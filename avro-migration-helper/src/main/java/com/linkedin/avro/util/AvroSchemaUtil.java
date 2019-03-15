@@ -25,9 +25,9 @@ public class AvroSchemaUtil {
   /**
    * given a (parent) schema, and a field name, find the schema for that field.
    * if the field is a union, returns the (only) non-null branch of the union
-   * @param parent
-   * @param fieldName
-   * @return
+   * @param parent parent schema containing field
+   * @param fieldName name of the field in question
+   * @return schema of the field (or non-null union branch thereof)
    */
   public static Schema findNonNullUnionBranch(Schema parent, String fieldName) {
     if (parent == null || fieldName == null || fieldName.isEmpty()) {

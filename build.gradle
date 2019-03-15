@@ -4,18 +4,144 @@
  * See License in the project root for license information.
  */
 
+buildscript {
+  repositories {
+    jcenter()
+  }
+  dependencies {
+    classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
+  }
+}
+
+group = 'com.linkedin.avroutil'
+
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+def allPublicationNames = new HashSet<String>()
+
 subprojects {
-  pluginManager.withPlugin("java") {
+
+  //apply group and version to all submodules
+  group = rootProject.group
+  version = rootProject.version
+
+  plugins.withType(JavaPlugin) {
+
     repositories {
+      mavenLocal()
       jcenter()
     }
+
     test {
       useTestNG()
+    }
+
+    task sourceJar(type: Jar) {
+      from sourceSets.main.allJava
+      classifier "sources"
+    }
+
+    task javadocJar(type: Jar) {
+      from javadoc
+      classifier = 'javadoc'
+    }
+
+    task testJar(type: Jar) {
+      from sourceSets.test.allJava
+      classifier = 'tests'
+    }
+
+    publishing {
+      publications {
+        "$project.name"(MavenPublication) {
+          groupId project.group
+          artifactId project.name
+          version project.version
+
+
+          from components.java
+          artifact sourceJar
+          artifact javadocJar
+          artifact testJar
+
+          //we strive to meet https://central.sonatype.org/pages/requirements.html
+          pom {
+            name = 'Avro Util'
+            description = 'utilities for writing code that works across major avro versions'
+            url = 'https://github.com/linkedin/avro-util'
+
+            licenses {
+              license {
+                name = 'BSD 2-Clause'
+                url = 'https://raw.githubusercontent.com/linkedin/avro-util/master/LICENSE'
+              }
+            }
+            developers {
+              developer {
+                id = 'radai-rosenblatt'
+                name = 'Radai Rosenblatt'
+                email = 'radai.rosenblatt@gmail.com'
+                organization = 'LinkedIn'
+                organizationUrl = 'linkedin.com'
+              }
+              developer {
+                id = 'abhishekmendhekar'
+                name = 'Abhishek Mendhekar'
+                organization = 'LinkedIn'
+                organizationUrl = 'linkedin.com'
+              }
+              developer {
+                id = 'jimhe'
+                name = 'Jim He'
+                email = 'jimjhe@gmail.com'
+                organization = 'LinkedIn'
+                organizationUrl = 'linkedin.com'
+              }
+              developer {
+                id = 'ghosthack'
+                name = 'Adrian Fernandez'
+                email = 'adrian@ghosthack.com'
+                organization = 'LinkedIn'
+                organizationUrl = 'linkedin.com'
+              }
+            }
+            scm {
+              connection = 'scm:git:git://github.com:linkedin/avro-util.git'
+              developerConnection = 'scm:git:ssh://github.com:linkedin/avro-util.git'
+              url = 'https://github.com/linkedin/avro-util'
+            }
+          }
+        }
+
+        //record all of this module's publications in the bintray publications list
+        //for the root project
+        allPublicationNames.addAll(project.publishing.publications.names)
+        rootProject.bintray.publications = allPublicationNames.toArray()
+      }
     }
   }
 }
 
+bintray {
+  user = System.getenv('BINTRAY_USER')
+  key = System.getenv('BINTRAY_KEY')
+
+  publications = [] //filled by child closure above
+
+  pkg {
+    repo = 'avro-util'
+    name = 'avro-util'
+    licenses = ['BSD 2-Clause']
+    vcsUrl = 'https://github.com/linkedin/avro-util.git'
+    version {
+      name = project.version
+    }
+    publish = true
+  }
+}
+
 wrapper {
-  gradleVersion = 4.9
+  gradleVersion = 5.2
   distributionType = Wrapper.DistributionType.ALL
 }

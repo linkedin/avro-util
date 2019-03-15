@@ -19,7 +19,7 @@ import com.linkedin.avro.compatibility.AvroCompatibilityHelper;
  * this class represents a malformed avro schema that unfortunately exists due to legacy.
  * this class contains the original schema json, a "fixed" schema (which is usable by modern
  * avro) and the list of transforms required to get from one to the other.
- * <p/>
+ * <p>
  * issues with legacy schemas
  * <ul>
  *   <li>illegal characters in identifier names and enum values - things like '@' '-' and spaces</li>
@@ -27,7 +27,7 @@ import com.linkedin.avro.compatibility.AvroCompatibilityHelper;
  *   <li>invalid default property values (like a boolean default value for an int prop)</li>
  *   <li>sometimes the schema definition may not even be valid json - in the olden days people would write those and register them manually</li>
  * </ul>
- * <p/>
+ * <p>
  * some of these issues are fixable - by escaping illegal characters and removing duplicate definitions.
  * this can allow us to continue "supporting" those schemas by using a fixing up the schema and using
  * the fixed schema and the list of fix steps to continue read/writing both the schema itself as well

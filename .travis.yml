@@ -1,0 +1,49 @@
+language: java
+
+# any more recent ubuntu image doesnt have java 8
+dist: trusty
+
+jdk: oraclejdk8
+
+env:
+  global:
+    # these secure values are encrypted for linkedin/avro-util. for use in forked repos, set env vars in your own build - they should win over these (as these wont be decodable in forked builds)
+    - secure: "KPZNEmxkF0FelGIG976EoZ1G/mEbtwM1bv8h7e5KdDQwrfuUAxvOH1EMcrC9zcKBcLDs8sMfq1cqxW3segEnbShYXawsBNlceEyZo85GbKjEIeWzFgEibDBtqEuWxYsIIjjJIfVd485pTIaTt+T22lZEmJBrUGC3Y2OlRH3rr4UxFM6MITn63qV156xvs1qG08X/nxk1YK+IP1rVmd/hhEX0xTo8HA+wmOqWBUKdQ4AWGCj2Hp7vtISqRRrby+D5TxsIuWonvMLNKy8aDi9QeDZ+bFDlRLW8EbmtGitW9Wdmb2ObmlnGAPBZ1WjiooUlgIBp6dH0YLmCGcO8rLT8Lhb1DpUFd/2axmtqTwsjuD5uPgQywM2tFqVN9d0MFOAKb2w/Pa+h20G2ctEG+CqvarPao4jNV0UL6YRREguSW2nSmhe+BntYlCK4YDXHU/sW7mrpth/X85tBn9cwSbSXk5ofjsKLHQg+ryQE6/yLAsNOoxWYPV0JCGUT3/G0jr+TK/dYOXMgC4nZZljvmvbyt7Y5zYMFO0wOQ8lm1gF3rqpKPHJlHLAal4OwRZ/UMzsxwaVC73tQ5Oo830H2pD3Evtgiz6kg6PHavzVrx8ZQ6BwTSTu9Dc44WCaUAhQEIy9rZ9UWSrtaGRXAYO7Rjw5GzRwbRxv7VSSQXCmmiIl7xXM="
+    - secure: "oIIsNfRmt+vBrpaItsQZHsinwBGsrnXm2l35+bJLCUj+Yux+6ZKKoBpdgV6Wg/RQd3t3Uc+CXQjbc+Xrp0kM1nE12wpv7MkcrzA0WjesCBSE7Jc+6drZZFl4OTFlY7FIWPlSEcosGuwcC8O2TX2lmJTykbnt4FxHeCP9PMVjzhCULDEuQWeKNkjWKpIW9Q0p7+rsXdnPkbHbUzdxWKwLjcEMWftgqIODZxKn4t8lxSms6jnrfT7LndiwfqCwXV21FZaZKMB30e+QOBnLra6jGvM4tVpo4PV+RNLSXx3CpXriOz5Vhjtx4/mzs6hO/IwY18g/Vyg1F6YuiiqV/O1+s2iugyLdd/136n2MKlytYYODjplS4lr2Ku9QjVKzKxfEDAxSFbLkPQIoSeqOFkt0rUyx+gV1w+7hLIhCxuQ4/i6QKheAgs65tVyCtKzXccLLoxX6vAN70Sz/+Ge4qkG1n4WOyRIuM/bMCym6oyofCoWbb0ZTELbYnI44u+HBxAayfiueW6wXsUcr6Gp7MIIAfO/XI+jIAeVSHSodaFnU19ymV1Rc5o5/laHGqPgtrQHpFhh1vOYWI6FY/K1nA5yyIoNpZcq4TU2J4z2MOe+sVtVHsrEoRolxg1+XwPsQYc8VV9ytH7UShJ9snn9F65/zJfrQamn7bksDQHQY++4Y3rs="
+
+# update to latest oracle jdk8 (adds ~20 seconds)
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+
+# instead of the default install step (./gradlew assemble) just fetch our wanted gradle version
+install: true
+
+script:
+  - ./gradlew clean build
+
+# required for gradle artifact caching (see https://docs.travis-ci.com/user/languages/java/#caching)
+before_cache:
+  - rm -rvf $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -rvf $HOME/.gradle/caches/*/fileHashes/fileHashes.lock
+  - rm -rvf $HOME/.gradle/caches/*/javaCompile/javaCompile.lock
+  - rm -rvf $HOME/.gradle/caches/journal-*/file-access.bin
+  - rm -rvf $HOME/.gradle/caches/journal-*/*.lock
+  - rm -rvf $HOME/.gradle/caches/*/plugin-resolution/
+  - rm -rvf $HOME/.gradle/caches/*/scripts/*/cp_proj/
+  - sync
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+
+deploy:
+  provider: script
+  script: bash -v scripts/publishToBintray.sh
+  skip_cleanup: true
+  on:
+    all_branches: true
+    tags: true
+    # the condition on the tag name (should be a semantic version) is inside the script, for ease of development

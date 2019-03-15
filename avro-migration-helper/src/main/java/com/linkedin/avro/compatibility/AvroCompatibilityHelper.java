@@ -114,11 +114,17 @@ public class AvroCompatibilityHelper {
    * so it would be wrong to check for instanceof GenericRecord!
    *
    * @param indexedRecord the record in question
+   * @return true if argument is a specific record
    */
   public static boolean isSpecificRecord(IndexedRecord indexedRecord) {
     return indexedRecord instanceof SpecificRecord;
   }
 
+  /**
+   * Return true if the {@link IndexedRecord} is a {@link org.apache.avro.generic.GenericRecord}.
+   * @param indexedRecord a record
+   * @return true if argument is a generic record
+   */
   public static boolean isGenericRecord(IndexedRecord indexedRecord) {
     return !(isSpecificRecord(indexedRecord));
   }
