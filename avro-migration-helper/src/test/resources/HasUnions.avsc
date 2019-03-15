@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "HasUnions",
+  "fields": [
+    {
+      "name": "f1",
+      "type": ["null", "HasUnions"]
+    }
+  ]
+}

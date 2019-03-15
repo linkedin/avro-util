@@ -1,0 +1,17 @@
+{
+  "name": "Whatever",
+  "type": "record",
+  "fields": [
+    {
+      "name": "f",
+      "type": {
+        "name": "EnumType",
+        "type": "enum",
+        "symbols": [
+          "A",
+          "B"
+        ]
+      }
+    }
+  ]
+}

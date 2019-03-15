@@ -1,0 +1,28 @@
+{
+  public static final org.apache.avro.Schema SCHEMA$ = org.apache.avro.Schema.parse("{\"type\":\"fixed\",\"name\":\"${name}\",\"size\":${size},\"namespace\":\"${namespace}\",\"doc\":\"${doc}\"}");
+
+  public ${name}() {
+    super();
+  }
+
+  public ${name}(byte[] bytes) {
+    super();
+    bytes(bytes);
+  }
+
+  public org.apache.avro.Schema getSchema() {
+    return SCHEMA$;
+  }
+
+  private static final org.apache.avro.io.DatumWriter WRITER$ = new org.apache.avro.specific.SpecificDatumWriter<${name}>(SCHEMA$);
+
+  public void writeExternal(java.io.ObjectOutput out) throws java.io.IOException {
+    WRITER$.write(this, com.linkedin.avro.compatibility.AvroCompatibilityHelper.newBinaryEncoder(out));
+  }
+
+  private static final org.apache.avro.io.DatumReader READER$ = new org.apache.avro.specific.SpecificDatumReader<${name}>(SCHEMA$);
+
+  public void readExternal(java.io.ObjectInput in) throws java.io.IOException {
+    READER$.read(this, com.linkedin.avro.compatibility.AvroCompatibilityHelper.newBinaryDecoder(in));
+  }
+}
