@@ -17,8 +17,8 @@ configurations {
 }
 
 test {
-  //we run test multiple times with different avro versions, do
-  //dont use the default test task
+  //we run test multiple times with different avro
+  //versions, so dont use the default test task
   enabled = false
 }
 
