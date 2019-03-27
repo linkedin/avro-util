@@ -4,8 +4,10 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avro.compatibility;
+package org.apache.avro.io;
 
+import com.linkedin.avro.compatibility.AvroGeneratedSourceCode;
+import com.linkedin.avro.compatibility.AvroVersion;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

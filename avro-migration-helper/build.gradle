@@ -4,7 +4,23 @@
  * See License in the project root for license information.
  */
 
-apply plugin: 'java-library'
+plugins {
+  id "java-library"
+}
+
+configurations {
+  avro14
+  avro15
+  avro16
+  avro17
+  avro18
+}
+
+test {
+  //we run test multiple times with different avro
+  //versions, so dont use the default test task
+  enabled = false
+}
 
 dependencies {
 
@@ -15,22 +31,79 @@ dependencies {
     exclude group: "org.jboss.netty"
     exclude group: "com.thoughtworks.paranamer", module: "paranamer-ant"
   }
-  //when run with #avro17
-  //compileOnly 'org.apache.avro:avro-compiler:1.7.7'
 
-  compile 'org.json:json:20170516'
+  //comment above and uncomment these when trying to
+  //work on a particular version of avro in an IDE
 
-  testCompile ('org.apache.avro:avro:1.4.1') {
+  //compile 'org.apache.avro:avro:1.8.2'
+  //compile 'org.apache.avro:avro-compiler:1.8.2'
+
+  compile 'org.json:json:20180813'
+
+  testCompileOnly ('org.apache.avro:avro:1.4.1') {
     exclude group: "org.mortbay.jetty"
     exclude group: "org.apache.velocity"
     exclude group: "commons-lang"
     exclude group: "org.jboss.netty"
     exclude group: "com.thoughtworks.paranamer", module: "paranamer-ant"
   }
-  //when run with #avro17
-  //compileOnly 'org.apache.avro:avro-compiler:1.7.7'
+
   testCompile 'org.testng:testng:6.14.3'
   testCompile 'commons-io:commons-io:2.6'
   testCompile 'org.skyscreamer:jsonassert:1.5.0'
   testCompile 'net.openhft:compiler:2.3.1'
+
+  testRuntimeOnly 'org.slf4j:slf4j-simple:1.7.26'
+
+  avro14 ("org.apache.avro:avro:1.4.1") {
+    exclude group: "org.mortbay.jetty"
+    exclude group: "org.apache.velocity"
+    exclude group: "commons-lang"
+    exclude group: "org.jboss.netty"
+    exclude group: "com.thoughtworks.paranamer", module: "paranamer-ant"
+    exclude group: "org.slf4j"
+  }
+  avro15 "org.apache.avro:avro:1.5.4"
+  avro15 "org.apache.avro:avro-compiler:1.5.4"
+  avro16 "org.apache.avro:avro:1.6.3"
+  avro16 "org.apache.avro:avro-compiler:1.6.3"
+  avro17 ("org.apache.avro:avro:1.7.7") {
+    exclude group: "org.slf4j"
+  }
+  avro17 ("org.apache.avro:avro-compiler:1.7.7") {
+    exclude group: "org.slf4j"
+  }
+  avro18 ("org.apache.avro:avro:1.8.2") {
+    exclude group: "org.slf4j"
+  }
+  avro18 ("org.apache.avro:avro-compiler:1.8.2") {
+    exclude group: "org.slf4j"
+  }
 }
+
+def avroVersions = ["14", "15", "16", "17", "18"]
+
+for (String avroVersion : avroVersions) {
+
+  task "testAvro${avroVersion}" (type: Test, group: "Verification", description: "runs unit tests with avro ${avroVersion}") {
+    useTestNG()
+
+    testLogging {
+      events "passed", "skipped", "failed"
+    }
+
+    classpath = project.sourceSets.test.runtimeClasspath.filter {
+      File file -> !file.name.contains("avro")
+    }.plus (configurations."avro${avroVersion}")
+
+    def gradleIsFun = avroVersion
+
+    doFirst {
+      System.out.println("classpath for avro " + gradleIsFun + " is:")
+      classpath.each { System.out.println(it) }
+    }
+  }
+
+}
+
+build.dependsOn testAvro14, testAvro17, testAvro18
