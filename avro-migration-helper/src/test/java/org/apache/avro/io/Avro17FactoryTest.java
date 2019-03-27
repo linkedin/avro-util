@@ -4,9 +4,11 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avro.compatibility;
+package org.apache.avro.io;
 
 import com.linkedin.avro.TestUtil;
+import com.linkedin.avro.compatibility.AvroCompatibilityHelper;
+import com.linkedin.avro.compatibility.AvroVersion;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;

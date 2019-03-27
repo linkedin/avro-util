@@ -18,7 +18,7 @@ import org.apache.avro.Schema;
  * this class has been back-ported from modern (1.8.2) avro to allow canonicalizing schemas
  * under avro 1.4. its only intended for use by migration helper code (hence its package private)
  */
-class SchemaNormalization {
+public class SchemaNormalization {
   private SchemaNormalization() {
   }
 

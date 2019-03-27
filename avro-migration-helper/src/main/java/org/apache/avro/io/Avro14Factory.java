@@ -4,8 +4,11 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avro.compatibility;
+package org.apache.avro.io;
 
+import com.linkedin.avro.compatibility.AvroGeneratedSourceCode;
+import com.linkedin.avro.compatibility.AvroVersion;
+import com.linkedin.avro.compatibility.SchemaNormalization;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -22,11 +25,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
-import org.apache.avro.io.BinaryEncoder;
 
 
-//package private ON PURPOSE
-class Avro14Factory extends AbstractAvroFactory {
+public class Avro14Factory extends AbstractAvroFactory {
   private static final Pattern PACKAGE_PATTERN = Pattern.compile("package\\s+(.*);");
   private static final Pattern FIXED_SIZE_ANNOTATION_PATTERN = Pattern.compile("@org.apache.avro.specific.FixedSize\\((.*)\\)");
   private static final Pattern FIXED_CLASS_DECL_PATTERN = Pattern.compile("public class (\\w+) extends org.apache\\.avro\\.specific\\.SpecificFixed ");
@@ -45,7 +46,7 @@ class Avro14Factory extends AbstractAvroFactory {
   private final Constructor _binaryEncoderCtr;
   private final Method _schemaParseMethod;
 
-  Avro14Factory() throws Exception {
+  public Avro14Factory() throws Exception {
     super(
         GenericData.EnumSymbol.class.getConstructor(String.class),
         GenericData.Fixed.class.getConstructor(byte[].class)

@@ -4,8 +4,11 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avro.compatibility;
+package org.apache.avro.io;
 
+import com.linkedin.avro.compatibility.AvroCompatibilityHelper;
+import com.linkedin.avro.compatibility.AvroGeneratedSourceCode;
+import com.linkedin.avro.compatibility.AvroVersion;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -20,11 +23,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
-import org.apache.avro.io.BinaryEncoder;
 
 
-//package private ON PURPOSE
-class Avro17Factory extends AbstractAvroFactory {
+public class Avro17Factory extends AbstractAvroFactory {
   private static final String PARSER_INVOCATION_START = "new org.apache.avro.Schema.Parser().parse(";
   private static final Pattern PARSER_INVOCATION_PATTERN = Pattern.compile(Pattern.quote(PARSER_INVOCATION_START) + "\"(.*)\"\\);([\r\n]+)");
   private static final String CSV_SEPARATOR = "(?<!\\\\)\",\""; //require the 1st " not be preceded by a \
@@ -39,9 +40,9 @@ class Avro17Factory extends AbstractAvroFactory {
   private static final Pattern READ_EXTERNAL_SIGNATURE = Pattern.compile(Pattern.quote("@Override public void readExternal(java.io.ObjectInput in)"));
   private static final String READ_EXTERNAL_WITHOUT_OVERRIDE = Matcher.quoteReplacement("public void readExternal(java.io.ObjectInput in)");
   private static final Pattern CREATE_ENCODER_INVOCATION = Pattern.compile(Pattern.quote("org.apache.avro.specific.SpecificData.getEncoder(out)"));
-  private static final String CREATE_ENCODER_VIA_HELPER = Matcher.quoteReplacement("org.apache.avro.io.LinkedinAvroMigrationHelper.newBinaryEncoder(out)");
+  private static final String CREATE_ENCODER_VIA_HELPER = Matcher.quoteReplacement(AvroCompatibilityHelper.class.getCanonicalName() + ".newBinaryEncoder(out)");
   private static final Pattern CREATE_DECODER_INVOCATION = Pattern.compile(Pattern.quote("org.apache.avro.specific.SpecificData.getDecoder(in)"));
-  private static final String CREATE_DECODER_VIA_HELPER = Matcher.quoteReplacement("org.apache.avro.io.LinkedinAvroMigrationHelper.newBinaryDecoder(in)");
+  private static final String CREATE_DECODER_VIA_HELPER = Matcher.quoteReplacement(AvroCompatibilityHelper.class.getCanonicalName() + ".newBinaryDecoder(in)");
   private static final Pattern CATCH_EXCEPTION_PATTERN = Pattern.compile(Pattern.quote("catch (Exception e)"));
   private static final String CATCH_FULLY_QUALIFIED_EXCEPTION = Matcher.quoteReplacement("catch (java.lang.Exception e)");
 
@@ -60,7 +61,7 @@ class Avro17Factory extends AbstractAvroFactory {
   private Object _charSequenceStringTypeEnumInstance;
   private Method _setStringTypeMethod;
 
-  Avro17Factory() throws Exception {
+  public Avro17Factory() throws Exception {
     super(
         GenericData.EnumSymbol.class.getConstructor(Schema.class, String.class),
         GenericData.Fixed.class.getConstructor(Schema.class, byte[].class)

@@ -4,10 +4,9 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avro.compatibility;
+package org.apache.avro.io;
 
 import com.linkedin.avro.TestUtil;
-import com.linkedin.avro.compatibility.Avro14Factory;
 import com.linkedin.avro.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avro.compatibility.AvroGeneratedSourceCode;
 import com.linkedin.avro.compatibility.AvroVersion;
@@ -18,13 +17,14 @@ import java.util.Collections;
 import java.util.List;
 import net.openhft.compiler.CompilerUtils;
 import org.apache.avro.Schema;
+import org.apache.avro.io.Avro14Factory;
 import org.apache.avro.specific.SpecificFixed;
 import org.testng.Assert;
 import org.testng.SkipException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static com.linkedin.avro.compatibility.Avro14Factory.*;
+import static org.apache.avro.io.Avro14Factory.*;
 
 
 public class Avro14FactoryTest {

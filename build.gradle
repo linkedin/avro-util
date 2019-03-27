@@ -35,6 +35,10 @@ subprojects {
 
     test {
       useTestNG()
+
+      testLogging {
+        events "passed", "skipped", "failed"
+      }
     }
 
     task sourceJar(type: Jar) {

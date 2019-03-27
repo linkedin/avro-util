@@ -4,7 +4,7 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avro.compatibility;
+package org.apache.avro.io;
 
 import com.acme.generatedby14.Fixed;
 import com.linkedin.avro.TestUtil;

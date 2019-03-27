@@ -4,22 +4,26 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avro.compatibility;
+package org.apache.avro.io;
 
+import com.linkedin.avro.compatibility.AvroGeneratedSourceCode;
+import com.linkedin.avro.compatibility.AvroVersion;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
-import org.apache.avro.io.BinaryEncoder;
-import org.apache.avro.io.JsonDecoder;
-import org.apache.avro.io.JsonEncoder;
 import org.codehaus.jackson.JsonGenerator;
 
 
-//package-private ON PURPOSE
-interface AvroFactory {
+/**
+ * a factory interface for performing various avro operations
+ * that are avro-version-dependant.
+ * this class is in the "org.apache.avro.io" package because some
+ * classes used here (like org.apache.avro.ioJsonEncoder) are package-private
+ */
+public interface AvroFactory {
 
   BinaryEncoder newBinaryEncoder(OutputStream out);
 
