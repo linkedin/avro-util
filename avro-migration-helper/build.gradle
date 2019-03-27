@@ -96,8 +96,10 @@ for (String avroVersion : avroVersions) {
       File file -> !file.name.contains("avro")
     }.plus (configurations."avro${avroVersion}")
 
+    def gradleIsFun = avroVersion
+
     doFirst {
-      System.out.println("classpath for avro ${avroVersion} is:")
+      System.out.println("classpath for avro " + gradleIsFun + " is:")
       classpath.each { System.out.println(it) }
     }
   }
