@@ -156,25 +156,54 @@ public class AvroCompatibilityHelper {
   }
 
   private static AvroVersion detectAvroVersion() {
-    Class<?> binaryEncoderClass;
-    Class<?> specificDataClass;
+
+    //the following code looks for a series of changes made to the avro codebase for major
+    //releases, and that have ideally remained "stable" ever since their introduction.
+
+    //BinaryEncoder was made abstract for 1.5.0 as part of AVRO-753
     try {
-      binaryEncoderClass = Class.forName("org.apache.avro.io.BinaryEncoder");
-      specificDataClass = Class.forName("org.apache.avro.specific.SpecificData");
-    } catch (ClassNotFoundException e) {
-      //these exist in all avro versions known to us
-      throw new IllegalStateException("unable to locate any avro on the classpath", e);
+      Class<?> binaryEncoderClass = Class.forName("org.apache.avro.io.BinaryEncoder");
+      if (!Modifier.isAbstract(binaryEncoderClass.getModifiers())) {
+        return AvroVersion.AVRO_1_4;
+      }
+    } catch (ClassNotFoundException unexpected) {
+      throw new IllegalStateException("unable to find class org.apache.avro.io.BinaryEncoder", unexpected);
     }
 
-    if (!Modifier.isAbstract(binaryEncoderClass.getModifiers())) {
-      return AvroVersion.AVRO_1_4;
+    //GenericData.StringType was added for 1.6.0 as part of AVRO-803
+    try {
+      Class.forName("org.apache.avro.generic.GenericData$StringType");
+    } catch (ClassNotFoundException expected) {
+      return AvroVersion.AVRO_1_5;
     }
 
+    //SchemaNormalization was added for 1.7.0 as part of AVRO-1006
     try {
-      specificDataClass.getMethod("getDecoder", ObjectInput.class);
-      return AvroVersion.AVRO_1_8;
-    } catch (NoSuchMethodException e) {
+      Class.forName("org.apache.avro.SchemaNormalization");
+    } catch (ClassNotFoundException expected) {
+      return AvroVersion.AVRO_1_6;
+    }
+
+    //extra constructor added to EnumSymbol for 1.8.0 as part of AVRO-997
+    try {
+      Class<?> enumSymbolClass = Class.forName("org.apache.avro.generic.GenericData$EnumSymbol");
+      enumSymbolClass.getConstructor(Schema.class, Object.class);
+    } catch (NoSuchMethodException expected) {
       return AvroVersion.AVRO_1_7;
+    } catch (ClassNotFoundException unexpected) {
+      throw new IllegalStateException("unable to find class org.apache.avro.generic.GenericData$EnumSymbol", unexpected);
     }
+
+    //method added for 1.9.0 as part of AVRO-2360
+    try {
+      Class<?> conversionClass = Class.forName("org.apache.avro.Conversion");
+      conversionClass.getMethod("adjustAndSetValue", String.class, String.class);
+    } catch (NoSuchMethodException expected) {
+      return AvroVersion.AVRO_1_8;
+    } catch (ClassNotFoundException unexpected) {
+      throw new IllegalStateException("unable to find class org.apache.avro.Conversion", unexpected);
+    }
+
+    return AvroVersion.AVRO_1_9;
   }
 }
