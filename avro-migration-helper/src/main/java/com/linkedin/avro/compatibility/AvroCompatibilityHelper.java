@@ -16,14 +16,8 @@ import java.util.Collection;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
-import org.apache.avro.io.Avro14Factory;
-import org.apache.avro.io.Avro17Factory;
-import org.apache.avro.io.AvroFactory;
-import org.apache.avro.io.BinaryDecoder;
-import org.apache.avro.io.BinaryEncoder;
-import org.apache.avro.io.DecoderFactory;
-import org.apache.avro.io.JsonDecoder;
-import org.apache.avro.io.JsonEncoder;
+import org.apache.avro.io.*;
+import org.apache.avro.io.AvroAdapter;
 import org.apache.avro.specific.SpecificRecord;
 import org.codehaus.jackson.JsonGenerator;
 
@@ -34,18 +28,18 @@ import org.codehaus.jackson.JsonGenerator;
  */
 public class AvroCompatibilityHelper {
   private static final AvroVersion AVRO_VERSION;
-  private static final AvroFactory FACTORY;
+  private static final AvroAdapter FACTORY;
 
   static {
     AVRO_VERSION = detectAvroVersion();
     try {
       switch (AVRO_VERSION) {
         case AVRO_1_4:
-          FACTORY = new Avro14Factory();
+          FACTORY = new Avro14Adapter();
           break;
         case AVRO_1_7:
         case AVRO_1_8:
-          FACTORY = new Avro17Factory();
+          FACTORY = new Avro17Adapter();
           break;
         default:
           //1.5/1.6 support is out of scope for the migration effort and so are not supported (yet?)
@@ -147,8 +141,17 @@ public class AvroCompatibilityHelper {
     return AVRO_VERSION;
   }
 
+  /**
+   * parse a single schema
+   * @param schemaJson the schema to parse (expected to be a json string)
+   * @return a Schema object, if parsing was successful
+   */
   public static Schema parse(String schemaJson) {
-    return FACTORY.parse(schemaJson);
+    return parse(schemaJson, null).getMainSchema();
+  }
+
+  public static SchemaParseResult parse(String schemaJson, Collection<Schema> known) {
+    return FACTORY.parse(schemaJson, known);
   }
 
   public static String toParsingForm(Schema s) {

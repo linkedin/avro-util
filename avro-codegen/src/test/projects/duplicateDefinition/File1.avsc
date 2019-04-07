@@ -1,0 +1,11 @@
+{
+  "namespace": "com.acme",
+  "type": "record",
+  "name": "Record",
+  "fields": [
+    {
+      "name": "f",
+      "type": "long"
+    }
+  ]
+}

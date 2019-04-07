@@ -11,7 +11,7 @@ import com.linkedin.avro.compatibility.AvroCompatibilityHelper;
 
 /**
  * this demonstrates the output of generating a fixed-type class would be under avro 1.4 after
- * transformations done in Avro14Factory
+ * transformations done in Avro14Adapter
  */
 @SuppressWarnings("all")
 @org.apache.avro.specific.FixedSize(16)

@@ -9,36 +9,31 @@ package org.apache.avro.io;
 import com.linkedin.avro.compatibility.AvroGeneratedSourceCode;
 import com.linkedin.avro.compatibility.AvroVersion;
 import com.linkedin.avro.compatibility.SchemaNormalization;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.StringWriter;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.linkedin.avro.compatibility.SchemaParseResult;
+import com.linkedin.avro.util.TemplateUtil;
 import org.apache.avro.Schema;
+import org.apache.avro.Avro14SchemaAccessHelper;
 import org.apache.avro.generic.GenericData;
 
 
-public class Avro14Factory extends AbstractAvroFactory {
+public class Avro14Adapter extends AbstractAvroAdapter {
   private static final Pattern PACKAGE_PATTERN = Pattern.compile("package\\s+(.*);");
   private static final Pattern FIXED_SIZE_ANNOTATION_PATTERN = Pattern.compile("@org.apache.avro.specific.FixedSize\\((.*)\\)");
   private static final Pattern FIXED_CLASS_DECL_PATTERN = Pattern.compile("public class (\\w+) extends org.apache\\.avro\\.specific\\.SpecificFixed ");
   private static final Pattern ENUM_CLASS_ANNOTATION_PATTERN = Pattern.compile("public enum (\\w+) ");
   private static final Pattern ENUM_CLASS_DECL_PATTERN = Pattern.compile("public enum (\\w+) \\{\\s*[\\n\\r]\\s*(.*)\\s*[\\n\\r]}");
-  private static final Pattern TEMPLATE_PLACEHOLDER_PATTERN = Pattern.compile("\\$\\{(\\w+)}");
   private static final Pattern COMMENT_PATTERN = Pattern.compile("(//([/\\s]*).*?\\s*$)|(/\\*+\\s*(.*?)\\s*\\*+/)", Pattern.MULTILINE | Pattern.DOTALL);
-  private static final String FIXED_CLASS_BODY_TEMPLATE = loadTemplate("SpecificFixedBody.template");
-  private static final String FIXED_CLASS_NO_NAMESPACE_BODY_TEMPLATE = loadTemplate("SpecificFixedBodyNoNamespace.template");
-  private static final String ENUM_CLASS_BODY_TEMPLATE = loadTemplate("Enum.template");
-  private static final String ENUM_CLASS_NO_NAMESPACE_BODY_TEMPLATE = loadTemplate("EnumNoNamespace.template");
+  private static final String FIXED_CLASS_BODY_TEMPLATE = TemplateUtil.loadTemplate("SpecificFixedBody.template");
+  private static final String FIXED_CLASS_NO_NAMESPACE_BODY_TEMPLATE = TemplateUtil.loadTemplate("SpecificFixedBodyNoNamespace.template");
+  private static final String ENUM_CLASS_BODY_TEMPLATE = TemplateUtil.loadTemplate("Enum.template");
+  private static final String ENUM_CLASS_NO_NAMESPACE_BODY_TEMPLATE = TemplateUtil.loadTemplate("EnumNoNamespace.template");
   private static final String PARSE_INVOCATION_START = "org.apache.avro.Schema.parse(";
   private static final Pattern PARSE_INVOCATION_PATTERN = Pattern.compile(Pattern.quote(PARSE_INVOCATION_START) + "\"(.*)\"\\);");
   private static final int MAX_STRING_LITERAL_SIZE = 65000; //just under 64k
@@ -46,7 +41,7 @@ public class Avro14Factory extends AbstractAvroFactory {
   private final Constructor _binaryEncoderCtr;
   private final Method _schemaParseMethod;
 
-  public Avro14Factory() throws Exception {
+  public Avro14Adapter() throws Exception {
     super(
         GenericData.EnumSymbol.class.getConstructor(String.class),
         GenericData.Fixed.class.getConstructor(byte[].class)
@@ -71,6 +66,7 @@ public class Avro14Factory extends AbstractAvroFactory {
     if (compatibilityLevel.ordinal() > AvroVersion.AVRO_1_4.ordinal()) {
       //things like lack of SCHEMA$ field on fixed types is an issue with 1.5+
       //at higher versions even more would be missing (implementation of Externalizable for 1.8, for example)
+      //TODO - reconsider this (as we add these things in)
       throw new IllegalStateException("avro-1.4 generated specific records cannot in general be made compatible with " + compatibilityLevel);
     }
     List<AvroGeneratedSourceCode> transformed = new ArrayList<>(avroCodegenOutput.size());
@@ -113,20 +109,8 @@ public class Avro14Factory extends AbstractAvroFactory {
   }
 
   @Override
-  public Schema parse(String schemaJson) {
-    try {
-      return (Schema) _schemaParseMethod.invoke(null, schemaJson);
-    } catch (RuntimeException e) {
-      throw e; //pass-through
-    } catch (InvocationTargetException e) {
-      Throwable underlying = e.getCause();
-      if (underlying instanceof RuntimeException) {
-        throw (RuntimeException) underlying;
-      }
-      throw new IllegalStateException(e);
-    } catch (Exception e) {
-      throw new IllegalStateException(e);
-    }
+  public SchemaParseResult parse(String schemaJson, Collection<Schema> known) {
+    return Avro14SchemaAccessHelper.parse(schemaJson, known);
   }
 
   @Override
@@ -190,7 +174,7 @@ public class Avro14Factory extends AbstractAvroFactory {
     templateParams.put("symbol_string", sb.toString()); // drop the last comma
 
     String template = packageName == null ? ENUM_CLASS_NO_NAMESPACE_BODY_TEMPLATE : ENUM_CLASS_BODY_TEMPLATE;
-    String body = populateTemplate(template, templateParams);
+    String body = TemplateUtil.populateTemplate(template, templateParams);
 
     return code.substring(0, enumMatcher.end(0)) + body;
   }
@@ -252,7 +236,7 @@ public class Avro14Factory extends AbstractAvroFactory {
     templateParams.put("doc", doc);
     templateParams.put("namespace", packageName); //might be null
     String template = packageName == null ? FIXED_CLASS_NO_NAMESPACE_BODY_TEMPLATE : FIXED_CLASS_BODY_TEMPLATE;
-    String body = populateTemplate(template, templateParams);
+    String body = TemplateUtil.populateTemplate(template, templateParams);
 
     return code.substring(0, classMatcher.end(0)) + body;
   }
@@ -331,41 +315,5 @@ public class Avro14Factory extends AbstractAvroFactory {
       }
     }
     return false;
-  }
-
-  static String loadTemplate(String templateName) {
-    try (InputStream is = Avro14Factory.class.getClassLoader().getResourceAsStream(templateName)) {
-      if (is == null) {
-        throw new IllegalStateException("unable to find " + templateName);
-      }
-      try (InputStreamReader reader = new InputStreamReader(is, "UTF-8");
-          BufferedReader bufferedReader = new BufferedReader(reader)) {
-        StringWriter writer = new StringWriter();
-        String line;
-        while ((line = bufferedReader.readLine()) != null) {
-          writer.append(line).append(System.lineSeparator());
-        }
-        writer.flush();
-        return writer.toString();
-      }
-    } catch (Exception e) {
-      throw new IllegalStateException("unable to load template " + templateName, e);
-    }
-  }
-
-  static String populateTemplate(String template, Map<String, String> parameters) {
-    //poor-man's regexp-based templating engine
-    Matcher paramMatcher = TEMPLATE_PLACEHOLDER_PATTERN.matcher(template);
-    StringBuffer output = new StringBuffer();
-    while (paramMatcher.find()) {
-      String paramName = paramMatcher.group(1);
-      String paramValue = parameters.get(paramName);
-      if (paramValue == null) {
-        throw new IllegalStateException("parameters have no value for " + paramName);
-      }
-      paramMatcher.appendReplacement(output, paramValue);
-    }
-    paramMatcher.appendTail(output);
-    return output.toString();
   }
 }

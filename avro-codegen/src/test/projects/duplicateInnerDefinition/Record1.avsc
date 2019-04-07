@@ -1,0 +1,20 @@
+{
+  "namespace": "com.acme",
+  "type": "record",
+  "name": "Record1",
+  "fields": [
+    {
+      "name": "f",
+      "type": {
+        "type": "record",
+        "name": "Inner",
+        "fields": [
+          {
+            "name": "i",
+            "type": "int"
+          }
+        ]
+      }
+    }
+  ]
+}

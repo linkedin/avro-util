@@ -1,0 +1,11 @@
+{
+  "namespace": "com.acme",
+  "type": "record",
+  "name": "NeedsClasspathEnum",
+  "fields": [
+    {
+      "name": "f",
+      "type": "com.acme.ClasspathEnum"
+    }
+  ]
+}

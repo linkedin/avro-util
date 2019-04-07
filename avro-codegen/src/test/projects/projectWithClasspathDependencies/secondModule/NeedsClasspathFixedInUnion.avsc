@@ -1,0 +1,11 @@
+{
+  "namespace": "com.acme",
+  "type": "record",
+  "name": "NeedsClasspathFixedInUnion",
+  "fields": [
+    {
+      "name": "f",
+      "type": ["null", "com.acme.ClasspathFixed"]
+    }
+  ]
+}

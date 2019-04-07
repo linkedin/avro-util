@@ -14,18 +14,17 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.linkedin.avro.compatibility.SchemaParseResult;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 
 
-public class Avro17Factory extends AbstractAvroFactory {
+public class Avro17Adapter extends AbstractAvroAdapter {
   private static final String PARSER_INVOCATION_START = "new org.apache.avro.Schema.Parser().parse(";
   private static final Pattern PARSER_INVOCATION_PATTERN = Pattern.compile(Pattern.quote(PARSER_INVOCATION_START) + "\"(.*)\"\\);([\r\n]+)");
   private static final String CSV_SEPARATOR = "(?<!\\\\)\",\""; //require the 1st " not be preceded by a \
@@ -52,6 +51,8 @@ public class Avro17Factory extends AbstractAvroFactory {
   private final Method _setValidateMethod;
   private final Method _setValidateDefaultsMethod; //in 1.8+
   private final Method _parseMethod;
+  private final Method _addTypesMethod;
+  private final Method _getTypesMethod;
   private final Method _toParsingFormMethod;
 
   //compiler-related
@@ -61,7 +62,7 @@ public class Avro17Factory extends AbstractAvroFactory {
   private Object _charSequenceStringTypeEnumInstance;
   private Method _setStringTypeMethod;
 
-  public Avro17Factory() throws Exception {
+  public Avro17Adapter() throws Exception {
     super(
         GenericData.EnumSymbol.class.getConstructor(Schema.class, String.class),
         GenericData.Fixed.class.getConstructor(Schema.class, byte[].class)
@@ -79,6 +80,8 @@ public class Avro17Factory extends AbstractAvroFactory {
       _setValidateDefaultsMethod = null;
     }
     _parseMethod = schemaParserClass.getDeclaredMethod("parse", String.class);
+    _addTypesMethod = schemaParserClass.getDeclaredMethod("addTypes", Map.class);
+    _getTypesMethod = schemaParserClass.getDeclaredMethod("getTypes");
 
     Class<?> schemaNormalizationClass = Class.forName("org.apache.avro.SchemaNormalization");
     _toParsingFormMethod = schemaNormalizationClass.getMethod("toParsingForm", Schema.class);
@@ -143,14 +146,26 @@ public class Avro17Factory extends AbstractAvroFactory {
   }
 
   @Override
-  public Schema parse(String schemaJson) {
+  public SchemaParseResult parse(String schemaJson, Collection<Schema> known) {
     try {
       Object schemaParser = _schemaParserCtr.newInstance();
       _setValidateMethod.invoke(schemaParser, Boolean.TRUE);
       if (_setValidateDefaultsMethod != null) {
         _setValidateDefaultsMethod.invoke(schemaParser, Boolean.TRUE);
       }
-      return (Schema) _parseMethod.invoke(schemaParser, schemaJson);
+
+      if (known != null) {
+        Map<String, Schema> types = new HashMap<>(known.size());
+        for (Schema s : known) {
+          types.put(s.getFullName(), s);
+        }
+        _addTypesMethod.invoke(schemaParser, types);
+      }
+
+      Schema parsed = (Schema) _parseMethod.invoke(schemaParser, schemaJson);
+      //noinspection unchecked
+      Map<String, Schema> allKnown = (Map<String, Schema>) _getTypesMethod.invoke(schemaParser);
+      return new SchemaParseResult(parsed, allKnown);
     } catch (RuntimeException e) {
       throw e; //pass-through
     } catch (InvocationTargetException e) {
@@ -165,11 +180,11 @@ public class Avro17Factory extends AbstractAvroFactory {
   }
 
   @Override
-  public Collection<AvroGeneratedSourceCode> compile(Collection<Schema> toCompile, AvroVersion compatibilityTarget) {
+  public Collection<AvroGeneratedSourceCode> compile(Collection<Schema> toCompile, AvroVersion minSupportedRuntimeVersion) {
     if (!_compilerSupported) {
       throw new UnsupportedOperationException("avro compiler jar was not found on classpath (was made an independent jar in modern avro)");
     }
-    return super.compile(toCompile, compatibilityTarget);
+    return super.compile(toCompile, minSupportedRuntimeVersion);
   }
 
   @Override
@@ -194,10 +209,10 @@ public class Avro17Factory extends AbstractAvroFactory {
         makeCompatible = Function.identity();
         break;
       case AVRO_1_7:
-        makeCompatible = Avro17Factory::make17Compatible;
+        makeCompatible = Avro17Adapter::make17Compatible;
         break;
       case AVRO_1_4:
-        makeCompatible = Avro17Factory::make14Compatible;
+        makeCompatible = Avro17Adapter::make14Compatible;
         break;
       default:
         throw new UnsupportedOperationException("unhandled: " + compatibilityLevel);

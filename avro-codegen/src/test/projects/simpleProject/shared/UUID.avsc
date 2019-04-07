@@ -1,0 +1,6 @@
+{
+  "namespace": "com.acme",
+  "type": "fixed",
+  "name": "UUID",
+  "size": 16
+}

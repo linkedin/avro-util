@@ -20,7 +20,7 @@ import org.apache.avro.Schema;
 
 
 //package private ON PURPOSE
-abstract class AbstractAvroFactory implements AvroFactory {
+abstract class AbstractAvroAdapter implements AvroAdapter {
   //common fields
   protected final Constructor _enumSymbolCtr;
   protected final Constructor _fixedCtr;
@@ -32,20 +32,20 @@ abstract class AbstractAvroFactory implements AvroFactory {
   protected Field _outputFilePathField;
   protected Field _outputFileContentsField;
 
-  public AbstractAvroFactory(Constructor enumSymbolCtr, Constructor fixedCtr) throws Exception {
+  public AbstractAvroAdapter(Constructor enumSymbolCtr, Constructor fixedCtr) throws Exception {
     _enumSymbolCtr = enumSymbolCtr;
     _fixedCtr = fixedCtr;
   }
 
   @Override
-  public Collection<AvroGeneratedSourceCode> compile(Collection<Schema> toCompile, AvroVersion compatibilityTarget) {
+  public Collection<AvroGeneratedSourceCode> compile(Collection<Schema> toCompile, AvroVersion minSupportedRuntimeVersion) {
     if (toCompile == null || toCompile.isEmpty()) {
       return Collections.emptyList();
     }
     Iterator<Schema> schemaIter = toCompile.iterator();
     Schema first = schemaIter.next();
     try {
-      Object compilerInstance = getCompilerInstance(first, compatibilityTarget);
+      Object compilerInstance = getCompilerInstance(first, minSupportedRuntimeVersion);
 
       while (schemaIter.hasNext()) {
         _compilerEnqueueMethod.invoke(compilerInstance, schemaIter.next());
@@ -55,7 +55,11 @@ abstract class AbstractAvroFactory implements AvroFactory {
           .map(o -> new AvroGeneratedSourceCode(getPath(o), getContents(o)))
           .collect(Collectors.toList());
 
-      return transform(translated, compatibilityTarget);
+      if (minSupportedRuntimeVersion != null) {
+        return transform(translated, minSupportedRuntimeVersion);
+      } else {
+        return translated;
+      }
     } catch (UnsupportedOperationException e) {
       throw e; //as-is
     } catch (Exception e) {
