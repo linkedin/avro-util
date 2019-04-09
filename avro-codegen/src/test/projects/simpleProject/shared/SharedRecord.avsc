@@ -1,0 +1,28 @@
+{
+  "namespace": "com.acme",
+  "type": "record",
+  "name": "SharedRecord",
+  "fields": [
+    {
+      "name": "f",
+      "type": "long"
+    },
+    {
+      "name": "uuid",
+      "type": "UUID"
+    },
+    {
+      "name": "inner",
+      "type": {
+        "type": "record",
+        "name": "Inner",
+        "fields": [
+          {
+            "name": "i",
+            "type": "int"
+          }
+        ]
+      }
+    }
+  ]
+}

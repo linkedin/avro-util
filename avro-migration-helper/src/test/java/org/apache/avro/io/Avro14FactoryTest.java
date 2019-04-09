@@ -17,14 +17,13 @@ import java.util.Collections;
 import java.util.List;
 import net.openhft.compiler.CompilerUtils;
 import org.apache.avro.Schema;
-import org.apache.avro.io.Avro14Factory;
 import org.apache.avro.specific.SpecificFixed;
 import org.testng.Assert;
 import org.testng.SkipException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static org.apache.avro.io.Avro14Factory.*;
+import static org.apache.avro.io.Avro14Adapter.*;
 
 
 public class Avro14FactoryTest {
@@ -60,7 +59,7 @@ public class Avro14FactoryTest {
           + "  \"doc\" : \"Bob Smith Store\"\n"
           + "  }";
 
-  private Avro14Factory _factory;
+  private Avro14Adapter _factory;
 
   @BeforeClass
   public void skipForModernAvro() throws Exception {
@@ -69,7 +68,7 @@ public class Avro14FactoryTest {
     if (!supportedVersions.contains(runtimeVersion)) {
       throw new SkipException("class only supported under " + supportedVersions + ". runtime version detected as " + runtimeVersion);
     }
-    _factory = new Avro14Factory();
+    _factory = new Avro14Adapter();
   }
 
   @Test

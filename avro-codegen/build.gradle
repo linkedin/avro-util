@@ -1,0 +1,31 @@
+/*
+ * Copyright 2018 LinkedIn Corp.
+ * Licensed under the BSD 2-Clause License (the "License"). 
+ * See License in the project root for license information.
+ */
+
+plugins {
+    id "java-library"
+}
+
+dependencies {
+    compile project(":avro-migration-helper")
+
+    compile "org.apache.ant:ant:1.10.5"
+    compile "commons-io:commons-io:2.6"
+    compile "org.apache.logging.log4j:log4j-api:2.11.2"
+    
+    //TODO - make these compile only
+    compile "org.apache.avro:avro:1.4.1"
+    //compile "org.apache.avro:avro-compiler:1.8.2"
+
+    testCompile 'net.openhft:compiler:2.3.1'
+    
+    //redirect logging to log4j2 for tests
+    testRuntimeOnly "org.apache.logging.log4j:log4j-core:2.11.2"
+    testRuntimeOnly "org.apache.logging.log4j:log4j-slf4j-impl:2.11.2"
+}
+
+test {
+    testLogging.showStandardStreams = true
+}

@@ -1,0 +1,11 @@
+{
+  "namespace": "com.acme",
+  "type": "record",
+  "name": "NeedsClasspathRecord",
+  "fields": [
+    {
+      "name": "f",
+      "type": "com.acme.ClasspathRecord"
+    }
+  ]
+}

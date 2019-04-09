@@ -1,0 +1,15 @@
+{
+  "namespace": "com.acme.specific",
+  "type": "record",
+  "name": "UsesSharedRecord",
+  "fields": [
+    {
+      "name": "sharedRecord",
+      "type": "com.acme.SharedRecord"
+    },
+    {
+      "name": "uuid",
+      "type": "com.acme.UUID"
+    }
+  ]
+}

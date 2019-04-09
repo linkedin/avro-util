@@ -1,0 +1,6 @@
+{
+  "namespace": "com.acme",
+  "type": "enum",
+  "name": "ClasspathEnum",
+  "symbols" : ["A", "B"]
+}

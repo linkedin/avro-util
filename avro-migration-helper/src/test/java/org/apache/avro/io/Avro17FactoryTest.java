@@ -72,7 +72,7 @@ public class Avro17FactoryTest {
           + "  ]\n"
           + "}";
 
-  private Avro17Factory _factory;
+  private Avro17Adapter _factory;
 
 
   @BeforeClass
@@ -82,7 +82,7 @@ public class Avro17FactoryTest {
     if (!supportedVersions.contains(runtimeVersion)) {
       throw new SkipException("class only supported under " + supportedVersions + ". runtime version detected as " + runtimeVersion);
     }
-    _factory = new Avro17Factory();
+    _factory = new Avro17Adapter();
   }
 
   @Test
@@ -99,12 +99,12 @@ public class Avro17FactoryTest {
 
   @Test
   public void testParseGoodSchema() throws Exception {
-    _factory.parse(GOOD_SCHEMA_JSON); //expected to succeed
+    _factory.parse(GOOD_SCHEMA_JSON, null); //expected to succeed
   }
 
   @Test(expectedExceptions = SchemaParseException.class)
   public void testParseBadSchema() throws Exception {
-    _factory.parse(BAD_SCHEMA_JSON);
+    _factory.parse(BAD_SCHEMA_JSON, null);
   }
 
   @Test
@@ -113,7 +113,7 @@ public class Avro17FactoryTest {
     if (runtimeVersion != AvroVersion.AVRO_1_7) {
       throw new SkipException("only supported under " + AvroVersion.AVRO_1_7 + ". runtime version detected as " + runtimeVersion);
     }
-    _factory.parse(BAD_DEFAULTS_SCHEMA_JSON); //expected to succeed
+    _factory.parse(BAD_DEFAULTS_SCHEMA_JSON, null); //expected to succeed
   }
 
   @Test(expectedExceptions = AvroTypeException.class)
@@ -122,7 +122,7 @@ public class Avro17FactoryTest {
     if (runtimeVersion != AvroVersion.AVRO_1_8) {
       throw new SkipException("only supported under " + AvroVersion.AVRO_1_8 + ". runtime version detected as " + runtimeVersion);
     }
-    _factory.parse(BAD_DEFAULTS_SCHEMA_JSON);
+    _factory.parse(BAD_DEFAULTS_SCHEMA_JSON, null);
   }
 
   @Test
@@ -137,7 +137,7 @@ public class Avro17FactoryTest {
 
   public void testStripOutBuilder(String fromCode) {
     Assert.assertTrue(BUILDER_METHOD_START.matcher(fromCode).find());
-    String sansBuilder = Avro17Factory.removeBuilderSupport(fromCode);
+    String sansBuilder = Avro17Adapter.removeBuilderSupport(fromCode);
     Assert.assertFalse(BUILDER_METHOD_START.matcher(sansBuilder).find());
   }
 }
