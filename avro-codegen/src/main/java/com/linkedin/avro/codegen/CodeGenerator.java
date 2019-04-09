@@ -111,11 +111,11 @@ public class CodeGenerator {
 
         //for every included file, holds the root via which this file was included
         //(which could be the file itself if it was included directly)
-        Map<File, File> fileToParent = new HashMap<>();
+        Map<File, File> fileToRoot = new HashMap<>();
         Set<File> sharedSchemas = new HashSet<>();
         Set<File> nonSharedSchemas = new HashSet<>();
 
-        findAllIncludedFiles(fileToParent, sharedSchemas, nonSharedSchemas);
+        findAllIncludedFiles(fileToRoot, sharedSchemas, nonSharedSchemas);
 
         LOG.info("compiling {} schema files ({} of which shared)", nonSharedSchemas.size() + sharedSchemas.size(), sharedSchemas.size());
 
@@ -129,13 +129,13 @@ public class CodeGenerator {
         Map<String, SchemaDetails> nonSharedParsed = parseSchemas(nonSharedSchemas, sharedParsed, externalSchemas);
 
         //validate all the schemas we parsed
-        validateParsedSchemas(sharedParsed, fileToParent);
-        validateParsedSchemas(nonSharedParsed, fileToParent);
+        validateParsedSchemas(sharedParsed, fileToRoot);
+        validateParsedSchemas(nonSharedParsed, fileToRoot);
 
         //generate java code from all the schemas we just parsed
         List<Schema> allSchemas = new ArrayList<>();
-        sharedParsed.values().forEach(schemaDetails -> allSchemas.add(schemaDetails.schema));
-        nonSharedParsed.values().forEach(schemaDetails -> allSchemas.add(schemaDetails.schema));
+        sharedParsed.values().forEach(schemaDetails -> allSchemas.add(schemaDetails.getSchema()));
+        nonSharedParsed.values().forEach(schemaDetails -> allSchemas.add(schemaDetails.getSchema()));
         Collection<AvroGeneratedSourceCode> javaClassFiles = AvroCompatibilityHelper.compile(allSchemas, minTargetAvroVersion);
         Collection<AvroGeneratedSourceCode> nonExternal;
 
@@ -196,11 +196,11 @@ public class CodeGenerator {
         for (Map.Entry<String, SchemaDetails> entry : parsedSchemas.entrySet()) {
             String fqcn = entry.getKey();
             SchemaDetails schemaDetails = entry.getValue();
-            if (!schemaDetails.topLevel) {
+            if (!schemaDetails.isTopLevel()) {
                 continue;
             }
-            Schema schema = schemaDetails.schema;
-            File file = schemaDetails.location;
+            Schema schema = schemaDetails.getSchema();
+            File file = schemaDetails.getLocation();
             File root = fileToParent.get(file);
 
             if (validateSchemaNamespaceVsFilePath) {
@@ -213,12 +213,12 @@ public class CodeGenerator {
                 }
                 if (namespace == null) {
                     if (!relativePath.equals("")) {
-                        throw new IllegalArgumentException("schema " + schema.getFullName() + " has no namespace yet is defined in "
+                        throw new IllegalArgumentException("schema " + fqcn + " has no namespace yet is defined in "
                                 + file + " who's relative path to root is " + relativePath);
                     }
                 } else {
                     if (!relativePath.equals(namespace)) {
-                        throw new IllegalArgumentException("schema " + schema.getFullName() + " belongs to namespace " + namespace
+                        throw new IllegalArgumentException("schema " + fqcn + " belongs to namespace " + namespace
                                 + " yet is defined in " + file + " who's relative path to root is " + relativePath);
                     }
                 }
@@ -228,7 +228,7 @@ public class CodeGenerator {
                 String name = schema.getName();
                 String fileName = FilenameUtils.removeExtension(file.getName());
                 if (!fileName.equals(name)) {
-                    throw new IllegalArgumentException("schema " + schema.getFullName() + " has name " + name + " yet is defined in a file called " + file.getName());
+                    throw new IllegalArgumentException("schema " + fqcn + " has name " + name + " yet is defined in a file called " + file.getName());
                 }
             }
         }
@@ -243,10 +243,6 @@ public class CodeGenerator {
         Map<String, SchemaDetails> successfullyParsed = new HashMap<>();
         int passNumber = 0;
 
-        //temporary data structures
-        List<Schema> allKnownSchemas = new ArrayList<>();
-        List<Schema> allKnownTopLevelSchemas = new ArrayList<>();
-
         while (!toTry.isEmpty()) {
             boolean madeProgress = false;
             passNumber++;
@@ -258,9 +254,7 @@ public class CodeGenerator {
                 try {
 
                     //build up a collection of all known schemas to hand to avro
-                    allKnownSchemas.clear();
-                    allKnownTopLevelSchemas.clear();
-                    buildUpKnownSchemaLists(successfullyParsed, importableSchemas, externalSchemas, allKnownSchemas, allKnownTopLevelSchemas);
+                    List<Schema> allKnownSchemas = buildUpKnownSchemaLists(successfullyParsed, importableSchemas, externalSchemas);
 
                     //call avro to parse our file given all the known schemas we've built up above
                     result = AvroCompatibilityHelper.parse(fileContents, allKnownSchemas);
@@ -285,19 +279,19 @@ public class CodeGenerator {
             }
             if (!madeProgress) {
                 //classify our issues
-                failedFiles.forEach((file, issue) -> issue.classification = classifyIssue(issue.exception));
+                failedFiles.forEach((file, issue) -> issue.setClassification(classifyIssue(issue.getException())));
                 //terminate for any issues that we cant handle
                 throwForFatalErrors(failedFiles, successfullyParsed, importableSchemas);
                 //if we got here none of the issues are fatal
                 if (allowClasspathLookup) {
                     ClasspathFishingResults fishingResults = goFishingOnTheClasspath(failedFiles);
-                    Map<String, SchemaDetails> loot = fishingResults.fqcnsFound;
+                    Map<String, SchemaDetails> loot = fishingResults.getFqcnsFound();
                     if (!loot.isEmpty()) {
                         //yay, we live to iterate another day!
-                        externalSchemas.putAll(fishingResults.fqcnsFound);
+                        externalSchemas.putAll(loot);
                     }
                     else {
-                        throw new IllegalArgumentException("unable to find records " + fishingResults.fqcnsNotFound
+                        throw new IllegalArgumentException("unable to find records " + fishingResults.getFqcnsNotFound()
                                 + " used in " + failedFiles.keySet() + ". not even on the classpath");
                     }
                 } else {
@@ -320,10 +314,11 @@ public class CodeGenerator {
 
         for (Map.Entry<File, FileParseIssue> entry : failedFiles.entrySet()) {
             FileParseIssue issue = entry.getValue();
-            if (issue.classification.type != IssueType.MISSING_FQCN) {
+            ClassifiedIssue classification = issue.getClassification();
+            if (classification.getType() != IssueType.MISSING_FQCN) {
                 continue;
             }
-            String fqcn = issue.classification.fqcn;
+            String fqcn = classification.getFqcn();
             Class<?> clazz;
             try {
                 clazz = Class.forName(fqcn);
@@ -455,9 +450,10 @@ public class CodeGenerator {
         for (Map.Entry<File, FileParseIssue> entry : failedFiles.entrySet()) {
             File file = entry.getKey();
             FileParseIssue issue = entry.getValue();
-            String fqcn = issue.classification.fqcn;
+            ClassifiedIssue classification = issue.getClassification();
+            String fqcn = classification.getFqcn();
 
-            switch (issue.classification.type) {
+            switch (classification.getType()) {
                 case REDEFINITION:
                     //be nice to users, figure out where the other definition is
                     SchemaDetails dup = successfullyParsed.get(fqcn);
@@ -466,22 +462,22 @@ public class CodeGenerator {
                     }
                     if (dup == null) {
                         //something is wrong with the universe
-                        toThrow.add(new IllegalStateException("avro claims dup in " + file + " but we cant see where", issue.exception));
+                        toThrow.add(new IllegalStateException("avro claims dup in " + file + " but we cant see where", issue.getException()));
                         break;
                     }
-                    toThrow.add(new IllegalStateException("schema " + fqcn + " is defined in both " + file + " and " + dup.location, issue.exception));
+                    toThrow.add(new IllegalStateException("schema " + fqcn + " is defined in both " + file + " and " + dup.getLocation(), issue.getException()));
                     break;
                 case MISSING_FQCN:
                     if (!allowClasspathLookup) {
-                        toThrow.add(new IllegalStateException("record " + fqcn + " referenced in " + file + " not found and classpath lookup is off", issue.exception));
+                        toThrow.add(new IllegalStateException("record " + fqcn + " referenced in " + file + " not found and classpath lookup is off", issue.getException()));
                     }
                     break;
                 case OTHER:
-                    toThrow.add(issue.exception); //we cant handle this
+                    toThrow.add(issue.getException()); //we cant handle this
                     break;
                 default:
                     //this is a bug
-                    throw new IllegalStateException("unhandled: " + issue.classification.type, issue.exception);
+                    throw new IllegalStateException("unhandled: " + classification.getType(), issue.getException());
             }
         }
 
@@ -527,21 +523,8 @@ public class CodeGenerator {
             Map<String, SchemaDetails> moreSchemas,
             Map<String, SchemaDetails> externalSchemas
     ) {
-
-//        Schema mainSchema = result.getMainSchema();
         Map<String, Schema> allSchemas = result.getAllSchemas(); //will contain all schemas defined anywhere
-
         Map<String, Schema> actuallyNewSchemas = new HashMap<>();
-
-//        String mainSchemaFullName = mainSchema.getFullName();
-//        SchemaDetails alreadyDefinedMain = successfullyParsed.get(mainSchemaFullName);
-//        if (alreadyDefinedMain != null) {
-//            throw new IllegalArgumentException("schema " + mainSchemaFullName + " is defined in " + schemaFile + " and also in " + alreadyDefinedMain.location);
-//        }
-//        alreadyDefinedMain = moreSchemas.get(mainSchemaFullName);
-//        if (alreadyDefinedMain != null) {
-//            throw new IllegalArgumentException("schema " + mainSchemaFullName + " is defined in " + schemaFile + " and also in " + alreadyDefinedMain.location);
-//        }
 
         for (Map.Entry<String, Schema> entry : allSchemas.entrySet()) {
             String fullName = entry.getKey();
@@ -549,26 +532,26 @@ public class CodeGenerator {
 
             SchemaDetails alreadyDefined = successfullyParsed.get(fullName);
             if (alreadyDefined != null) {
-                if (alreadyDefined.schema == schema) { //yes, pointer comparison, not equals()
+                if (alreadyDefined.getSchema() == schema) { //yes, pointer comparison, not equals()
                     //not a redefinition, just a known schema
                     continue;
                 }
-                throw new IllegalArgumentException("schema " + fullName + " is defined in " + schemaFile + " and also in " + alreadyDefined.location);
+                throw new IllegalArgumentException("schema " + fullName + " is defined in " + schemaFile + " and also in " + alreadyDefined.getLocation());
             }
             if (moreSchemas != null) {
                 alreadyDefined = moreSchemas.get(fullName);
                 if (alreadyDefined != null) {
-                    if (alreadyDefined.schema == schema) { //yes, pointer comparison, not equals()
+                    if (alreadyDefined.getSchema() == schema) { //yes, pointer comparison, not equals()
                         //not a redefinition, just a known schema
                         continue;
                     }
-                    throw new IllegalArgumentException("schema " + fullName + " is defined in " + schemaFile + " and also in " + alreadyDefined.location);
+                    throw new IllegalArgumentException("schema " + fullName + " is defined in " + schemaFile + " and also in " + alreadyDefined.getLocation());
                 }
             }
             if (externalSchemas != null) {
                 alreadyDefined = externalSchemas.get(fullName);
                 if (alreadyDefined != null) {
-                    if (alreadyDefined.schema == schema) { //yes, pointer comparison, not equals()
+                    if (alreadyDefined.getSchema() == schema) { //yes, pointer comparison, not equals()
                         //not a redefinition, just a known schema
                         continue;
                     }
@@ -582,30 +565,20 @@ public class CodeGenerator {
         return actuallyNewSchemas;
     }
 
-    private void buildUpKnownSchemaLists(
+    private List<Schema> buildUpKnownSchemaLists(
             Map<String, SchemaDetails> successfullyParsed,
             Map<String, SchemaDetails> moreSchemas,
-            Map<String, SchemaDetails> externalSchemas,
-            List<Schema> allKnownSchemas,
-            List<Schema> allKnownTopLevelSchemas
+            Map<String, SchemaDetails> externalSchemas
     ) {
-        successfullyParsed.forEach((fullName, schemaDetails) -> {
-            if (schemaDetails.topLevel) {
-                allKnownTopLevelSchemas.add(schemaDetails.schema);
-            }
-            allKnownSchemas.add(schemaDetails.schema);
-        });
+        List<Schema> allKnownSchemas = new ArrayList<>();
+        successfullyParsed.forEach((fullName, schemaDetails) -> allKnownSchemas.add(schemaDetails.getSchema()));
         if (moreSchemas != null) {
-            moreSchemas.forEach((fullName, schemaDetails) -> {
-                if (schemaDetails.topLevel) {
-                    allKnownTopLevelSchemas.add(schemaDetails.schema);
-                }
-                allKnownSchemas.add(schemaDetails.schema);
-            });
+            moreSchemas.forEach((fullName, schemaDetails) -> allKnownSchemas.add(schemaDetails.getSchema()));
         }
         if (externalSchemas != null) {
-            externalSchemas.forEach((fullName, schemaDetails) -> allKnownSchemas.add(schemaDetails.schema));
+            externalSchemas.forEach((fullName, schemaDetails) -> allKnownSchemas.add(schemaDetails.getSchema()));
         }
+        return allKnownSchemas;
     }
 
     private void findAllIncludedFiles(Map<File, File> fileToParent, Set<File> sharedSchemas, Set<File> nonSharedSchemas) {
@@ -670,106 +643,5 @@ public class CodeGenerator {
             }
         }
         return false;
-    }
-
-    private static class ClasspathFishingResults {
-        private final Set<String> fqcnsNotFound;
-        private final Map<String, String> fqcnsFoundButUnusable;
-        private final Map<String, SchemaDetails> fqcnsFound;
-
-        public ClasspathFishingResults(
-                Set<String> fqcnsNotFound,
-                Map<String, String> fqcnsFoundButUnusable,
-                Map<String, SchemaDetails> fqcnsFound
-        ) {
-            this.fqcnsNotFound = fqcnsNotFound;
-            this.fqcnsFoundButUnusable = fqcnsFoundButUnusable;
-            this.fqcnsFound = fqcnsFound;
-        }
-
-        public Set<String> getFqcnsNotFound() {
-            return fqcnsNotFound;
-        }
-
-        public Map<String, String> getFqcnsFoundButUnusable() {
-            return fqcnsFoundButUnusable;
-        }
-
-        public Map<String, SchemaDetails> getFqcnsFound() {
-            return fqcnsFound;
-        }
-    }
-
-    private enum SchemaSource {
-        FILE, CLASSPATH
-    }
-
-    private static class SchemaDetails {
-        private Schema schema;
-        private SchemaSource source;
-
-        //fields valid for schemas sourced from files
-        private File location;
-        private boolean topLevel;
-
-        //fields valid for schemas sources from the classpath
-        private boolean reversed;
-
-        static SchemaDetails fromFile(Schema schema, File location, boolean topLevel) {
-            return new SchemaDetails(schema, SchemaSource.FILE, location, topLevel, false);
-        }
-
-        static SchemaDetails fromClasspath(Schema schema, boolean reversed) {
-            return new SchemaDetails(schema, SchemaSource.CLASSPATH, null, false, reversed);
-        }
-
-        private SchemaDetails(Schema schema, SchemaSource source, File location, boolean topLevel, boolean reversed) {
-            this.schema = schema;
-            this.source = source;
-            this.location = location;
-            this.topLevel = topLevel;
-            this.reversed = reversed;
-        }
-
-        public Schema getSchema() {
-            return schema;
-        }
-
-        public SchemaSource getSource() {
-            return source;
-        }
-
-        public File getLocation() {
-            return location;
-        }
-
-        public boolean isTopLevel() {
-            return topLevel;
-        }
-    }
-
-    private static class FileParseIssue {
-        private final File file;
-        private final SchemaParseException exception;
-        private ClassifiedIssue classification;
-
-        public FileParseIssue(File file, SchemaParseException exception) {
-            this.file = file;
-            this.exception = exception;
-        }
-    }
-
-    private enum IssueType {
-        REDEFINITION, MISSING_FQCN, OTHER
-    }
-
-    private static class ClassifiedIssue {
-        private final IssueType type;
-        private final String fqcn;
-
-        public ClassifiedIssue(IssueType type, String fqcn) {
-            this.type = type;
-            this.fqcn = fqcn;
-        }
     }
 }
