@@ -2,6 +2,9 @@
 .gradle/
 build/
 
+#temp artifacts
+avro_tools/
+
 #IDEA artifacts
 out/
 .idea/

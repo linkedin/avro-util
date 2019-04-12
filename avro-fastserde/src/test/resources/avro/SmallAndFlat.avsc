@@ -1,0 +1,53 @@
+{
+  "type" : "record",
+  "name" : "SmallAndFlat",
+  "namespace" : "com.linkedin.avro.fastserde.generated.avro.benchmark",
+  "fields" : [ {
+    "name" : "CczKZFLETP",
+    "type" : "string"
+  }, {
+    "name" : "YaCaKFmeaj",
+    "type" : [ "null", {
+      "type" : "fixed",
+      "name" : "FixedDkjNE",
+      "size" : 9
+    } ]
+  }, {
+    "name" : "OIiwOHvmQP",
+    "type" : {
+      "type" : "array",
+      "items" : "boolean"
+    }
+  }, {
+    "name" : "JbDthFXQFc",
+    "type" : "boolean"
+  }, {
+    "name" : "krIYTkQdOd",
+    "type" : "boolean"
+  }, {
+    "name" : "oPKWAWftEH",
+    "type" : {
+      "type" : "map",
+      "values" : "bytes"
+    }
+  }, {
+    "name" : "pDXjgCbDIo",
+    "type" : [ "null", {
+      "type" : "fixed",
+      "name" : "FixedzMnDM",
+      "size" : 9
+    } ]
+  }, {
+    "name" : "WULmOMQepx",
+    "type" : {
+      "type" : "map",
+      "values" : "double"
+    }
+  }, {
+    "name" : "FjhSoatdto",
+    "type" : [ "null", "double" ]
+  }, {
+    "name" : "pWtugTtRwE",
+    "type" : [ "null", "bytes" ]
+  } ]
+}

@@ -1,0 +1,438 @@
+{
+  "type" : "record",
+  "name" : "LargeAndFlat",
+  "namespace" : "com.linkedin.avro.fastserde.generated.avro.benchmark",
+  "fields" : [ {
+    "name" : "DPklXxJMAu",
+    "type" : [ "null", "boolean" ]
+  }, {
+    "name" : "zcuSHBomJa",
+    "type" : "string"
+  }, {
+    "name" : "zQzzwrHPDf",
+    "type" : {
+      "type" : "fixed",
+      "name" : "FixedrUkFv",
+      "size" : 1
+    }
+  }, {
+    "name" : "RMAHuZYitH",
+    "type" : "bytes"
+  }, {
+    "name" : "VLOvcdxpmD",
+    "type" : [ "null", "boolean" ]
+  }, {
+    "name" : "xupotbvWsC",
+    "type" : [ "null", "double" ]
+  }, {
+    "name" : "rojRJMvkFG",
+    "type" : {
+      "type" : "map",
+      "values" : "int"
+    }
+  }, {
+    "name" : "BNrJTpeYhX",
+    "type" : [ "null", "float" ]
+  }, {
+    "name" : "bWURswOSyF",
+    "type" : "float"
+  }, {
+    "name" : "hqcpDqTvHx",
+    "type" : "long"
+  }, {
+    "name" : "IIZvfCVJUu",
+    "type" : "double"
+  }, {
+    "name" : "ZiqqsmWJKe",
+    "type" : [ "null", "float" ]
+  }, {
+    "name" : "yZdhTaHxOd",
+    "type" : [ "null", {
+      "type" : "fixed",
+      "name" : "FixedZPdMi",
+      "size" : 3
+    } ]
+  }, {
+    "name" : "tWZokFsfGj",
+    "type" : "double"
+  }, {
+    "name" : "GiIfqUnywg",
+    "type" : [ "null", "bytes" ]
+  }, {
+    "name" : "uQxEYSeACA",
+    "type" : {
+      "type" : "array",
+      "items" : "long"
+    }
+  }, {
+    "name" : "EaQxxJQXKY",
+    "type" : [ "null", "boolean" ]
+  }, {
+    "name" : "mcoBJtAWCA",
+    "type" : "int"
+  }, {
+    "name" : "fAONGXLYWF",
+    "type" : {
+      "type" : "map",
+      "values" : {
+        "type" : "enum",
+        "name" : "EnumnSFNa",
+        "symbols" : [ "jSD", "SPJwtFwnUcKnRPKdcscLlrJ", "TqebRsTniYNVGed" ]
+      }
+    }
+  }, {
+    "name" : "WSzjhzbWxT",
+    "type" : {
+      "type" : "map",
+      "values" : "bytes"
+    }
+  }, {
+    "name" : "wXpOrKyUhr",
+    "type" : {
+      "type" : "enum",
+      "name" : "EnumUYEcL",
+      "symbols" : [ "hPG", "FzzDWMCRoxGxhmQUuDaujXKZmOZmNKwlr", "zMJqIiQYEEVWyUbuIMVrBOgLXsSnVYqtoUNN" ]
+    }
+  }, {
+    "name" : "ZQvGjHLdgZ",
+    "type" : "float"
+  }, {
+    "name" : "hXbXBSTXuT",
+    "type" : [ "null", {
+      "type" : "enum",
+      "name" : "EnumYAZoZ",
+      "symbols" : [ "KVQkAZcEMDKaMbvJTRidKDEfjVa", "ibbTNUMOlpibYjYODvZSEWvreC", "ANdjntIM", "NFrQvGsyOOwsOuzIgCIDCQZPcy" ]
+    } ]
+  }, {
+    "name" : "ISzBdvbSgV",
+    "type" : {
+      "type" : "enum",
+      "name" : "EnumocJXV",
+      "symbols" : [ "JujqGZmwHeMJJdhADMVGKDzPRJFXeAVc", "HRIXRBbrtqlJTrfshFossIJuO", "rRZdiXJaGZBQnxFVrIVNIlaoWZGSRDzwOx", "KiIxpyGqnEFCKmgWtFkQx" ]
+    }
+  }, {
+    "name" : "aLTSqdVlMg",
+    "type" : "double"
+  }, {
+    "name" : "FwYyHBJsYT",
+    "type" : {
+      "type" : "fixed",
+      "name" : "FixedFChGq",
+      "size" : 9
+    }
+  }, {
+    "name" : "XDCyBBRNMC",
+    "type" : "int"
+  }, {
+    "name" : "MUWtuRlNDs",
+    "type" : {
+      "type" : "map",
+      "values" : "double"
+    }
+  }, {
+    "name" : "MkFupfBQIz",
+    "type" : "bytes"
+  }, {
+    "name" : "SuvdlgkfHw",
+    "type" : {
+      "type" : "map",
+      "values" : "int"
+    }
+  }, {
+    "name" : "yQaHqWdTCq",
+    "type" : {
+      "type" : "map",
+      "values" : {
+        "type" : "enum",
+        "name" : "EnumqbNun",
+        "symbols" : [ "qRpcBaUuZbRDtGoexwbtgLLiBSibt", "DfRB", "weJpocwKPDsEycdtTGRqHJvKLGpjaRFtuhqR", "Rw", "XTfAEKxtdVtAHATeIWvGi", "ZLEgJxSyGzzoYpOULadtcqwfjXDN", "PurdogRcRWzVwfBSgJgQqSQeJADeD", "HQZNBtfolRHnRhkPPGfsDEmqzdGFkhaNdBx" ]
+      }
+    }
+  }, {
+    "name" : "uFihEZfuUs",
+    "type" : "double"
+  }, {
+    "name" : "vtDLcpKBTQ",
+    "type" : "boolean"
+  }, {
+    "name" : "BFGETdQSfH",
+    "type" : {
+      "type" : "map",
+      "values" : "int"
+    }
+  }, {
+    "name" : "BdxiRRPzzb",
+    "type" : "int"
+  }, {
+    "name" : "wDzjPuodFR",
+    "type" : [ "null", "boolean" ]
+  }, {
+    "name" : "nHmTDKGLrH",
+    "type" : "boolean"
+  }, {
+    "name" : "PkmmpTdDZE",
+    "type" : {
+      "type" : "enum",
+      "name" : "EnumNFHhb",
+      "symbols" : [ "ciuXzcYwipjyJWbEmFUXUPWyHSqeUefbZbI", "qvqPjltDCN", "lsLVdfWyYvRZbUjGFpQRdbrpPxCb" ]
+    }
+  }, {
+    "name" : "mqdUjkUlye",
+    "type" : {
+      "type" : "fixed",
+      "name" : "FixedLkxTD",
+      "size" : 7
+    }
+  }, {
+    "name" : "DojTQSDqDm",
+    "type" : {
+      "type" : "enum",
+      "name" : "EnumXjFRv",
+      "symbols" : [ "pwggrkyjcaEbqFombfAOKaYvHuXKlSGwXOuZHwN", "uUHAiHQAMCrYhlZqjiQSjkR", "JcmtkViNGTznGFzSEHhhnTlaMPBChquJ", "diRDoy", "RcWhYMylupI", "aQYImuPidh", "CuWAWbzvSQQZXEdUdAwywyi", "VgbsZfzbcmMcQmYYNETgIKDrVwsL" ]
+    }
+  }, {
+    "name" : "rcgXMDFseq",
+    "type" : {
+      "type" : "fixed",
+      "name" : "FixedwZQtW",
+      "size" : 1
+    }
+  }, {
+    "name" : "LkavtZBHNi",
+    "type" : "double"
+  }, {
+    "name" : "nFbkMdSoAy",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "CEwFNYBajU",
+    "type" : {
+      "type" : "map",
+      "values" : "boolean"
+    }
+  }, {
+    "name" : "yELRUaDLJv",
+    "type" : "double"
+  }, {
+    "name" : "kEHXjVzico",
+    "type" : [ "null", "double" ]
+  }, {
+    "name" : "PxBMGVmbwx",
+    "type" : "boolean"
+  }, {
+    "name" : "jEaVfSdYDy",
+    "type" : "long"
+  }, {
+    "name" : "GwXPTzcGRU",
+    "type" : {
+      "type" : "array",
+      "items" : {
+        "type" : "fixed",
+        "name" : "FixedXRiNC",
+        "size" : 8
+      }
+    }
+  }, {
+    "name" : "lhOhIfqcHU",
+    "type" : {
+      "type" : "array",
+      "items" : "int"
+    }
+  }, {
+    "name" : "vLvjJWCMgu",
+    "type" : {
+      "type" : "enum",
+      "name" : "EnumLbnse",
+      "symbols" : [ "ahuuXHuVC", "WLcsIBZkzHlrfqfbiPvtKxF", "HUYfYLXmRGTIHiRSH", "PHMiGildxc", "NFpQMNpkVLtWmdQgbXXMOQWitPacxALK", "vyPPguTpK" ]
+    }
+  }, {
+    "name" : "cVVIfShzlK",
+    "type" : "long"
+  }, {
+    "name" : "GULZxggvFS",
+    "type" : [ "null", {
+      "type" : "fixed",
+      "name" : "FixedvvJkq",
+      "size" : 4
+    } ]
+  }, {
+    "name" : "jceRdyjAMl",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "HwoHubGHvk",
+    "type" : [ "null", "int" ]
+  }, {
+    "name" : "QtmPHGGoUx",
+    "type" : "int"
+  }, {
+    "name" : "UqkMNurbcJ",
+    "type" : [ "null", {
+      "type" : "enum",
+      "name" : "EnumTqpkh",
+      "symbols" : [ "rv", "EarFrYscKiBCtvqdbSANpS", "hYOLfPzafOVFrshWMvxhWdRwztOxuPI", "qijbhknjMCRYmiwASzYqZXPlZykFrhLzqZAj", "nGpYjMLYAlrGmtVVAYXgHiOM", "kvJUiMaYBkMWZauLxbEnTrrywGIgxjUnLXGMQ" ]
+    } ]
+  }, {
+    "name" : "tSEWMjenFj",
+    "type" : [ "null", {
+      "type" : "fixed",
+      "name" : "FixedRTrLR",
+      "size" : 6
+    } ]
+  }, {
+    "name" : "jUItwENCXU",
+    "type" : "bytes"
+  }, {
+    "name" : "VEfFsMUXvn",
+    "type" : {
+      "type" : "fixed",
+      "name" : "FixedrEXpM",
+      "size" : 9
+    }
+  }, {
+    "name" : "ZCWoLbFxUU",
+    "type" : "double"
+  }, {
+    "name" : "JqcLYZfafU",
+    "type" : {
+      "type" : "enum",
+      "name" : "EnumugWpZ",
+      "symbols" : [ "MfZW", "ZiuEoCADezcQsrFfGnIfGoTfEdUrPAj", "UkRaMlHiaEvjFqZ", "sDvdqlTFExmOGvjBEVTWVyEdyxCRVorwhdiXOdO", "jhsOmxVvvZLFVVOuiMgOqcrOsEeIQ", "jhmzeJlaHadejCmZMyKqrPjJzTDXPRcx", "fOIHaPyokRPeINBtfNqM" ]
+    }
+  }, {
+    "name" : "LUSWydfRFR",
+    "type" : "double"
+  }, {
+    "name" : "UyEWPOtKtC",
+    "type" : [ "null", "double" ]
+  }, {
+    "name" : "CJjpdBAraP",
+    "type" : "string"
+  }, {
+    "name" : "vGXZiVUTVW",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "VXPvSpMvOh",
+    "type" : "string"
+  }, {
+    "name" : "HEypqLgvsN",
+    "type" : "int"
+  }, {
+    "name" : "ynBEsgvBxB",
+    "type" : "float"
+  }, {
+    "name" : "vzMlidZRWh",
+    "type" : "float"
+  }, {
+    "name" : "DnwtTGMzQu",
+    "type" : "bytes"
+  }, {
+    "name" : "diaVvPcksm",
+    "type" : "float"
+  }, {
+    "name" : "xmaJzYRvks",
+    "type" : "bytes"
+  }, {
+    "name" : "bFFfdGHGgZ",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "pWidyABLxy",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "sufZtkTGyN",
+    "type" : {
+      "type" : "fixed",
+      "name" : "FixedDeAes",
+      "size" : 6
+    }
+  }, {
+    "name" : "HLVBRkoQMB",
+    "type" : "int"
+  }, {
+    "name" : "qGkTWbsEiW",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "ULiNWbwhoH",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "zwNyMwEaVG",
+    "type" : {
+      "type" : "fixed",
+      "name" : "FixedXgVPz",
+      "size" : 6
+    }
+  }, {
+    "name" : "VusLkiRYAR",
+    "type" : {
+      "type" : "map",
+      "values" : "long"
+    }
+  }, {
+    "name" : "tKYjdZBWhw",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "qQCMBYDwSZ",
+    "type" : "float"
+  }, {
+    "name" : "bkDjjRtUtT",
+    "type" : [ "null", "double" ]
+  }, {
+    "name" : "SWzeUrFYwO",
+    "type" : "long"
+  }, {
+    "name" : "mQqeOaWvaZ",
+    "type" : "long"
+  }, {
+    "name" : "jonzeigvEp",
+    "type" : {
+      "type" : "enum",
+      "name" : "EnumPnjfP",
+      "symbols" : [ "zNiiXhpGeIOrMOxh", "KHpYqjnBwoydiVBqtZVzQHrpESKuwmtrBO", "kGFX", "IaeRgjZDcOKVbLXRBEifKEVvwt", "SnUqdxAuKLZNjV", "RWiXQJaZurBPZSfUKP", "ttLejgF", "wcdKJrLdPUztqphsomTRlaqAZxEWaZVsWBruXgG", "RgiNxYasiuVmRVzeEzzxAuoEhcKuXgR" ]
+    }
+  }, {
+    "name" : "wbjIWOhttC",
+    "type" : [ "null", "boolean" ]
+  }, {
+    "name" : "NJlMPHNxdy",
+    "type" : "string"
+  }, {
+    "name" : "UyYXgwygdF",
+    "type" : "double"
+  }, {
+    "name" : "pGveQBylek",
+    "type" : {
+      "type" : "enum",
+      "name" : "EnumpjHzv",
+      "symbols" : [ "xwDAtuXtrzkUC", "LSVYziWJHcmurgxPFVREMKDydqkxLxbihI", "XCfCNXsHEbNKR", "wbYpODwSJNTvxgvEpCuGUihswuPas", "KXtlKWKMOZoSPKNzOqEznRPCWklFSmSOX", "ezceKadjabRNGVwpOZyrkMTsvJpsRHhrzDt" ]
+    }
+  }, {
+    "name" : "CkWTdMgfzA",
+    "type" : [ "null", "double" ]
+  }, {
+    "name" : "drHuscMZEf",
+    "type" : [ "null", "boolean" ]
+  }, {
+    "name" : "ustDJUSHSq",
+    "type" : "float"
+  }, {
+    "name" : "vLvvImsysV",
+    "type" : "boolean"
+  }, {
+    "name" : "FRNrOlcMdV",
+    "type" : "long"
+  }, {
+    "name" : "UmboAleoyD",
+    "type" : "int"
+  }, {
+    "name" : "gYDwRfKfAb",
+    "type" : {
+      "type" : "fixed",
+      "name" : "Fixednplpl",
+      "size" : 6
+    }
+  }, {
+    "name" : "egJOeyCmqZ",
+    "type" : "long"
+  }, {
+    "name" : "JfzKaTbOEo",
+    "type" : "float"
+  } ]
+}

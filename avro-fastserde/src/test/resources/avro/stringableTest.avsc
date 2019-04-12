@@ -1,0 +1,59 @@
+{
+  "type": "record",
+  "name": "StringableRecord",
+  "namespace": "com.linkedin.avro.fastserde.generated.avro",
+  "doc": null,
+  "fields": [
+    { "name": "biginteger",
+      "type": { "type": "string", "java-class": "java.math.BigInteger" }
+    },
+    { "name": "bigdecimal",
+      "type": {"type": "string", "java-class": "java.math.BigDecimal" }
+    },
+    { "name": "uri",
+      "type": "string",
+      "type": {"type": "string", "java-class": "java.net.URI" }
+    },
+    { "name": "url",
+      "type": "string",
+      "type": {"type": "string", "java-class": "java.net.URL" }
+    },
+    { "name": "file",
+      "type": "string",
+      "type": {"type": "string", "java-class": "java.io.File" }
+    },
+    { "name": "urlArray",
+      "type": {
+        "type": "array",
+        "items": { "type": "string", "java-class": "java.net.URL" }
+        }
+    },
+    { "name": "urlMap",
+      "type": {
+        "type": "map",
+        "java-key-class": "java.net.URL",
+        "values": { "type": "string", "java-class": "java.math.BigInteger" }
+      }
+    },
+    { "name": "subRecord",
+      "type":
+      { "type": "record",
+        "name":  "StringableSubRecord",
+        "fields": [
+          { "type" : {"type": "string", "java-class": "java.net.URI"},
+            "name": "uriField"
+          }
+        ]
+      }
+    },
+    { "name": "subRecordWithSubRecord",
+      "type":
+      { "type": "record",
+        "name":  "AnotherSubRecord",
+        "fields": [
+          { "type" : "StringableSubRecord", "name": "subRecord" }
+        ]
+      }
+    }
+  ]
+}

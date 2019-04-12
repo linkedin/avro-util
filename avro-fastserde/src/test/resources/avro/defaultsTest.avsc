@@ -1,0 +1,355 @@
+{
+  "type": "record",
+  "name": "DefaultsTestRecord",
+  "namespace": "com.linkedin.avro.fastserde.generated.avro",
+  "doc": null,
+  "fields": [
+    {
+      "name": "testInt",
+      "type": "int",
+      "default": 42
+    },
+    {
+      "name": "testIntUnion",
+      "type": [
+        "null",
+        "int"
+      ],
+      "default": null
+    },
+    {
+      "name": "testLong",
+      "type": "long",
+      "default": 9223372036854775807
+    },
+    {
+      "name": "testLongUnion",
+      "type": [
+        "null",
+        "long"
+      ],
+      "default": null
+    },
+    {
+      "name": "testDouble",
+      "type": "double",
+      "default": 3.14
+    },
+    {
+      "name": "testDoubleUnion",
+      "type": [
+        "null",
+        "double"
+      ],
+      "default": null
+    },
+    {
+      "name": "testFloat",
+      "type": "float",
+      "default": 3.14
+    },
+    {
+      "name": "testFloatUnion",
+      "type": [
+        "null",
+        "float"
+      ],
+      "default": null
+    },
+    {
+      "name": "testBoolean",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "name": "testBooleanUnion",
+      "type": [
+        "null",
+        "boolean"
+      ],
+      "default": null
+    },
+    {
+      "name": "testBytes",
+      "type": "bytes",
+      "default": "1234"
+    },
+    {
+      "name": "testBytesUnion",
+      "type": [
+        "null",
+        "bytes"
+      ],
+      "default": null
+    },
+    {
+      "name": "testString",
+      "type": "string",
+      "default": "testStringValue"
+    },
+    {
+      "name": "testStringable",
+      "type": { "type": "string", "java-class": "java.net.URL" },
+      "default": "http://www.example.com"
+    },
+    {
+      "name": "testStringUnion",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "aliases": [
+        "testStringAlias"
+      ]
+    },
+    {
+      "name": "testFixed",
+      "type": {
+        "type": "fixed",
+        "name": "DefaultsFixed",
+        "size": 1
+      },
+      "default": "5"
+    },
+    {
+      "name": "testFixedUnion",
+      "type": [
+        "null",
+        "DefaultsFixed"
+      ],
+      "default": null
+    },
+    {
+      "name": "testFixedArray",
+      "type": {
+        "type": "array",
+        "items": "DefaultsFixed"
+      },
+      "default": ["6"]
+    },
+    {
+      "name": "testFixedUnionArray",
+      "type": {
+        "type": "array",
+        "items": [
+          "null",
+          "DefaultsFixed"
+        ]
+      },
+      "default": [null]
+    },
+    {
+      "name": "testEnum",
+      "type": {
+        "type": "enum",
+        "name": "DefaultsEnum",
+        "doc": null,
+        "symbols": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E"
+        ]
+      },
+      "doc": null,
+      "default": "C"
+    },
+    {
+      "name": "testEnumUnion",
+      "type": [
+        "null",
+        "DefaultsEnum"
+      ],
+      "default": null
+    },
+    {
+      "name": "testEnumArray",
+      "type": {
+        "type": "array",
+        "items": "DefaultsEnum"
+      },
+      "default": ["E", "B"]
+    },
+    {
+      "name": "testEnumUnionArray",
+      "type": {
+        "type": "array",
+        "items": [
+          "null",
+          "DefaultsEnum"
+        ]
+      },
+      "default": [null]
+    },
+    {
+      "name": "testNewEnumIntUnionArray",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "array",
+          "items": [
+             {
+            "type": "enum",
+            "name": "DefaultsNewEnum",
+            "doc": null,
+            "symbols": [
+              "A",
+              "B"
+            ]
+            },
+            "int"
+          ]
+        }
+      },
+      "default": [["B"]]
+    },
+    {
+      "name": "oldSubRecord",
+      "type": {
+          "type": "record",
+          "name": "OldSubRecord",
+          "doc": null,
+          "fields": [
+            {
+              "name": "oldSubField",
+              "type": "string"
+            }
+          ]
+       }
+    },
+    {
+      "name": "newFieldWithOldSubRecord",
+      "type": "OldSubRecord",
+      "default": {"oldSubField": "defaultOldSubField" }
+    },
+    {
+      "name": "subRecordUnion",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "DefaultsSubRecord",
+          "doc": null,
+          "fields": [
+            {
+              "name": "subField",
+              "type": "string"
+            },
+            {
+              "name": "anotherField",
+              "type": [
+                "null",
+                "string"
+              ],
+              "default": null
+            },
+            {
+              "name": "arrayField",
+              "type":  {
+                "type": "array",
+                "items": "DefaultsEnum"
+              },
+              "default": []
+            }
+          ]
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "subRecord",
+      "type": "DefaultsSubRecord",
+      "default": {
+           "subField": "valueOfSubField",
+            "anotherField": null,
+            "arrayField": ["A"]
+       }
+    },
+    {
+      "name": "recordArray",
+      "type": {
+        "type": "array",
+        "items": "DefaultsSubRecord"
+      },
+      "default": [{
+           "subField": "recordArrayValue",
+           "anotherField": null,
+           "arrayField": ["A"]
+       }]
+    },
+    {
+      "name": "recordUnionArray",
+      "type": {
+        "type": "array",
+        "items": [
+          "null",
+         "DefaultsSubRecord"
+	]
+      },
+      "default": [null]
+    },
+    {
+      "name": "stringableMap",
+      "type": {
+        "type": "map",
+        "java-key-class": "java.net.URL",
+        "values": { "type": "string", "java-class": "java.math.BigInteger" }
+      },
+      "default": {"http://www.example2.com": "123"}
+    },
+    {
+      "name": "recordMap",
+      "type": {
+        "type": "map",
+        "values": "DefaultsSubRecord"
+      },
+      "default": {"test": {
+           "subField": "recordMapValue",
+            "anotherField": null,
+            "arrayField": ["A"]
+      }}
+    },
+    {
+      "name": "recordUnionMap",
+      "type":
+       {
+         "type": "map",
+         "values": [
+           "null",
+           "DefaultsSubRecord"
+         ]
+       },
+      "default": {"test": null}
+    },
+    {
+      "name": "recordUnionMapArray",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "map",
+          "values": [
+            "null",
+            "DefaultsSubRecord"
+          ]
+        }
+      },
+      "default": [{"test": null}]
+    },
+    {
+      "name": "recordUnionArrayMap",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "array",
+          "items": [
+            "null",
+            "DefaultsSubRecord"
+          ]
+        }
+      },
+      "default": {"test": [null]}
+    }
+  ]
+}
