@@ -3,25 +3,29 @@ package com.linkedin.avro.fastserde;
 import com.google.common.base.Charsets;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
+import com.linkedin.avro.compatibility.AvroCompatibilityHelper;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 import org.apache.avro.Schema;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
-//import org.apache.avro.SchemaNormalization;
+import static com.linkedin.avro.fastserde.Utils.*;
 
 
 public abstract class FastSerializerGeneratorBase<T> {
   public static final String GENERATED_PACKAGE_NAME = "com.linkedin.avro.fastserde.serialization.generated";
-  public static final String GENERATED_SOURCES_PATH = "/com/linkedin/avro/fastserde/serialization/generated/";
+  public static final String GENERATED_SOURCES_PATH = generateSourcePathFromPackageName(GENERATED_PACKAGE_NAME);
+
+  private static final AtomicInteger SCHEMA_FINGER_PRINT_BASE = new AtomicInteger(0);
+
   private static final Logger LOGGER = Logger.getLogger(FastSerializerGeneratorBase.class);
   private static final Map<Schema, Integer> SCHEMA_IDS_CACHE = new ConcurrentHashMap<>();
   private static final HashFunction HASH_FUNCTION = Hashing.murmur3_128();
@@ -41,7 +45,7 @@ public abstract class FastSerializerGeneratorBase<T> {
   }
 
   public static String getClassName(Schema schema, String description) {
-    Integer schemaId = Math.abs(getSchemaId(schema));
+    Integer schemaId = Math.abs(getSchemaFingerprint(schema));
     if (Schema.Type.RECORD.equals(schema.getType())) {
       return schema.getName() + description + "Serializer" + "_" + schemaId;
     } else if (Schema.Type.ARRAY.equals(schema.getType())) {
@@ -53,13 +57,13 @@ public abstract class FastSerializerGeneratorBase<T> {
   }
 
   protected static String getVariableName(String name) {
-    return StringUtils.uncapitalize(name) + nextRandomInt();
+    return StringUtils.uncapitalize(name) + nextUniqueInt();
   }
 
-  public static int getSchemaId(Schema schema) {
+  public static int getSchemaFingerprint(Schema schema) {
     Integer schemaId = SCHEMA_IDS_CACHE.get(schema);
     if (schemaId == null) {
-      String schemaString = schema.toString(); //SchemaNormalization.toParsingForm(schema);
+      String schemaString = AvroCompatibilityHelper.toParsingForm(schema);
       schemaId = HASH_FUNCTION.hashString(schemaString, Charsets.UTF_8).asInt();
       SCHEMA_IDS_CACHE.put(schema, schemaId);
     }
@@ -67,8 +71,8 @@ public abstract class FastSerializerGeneratorBase<T> {
     return schemaId;
   }
 
-  protected static int nextRandomInt() {
-    return Math.abs(ThreadLocalRandom.current().nextInt());
+  protected static int nextUniqueInt() {
+    return SCHEMA_FINGER_PRINT_BASE.getAndIncrement();
   }
 
   public abstract FastSerializer<T> generateSerializer();

@@ -2,7 +2,9 @@ package com.linkedin.avro.fastserde;
 
 import com.linkedin.avro.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avro.compatibility.AvroVersion;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -35,7 +37,13 @@ public class Utils {
   }
 
   public static List<AvroVersion> getAvroVersionsSupportedForSerializer() {
-    return AVRO_VERSIONS_SUPPORTED_FOR_DESERIALIZER;
+    return AVRO_VERSIONS_SUPPORTED_FOR_SERIALIZER;
+  }
+
+  public static String generateSourcePathFromPackageName(String packageName) {
+    StringBuilder pathBuilder = new StringBuilder(File.separator);
+    Arrays.stream(packageName.split("\\.")).forEach( s -> pathBuilder.append(s).append(File.separator));
+    return pathBuilder.toString();
   }
 
   static {

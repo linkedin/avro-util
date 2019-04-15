@@ -4,6 +4,7 @@ build/
 
 #temp artifacts
 avro_tools/
+generated/
 
 #IDEA artifacts
 out/

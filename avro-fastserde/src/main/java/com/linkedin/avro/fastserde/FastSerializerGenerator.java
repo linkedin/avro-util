@@ -398,7 +398,7 @@ public class FastSerializerGenerator<T> extends FastSerializerGeneratorBase<T> {
     if (Schema.Type.RECORD.equals(schema.getType())) {
       if (!methodAlreadyDefined(schema)) {
         JMethod method =
-            serializerClass.method(JMod.PUBLIC, codeModel.VOID, "serialize" + schema.getName() + nextRandomInt());
+            serializerClass.method(JMod.PUBLIC, codeModel.VOID, "serialize" + schema.getName() + nextUniqueInt());
         method._throws(IOException.class);
         method.param(classFromSchemaForSerializer(schema), "data");
         method.param(Encoder.class, ENCODER);

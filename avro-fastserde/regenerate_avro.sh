@@ -18,23 +18,21 @@ if [ ! -f $DEFAULT_AVRO_TOOLS_182_JAR ]; then
   wget "https://repo1.maven.org/maven2/org/apache/avro/avro-tools/1.8.2/avro-tools-1.8.2.jar" -P avro_tools/avro_tools_182
 fi
 
+# schema path to compile
 AVRO_SCHEMAS_PATH=(
   "src/test/resources/avro/fastserdetest.avsc"
   "src/test/resources/avro/defaultsTest.avsc"
   "src/test/resources/avro/stringableTest.avsc"
 )
-CODE_GEN_PATH=(
-  "src/test/java"
-  "src/test/java"
-  "src/test/java"
-  "src/test/java"
-  "src/test/java"
-  "src/test/java"
-)
+# path to store the generated
+CODE_GEN_PATH="src/test/java"
+
+# full path to store the compiled classes, and the dimension of this array
+# should be same as ${#AVRO_SCHEMAS_PATH[@]}
 FULL_CODE_GEN_PATH=(
-  "${CODE_GEN_PATH[0]}/com/linkedin/avro/fastserde/generated/avro/*.java"
-  "${CODE_GEN_PATH[0]}/com/linkedin/avro/fastserde/generated/avro/*.java"
-  "${CODE_GEN_PATH[0]}/com/linkedin/avro/fastserde/generated/avro/*.java"
+  "${CODE_GEN_PATH}/com/linkedin/avro/fastserde/generated/avro/*.java"
+  "${CODE_GEN_PATH}/com/linkedin/avro/fastserde/generated/avro/*.java"
+  "${CODE_GEN_PATH}/com/linkedin/avro/fastserde/generated/avro/*.java"
 )
 
 if [[ $# < 1 ]]; then
@@ -89,7 +87,7 @@ done
 echo "Finished deleting old files. About to generate new ones..."
 
 for (( i=0; i<${#FULL_CODE_GEN_PATH[@]}; i++ )); do
-  java -jar $AVRO_TOOLS_JAR compile schema ${AVRO_SCHEMAS_PATH[i]} ${CODE_GEN_PATH[i]}
+  java -jar $AVRO_TOOLS_JAR compile schema ${AVRO_SCHEMAS_PATH[i]} $CODE_GEN_PATH
   echo "Finished generation for schema path:  ${AVRO_SCHEMAS_PATH[i]}"
 done
 

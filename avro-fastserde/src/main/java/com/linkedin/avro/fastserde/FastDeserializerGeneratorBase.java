@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
+import com.linkedin.avro.compatibility.AvroCompatibilityHelper;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
@@ -14,17 +15,22 @@ import java.util.Collections;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 import org.apache.avro.Schema;
 import org.apache.avro.io.parsing.Symbol;
 import org.apache.log4j.Logger;
 
+import static com.linkedin.avro.fastserde.Utils.*;
+
 
 public abstract class FastDeserializerGeneratorBase<T> {
   public static final String GENERATED_PACKAGE_NAME = "com.linkedin.avro.fastserde.deserialization.generated";
-  public static final String GENERATED_SOURCES_PATH = "/com/linkedin/avro/fastserde/deserialization/generated/";
+  public static final String GENERATED_SOURCES_PATH = generateSourcePathFromPackageName(GENERATED_PACKAGE_NAME);
+
+  private static final AtomicInteger SCHEMA_FINGER_PRINT_BASE = new AtomicInteger(0);
+
   protected static final Symbol EMPTY_SYMBOL = new Symbol(Symbol.Kind.TERMINAL, new Symbol[]{}) {
   };
   protected static final Symbol END_SYMBOL = new Symbol(Symbol.Kind.TERMINAL, new Symbol[]{}) {
@@ -47,7 +53,7 @@ public abstract class FastDeserializerGeneratorBase<T> {
     this.destination = destination;
     this.classLoader = classLoader;
     this.compileClassPath = compileClassPath;
-    codeModel = new JCodeModel();
+    this.codeModel = new JCodeModel();
   }
 
   protected static Symbol[] reverseSymbolArray(Symbol[] symbols) {
@@ -61,8 +67,8 @@ public abstract class FastDeserializerGeneratorBase<T> {
   }
 
   public static String getClassName(Schema writerSchema, Schema readerSchema, String description) {
-    Integer writerSchemaId = Math.abs(getSchemaId(writerSchema));
-    Integer readerSchemaId = Math.abs(getSchemaId(readerSchema));
+    Integer writerSchemaId = Math.abs(getSchemaFingerprint(writerSchema));
+    Integer readerSchemaId = Math.abs(getSchemaFingerprint(readerSchema));
     Schema.Type readerSchemaType = readerSchema.getType();
     if (Schema.Type.RECORD.equals(readerSchemaType)) {
       return readerSchema.getName() + description + "Deserializer" + writerSchemaId + "_" + readerSchemaId;
@@ -75,7 +81,7 @@ public abstract class FastDeserializerGeneratorBase<T> {
   }
 
   protected static String getVariableName(String name) {
-    return name + nextRandomInt();
+    return name + SCHEMA_FINGER_PRINT_BASE.getAndIncrement();
   }
 
   protected static String getSymbolPrintName(Symbol symbol) {
@@ -93,22 +99,15 @@ public abstract class FastDeserializerGeneratorBase<T> {
     return printName;
   }
 
-  public static int getSchemaId(Schema schema) {
+  public static int getSchemaFingerprint(Schema schema) {
     Integer schemaId = SCHEMA_IDS_CACHE.get(schema);
     if (schemaId == null) {
-      /**
-       * SchemaNormalization.toParsingForm(schema) is not available in avro-1.4
-       */
-      String schemaString = schema.toString();
+      String schemaString = AvroCompatibilityHelper.toParsingForm(schema);
       schemaId = HASH_FUNCTION.hashString(schemaString, Charsets.UTF_8).asInt();
       SCHEMA_IDS_CACHE.put(schema, schemaId);
     }
 
     return schemaId;
-  }
-
-  protected static int nextRandomInt() {
-    return Math.abs(ThreadLocalRandom.current().nextInt());
   }
 
   protected static void assignBlockToBody(Object codeContainer, JBlock body) {

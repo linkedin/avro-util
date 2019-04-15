@@ -168,9 +168,4 @@ public class SerDeMicroBenchmark {
     System.out.println("This test with useFastAvro: " + useFastAvro + " took " + (System.currentTimeMillis() - startTs)
         + "ms, and it finished " + totalFetchCnt.get() + " requests");
   }
-
-  @Test
-  public void printSchema() {
-    System.out.println(BenchmarkTestObject.SCHEMA$.toString(true));
-  }
 }

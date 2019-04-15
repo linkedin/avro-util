@@ -11,10 +11,6 @@ import org.apache.avro.io.DecoderFactory;
 
 public class AvroGenericDeserializer<V> {
 
-  /**
-   * This default is intended for the backend. The client overrides this, and its default is defined in
-   * the ClientConfig class, along with all the other client defaults.
-   */
   private final DatumReader<V> datumReader;
 
   public AvroGenericDeserializer(Schema writer, Schema reader) {

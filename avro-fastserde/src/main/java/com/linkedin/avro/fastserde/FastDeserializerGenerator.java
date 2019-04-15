@@ -27,7 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -89,26 +88,8 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
 
       Schema aliasedWriterSchema = writer;
       /**
-       * {@link Schema.applyAliases} is not working well in avro-1.4 since there is a bug in this function:
-       * private static String getFieldAlias
-       *     (Name record, String field, Map<Name,Map<String,String>> fieldAliases) {
-       *     Map<String,String> recordAliases = fieldAliases.get(record);
-       *     if (recordAliases == null)
-       *       return field;
-       *     return recordAliases.get(field);
-       *   }
-       *
-       * This issue has been fixed in avro-1.7, and the following is the correct behavior:
-       *   private static String getFieldAlias
-       *     (Name record, String field, Map<Name,Map<String,String>> fieldAliases) {
-       *     Map<String,String> recordAliases = fieldAliases.get(record);
-       *     if (recordAliases == null)
-       *       return field;
-       *     String alias = recordAliases.get(field);
-       *     if (alias == null)
-       *       return field;
-       *     return alias;
-       *   }
+       * {@link Schema.applyAliases} is not working correctly in avro-1.4 since there is a bug in this function:
+       * {@literal Schema#getFieldAlias}.
        **/
       if (!Utils.isAvro14()) {
         aliasedWriterSchema = Schema.applyAliases(writer, reader);
@@ -221,13 +202,17 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     }
   }
 
-  private void ifCodeGen(JBlock parentBody, JExpression condition, Consumer<JBlock> thenClosure,
-      Optional<Consumer<JBlock>> elseClosure) {
+  private void ifCodeGen(JBlock parentBody, JExpression condition, Consumer<JBlock> thenClosure) {
     JConditional ifCondition = parentBody._if(condition);
     thenClosure.accept(ifCondition._then());
-    if (elseClosure.isPresent()) {
-      elseClosure.get().accept(ifCondition._else());
-    }
+  }
+
+
+  private void ifCodeGen(JBlock parentBody, JExpression condition, Consumer<JBlock> thenClosure,
+      Consumer<JBlock> elseClosure) {
+    JConditional ifCondition = parentBody._if(condition);
+    thenClosure.accept(ifCondition._then());
+    elseClosure.accept(ifCondition._else());
   }
 
   private void processRecord(JVar recordSchemaVar, String recordName, final Schema recordWriterSchema,
@@ -290,7 +275,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       JClass indexedRecordClass = codeModel.ref(IndexedRecord.class);
       JInvocation newRecord = JExpr._new(schemaAssistant.classFromSchema(recordWriterSchema, false));
       if (useGenericTypes) {
-        JExpression recordSchema = schemaMapField.invoke("get").arg(JExpr.lit(getSchemaId(recordWriterSchema)));
+        JExpression recordSchema = schemaMapField.invoke("get").arg(JExpr.lit(getSchemaFingerprint(recordWriterSchema)));
         newRecord = newRecord.arg(recordSchema);
         JInvocation finalNewRecordInvocation = newRecord;
 
@@ -303,12 +288,15 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
                     // not trying to compare the schema content, but just the reference, which should be very fast.
                     JExpr.invoke(JExpr.cast(indexedRecordClass, reuseVar), "getSchema").eq(recordSchema)),
             thenBlock -> thenBlock.assign(result, JExpr.cast(indexedRecordClass, reuseVar)),
-            Optional.of(elseBlock -> elseBlock.assign(result, finalNewRecordInvocation)));
+            elseBlock -> elseBlock.assign(result, finalNewRecordInvocation)
+        );
       } else {
         JInvocation finalNewRecordInvocation = newRecord;
-        ifCodeGen(methodBody, reuseVar.ne(JExpr._null()),
+        ifCodeGen(methodBody,
+            reuseVar.ne(JExpr._null()),
             thenBlock -> thenBlock.assign(result, JExpr.cast(recordClass, reuseVar)),
-            Optional.of(elseBlock -> elseBlock.assign(result, finalNewRecordInvocation)));
+            elseBlock -> elseBlock.assign(result, finalNewRecordInvocation)
+        );
       }
     } else {
       result = null;
@@ -488,10 +476,6 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
             }
             return newFixedExpr;
           } else {
-            // fixed implementation in avro-1.4
-            // The specific fixed type only has a constructor with empty param
-            // The following may not work if the specific fixed code is generated through 1.7
-            // If the schema is generated in avro-1.4, but the app is using avro-1.7, so it won't work either..
             JVar fixed = body.decl(fixedClass, getVariableName(schema.getName()));
             JInvocation newFixedExpr = JExpr._new(fixedClass);
             body.assign(fixed, newFixedExpr);
@@ -636,9 +620,9 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     if (action.getShouldRead()) {
       JVar reuse = declareValueVar(name + "Reuse", arraySchema, ifBlockForChunkLenCheck);
 
-      ifCodeGen(ifBlockForChunkLenCheck, reuseSupplier.get()._instanceof(codeModel.ref(List.class)),
-          thenBlock -> thenBlock.assign(reuse, JExpr.cast(codeModel.ref(List.class), reuseSupplier.get())),
-          Optional.empty());
+      ifCodeGen(ifBlockForChunkLenCheck,
+          reuseSupplier.get()._instanceof(codeModel.ref(List.class)),
+          thenBlock -> thenBlock.assign(reuse, JExpr.cast(codeModel.ref(List.class), reuseSupplier.get())));
 
       JInvocation newArrayExp = JExpr._new(arrayClass);
       if (useGenericTypes) {
@@ -646,10 +630,14 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       }
       JInvocation finalNewArrayExp = newArrayExp;
       // check whether the reuse is null or not
-      ifCodeGen(ifBlockForChunkLenCheck, reuse.ne(JExpr.direct("null")), thenBlock -> {
-        thenBlock.invoke(reuse, "clear");
-        thenBlock.assign(arrayVar, reuse);
-      }, Optional.of(elseBlock -> elseBlock.assign(arrayVar, finalNewArrayExp)));
+      ifCodeGen(ifBlockForChunkLenCheck,
+          reuse.ne(JExpr.direct("null")),
+          thenBlock -> {
+            thenBlock.invoke(reuse, "clear");
+            thenBlock.assign(arrayVar, reuse);
+          },
+          (elseBlock -> elseBlock.assign(arrayVar, finalNewArrayExp))
+      );
 
       JBlock elseBlock = conditional._else();
       if (useGenericTypes) {
@@ -728,16 +716,19 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       JVar reuse = declareValueVar(name + "Reuse", mapSchema, ifBlockForChunkLenCheck);
 
       // Check whether the reuse is a Map or not
-      ifCodeGen(ifBlockForChunkLenCheck, reuseSupplier.get()._instanceof(codeModel.ref(Map.class)),
-          thenBlock -> thenBlock.assign(reuse, JExpr.cast(codeModel.ref(Map.class), reuseSupplier.get())),
-          Optional.empty());
+      ifCodeGen(ifBlockForChunkLenCheck,
+          reuseSupplier.get()._instanceof(codeModel.ref(Map.class)),
+          thenBlock -> thenBlock.assign(reuse, JExpr.cast(codeModel.ref(Map.class), reuseSupplier.get())));
 
       // Check whether the reuse is null or not
-      ifCodeGen(ifBlockForChunkLenCheck, reuse.ne(JExpr.direct("null")), thenBlock -> {
-        thenBlock.invoke(reuse, "clear");
-        thenBlock.assign(mapVar, reuse);
-      }, Optional.of(
-          elseBlock -> elseBlock.assign(mapVar, JExpr._new(schemaAssistant.classFromSchema(mapSchema, false)))));
+      ifCodeGen(ifBlockForChunkLenCheck,
+          reuse.ne(JExpr.direct("null")),
+          thenBlock -> {
+            thenBlock.invoke(reuse, "clear");
+            thenBlock.assign(mapVar, reuse);
+          },
+          elseBlock -> elseBlock.assign(mapVar, JExpr._new(schemaAssistant.classFromSchema(mapSchema, false)))
+      );
 
       JBlock elseBlock = conditional._else();
       elseBlock.assign(mapVar, codeModel.ref(Collections.class).staticInvoke("emptyMap"));
@@ -795,12 +786,15 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
          * Here will check whether the length of the reused fixed is same as the one to be deserialized or not.
          * If not, here will initialize a new byte array to store it.
          */
-        ifCodeGen(body, reuseSupplier.get()._instanceof(codeModel.ref(GenericFixed.class)).
-            cand(JExpr.invoke(JExpr.cast(codeModel.ref(GenericFixed.class), reuseSupplier.get()), "bytes")
-                .ref("length")
-                .eq(JExpr.direct("" + schema.getFixedSize()))), thenBlock -> thenBlock.assign(fixedBuffer,
-            JExpr.invoke(JExpr.cast(codeModel.ref(GenericFixed.class), reuseSupplier.get()), "bytes")), Optional.of(
-            elseBlock -> elseBlock.assign(fixedBuffer, JExpr.direct(" new byte[" + schema.getFixedSize() + "]"))));
+        ifCodeGen(body,
+            reuseSupplier.get()._instanceof(codeModel.ref(GenericFixed.class)).
+                cand(JExpr.invoke(JExpr.cast(codeModel.ref(GenericFixed.class), reuseSupplier.get()), "bytes")
+                    .ref("length")
+                    .eq(JExpr.direct("" + schema.getFixedSize()))),
+            thenBlock -> thenBlock.assign(fixedBuffer,
+                JExpr.invoke(JExpr.cast(codeModel.ref(GenericFixed.class), reuseSupplier.get()), "bytes")),
+            elseBlock -> elseBlock.assign(fixedBuffer, JExpr.direct(" new byte[" + schema.getFixedSize() + "]"))
+        );
       }
       body.directStatement(DECODER + ".readFixed(" + fixedBuffer.name() + ");");
 
@@ -883,11 +877,13 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       if (reuseSupplier.get().equals(JExpr._null())) {
         putValueIntoParent.accept(body, JExpr.invoke(JExpr.direct(DECODER), "readBytes").arg(JExpr.direct("null")));
       } else {
-        ifCodeGen(body, reuseSupplier.get()._instanceof(codeModel.ref("java.nio.ByteBuffer")),
+        ifCodeGen(body,
+            reuseSupplier.get()._instanceof(codeModel.ref("java.nio.ByteBuffer")),
             thenBlock -> putValueIntoParent.accept(thenBlock, JExpr.invoke(JExpr.direct(DECODER), "readBytes")
-                .arg(JExpr.cast(codeModel.ref(ByteBuffer.class), reuseSupplier.get()))), Optional.of(
-                elseBlock -> putValueIntoParent.accept(elseBlock,
-                    JExpr.invoke(JExpr.direct(DECODER), "readBytes").arg(JExpr.direct("null")))));
+                .arg(JExpr.cast(codeModel.ref(ByteBuffer.class), reuseSupplier.get()))),
+            elseBlock -> putValueIntoParent.accept(elseBlock,
+                JExpr.invoke(JExpr.direct(DECODER), "readBytes").arg(JExpr.direct("null")))
+        );
       }
     } else {
       body.directStatement(DECODER + ".skipBytes()");
@@ -909,9 +905,11 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
         }
         putValueIntoParent.accept(body, readStringInvocation);
       } else {
-        ifCodeGen(body, reuseSupplier.get()._instanceof(codeModel.ref("org.apache.avro.util.Utf8")),
+        ifCodeGen(body,
+            reuseSupplier.get()._instanceof(codeModel.ref("org.apache.avro.util.Utf8")),
             thenBlock -> putValueIntoParent.accept(thenBlock, JExpr.invoke(JExpr.direct(DECODER), "readString")
-                .arg(JExpr.cast(codeModel.ref(Utf8.class), reuseSupplier.get()))), Optional.of(elseBlock -> {
+                .arg(JExpr.cast(codeModel.ref(Utf8.class), reuseSupplier.get()))),
+            elseBlock -> {
               JExpression readStringInvocation;
               if (!useGenericTypes && schema.getType().equals(Schema.Type.STRING) && SchemaAssistant.isStringable(
                   schema)) {
@@ -922,7 +920,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
                 readStringInvocation = JExpr.invoke(JExpr.direct(DECODER), "readString").arg(JExpr._null());
               }
               putValueIntoParent.accept(elseBlock, readStringInvocation);
-            }));
+            });
       }
     } else {
       body.directStatement(DECODER + ".skipString();");
@@ -985,7 +983,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       return null;
     }
     if (SchemaAssistant.isComplexType(valueSchema) || Schema.Type.ENUM.equals(valueSchema.getType())) {
-      int schemaId = getSchemaId(valueSchema);
+      int schemaId = getSchemaFingerprint(valueSchema);
       if (schemaVarMap.get(schemaId) != null) {
         return schemaVarMap.get(schemaId);
       } else {
@@ -1001,7 +999,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
   }
 
   private void registerSchema(final Schema writerSchema, JVar schemaVar) {
-    registerSchema(writerSchema, getSchemaId(writerSchema), schemaVar);
+    registerSchema(writerSchema, getSchemaFingerprint(writerSchema), schemaVar);
   }
 
   private void registerSchema(final Schema writerSchema, int schemaId, JVar schemaVar) {
@@ -1013,7 +1011,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
   }
 
   private boolean schemaNotRegistered(final Schema schema) {
-    return !schemaMap.containsKey(getSchemaId(schema));
+    return !schemaMap.containsKey(getSchemaFingerprint(schema));
   }
 
   private boolean methodAlreadyDefined(final Schema schema, boolean read) {
@@ -1056,6 +1054,6 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
   }
 
   private JInvocation getSchemaExpr(Schema schema) {
-    return useGenericTypes ? schemaMapField.invoke("get").arg(JExpr.lit(getSchemaId(schema))) : null;
+    return useGenericTypes ? schemaMapField.invoke("get").arg(JExpr.lit(getSchemaFingerprint(schema))) : null;
   }
 }

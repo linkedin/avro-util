@@ -3,7 +3,6 @@ package com.linkedin.avro.fastserde.micro.benchmark;
 import com.linkedin.avro.compatibility.AvroCompatibilityHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.io.DatumWriter;
@@ -68,11 +67,5 @@ public class AvroGenericSerializer<K> {
       }
     }
     return output.toByteArray();
-  }
-
-  public byte[] serializeObjects(Iterable<K> objects, ByteBuffer prefix) throws Exception {
-    ByteArrayOutputStream output = new ByteArrayOutputStream();
-    output.write(prefix.array(), prefix.position(), prefix.remaining());
-    return serializeObjects(objects, output);
   }
 }

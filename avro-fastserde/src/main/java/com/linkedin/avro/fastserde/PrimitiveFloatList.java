@@ -25,6 +25,7 @@ import org.apache.avro.io.Decoder;
  * - It re-implements {@link #compareTo(GenericArray)}, {@link #equals(Object)} and {@link #hashCode()}
  *   in order to leverage the primitive types, rather than causing unintended boxing.
  *
+ * TODO: Provide arrays for other primitive types.
  */
 public class PrimitiveFloatList extends AbstractList<Float>
     implements GenericArray<Float>, Comparable<GenericArray<Float>> {
@@ -49,7 +50,7 @@ public class PrimitiveFloatList extends AbstractList<Float>
   }
 
   /**
-   * Instantiate (or re-use) and populate a {@link PrimitiveFloatList} from a {@link org.apache.avro.io.ResolvingDecoder}.
+   * Instantiate (or re-use) and populate a {@link PrimitiveFloatList} from a {@link org.apache.avro.io.Decoder}.
    *
    * N.B.: the caller must ensure the data is of the appropriate type by calling {@link #isFloatArray(Schema)}.
    */
@@ -155,6 +156,8 @@ public class PrimitiveFloatList extends AbstractList<Float>
 
   /**
    * Add a primitive float inside the list, without boxing.
+   *
+   * TODO: verify if it's enough to simply store the data as primitives in order to benefit from the GC optimization.
    */
   private boolean addPrimitive(float o) {
     if (size == elements.length) {

@@ -288,8 +288,8 @@ public final class FastSerdeCache {
   }
 
   private String getSchemaKey(Schema writerSchema, Schema readerSchema) {
-    return String.valueOf(Math.abs(FastDeserializerGeneratorBase.getSchemaId(writerSchema))) + Math.abs(
-        FastDeserializerGeneratorBase.getSchemaId(readerSchema));
+    return String.valueOf(Math.abs(FastDeserializerGeneratorBase.getSchemaFingerprint(writerSchema))) + Math.abs(
+        FastDeserializerGeneratorBase.getSchemaFingerprint(readerSchema));
   }
 
   /**

@@ -4,11 +4,11 @@ import java.io.IOException;
 import org.apache.avro.io.Decoder;
 
 
-public interface FastDeserializer<Type> {
+public interface FastDeserializer<T> {
 
-  default Type deserialize(Decoder d) throws IOException {
+  default T deserialize(Decoder d) throws IOException {
     return deserialize(null, d);
   }
 
-  Type deserialize(Type reuse, Decoder d) throws IOException;
+  T deserialize(T reuse, Decoder d) throws IOException;
 }
