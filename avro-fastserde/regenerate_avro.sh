@@ -20,9 +20,9 @@ fi
 
 # schema path to compile
 AVRO_SCHEMAS_PATH=(
-  "src/test/resources/avro/fastserdetest.avsc"
-  "src/test/resources/avro/defaultsTest.avsc"
-  "src/test/resources/avro/stringableTest.avsc"
+  "src/test/avro/fastserdetest.avsc"
+  "src/test/avro/defaultsTest.avsc"
+  "src/test/avro/stringableTest.avsc"
 )
 # path to store the generated
 CODE_GEN_PATH="src/test/java"
