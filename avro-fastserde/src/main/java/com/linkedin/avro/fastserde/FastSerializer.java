@@ -4,7 +4,7 @@ import java.io.IOException;
 import org.apache.avro.io.Encoder;
 
 
-public interface FastSerializer<Type> {
+public interface FastSerializer<T> {
 
-  void serialize(Type data, Encoder e) throws IOException;
+  void serialize(T data, Encoder e) throws IOException;
 }
