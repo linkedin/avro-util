@@ -2,8 +2,6 @@ package com.linkedin.avro.fastserde;
 
 public class FastSerializerGeneratorException extends RuntimeException {
 
-  private static final long serialVersionUID = 1L;
-
   public FastSerializerGeneratorException(String message, Throwable cause) {
     super(message, cause);
   }
