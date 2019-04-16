@@ -60,8 +60,8 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
   private boolean useGenericTypes;
   private JMethod schemaMapMethod;
   private JFieldVar schemaMapField;
-  private Map<Integer, Schema> schemaMap = new HashMap<>();
-  private Map<Integer, JVar> schemaVarMap = new HashMap<>();
+  private Map<Long, Schema> schemaMap = new HashMap<>();
+  private Map<Long, JVar> schemaVarMap = new HashMap<>();
   private Map<String, JMethod> deserializeMethodMap = new HashMap<>();
   private Map<String, JMethod> skipMethodMap = new HashMap<>();
   private Map<JMethod, Set<Class<? extends Exception>>> exceptionFromMethodMap = new HashMap<>();
@@ -99,13 +99,13 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
 
       if (useGenericTypes) {
         schemaMapField =
-            deserializerClass.field(JMod.PRIVATE, codeModel.ref(Map.class).narrow(Integer.class).narrow(Schema.class),
+            deserializerClass.field(JMod.PRIVATE, codeModel.ref(Map.class).narrow(Long.class).narrow(Schema.class),
                 "readerSchemaMap");
         schemaMapMethod = deserializerClass.method(JMod.PRIVATE | JMod.FINAL, void.class, "schemaMap");
         constructor.body().invoke(schemaMapMethod);
         schemaMapMethod.body()
             .assign(schemaMapField,
-                JExpr._new(codeModel.ref(HashMap.class).narrow(Integer.class).narrow(Schema.class)));
+                JExpr._new(codeModel.ref(HashMap.class).narrow(Long.class).narrow(Schema.class)));
         registerSchema(aliasedWriterSchema, readerSchemaVar);
       }
 
@@ -275,7 +275,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       JClass indexedRecordClass = codeModel.ref(IndexedRecord.class);
       JInvocation newRecord = JExpr._new(schemaAssistant.classFromSchema(recordWriterSchema, false));
       if (useGenericTypes) {
-        JExpression recordSchema = schemaMapField.invoke("get").arg(JExpr.lit(getSchemaFingerprint(recordWriterSchema)));
+        JExpression recordSchema = schemaMapField.invoke("get").arg(JExpr.lit(Utils.getSchemaFingerprint(recordWriterSchema)));
         newRecord = newRecord.arg(recordSchema);
         JInvocation finalNewRecordInvocation = newRecord;
 
@@ -983,7 +983,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       return null;
     }
     if (SchemaAssistant.isComplexType(valueSchema) || Schema.Type.ENUM.equals(valueSchema.getType())) {
-      int schemaId = getSchemaFingerprint(valueSchema);
+      long schemaId = Utils.getSchemaFingerprint(valueSchema);
       if (schemaVarMap.get(schemaId) != null) {
         return schemaVarMap.get(schemaId);
       } else {
@@ -999,10 +999,10 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
   }
 
   private void registerSchema(final Schema writerSchema, JVar schemaVar) {
-    registerSchema(writerSchema, getSchemaFingerprint(writerSchema), schemaVar);
+    registerSchema(writerSchema, Utils.getSchemaFingerprint(writerSchema), schemaVar);
   }
 
-  private void registerSchema(final Schema writerSchema, int schemaId, JVar schemaVar) {
+  private void registerSchema(final Schema writerSchema, long schemaId, JVar schemaVar) {
     if ((Schema.Type.RECORD.equals(writerSchema.getType()) || Schema.Type.ENUM.equals(writerSchema.getType())
         || Schema.Type.ARRAY.equals(writerSchema.getType())) && schemaNotRegistered(writerSchema)) {
       schemaMap.put(schemaId, writerSchema);
@@ -1011,7 +1011,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
   }
 
   private boolean schemaNotRegistered(final Schema schema) {
-    return !schemaMap.containsKey(getSchemaFingerprint(schema));
+    return !schemaMap.containsKey(Utils.getSchemaFingerprint(schema));
   }
 
   private boolean methodAlreadyDefined(final Schema schema, boolean read) {
@@ -1054,6 +1054,6 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
   }
 
   private JInvocation getSchemaExpr(Schema schema) {
-    return useGenericTypes ? schemaMapField.invoke("get").arg(JExpr.lit(getSchemaFingerprint(schema))) : null;
+    return useGenericTypes ? schemaMapField.invoke("get").arg(JExpr.lit(Utils.getSchemaFingerprint(schema))) : null;
   }
 }
