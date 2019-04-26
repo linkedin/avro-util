@@ -34,6 +34,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericFixed;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
@@ -664,6 +665,15 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       }
     }
 
+    // Define element reuse variable here
+    JVar elementReuseVar = forBody.decl(codeModel.ref(Object.class), getVariableName(name + "ArrayElementReuseVar"), JExpr._null());
+    ifCodeGen(forBody,
+        reuseSupplier.get()._instanceof(codeModel.ref(GenericArray.class)),
+        then ->
+            then.assign(elementReuseVar, JExpr.invoke(JExpr.cast(codeModel.ref(GenericArray.class), reuseSupplier.get()), "peek"))
+    );
+    Supplier<JExpression> elementReuseSupplier = () -> elementReuseVar;
+
     if (SchemaAssistant.isComplexType(arraySchema.getElementType())) {
       String elemName = name + "Elem";
       Schema readerArrayElementSchema = null;
@@ -671,9 +681,9 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
         readerArrayElementSchema = readerArraySchema.getElementType();
       }
       processComplexType(elementSchemaVar, elemName, arraySchema.getElementType(), readerArrayElementSchema, forBody,
-          action, putValueInArray, EMPTY_SUPPLIER);
+          action, putValueInArray, elementReuseSupplier);
     } else {
-      processSimpleType(arraySchema.getElementType(), forBody, action, putValueInArray, EMPTY_SUPPLIER);
+      processSimpleType(arraySchema.getElementType(), forBody, action, putValueInArray, elementReuseSupplier);
     }
     doLoop.body().assign(chunkLen, JExpr.direct(DECODER + ".arrayNext()"));
 
@@ -907,8 +917,18 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       } else {
         ifCodeGen(body,
             reuseSupplier.get()._instanceof(codeModel.ref("org.apache.avro.util.Utf8")),
-            thenBlock -> putValueIntoParent.accept(thenBlock, JExpr.invoke(JExpr.direct(DECODER), "readString")
-                .arg(JExpr.cast(codeModel.ref(Utf8.class), reuseSupplier.get()))),
+            thenBlock -> {
+              JExpression readStringInvocation;
+              if (!useGenericTypes && schema.getType().equals(Schema.Type.STRING) && SchemaAssistant.isStringable(
+                  schema)) {
+                readStringInvocation = JExpr._new(schemaAssistant.classFromSchema(schema))
+                    .arg(JExpr.invoke(JExpr.direct(DECODER), "readString").
+                        arg(JExpr.cast(codeModel.ref(Utf8.class), reuseSupplier.get())).invoke("toString"));
+              } else {
+                readStringInvocation = JExpr.invoke(JExpr.direct(DECODER), "readString").arg(JExpr.cast(codeModel.ref(Utf8.class), reuseSupplier.get()));
+              }
+              putValueIntoParent.accept(thenBlock, readStringInvocation);
+            },
             elseBlock -> {
               JExpression readStringInvocation;
               if (!useGenericTypes && schema.getType().equals(Schema.Type.STRING) && SchemaAssistant.isStringable(
@@ -920,7 +940,8 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
                 readStringInvocation = JExpr.invoke(JExpr.direct(DECODER), "readString").arg(JExpr._null());
               }
               putValueIntoParent.accept(elseBlock, readStringInvocation);
-            });
+            }
+        );
       }
     } else {
       body.directStatement(DECODER + ".skipString();");
