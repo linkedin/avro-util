@@ -1,5 +1,7 @@
 Avro-Util
 =========
+[![Build Status](https://travis-ci.org/linkedin/avro-util.svg?branch=master)](https://travis-ci.org/linkedin/avro-util)
+[![Download](https://api.bintray.com/packages/linkedin/maven/avro-util/images/download.svg)](https://bintray.com/linkedin/maven/avro-util/_latestVersion)
 
 A collection of utilitiesto allow java projects to better work with avro.
 
