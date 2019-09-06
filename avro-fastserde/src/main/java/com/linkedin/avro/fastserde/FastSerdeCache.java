@@ -299,7 +299,6 @@ public final class FastSerdeCache {
    * @param writerSchema
    * @param readerSchema
    * @return
-   * @throws Exception
    */
   public FastDeserializer<?> buildFastSpecificDeserializer(Schema writerSchema, Schema readerSchema) {
     LOGGER.info("Start buildFastSpecificDeserializer for reader schema: [" + readerSchema + "] and write schema: ["
@@ -346,7 +345,6 @@ public final class FastSerdeCache {
    * @param writerSchema
    * @param readerSchema
    * @return
-   * @throws Exception
    */
   public FastDeserializer<?> buildFastGenericDeserializer(Schema writerSchema, Schema readerSchema) {
     LOGGER.info("Start buildFastGenericDeserializer for reader schema: [" + readerSchema + "] and write schema: ["

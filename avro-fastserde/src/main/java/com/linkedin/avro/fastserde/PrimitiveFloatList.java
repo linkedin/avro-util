@@ -72,7 +72,7 @@ public class PrimitiveFloatList extends AbstractList<Float>
 
   /**
    * @param expected {@link Schema} to inspect
-   * @return true is the {@param expected} SCHEMA is of the right type to decode as a {@link PrimitiveFloatList}
+   * @return true if the {@code expected} SCHEMA is of the right type to decode as a {@link PrimitiveFloatList}
    *         false otherwise
    */
   public static boolean isFloatArray(Schema expected) {
