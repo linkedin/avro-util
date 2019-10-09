@@ -12,6 +12,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -67,13 +68,17 @@ public class AvroCompatibilityHelper {
     return newBinaryEncoder(new ObjectOutputToOutputStreamAdapter(out));
   }
 
+  public static BinaryDecoder newBinaryDecoder(InputStream in) {
+    return FACTORY.newBinaryDecoder(in);
+  }
+
   /**
    * to be migrated to SpecificData.getDecoder() in avro 1.8+
    * @param in object input
    * @return a binary decoder on top of the given ObjectInput
    */
   public static BinaryDecoder newBinaryDecoder(ObjectInput in) {
-    return DecoderFactory.defaultFactory().createBinaryDecoder(new ObjectInputToInputStreamAdapter(in), null);
+    return newBinaryDecoder(new ObjectInputToInputStreamAdapter(in));
   }
 
   public static JsonEncoder newJsonEncoder(Schema schema, OutputStream out) throws IOException {
@@ -102,6 +107,33 @@ public class AvroCompatibilityHelper {
 
   public static GenericData.Fixed newFixedField(Schema ofType, byte[] contents) {
     return FACTORY.newFixedField(ofType, contents);
+  }
+
+  /**
+   * Create an instance of a class. If the class implements {@link SchemaConstructable},
+   * call a constructor with a {@link Schema} parameter, otherwise use a no-arg constructor.
+   * @param clazz class type to instantiate
+   * @param schema Avro schema to use for instantiating {@param clazz} if it implements {@link SchemaConstructable}
+   */
+  public static Object newInstance(Class clazz, Schema schema) {
+    return FACTORY.newInstance(clazz, schema);
+  }
+
+  /**
+   * Find the Avro schema for a Java type
+   */
+  public static Schema getSchema(Type type) {
+    return FACTORY.getSchema(type);
+  }
+
+  /**
+   * Get the default value of the given field, if any.
+   * @param field the field whose default value should be retrieved.
+   * @return the default value associated with the given field,
+   * or null if none is specified in the schema.
+   */
+  public static Object getDefaultValue(Schema.Field field) {
+    return FACTORY.getDefaultValue(field);
   }
 
   /**

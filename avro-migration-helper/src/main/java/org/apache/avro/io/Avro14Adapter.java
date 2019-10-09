@@ -9,6 +9,9 @@ package org.apache.avro.io;
 import com.linkedin.avro.compatibility.AvroGeneratedSourceCode;
 import com.linkedin.avro.compatibility.AvroVersion;
 import com.linkedin.avro.compatibility.SchemaNormalization;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -18,9 +21,14 @@ import java.util.regex.Pattern;
 
 import com.linkedin.avro.compatibility.SchemaParseResult;
 import com.linkedin.avro.util.TemplateUtil;
+import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.Avro14SchemaAccessHelper;
 import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericDatumReader;
+import org.apache.avro.io.parsing.ResolvingGrammarGenerator;
+import org.apache.avro.specific.SpecificDatumReader;
+import org.codehaus.jackson.JsonNode;
 
 
 public class Avro14Adapter extends AbstractAvroAdapter {
@@ -36,10 +44,12 @@ public class Avro14Adapter extends AbstractAvroAdapter {
   private static final String ENUM_CLASS_NO_NAMESPACE_BODY_TEMPLATE = TemplateUtil.loadTemplate("EnumNoNamespace.template");
   private static final String PARSE_INVOCATION_START = "org.apache.avro.Schema.parse(";
   private static final Pattern PARSE_INVOCATION_PATTERN = Pattern.compile(Pattern.quote(PARSE_INVOCATION_START) + "\"(.*)\"\\);");
+  private static final Map<Schema.Field, Object> DEFAULT_VALUE_CACHE = Collections.synchronizedMap(new WeakHashMap<>());
   private static final int MAX_STRING_LITERAL_SIZE = 65000; //just under 64k
 
   private final Constructor _binaryEncoderCtr;
   private final Method _schemaParseMethod;
+  private final Method _encodeJsonNode;
 
   public Avro14Adapter() throws Exception {
     super(
@@ -59,6 +69,8 @@ public class Avro14Adapter extends AbstractAvroAdapter {
     _outputFileContentsField = outputFileClass.getDeclaredField("contents");
     _outputFileContentsField.setAccessible(true);
     _schemaParseMethod = Schema.class.getDeclaredMethod("parse", String.class);
+    _encodeJsonNode = ResolvingGrammarGenerator.class.getDeclaredMethod("encode", Encoder.class, Schema.class, JsonNode.class);
+    _encodeJsonNode.setAccessible(true); //package-private
   }
 
   @Override
@@ -106,6 +118,49 @@ public class Avro14Adapter extends AbstractAvroAdapter {
     } catch (Exception e) {
       throw new IllegalStateException(e);
     }
+  }
+
+  @Override
+  public Object newInstance(Class c, Schema s) {
+    return SpecificDatumReaderExtender.newInstance(c, s);
+  }
+
+  // copied with minor modifications from Avro 1.4
+  @Override
+  public Object getDefaultValue(Schema.Field field) {
+    JsonNode json = field.defaultValue();
+    if (json == null) {
+      throw new AvroRuntimeException("Field " + field + " not set and has no default value");
+    }
+    if (json.isNull()
+        && (field.schema().getType() == Schema.Type.NULL
+        || (field.schema().getType() == Schema.Type.UNION
+        && field.schema().getTypes().get(0).getType() == Schema.Type.NULL))) {
+      return null;
+    }
+
+    // Check the cache
+    Object defaultValue = DEFAULT_VALUE_CACHE.get(field);
+
+    // If not cached, get the default Java value by encoding the default JSON
+    // value and then decoding it:
+    if (defaultValue == null) {
+      try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+        BinaryEncoder encoder = newBinaryEncoder(baos);
+        _encodeJsonNode.invoke(null, encoder, field.schema(), json);
+        encoder.flush();
+        BinaryDecoder decoder = newBinaryDecoder(new ByteArrayInputStream(baos.toByteArray()));
+        defaultValue = new GenericDatumReader<>(field.schema()).read(null, decoder);
+
+        DEFAULT_VALUE_CACHE.put(field, defaultValue);
+      } catch (IOException e) {
+        throw new AvroRuntimeException(e);
+      } catch (Exception e) {
+        throw new IllegalStateException(e);
+      }
+    }
+
+    return defaultValue;
   }
 
   @Override
@@ -315,5 +370,14 @@ public class Avro14Adapter extends AbstractAvroAdapter {
       }
     }
     return false;
+  }
+
+  /**
+   * Primarily intended to expose a protected static method defined on {@link SpecificDatumReader}.
+   */
+  private static class SpecificDatumReaderExtender extends SpecificDatumReader {
+    public static Object newInstance(Class c, Schema s) {
+      return SpecificDatumReader.newInstance(c, s);
+    }
   }
 }

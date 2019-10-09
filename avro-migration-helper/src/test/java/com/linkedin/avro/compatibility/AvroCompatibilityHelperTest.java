@@ -11,10 +11,8 @@ import com.acme.generatedbylatest.Event;
 import com.acme.generatedbylatest.Guid;
 import com.acme.generatedbylatest.Header;
 import com.linkedin.avro.TestUtil;
-import com.linkedin.avro.compatibility.AvroGeneratedSourceCode;
-import com.linkedin.avro.compatibility.AvroVersion;
 import com.linkedin.avro.legacy.LegacyAvroSchema;
-import com.linkedin.avro.compatibility.AvroCompatibilityHelper;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.StringWriter;
@@ -32,7 +30,9 @@ import javax.tools.ToolProvider;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
+import org.apache.avro.util.Utf8;
 import org.testng.Assert;
 import org.testng.SkipException;
 import org.testng.annotations.Test;
@@ -69,7 +69,7 @@ public class AvroCompatibilityHelperTest {
           + "       \"name\":\"EnumType\"\n"
           + "     }\n"
           + "    },\n"
-          + "    {\"name\":\"strField\", \"type\":\"string\"}\n"
+          + "    {\"name\":\"strField\", \"type\":\"string\", \"default\":\"str\"}\n"
           + "  ]\n"
           + "}"
   );
@@ -82,10 +82,23 @@ public class AvroCompatibilityHelperTest {
   }
 
   @Test
+  public void testGetDefaultValue() {
+    Object defaultValue = AvroCompatibilityHelper.getDefaultValue(_schema.getField("strField"));
+    Assert.assertEquals(defaultValue, new Utf8("str"));
+  }
+
+  @Test
   public void testBinaryEncoder() throws Exception {
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     BinaryEncoder binaryEncoder = AvroCompatibilityHelper.newBinaryEncoder(os);
     Assert.assertNotNull(binaryEncoder);
+  }
+
+  @Test
+  public void testBinaryDecoder() {
+    ByteArrayInputStream is = new ByteArrayInputStream(new byte[0]);
+    BinaryDecoder binaryDecoder = AvroCompatibilityHelper.newBinaryDecoder(is);
+    Assert.assertNotNull(binaryDecoder);
   }
 
   @Test

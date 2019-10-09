@@ -8,15 +8,18 @@ package org.apache.avro.io;
 
 import com.linkedin.avro.compatibility.AvroGeneratedSourceCode;
 import com.linkedin.avro.compatibility.AvroVersion;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.avro.Schema;
+import org.apache.avro.specific.SpecificData;
 
 
 //package private ON PURPOSE
@@ -35,6 +38,16 @@ abstract class AbstractAvroAdapter implements AvroAdapter {
   public AbstractAvroAdapter(Constructor enumSymbolCtr, Constructor fixedCtr) throws Exception {
     _enumSymbolCtr = enumSymbolCtr;
     _fixedCtr = fixedCtr;
+  }
+
+  @Override
+  public BinaryDecoder newBinaryDecoder(InputStream inputStream) {
+    return DecoderFactory.defaultFactory().createBinaryDecoder(inputStream, null);
+  }
+
+  @Override
+  public Schema getSchema(Type type) {
+    return SpecificData.get().getSchema(type);
   }
 
   @Override

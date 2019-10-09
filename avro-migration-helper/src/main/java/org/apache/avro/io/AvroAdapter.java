@@ -11,6 +11,7 @@ import com.linkedin.avro.compatibility.AvroVersion;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Type;
 import java.util.Collection;
 
 import com.linkedin.avro.compatibility.SchemaParseResult;
@@ -28,6 +29,8 @@ import org.codehaus.jackson.JsonGenerator;
 public interface AvroAdapter {
 
   BinaryEncoder newBinaryEncoder(OutputStream out);
+
+  BinaryDecoder newBinaryDecoder(InputStream in);
 
   default JsonEncoder newJsonEncoder(Schema schema, OutputStream out) throws IOException {
     return new JsonEncoder(schema, out); //was made package-private in 1.7
@@ -53,6 +56,12 @@ public interface AvroAdapter {
   }
 
   GenericData.Fixed newFixedField(Schema ofType, byte[] contents);
+
+  Object newInstance(Class clazz, Schema schema);
+
+  Schema getSchema(Type type);
+
+  Object getDefaultValue(Schema.Field field);
 
   /**
    * invokes the avro {@link org.apache.avro.specific.SpecificCompiler} to generate java code
