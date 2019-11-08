@@ -9,13 +9,19 @@ DEFAULT_AVRO_TOOLS_177_JAR="avro_tools/avro_tools_177/avro-tools-1.7.7.jar"
 DEFAULT_AVRO_TOOLS_182_JAR="avro_tools/avro_tools_182/avro-tools-1.8.2.jar"
 
 if [ ! -f $DEFAULT_AVRO_TOOLS_140_JAR ]; then
-  wget "https://repo1.maven.org/maven2/org/apache/avro/avro/1.4.0/avro-tools-1.4.0.jar" -P avro_tools/avro_tools_140
+  mkdir -p avro_tools/avro_tools_140 && pushd . && cd avro_tools/avro_tools_140
+  curl -s -L -O -C - "https://repo1.maven.org/maven2/org/apache/avro/avro/1.4.0/avro-tools-1.4.0.jar" -o avro-tools-1.4.0.jar
+  popd
 fi
 if [ ! -f $DEFAULT_AVRO_TOOLS_177_JAR ]; then
-  wget "https://repo1.maven.org/maven2/org/apache/avro/avro-tools/1.7.7/avro-tools-1.7.7.jar" -P avro_tools/avro_tools_177
+  mkdir -p avro_tools/avro_tools_177 && pushd . && cd avro_tools/avro_tools_177
+  curl -s -L -O -C - "https://repo1.maven.org/maven2/org/apache/avro/avro-tools/1.7.7/avro-tools-1.7.7.jar" -o avro-tools-1.7.7.jar
+  popd
 fi
 if [ ! -f $DEFAULT_AVRO_TOOLS_182_JAR ]; then
-  wget "https://repo1.maven.org/maven2/org/apache/avro/avro-tools/1.8.2/avro-tools-1.8.2.jar" -P avro_tools/avro_tools_182
+  mkdir -p avro_tools/avro_tools_182 && pushd . && cd avro_tools/avro_tools_182
+  curl -s -L -O -C - "https://repo1.maven.org/maven2/org/apache/avro/avro-tools/1.8.2/avro-tools-1.8.2.jar" -o avro-tools-1.8.2.jar
+  popd
 fi
 
 # schema path to compile
