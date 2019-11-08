@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 import com.linkedin.avro.compatibility.SchemaParseResult;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
+import org.apache.avro.specific.SpecificData;
 
 
 public class Avro17Adapter extends AbstractAvroAdapter {
@@ -54,6 +55,8 @@ public class Avro17Adapter extends AbstractAvroAdapter {
   private final Method _addTypesMethod;
   private final Method _getTypesMethod;
   private final Method _toParsingFormMethod;
+  private final Method _newInstanceMethod;
+  private final Method _getDefaultValueMethod;
 
   //compiler-related
   private boolean _compilerSupported; //defaults to false
@@ -85,6 +88,9 @@ public class Avro17Adapter extends AbstractAvroAdapter {
 
     Class<?> schemaNormalizationClass = Class.forName("org.apache.avro.SchemaNormalization");
     _toParsingFormMethod = schemaNormalizationClass.getMethod("toParsingForm", Schema.class);
+
+    _newInstanceMethod = SpecificData.class.getMethod("newInstance", Class.class, Schema.class);
+    _getDefaultValueMethod = SpecificData.class.getMethod("getDefaultValue", Schema.Field.class);
 
     tryInitializeCompilerFields();
   }
@@ -140,6 +146,24 @@ public class Avro17Adapter extends AbstractAvroAdapter {
   public GenericData.Fixed newFixedField(Schema ofType, byte[] contents) {
     try {
       return (GenericData.Fixed) _fixedCtr.newInstance(ofType, contents);
+    } catch (Exception e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
+  @Override
+  public Object newInstance(Class c, Schema s) {
+    try {
+      return _newInstanceMethod.invoke(null, c, s);
+    } catch (Exception e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
+  @Override
+  public Object getDefaultValue(Schema.Field field) {
+    try {
+      return _getDefaultValueMethod.invoke(SpecificData.get(), field);
     } catch (Exception e) {
       throw new IllegalStateException(e);
     }
