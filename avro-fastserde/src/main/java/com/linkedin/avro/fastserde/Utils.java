@@ -3,12 +3,19 @@ package com.linkedin.avro.fastserde;
 import com.linkedin.avro.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avro.compatibility.AvroVersion;
 import com.linkedin.avro.compatibility.SchemaNormalization;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import org.apache.avro.Schema;
 
 
@@ -75,5 +82,89 @@ public class Utils {
 
     AVRO_VERSIONS_SUPPORTED_FOR_SERIALIZER.add(AvroVersion.AVRO_1_7);
     AVRO_VERSIONS_SUPPORTED_FOR_SERIALIZER.add(AvroVersion.AVRO_1_8);
+  }
+
+
+  private static String replaceLast(String str, char target, char replacement) {
+    if (str.indexOf(target) < 0) {
+      // doesn't contain target char
+      return str;
+    }
+    int lastOccurrence = str.lastIndexOf(target);
+    StringBuilder sb = new StringBuilder();
+    sb.append(str, 0, lastOccurrence)
+        .append(replacement);
+    if (lastOccurrence != str.length() - 1) {
+      sb.append(str.substring(lastOccurrence + 1));
+    }
+    return sb.toString();
+  }
+
+  private static Class<?> loadClass(String className) throws ClassNotFoundException {
+    try {
+      // First try the current class loader
+      return Class.forName(className);
+    } catch (ClassNotFoundException e) {
+      // If the required class couldn't be found, here will try to use the class loader of current thread
+      return Class.forName(className, false, Thread.currentThread().getContextClassLoader());
+    }
+  }
+
+  /**
+   * This class is used to infer all the compilation dependencies.
+   * @param existingCompileClasspath
+   * @param filePath
+   * @param knownUsedFullyQualifiedClassNameSet: known fully qualified class name when generating the serialization/de-serialization classes
+   * @return
+   * @throws IOException
+   * @throws ClassNotFoundException
+   */
+  public static String inferCompileDependencies(String existingCompileClasspath, String filePath, Set<String> knownUsedFullyQualifiedClassNameSet)
+      throws IOException, ClassNotFoundException {
+    Set<String> usedFullyQualifiedClassNameSet = new HashSet<>(knownUsedFullyQualifiedClassNameSet);
+    Set<String> libSet = Arrays.stream(existingCompileClasspath.split(":")).collect(Collectors.toSet());
+    final String importPrefix = "import ";
+    // collect all the necessary dependencies for compilation
+    try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+      String line;
+      while ((line = reader.readLine()) != null) {
+        if (line.startsWith(importPrefix)) {
+          // Get the qualified class name from "import" statements
+          String qualifiedClassName = line.substring(importPrefix.length(), line.length() - 1);
+
+          if (!qualifiedClassName.isEmpty()) {
+            usedFullyQualifiedClassNameSet.add(qualifiedClassName);
+          }
+        }
+      }
+
+      StringBuilder sb = new StringBuilder(existingCompileClasspath);
+      for (String requiredClass : usedFullyQualifiedClassNameSet) {
+        CodeSource codeResource;
+        try {
+          codeResource = loadClass(requiredClass).getProtectionDomain().getCodeSource();
+        } catch (ClassNotFoundException e) {
+          /**
+           * Inner class couldn't be located directly by Class.forName in the formal way, so we have to replace the
+           * last '.' by '$'.
+           * For example, 'org.apache.avro.generic.GenericData.Record' could NOT be located by {@link Class#forName(String)},
+           * but 'org.apache.avro.generic.GenericData#Record' can be located.
+           *
+           * Here, we only try once since multiple layers of inner class is not expected in the generated java class,
+           * and in theory, the inner class being used could only be defined by Avro lib.
+           * If this assumption is not right, we need to do recursive search to find the right library.
+           */
+          codeResource = loadClass(replaceLast(requiredClass, '.', '$')).getProtectionDomain().getCodeSource();
+        }
+        if (codeResource != null) {
+          String libPath = codeResource.getLocation().getFile();
+          if (!libSet.contains(libPath)) {
+            sb.append(":").append(libPath);
+            libSet.add(libPath);
+          }
+        }
+      }
+      return sb.toString();
+    }
   }
 }

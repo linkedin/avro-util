@@ -163,6 +163,7 @@ public final class FastSerdeCache {
                   classPath += ":" + lib.getAbsolutePath();
                 }
               }
+              LOGGER.info("Inferred class path: " + classPath);
             } catch (ClassNotFoundException e) {
               throw new RuntimeException("Failed to find class: " + avroSchemaClassName);
             }

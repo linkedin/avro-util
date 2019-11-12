@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.ListIterator;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
@@ -44,7 +45,7 @@ public abstract class FastDeserializerGeneratorBase<T> {
     this.reader = reader;
     this.destination = destination;
     this.classLoader = classLoader;
-    this.compileClassPath = compileClassPath;
+    this.compileClassPath = (null == compileClassPath ? "" : compileClassPath);
     this.codeModel = new JCodeModel();
   }
 
@@ -106,21 +107,24 @@ public abstract class FastDeserializerGeneratorBase<T> {
   public abstract FastDeserializer<T> generateDeserializer();
 
   @SuppressWarnings("unchecked")
-  protected Class<FastDeserializer<T>> compileClass(final String className) throws IOException, ClassNotFoundException {
+  protected Class<FastDeserializer<T>> compileClass(final String className, Set<String> knownUsedFullyQualifiedClassNameSet)
+      throws IOException, ClassNotFoundException {
     codeModel.build(destination);
 
     String filePath = destination.getAbsolutePath() + GENERATED_SOURCES_PATH + className + ".java";
     LOGGER.info("Generated deserializer source file: " + filePath);
     JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+    String compileClassPathForCurrentFile = Utils.inferCompileDependencies(compileClassPath, filePath, knownUsedFullyQualifiedClassNameSet);
+    LOGGER.info("For source file: " + filePath + ", and the inferred compile class path: " + compileClassPathForCurrentFile);
     int compileResult;
-    if (compileClassPath != null) {
-      compileResult = compiler.run(null, null, null, "-cp", compileClassPath, filePath);
-    } else {
-      compileResult = compiler.run(null, null, null, filePath);
+    try {
+      compileResult = compiler.run(null, null, null, "-cp", compileClassPathForCurrentFile, filePath);
+    } catch (Exception e) {
+      throw new FastDeserializerGeneratorException("Unable to compile:" + className, e);
     }
 
     if (compileResult != 0) {
-      throw new FastDeserializerGeneratorException("unable to compile:" + className);
+      throw new FastDeserializerGeneratorException("Unable to compile:" + className);
     }
 
     return (Class<FastDeserializer<T>>) classLoader.loadClass(GENERATED_PACKAGE_NAME + "." + className);

@@ -159,7 +159,7 @@ public class PrimitiveFloatList extends AbstractList<Float>
    *
    * TODO: verify if it's enough to simply store the data as primitives in order to benefit from the GC optimization.
    */
-  private boolean addPrimitive(float o) {
+  public boolean addPrimitive(float o) {
     if (size == elements.length) {
       float[] newElements = new float[(size * 3) / 2 + 1];
       System.arraycopy(elements, 0, newElements, 0, size);
