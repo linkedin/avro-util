@@ -15,6 +15,10 @@ import org.apache.log4j.Logger;
 import static com.linkedin.avro.fastserde.Utils.*;
 
 
+/**
+ * TODO: refactor {@link FastSerializerGeneratorBase} and {@link FastDeserializerGeneratorBase} to eliminate the duplicate code.
+ * @param <T>
+ */
 public abstract class FastSerializerGeneratorBase<T> {
   public static final String GENERATED_PACKAGE_NAME = "com.linkedin.avro.fastserde.serialization.generated";
   public static final String GENERATED_SOURCES_PATH = generateSourcePathFromPackageName(GENERATED_PACKAGE_NAME);

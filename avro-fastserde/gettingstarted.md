@@ -71,8 +71,4 @@ FastSpecificDatumWriter<T> fastSpecificDatumWriter = new FastSpecificDatumWriter
 fastSpecificDatumWriter.write(data, binaryEncoder);
 
 
-## Troubleshooting
-
-
-## Related Documentation
 
