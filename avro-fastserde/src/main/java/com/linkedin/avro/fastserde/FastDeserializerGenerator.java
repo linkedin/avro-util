@@ -154,7 +154,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       deserializeMethod.param(readerSchemaClass, VAR_NAME_FOR_REUSE);
       deserializeMethod.param(Decoder.class, DECODER);
 
-      Class<FastDeserializer<T>> clazz = compileClass(className);
+      Class<FastDeserializer<T>> clazz = compileClass(className, schemaAssistant.getUsedFullyQualifiedClassNameSet());
       return clazz.getConstructor(Schema.class).newInstance(reader);
     } catch (JClassAlreadyExistsException e) {
       throw new FastDeserializerGeneratorException("Class: " + className + " already exists");

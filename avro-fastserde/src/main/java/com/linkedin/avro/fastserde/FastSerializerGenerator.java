@@ -70,7 +70,7 @@ public class FastSerializerGenerator<T> extends FastSerializerGeneratorBase<T> {
       serializeMethod.param(codeModel.ref(Encoder.class), ENCODER);
       serializeMethod._throws(codeModel.ref(IOException.class));
 
-      final Class<FastSerializer<T>> clazz = compileClass(className);
+      final Class<FastSerializer<T>> clazz = compileClass(className, schemaAssistant.getUsedFullyQualifiedClassNameSet());
       return clazz.newInstance();
     } catch (JClassAlreadyExistsException e) {
       throw new FastSerializerGeneratorException("Class: " + className + " already exists");

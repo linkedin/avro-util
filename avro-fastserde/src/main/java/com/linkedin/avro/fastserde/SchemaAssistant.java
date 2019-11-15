@@ -25,18 +25,30 @@ import org.apache.avro.util.Utf8;
 
 
 public class SchemaAssistant {
-  // The folllowing constants are not available in avro-1.4
+  // The following constants are not available in avro-1.4
   public static final String CLASS_PROP = "java-class";
   public static final String KEY_CLASS_PROP = "java-key-class";
 
   private final JCodeModel codeModel;
   private final boolean useGenericTypes;
   private Set<Class<? extends Exception>> exceptionsFromStringable;
+  /**
+   * This is used to collect all the fully qualified classes being used by the
+   * generated class.
+   * The purpose of this bookkeeping is that in some framework, those classes
+   * couldn't be found during compilation time, so we need to manually find
+   * the libraries, which define those classes, and put them in the compile classpath.
+   */
+  private final Set<String> fullyQualifiedClassNameSet = new HashSet<>();
 
   public SchemaAssistant(JCodeModel codeModel, boolean useGenericTypes) {
     this.codeModel = codeModel;
     this.useGenericTypes = useGenericTypes;
     this.exceptionsFromStringable = new HashSet<>();
+  }
+
+  protected Set<String> getUsedFullyQualifiedClassNameSet() {
+    return fullyQualifiedClassNameSet;
   }
 
   /* Complex type here means type that it have to handle other types inside itself. */
@@ -246,6 +258,14 @@ public class SchemaAssistant {
       default:
         throw new SchemaAssistantException("Incorrect request for " + schema.getType()); //.getName() + " class!");
     }
+
+    /**
+     * Exclude the narrowed type.
+     * Essentially, for type: java.util.ArrayList<java.util.Map<org.apache.avro.util.Utf8>,
+     * {@link JClass#erasure()} will return java.util.ArrayList, and that is the class, which can be located by
+     * {@link Class#forName(String)}.
+     */
+    fullyQualifiedClassNameSet.add(outputClass.erasure().fullName());
 
     return outputClass;
   }
