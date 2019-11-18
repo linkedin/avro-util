@@ -16,9 +16,11 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.*;
 import org.apache.avro.io.AvroAdapter;
+import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificRecord;
 import org.codehaus.jackson.JsonGenerator;
 
@@ -110,10 +112,10 @@ public class AvroCompatibilityHelper {
   }
 
   /**
-   * Create an instance of a class. If the class implements {@link SchemaConstructable},
+   * Create an instance of a class. If the class implements {@link SpecificDatumReader.SchemaConstructable},
    * call a constructor with a {@link Schema} parameter, otherwise use a no-arg constructor.
    * @param clazz class type to instantiate
-   * @param schema Avro schema to use for instantiating {@param clazz} if it implements {@link SchemaConstructable}
+   * @param schema Avro schema to use for instantiating @param clazz if it implements {@link SpecificDatumReader.SchemaConstructable}
    */
   public static Object newInstance(Class clazz, Schema schema) {
     return FACTORY.newInstance(clazz, schema);
@@ -150,7 +152,7 @@ public class AvroCompatibilityHelper {
   }
 
   /**
-   * Return true if the {@link IndexedRecord} is a {@link org.apache.avro.generic.GenericRecord}.
+   * Return true if the {@link IndexedRecord} is a {@link GenericRecord}.
    * @param indexedRecord a record
    * @return true if argument is a generic record
    */
