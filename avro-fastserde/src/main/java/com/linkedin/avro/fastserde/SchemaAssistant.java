@@ -74,6 +74,9 @@ public class SchemaAssistant {
         return true;
       case ENUM:
       case FIXED:
+        /**
+         * This is used to avoid `getSchema` call since in Avro-1.4, `getSchema` method is not available for Enum and Fixed.
+         */
         return Utils.isAvro14() ? false : true;
       default:
         return false;
