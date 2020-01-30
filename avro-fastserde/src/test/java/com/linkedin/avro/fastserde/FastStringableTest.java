@@ -108,16 +108,31 @@ public class FastStringableTest {
           specificDataFromDecoder(StringableRecord.SCHEMA$, writeWithFastAvro(record, StringableRecord.SCHEMA$));
 
       // then
-      Assert.assertEquals(exampleBigDecimal, afterDecoding.bigdecimal);
-      Assert.assertEquals(exampleBigInteger, afterDecoding.biginteger);
-      Assert.assertEquals(exampleFile, afterDecoding.file);
-      Assert.assertEquals(Collections.singletonList(exampleURL), afterDecoding.urlArray);
-      Assert.assertEquals(Collections.singletonMap(exampleURL, exampleBigInteger), afterDecoding.urlMap);
-      Assert.assertNotNull(afterDecoding.subRecord);
-      Assert.assertEquals(exampleURI, afterDecoding.subRecord.uriField);
-      Assert.assertNotNull(afterDecoding.subRecordWithSubRecord);
-      Assert.assertNotNull(afterDecoding.subRecordWithSubRecord.subRecord);
-      Assert.assertEquals(exampleURI, afterDecoding.subRecordWithSubRecord.subRecord.uriField);
+      if (Utils.isAvro14()) {
+        Assert.assertEquals(exampleBigDecimal.toString(), afterDecoding.bigdecimal.toString());
+        Assert.assertEquals(exampleBigInteger.toString(), afterDecoding.biginteger.toString());
+        Assert.assertEquals(exampleFile.toString(), afterDecoding.file.toString());
+        Assert.assertEquals(Collections.singletonList(new Utf8(exampleURL.toString())), afterDecoding.urlArray);
+        Assert.assertEquals(
+            Collections.singletonMap(new Utf8(exampleURL.toString()), new Utf8(exampleBigInteger.toString())),
+            afterDecoding.urlMap);
+        Assert.assertNotNull(afterDecoding.subRecord);
+        Assert.assertEquals(exampleURI.toString(), afterDecoding.subRecord.uriField.toString());
+        Assert.assertNotNull(afterDecoding.subRecordWithSubRecord);
+        Assert.assertNotNull(afterDecoding.subRecordWithSubRecord.subRecord);
+        Assert.assertEquals(exampleURI.toString(), afterDecoding.subRecordWithSubRecord.subRecord.uriField.toString());
+      } else {
+        Assert.assertEquals(exampleBigDecimal, afterDecoding.bigdecimal);
+        Assert.assertEquals(exampleBigInteger, afterDecoding.biginteger);
+        Assert.assertEquals(exampleFile, afterDecoding.file);
+        Assert.assertEquals(Collections.singletonList(exampleURL), afterDecoding.urlArray);
+        Assert.assertEquals(Collections.singletonMap(exampleURL, exampleBigInteger), afterDecoding.urlMap);
+        Assert.assertNotNull(afterDecoding.subRecord);
+        Assert.assertEquals(exampleURI, afterDecoding.subRecord.uriField);
+        Assert.assertNotNull(afterDecoding.subRecordWithSubRecord);
+        Assert.assertNotNull(afterDecoding.subRecordWithSubRecord.subRecord);
+        Assert.assertEquals(exampleURI, afterDecoding.subRecordWithSubRecord.subRecord.uriField);
+      }
     }
   }
 

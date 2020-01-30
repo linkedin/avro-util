@@ -59,7 +59,7 @@ public class SerDeMicroBenchmark {
     return serializer.serializeObjects(objs);
   }
 
-  @Test(invocationCount = 5)
+  @Test(invocationCount = 5, groups = {"perfTest"})
   public void testAvroSerialization() throws Exception {
     long startInMs = System.currentTimeMillis();
 
@@ -75,7 +75,7 @@ public class SerDeMicroBenchmark {
     System.out.println("Regular avro serialization latency: " + (System.currentTimeMillis() - startInMs) + " ms");
   }
 
-  @Test(invocationCount = 5)
+  @Test(invocationCount = 5, groups = {"perfTest"})
   public void testFastAvroSerialization() throws Exception {
     long startInMs = System.currentTimeMillis();
 
@@ -92,7 +92,7 @@ public class SerDeMicroBenchmark {
     System.out.println("Fast avro serialization latency: " + (System.currentTimeMillis() - startInMs) + " ms");
   }
 
-  @Test(invocationCount = 5)
+  @Test(invocationCount = 5, groups = {"perfTest"})
   public void testAvroDeserialization() throws Exception {
     byte[] serializedBytes = serializedTestObjects(1000);
     long startInMs = System.currentTimeMillis();
@@ -104,7 +104,7 @@ public class SerDeMicroBenchmark {
     System.out.println("Regular avro deserialization latency: " + (System.currentTimeMillis() - startInMs) + " ms");
   }
 
-  @Test(invocationCount = 5)
+  @Test(invocationCount = 5, groups = {"perfTest"})
   public void testFastAvroDeserialization() throws Exception {
     byte[] serializedBytes = serializedTestObjects(1000);
     long startInMs = System.currentTimeMillis();
@@ -126,7 +126,7 @@ public class SerDeMicroBenchmark {
     return new Object[][]{{false}};
   }
 
-  @Test(dataProvider = "useFastAvroOptionsProvider")
+  @Test(dataProvider = "useFastAvroOptionsProvider", groups = {"perfTest"})
   public void testFastAvroWithMultiThread(boolean useFastAvro) throws Exception {
     byte[] serializedBytes = serializedTestObjects(1000);
     long startInMs = System.currentTimeMillis();

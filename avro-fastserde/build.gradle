@@ -74,10 +74,7 @@ for (String avroVersion : avroVersions) {
   task "testAvro${avroVersion}" (type: Test, group: "Verification", description: "runs unit tests with avro ${avroVersion}") {
 
     useTestNG() {
-      includeGroups "deserializationTest"
-      if (!avroVersion.equals("14")) {
-        includeGroups "serializationTest"
-      }
+      excludeGroups "perfTest"
     }
 
     testLogging {

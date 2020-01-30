@@ -52,7 +52,7 @@ LinkedIn.
 
 | Version  | Serialization | Deserialization | Fast Serialization | Fast Deserialization |
 | -------- | ------------- | --------------- | ------------------ | -------------------- |
-| Avro 1.4 |      Yes      |      Yes        |      No            |      Yes             |
+| Avro 1.4 |      Yes      |      Yes        |      Yes           |      Yes             |
 | Avro 1.5 |      ???      |      ???        |      No            |      No              |
 | Avro 1.6 |      ???      |      ???        |      No            |      No              |
 | Avro 1.7 |      Yes      |      Yes        |      Yes           |      Yes             |
