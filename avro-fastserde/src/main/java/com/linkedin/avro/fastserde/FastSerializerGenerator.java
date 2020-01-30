@@ -6,6 +6,7 @@ import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JConditional;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
+import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JForEach;
 import com.sun.codemodel.JForLoop;
 import com.sun.codemodel.JMethod;
@@ -15,8 +16,11 @@ import com.sun.codemodel.JVar;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.avro.Schema;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.util.Utf8;
@@ -31,11 +35,21 @@ public class FastSerializerGenerator<T> extends FastSerializerGeneratorBase<T> {
   private final Map<String, JMethod> serializeMethodMap = new HashMap<>();
   private final SchemaAssistant schemaAssistant;
 
+  /**
+   * Enum schema mapping for Avro-1.4.
+   */
+  private JFieldVar enumSchemaMapField;
+  /**
+   * This field is used to decide whether the corresponding schema is already in {@link #enumSchemaMapField} or not.
+   */
+  private final Set<Long> enumSchemaIdSet = new HashSet<>();
+
+
   public FastSerializerGenerator(boolean useGenericTypes, Schema schema, File destination, ClassLoader classLoader,
       String compileClassPath) {
     super(schema, destination, classLoader, compileClassPath);
     this.useGenericTypes = useGenericTypes;
-    this.schemaAssistant = new SchemaAssistant(codeModel, useGenericTypes);
+    this.schemaAssistant = new SchemaAssistantForSerializer(codeModel, useGenericTypes);
   }
 
   @Override
@@ -46,10 +60,24 @@ public class FastSerializerGenerator<T> extends FastSerializerGeneratorBase<T> {
     try {
       serializerClass = classPackage._class(className);
 
+      if (Utils.isAvro14()) {
+        /**
+         * In Avro-1.4, there is no way to infer/extract enum schema from {@link org.apache.avro.generic.GenericData.EnumSymbol}, so
+         * the serializer needs to maintain a mapping between the schema id and the actual {@link org.apache.avro.Schema.EnumSchema},
+         * and get the enum id from the corresponding EnumSchema in {@link #processEnum(Schema, JExpression, JBlock)}.
+         */
+        enumSchemaMapField =
+            serializerClass.field(
+                JMod.PRIVATE,
+                codeModel.ref(Map.class).narrow(Long.class).narrow(Schema.class),
+                "enumSchemaMap",
+                JExpr._new(codeModel.ref(ConcurrentHashMap.class).narrow(Long.class).narrow(Schema.class)));
+      }
+
       final JMethod serializeMethod = serializerClass.method(JMod.PUBLIC, void.class, "serialize");
       final JVar serializeMethodParam;
 
-      JClass outputClass = classFromSchemaForSerializer(schema);
+      JClass outputClass = schemaAssistant.classFromSchema(schema);
       serializerClass._implements(codeModel.ref(FastSerializer.class).narrow(outputClass));
       serializeMethodParam = serializeMethod.param(outputClass, "data");
 
@@ -126,7 +154,7 @@ public class FastSerializerGenerator<T> extends FastSerializerGeneratorBase<T> {
     for (Schema.Field field : recordSchema.getFields()) {
       Schema fieldSchema = field.schema();
       if (SchemaAssistant.isComplexType(fieldSchema)) {
-        JClass fieldClass = classFromSchemaForSerializer(fieldSchema);
+        JClass fieldClass = schemaAssistant.classFromSchema(fieldSchema);
         JVar containerVar = declareValueVar(field.name(), fieldSchema, body);
         JExpression valueExpression = JExpr.invoke(recordExpr, "get").arg(JExpr.lit(field.pos()));
         containerVar.init(JExpr.cast(fieldClass, valueExpression));
@@ -138,37 +166,8 @@ public class FastSerializerGenerator<T> extends FastSerializerGeneratorBase<T> {
     }
   }
 
-  /**
-   * Special handling for "String" type since the underlying data could be "String" or "Utf8".
-   *
-   * This is different from the de-serializer since Avro will always decode it into "Utf8".
-   * @param fieldClass
-   * @return
-   */
-  private JClass specialHandlingOfStringSchemaForSerializer(JClass fieldClass) {
-    if (fieldClass.equals(codeModel.ref(Utf8.class))) {
-      return codeModel.ref(CharSequence.class);
-    }
-    return fieldClass;
-  }
-
-  private JClass classFromSchemaForSerializer(Schema fieldSchema) {
-    JClass fieldClass = schemaAssistant.classFromSchema(fieldSchema);
-    return specialHandlingOfStringSchemaForSerializer(fieldClass);
-  }
-
-  private JClass classFromSchemaForSerializer(Schema fieldSchema, boolean abstractType) {
-    JClass fieldClass = schemaAssistant.classFromSchema(fieldSchema, abstractType);
-    return specialHandlingOfStringSchemaForSerializer(fieldClass);
-  }
-
-  private JClass classFromSchemaForSerializer(Schema fieldSchema, boolean abstractType, boolean rawType) {
-    JClass fieldClass = schemaAssistant.classFromSchema(fieldSchema, abstractType, rawType);
-    return specialHandlingOfStringSchemaForSerializer(fieldClass);
-  }
-
   private void processArray(final Schema arraySchema, JExpression arrayExpr, JBlock body) {
-    final JClass arrayClass = classFromSchemaForSerializer(arraySchema);
+    final JClass arrayClass = schemaAssistant.classFromSchema(arraySchema);
     body.invoke(JExpr.direct(ENCODER), "writeArrayStart");
 
     final JExpression emptyArrayCondition = arrayExpr.eq(JExpr._null()).cor(JExpr.invoke(arrayExpr, "isEmpty"));
@@ -199,9 +198,9 @@ public class FastSerializerGenerator<T> extends FastSerializerGeneratorBase<T> {
 
   private void processMap(final Schema mapSchema, JExpression mapExpr, JBlock body) {
 
-    final JClass mapClass = classFromSchemaForSerializer(mapSchema);
+    final JClass mapClass = schemaAssistant.classFromSchema(mapSchema);
 
-    JClass keyClass = specialHandlingOfStringSchemaForSerializer(schemaAssistant.keyClassFromMapSchema(mapSchema));
+    JClass keyClass = schemaAssistant.keyClassFromMapSchema(mapSchema);
 
     body.invoke(JExpr.direct(ENCODER), "writeMapStart");
 
@@ -280,8 +279,8 @@ public class FastSerializerGenerator<T> extends FastSerializerGeneratorBase<T> {
         continue;
       }
 
-      JClass optionClass = classFromSchemaForSerializer(schemaOption);
-      JClass rawOptionClass = classFromSchemaForSerializer(schemaOption, true, true);
+      JClass optionClass = schemaAssistant.classFromSchema(schemaOption);
+      JClass rawOptionClass = schemaAssistant.classFromSchema(schemaOption, true, true);
       JExpression condition = unionExpr._instanceof(rawOptionClass);
       if (useGenericTypes && SchemaAssistant.isNamedType(schemaOption)) {
         condition = condition.cand(JExpr.invoke(JExpr.lit(schemaOption.getFullName()), "equals")
@@ -304,18 +303,41 @@ public class FastSerializerGenerator<T> extends FastSerializerGeneratorBase<T> {
   }
 
   private void processFixed(Schema fixedSchema, JExpression fixedValueExpression, JBlock body) {
-    JClass fixedClass = classFromSchemaForSerializer(fixedSchema);
+    JClass fixedClass = schemaAssistant.classFromSchema(fixedSchema);
     body.invoke(JExpr.direct(ENCODER), "writeFixed")
         .arg(JExpr.invoke(JExpr.cast(fixedClass, fixedValueExpression), "bytes"));
   }
 
   private void processEnum(Schema enumSchema, JExpression enumValueExpression, JBlock body) {
-    JClass enumClass = classFromSchemaForSerializer(enumSchema);
+    JClass enumClass = schemaAssistant.classFromSchema(enumSchema);
     JExpression enumValueCasted = JExpr.cast(enumClass, enumValueExpression);
     JExpression valueToWrite;
     if (useGenericTypes) {
-      valueToWrite =
-          JExpr.invoke(enumValueCasted.invoke("getSchema"), "getEnumOrdinal").arg(enumValueCasted.invoke("toString"));
+      if (Utils.isAvro14()) {
+        /**
+         * Register/retrieve the corresponding {@link org.apache.avro.Schema.EnumSchema} from the mapping.
+         */
+        long enumSchemaFingerprint = Utils.getSchemaFingerprint(enumSchema);
+        if (enumSchemaIdSet.contains(enumSchemaFingerprint)) {
+          valueToWrite = JExpr.invoke(
+              enumSchemaMapField.invoke("get").arg(JExpr.lit(enumSchemaFingerprint)),
+              "getEnumOrdinal"
+          ).arg(enumValueCasted.invoke("toString"));
+        } else {
+          enumSchemaIdSet.add(enumSchemaFingerprint);
+          JVar enumSchemaVar = body.decl(codeModel.ref(Schema.class),
+              getVariableName(enumSchema.getName() + "EnumSchema"),
+              codeModel.ref(Schema.class).staticInvoke("parse").arg(enumSchema.toString())
+          );
+          body.invoke(enumSchemaMapField, "put").arg(JExpr.lit(enumSchemaFingerprint)).arg(enumSchemaVar);
+          valueToWrite = JExpr.invoke(enumSchemaVar, "getEnumOrdinal").arg(enumValueCasted.invoke("toString"));
+        }
+      } else {
+        valueToWrite = JExpr.invoke(
+            enumValueCasted.invoke("getSchema"),
+            "getEnumOrdinal"
+        ).arg(enumValueCasted.invoke("toString"));
+      }
     } else {
       valueToWrite = enumValueCasted.invoke("ordinal");
     }
@@ -339,7 +361,7 @@ public class FastSerializerGenerator<T> extends FastSerializerGeneratorBase<T> {
 
   private void processPrimitive(final Schema primitiveSchema, JExpression primitiveValueExpression, JBlock body) {
     String writeFunction;
-    JClass primitiveClass = classFromSchemaForSerializer(primitiveSchema);
+    JClass primitiveClass = schemaAssistant.classFromSchema(primitiveSchema);
     JExpression castedValue = JExpr.cast(primitiveClass, primitiveValueExpression);
     switch (primitiveSchema.getType()) {
       case STRING:
@@ -373,7 +395,7 @@ public class FastSerializerGenerator<T> extends FastSerializerGeneratorBase<T> {
 
   private JVar declareValueVar(final String name, final Schema schema, JBlock block) {
     if (SchemaAssistant.isComplexType(schema)) {
-      return block.decl(classFromSchemaForSerializer(schema, true), getVariableName(StringUtils.uncapitalize(name)),
+      return block.decl(schemaAssistant.classFromSchema(schema, true), getVariableName(StringUtils.uncapitalize(name)),
           JExpr._null());
     } else {
       throw new FastDeserializerGeneratorException("Incorrect container variable: " + schema.getType()); //.getName());
@@ -400,7 +422,7 @@ public class FastSerializerGenerator<T> extends FastSerializerGeneratorBase<T> {
         JMethod method =
             serializerClass.method(JMod.PUBLIC, codeModel.VOID, "serialize" + schema.getName() + nextUniqueInt());
         method._throws(IOException.class);
-        method.param(classFromSchemaForSerializer(schema), "data");
+        method.param(schemaAssistant.classFromSchema(schema), "data");
         method.param(Encoder.class, ENCODER);
 
         method.annotate(SuppressWarnings.class).param("value", "unchecked");

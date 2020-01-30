@@ -47,6 +47,10 @@ public class SchemaAssistant {
     this.exceptionsFromStringable = new HashSet<>();
   }
 
+  protected JCodeModel getCodeModel() {
+    return codeModel;
+  }
+
   protected Set<String> getUsedFullyQualifiedClassNameSet() {
     return fullyQualifiedClassNameSet;
   }
@@ -67,9 +71,10 @@ public class SchemaAssistant {
   public static boolean isNamedType(Schema schema) {
     switch (schema.getType()) {
       case RECORD:
+        return true;
       case ENUM:
       case FIXED:
-        return true;
+        return Utils.isAvro14() ? false : true;
       default:
         return false;
     }
@@ -129,7 +134,7 @@ public class SchemaAssistant {
       extendExceptionsFromStringable(schema.getProp(KEY_CLASS_PROP));
       return codeModel.ref(schema.getProp(KEY_CLASS_PROP));
     } else {
-      return codeModel.ref(Utf8.class);
+      return defaultStringType();
     }
   }
 
@@ -249,7 +254,7 @@ public class SchemaAssistant {
           outputClass = codeModel.ref(schema.getProp(CLASS_PROP));
           extendExceptionsFromStringable(schema.getProp(CLASS_PROP));
         } else {
-          outputClass = codeModel.ref(Utf8.class);
+          outputClass = defaultStringType();
         }
         break;
       case BYTES:
@@ -268,6 +273,10 @@ public class SchemaAssistant {
     fullyQualifiedClassNameSet.add(outputClass.erasure().fullName());
 
     return outputClass;
+  }
+
+  protected JClass defaultStringType() {
+    return codeModel.ref(Utf8.class);
   }
 
   public JExpression getEnumValueByName(Schema enumSchema, JExpression nameExpr, JInvocation getSchemaExpr) {
@@ -309,7 +318,7 @@ public class SchemaAssistant {
     if (isStringable(schema)) {
       return JExpr._new(classFromSchema(schema)).arg(stringExpr);
     } else {
-      return JExpr._new(codeModel.ref(Utf8.class)).arg(stringExpr);
+      return JExpr._new(defaultStringType()).arg(stringExpr);
     }
   }
 }
