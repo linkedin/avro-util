@@ -133,6 +133,16 @@ public class Avro17Adapter extends AbstractAvroAdapter {
     }
   }
 
+  /**
+   * In Avro-1.7 and above, the default binary encoder returned is buffered.
+   * @param out output stream
+   * @return
+   */
+  @Override
+  public Encoder newBufferedBinaryEncoder(OutputStream out) {
+    return newBinaryEncoder(out);
+  }
+
   @Override
   public GenericData.EnumSymbol newEnumSymbol(Schema avroSchema, String enumValue) {
     try {

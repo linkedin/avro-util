@@ -30,6 +30,14 @@ public interface AvroAdapter {
 
   BinaryEncoder newBinaryEncoder(OutputStream out);
 
+  /**
+   * This method is to explicitly return a buffered binary encoder to improve serialization performance
+   * specifically for Avro-1.4.
+   * @param out output stream
+   * @return buffered binary encoder
+   */
+  Encoder newBufferedBinaryEncoder(OutputStream out);
+
   BinaryDecoder newBinaryDecoder(InputStream in);
 
   default JsonEncoder newJsonEncoder(Schema schema, OutputStream out) throws IOException {

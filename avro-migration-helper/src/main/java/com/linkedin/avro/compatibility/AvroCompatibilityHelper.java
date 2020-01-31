@@ -61,6 +61,11 @@ public class AvroCompatibilityHelper {
     return FACTORY.newBinaryEncoder(out);
   }
 
+
+  public static Encoder newBufferedBinaryEncoder(OutputStream out) {
+    return FACTORY.newBufferedBinaryEncoder(out);
+  }
+
   /**
    * to be migrated to SpecificData.getEncoder() in avro 1.8+
    * @param out object output
