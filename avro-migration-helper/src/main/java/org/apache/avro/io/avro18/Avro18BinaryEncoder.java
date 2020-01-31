@@ -91,7 +91,7 @@ public abstract class Avro18BinaryEncoder extends Avro18Encoder {
   /**
    * Returns the number of bytes currently buffered by this encoder. If this
    * Encoder does not buffer, this will always return zero.
-   * <p/>
+   *
    * Call {@link #flush()} to empty the buffer to the underlying output.
    */
   public abstract int bytesBuffered();

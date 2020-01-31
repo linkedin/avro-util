@@ -224,7 +224,7 @@ public abstract class Avro18Encoder extends Encoder implements Flushable {
    * <pre>
    * out.writeMapStart();
    * out.setItemCount(list.size());
-   * for (Map.Entry<String,Record> entry : map.entrySet()) {
+   * for (Map.Entry&lt;String,Record&gt; entry : map.entrySet()) {
    *   out.startItem();
    *   out.writeString(entry.getKey());
    *   out.writeLong(entry.getValue().longField);
