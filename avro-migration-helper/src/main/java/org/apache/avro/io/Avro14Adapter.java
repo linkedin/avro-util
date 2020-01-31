@@ -26,6 +26,7 @@ import org.apache.avro.Schema;
 import org.apache.avro.Avro14SchemaAccessHelper;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
+import org.apache.avro.io.avro18.Avro18BufferedBinaryEncoder;
 import org.apache.avro.io.parsing.ResolvingGrammarGenerator;
 import org.apache.avro.specific.SpecificDatumReader;
 import org.codehaus.jackson.JsonNode;
@@ -102,6 +103,21 @@ public class Avro14Adapter extends AbstractAvroAdapter {
     }
   }
 
+  /**
+   * In Avro-1.4, there is no buffered binary encoder.
+   * To improve the serialization, we back-port the buffered binary encoder implementation
+   * as {@link Avro18BufferedBinaryEncoder} from Avro-1.8, with it, the serialization performance will be
+   * improved a lot.
+   * Since the back-ported class couldn't extend {@link BinaryEncoder} because of different
+   * constructors in different Avro versions, so we have to return the {@link Encoder} instead.
+   * @param out output stream
+   * @return buffered binary encoder.
+   */
+  @Override
+  public Encoder newBufferedBinaryEncoder(OutputStream out) {
+    return new Avro18BufferedBinaryEncoder(out);
+  }
+
   @Override
   public GenericData.EnumSymbol newEnumSymbol(Schema avroSchema, String enumValue) {
     try {
@@ -146,7 +162,7 @@ public class Avro14Adapter extends AbstractAvroAdapter {
     // value and then decoding it:
     if (defaultValue == null) {
       try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-        BinaryEncoder encoder = newBinaryEncoder(baos);
+        Encoder encoder = newBufferedBinaryEncoder(baos);
         _encodeJsonNode.invoke(null, encoder, field.schema(), json);
         encoder.flush();
         BinaryDecoder decoder = newBinaryDecoder(new ByteArrayInputStream(baos.toByteArray()));
