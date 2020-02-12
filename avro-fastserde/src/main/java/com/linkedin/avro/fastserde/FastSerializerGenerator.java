@@ -327,9 +327,12 @@ public class FastSerializerGenerator<T> extends FastSerializerGeneratorBase<T> {
           enumSchemaIdSet.add(enumSchemaFingerprint);
           JVar enumSchemaVar = body.decl(codeModel.ref(Schema.class),
               getVariableName(enumSchema.getName() + "EnumSchema"),
-              codeModel.ref(Schema.class).staticInvoke("parse").arg(enumSchema.toString())
-          );
-          body.invoke(enumSchemaMapField, "put").arg(JExpr.lit(enumSchemaFingerprint)).arg(enumSchemaVar);
+              enumSchemaMapField.invoke("get").arg(JExpr.lit(enumSchemaFingerprint)));
+          JConditional schemaCheckCond = body._if(JExpr._null().eq(enumSchemaVar));
+          JBlock thenBody = schemaCheckCond._then();
+          thenBody.assign(enumSchemaVar, codeModel.ref(Schema.class).staticInvoke("parse").arg(enumSchema.toString()));
+          thenBody.invoke(enumSchemaMapField, "put").arg(JExpr.lit(enumSchemaFingerprint)).arg(enumSchemaVar);
+
           valueToWrite = JExpr.invoke(enumSchemaVar, "getEnumOrdinal").arg(enumValueCasted.invoke("toString"));
         }
       } else {

@@ -21,6 +21,7 @@ import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
+import org.apache.avro.io.Encoder;
 import org.apache.avro.util.Utf8;
 import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
@@ -407,7 +408,7 @@ public class FastGenericSerializerGeneratorTest {
 
   public <T> Decoder dataAsBinaryDecoder(T data, Schema schema) {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    BinaryEncoder binaryEncoder = AvroCompatibilityHelper.newBinaryEncoder(baos); //new BinaryEncoder(baos);
+    Encoder binaryEncoder = AvroCompatibilityHelper.newBufferedBinaryEncoder(baos); //new BinaryEncoder(baos);
 
     try {
       FastGenericSerializerGenerator<T> fastGenericSerializerGenerator =

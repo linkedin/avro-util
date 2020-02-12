@@ -127,7 +127,7 @@ public class FastDeserializerGeneratorForReuseTest {
 
   private static byte[] serialize(GenericRecord record, Schema schema) throws IOException {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    Encoder encoder = AvroCompatibilityHelper.newBinaryEncoder(baos);
+    Encoder encoder = AvroCompatibilityHelper.newBufferedBinaryEncoder(baos);
     DatumWriter datumWriter = new GenericDatumWriter(schema);
     datumWriter.write(record, encoder);
     encoder.flush();
