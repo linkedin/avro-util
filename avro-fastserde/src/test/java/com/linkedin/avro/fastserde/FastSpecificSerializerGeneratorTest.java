@@ -23,6 +23,7 @@ import org.apache.avro.generic.GenericContainer;
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
+import org.apache.avro.io.Encoder;
 import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.util.Utf8;
 import org.testng.Assert;
@@ -360,7 +361,7 @@ public class FastSpecificSerializerGeneratorTest {
 
   public <T> Decoder dataAsDecoder(T data, Schema schema) {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    BinaryEncoder binaryEncoder = AvroCompatibilityHelper.newBinaryEncoder(baos);
+    Encoder binaryEncoder = AvroCompatibilityHelper.newBufferedBinaryEncoder(baos);
 
     try {
       FastSpecificSerializerGenerator<T> fastSpecificSerializerGenerator =

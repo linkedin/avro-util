@@ -36,7 +36,7 @@ public class FastDatumWriterTest {
 
     // when
     fastSpecificDatumWriter.write(testRecord,
-        AvroCompatibilityHelper.newBinaryEncoder(new ByteArrayOutputStream()));
+        AvroCompatibilityHelper.newBufferedBinaryEncoder(new ByteArrayOutputStream()));
 
     // then
     FastSerializer<TestRecord> fastSpecificSerializer =
@@ -58,7 +58,7 @@ public class FastDatumWriterTest {
     record.put("test", "test");
 
     // when
-    fastGenericDatumReader.write(record, AvroCompatibilityHelper.newBinaryEncoder(new ByteArrayOutputStream()));
+    fastGenericDatumReader.write(record, AvroCompatibilityHelper.newBufferedBinaryEncoder(new ByteArrayOutputStream()));
 
     // then
     FastSerializer<GenericRecord> fastGenericSerializer =
