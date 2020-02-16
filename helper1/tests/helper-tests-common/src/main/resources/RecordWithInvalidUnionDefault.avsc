@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "HasInvalidUnionDefault",
+  "fields": [
+    {
+      "name": "fieldWithBadUnionDefault",
+      "type": ["null", "string"],
+      "default": "definitely not null"
+    }
+  ]
+}

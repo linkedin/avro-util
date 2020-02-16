@@ -20,4 +20,32 @@ apply plugin: 'net.vivin.gradle-semantic-build-versioning'
 //otherwise it defaults to the folder name
 rootProject.name = 'avro-util'
 
-include 'avro-migration-helper', 'avro-codegen', "avro-fastserde"
+//TODO - bring these back
+//include 'avro-migration-helper', 'avro-codegen', "avro-fastserde"
+
+//include 'avro-migration-helper'
+//include 'avro-codegen'
+
+include 'helper1:helper-common'
+include 'helper1:impls:helper-impl-14'
+include 'helper1:impls:helper-impl-15'
+include 'helper1:impls:helper-impl-16'
+include 'helper1:impls:helper-impl-17'
+include 'helper1:impls:helper-impl-18'
+include 'helper1:impls:helper-impl-19'
+include 'helper1:helper'
+include 'helper1:tests:codegen-14'
+include 'helper1:tests:codegen-15'
+include 'helper1:tests:codegen-16'
+include 'helper1:tests:codegen-17'
+include 'helper1:tests:codegen-18'
+include 'helper1:tests:codegen-19'
+include 'helper1:tests:helper-tests-common'
+include 'helper1:tests:helper-tests-noavro'
+include 'helper1:tests:helper-tests-allavro'
+include 'helper1:tests:helper-tests-14'
+include 'helper1:tests:helper-tests-15'
+include 'helper1:tests:helper-tests-16'
+include 'helper1:tests:helper-tests-17'
+include 'helper1:tests:helper-tests-18'
+include 'helper1:tests:helper-tests-19'

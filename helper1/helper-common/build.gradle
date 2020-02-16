@@ -1,0 +1,19 @@
+/*
+ * Copyright 2020 LinkedIn Corp.
+ * Licensed under the BSD 2-Clause License (the "License"). 
+ * See License in the project root for license information.
+ */
+
+plugins {
+  id "java"
+}
+
+dependencies {
+  compileOnly ('org.apache.avro:avro:1.4.1') {
+    exclude group: "org.mortbay.jetty"
+    exclude group: "org.apache.velocity"
+    exclude group: "commons-lang"
+    exclude group: "org.jboss.netty"
+    exclude group: "com.thoughtworks.paranamer", module: "paranamer-ant"
+  }
+}

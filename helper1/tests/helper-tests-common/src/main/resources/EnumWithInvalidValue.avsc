@@ -1,0 +1,6 @@
+{
+  "type": "enum",
+  "namespace": "com.acme",
+  "name": "EnumWithInvalidValue",
+  "symbols": ["A", "INVALID VALUE"]
+}

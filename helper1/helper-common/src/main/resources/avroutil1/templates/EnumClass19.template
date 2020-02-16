@@ -1,0 +1,13 @@
+public enum ${name} implements org.apache.avro.generic.GenericEnumSymbol<${name}> {
+  ${symbols};
+
+  public static final org.apache.avro.Schema SCHEMA$ = ${helper}.parse("{\"type\":\"enum\",\"name\":\"${name}\",\"namespace\":\"${namespace}\",\"symbols\":[${symbol_string}],\"doc\":\"${doc}\"}");
+
+  public static org.apache.avro.Schema getClassSchema() {
+    return SCHEMA$;
+  }
+
+  public org.apache.avro.Schema getSchema() {
+    return SCHEMA$;
+  }
+}

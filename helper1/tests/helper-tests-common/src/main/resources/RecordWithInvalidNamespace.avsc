@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "namespace": "this thing. has spaces.in it?!",
+  "name": "HasInvalidNamespace",
+  "fields": [
+    {
+      "name": "stringField",
+      "type": "string"
+    }
+  ]
+}

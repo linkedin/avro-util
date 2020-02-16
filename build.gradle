@@ -44,7 +44,7 @@ subprojects {
     }
 
     dependencies {
-      testCompile "org.testng:testng:6.14.3"
+      testImplementation "org.testng:testng:6.14.3"
     }
 
     assemble.dependsOn ':parseGitInfo' //make sure we have git info before packaging
@@ -105,6 +105,10 @@ subprojects {
       useTestNG()
 
       testLogging {
+        showStandardStreams = true
+        showExceptions = true
+        showStackTraces = true
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
         events "started", "passed", "skipped", "failed"
       }
     }
@@ -215,7 +219,7 @@ bintray {
 }
 
 wrapper {
-  gradleVersion = 5.2
+  gradleVersion = '6.1.1'
   distributionType = Wrapper.DistributionType.ALL
 }
 
