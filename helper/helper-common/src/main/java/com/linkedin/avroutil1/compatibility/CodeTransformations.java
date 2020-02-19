@@ -48,6 +48,12 @@ public class CodeTransformations {
   private static final Pattern CREATE_DECODER_INVOCATION_FULLY_QUALIFIED = Pattern.compile(Pattern.quote("org.apache.avro.specific.SpecificData.getDecoder(in)"));
   private static final Pattern CREATE_DECODER_INVOCATION_SHORT = Pattern.compile(Pattern.quote("SpecificData.getDecoder(in)"));
   private static final String  CREATE_DECODER_VIA_HELPER = Matcher.quoteReplacement(HelperConsts.HELPER_FQCN + ".newBinaryDecoder(in)");
+  private static final Pattern HAS_CUSTOM_CODERS_SIGNATURE_SIGNATURE = Pattern.compile(Pattern.quote("@Override protected boolean hasCustomCoders"));
+  private static final String  HAS_CUSTOM_CODERS_WITHOUT_OVERRIDE = Matcher.quoteReplacement("protected boolean hasCustomCoders");
+  private static final Pattern CUSTOM_ENCODE_SIGNATURE = Pattern.compile(Pattern.quote("@Override public void customEncode"));
+  private static final String  CUSTOM_ENCODE_WITHOUT_OVERRIDE = Matcher.quoteReplacement("public void customEncode");
+  private static final Pattern CUSTOM_DECODE_SIGNATURE = Pattern.compile(Pattern.quote("@Override public void customDecode"));
+  private static final String  CUSTOM_DECODE_WITHOUT_OVERRIDE = Matcher.quoteReplacement("public void customDecode");
 
   private static final String FIXED_CLASS_BODY_TEMPLATE = TemplateUtil.loadTemplate("avroutil1/templates/SpecificFixedBody.template");
   private static final String FIXED_CLASS_NO_NAMESPACE_BODY_TEMPLATE = TemplateUtil.loadTemplate("avroutil1/templates/SpecificFixedBodyNoNamespace.template");
@@ -448,6 +454,28 @@ public class CodeTransformations {
     withHelperCall = CREATE_DECODER_INVOCATION_SHORT.matcher(withHelperCall).replaceAll(CREATE_DECODER_VIA_HELPER);
 
     return withHelperCall;
+  }
+
+  /**
+   * avro 1.9 introduced 3 new methods to {@link org.apache.avro.specific.SpecificRecordBase}:
+   * <ul>
+   *   <li>protected boolean hasCustomCoders()</li>
+   *   <li>public void customEncode</li>
+   *   <li>public void customDecode</li>
+   * </ul>
+   *
+   * to make the code compile under older avro, we  need to strip out the {@link Override} annotations off those methods
+   * on generated record classes
+   * @param code avro generated code that may have custom encode/decode support
+   * @param minSupportedVersion lowest avro version under which the generated code should work
+   * @param maxSupportedVersion highest avro version under which the generated code should work
+   * @return code where the custom codec support still exists but is compatible with earlier avro at runtime
+   */
+  public static String transformCustomCodersSupport(String code, AvroVersion minSupportedVersion, AvroVersion maxSupportedVersion) {
+    String transformed = HAS_CUSTOM_CODERS_SIGNATURE_SIGNATURE.matcher(code).replaceAll(HAS_CUSTOM_CODERS_WITHOUT_OVERRIDE);
+    transformed = CUSTOM_ENCODE_SIGNATURE.matcher(transformed).replaceAll(CUSTOM_ENCODE_WITHOUT_OVERRIDE);
+    transformed = CUSTOM_DECODE_SIGNATURE.matcher(transformed).replaceAll(CUSTOM_DECODE_WITHOUT_OVERRIDE);
+    return transformed;
   }
 
   /**

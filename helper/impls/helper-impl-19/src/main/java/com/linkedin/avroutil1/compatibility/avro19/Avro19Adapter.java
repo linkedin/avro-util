@@ -241,6 +241,7 @@ public class Avro19Adapter implements AvroAdapter {
       fixed = CodeTransformations.removeBinaryMessageCodecSupport(fixed, minAvro, maxAvro);
       fixed = CodeTransformations.removeAvroGeneratedAnnotation(fixed, minAvro, maxAvro);
       fixed = CodeTransformations.transformExternalizableSupport(fixed, minAvro, maxAvro);
+      fixed = CodeTransformations.transformCustomCodersSupport(fixed, minAvro, maxAvro);
       transformed.add(new AvroGeneratedSourceCode(generated.getPath(), fixed));
     }
     return transformed;
