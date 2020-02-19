@@ -42,9 +42,11 @@ public class CodeTransformations {
   private static final String  WRITE_EXTERNAL_WITHOUT_OVERRIDE = Matcher.quoteReplacement("public void writeExternal(java.io.ObjectOutput out)");
   private static final Pattern READ_EXTERNAL_SIGNATURE = Pattern.compile(Pattern.quote("@Override public void readExternal(java.io.ObjectInput in)"));
   private static final String  READ_EXTERNAL_WITHOUT_OVERRIDE = Matcher.quoteReplacement("public void readExternal(java.io.ObjectInput in)");
-  private static final Pattern CREATE_ENCODER_INVOCATION = Pattern.compile(Pattern.quote("org.apache.avro.specific.SpecificData.getEncoder(out)"));
+  private static final Pattern CREATE_ENCODER_INVOCATION_FULLY_QUALIFIED = Pattern.compile(Pattern.quote("org.apache.avro.specific.SpecificData.getEncoder(out)"));
+  private static final Pattern CREATE_ENCODER_INVOCATION_SHORT = Pattern.compile(Pattern.quote("SpecificData.getEncoder(out)"));
   private static final String  CREATE_ENCODER_VIA_HELPER = Matcher.quoteReplacement(HelperConsts.HELPER_FQCN + ".newBinaryEncoder(out)");
-  private static final Pattern CREATE_DECODER_INVOCATION = Pattern.compile(Pattern.quote("org.apache.avro.specific.SpecificData.getDecoder(in)"));
+  private static final Pattern CREATE_DECODER_INVOCATION_FULLY_QUALIFIED = Pattern.compile(Pattern.quote("org.apache.avro.specific.SpecificData.getDecoder(in)"));
+  private static final Pattern CREATE_DECODER_INVOCATION_SHORT = Pattern.compile(Pattern.quote("SpecificData.getDecoder(in)"));
   private static final String  CREATE_DECODER_VIA_HELPER = Matcher.quoteReplacement(HelperConsts.HELPER_FQCN + ".newBinaryDecoder(in)");
 
   private static final String FIXED_CLASS_BODY_TEMPLATE = TemplateUtil.loadTemplate("avroutil1/templates/SpecificFixedBody.template");
@@ -440,8 +442,10 @@ public class CodeTransformations {
     withoutAnnotations = READ_EXTERNAL_SIGNATURE.matcher(withoutAnnotations).replaceAll(READ_EXTERNAL_WITHOUT_OVERRIDE);
 
     //replace SpecificData.getEncoder()/getDecoder() with the helper
-    String withHelperCall = CREATE_ENCODER_INVOCATION.matcher(withoutAnnotations).replaceAll(CREATE_ENCODER_VIA_HELPER);
-    withHelperCall = CREATE_DECODER_INVOCATION.matcher(withHelperCall).replaceAll(CREATE_DECODER_VIA_HELPER);
+    String withHelperCall = CREATE_ENCODER_INVOCATION_FULLY_QUALIFIED.matcher(withoutAnnotations).replaceAll(CREATE_ENCODER_VIA_HELPER);
+    withHelperCall = CREATE_ENCODER_INVOCATION_SHORT.matcher(withHelperCall).replaceAll(CREATE_ENCODER_VIA_HELPER);
+    withHelperCall = CREATE_DECODER_INVOCATION_FULLY_QUALIFIED.matcher(withHelperCall).replaceAll(CREATE_DECODER_VIA_HELPER);
+    withHelperCall = CREATE_DECODER_INVOCATION_SHORT.matcher(withHelperCall).replaceAll(CREATE_DECODER_VIA_HELPER);
 
     return withHelperCall;
   }

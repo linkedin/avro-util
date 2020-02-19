@@ -72,7 +72,7 @@ public class CodeTransformationsAvro19Test {
     String avsc = TestUtil.load("PerfectlyNormalRecord.avsc");
     Schema schema = AvroCompatibilityHelper.parse(avsc);
     String originalCode = runNativeCodegen(schema);
-    //TODO - actually implement method
+
     String transformedCode = CodeTransformations.transformExternalizableSupport(originalCode, AvroVersion.earliest(), AvroVersion.latest());
 
     Class<?> transformedClass = CompilerUtils.CACHED_COMPILER.loadFromJava(schema.getFullName(), transformedCode);

@@ -43,7 +43,7 @@ task runVanillaAvroCodegen {
 
 task runCompatAvroCodegen {
   description = 'generate specific classes using compatibility helper'
-
+  outputs.dir("$buildDir/generated/sources/compat-avro/java/main").withPropertyName('outputDir')
   fileTree(dir: 'src/main/compat-avro', include:'**/*.avsc').each { file ->
     doLast {
       javaexec {
@@ -55,6 +55,13 @@ task runCompatAvroCodegen {
   }
 }
 
+//copy output generated compatible code into resources so downstream modules can use it
+task copyCompatAvroCodeToResources(type: Copy) {
+  from "$buildDir/generated/sources/compat-avro/java/main"
+  into "$buildDir/resources/main"
+}
+
+copyCompatAvroCodeToResources.dependsOn runCompatAvroCodegen
 compileJava.dependsOn runVanillaAvroCodegen, runCompatAvroCodegen
 //TODO - figure out why this must be done manually
 runCompatAvroCodegen.dependsOn ":helper:tests:helper-tests-common:jar"

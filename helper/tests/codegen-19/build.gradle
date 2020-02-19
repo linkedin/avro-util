@@ -43,7 +43,7 @@ task runVanillaAvroCodegen {
 
 task runCompatAvroCodegen {
   description = 'generate specific classes using compatibility helper'
-
+  outputs.dir("$buildDir/generated/sources/compat-avro/java/main").withPropertyName('outputDir')
   fileTree(dir: 'src/main/compat-avro', include:'**/*.avsc').each { file ->
     doLast {
       javaexec {
