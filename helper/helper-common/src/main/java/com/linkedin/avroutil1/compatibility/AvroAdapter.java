@@ -1,0 +1,69 @@
+package com.linkedin.avroutil1.compatibility;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.OutputStream;
+import java.util.Collection;
+import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
+import org.apache.avro.io.BinaryDecoder;
+import org.apache.avro.io.BinaryEncoder;
+import org.apache.avro.io.JsonDecoder;
+import org.apache.avro.io.JsonEncoder;
+
+
+/**
+ * an interface for performing various avro operations that are avro-version-dependant.
+ * each implementation is expected to support a given major version of avro (more specifically, the latest
+ * minor version of a particular major version - so the adapter for 1.7 actually supports 1.7.7).
+ */
+public interface AvroAdapter {
+
+  //codecs
+
+  BinaryEncoder newBinaryEncoder(OutputStream out, boolean buffered, BinaryEncoder reuse);
+
+  BinaryEncoder newBinaryEncoder(ObjectOutput out);
+
+  BinaryDecoder newBinaryDecoder(InputStream in, boolean buffered, BinaryDecoder reuse);
+
+  BinaryDecoder newBinaryDecoder(ObjectInput in);
+
+  JsonEncoder newJsonEncoder(Schema schema, OutputStream out, boolean pretty) throws IOException;
+
+  JsonDecoder newJsonDecoder(Schema schema, InputStream in) throws IOException;
+
+  JsonDecoder newJsonDecoder(Schema schema, String in) throws IOException;
+
+  //parsing and Schema-related
+
+  SchemaParseResult parse(String schemaJson, SchemaParseConfiguration desiredConf, Collection<Schema> known);
+
+  String toParsingForm(Schema s);
+
+  //specific record utils
+
+  Object newInstance(Class<?> clazz, Schema schema);
+
+  Object getSpecificDefaultValue(Schema.Field field);
+
+  //generic record utils
+
+  GenericData.EnumSymbol newEnumSymbol(Schema enumSchema, String enumValue);
+
+  GenericData.Fixed newFixedField(Schema fixedSchema);
+
+  GenericData.Fixed newFixedField(Schema fixedSchema, byte[] contents);
+
+  Object getGenericDefaultValue(Schema.Field field);
+
+  //code generation
+
+  Collection<AvroGeneratedSourceCode> compile(
+      Collection<Schema> toCompile,
+      AvroVersion minSupportedVersion,
+      AvroVersion maxSupportedVersion
+  );
+}

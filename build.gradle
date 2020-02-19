@@ -18,7 +18,7 @@ buildscript {
   }
 }
 
-group = 'com.linkedin.avroutil'
+group = 'com.linkedin.avroutil1'
 
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
@@ -219,7 +219,7 @@ bintray {
 }
 
 wrapper {
-  gradleVersion = '6.1.1'
+  gradleVersion = '6.2'
   distributionType = Wrapper.DistributionType.ALL
 }
 

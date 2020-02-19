@@ -1,0 +1,17 @@
+/*
+ * Copyright 2020 LinkedIn Corp.
+ * Licensed under the BSD 2-Clause License (the "License"). 
+ * See License in the project root for license information.
+ */
+
+plugins {
+  id "java"
+}
+
+dependencies {
+  implementation (project(":helper:helper-common"))
+  implementation "org.slf4j:slf4j-api:1.7.30"
+  compileOnly ("org.apache.avro:avro:1.6.3") {
+
+  }
+}
