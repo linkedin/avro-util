@@ -340,7 +340,9 @@ public class AvroCompatibilityHelper {
    * @param minSupportedVersion lowest avro version under which the generated code should work
    * @param maxSupportedVersion highest avro version under which the generated code should work
    * @return a collection of generated java file descriptors, each with a relative path and proposed contents
+   * @deprecated code-gen functionality will be moved to a separate class soon
    */
+  @Deprecated
   public static Collection<AvroGeneratedSourceCode> compile(
       Collection<Schema> toCompile,
       AvroVersion minSupportedVersion,

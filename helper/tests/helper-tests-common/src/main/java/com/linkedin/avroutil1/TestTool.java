@@ -22,6 +22,10 @@ import org.apache.avro.Schema;
 import org.apache.commons.io.IOUtils;
 
 
+/**
+ * a command line tool to generate code for a single avro schema file using the helper.
+ * this utility exists to generate source code for tests inside this project only.
+ */
 public class TestTool {
 
   public static void main(String[] args) throws Exception {
