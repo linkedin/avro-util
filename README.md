@@ -3,7 +3,7 @@ Avro-Util
 [![Build Status](https://travis-ci.org/linkedin/avro-util.svg?branch=master)](https://travis-ci.org/linkedin/avro-util)
 [![Download](https://api.bintray.com/packages/linkedin/maven/avro-util/images/download.svg)](https://bintray.com/linkedin/maven/avro-util/_latestVersion)
 
-A collection of utilitiesto allow java projects to better work with avro.
+A collection of utilities and libraries to allow java projects to better work with avro.
 
 ### Background ###
 
@@ -21,7 +21,7 @@ performance.
 
 The following modules are available in this project.
 
-## avro-migration-helper ##
+## helper ##
 
 This module provides utility functions which, when coded against, ensure 
 compatibility with every Avro supported version. This is achieved by offering 
@@ -50,10 +50,13 @@ LinkedIn.
 
 ### Supported versions of Avro ###
 
+The helper module supports avro 1.4 - 1.9 inclusive. for fastserde support: 
+
 | Version  | Serialization | Deserialization | Fast Serialization | Fast Deserialization |
 | -------- | ------------- | --------------- | ------------------ | -------------------- |
 | Avro 1.4 |      Yes      |      Yes        |      Yes           |      Yes             |
-| Avro 1.5 |      ???      |      ???        |      No            |      No              |
-| Avro 1.6 |      ???      |      ???        |      No            |      No              |
+| Avro 1.5 |      Yes      |      Yes        |      No            |      No              |
+| Avro 1.6 |      Yes      |      Yes        |      No            |      No              |
 | Avro 1.7 |      Yes      |      Yes        |      Yes           |      Yes             |
 | Avro 1.8 |      Yes      |      Yes        |      Yes           |      Yes             |
+| Avro 1.9 |      Yes      |      Yes        |      ???           |      ???             |
