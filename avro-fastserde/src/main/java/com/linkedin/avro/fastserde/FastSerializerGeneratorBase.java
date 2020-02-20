@@ -17,7 +17,7 @@ import static com.linkedin.avro.fastserde.Utils.*;
 
 /**
  * TODO: refactor {@link FastSerializerGeneratorBase} and {@link FastDeserializerGeneratorBase} to eliminate the duplicate code.
- * @param <T>
+ * @param <T> type of Datum to be operated on
  */
 public abstract class FastSerializerGeneratorBase<T> {
   public static final String GENERATED_PACKAGE_NAME = "com.linkedin.avro.fastserde.serialization.generated";

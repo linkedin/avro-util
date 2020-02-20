@@ -66,7 +66,7 @@ public abstract class Avro18Encoder extends Encoder implements Flushable {
   public abstract void writeLong(long n) throws IOException;
 
   /** Write a float.
-   * @throws IOException
+   * @throws IOException on io errors
    * @throws AvroTypeException If this is a stateful writer and a
    * float is not expected
    */
@@ -128,7 +128,7 @@ public abstract class Avro18Encoder extends Encoder implements Flushable {
   /**
    * Writes a byte string.
    * Equivalent to <tt>writeBytes(bytes, 0, bytes.length)</tt>
-   * @throws IOException
+   * @throws IOException on in errors
    * @throws AvroTypeException If this is a stateful writer and a
    * byte-string is not expected
    */
@@ -144,19 +144,23 @@ public abstract class Avro18Encoder extends Encoder implements Flushable {
    * @param len The number of bytes to write.
    * @throws AvroTypeException If this is a stateful writer and a
    * byte-string is not expected
-   * @throws IOException
+   * @throws IOException on in errors
    */
   public abstract void writeFixed(byte[] bytes, int start, int len) throws IOException;
 
   /**
    * A shorthand for <tt>writeFixed(bytes, 0, bytes.length)</tt>
-   * @param bytes
+   * @param bytes data to write
    */
   public void writeFixed(byte[] bytes) throws IOException {
     writeFixed(bytes, 0, bytes.length);
   }
 
-  /** Writes a fixed from a ByteBuffer. */
+  /**
+   * Writes a fixed from a ByteBuffer.
+   * @param bytes data to write
+   * @throws IOException on io errors
+   */
   public void writeFixed(ByteBuffer bytes) throws IOException {
     int pos = bytes.position();
     int len = bytes.limit() - pos;
@@ -171,10 +175,10 @@ public abstract class Avro18Encoder extends Encoder implements Flushable {
 
   /**
    * Writes an enumeration.
-   * @param e
+   * @param e ordinal of the enum to write
    * @throws AvroTypeException If this is a stateful writer and an enumeration
    * is not expected or the <tt>e</tt> is out of range.
-   * @throws IOException
+   * @throws IOException on io errors
    */
   public abstract void writeEnum(int e) throws IOException;
 
@@ -217,7 +221,7 @@ public abstract class Avro18Encoder extends Encoder implements Flushable {
    * can start another batch with {@link #setItemCount}.
    *
    * @param itemCount The number of {@link #startItem()} calls to follow.
-   * @throws IOException
+   * @throws IOException on io errors
    */
   public abstract void setItemCount(long itemCount) throws IOException;
 

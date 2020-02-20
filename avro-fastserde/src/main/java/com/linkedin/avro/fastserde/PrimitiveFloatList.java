@@ -53,6 +53,11 @@ public class PrimitiveFloatList extends AbstractList<Float>
    * Instantiate (or re-use) and populate a {@link PrimitiveFloatList} from a {@link org.apache.avro.io.Decoder}.
    *
    * N.B.: the caller must ensure the data is of the appropriate type by calling {@link #isFloatArray(Schema)}.
+   *
+   * @param old old {@link PrimitiveFloatList} to reuse
+   * @param in {@link org.apache.avro.io.Decoder} to read new list from
+   * @return a {@link PrimitiveFloatList} with data, possibly the old argument reused
+   * @throws IOException on io errors
    */
   public static Object readPrimitiveFloatArray(Object old, Decoder in) throws IOException {
     long l = in.readArrayStart();
@@ -158,6 +163,8 @@ public class PrimitiveFloatList extends AbstractList<Float>
    * Add a primitive float inside the list, without boxing.
    *
    * TODO: verify if it's enough to simply store the data as primitives in order to benefit from the GC optimization.
+   * @param o new float to add
+   * @return true?
    */
   public boolean addPrimitive(float o) {
     if (size == elements.length) {

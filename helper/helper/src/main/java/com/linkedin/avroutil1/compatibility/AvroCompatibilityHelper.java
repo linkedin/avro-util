@@ -115,7 +115,7 @@ public class AvroCompatibilityHelper {
    * @param in an input stream
    * @param buffered true for buffered decoder (if/when supported by runtime avro)
    * @param reuse a given decoder to reuse, if supported by the runtime avro
-   * @return
+   * @return a {@link BinaryDecoder} for the given input stream, possibly reused
    */
   public static BinaryDecoder newBinaryDecoder(InputStream in, boolean buffered, BinaryDecoder reuse) {
     assertAvroAvailable();
@@ -141,7 +141,7 @@ public class AvroCompatibilityHelper {
    * @param out an output stream
    * @param pretty true to pretty-print the json (if supported by runtime avro version)
    * @return an encoder
-   * @throws IOException
+   * @throws IOException in io errors
    */
   public static JsonEncoder newJsonEncoder(Schema schema, OutputStream out, boolean pretty) throws IOException {
     assertAvroAvailable();
@@ -153,7 +153,7 @@ public class AvroCompatibilityHelper {
    * @param schema a schema
    * @param in an input stream
    * @return a decoder
-   * @throws IOException
+   * @throws IOException on io errors
    */
   public static JsonDecoder newJsonDecoder(Schema schema, InputStream in) throws IOException {
     assertAvroAvailable();
@@ -165,7 +165,7 @@ public class AvroCompatibilityHelper {
    * @param schema a schema
    * @param in a String containing a json-serialized avro payload
    * @return a decoder
-   * @throws IOException
+   * @throws IOException on io errors
    */
   public static JsonDecoder newJsonDecoder(Schema schema, String in) throws IOException {
     assertAvroAvailable();
@@ -213,6 +213,8 @@ public class AvroCompatibilityHelper {
 
   /**
    * Returns "Parsing Canonical Form" of a schema as defined by the Avro spec for avro 1.7+
+   * @param s a schema
+   * @return parsing canonical form for the given schema
    */
   public static String toParsingForm(Schema s) {
     assertAvroAvailable();

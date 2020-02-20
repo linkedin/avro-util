@@ -109,7 +109,10 @@ public abstract class Avro18BinaryEncoder extends Avro18Encoder {
     writeInt(unionIndex);
   }
 
-  /** Write a zero byte to the underlying output. **/
+  /**
+   * Write a zero byte to the underlying output.
+   * @throws IOException on io errors
+   */
   protected abstract void writeZero() throws IOException;
 
   /**
@@ -117,6 +120,8 @@ public abstract class Avro18BinaryEncoder extends Avro18Encoder {
    * Encoder does not buffer, this will always return zero.
    *
    * Call {@link #flush()} to empty the buffer to the underlying output.
+   *
+   * @return number of bytes currently buffered
    */
   public abstract int bytesBuffered();
 }

@@ -62,8 +62,8 @@ public class Utils {
 
   /**
    * This function will produce a fingerprint for the provided schema.
-   * @param schema
-   * @return
+   * @param schema a schema
+   * @return fingerprint for the given schema
    */
   public static Long getSchemaFingerprint(Schema schema) {
     Long schemaId = SCHEMA_IDS_CACHE.get(schema);
@@ -113,12 +113,12 @@ public class Utils {
 
   /**
    * This class is used to infer all the compilation dependencies.
-   * @param existingCompileClasspath
-   * @param filePath
+   * @param existingCompileClasspath existing compile classpath
+   * @param filePath java source file to compile
    * @param knownUsedFullyQualifiedClassNameSet: known fully qualified class name when generating the serialization/de-serialization classes
-   * @return
-   * @throws IOException
-   * @throws ClassNotFoundException
+   * @return classpath to compile given file
+   * @throws IOException on io issues
+   * @throws ClassNotFoundException on classloading issues
    */
   public static String inferCompileDependencies(String existingCompileClasspath, String filePath, Set<String> knownUsedFullyQualifiedClassNameSet)
       throws IOException, ClassNotFoundException {
