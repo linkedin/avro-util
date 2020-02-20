@@ -49,11 +49,7 @@ public class CodeTransformations {
   private static final Pattern CREATE_DECODER_INVOCATION_SHORT = Pattern.compile(Pattern.quote("SpecificData.getDecoder(in)"));
   private static final String  CREATE_DECODER_VIA_HELPER = Matcher.quoteReplacement(HelperConsts.HELPER_FQCN + ".newBinaryDecoder(in)");
   private static final Pattern HAS_CUSTOM_CODERS_SIGNATURE_SIGNATURE = Pattern.compile(Pattern.quote("@Override protected boolean hasCustomCoders"));
-  private static final String  HAS_CUSTOM_CODERS_WITHOUT_OVERRIDE = Matcher.quoteReplacement("protected boolean hasCustomCoders");
-  private static final Pattern CUSTOM_ENCODE_SIGNATURE = Pattern.compile(Pattern.quote("@Override public void customEncode"));
-  private static final String  CUSTOM_ENCODE_WITHOUT_OVERRIDE = Matcher.quoteReplacement("public void customEncode");
-  private static final Pattern CUSTOM_DECODE_SIGNATURE = Pattern.compile(Pattern.quote("@Override public void customDecode"));
-  private static final String  CUSTOM_DECODE_WITHOUT_OVERRIDE = Matcher.quoteReplacement("public void customDecode");
+  private static final Pattern END_CUSTOM_DECODE_PATTERN = Pattern.compile("}\\s+}\\s+}\\s+}");
 
   private static final String FIXED_CLASS_BODY_TEMPLATE = TemplateUtil.loadTemplate("avroutil1/templates/SpecificFixedBody.template");
   private static final String FIXED_CLASS_NO_NAMESPACE_BODY_TEMPLATE = TemplateUtil.loadTemplate("avroutil1/templates/SpecificFixedBodyNoNamespace.template");
@@ -464,18 +460,27 @@ public class CodeTransformations {
    *   <li>public void customDecode</li>
    * </ul>
    *
-   * to make the code compile under older avro, we  need to strip out the {@link Override} annotations off those methods
-   * on generated record classes
+   * the implementation of customDecode() relies on ResolvingDecoder.readFieldOrderIfDiff()
+   * which only exists in avro 1.9, so under older avro we strip it all out
+   *
    * @param code avro generated code that may have custom encode/decode support
    * @param minSupportedVersion lowest avro version under which the generated code should work
    * @param maxSupportedVersion highest avro version under which the generated code should work
-   * @return code where the custom codec support still exists but is compatible with earlier avro at runtime
+   * @return code where the custom codec support has been removed
    */
   public static String transformCustomCodersSupport(String code, AvroVersion minSupportedVersion, AvroVersion maxSupportedVersion) {
-    String transformed = HAS_CUSTOM_CODERS_SIGNATURE_SIGNATURE.matcher(code).replaceAll(HAS_CUSTOM_CODERS_WITHOUT_OVERRIDE);
-    transformed = CUSTOM_ENCODE_SIGNATURE.matcher(transformed).replaceAll(CUSTOM_ENCODE_WITHOUT_OVERRIDE);
-    transformed = CUSTOM_DECODE_SIGNATURE.matcher(transformed).replaceAll(CUSTOM_DECODE_WITHOUT_OVERRIDE);
-    return transformed;
+    Matcher startMatcher = HAS_CUSTOM_CODERS_SIGNATURE_SIGNATURE.matcher(code);
+    if (!startMatcher.find()) {
+      return code; //no codec support in this code
+    }
+    Matcher endMatcher = END_CUSTOM_DECODE_PATTERN.matcher(code);
+    if (!endMatcher.find(startMatcher.end())) {
+      throw new IllegalStateException("unable to find custom Encoder/Decoder support in " + code);
+    }
+
+    @SuppressWarnings("UnnecessaryLocalVariable")
+    String codeWithout = code.substring(0, startMatcher.start()) + code.substring(endMatcher.end());
+    return codeWithout;
   }
 
   /**
