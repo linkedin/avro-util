@@ -1,0 +1,6 @@
+{
+  "type" : "fixed",
+  "namespace": "com.acme",
+  "name" : "PerfectlyNormalFixed",
+  "size" : 3
+}

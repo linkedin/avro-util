@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "namespace": "by16",
+  "name": "SimpleRecord",
+  "fields": [
+    {
+      "name": "stringField",
+      "type": "string"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "namespace": "under18",
+  "name": "SimpleRecord",
+  "fields": [
+    {
+      "name": "stringField",
+      "type": "string"
+    }
+  ]
+}

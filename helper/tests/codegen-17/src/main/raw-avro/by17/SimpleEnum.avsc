@@ -1,0 +1,6 @@
+{
+  "type": "enum",
+  "namespace": "by17",
+  "name": "SimpleEnum",
+  "symbols": ["A", "B"]
+}

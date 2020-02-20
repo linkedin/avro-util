@@ -1,0 +1,31 @@
+{
+  public static final org.apache.avro.Schema SCHEMA$ = ${helper}.parse("{\"type\":\"fixed\",\"name\":\"${name}\",\"size\":${size},\"doc\":\"${doc}\"}");
+
+  public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
+
+  public ${name}() {
+    super();
+  }
+
+  public ${name}(byte[] bytes) {
+    //we cant assume the super class has a byte[] constructor as it wont under avro <= 1.5
+    super();
+    bytes(bytes);
+  }
+
+  public org.apache.avro.Schema getSchema() {
+    return SCHEMA$;
+  }
+
+  private static final org.apache.avro.io.DatumWriter WRITER$ = new org.apache.avro.specific.SpecificDatumWriter<${name}>(SCHEMA$);
+
+  public void writeExternal(java.io.ObjectOutput out) throws java.io.IOException {
+    WRITER$.write(this, ${helper}.newBinaryEncoder(out));
+  }
+
+  private static final org.apache.avro.io.DatumReader READER$ = new org.apache.avro.specific.SpecificDatumReader<${name}>(SCHEMA$);
+
+  public void readExternal(java.io.ObjectInput in) throws java.io.IOException {
+    READER$.read(this, ${helper}.newBinaryDecoder(in));
+  }
+}

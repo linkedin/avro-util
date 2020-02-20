@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "PerfectlyNormalRecord",
+  "doc": "a perfectly normal record",
+  "fields": [
+    {
+      "name": "stringField",
+      "type": "string"
+    }
+  ]
+}

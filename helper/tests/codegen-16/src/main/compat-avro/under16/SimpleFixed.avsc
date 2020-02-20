@@ -1,0 +1,6 @@
+{
+  "type" : "fixed",
+  "namespace": "under16",
+  "name" : "SimpleFixed",
+  "size" : 3
+}

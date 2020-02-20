@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "HasInvalidFieldName",
+  "fields": [
+    {
+      "name": "1BadFieldName",
+      "type": "string"
+    }
+  ]
+}

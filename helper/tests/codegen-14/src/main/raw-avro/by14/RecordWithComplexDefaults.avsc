@@ -1,0 +1,41 @@
+{
+  "type": "record",
+  "namespace": "by14",
+  "name": "HasComplexDefaults",
+  "fields": [
+    {
+      "name": "fieldWithDefaultEnum",
+      "type": {
+        "type": "enum",
+        "name": "DefaultEnum",
+        "symbols": ["A", "B"]
+      },
+      "default": "B"
+    },
+    {
+      "name": "fieldWithDefaultFixed",
+      "type": {
+        "type": "fixed",
+        "name": "DefaultFixed",
+        "size": 7
+      },
+      "default": "\\u0001\\u0002\\u0003\\u0004\\u0005\\u0006\\u0007"
+    },
+    {
+      "name": "fieldWithDefaultRecord",
+      "type": {
+        "type": "record",
+        "name": "DefaultRecord",
+        "fields": [
+          {
+            "name": "intField",
+            "type": "int"
+          }
+        ]
+      },
+      "default": {
+        "intField": 7
+      }
+    }
+  ]
+}

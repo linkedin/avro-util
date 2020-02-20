@@ -1,0 +1,23 @@
+/*
+ * Copyright 2020 LinkedIn Corp.
+ * Licensed under the BSD 2-Clause License (the "License"). 
+ * See License in the project root for license information.
+ */
+
+plugins {
+  id "java"
+  id "checkstyle"
+}
+
+dependencies {
+  testImplementation project(":helper:helper")
+  testImplementation project(":helper:tests:helper-tests-common")
+  testImplementation (project(":helper:tests:codegen-14")) {
+    exclude group: "org.apache.avro"
+  }
+
+  testImplementation "org.apache.avro:avro:1.6.3"
+  testImplementation "org.apache.avro:avro-compiler:1.6.3"
+  testImplementation "com.google.guava:guava:28.2-jre"
+  testImplementation "org.mockito:mockito-core:3.2.4"
+}

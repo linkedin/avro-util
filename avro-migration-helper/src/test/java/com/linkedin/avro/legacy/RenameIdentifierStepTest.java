@@ -10,21 +10,19 @@ import com.linkedin.avro.TestUtil;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import static com.linkedin.avro.legacy.LegacySchemaTestUtil.*;
-
 
 public class RenameIdentifierStepTest {
 
   @Test
   public void testApplyStepToSchema() throws Exception {
     String badSchema = TestUtil.load("WorldsMostHorrible.avsc");
-    assertValid14Schema(badSchema);
-    Assert.assertEquals(1, countMatches(badSchema, "NOT OK"));
-    Assert.assertEquals(0, countMatches(badSchema, "somethingElse"));
+    LegacySchemaTestUtil.assertValid14Schema(badSchema);
+    Assert.assertEquals(1, LegacySchemaTestUtil.countMatches(badSchema, "NOT OK"));
+    Assert.assertEquals(0, LegacySchemaTestUtil.countMatches(badSchema, "somethingElse"));
 
-    String fixedSchema = apply(badSchema, new RenameIdentifierStep(null, "NOT OK", "somethingElse"));
+    String fixedSchema = LegacySchemaTestUtil.apply(badSchema, new RenameIdentifierStep(null, "NOT OK", "somethingElse"));
 
-    Assert.assertEquals(0, countMatches(fixedSchema, "NOT OK"));
-    Assert.assertEquals(1, countMatches(fixedSchema, "somethingElse"));
+    Assert.assertEquals(0, LegacySchemaTestUtil.countMatches(fixedSchema, "NOT OK"));
+    Assert.assertEquals(1, LegacySchemaTestUtil.countMatches(fixedSchema, "somethingElse"));
   }
 }

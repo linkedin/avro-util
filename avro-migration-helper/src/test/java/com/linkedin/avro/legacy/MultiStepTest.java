@@ -14,15 +14,13 @@ import java.util.List;
 import java.util.Random;
 import org.testng.annotations.Test;
 
-import static com.linkedin.avro.legacy.LegacySchemaTestUtil.*;
-
 
 public class MultiStepTest {
 
   @Test
   public void testCompleteFix() throws Exception {
     String badSchema = TestUtil.load("WorldsMostHorrible.avsc");
-    assertValid14Schema(badSchema);
+    LegacySchemaTestUtil.assertValid14Schema(badSchema);
 
     List<SchemaTransformStep> steps = new ArrayList<>(Arrays.asList(
         new RemoveDuplicateStep(null, "twin"),
@@ -37,8 +35,8 @@ public class MultiStepTest {
     Collections.shuffle(steps, rng); //make it interesting
 
     try {
-      String fixed = apply(badSchema, steps);
-      assertValidSchema(fixed);
+      String fixed = LegacySchemaTestUtil.apply(badSchema, steps);
+      LegacySchemaTestUtil.assertValidSchema(fixed);
     } catch (Exception e) {
       throw new IllegalStateException("test failed. seed is " + seed, e);
     }

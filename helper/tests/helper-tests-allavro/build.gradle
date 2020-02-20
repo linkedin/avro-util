@@ -1,0 +1,146 @@
+/*
+ * Copyright 2020 LinkedIn Corp.
+ * Licensed under the BSD 2-Clause License (the "License"). 
+ * See License in the project root for license information.
+ */
+
+plugins {
+  id "java"
+  id "checkstyle"
+}
+
+configurations {
+  avro14
+  avro15
+  avro15NoCompiler
+  avro16
+  avro16NoCompiler
+  avro17
+  avro17NoCompiler
+  avro18
+  avro18NoCompiler
+  avro19
+  avro19NoCompiler
+}
+
+test {
+  //we run test multiple times with different avro versions
+  //(see below)), so dont use the default test task
+  enabled = false
+}
+
+dependencies {
+  testImplementation project(":helper:helper")
+  testImplementation project(":helper:tests:helper-tests-common")
+  testImplementation (project(":helper:tests:codegen-14")) {
+    exclude group: "org.apache.avro"
+  }
+  testImplementation (project(":helper:tests:codegen-15")) {
+    exclude group: "org.apache.avro"
+  }
+  testImplementation (project(":helper:tests:codegen-16")) {
+    exclude group: "org.apache.avro"
+  }
+  testImplementation (project(":helper:tests:codegen-17")) {
+    exclude group: "org.apache.avro"
+  }
+  testImplementation (project(":helper:tests:codegen-18")) {
+    exclude group: "org.apache.avro"
+  }
+  testImplementation (project(":helper:tests:codegen-19")) {
+    exclude group: "org.apache.avro"
+  }
+
+  testImplementation "com.google.guava:guava:28.2-jre"
+  testImplementation "org.mockito:mockito-core:3.2.4"
+
+  testCompileOnly ('org.apache.avro:avro:1.4.1') {
+    exclude group: "org.mortbay.jetty"
+    exclude group: "org.apache.velocity"
+    exclude group: "commons-lang"
+    exclude group: "org.jboss.netty"
+    exclude group: "com.thoughtworks.paranamer", module: "paranamer-ant"
+  }
+
+  avro14 ("org.apache.avro:avro:1.4.1") {
+    exclude group: "org.mortbay.jetty"
+    exclude group: "org.apache.velocity"
+    exclude group: "commons-lang"
+    exclude group: "org.jboss.netty"
+    exclude group: "com.thoughtworks.paranamer", module: "paranamer-ant"
+    exclude group: "org.slf4j"
+  }
+
+  avro15 "org.apache.avro:avro:1.5.4"
+  avro15 "org.apache.avro:avro-compiler:1.5.4"
+  avro15NoCompiler "org.apache.avro:avro:1.5.4"
+
+  avro16 "org.apache.avro:avro:1.6.3"
+  avro16 "org.apache.avro:avro-compiler:1.6.3"
+  avro16NoCompiler "org.apache.avro:avro:1.6.3"
+
+  avro17 ("org.apache.avro:avro:1.7.7") {
+    exclude group: "org.slf4j"
+  }
+  avro17 ("org.apache.avro:avro-compiler:1.7.7") {
+    exclude group: "org.slf4j"
+  }
+  avro17NoCompiler ("org.apache.avro:avro:1.7.7") {
+    exclude group: "org.slf4j"
+  }
+
+  avro18 ("org.apache.avro:avro:1.8.2") {
+    exclude group: "org.slf4j"
+  }
+  avro18 ("org.apache.avro:avro-compiler:1.8.2") {
+    exclude group: "org.slf4j"
+  }
+  avro18NoCompiler ("org.apache.avro:avro:1.8.2") {
+    exclude group: "org.slf4j"
+  }
+
+  avro19 ("org.apache.avro:avro:1.9.2") {
+    exclude group: "org.slf4j"
+  }
+  avro19 ("org.apache.avro:avro-compiler:1.9.2") {
+    exclude group: "org.slf4j"
+  }
+  avro19NoCompiler ("org.apache.avro:avro:1.9.2") {
+    exclude group: "org.slf4j"
+  }
+}
+
+def avroVersions = ["14", "15", "15NoCompiler", "16", "16NoCompiler", "17", "17NoCompiler", "18", "18NoCompiler", "19", "19NoCompiler"]
+
+for (String avroVersion : avroVersions) {
+
+  //noinspection GroovyAssignabilityCheck
+  task "testAvro${avroVersion}" (type: Test, group: "Verification", description: "runs unit tests with avro ${avroVersion}") {
+    useTestNG()
+
+    systemProperty 'runtime.avro.version', avroVersion
+
+    testLogging {
+      showStandardStreams = true
+      showExceptions = true
+      showStackTraces = true
+      exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+      events "started", "passed", "skipped", "failed"
+    }
+
+    classpath = project.sourceSets.test.runtimeClasspath.filter {
+      File file -> !file.name.contains("avro")
+    }.plus (configurations."avro${avroVersion}")
+
+    project.tasks.getByName("build").dependsOn("testAvro${avroVersion}")
+
+    def gradleIsFun = avroVersion
+    doFirst {
+      System.out.println("classpath for avro " + gradleIsFun + " is:")
+      classpath.each { System.out.println(it) }
+    }
+  }
+
+}
+
+//build.dependsOn testAvro14, testAvro15, testAvro16, testAvro17, testAvro18, testAvro19

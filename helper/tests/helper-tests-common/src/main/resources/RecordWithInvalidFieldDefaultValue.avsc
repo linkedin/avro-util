@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "HasInvalidFieldDefault",
+  "fields": [
+    {
+      "name": "fieldWithBadDefault",
+      "type": "boolean",
+      "default": "definitely not a boolean"
+    }
+  ]
+}
