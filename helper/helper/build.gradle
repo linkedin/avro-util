@@ -6,6 +6,7 @@
 
 plugins {
   id "java-library"
+  id "com.github.johnrengelman.shadow"
 }
 
 dependencies {
@@ -23,4 +24,124 @@ dependencies {
   implementation project(":helper:impls:helper-impl-17")
   implementation project(":helper:impls:helper-impl-18")
   implementation project(":helper:impls:helper-impl-19")
+}
+
+shadowJar {
+  //needs to have a classifier to not overwrite the regular jar
+  classifier = "all"
+
+  dependencies {
+    //do not pack slf4j
+    exclude(dependency("org.slf4j:slf4j-api:.*"))
+  }
+}
+
+//"fat" sources jar
+task sourcesJar(type: Jar, dependsOn: classes) {
+  group = 'build'
+  classifier = 'sources'
+  // we return here a closure to do this lazy, after all projects are configured by gradle
+  from { collectSourceSetsIncludingSubmodules(project) }
+}
+
+task javadocJar(type: Jar) {
+  from javadoc
+  classifier = 'javadoc'
+}
+
+
+publishing {
+  publications {
+    "$project.name"(MavenPublication) {
+      groupId project.group
+      artifactId project.name-"all"
+      version project.version
+
+      //stripping away the classifier to publish as its own top-level artifact
+      artifact source: shadowJar, classifier: ''
+      artifact sourcesJar
+      artifact javadocJar
+
+      //we strive to meet https://central.sonatype.org/pages/requirements.html
+      pom {
+        name = 'Avro Util'
+        description = 'utilities for writing code that works across major avro versions'
+        url = 'https://github.com/linkedin/avro-util'
+
+        licenses {
+          license {
+            name = 'BSD 2-Clause'
+            url = 'https://raw.githubusercontent.com/linkedin/avro-util/master/LICENSE'
+          }
+        }
+        developers {
+          developer {
+            id = 'radai-rosenblatt'
+            name = 'Radai Rosenblatt'
+            email = 'radai.rosenblatt@gmail.com'
+            organization = 'LinkedIn'
+            organizationUrl = 'linkedin.com'
+          }
+          developer {
+            id = 'abhishekmendhekar'
+            name = 'Abhishek Mendhekar'
+            organization = 'LinkedIn'
+            organizationUrl = 'linkedin.com'
+          }
+          developer {
+            id = 'jimhe'
+            name = 'Jim He'
+            email = 'jimjhe@gmail.com'
+            organization = 'LinkedIn'
+            organizationUrl = 'linkedin.com'
+          }
+          developer {
+            id = 'ghosthack'
+            name = 'Adrian Fernandez'
+            email = 'adrian@ghosthack.com'
+            organization = 'LinkedIn'
+            organizationUrl = 'linkedin.com'
+          }
+        }
+        scm {
+          connection = 'scm:git:git://github.com:linkedin/avro-util.git'
+          developerConnection = 'scm:git:ssh://github.com:linkedin/avro-util.git'
+          url = 'https://github.com/linkedin/avro-util'
+        }
+      }
+    }
+
+    //record all of this module's publications in the bintray publications list
+    //for the root project
+    List<String> allPublicationNames = new ArrayList<>(Arrays.asList(rootProject.bintray.publications))
+    List<String> projectAndDepPublicationNames = new ArrayList<>(project.publishing.publications.names)
+
+    for (String projectPubName : projectAndDepPublicationNames) {
+      if (!allPublicationNames.contains(projectPubName)) {
+        allPublicationNames.add(projectPubName)
+      }
+    }
+
+    //bintray plugin on the root project will look for publications here
+    rootProject.bintray.publications = allPublicationNames.toArray()
+  }
+}
+
+// workaround for missing gradle shadow plugin feature, see https://github.com/johnrengelman/shadow/issues/41
+private Set<SourceDirectorySet> collectSourceSetsIncludingSubmodules(Project project){
+  Set<SourceDirectorySet> result = [].toSet()
+  recursiveCollectSourceSets(project, [].toSet(), result)
+  return result
+}
+
+private void recursiveCollectSourceSets(Project visitingProject,
+    Set<Project> visitedProjects,
+    Set<SourceDirectorySet> collectedSourceSets) {
+  if (!visitedProjects.contains(visitingProject)) {
+    visitedProjects.add(visitingProject)
+    collectedSourceSets.add(visitingProject.sourceSets.main.allSource)
+    visitingProject.configurations.implementation.getAllDependencies().withType(ProjectDependency).each { ProjectDependency pd ->
+      recursiveCollectSourceSets(pd.getDependencyProject(), visitedProjects, collectedSourceSets)
+    }
+  }
 }

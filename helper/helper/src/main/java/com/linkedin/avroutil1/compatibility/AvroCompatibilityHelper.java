@@ -231,8 +231,8 @@ public class AvroCompatibilityHelper {
   /**
    * instantiates a possibly-SchemaConstructable class <br>
    * avro defines an interface called SchemaConstructable, which was moved in avro 1.6+
-   * ({@link org.apache.avro.specific.SpecificDatumReader.SchemaConstructable} in avro <= 1.5
-   * but {@link org.apache.avro.specific.SpecificData.SchemaConstructable} in avro 1.6+).
+   * (org.apache.avro.specific.SpecificDatumReader.SchemaConstructable in avro &lt;= 1.5
+   * but org.apache.avro.specific.SpecificData.SchemaConstructable in avro 1.6+).
    * such classes can only be instantiated by providing a schema as an argument (validation of the
    * schema is the constructor author's responsibility). this method allows for instantiating such
    * classes correctly. if the class in question is not SchemaConstructable the default (no arg)

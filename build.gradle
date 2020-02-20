@@ -1,16 +1,16 @@
-import javax.xml.bind.DatatypeConverter
-import java.security.MessageDigest
-import java.util.regex.Pattern
-
-
 /*
  * Copyright 2018 LinkedIn Corp.
  * Licensed under the BSD 2-Clause License (the "License"). 
  * See License in the project root for license information.
  */
 
+import javax.xml.bind.DatatypeConverter
+import java.security.MessageDigest
+import java.util.regex.Pattern
+
 buildscript {
   repositories {
+    mavenLocal()
     jcenter()
   }
   dependencies {
@@ -18,12 +18,18 @@ buildscript {
   }
 }
 
+plugins {
+  id "maven-publish"
+  id "com.jfrog.bintray" version "1.8.4"
+  id 'com.github.johnrengelman.shadow' version '5.2.0' apply false
+}
+
 group = 'com.linkedin.avroutil1'
 
-apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
-
-def allPublicationNames = new HashSet<String>()
+//does not include "helper" as that module has its own publishing section (because fat jar)
+Set<String> projectsToPublish = new HashSet<>(Arrays.asList("avro-migration-helper", "avro-codegen", "avro-fastserde"))
+Set<String> projectsToRecordGitInfoFor = new HashSet<>(projectsToPublish)
+projectsToRecordGitInfoFor.add("helper")
 
 ext {
   gitHash = "unknown"
@@ -47,60 +53,6 @@ subprojects {
       testImplementation "org.testng:testng:6.14.3"
     }
 
-    assemble.dependsOn ':parseGitInfo' //make sure we have git info before packaging
-
-    jar {
-
-      doFirst { //for some odd reason this is needed to pick up gitHash
-
-        //version embedding at build time
-        //we create a file called __Versioning__[md5] and set its payload to contain versioning info
-        //
-        //the file name is not fixed, but contains an md5 hash of the project group name and version.
-        //its not fixed so that if multiple libraries are repackaged (think fat/shaded jar) the versioning files
-        //are unlikely to conflict or get overwritten. the md5 hash part is chosen such that builds are
-        //"repeatable" - re-running the same build results in the same output. this is nice for incremental builds.
-        //
-        //the value contains versioning information for both this module and the entire project it was built as part of.
-        //
-        //this information allows us, at runtime, to determine what libraries/versions exist on a given classpath
-
-        MessageDigest md = MessageDigest.getInstance("MD5")
-        md.update(String.valueOf(project.group).getBytes("UTF-8"))
-        md.update(String.valueOf(project.name).getBytes("UTF-8"))
-        md.update(String.valueOf(project.version).getBytes("UTF-8"))
-        byte[] digest = md.digest();
-        String hash = DatatypeConverter.printHexBinary(digest).toUpperCase()
-
-        String versioningFileName = "__Versioning__" + hash
-        String versioningPayload = "{" +
-            "\"format\":\"v1\"," +
-            "\"project\":\"" + rootProject.group + ":" + rootProject.name + ":" + rootProject.version + "\"," +
-            "\"module\":\"" + project.group + ":" + project.name + ":" + project.version + "\"," +
-            "\"branch\":\"" + rootProject.gitName + "\"," +
-            "\"revision\":\"" + rootProject.gitHash + "\"" +
-            "}"
-
-        String outFolder = "${project.buildDir}/resources/main/META-INF/"
-        mkdir outFolder
-        file("${outFolder}/${versioningFileName}").text = versioningPayload
-
-        manifest {
-          //embed module names and version information
-          //into jar manifests
-          attributes(
-              'Name': "${project.name}",
-              'Specification-Title': "${project.name}",
-              'Specification-Version': "${project.version}",
-              'Specification-Vendor': "LinkedIn",
-              'Implementation-Title': "${project.name}",
-              'Implementation-Version': "${project.version}",
-              'Implementation-Vendor': "LinkedIn",
-          )
-        }
-      }
-    }
-
     test {
       useTestNG()
 
@@ -113,87 +65,152 @@ subprojects {
       }
     }
 
-    task sourceJar(type: Jar) {
-      from sourceSets.main.allJava
-      classifier "sources"
-    }
+    assemble.dependsOn ':parseGitInfo' //make sure we have git info before packaging
 
-    task javadocJar(type: Jar) {
-      from javadoc
-      classifier = 'javadoc'
-    }
+    if (projectsToRecordGitInfoFor.contains(project.name)) {
 
-    task testJar(type: Jar) {
-      from sourceSets.test.allJava
-      classifier = 'tests'
-    }
+      jar {
 
-    publishing {
-      publications {
-        "$project.name"(MavenPublication) {
-          groupId project.group
-          artifactId project.name
-          version project.version
+        doFirst { //for some odd reason this is needed to pick up gitHash
 
+          //version embedding at build time
+          //we create a file called __Versioning__[md5] and set its payload to contain versioning info
+          //
+          //the file name is not fixed, but contains an md5 hash of the project group name and version.
+          //its not fixed so that if multiple libraries are repackaged (think fat/shaded jar) the versioning files
+          //are unlikely to conflict or get overwritten. the md5 hash part is chosen such that builds are
+          //"repeatable" - re-running the same build results in the same output. this is nice for incremental builds.
+          //
+          //the value contains versioning information for both this module and the entire project it was built as part of.
+          //
+          //this information allows us, at runtime, to determine what libraries/versions exist on a given classpath
 
-          from components.java
-          artifact sourceJar
-          artifact javadocJar
-          artifact testJar
+          MessageDigest md = MessageDigest.getInstance("MD5")
+          md.update(String.valueOf(project.group).getBytes("UTF-8"))
+          md.update(String.valueOf(project.name).getBytes("UTF-8"))
+          md.update(String.valueOf(project.version).getBytes("UTF-8"))
+          byte[] digest = md.digest();
+          String hash = DatatypeConverter.printHexBinary(digest).toUpperCase()
 
-          //we strive to meet https://central.sonatype.org/pages/requirements.html
-          pom {
-            name = 'Avro Util'
-            description = 'utilities for writing code that works across major avro versions'
-            url = 'https://github.com/linkedin/avro-util'
+          String versioningFileName = "__Versioning__" + hash
+          String versioningPayload = "{" +
+              "\"format\":\"v1\"," +
+              "\"project\":\"" + rootProject.group + ":" + rootProject.name + ":" + rootProject.version + "\"," +
+              "\"module\":\"" + project.group + ":" + project.name + ":" + project.version + "\"," +
+              "\"branch\":\"" + rootProject.gitName + "\"," +
+              "\"revision\":\"" + rootProject.gitHash + "\"" +
+              "}"
 
-            licenses {
-              license {
-                name = 'BSD 2-Clause'
-                url = 'https://raw.githubusercontent.com/linkedin/avro-util/master/LICENSE'
-              }
-            }
-            developers {
-              developer {
-                id = 'radai-rosenblatt'
-                name = 'Radai Rosenblatt'
-                email = 'radai.rosenblatt@gmail.com'
-                organization = 'LinkedIn'
-                organizationUrl = 'linkedin.com'
-              }
-              developer {
-                id = 'abhishekmendhekar'
-                name = 'Abhishek Mendhekar'
-                organization = 'LinkedIn'
-                organizationUrl = 'linkedin.com'
-              }
-              developer {
-                id = 'jimhe'
-                name = 'Jim He'
-                email = 'jimjhe@gmail.com'
-                organization = 'LinkedIn'
-                organizationUrl = 'linkedin.com'
-              }
-              developer {
-                id = 'ghosthack'
-                name = 'Adrian Fernandez'
-                email = 'adrian@ghosthack.com'
-                organization = 'LinkedIn'
-                organizationUrl = 'linkedin.com'
-              }
-            }
-            scm {
-              connection = 'scm:git:git://github.com:linkedin/avro-util.git'
-              developerConnection = 'scm:git:ssh://github.com:linkedin/avro-util.git'
-              url = 'https://github.com/linkedin/avro-util'
-            }
+          String outFolder = "${project.buildDir}/resources/main/META-INF/"
+          mkdir outFolder
+          file("${outFolder}/${versioningFileName}").text = versioningPayload
+
+          manifest {
+            //embed module names and version information
+            //into jar manifests
+            attributes(
+                'Name': "${project.name}",
+                'Specification-Title': "${project.name}",
+                'Specification-Version': "${project.version}",
+                'Specification-Vendor': "LinkedIn",
+                'Implementation-Title': "${project.name}",
+                'Implementation-Version': "${project.version}",
+                'Implementation-Vendor': "LinkedIn",
+            )
           }
         }
+      }
+    }
 
-        //record all of this module's publications in the bintray publications list
-        //for the root project
-        allPublicationNames.addAll(project.publishing.publications.names)
-        rootProject.bintray.publications = allPublicationNames.toArray()
+    if (projectsToPublish.contains(project.name)) {
+
+      task sourceJar(type: Jar) {
+        from sourceSets.main.allJava
+        classifier "sources"
+      }
+
+      task javadocJar(type: Jar) {
+        from javadoc
+        classifier = 'javadoc'
+      }
+
+      task testJar(type: Jar) {
+        from sourceSets.test.allJava
+        classifier = 'tests'
+      }
+
+      publishing {
+        publications {
+          "$project.name"(MavenPublication) {
+            groupId project.group
+            artifactId project.name
+            version project.version
+
+            from components.java
+            artifact sourceJar
+            artifact javadocJar
+            artifact testJar
+
+            //we strive to meet https://central.sonatype.org/pages/requirements.html
+            pom {
+              name = 'Avro Util'
+              description = 'utilities for writing code that works across major avro versions'
+              url = 'https://github.com/linkedin/avro-util'
+
+              licenses {
+                license {
+                  name = 'BSD 2-Clause'
+                  url = 'https://raw.githubusercontent.com/linkedin/avro-util/master/LICENSE'
+                }
+              }
+              developers {
+                developer {
+                  id = 'radai-rosenblatt'
+                  name = 'Radai Rosenblatt'
+                  email = 'radai.rosenblatt@gmail.com'
+                  organization = 'LinkedIn'
+                  organizationUrl = 'linkedin.com'
+                }
+                developer {
+                  id = 'abhishekmendhekar'
+                  name = 'Abhishek Mendhekar'
+                  organization = 'LinkedIn'
+                  organizationUrl = 'linkedin.com'
+                }
+                developer {
+                  id = 'jimhe'
+                  name = 'Jim He'
+                  email = 'jimjhe@gmail.com'
+                  organization = 'LinkedIn'
+                  organizationUrl = 'linkedin.com'
+                }
+                developer {
+                  id = 'ghosthack'
+                  name = 'Adrian Fernandez'
+                  email = 'adrian@ghosthack.com'
+                  organization = 'LinkedIn'
+                  organizationUrl = 'linkedin.com'
+                }
+              }
+              scm {
+                connection = 'scm:git:git://github.com:linkedin/avro-util.git'
+                developerConnection = 'scm:git:ssh://github.com:linkedin/avro-util.git'
+                url = 'https://github.com/linkedin/avro-util'
+              }
+            }
+          }
+
+          //record all of this module's publications in the bintray publications list
+          //for the root project
+          List<String> allPublicationNames = new ArrayList<>(Arrays.asList(rootProject.bintray.publications))
+          List<String> projectAndDepPublicationNames = new ArrayList<>(project.publishing.publications.names)
+          for (String projectPubName : projectAndDepPublicationNames) {
+            if (!allPublicationNames.contains(projectPubName)) {
+              allPublicationNames.add(projectPubName)
+            }
+          }
+          rootProject.bintray.publications = allPublicationNames.toArray()
+        }
       }
     }
   }
