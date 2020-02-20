@@ -13,7 +13,7 @@ public class SchemaAssistantForSerializer extends SchemaAssistant {
    * Special handling for "String" type since the underlying data could be "String" or "Utf8".
    *
    * This is different from the de-serializer since Avro will always decode it into "Utf8".
-   * @return
+   * @return the String type to use for serializing
    */
   @Override
   protected JClass defaultStringType() {

@@ -140,7 +140,7 @@ public class Avro17Adapter extends AbstractAvroAdapter {
   /**
    * In Avro-1.7 and above, the default binary encoder returned is buffered.
    * @param out output stream
-   * @return
+   * @return a buffered binary encoder
    */
   @Override
   public Encoder newBufferedBinaryEncoder(OutputStream out) {

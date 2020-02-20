@@ -50,12 +50,11 @@ task javadocJar(type: Jar) {
   classifier = 'javadoc'
 }
 
-
 publishing {
   publications {
-    "$project.name"(MavenPublication) {
+    "$project.name-all"(MavenPublication) {
       groupId project.group
-      artifactId project.name-"all"
+      artifactId "$project.name-all"
       version project.version
 
       //stripping away the classifier to publish as its own top-level artifact

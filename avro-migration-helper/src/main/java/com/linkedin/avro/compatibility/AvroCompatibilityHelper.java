@@ -127,6 +127,7 @@ public class AvroCompatibilityHelper {
    * call a constructor with a {@link Schema} parameter, otherwise use a no-arg constructor.
    * @param clazz class type to instantiate
    * @param schema Avro schema to use for instantiating @param clazz if it implements {@link SpecificDatumReader.SchemaConstructable}
+   * @return a new instance of the given class
    */
   public static Object newInstance(Class clazz, Schema schema) {
     return FACTORY.newInstance(clazz, schema);
@@ -134,6 +135,8 @@ public class AvroCompatibilityHelper {
 
   /**
    * Find the Avro schema for a Java type
+   * @param type type to find schema for
+   * @return Schema for given type
    */
   public static Schema getSchema(Type type) {
     return FACTORY.getSchema(type);

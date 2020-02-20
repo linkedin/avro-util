@@ -22,8 +22,12 @@ public class SchemaNormalization {
   private SchemaNormalization() {
   }
 
-  /** Returns "Parsing Canonical Form" of a schema as defined by Avro
-   * spec. */
+  /**
+   * Returns "Parsing Canonical Form" of a schema as defined by Avro
+   * spec.
+   * @param s a schema
+   * @return parsing canonical form of the given schema
+   */
   public static String toParsingForm(Schema s) {
     try {
       Map<String, String> env = new HashMap<>();

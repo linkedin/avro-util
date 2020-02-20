@@ -297,9 +297,9 @@ public final class FastSerdeCache {
    * This function will generate a fast specific deserializer, and it will throw exception if anything wrong happens.
    * This function can be used to verify whether current {@link FastSerdeCache} could generate proper fast deserializer.
    *
-   * @param writerSchema
-   * @param readerSchema
-   * @return
+   * @param writerSchema writer schema
+   * @param readerSchema reader schema
+   * @return a fast deserializer
    */
   public FastDeserializer<?> buildFastSpecificDeserializer(Schema writerSchema, Schema readerSchema) {
     LOGGER.info("Start buildFastSpecificDeserializer for reader schema: [" + readerSchema + "] and write schema: ["
@@ -343,9 +343,9 @@ public final class FastSerdeCache {
    * This function will generate a fast generic deserializer, and it will throw exception if anything wrong happens.
    * This function can be used to verify whether current {@link FastSerdeCache} could generate proper fast deserializer.
    *
-   * @param writerSchema
-   * @param readerSchema
-   * @return
+   * @param writerSchema writer schema
+   * @param readerSchema reader schema
+   * @return a fast deserializer
    */
   public FastDeserializer<?> buildFastGenericDeserializer(Schema writerSchema, Schema readerSchema) {
     LOGGER.info("Start buildFastGenericDeserializer for reader schema: [" + readerSchema + "] and write schema: ["
