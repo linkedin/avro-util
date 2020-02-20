@@ -46,7 +46,7 @@ public class FixDefaultValueStep extends AbstractSchemaTraversingStep {
         Integer.parseInt(literal);
         return INT;
       } catch (NumberFormatException ignored) {
-
+        //empty
       }
       throw new IllegalStateException("unhandled: " + literal);
     }

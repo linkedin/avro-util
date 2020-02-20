@@ -8,18 +8,20 @@ package com.linkedin.avro.codegen;
 
 import com.linkedin.avro.codegen.testutil.CompilerHelper;
 import com.linkedin.avro.compatibility.AvroGeneratedSourceCode;
+import java.io.File;
+import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Locale;
 import net.openhft.compiler.CompilerUtils;
 import org.apache.avro.specific.SpecificFixed;
 import org.apache.avro.specific.SpecificRecord;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.io.File;
-import java.lang.reflect.Method;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.*;
 
 public class CodeGeneratorTest {
     private File sourceRoot;

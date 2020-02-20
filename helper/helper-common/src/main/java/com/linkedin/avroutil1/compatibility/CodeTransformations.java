@@ -1,3 +1,9 @@
+/*
+ * Copyright 2020 LinkedIn Corp.
+ * Licensed under the BSD 2-Clause License (the "License").
+ * See License in the project root for license information.
+ */
+
 package com.linkedin.avroutil1.compatibility;
 
 import java.util.ArrayList;
@@ -34,10 +40,10 @@ public class CodeTransformations {
   private static final Pattern AVROGENERATED_ANNOTATION_PATTERN = Pattern.compile(Pattern.quote("@org.apache.avro.specific.AvroGenerated"));
   private static final Pattern MODEL_DECL_PATTERN = Pattern.compile(Pattern.quote("private static SpecificData MODEL$ = new SpecificData();"));
   private static final Pattern GET_SPECIFICDATA_METHOD_PATTERN = Pattern.compile("public\\s*org\\.apache\\.avro\\.specific\\.SpecificData\\s*getSpecificData\\s*\\(\\s*\\)\\s*\\{\\s*return\\s*MODEL\\$\\s*;\\s*}");
-  private static final Pattern WRITER$_DECL = Pattern.compile("WRITER\\$\\s*=\\s*([^;]+);");
-  private static final String  WRITER$_DECL_REPLACEMENT = Matcher.quoteReplacement("WRITER$ = new org.apache.avro.specific.SpecificDatumWriter<>(SCHEMA$);");
-  private static final Pattern READER$_DECL = Pattern.compile("READER\\$\\s*=\\s*([^;]+);");
-  private static final String  READER$_DECL_REPLACEMENT = Matcher.quoteReplacement("READER$ = new org.apache.avro.specific.SpecificDatumReader<>(SCHEMA$);");
+  private static final Pattern WRITER_DOLLAR_DECL = Pattern.compile("WRITER\\$\\s*=\\s*([^;]+);");
+  private static final String  WRITER_DOLLAR_DECL_REPLACEMENT = Matcher.quoteReplacement("WRITER$ = new org.apache.avro.specific.SpecificDatumWriter<>(SCHEMA$);");
+  private static final Pattern READER_DOLLAR_DECL = Pattern.compile("READER\\$\\s*=\\s*([^;]+);");
+  private static final String  READER_DOLLAR_DECL_REPLACEMENT = Matcher.quoteReplacement("READER$ = new org.apache.avro.specific.SpecificDatumReader<>(SCHEMA$);");
   private static final Pattern WRITE_EXTERNAL_SIGNATURE = Pattern.compile(Pattern.quote("@Override public void writeExternal(java.io.ObjectOutput out)"));
   private static final String  WRITE_EXTERNAL_WITHOUT_OVERRIDE = Matcher.quoteReplacement("public void writeExternal(java.io.ObjectOutput out)");
   private static final Pattern READ_EXTERNAL_SIGNATURE = Pattern.compile(Pattern.quote("@Override public void readExternal(java.io.ObjectInput in)"));
@@ -435,9 +441,10 @@ public class CodeTransformations {
     String codeWithoutGetSpecificData = GET_SPECIFICDATA_METHOD_PATTERN.matcher(codeWithoutModel).replaceAll("");
 
     //this is actually a nop for fixed classes
-    String writerFixed = WRITER$_DECL.matcher(codeWithoutGetSpecificData).replaceAll(WRITER$_DECL_REPLACEMENT);
+    String writerFixed = WRITER_DOLLAR_DECL.matcher(codeWithoutGetSpecificData).replaceAll(
+        WRITER_DOLLAR_DECL_REPLACEMENT);
     //this is actually a nop for fixed classes
-    String readerFixed = READER$_DECL.matcher(writerFixed).replaceAll(READER$_DECL_REPLACEMENT);
+    String readerFixed = READER_DOLLAR_DECL.matcher(writerFixed).replaceAll(READER_DOLLAR_DECL_REPLACEMENT);
 
     //strip out the @Override annotations from readExternal()/writeExternal()
     String withoutAnnotations = WRITE_EXTERNAL_SIGNATURE.matcher(readerFixed).replaceAll(WRITE_EXTERNAL_WITHOUT_OVERRIDE);

@@ -7,8 +7,6 @@
 package com.linkedin.avro.compatibility;
 
 import com.linkedin.avro.TestUtil;
-import com.linkedin.avro.compatibility.AvroCompatibilityHelper;
-import com.linkedin.avro.compatibility.AvroVersion;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaParseException;
 import org.testng.Assert;

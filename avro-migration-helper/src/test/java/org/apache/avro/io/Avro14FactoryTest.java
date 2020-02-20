@@ -23,8 +23,6 @@ import org.testng.SkipException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static org.apache.avro.io.Avro14Adapter.*;
-
 
 public class Avro14FactoryTest {
 
@@ -151,48 +149,48 @@ public class Avro14FactoryTest {
   public void testSafeSplit() throws Exception {
     Assert.assertEquals(
         Arrays.asList("1234567890", "abcdefghij"),
-        safeSplit("1234567890abcdefghij", 10));
+        Avro14Adapter.safeSplit("1234567890abcdefghij", 10));
     Assert.assertEquals(
         Arrays.asList("1234567890", "abcdefghij", "AB"),
-        safeSplit("1234567890abcdefghijAB", 10));
+        Avro14Adapter.safeSplit("1234567890abcdefghijAB", 10));
     Assert.assertEquals(Collections.singletonList("1234567890"),
-        safeSplit("1234567890", 10));
+        Avro14Adapter.safeSplit("1234567890", 10));
     //dont chop at '
     Assert.assertEquals(
         Arrays.asList("12345678", "9'abcdefgh", "ij"),
-        safeSplit("123456789'abcdefghij", 10));
+        Avro14Adapter.safeSplit("123456789'abcdefghij", 10));
     //unicode escapes not on the boundary
     Assert.assertEquals(
         Arrays.asList("xx\\u1234xx", "xxxxxxxxxx"),
-        safeSplit("xx\\u1234xxxxxxxxxxxx", 10));
+        Avro14Adapter.safeSplit("xx\\u1234xxxxxxxxxxxx", 10));
     Assert.assertEquals(
         Arrays.asList("xxxx\\u1234", "xxxxxxxxxx"),
-        safeSplit("xxxx\\u1234xxxxxxxxxx", 10));
+        Avro14Adapter.safeSplit("xxxx\\u1234xxxxxxxxxx", 10));
     //unicode escapes cross the boundary
     Assert.assertEquals(
         Arrays.asList("xxxx","x\\u1234xxx", "xxxxxx"),
-        safeSplit("xxxxx\\u1234xxxxxxxxx", 10));
+        Avro14Adapter.safeSplit("xxxxx\\u1234xxxxxxxxx", 10));
     Assert.assertEquals(
         Arrays.asList("xxxxx","x\\u1234xxx", "xxxxx"),
-        safeSplit("xxxxxx\\u1234xxxxxxxx", 10));
+        Avro14Adapter.safeSplit("xxxxxx\\u1234xxxxxxxx", 10));
     Assert.assertEquals(
         Arrays.asList("xxxxxx","x\\u1234xxx", "xxxx"),
-        safeSplit("xxxxxxx\\u1234xxxxxxx", 10));
+        Avro14Adapter.safeSplit("xxxxxxx\\u1234xxxxxxx", 10));
     Assert.assertEquals(
         Arrays.asList("xxxxxxx","x\\u1234xxx", "xxx"),
-        safeSplit("xxxxxxxx\\u1234xxxxxx", 10));
+        Avro14Adapter.safeSplit("xxxxxxxx\\u1234xxxxxx", 10));
     Assert.assertEquals(
         Arrays.asList("xxxxxxxx","x\\u1234xxx", "xx"),
-        safeSplit("xxxxxxxxx\\u1234xxxxx", 10));
+        Avro14Adapter.safeSplit("xxxxxxxxx\\u1234xxxxx", 10));
     Assert.assertEquals(
         Arrays.asList("xxxxxxxxx","x\\u1234xxx", "x"),
-        safeSplit("xxxxxxxxxx\\u1234xxxx", 10));
+        Avro14Adapter.safeSplit("xxxxxxxxxx\\u1234xxxx", 10));
     Assert.assertEquals(
         Arrays.asList("xxxxxxxxx","x\\u1234xxx", "x"),
-        safeSplit("xxxxxxxxxx\\u1234xxxx", 10));
+        Avro14Adapter.safeSplit("xxxxxxxxxx\\u1234xxxx", 10));
     Assert.assertEquals(
         Arrays.asList("xxxxxxxxxx","x\\u1234xxx"),
-        safeSplit("xxxxxxxxxxx\\u1234xxx", 10));
+        Avro14Adapter.safeSplit("xxxxxxxxxxx\\u1234xxx", 10));
   }
 
   @Test
