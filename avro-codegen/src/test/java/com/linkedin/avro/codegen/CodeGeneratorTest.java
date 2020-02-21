@@ -94,9 +94,9 @@ public class CodeGeneratorTest {
         Collection<AvroGeneratedSourceCode> firstModuleSources = generator.generateCode();
         Assert.assertEquals(firstModuleSources.size(), 3);
 
-        Class enumClass = null;
-        Class fixedClass = null;
-        Class recordClass = null;
+        Class<?> enumClass = null;
+        Class<?> fixedClass = null;
+        Class<?> recordClass = null;
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         for (AvroGeneratedSourceCode code : firstModuleSources) {
