@@ -7,25 +7,50 @@
 plugins {
     id "java-library"
     id "checkstyle"
+    id "com.github.johnrengelman.shadow"
 }
 
 dependencies {
-    compile project(":avro-migration-helper")
+    implementation project(":avro-migration-helper")
 
-    compile "commons-io:commons-io:2.6"
-    compile "org.apache.logging.log4j:log4j-api:2.11.2"
+    implementation "commons-io:commons-io:2.6"
+    implementation "org.apache.logging.log4j:log4j-api:2.11.2"
+    implementation "com.beust:jcommander:1.78"
+    implementation "org.apache.ant:ant:1.10.7"
     
-    //TODO - make these compile only
-    compile "org.apache.avro:avro:1.4.1"
-    //compile "org.apache.avro:avro-compiler:1.8.2"
+    compileOnly ("org.apache.avro:avro:1.4.1") {
+        exclude group: "org.mortbay.jetty"
+        exclude group: "org.apache.velocity"
+        exclude group: "commons-lang"
+        exclude group: "org.jboss.netty"
+        exclude group: "com.thoughtworks.paranamer", module: "paranamer-ant"
+        exclude group: "org.slf4j"
+    }
 
+    testCompile ("org.apache.avro:avro:1.4.1") {
+        exclude group: "org.mortbay.jetty"
+        exclude group: "org.apache.velocity"
+        exclude group: "commons-lang"
+        exclude group: "org.jboss.netty"
+        exclude group: "com.thoughtworks.paranamer", module: "paranamer-ant"
+        exclude group: "org.slf4j"
+    }
     testCompile 'net.openhft:compiler:2.3.1'
-    
+
     //redirect logging to log4j2 for tests
     testRuntimeOnly "org.apache.logging.log4j:log4j-core:2.11.2"
     testRuntimeOnly "org.apache.logging.log4j:log4j-slf4j-impl:2.11.2"
 }
 
-test {
-    testLogging.showStandardStreams = true
+jar {
+    manifest {
+        attributes(
+            "Main-Class": "com.linkedin.avro.codegen.Tool"
+        )
+    }
+}
+
+shadowJar {
+    //needs to have a classifier to not overwrite the regular jar
+    classifier = "all"
 }
