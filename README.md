@@ -5,6 +5,24 @@ Avro-Util
 
 A collection of utilities and libraries to allow java projects to better work with avro.
 
+### How To Use ###
+
+Artifacts are published to [bintray](https://bintray.com/linkedin/maven/avro-util).
+To use them (say in a gradle build) you'd need to add that bintray repository to your build.gradle, 
+and then add a dependency on the module(s) you wish to use:
+
+```gradle
+repositories {
+   maven {
+      url  "https://dl.bintray.com/linkedin/maven"
+   }
+}
+...
+dependencies {
+   compile "com.linkedin.avroutil1:helper-all:0.1.8"
+}
+```
+
 ### Background ###
 
 Apache Avro is a widely used serialization format.
