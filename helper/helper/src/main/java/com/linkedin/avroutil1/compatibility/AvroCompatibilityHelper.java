@@ -99,6 +99,16 @@ public class AvroCompatibilityHelper {
   }
 
   /**
+   * a convenience method for creating a (buffered) {@link BinaryEncoder} on top of the given output stream. <br>
+   * remember to flush.
+   * @param out an output stream
+   * @return a binary encoder on top of the given stream
+   */
+  public static BinaryEncoder newBinaryEncoder(OutputStream out) {
+    return newBinaryEncoder(out, true, null);
+  }
+
+  /**
    * constructs a {@link BinaryEncoder} on top of the given {@link ObjectOutput}.
    * this is mostly meant as a runtime utility for generated classes that implement {@link java.io.Externalizable}
    * <br>
@@ -130,6 +140,15 @@ public class AvroCompatibilityHelper {
    */
   public static BinaryDecoder newBinaryDecoder(byte[] in) {
     return newBinaryDecoder(new ByteArrayInputStream(in), false, null);
+  }
+
+  /**
+   * convenience method for getting a (buffered) {@link BinaryDecoder} for a given {@link InputStream}
+   * @param in an input stream
+   * @return a {@link BinaryDecoder} for decoding the given input stream
+   */
+  public static BinaryDecoder newBinaryDecoder(InputStream in) {
+    return newBinaryDecoder(in, true, null);
   }
 
   /**
