@@ -12,6 +12,7 @@ import com.linkedin.avroutil1.compatibility.avro16.Avro16Adapter;
 import com.linkedin.avroutil1.compatibility.avro17.Avro17Adapter;
 import com.linkedin.avroutil1.compatibility.avro18.Avro18Adapter;
 import com.linkedin.avroutil1.compatibility.avro19.Avro19Adapter;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInput;
@@ -98,10 +99,20 @@ public class AvroCompatibilityHelper {
   }
 
   /**
+   * a convenience method for creating a (buffered) {@link BinaryEncoder} on top of the given output stream. <br>
+   * remember to flush.
+   * @param out an output stream
+   * @return a binary encoder on top of the given stream
+   */
+  public static BinaryEncoder newBinaryEncoder(OutputStream out) {
+    return newBinaryEncoder(out, true, null);
+  }
+
+  /**
    * constructs a {@link BinaryEncoder} on top of the given {@link ObjectOutput}.
    * this is mostly meant as a runtime utility for generated classes that implement {@link java.io.Externalizable}
    * <br>
-   * this method is also called from generated classes
+   * this method is mostly called from generated classes, <b>YOU PROBABLY DONT WANT TO USE THIS</b>
    * @param out an {@link ObjectOutput}
    * @return a {@link BinaryEncoder}
    */
@@ -111,7 +122,7 @@ public class AvroCompatibilityHelper {
   }
 
   /**
-   * constructs a {@link BinaryDecoder} on top os the given input stream
+   * constructs a {@link BinaryDecoder} on top of the given input stream
    * @param in an input stream
    * @param buffered true for buffered decoder (if/when supported by runtime avro)
    * @param reuse a given decoder to reuse, if supported by the runtime avro
@@ -123,10 +134,28 @@ public class AvroCompatibilityHelper {
   }
 
   /**
+   * convenience method for getting a {@link BinaryDecoder} for a given byte[]
+   * @param in byte array with data
+   * @return a {@link BinaryDecoder} for decoding the given array
+   */
+  public static BinaryDecoder newBinaryDecoder(byte[] in) {
+    return newBinaryDecoder(new ByteArrayInputStream(in), false, null);
+  }
+
+  /**
+   * convenience method for getting a (buffered) {@link BinaryDecoder} for a given {@link InputStream}
+   * @param in an input stream
+   * @return a {@link BinaryDecoder} for decoding the given input stream
+   */
+  public static BinaryDecoder newBinaryDecoder(InputStream in) {
+    return newBinaryDecoder(in, true, null);
+  }
+
+  /**
    * constructs a {@link BinaryDecoder} on top of the given {@link ObjectInput}.
    * this is mostly meant as a runtime utility for generated classes that implement {@link java.io.Externalizable}
    * <br>
-   * this method is also called from generated classes
+   * this method is mostly called from generated classes, <b>YOU PROBABLY DONT WANT TO USE THIS</b>
    * @param in an {@link ObjectInput}
    * @return a {@link BinaryDecoder}
    */
