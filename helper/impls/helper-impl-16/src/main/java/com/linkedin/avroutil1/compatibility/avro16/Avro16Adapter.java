@@ -137,7 +137,10 @@ public class Avro16Adapter implements AvroAdapter {
     boolean validateDefaults = false;
     if (desiredConf != null) {
       validateNames = desiredConf.validateNames();
+      validateDefaults = desiredConf.validateDefaultValues();
     }
+    SchemaParseConfiguration configUsed = new SchemaParseConfiguration(validateNames, validateDefaults);
+
     parser.setValidate(validateNames);
     if (known != null && !known.isEmpty()) {
       Map<String, Schema> knownByFullName = new HashMap<>(known.size());
@@ -149,15 +152,14 @@ public class Avro16Adapter implements AvroAdapter {
     }
     Schema mainSchema = parser.parse(schemaJson);
 
-    if (desiredConf != null && desiredConf.validateDefaultValues()) {
+    if (validateDefaults) {
       //avro 1.6 doesnt properly validate default values, so we have to do it ourselves
-      SchemaValidator validator = new SchemaValidator(desiredConf, known);
+      SchemaValidator validator = new SchemaValidator(configUsed, known);
       AvroSchemaUtil.traverseSchema(mainSchema, validator); //will throw on issues
     }
 
     Map<String, Schema> knownByFullName = parser.getTypes();
-    //noinspection ConstantConditions
-    return new SchemaParseResult(mainSchema, knownByFullName, new SchemaParseConfiguration(validateNames, validateDefaults));
+    return new SchemaParseResult(mainSchema, knownByFullName, configUsed);
   }
 
   @Override

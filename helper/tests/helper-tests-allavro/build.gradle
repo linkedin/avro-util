@@ -17,6 +17,8 @@ configurations {
   avro16NoCompiler
   avro17
   avro17NoCompiler
+  avro17Old
+  avro17OldNoCompiler
   avro18
   avro18NoCompiler
   avro19
@@ -89,6 +91,16 @@ dependencies {
     exclude group: "org.slf4j"
   }
 
+  avro17Old ("org.apache.avro:avro:1.7.0") {
+    exclude group: "org.slf4j"
+  }
+  avro17Old ("org.apache.avro:avro-compiler:1.7.0") {
+    exclude group: "org.slf4j"
+  }
+  avro17OldNoCompiler ("org.apache.avro:avro:1.7.0") {
+    exclude group: "org.slf4j"
+  }
+
   avro18 ("org.apache.avro:avro:1.8.2") {
     exclude group: "org.slf4j"
   }
@@ -110,7 +122,21 @@ dependencies {
   }
 }
 
-def avroVersions = ["14", "15", "15NoCompiler", "16", "16NoCompiler", "17", "17NoCompiler", "18", "18NoCompiler", "19", "19NoCompiler"]
+def avroVersions = [
+        "14",
+        "15",
+        "15NoCompiler",
+        "16",
+        "16NoCompiler",
+        "17",
+        "17NoCompiler",
+        "17Old",
+        "17OldNoCompiler",
+        "18",
+        "18NoCompiler",
+        "19",
+        "19NoCompiler"
+]
 
 for (String avroVersion : avroVersions) {
 
@@ -142,5 +168,3 @@ for (String avroVersion : avroVersions) {
   }
 
 }
-
-//build.dependsOn testAvro14, testAvro15, testAvro16, testAvro17, testAvro18, testAvro19
