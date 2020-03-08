@@ -129,8 +129,10 @@ public class Avro14Adapter implements AvroAdapter {
       Schema schema = result.getMainSchema();
       SchemaValidator validator = new SchemaValidator(desiredConf, known);
       AvroSchemaUtil.traverseSchema(schema, validator); //will throw on issues
+      return new SchemaParseResult(result.getMainSchema(), result.getAllSchemas(), desiredConf);
+    } else {
+      return result;
     }
-    return result;
   }
 
   @Override

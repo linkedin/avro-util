@@ -8,10 +8,13 @@ package com.linkedin.avroutil1.compatibility.avro17;
 
 import com.linkedin.avroutil1.compatibility.AvroAdapter;
 import com.linkedin.avroutil1.compatibility.AvroGeneratedSourceCode;
+import com.linkedin.avroutil1.compatibility.AvroSchemaUtil;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
 import com.linkedin.avroutil1.compatibility.CodeTransformations;
 import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
 import com.linkedin.avroutil1.compatibility.SchemaParseResult;
+import com.linkedin.avroutil1.compatibility.SchemaValidator;
+import com.linkedin.avroutil1.compatibility.avro17.backports.Avro17DefaultValuesCache;
 import com.linkedin.avroutil1.compatibility.backports.ObjectInputToInputStreamAdapter;
 import com.linkedin.avroutil1.compatibility.backports.ObjectOutputToOutputStreamAdapter;
 import java.io.IOException;
@@ -47,6 +50,8 @@ import org.slf4j.LoggerFactory;
 public class Avro17Adapter implements AvroAdapter {
   private final static Logger LOG = LoggerFactory.getLogger(Avro17Adapter.class);
 
+  //compiler-related fields and methods (if the compiler jar is on the classpath)
+
   private boolean compilerSupported;
   private Constructor<?> specificCompilerCtr;
   private Method compilerEnqueueMethod;
@@ -57,6 +62,19 @@ public class Avro17Adapter implements AvroAdapter {
   private Method setFieldVisibilityMethod;
   private Object charSequenceStringTypeEnumInstance;
   private Method setStringTypeMethod;
+
+  //"optional" methods - things added in later 1.7.* versions that may not exist if we're running with earlier 1.7.*
+
+  /**
+   * method {@link org.apache.avro.Schema.Parser#setValidateDefaults(boolean)}.
+   */
+  private Method setValidateDefaultsMethod;
+  /**
+   * method {@link SpecificData#getDefaultValue(Schema.Field)}.
+   * we use this method's existence to also imply the existence of
+   * {@link GenericData#getDefaultValue(Schema.Field)}
+   */
+  private Method getSpecificDefaultValueMethod;
 
   public Avro17Adapter() {
     tryInitializeCompilerFields();
@@ -90,6 +108,28 @@ public class Avro17Adapter implements AvroAdapter {
       //but if we're missing a transitive dependency we will get NoClassDefFoundError
       compilerSupported = false;
       //ignore
+    }
+
+    boolean warned = false;
+
+    try {
+      setValidateDefaultsMethod = Schema.Parser.class.getMethod("setValidateDefaults", Boolean.TYPE);
+    } catch (Exception | LinkageError e) {
+      if (!warned) {
+        LOG.warn("you are using an older version of avro 1.7. please consider upgrading to latest 1.7.*");
+        warned = true;
+      }
+      setValidateDefaultsMethod = null;
+    }
+
+    try {
+      getSpecificDefaultValueMethod = SpecificData.class.getMethod("getDefaultValue", Schema.Field.class);
+    } catch (Exception | LinkageError e) {
+      if (!warned) {
+        LOG.warn("you are using an older version of avro 1.7. please consider upgrading to latest 1.7.*");
+        warned = true;
+      }
+      getSpecificDefaultValueMethod = null;
     }
   }
 
@@ -142,8 +182,15 @@ public class Avro17Adapter implements AvroAdapter {
       validateNames = desiredConf.validateNames();
       validateDefaults = desiredConf.validateDefaultValues();
     }
+    SchemaParseConfiguration configUsed = new SchemaParseConfiguration(validateNames, validateDefaults);
+
     parser.setValidate(validateNames);
-    parser.setValidateDefaults(validateDefaults);
+
+    //must check the method exists before trying to call it
+    if (setValidateDefaultsMethod != null) {
+      parser.setValidateDefaults(validateDefaults);
+    }
+
     if (known != null && !known.isEmpty()) {
       Map<String, Schema> knownByFullName = new HashMap<>(known.size());
       for (Schema s : known) {
@@ -154,10 +201,14 @@ public class Avro17Adapter implements AvroAdapter {
     }
     Schema mainSchema = parser.parse(schemaJson);
 
-    //avro 1.7 can (optionally) validate defaults - so even if the user asked for that we have no further work to do
+    if (validateDefaults && setValidateDefaultsMethod == null) {
+      //older avro 1.7 doesnt support validating default values, so we have to do it ourselves
+      SchemaValidator validator = new SchemaValidator(configUsed, known);
+      AvroSchemaUtil.traverseSchema(mainSchema, validator); //will throw on issues
+    }
 
     Map<String, Schema> knownByFullName = parser.getTypes();
-    return new SchemaParseResult(mainSchema, knownByFullName, new SchemaParseConfiguration(validateNames, validateDefaults));
+    return new SchemaParseResult(mainSchema, knownByFullName, configUsed);
   }
 
   @Override
@@ -172,7 +223,12 @@ public class Avro17Adapter implements AvroAdapter {
 
   @Override
   public Object getSpecificDefaultValue(Schema.Field field) {
-    return SpecificData.get().getDefaultValue(field);
+    if (getSpecificDefaultValueMethod != null) {
+      return SpecificData.get().getDefaultValue(field);
+    } else {
+      //old avro 1.7 - punt to backported code
+      return Avro17DefaultValuesCache.getDefaultValue(field, true);
+    }
   }
 
   @Override
@@ -192,7 +248,12 @@ public class Avro17Adapter implements AvroAdapter {
 
   @Override
   public Object getGenericDefaultValue(Schema.Field field) {
-    return GenericData.get().getDefaultValue(field);
+    if (getSpecificDefaultValueMethod != null) {
+      return GenericData.get().getDefaultValue(field);
+    } else {
+      //old avro 1.7 - punt to backported code
+      return Avro17DefaultValuesCache.getDefaultValue(field, false);
+    }
   }
 
   @Override
