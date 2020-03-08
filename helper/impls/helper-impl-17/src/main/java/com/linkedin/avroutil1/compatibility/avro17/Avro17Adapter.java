@@ -65,8 +65,16 @@ public class Avro17Adapter implements AvroAdapter {
 
   //"optional" methods - things added in later 1.7.* versions that may not exist if we're running with earlier 1.7.*
 
+  /**
+   * method {@link org.apache.avro.Schema.Parser#setValidateDefaults(boolean)}.
+   */
   private Method setValidateDefaultsMethod;
-  private Method getSpecificDefaultValueMethod; //we use this method's existence to also imply the existence of the generic one
+  /**
+   * method {@link SpecificData#getDefaultValue(Schema.Field)}.
+   * we use this method's existence to also imply the existence of
+   * {@link GenericData#getDefaultValue(Schema.Field)}
+   */
+  private Method getSpecificDefaultValueMethod;
 
   public Avro17Adapter() {
     tryInitializeCompilerFields();
