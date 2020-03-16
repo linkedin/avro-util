@@ -38,12 +38,12 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
 
     if (!Utils.isSupportedAvroVersionsForDeserializer()) {
       this.cachedFastDeserializer = getRegularAvroImpl(writerSchema, readerSchema);
-      LOGGER.info("Current avro version: " + Utils.getRuntimeAvroVersion() + " is not supported, and only the following"
+      LOGGER.debug("Current avro version: " + Utils.getRuntimeAvroVersion() + " is not supported, and only the following"
           + " versions are supported: " + Utils.getAvroVersionsSupportedForDeserializer() + ", so skip the FastDeserializer generation");
     } else if (!FastSerdeCache.isSupportedForFastDeserializer(readerSchema.getType())) {
       // For unsupported schema type, we won't try to fetch it from FastSerdeCache since it is inefficient.
       this.cachedFastDeserializer = getRegularAvroImpl(writerSchema, readerSchema);
-      LOGGER.info("Skip the FastGenericDeserializer generation since read schema type: " + readerSchema.getType()
+      LOGGER.debug("Skip the FastGenericDeserializer generation since read schema type: " + readerSchema.getType()
           + " is not supported");
     }
   }
@@ -73,7 +73,7 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
         // don't cache
       } else {
         cachedFastDeserializer = fastDeserializer;
-        LOGGER.info("FastGenericDeserializer was generated and cached for reader schema: [" + readerSchema
+        LOGGER.debug("FastGenericDeserializer was generated and cached for reader schema: [" + readerSchema
             + "], writer schema: [" + writerSchema + "]");
       }
     }
