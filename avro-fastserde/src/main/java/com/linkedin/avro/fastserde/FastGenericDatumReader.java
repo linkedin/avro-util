@@ -38,13 +38,19 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
 
     if (!Utils.isSupportedAvroVersionsForDeserializer()) {
       this.cachedFastDeserializer = getRegularAvroImpl(writerSchema, readerSchema);
-      LOGGER.debug("Current avro version: " + Utils.getRuntimeAvroVersion() + " is not supported, and only the following"
-          + " versions are supported: " + Utils.getAvroVersionsSupportedForDeserializer() + ", so skip the FastDeserializer generation");
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug(
+            "Current avro version: " + Utils.getRuntimeAvroVersion() + " is not supported, and only the following"
+                + " versions are supported: " + Utils.getAvroVersionsSupportedForDeserializer()
+                + ", so skip the FastDeserializer generation");
+      }
     } else if (!FastSerdeCache.isSupportedForFastDeserializer(readerSchema.getType())) {
       // For unsupported schema type, we won't try to fetch it from FastSerdeCache since it is inefficient.
       this.cachedFastDeserializer = getRegularAvroImpl(writerSchema, readerSchema);
-      LOGGER.debug("Skip the FastGenericDeserializer generation since read schema type: " + readerSchema.getType()
-          + " is not supported");
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("Skip the FastGenericDeserializer generation since read schema type: " + readerSchema.getType()
+            + " is not supported");
+      }
     }
   }
 
@@ -73,8 +79,10 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
         // don't cache
       } else {
         cachedFastDeserializer = fastDeserializer;
-        LOGGER.debug("FastGenericDeserializer was generated and cached for reader schema: [" + readerSchema
-            + "], writer schema: [" + writerSchema + "]");
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug("FastGenericDeserializer was generated and cached for reader schema: ["
+              + readerSchema + "], writer schema: [" + writerSchema + "]");
+        }
       }
     }
 
