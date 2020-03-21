@@ -11,10 +11,12 @@ import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 import org.apache.avro.Schema;
 
@@ -25,6 +27,16 @@ public class Utils {
 
   // Cache the mapping between Schema and the corresponding fingerprint
   private static final Map<Schema, Long> SCHEMA_IDS_CACHE = new ConcurrentHashMap<>();
+
+  // Schema#hashCode is not performance efficient in Avro 1.4. It has been improved
+  // by caching hashcode in the later version. Change to use IdentityHashMap for
+  // Avro 1.4 helps to improve the cache lookup performance. However, it requires
+  // the client to resuse the schame instance. Or, it will ventually lead to
+  // "Too many schema objects" issue
+  // TODO - LRU Cache with size limit
+  private static final Map<Schema, Long> SCHEMA_IDS_CACHE_AVRO_14 = new IdentityHashMap<>();
+
+  private static ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();
 
   private Utils() {
   }
@@ -66,12 +78,32 @@ public class Utils {
    * @return fingerprint for the given schema
    */
   public static Long getSchemaFingerprint(Schema schema) {
-    Long schemaId = SCHEMA_IDS_CACHE.get(schema);
-    if (schemaId == null) {
-      schemaId = SchemaNormalization.parsingFingerprint64(schema);
-      SCHEMA_IDS_CACHE.put(schema, schemaId);
+    Long schemaId = null;
+    if (isAvro14()) {
+      // lookup cache and read lock
+      reentrantReadWriteLock.readLock().lock();
+      try {
+        schemaId = SCHEMA_IDS_CACHE_AVRO_14.get(schema);
+      } finally {
+        reentrantReadWriteLock.readLock().unlock();
+      }
+      // update cache and write lock
+      if (schemaId == null) {
+        try {
+          reentrantReadWriteLock.writeLock().lock();
+          schemaId = SchemaNormalization.parsingFingerprint64(schema);
+          SCHEMA_IDS_CACHE_AVRO_14.put(schema, schemaId);
+        } finally {
+          reentrantReadWriteLock.writeLock().unlock();
+        }
+      }
+    } else {
+      schemaId = SCHEMA_IDS_CACHE.get(schema);
+      if (schemaId == null) {
+        schemaId = SchemaNormalization.parsingFingerprint64(schema);
+        SCHEMA_IDS_CACHE.put(schema, schemaId);
+      }
     }
-
     return schemaId;
   }
 
