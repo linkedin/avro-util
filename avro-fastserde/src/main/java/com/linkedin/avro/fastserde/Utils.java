@@ -11,7 +11,6 @@ import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 import org.apache.avro.Schema;
+import org.jboss.util.collection.WeakIdentityHashMap;
 
 
 public class Utils {
@@ -29,14 +29,13 @@ public class Utils {
   private static final Map<Schema, Long> SCHEMA_IDS_CACHE = new ConcurrentHashMap<>();
 
   // Schema#hashCode is not performance efficient in Avro 1.4. It has been improved
-  // by caching hashcode in the later version. Change to use IdentityHashMap for
+  // by caching hashcode in the later version. Change to use WeakIdentityHashMap for
   // Avro 1.4 helps to improve the cache lookup performance. However, it requires
-  // the client to resuse the schame instance. Or, it will ventually lead to
-  // "Too many schema objects" issue
+  // the client to resuse the schame instance.
   // TODO - LRU Cache with size limit
-  private static final Map<Schema, Long> SCHEMA_IDS_CACHE_AVRO_14 = new IdentityHashMap<>();
+  private static final Map<Schema, Long> SCHEMA_IDS_CACHE_AVRO_14 = new WeakIdentityHashMap();
 
-  private static ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();
+  private static final ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();
 
   private Utils() {
   }
