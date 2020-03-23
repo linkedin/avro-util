@@ -1,6 +1,6 @@
 package com.linkedin.avro.fastserde;
 
-import com.linkedin.avro.compatibility.AvroCompatibilityHelper;
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -101,7 +101,7 @@ public final class FastSerdeTestsSupport {
 
   public static <T> Decoder genericDataAsDecoder(T data, Schema schema) {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    Encoder binaryEncoder = AvroCompatibilityHelper.newBufferedBinaryEncoder(baos);
+    Encoder binaryEncoder = AvroCompatibilityHelper.newBinaryEncoder(baos, true, null);
 
     try {
       GenericDatumWriter<T> writer = new GenericDatumWriter<>(schema);
@@ -120,7 +120,7 @@ public final class FastSerdeTestsSupport {
 
   public static <T> Decoder specificDataAsDecoder(T record, Schema schema) {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    Encoder binaryEncoder = AvroCompatibilityHelper.newBufferedBinaryEncoder(baos);
+    Encoder binaryEncoder = AvroCompatibilityHelper.newBinaryEncoder(baos, true, null);
 
     try {
       SpecificDatumWriter<T> writer = new SpecificDatumWriter<>(schema);

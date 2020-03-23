@@ -21,14 +21,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.linkedin.avroutil1.compatibility.avro15.backports;
+package com.linkedin.avroutil1.compatibility;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import org.apache.avro.Schema;
 
@@ -38,11 +37,9 @@ import org.apache.avro.Schema;
  * (see {@link #toParsingForm}) -- and fingerprints of canonical forms
  * ({@link #fingerprint}).
  */
-public class Avro19SchemaNormalization {
-
-  private Avro19SchemaNormalization() {
+public class SchemaNormalization {
+  private SchemaNormalization() {
   }
-
   /**
    * Returns "Parsing Canonical Form" of a schema as defined by Avro spec.
    */
@@ -55,7 +52,6 @@ public class Avro19SchemaNormalization {
       throw new RuntimeException(e);
     }
   }
-
   /**
    * Returns a fingerprint of a string of bytes. This string is presumed to
    * contain a canonical form of a schema. The algorithm used to compute the
@@ -80,11 +76,9 @@ public class Avro19SchemaNormalization {
       }
       return result;
     }
-
     MessageDigest md = MessageDigest.getInstance(fpName);
     return md.digest(data);
   }
-
   /**
    * Returns the 64-bit Rabin Fingerprint (as recommended in the Avro spec) of a
    * byte string.
@@ -95,7 +89,6 @@ public class Avro19SchemaNormalization {
       result = (result >>> 8) ^ FP64.FP_TABLE[(int) (result ^ b) & 0xff];
     return result;
   }
-
   /**
    * Returns {@link #fingerprint} applied to the parsing canonical form of the
    * supplied schema.
@@ -103,7 +96,6 @@ public class Avro19SchemaNormalization {
   public static byte[] parsingFingerprint(String fpName, Schema s) throws NoSuchAlgorithmException {
     return fingerprint(fpName, toParsingForm(s).getBytes(StandardCharsets.UTF_8));
   }
-
   /**
    * Returns {@link #fingerprint64} applied to the parsing canonical form of the
    * supplied schema.
@@ -111,74 +103,68 @@ public class Avro19SchemaNormalization {
   public static long parsingFingerprint64(Schema s) {
     return fingerprint64(toParsingForm(s).getBytes(StandardCharsets.UTF_8));
   }
-
   private static Appendable build(Map<String, String> env, Schema s, Appendable o) throws IOException {
     boolean firstTime = true;
     Schema.Type st = s.getType();
     switch (st) {
-    default: // boolean, bytes, double, float, int, long, null, string
-      return o.append('"').append(st.name().toLowerCase(Locale.ROOT)).append('"');
-
-    case UNION:
-      o.append('[');
-      for (Schema b : s.getTypes()) {
-        if (!firstTime)
-          o.append(',');
+      default: // boolean, bytes, double, float, int, long, null, string
+        return o.append('"').append(st.name()).append('"');
+      case UNION:
+        o.append('[');
+        for (Schema b : s.getTypes()) {
+          if (!firstTime)
+            o.append(',');
+          else
+            firstTime = false;
+          build(env, b, o);
+        }
+        return o.append(']');
+      case ARRAY:
+      case MAP:
+        o.append("{\"type\":\"").append(st.name()).append("\"");
+        if (st == Schema.Type.ARRAY)
+          build(env, s.getElementType(), o.append(",\"items\":"));
         else
-          firstTime = false;
-        build(env, b, o);
-      }
-      return o.append(']');
-
-    case ARRAY:
-    case MAP:
-      o.append("{\"type\":\"").append(st.name().toLowerCase(Locale.ROOT)).append("\"");
-      if (st == Schema.Type.ARRAY)
-        build(env, s.getElementType(), o.append(",\"items\":"));
-      else
-        build(env, s.getValueType(), o.append(",\"values\":"));
-      return o.append("}");
-
-    case ENUM:
-    case FIXED:
-    case RECORD:
-      String name = s.getFullName();
-      if (env.get(name) != null)
-        return o.append(env.get(name));
-      String qname = "\"" + name + "\"";
-      env.put(name, qname);
-      o.append("{\"name\":").append(qname);
-      o.append(",\"type\":\"").append(st.name().toLowerCase(Locale.ROOT)).append("\"");
-      if (st == Schema.Type.ENUM) {
-        o.append(",\"symbols\":[");
-        for (String enumSymbol : s.getEnumSymbols()) {
-          if (!firstTime)
-            o.append(',');
-          else
-            firstTime = false;
-          o.append('"').append(enumSymbol).append('"');
+          build(env, s.getValueType(), o.append(",\"values\":"));
+        return o.append("}");
+      case ENUM:
+      case FIXED:
+      case RECORD:
+        String name = s.getFullName();
+        if (env.get(name) != null)
+          return o.append(env.get(name));
+        String qname = "\"" + name + "\"";
+        env.put(name, qname);
+        o.append("{\"name\":").append(qname);
+        o.append(",\"type\":\"").append(st.name()).append("\"");
+        if (st == Schema.Type.ENUM) {
+          o.append(",\"symbols\":[");
+          for (String enumSymbol : s.getEnumSymbols()) {
+            if (!firstTime)
+              o.append(',');
+            else
+              firstTime = false;
+            o.append('"').append(enumSymbol).append('"');
+          }
+          o.append("]");
+        } else if (st == Schema.Type.FIXED) {
+          o.append(",\"size\":").append(Integer.toString(s.getFixedSize()));
+        } else { // st == Schema.Type.RECORD
+          o.append(",\"fields\":[");
+          for (Schema.Field f : s.getFields()) {
+            if (!firstTime)
+              o.append(',');
+            else
+              firstTime = false;
+            o.append("{\"name\":\"").append(f.name()).append("\"");
+            build(env, f.schema(), o.append(",\"type\":")).append("}");
+          }
+          o.append("]");
         }
-        o.append("]");
-      } else if (st == Schema.Type.FIXED) {
-        o.append(",\"size\":").append(Integer.toString(s.getFixedSize()));
-      } else { // st == Schema.Type.RECORD
-        o.append(",\"fields\":[");
-        for (Schema.Field f : s.getFields()) {
-          if (!firstTime)
-            o.append(',');
-          else
-            firstTime = false;
-          o.append("{\"name\":\"").append(f.name()).append("\"");
-          build(env, f.schema(), o.append(",\"type\":")).append("}");
-        }
-        o.append("]");
-      }
-      return o.append("}");
+        return o.append("}");
     }
   }
-
   final static long EMPTY64 = 0xc15d213aa4d7a795L;
-
   /* An inner class ensures that FP_TABLE initialized only when needed. */
   private static class FP64 {
     private static final long[] FP_TABLE = new long[256];

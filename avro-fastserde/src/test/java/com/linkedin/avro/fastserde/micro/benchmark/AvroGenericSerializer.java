@@ -1,6 +1,6 @@
 package com.linkedin.avro.fastserde.micro.benchmark;
 
-import com.linkedin.avro.compatibility.AvroCompatibilityHelper;
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.apache.avro.Schema;
@@ -22,7 +22,7 @@ public class AvroGenericSerializer<K> {
 
   public byte[] serialize(K object) throws Exception {
     ByteArrayOutputStream output = new ByteArrayOutputStream();
-    Encoder encoder = AvroCompatibilityHelper.newBufferedBinaryEncoder(output);
+    Encoder encoder = AvroCompatibilityHelper.newBinaryEncoder(output, true, null);
     try {
       datumWriter.write(object, encoder);
       encoder.flush();
@@ -45,7 +45,7 @@ public class AvroGenericSerializer<K> {
   }
 
   private byte[] serializeObjects(Iterable<K> objects, ByteArrayOutputStream output) throws Exception {
-    Encoder encoder = AvroCompatibilityHelper.newBufferedBinaryEncoder(output);
+    Encoder encoder = AvroCompatibilityHelper.newBinaryEncoder(output, true, null);
     try {
       objects.forEach(object -> {
         try {

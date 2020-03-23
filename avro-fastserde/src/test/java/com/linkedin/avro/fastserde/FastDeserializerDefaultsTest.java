@@ -1,12 +1,12 @@
 package com.linkedin.avro.fastserde;
 
-import com.linkedin.avro.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avro.fastserde.generated.avro.DefaultsEnum;
 import com.linkedin.avro.fastserde.generated.avro.DefaultsFixed;
 import com.linkedin.avro.fastserde.generated.avro.DefaultsNewEnum;
 import com.linkedin.avro.fastserde.generated.avro.DefaultsSubRecord;
 import com.linkedin.avro.fastserde.generated.avro.DefaultsTestRecord;
 import com.linkedin.avro.fastserde.generated.avro.TestRecord;
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;

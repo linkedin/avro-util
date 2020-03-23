@@ -1,6 +1,6 @@
 package com.linkedin.avro.fastserde;
 
-import com.linkedin.avro.compatibility.AvroCompatibilityHelper;
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -127,7 +127,7 @@ public class FastDeserializerGeneratorForReuseTest {
 
   private static byte[] serialize(GenericRecord record, Schema schema) throws IOException {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    Encoder encoder = AvroCompatibilityHelper.newBufferedBinaryEncoder(baos);
+    Encoder encoder = AvroCompatibilityHelper.newBinaryEncoder(baos, true, null);
     DatumWriter datumWriter = new GenericDatumWriter(schema);
     datumWriter.write(record, encoder);
     encoder.flush();

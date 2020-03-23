@@ -1,8 +1,8 @@
 package com.linkedin.avro.fastserde;
 
-import com.linkedin.avro.compatibility.AvroCompatibilityHelper;
-import com.linkedin.avro.compatibility.AvroVersion;
-import com.linkedin.avro.compatibility.SchemaNormalization;
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
+import com.linkedin.avroutil1.compatibility.AvroVersion;
+import com.linkedin.avroutil1.compatibility.SchemaNormalization;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;

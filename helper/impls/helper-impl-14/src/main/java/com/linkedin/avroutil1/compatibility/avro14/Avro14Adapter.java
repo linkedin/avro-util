@@ -16,7 +16,7 @@ import com.linkedin.avroutil1.compatibility.SchemaParseResult;
 import com.linkedin.avroutil1.compatibility.SchemaValidator;
 import com.linkedin.avroutil1.compatibility.avro14.backports.Avro14DefaultValuesCache;
 import com.linkedin.avroutil1.compatibility.avro14.backports.Avro18BufferedBinaryEncoder;
-import com.linkedin.avroutil1.compatibility.avro14.backports.Avro19SchemaNormalization;
+import com.linkedin.avroutil1.compatibility.SchemaNormalization;
 import com.linkedin.avroutil1.compatibility.backports.ObjectInputToInputStreamAdapter;
 import com.linkedin.avroutil1.compatibility.backports.ObjectOutputToOutputStreamAdapter;
 import java.io.IOException;
@@ -137,7 +137,7 @@ public class Avro14Adapter implements AvroAdapter {
 
   @Override
   public String toParsingForm(Schema s) {
-    return Avro19SchemaNormalization.toParsingForm(s);
+    return SchemaNormalization.toParsingForm(s);
   }
 
   @Override

@@ -1,8 +1,8 @@
 package com.linkedin.avro.fastserde;
 
-import com.linkedin.avro.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avro.fastserde.generated.avro.TestEnum;
 import com.linkedin.avro.fastserde.generated.avro.TestRecord;
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.apache.avro.Schema;
@@ -36,7 +36,7 @@ public class FastDatumWriterTest {
 
     // when
     fastSpecificDatumWriter.write(testRecord,
-        AvroCompatibilityHelper.newBufferedBinaryEncoder(new ByteArrayOutputStream()));
+        AvroCompatibilityHelper.newBinaryEncoder(new ByteArrayOutputStream(), true, null));
 
     // then
     FastSerializer<TestRecord> fastSpecificSerializer =
@@ -58,7 +58,7 @@ public class FastDatumWriterTest {
     record.put("test", "test");
 
     // when
-    fastGenericDatumReader.write(record, AvroCompatibilityHelper.newBufferedBinaryEncoder(new ByteArrayOutputStream()));
+    fastGenericDatumReader.write(record, AvroCompatibilityHelper.newBinaryEncoder(new ByteArrayOutputStream(), true, null));
 
     // then
     FastSerializer<GenericRecord> fastGenericSerializer =
