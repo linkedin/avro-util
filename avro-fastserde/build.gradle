@@ -31,7 +31,7 @@ if (USE_AVRO_14) {
 }
 
 dependencies {
-  compile project(":avro-migration-helper")
+  compile project(":helper:helper")
 
   compile "org.slf4j:slf4j-log4j12:1.7.14"
   compile "org.apache.commons:commons-lang3:3.4"
@@ -82,7 +82,7 @@ for (String avroVersion : avroVersions) {
     }
 
     classpath = project.sourceSets.test.runtimeClasspath.filter {
-      File file -> !(file.name.contains("avro") && !file.name.contains("avro-migration-helper"))
+      File file -> !(file.name.contains("avro") && !file.name.contains("helper"))
     }.plus (configurations."avro${avroVersion}")
 
     def gradleIsFun = avroVersion

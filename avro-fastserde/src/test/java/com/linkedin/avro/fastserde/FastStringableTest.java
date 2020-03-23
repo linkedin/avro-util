@@ -1,9 +1,9 @@
 package com.linkedin.avro.fastserde;
 
-import com.linkedin.avro.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avro.fastserde.generated.avro.AnotherSubRecord;
 import com.linkedin.avro.fastserde.generated.avro.StringableRecord;
 import com.linkedin.avro.fastserde.generated.avro.StringableSubRecord;
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -189,7 +189,7 @@ public class FastStringableTest {
 
   public <T> Decoder writeWithFastAvro(T data, Schema schema) {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    Encoder binaryEncoder = AvroCompatibilityHelper.newBufferedBinaryEncoder(baos);
+    Encoder binaryEncoder = AvroCompatibilityHelper.newBinaryEncoder(baos, true, null);
 
     try {
       FastSpecificSerializerGenerator<T> fastSpecificSerializerGenerator =

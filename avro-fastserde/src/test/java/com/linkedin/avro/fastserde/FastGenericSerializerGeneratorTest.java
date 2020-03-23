@@ -1,6 +1,6 @@
 package com.linkedin.avro.fastserde;
 
-import com.linkedin.avro.compatibility.AvroCompatibilityHelper;
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.net.URL;
@@ -408,7 +408,7 @@ public class FastGenericSerializerGeneratorTest {
 
   public <T> Decoder dataAsBinaryDecoder(T data, Schema schema) {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    Encoder binaryEncoder = AvroCompatibilityHelper.newBufferedBinaryEncoder(baos); //new BinaryEncoder(baos);
+    Encoder binaryEncoder = AvroCompatibilityHelper.newBinaryEncoder(baos, true, null); //new BinaryEncoder(baos);
 
     try {
       FastGenericSerializerGenerator<T> fastGenericSerializerGenerator =

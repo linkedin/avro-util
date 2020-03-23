@@ -1,6 +1,6 @@
 package com.linkedin.avro.fastserde;
 
-import com.linkedin.avro.compatibility.AvroCompatibilityHelper;
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;

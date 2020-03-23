@@ -1,10 +1,10 @@
 package com.linkedin.avro.fastserde;
 
-import com.linkedin.avro.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avro.fastserde.generated.avro.SubRecord;
 import com.linkedin.avro.fastserde.generated.avro.TestEnum;
 import com.linkedin.avro.fastserde.generated.avro.TestFixed;
 import com.linkedin.avro.fastserde.generated.avro.TestRecord;
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.net.URL;
@@ -361,7 +361,7 @@ public class FastSpecificSerializerGeneratorTest {
 
   public <T> Decoder dataAsDecoder(T data, Schema schema) {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    Encoder binaryEncoder = AvroCompatibilityHelper.newBufferedBinaryEncoder(baos);
+    Encoder binaryEncoder = AvroCompatibilityHelper.newBinaryEncoder(baos, true, null);
 
     try {
       FastSpecificSerializerGenerator<T> fastSpecificSerializerGenerator =
