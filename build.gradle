@@ -27,7 +27,8 @@ plugins {
 group = 'com.linkedin.avroutil1'
 
 //does not include "helper" as that module has its own publishing section (because fat jar)
-Set<String> projectsToPublish = new HashSet<>(Arrays.asList("avro-migration-helper", "avro-codegen", "avro-fastserde"))
+//does not include "avro-fastserde" as that module has its own publishing section (because we want it to depend on the fat jar)
+Set<String> projectsToPublish = new HashSet<>(Arrays.asList("avro-migration-helper", "avro-codegen"))
 Set<String> projectsToRecordGitInfoFor = new HashSet<>(projectsToPublish)
 projectsToRecordGitInfoFor.add("helper")
 
