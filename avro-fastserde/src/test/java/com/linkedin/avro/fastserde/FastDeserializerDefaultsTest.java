@@ -7,6 +7,7 @@ import com.linkedin.avro.fastserde.generated.avro.DefaultsSubRecord;
 import com.linkedin.avro.fastserde.generated.avro.DefaultsTestRecord;
 import com.linkedin.avro.fastserde.generated.avro.TestRecord;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -25,8 +26,12 @@ import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
+import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.Decoder;
+import org.apache.avro.io.DecoderFactory;
+import org.apache.avro.io.Encoder;
 import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.util.Utf8;
 import org.testng.Assert;
@@ -54,6 +59,105 @@ public class FastDeserializerDefaultsTest {
 
     classLoader = URLClassLoader.newInstance(new URL[]{tempDir.toURI().toURL()},
         FastDeserializerDefaultsTest.class.getClassLoader());
+  }
+
+  public byte[] serialize(Object object, GenericDatumWriter writer) throws Exception {
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    Encoder encoder = AvroCompatibilityHelper.newBinaryEncoder(output, true, null);
+
+    try {
+      writer.write(object, encoder);
+      encoder.flush();
+    } catch (IOException e) {
+      throw new Exception("Could not serialize the Avro object");
+    } finally {
+      if (output != null) {
+        try {
+          output.close();
+        } catch (IOException e) {
+        }
+      }
+    }
+    return output.toByteArray();
+  }
+
+  @Test
+  public void testFastFloatArraySerDes() throws IOException {
+    int array_size = 2500, iteration = 100_000;
+    long total = 0, endTime, startTime, w = 0;
+    String schemaString = "{\"type\":\"record\",\"name\":\"KeyRecord\",\"fields\":[{\"name\":\"name\",\"type\":\"string\",\"doc\":\"name field\"}, {\"name\":\"inventory\", \"type\" : {  \"type\" : \"array\", \"items\" : \"float\" }}] }";
+
+    Schema oldRecordSchema = Schema.parse(schemaString);
+    GenericDatumWriter<Object> writer = new GenericDatumWriter<>(oldRecordSchema);
+    FastDeserializer deserializer = new FastGenericDeserializerGenerator(oldRecordSchema, oldRecordSchema, tempDir, classLoader,
+        null).generateDeserializer();
+
+    // warm up cycles
+    for (int i = 0; i < 1000; i++) {
+      GenericData.Record record = new GenericData.Record(oldRecordSchema);
+      List<Float> a = new ArrayList();
+
+      for (int l = 0; l < array_size; l++) {
+        a.add((float) l);
+      }
+      record.put("name", "test");
+      record.put("inventory", a);
+
+      byte[] bytes = null;
+
+      try {
+        bytes = serialize(record, writer);
+      } catch (Exception ignored) {
+
+      }
+      BinaryDecoder decoder = DecoderFactory.defaultFactory().createBinaryDecoder(bytes, null);
+      try {
+        deserializer.deserialize(null, (BinaryDecoder)decoder);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    startTime = System.currentTimeMillis();
+    for (int i = 0; i < iteration; i++) {
+      GenericData.Record record = new GenericData.Record(oldRecordSchema);
+      List<Float> a = new ArrayList();
+
+      for (int l = 0; l < array_size; l++) {
+        a.add((float) l);
+      }
+      record.put("name", "test");
+      record.put("inventory", a);
+
+      GenericRecord testRecord;
+      byte[] bytes = null;
+
+      try {
+        bytes = serialize(record, writer);
+      } catch (Exception e) {
+
+      }
+      long before = System.currentTimeMillis();
+
+      BinaryDecoder decoder = DecoderFactory.defaultFactory().createBinaryDecoder(bytes, null);
+      try {
+        testRecord = (GenericRecord) deserializer.deserialize(null, decoder);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+      long after = System.currentTimeMillis();
+
+      List<Float> list = (List<Float>) (testRecord).get(1);
+      w += list.get(0);
+
+      int l = 0;
+      for (Float aFloat : list) {
+        Assert.assertEquals(l++, (int)aFloat.floatValue());
+      }
+      total += (after - before);
+    }
+    endTime = System.currentTimeMillis();
+    System.out.println(String.format("time taken for fastAvro to ser+deser %d records : %d, deser time: %d", iteration, endTime - startTime, total));
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")

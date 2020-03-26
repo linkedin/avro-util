@@ -1,9 +1,13 @@
 package com.linkedin.avro.fastserde;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.AbstractList;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
@@ -25,21 +29,32 @@ import org.apache.avro.io.Decoder;
  * - It re-implements {@link #compareTo(GenericArray)}, {@link #equals(Object)} and {@link #hashCode()}
  *   in order to leverage the primitive types, rather than causing unintended boxing.
  *
- * TODO: Provide arrays for other primitive types.
+ *   Using ByteBuffer to speed up float-array deserialization: We allocate ByteBuffer to store the raw bytes from
+ *   BinaryDecoder and deserialize them only during array element access. We cache the results into the elements array
+ *   after the first get access of the array so that sub-sequent array access are fast.
+ *
+ *   TODO: Provide arrays for other primitive types.
  */
 public class PrimitiveFloatList extends AbstractList<Float>
     implements GenericArray<Float>, Comparable<GenericArray<Float>> {
   private static final float[] EMPTY = new float[0];
+  private static final int FLOAT_SIZE = Float.BYTES;
   private static final Schema FLOAT_SCHEMA = Schema.create(Schema.Type.FLOAT);
   private static final Schema SCHEMA = Schema.createArray(FLOAT_SCHEMA);
-
   private int size;
+  private int byteBufferCount;
   private float[] elements = EMPTY;
+  private List<ByteBuffer> byteBuffers;
+  private boolean isCached = false;
 
   public PrimitiveFloatList(int capacity) {
     if (capacity != 0) {
       elements = new float[capacity];
     }
+  }
+
+  public PrimitiveFloatList() {
+    byteBuffers = new ArrayList<>(2);
   }
 
   public PrimitiveFloatList(Collection<Float> c) {
@@ -60,44 +75,73 @@ public class PrimitiveFloatList extends AbstractList<Float>
    * @throws IOException on io errors
    */
   public static Object readPrimitiveFloatArray(Object old, Decoder in) throws IOException {
-    long l = in.readArrayStart();
-    if (l > 0) {
-      PrimitiveFloatList array = (PrimitiveFloatList) newPrimitiveFloatArray(old, (int) l);
+    long length = in.readArrayStart();
+    long totalLength = 0;
+
+    if (length > 0) {
+      PrimitiveFloatList array = (PrimitiveFloatList) newPrimitiveFloatArray(old);
+      int cnt = 0;
+
       do {
-        for (long i = 0; i < l; i++) {
-          array.addPrimitive(in.readFloat());
+        ByteBuffer byteBuffer;
+        // Allocate ByeBuffer of size array length * Float.BYTES to hold the array values
+        if (array.byteBuffers.size() > cnt && (array.byteBuffers.get(cnt).limit() > (length * FLOAT_SIZE))) {
+          byteBuffer = array.byteBuffers.get(cnt);
+          byteBuffer.clear();
+        } else {
+          byteBuffer = ByteBuffer.allocate((int)length * FLOAT_SIZE).order(ByteOrder.LITTLE_ENDIAN);
         }
-        l = in.arrayNext();
-      } while (l > 0);
+        in.readFixed(byteBuffer.array(), 0, (int)(length * FLOAT_SIZE));
+        array.byteBuffers.add(cnt++, byteBuffer);
+        totalLength += length;
+        length = in.arrayNext();
+      } while (length > 0);
+
+      array.byteBufferCount = cnt;
+      setupElements(array, (int)totalLength);
       return array;
     } else {
-      return newPrimitiveFloatArray(old, 0);
+      return new PrimitiveFloatList(0);
     }
   }
 
+  private static void setupElements(PrimitiveFloatList list, int total_size) {
+    if (list.elements.length != 0) {
+      if (total_size <= list.getCapacity()) {
+        // reuse the float array directly
+        list.clear();
+      } else {
+        list.resizeAndClear(total_size);
+      }
+      list.size = total_size;
+      return;
+    }
+    list.elements = new float[total_size];
+    list.size = total_size;
+  }
+
   /**
-   * @param expected {@link Schema} to inspect
-   * @return true if the {@code expected} SCHEMA is of the right type to decode as a {@link PrimitiveFloatList}
-   *         false otherwise
-   */
+     * @param expected {@link Schema} to inspect
+     * @return true if the {@code expected} SCHEMA is of the right type to decode as a {@link PrimitiveFloatList}
+     *         false otherwise
+     */
   public static boolean isFloatArray(Schema expected) {
     return expected != null && Schema.Type.ARRAY.equals(expected.getType()) && FLOAT_SCHEMA.equals(
         expected.getElementType());
   }
 
-  private static Object newPrimitiveFloatArray(Object old, int size) {
+  private static Object newPrimitiveFloatArray(Object old) {
     if (old instanceof PrimitiveFloatList) {
       PrimitiveFloatList oldFloatList = (PrimitiveFloatList) old;
-      if (size <= oldFloatList.getCapacity()) {
-        // reuse the float array directly
-        oldFloatList.clear();
-        return old;
-      } else {
-        oldFloatList.resizeAndClear(size);
-        return oldFloatList;
+      for (ByteBuffer byteBuffer : oldFloatList.byteBuffers)  {
+        byteBuffer.clear();
       }
+      oldFloatList.isCached = false;
+      oldFloatList.size = 0;
+      return oldFloatList;
     } else {
-      return new PrimitiveFloatList(size);
+      // Just a place holder, will set up the elements later.
+      return new PrimitiveFloatList();
     }
   }
 
@@ -137,7 +181,9 @@ public class PrimitiveFloatList extends AbstractList<Float>
 
       @Override
       public Float next() {
-        return elements[position++];
+        float f = getPrimitive(position);
+        position++;
+        return f;
       }
 
       @Override
@@ -151,6 +197,7 @@ public class PrimitiveFloatList extends AbstractList<Float>
     if (i >= size) {
       throw new IndexOutOfBoundsException("Index " + i + " out of bounds.");
     }
+    cacheFromByteBuffer();
     return elements[i];
   }
 
@@ -167,6 +214,7 @@ public class PrimitiveFloatList extends AbstractList<Float>
    * @return true?
    */
   public boolean addPrimitive(float o) {
+    cacheFromByteBuffer();
     if (size == elements.length) {
       float[] newElements = new float[(size * 3) / 2 + 1];
       System.arraycopy(elements, 0, newElements, 0, size);
@@ -186,6 +234,7 @@ public class PrimitiveFloatList extends AbstractList<Float>
     if (location > size || location < 0) {
       throw new IndexOutOfBoundsException("Index " + location + " out of bounds.");
     }
+    cacheFromByteBuffer();
     if (size == elements.length) {
       float[] newElements = new float[(size * 3) / 2 + 1];
       System.arraycopy(elements, 0, newElements, 0, size);
@@ -201,6 +250,7 @@ public class PrimitiveFloatList extends AbstractList<Float>
     if (i >= size) {
       throw new IndexOutOfBoundsException("Index " + i + " out of bounds.");
     }
+    cacheFromByteBuffer();
     Float response = elements[i];
     elements[i] = o;
 
@@ -212,6 +262,7 @@ public class PrimitiveFloatList extends AbstractList<Float>
     if (i >= size) {
       throw new IndexOutOfBoundsException("Index " + i + " out of bounds.");
     }
+    cacheFromByteBuffer();
     Float result = elements[i];
     --size;
     System.arraycopy(elements, i + 1, elements, i, (size - i));
@@ -219,7 +270,26 @@ public class PrimitiveFloatList extends AbstractList<Float>
     return result;
   }
 
+  private void cacheFromByteBuffer() {
+    if (isCached) {
+      return;
+    }
+    synchronized (this) {
+      if (!isCached) {
+        for (int i = 0; i < byteBufferCount; i++) {
+          ByteBuffer byteBuffer = byteBuffers.get(i);
+          int length = byteBuffer.limit() >> 2;
+          for (int j = 0; j < length; j++) {
+            elements[j] = byteBuffer.getFloat(j * FLOAT_SIZE);
+          }
+        }
+        isCached = true;
+      }
+    }
+  }
+
   public float peekPrimitive() {
+    cacheFromByteBuffer();
     return (size < elements.length) ? elements[size] : null;
   }
 
@@ -230,6 +300,7 @@ public class PrimitiveFloatList extends AbstractList<Float>
 
   @Override
   public int compareTo(GenericArray<Float> that) {
+    cacheFromByteBuffer();
     if (that instanceof PrimitiveFloatList) {
       PrimitiveFloatList thatPrimitiveList = (PrimitiveFloatList) that;
       if (this.size == thatPrimitiveList.size) {
@@ -253,6 +324,7 @@ public class PrimitiveFloatList extends AbstractList<Float>
 
   @Override
   public void reverse() {
+    cacheFromByteBuffer();
     int left = 0;
     int right = elements.length - 1;
 
@@ -283,6 +355,7 @@ public class PrimitiveFloatList extends AbstractList<Float>
 
   @Override
   public boolean equals(Object o) {
+    cacheFromByteBuffer();
     if (o instanceof GenericArray) {
       return compareTo((GenericArray) o) == 0;
     } else {
@@ -292,6 +365,7 @@ public class PrimitiveFloatList extends AbstractList<Float>
 
   @Override
   public int hashCode() {
+    cacheFromByteBuffer();
     int hashCode = 1;
     for (int i = 0; i < this.size; i++) {
       hashCode = 31 * hashCode + Float.hashCode(elements[i]);
