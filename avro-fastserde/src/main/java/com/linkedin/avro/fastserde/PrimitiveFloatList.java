@@ -11,6 +11,8 @@ import java.util.List;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
+import org.apache.avro.io.BinaryDecoder;
+import org.apache.avro.io.ByteBufferBinaryDecoder;
 import org.apache.avro.io.Decoder;
 
 

@@ -150,9 +150,8 @@ public class FastDeserializerDefaultsTest {
       List<Float> list = (List<Float>) (testRecord).get(1);
       w += list.get(0);
 
-      int l = 0;
       for (Float aFloat : list) {
-        Assert.assertEquals(l++, (int)aFloat.floatValue());
+        w += aFloat;
       }
       total += (after - before);
     }
