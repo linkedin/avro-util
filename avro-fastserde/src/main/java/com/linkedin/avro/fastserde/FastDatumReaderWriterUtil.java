@@ -48,10 +48,10 @@ public class FastDatumReaderWriterUtil {
   private static final ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();
 
   //TODO :  LRU cache
-  private static final Map<SchemaPair, FastGenericDatumReader> fastGenericDatumReaderCache = new ConcurrentHashMap<>();
+  private static final Map<SchemaPair, FastGenericDatumReader> fastGenericDatumReaderCache = new FastAvroConcurrentHashMap<>();
   private static final Map<Schema, FastGenericDatumWriter> fastGenericDatumWriterCache = new WeakIdentityHashMap();
 
-  private static final Map<SchemaPair, FastSpecificDatumReader> fastSpecificDatumReaderCache = new ConcurrentHashMap<>();
+  private static final Map<SchemaPair, FastSpecificDatumReader> fastSpecificDatumReaderCache = new FastAvroConcurrentHashMap<>();
   private static final Map<Schema, FastSpecificDatumWriter> fastSpecificDatumWriterCache = new WeakIdentityHashMap();
 
   private FastDatumReaderWriterUtil() {
@@ -78,8 +78,8 @@ public class FastDatumReaderWriterUtil {
     }
     // update cache and write lock
     if (fastDatumWriter == null) {
+      reentrantReadWriteLock.writeLock().lock();
       try {
-        reentrantReadWriteLock.writeLock().lock();
         fastDatumWriter = new FastGenericDatumWriter<>(writerSchema);
         fastGenericDatumWriterCache.put(writerSchema, fastDatumWriter);
       } finally {
@@ -111,8 +111,8 @@ public class FastDatumReaderWriterUtil {
     }
     // update cache and write lock
     if (fastDatumWriter == null) {
+      reentrantReadWriteLock.writeLock().lock();
       try {
-        reentrantReadWriteLock.writeLock().lock();
         fastDatumWriter = new FastSpecificDatumWriter<>(writerSchema);
         fastSpecificDatumWriterCache.put(writerSchema, fastDatumWriter);
       } finally {
