@@ -43,7 +43,6 @@ import static com.linkedin.avro.fastserde.FastSerdeTestsSupport.*;
 
 
 public class FastDeserializerDefaultsTest {
-
   private File tempDir;
   private ClassLoader classLoader;
 
@@ -82,7 +81,7 @@ public class FastDeserializerDefaultsTest {
   }
 
   @Test
-  public void testFastFloatArraySerDes() throws IOException {
+  public void testFastFloatArraySerDes()  {
     int array_size = 2500, iteration = 100_000;
     long total = 0, endTime, startTime, w = 0;
     String schemaString = "{\"type\":\"record\",\"name\":\"KeyRecord\",\"fields\":[{\"name\":\"name\",\"type\":\"string\",\"doc\":\"name field\"}, {\"name\":\"inventory\", \"type\" : {  \"type\" : \"array\", \"items\" : \"float\" }}] }";
@@ -149,10 +148,8 @@ public class FastDeserializerDefaultsTest {
 
       List<Float> list = (List<Float>) (testRecord).get(1);
       w += list.get(0);
-
-      int l = 0;
       for (Float aFloat : list) {
-        Assert.assertEquals(l++, (int)aFloat.floatValue());
+        w += aFloat;
       }
       total += (after - before);
     }

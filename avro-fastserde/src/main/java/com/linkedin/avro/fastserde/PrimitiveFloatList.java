@@ -31,7 +31,8 @@ import org.apache.avro.io.Decoder;
  *
  *   Using ByteBuffer to speed up float-array deserialization: We allocate ByteBuffer to store the raw bytes from
  *   BinaryDecoder and deserialize them only during array element access. We cache the results into the elements array
- *   after the first get access of the array so that sub-sequent array access are fast.
+ *   after the first get access of the array so that sub-sequent array access are fast. For reuse case, we try to reuse
+ *   the existing ByteBuffers as long as their capacity can hold the array.
  *
  *   TODO: Provide arrays for other primitive types.
  */
@@ -84,14 +85,15 @@ public class PrimitiveFloatList extends AbstractList<Float>
 
       do {
         ByteBuffer byteBuffer;
-        // Allocate ByeBuffer of size array length * Float.BYTES to hold the array values
-        if (array.byteBuffers.size() > cnt && (array.byteBuffers.get(cnt).limit() > (length * FLOAT_SIZE))) {
+        long byteSize = length * FLOAT_SIZE;
+        // Check if we can reuse the old record's byteBuffers, else allocate a new one.
+        if (array.byteBuffers.size() > cnt && array.byteBuffers.get(cnt).limit() > byteSize) {
           byteBuffer = array.byteBuffers.get(cnt);
           byteBuffer.clear();
         } else {
-          byteBuffer = ByteBuffer.allocate((int)length * FLOAT_SIZE).order(ByteOrder.LITTLE_ENDIAN);
+          byteBuffer = ByteBuffer.allocate((int)byteSize).order(ByteOrder.LITTLE_ENDIAN);
         }
-        in.readFixed(byteBuffer.array(), 0, (int)(length * FLOAT_SIZE));
+        in.readFixed(byteBuffer.array(), 0, (int)byteSize);
         array.byteBuffers.add(cnt++, byteBuffer);
         totalLength += length;
         length = in.arrayNext();
@@ -105,19 +107,19 @@ public class PrimitiveFloatList extends AbstractList<Float>
     }
   }
 
-  private static void setupElements(PrimitiveFloatList list, int total_size) {
+  private static void setupElements(PrimitiveFloatList list, int totalSize) {
     if (list.elements.length != 0) {
-      if (total_size <= list.getCapacity()) {
+      if (totalSize <= list.getCapacity()) {
         // reuse the float array directly
         list.clear();
       } else {
-        list.resizeAndClear(total_size);
+        list.resizeAndClear(totalSize);
       }
-      list.size = total_size;
+      list.size = totalSize;
       return;
     }
-    list.elements = new float[total_size];
-    list.size = total_size;
+    list.elements = new float[totalSize];
+    list.size = totalSize;
   }
 
   /**

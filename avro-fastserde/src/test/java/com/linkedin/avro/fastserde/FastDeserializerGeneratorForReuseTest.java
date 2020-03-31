@@ -193,6 +193,7 @@ public class FastDeserializerGeneratorForReuseTest {
     GenericRecord deserRecord = deserializer.deserialize(getDecoder(serializedBytes));
 
     // Generate a different record
+    // new record array length larger than reuse record.
     GenericData.Record record1 = new GenericData.Record(oldRecordSchema);
     record1.put("name", "test1");
     arrayList.add((float)30);
@@ -203,6 +204,7 @@ public class FastDeserializerGeneratorForReuseTest {
     List<Float> list = (List<Float>)genericRecord.get(1);
     Assert.assertEquals(list.size(), 3);
 
+    // new record array length shorter than reuse record.
     arrayList.clear();
     arrayList.add((float)10);
     record1.put("inventory", arrayList);
