@@ -43,7 +43,7 @@ public class CodeTransformationsAvro19Test {
     Schema schema = AvroCompatibilityHelper.parse(avsc);
     String originalCode = runNativeCodegen(schema);
 
-    String transformedCode = CodeTransformations.transformParseCalls(originalCode, AvroVersion.earliest(), AvroVersion.latest());
+    String transformedCode = CodeTransformations.transformParseCalls(originalCode, AvroVersion.AVRO_1_9, AvroVersion.earliest(), AvroVersion.latest());
 
     Class<?> transformedClass = CompilerUtils.CACHED_COMPILER.loadFromJava(schema.getFullName(), transformedCode);
     Assert.assertNotNull(transformedClass);
@@ -55,7 +55,7 @@ public class CodeTransformationsAvro19Test {
     Schema schema = AvroCompatibilityHelper.parse(avsc);
     String originalCode = runNativeCodegen(schema);
 
-    String transformedCode = CodeTransformations.transformParseCalls(originalCode, AvroVersion.earliest(), AvroVersion.latest());
+    String transformedCode = CodeTransformations.transformParseCalls(originalCode, AvroVersion.AVRO_1_9, AvroVersion.earliest(), AvroVersion.latest());
 
     Class<?> transformedClass = CompilerUtils.CACHED_COMPILER.loadFromJava(schema.getFullName(), transformedCode);
     Assert.assertNotNull(transformedClass);
