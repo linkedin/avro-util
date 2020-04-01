@@ -43,6 +43,7 @@ dependencies {
   compile "org.apache.commons:commons-lang3:3.4"
   compile "com.sun.codemodel:codemodel:2.6"
   compile "com.google.guava:guava:19.0"
+  compile "org.jboss:jboss-common-core:2.5.0.Final"
 
   // By default, the compile and testCompile configuration is using avro-1.8, and
   // if you need to switch to an old version of Avro, we need to make
