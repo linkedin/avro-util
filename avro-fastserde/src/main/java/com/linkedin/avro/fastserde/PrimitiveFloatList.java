@@ -2,12 +2,9 @@ package com.linkedin.avro.fastserde;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.AbstractList;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
@@ -43,10 +40,9 @@ public class PrimitiveFloatList extends AbstractList<Float>
   private static final Schema FLOAT_SCHEMA = Schema.create(Schema.Type.FLOAT);
   private static final Schema SCHEMA = Schema.createArray(FLOAT_SCHEMA);
   private int size;
-  private int byteBufferCount;
   private float[] elements = EMPTY;
-  private List<ByteBuffer> byteBuffers;
   private boolean isCached = false;
+  private CompositeByteBuffer byteBuffer;
 
   public PrimitiveFloatList(int capacity) {
     if (capacity != 0) {
@@ -55,7 +51,7 @@ public class PrimitiveFloatList extends AbstractList<Float>
   }
 
   public PrimitiveFloatList() {
-    byteBuffers = new ArrayList<>(2);
+    byteBuffer = new CompositeByteBuffer();
   }
 
   public PrimitiveFloatList(Collection<Float> c) {
@@ -81,25 +77,17 @@ public class PrimitiveFloatList extends AbstractList<Float>
 
     if (length > 0) {
       PrimitiveFloatList array = (PrimitiveFloatList) newPrimitiveFloatArray(old);
-      int cnt = 0;
+      int index = 0;
 
       do {
-        ByteBuffer byteBuffer;
         long byteSize = length * FLOAT_SIZE;
-        // Check if we can reuse the old record's byteBuffers, else allocate a new one.
-        if (array.byteBuffers.size() > cnt && array.byteBuffers.get(cnt).limit() > byteSize) {
-          byteBuffer = array.byteBuffers.get(cnt);
-          byteBuffer.clear();
-        } else {
-          byteBuffer = ByteBuffer.allocate((int)byteSize).order(ByteOrder.LITTLE_ENDIAN);
-        }
+        ByteBuffer byteBuffer = array.byteBuffer.allocate(index++, (int)byteSize);
         in.readFixed(byteBuffer.array(), 0, (int)byteSize);
-        array.byteBuffers.add(cnt++, byteBuffer);
         totalLength += length;
         length = in.arrayNext();
       } while (length > 0);
 
-      array.byteBufferCount = cnt;
+      array.byteBuffer.setByteBufferCount(index);
       setupElements(array, (int)totalLength);
       return array;
     } else {
@@ -135,9 +123,7 @@ public class PrimitiveFloatList extends AbstractList<Float>
   private static Object newPrimitiveFloatArray(Object old) {
     if (old instanceof PrimitiveFloatList) {
       PrimitiveFloatList oldFloatList = (PrimitiveFloatList) old;
-      for (ByteBuffer byteBuffer : oldFloatList.byteBuffers)  {
-        byteBuffer.clear();
-      }
+      oldFloatList.byteBuffer.clear();
       oldFloatList.isCached = false;
       oldFloatList.size = 0;
       return oldFloatList;
@@ -278,13 +264,7 @@ public class PrimitiveFloatList extends AbstractList<Float>
     }
     synchronized (this) {
       if (!isCached) {
-        for (int i = 0; i < byteBufferCount; i++) {
-          ByteBuffer byteBuffer = byteBuffers.get(i);
-          int length = byteBuffer.limit() >> 2;
-          for (int j = 0; j < length; j++) {
-            elements[j] = byteBuffer.getFloat(j * FLOAT_SIZE);
-          }
-        }
+        byteBuffer.setArray(elements);
         isCached = true;
       }
     }
