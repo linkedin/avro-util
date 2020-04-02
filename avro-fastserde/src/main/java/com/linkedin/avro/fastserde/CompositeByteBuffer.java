@@ -42,9 +42,6 @@ public class CompositeByteBuffer {
     byteBufferCount = count;
   }
 
-  public float readFloat(int i) {
-    return byteBuffers.get(0).getFloat(i*4);
-  }
   public void setArray(float[] array) {
     int k = 0;
     for (int i = 0; i < byteBufferCount; i++) {
