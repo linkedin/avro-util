@@ -6,6 +6,7 @@
 
 plugins {
   id "java-library"
+  id "me.champeau.gradle.jmh" version "0.5.0"
 }
 
 configurations {
@@ -36,6 +37,15 @@ if (USE_AVRO_14) {
   USE_AVRO_18 = false
 }
 
+jmh {
+  profilers = ['gc', 'pauses']
+  duplicateClassesStrategy = 'warn'
+  clean {
+    delete "$buildDir/jmh-generated-classes"
+    delete "$buildDir/jmh-generated-sources"
+  }
+}
+
 dependencies {
   compile project(":helper:helper")
 
@@ -53,6 +63,8 @@ dependencies {
   compileOnly AVRO_LIB
 
   testCompileOnly AVRO_LIB
+
+  jmh AVRO_LIB
 
   testCompile 'org.testng:testng:6.14.3'
   testCompile "org.openjdk.jmh:jmh-core:1.19"
@@ -72,6 +84,10 @@ dependencies {
   avro18 ("org.apache.avro:avro-compiler:1.8.2") {
     exclude group: "org.slf4j"
   }
+}
+
+compileJmhJava {
+  dependsOn compileTestJava
 }
 
 def avroVersions = ["14", "17", "18"]
@@ -125,6 +141,10 @@ task generateAvroClasses18(type:Exec) {
 task whetherToCompileAvroClasses18() {
   if (USE_AVRO_18) {
     dependsOn generateAvroClasses18
+  } else if (USE_AVRO_17) {
+    dependsOn generateAvroClasses17
+  } else if (USE_AVRO_14) {
+    dependsOn generateAvroClasses14
   }
 }
 // Only pre-compile for Avro-1.8 since the default Avro version is 1.8
