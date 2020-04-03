@@ -33,6 +33,10 @@ public class CodeTransformations {
   );
   private static final Pattern PARSE_INVOCATION_END_PATTERN = Pattern.compile("\\);\\s+");
   private static final Pattern PARSE_VARARG_PATTERN = Pattern.compile("[^\\\\]\",\""); // a non-escaped "," sequence
+  private static final String  QUOTE = "\"";
+  private static final String  ESCAPED_QUOTE = "\\\"";
+  private static final String  BACKSLASH = "\\";
+  private static final String  DOUBLE_BACKSLASH = "\\\\";
   private static final Pattern NEW_BUILDER_METHOD_PATTERN = Pattern.compile("public static ([\\w.]+) newBuilder\\(\\)");
   private static final Pattern END_BUILDER_CLASS_PATTERN = Pattern.compile("}\\s+}\\s+}");
   private static final Pattern FROM_BYTEBUFFER_METHOD_END_PATTERN = Pattern.compile("return DECODER.decode\\s*\\(\\s*b\\s*\\)\\s*;\\s*}");
@@ -330,11 +334,15 @@ public class CodeTransformations {
     int lastEnd = 0;    //end of previous quoted string (index of the end quote character)
     StringBuilder result = new StringBuilder(str.length());
 
-    quotedStrStart = str.indexOf("\\\"", lastEnd);
+    //this code searches for json string literals inside a java string literal
+    //these would look like "{\"prop\":\"value\"}". we do this by finding pairs of \" (escaped quotes)
+    //and then making sure whats between them (the json string literals) is properly escaped
+
+    quotedStrStart = str.indexOf(ESCAPED_QUOTE, lastEnd);
     while (quotedStrStart >= 0) {
       quotedStrEnd = quotedStrStart;
       while (true) {
-        quotedStrEnd = str.indexOf("\\\"", quotedStrEnd + 2);
+        quotedStrEnd = str.indexOf(ESCAPED_QUOTE, quotedStrEnd + 2);
         if (quotedStrEnd < 0) {
           throw new IllegalArgumentException(
               "unterminated string literal starting at offset " + quotedStrStart + " in " + str);
@@ -349,7 +357,7 @@ public class CodeTransformations {
 
       //we assume we start with a properly escaped json inside, so we double all backslashes, then take one out
       //if it was escaping a quote :-)
-      String escaped = quotedStr.replace("\\", "\\\\").replace("\\\"", "\"");
+      String escaped = quotedStr.replace(BACKSLASH, DOUBLE_BACKSLASH).replace(ESCAPED_QUOTE, QUOTE);
 
       //copy from end of last string to start of this one (included our start quote)
       result.append(str, lastEnd, quotedStrStart + 2);
@@ -358,7 +366,7 @@ public class CodeTransformations {
 
       //move on to the next quoted string (if any)
       lastEnd = quotedStrEnd;
-      quotedStrStart = str.indexOf("\\\"", lastEnd + 1);
+      quotedStrStart = str.indexOf(ESCAPED_QUOTE, lastEnd + 1);
     }
 
     //append the tail (there's always at least the last end quote)
