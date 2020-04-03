@@ -33,6 +33,10 @@ public class CodeTransformations {
   );
   private static final Pattern PARSE_INVOCATION_END_PATTERN = Pattern.compile("\\);\\s+");
   private static final Pattern PARSE_VARARG_PATTERN = Pattern.compile("[^\\\\]\",\""); // a non-escaped "," sequence
+  private static final String  QUOTE = "\"";
+  private static final String  ESCAPED_QUOTE = "\\\"";
+  private static final String  BACKSLASH = "\\";
+  private static final String  DOUBLE_BACKSLASH = "\\\\";
   private static final Pattern NEW_BUILDER_METHOD_PATTERN = Pattern.compile("public static ([\\w.]+) newBuilder\\(\\)");
   private static final Pattern END_BUILDER_CLASS_PATTERN = Pattern.compile("}\\s+}\\s+}");
   private static final Pattern FROM_BYTEBUFFER_METHOD_END_PATTERN = Pattern.compile("return DECODER.decode\\s*\\(\\s*b\\s*\\)\\s*;\\s*}");
@@ -246,17 +250,28 @@ public class CodeTransformations {
    * also - avro 1.6+ issues "new org.apache.avro.Schema.Parser().parse(...)" calls which will not compile
    * under avro < 1.6
    *
-   * this method does 2 things:
+   * in addition, avro < 1.6 fails to properly escape control characters in the schema string (like newlines
+   * in doc properties) which will result in a json parse error when trying to instantiate the
+   * generated java class (because at that point it will fail to parse the avsc in SCHEMA$)
+   *
+   * this method does 3 things:
    * <ul>
    *   <li>replaces all parse calls with Helper.parse() calls</li>
    *   <li>replaces giant literals inside the parse() calls with a StringBuilder</li>
+   *   <li>properly escapes any control characters in string literals inside the avsc</li>
    * </ul>
    * @param code avro generated source code which may have giant string literals in parse() calls
+   * @param generatedWith version of avro that generated the original code
    * @param minSupportedVersion lowest avro version under which the generated code should work
    * @param maxSupportedVersion highest avro version under which the generated code should work
    * @return source code that wont have giant string literals in SCHEMA$
    */
-  public static String transformParseCalls(String code, AvroVersion minSupportedVersion, AvroVersion maxSupportedVersion) {
+  public static String transformParseCalls(
+      String code,
+      AvroVersion generatedWith,
+      AvroVersion minSupportedVersion,
+      AvroVersion maxSupportedVersion
+  ) {
     Matcher startMatcher = PARSE_INVOCATION_START_PATTERN.matcher(code); //group 1 would be the args to parse()
     if (!startMatcher.find()) {
       return code;
@@ -268,26 +283,25 @@ public class CodeTransformations {
 
     //does not include the enclosing double quotes
     String stringLiteral = code.substring(startMatcher.end() + 1, endMatcher.start() - 1);
+    boolean largeString = stringLiteral.length() >= MAX_STRING_LITERAL_SIZE;
+    //either we've already been here, or modern avro was used that already emits vararg
+    boolean ourVararg = stringLiteral.contains("new StringBuilder().append(");
+    boolean avroVararg = PARSE_VARARG_PATTERN.matcher(stringLiteral).find();
+    boolean alreadyVararg = ourVararg || avroVararg;
 
-    boolean needVarArg = stringLiteral.length() >= MAX_STRING_LITERAL_SIZE;
-    if (needVarArg) {
-      if (stringLiteral.contains("new StringBuilder().append(")) {
-        //we've already been over this code
-        needVarArg = false;
-      }
-      if (needVarArg) {
-        Matcher varargMatcher = PARSE_VARARG_PATTERN.matcher(stringLiteral);
-        if (varargMatcher.find()) {
-          //avro has already split up the literal
-          needVarArg = false;
-        }
-      }
+    //1st lets find any escape characters inside string literal(s) that may need escaping
+    //(if avro did the vararg avro also did escaping. likewise if we already did)
+    String escapedLiterals;
+    if (alreadyVararg || generatedWith.laterThan(AvroVersion.AVRO_1_5)) {
+      escapedLiterals = stringLiteral;
+    } else {
+      escapedLiterals = escapeJavaLiteral(stringLiteral);
     }
 
     String argToParseCall;
-    if (needVarArg) {
-      List<String> pieces = safeSplit(stringLiteral, MAX_STRING_LITERAL_SIZE);
-      StringBuilder argBuilder = new StringBuilder(stringLiteral.length()); //at least
+    if (largeString && !alreadyVararg) {
+      List<String> pieces = safeSplit(escapedLiterals, MAX_STRING_LITERAL_SIZE);
+      StringBuilder argBuilder = new StringBuilder(escapedLiterals.length()); //at least
       argBuilder.append("new StringBuilder()");
       for (String piece : pieces) {
         argBuilder.append(".append(\"").append(piece).append("\")");
@@ -295,13 +309,70 @@ public class CodeTransformations {
       argBuilder.append(".toString()");
       argToParseCall = argBuilder.toString();
     } else {
-      argToParseCall = "\"" + stringLiteral + "\"";
+      argToParseCall = "\"" + escapedLiterals + "\"";
     }
 
     String prefix = code.substring(0, startMatcher.start());
     String newParseCall = HelperConsts.HELPER_FQCN + ".parse(" + argToParseCall + ");";
     String restOfCode = code.substring(endMatcher.start() + 2);
     return prefix + newParseCall + restOfCode;
+  }
+
+  /**
+   * escapes any control characters inside string literals that are part of an argument json
+   * PACKAGE PRIVATE FOR TESTING
+   * @param str a piece of json, as a java string literal
+   * @return the given piece of json, safe for use as a java string literal
+   */
+  static String escapeJavaLiteral(String str) {
+    if (str == null || str.isEmpty()) {
+      return str;
+    }
+
+    int quotedStrStart; //start of current quoted string (index of the starting quote character)
+    int quotedStrEnd;   //end of current quoted string (index of the end quote character)
+    int lastEnd = 0;    //end of previous quoted string (index of the end quote character)
+    StringBuilder result = new StringBuilder(str.length());
+
+    //this code searches for json string literals inside a java string literal
+    //these would look like "{\"prop\":\"value\"}". we do this by finding pairs of \" (escaped quotes)
+    //and then making sure whats between them (the json string literals) is properly escaped
+
+    quotedStrStart = str.indexOf(ESCAPED_QUOTE, lastEnd);
+    while (quotedStrStart >= 0) {
+      quotedStrEnd = quotedStrStart;
+      while (true) {
+        quotedStrEnd = str.indexOf(ESCAPED_QUOTE, quotedStrEnd + 2);
+        if (quotedStrEnd < 0) {
+          throw new IllegalArgumentException(
+              "unterminated string literal starting at offset " + quotedStrStart + " in " + str);
+        }
+        char precedingChar = str.charAt(quotedStrEnd - 1); //character before the closing quote
+        if (precedingChar != '\\') {
+          break;
+        }
+      }
+
+      String quotedStr = str.substring(quotedStrStart + 2, quotedStrEnd); //without enclosing quotes
+
+      //we assume we start with a properly escaped json inside, so we double all backslashes, then take one out
+      //if it was escaping a quote :-)
+      String escaped = quotedStr.replace(BACKSLASH, DOUBLE_BACKSLASH).replace(ESCAPED_QUOTE, QUOTE);
+
+      //copy from end of last string to start of this one (included our start quote)
+      result.append(str, lastEnd, quotedStrStart + 2);
+      //append this string, escaped
+      result.append(escaped);
+
+      //move on to the next quoted string (if any)
+      lastEnd = quotedStrEnd;
+      quotedStrStart = str.indexOf(ESCAPED_QUOTE, lastEnd + 1);
+    }
+
+    //append the tail (there's always at least the last end quote)
+    result.append(str, lastEnd, str.length());
+
+    return result.toString();
   }
 
   /**

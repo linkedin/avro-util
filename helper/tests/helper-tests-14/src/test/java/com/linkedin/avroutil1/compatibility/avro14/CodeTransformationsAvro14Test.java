@@ -44,7 +44,19 @@ public class CodeTransformationsAvro14Test {
     Schema schema = AvroCompatibilityHelper.parse(avsc);
     String originalCode = runNativeCodegen(schema);
 
-    String transformedCode = CodeTransformations.transformParseCalls(originalCode, AvroVersion.earliest(), AvroVersion.latest());
+    String transformedCode = CodeTransformations.transformParseCalls(originalCode, AvroVersion.AVRO_1_4, AvroVersion.earliest(), AvroVersion.latest());
+
+    Class<?> transformedClass = CompilerUtils.CACHED_COMPILER.loadFromJava(schema.getFullName(), transformedCode);
+    Assert.assertNotNull(transformedClass);
+  }
+
+  @Test
+  public void testTransformAvro14RecordWithMultilineDoc() throws Exception {
+    String avsc = TestUtil.load("RecordWithMultilineDoc.avsc");
+    Schema schema = AvroCompatibilityHelper.parse(avsc);
+    String originalCode = runNativeCodegen(schema);
+
+    String transformedCode = CodeTransformations.transformParseCalls(originalCode, AvroVersion.AVRO_1_4, AvroVersion.earliest(), AvroVersion.latest());
 
     Class<?> transformedClass = CompilerUtils.CACHED_COMPILER.loadFromJava(schema.getFullName(), transformedCode);
     Assert.assertNotNull(transformedClass);

@@ -2,12 +2,12 @@
   "type": "record",
   "namespace": "under18",
   "name": "RecordWithMultilineDoc",
-  "doc": "A perfectly normal record\nNow with line breaks!",
+  "doc": "A perfectly normal record\nNow with line breaks! \" and quotes",
   "fields": [
     {
       "name": "stringField",
       "type": "string",
-      "doc": "Look mom!\nA newline!"
+      "doc": "Look mom!\nA newline! and quote: \""
     }
   ]
 }
