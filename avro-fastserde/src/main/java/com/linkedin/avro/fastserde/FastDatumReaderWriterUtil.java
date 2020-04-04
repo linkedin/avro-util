@@ -2,10 +2,8 @@ package com.linkedin.avro.fastserde;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.avro.Schema;
-import org.jboss.util.collection.WeakIdentityHashMap;
 
 /**
  * Utility class to generate and reuse FastDatumReader/Writer. The cache key is schema object.
@@ -49,10 +47,10 @@ public class FastDatumReaderWriterUtil {
 
   //TODO :  LRU cache
   private static final Map<SchemaPair, FastGenericDatumReader<?>> fastGenericDatumReaderCache = new FastAvroConcurrentHashMap<>();
-  private static final Map<Schema, FastGenericDatumWriter<?>> fastGenericDatumWriterCache = new WeakIdentityHashMap();
+  private static final Map<Schema, FastGenericDatumWriter<?>> fastGenericDatumWriterCache = new WeakIdentityHashMap<>();
 
   private static final Map<SchemaPair, FastSpecificDatumReader<?>> fastSpecificDatumReaderCache = new FastAvroConcurrentHashMap<>();
-  private static final Map<Schema, FastSpecificDatumWriter<?>> fastSpecificDatumWriterCache = new WeakIdentityHashMap();
+  private static final Map<Schema, FastSpecificDatumWriter<?>> fastSpecificDatumWriterCache = new WeakIdentityHashMap<>();
 
   private FastDatumReaderWriterUtil() {
   }
