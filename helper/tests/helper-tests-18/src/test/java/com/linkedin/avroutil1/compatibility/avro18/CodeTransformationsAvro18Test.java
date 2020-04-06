@@ -43,7 +43,7 @@ public class CodeTransformationsAvro18Test {
     Schema schema = AvroCompatibilityHelper.parse(avsc);
     String originalCode = runNativeCodegen(schema);
 
-    String transformedCode = CodeTransformations.transformParseCalls(originalCode, AvroVersion.earliest(), AvroVersion.latest());
+    String transformedCode = CodeTransformations.transformParseCalls(originalCode, AvroVersion.AVRO_1_8, AvroVersion.earliest(), AvroVersion.latest());
 
     Class<?> transformedClass = CompilerUtils.CACHED_COMPILER.loadFromJava(schema.getFullName(), transformedCode);
     Assert.assertNotNull(transformedClass);

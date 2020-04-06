@@ -29,7 +29,10 @@ AVRO_SCHEMAS_PATH=(
   "src/test/avro/fastserdetest.avsc"
   "src/test/avro/defaultsTest.avsc"
   "src/test/avro/stringableTest.avsc"
+  "src/test/avro/benchmarkSchema.avsc"
 )
+AVRO_SCHEMAS_ROOT_PATH="src/test/avro"
+
 # path to store the generated
 CODE_GEN_PATH="src/test/java"
 
@@ -39,7 +42,9 @@ FULL_CODE_GEN_PATH=(
   "${CODE_GEN_PATH}/com/linkedin/avro/fastserde/generated/avro/*.java"
   "${CODE_GEN_PATH}/com/linkedin/avro/fastserde/generated/avro/*.java"
   "${CODE_GEN_PATH}/com/linkedin/avro/fastserde/generated/avro/*.java"
+  "${CODE_GEN_PATH}/com/linkedin/avro/fastserde/generated/avro/*.java"
 )
+FULL_CODE_GEN_ROOT_PATH="${CODE_GEN_PATH}/com/linkedin/avro/fastserde/generated/avro"
 
 if [[ $# < 1 ]]; then
   echo "Usage: $0 avro_tools_path"
@@ -58,14 +63,14 @@ if [[ $# < 1 ]]; then
   echo ""
   echo "The $0 script uses avro-tools to generate SpecificRecord classes for the Avro schemas stored in:"
   echo ""
-  for path in ${AVRO_SCHEMAS_PATH[@]}; do
-      echo "    $path"
+  for path in `ls ${AVRO_SCHEMAS_ROOT_PATH}/*.avsc`; do
+    echo "    $path"
   done
   echo ""
   echo "The auto-generated classes are purged before each run and then re-generated here:"
   echo ""
-  for path in ${FULL_CODE_GEN_PATH[@]}; do
-      echo "    $path"
+  for path in `ls ${FULL_CODE_GEN_ROOT_PATH}/*.java`; do
+    echo "    $path"
   done
   echo ""
   exit 1
@@ -84,17 +89,16 @@ else
     AVRO_TOOLS_JAR=$AVRO_TOOLS_PATH_PARAM
 fi
 
-echo "Using AVRO_TOOLS_JAR=$AVRO_TOOLS_JAR"
-
-for path in ${FULL_CODE_GEN_PATH[@]}; do
-  rm -f $path
+for file in `ls ${FULL_CODE_GEN_ROOT_PATH}/*.java`; do
+  rm -f ${file}
 done
 
 echo "Finished deleting old files. About to generate new ones..."
 
-for (( i=0; i<${#FULL_CODE_GEN_PATH[@]}; i++ )); do
-  java -jar $AVRO_TOOLS_JAR compile schema ${AVRO_SCHEMAS_PATH[i]} $CODE_GEN_PATH
-  echo "Finished generation for schema path:  ${AVRO_SCHEMAS_PATH[i]}"
+for file in `ls ${AVRO_SCHEMAS_ROOT_PATH}/*.avsc`; do
+  echo ${file}
+  java -jar $AVRO_TOOLS_JAR compile schema ${file} $CODE_GEN_PATH
+  echo "Finished generation for schema path:  ${file}"
 done
 
 echo "Done!"
