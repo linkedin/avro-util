@@ -16,7 +16,7 @@ public class AvroGenericSerializer<K> {
     this(new GenericDatumWriter<>(schema));
   }
 
-  protected AvroGenericSerializer(DatumWriter datumWriter) {
+  public AvroGenericSerializer(DatumWriter datumWriter) {
     this.datumWriter = datumWriter;
   }
 

@@ -156,9 +156,10 @@ public class FastDeserializerGeneratorForReuseTest {
     // Generate a different record
     GenericRecord reuseRecord = newComplicateRecord('1');
 
+
     GenericRecord deserializedRecordWithFastAvro = deserializer.deserialize(getDecoder(serializedBytes));
     GenericRecord deserializedRecordWithFastAvroWithReuse =
-        deserializer.deserialize(reuseRecord, getDecoder(serializedBytes));
+        deserializer.deserialize(deserializedRecordWithFastAvro, getDecoder(serializedBytes));
     compareTwoRecords(deserializedRecordWithFastAvro, deserializedRecordWithFastAvroWithReuse);
 
     DatumReader datumReader = new GenericDatumReader(COMPLICATE_SCHEMA);
@@ -170,5 +171,47 @@ public class FastDeserializerGeneratorForReuseTest {
         (GenericRecord) datumReader.read(reuseRecord, getDecoder(serializedBytes));
     compareTwoRecords(deserializedRecordWithFastAvro, deserializedRecordWithRegularAvro);
     compareTwoRecords(deserializedRecordWithFastAvro, deserializedRecordWithRegularAvroWithReuse);
+  }
+
+  @Test(groups = {"deserializationTest"})
+  public void testFastGenericDeserializerPrimitFloatList() throws Exception {
+    String schemaString = "{\"type\":\"record\",\"name\":\"KeyRecord\",\"fields\":[{\"name\":\"name\",\"type\":\"string\",\"doc\":\"name field\"}, {\"name\":\"inventory\", \"type\" : {  \"type\" : \"array\", \"items\" : \"float\" }}] }";
+
+    Schema oldRecordSchema = Schema.parse(schemaString);
+    FastSerdeCache cache = FastSerdeCache.getDefaultInstance();
+    FastDeserializer<GenericRecord> deserializer =
+        (FastDeserializer<GenericRecord>) cache.buildFastGenericDeserializer(oldRecordSchema, oldRecordSchema);
+
+    GenericData.Record record = new GenericData.Record(oldRecordSchema);
+    ArrayList<Float> arrayList = new ArrayList();
+    arrayList.add((float)10);
+    arrayList.add((float)20);
+
+    record.put("name", "test");
+    record.put("inventory", arrayList);
+    byte[] serializedBytes = serialize(record, oldRecordSchema);
+    GenericRecord deserRecord = deserializer.deserialize(getDecoder(serializedBytes));
+
+    // Generate a different record
+    // new record array length larger than reuse record.
+    GenericData.Record record1 = new GenericData.Record(oldRecordSchema);
+    record1.put("name", "test1");
+    arrayList.add((float)30);
+    record1.put("inventory", arrayList);
+    serializedBytes = serialize(record1, oldRecordSchema);
+    // generate a record to reuse bytebuffer
+    GenericRecord genericRecord = deserializer.deserialize(deserRecord, getDecoder(serializedBytes));
+    List<Float> list = (List<Float>)genericRecord.get(1);
+    Assert.assertEquals(list.size(), 3);
+
+    // new record array length shorter than reuse record.
+    arrayList.clear();
+    arrayList.add((float)10);
+    record1.put("inventory", arrayList);
+    serializedBytes = serialize(record1, oldRecordSchema);
+    genericRecord = deserializer.deserialize(deserRecord, getDecoder(serializedBytes));
+    list = (List<Float>)genericRecord.get(1);
+    Assert.assertEquals(list.size(), 1);
+
   }
 }
