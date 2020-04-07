@@ -48,10 +48,8 @@ public class PrimitiveFloatList extends AbstractList<Float>
     if (capacity != 0) {
       elements = new float[capacity];
     }
-  }
-
-  public PrimitiveFloatList() {
-    byteBuffer = new CompositeByteBuffer();
+    // create empty ByteBuffer if capacity != 0 ( List<Float> interface usage case)
+    byteBuffer = new CompositeByteBuffer(capacity != 0);
   }
 
   public PrimitiveFloatList(Collection<Float> c) {
@@ -59,6 +57,7 @@ public class PrimitiveFloatList extends AbstractList<Float>
       elements = new float[c.size()];
       addAll(c);
     }
+    byteBuffer = new CompositeByteBuffer(c != null);
   }
 
   /**
@@ -129,7 +128,7 @@ public class PrimitiveFloatList extends AbstractList<Float>
       return oldFloatList;
     } else {
       // Just a place holder, will set up the elements later.
-      return new PrimitiveFloatList();
+      return new PrimitiveFloatList(0);
     }
   }
 
