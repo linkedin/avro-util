@@ -3,6 +3,7 @@ package com.linkedin.avro.fastserde;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -10,8 +11,8 @@ public class CompositeByteBuffer {
   private int byteBufferCount;
   private List<ByteBuffer> byteBuffers;
 
-  public CompositeByteBuffer() {
-    byteBuffers = new ArrayList<>(2);
+  public CompositeByteBuffer(boolean createEmpty) {
+    byteBuffers = createEmpty ? Collections.emptyList() : new ArrayList<>(2);
   }
 
   public ByteBuffer allocate(int index, int size) {
