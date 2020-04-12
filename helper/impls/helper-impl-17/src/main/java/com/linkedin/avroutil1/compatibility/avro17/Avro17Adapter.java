@@ -307,6 +307,7 @@ public class Avro17Adapter implements AvroAdapter {
       fixed = CodeTransformations.transformFixedClass(fixed, minAvro, maxAvro);
       fixed = CodeTransformations.transformEnumClass(fixed, minAvro, maxAvro);
       fixed = CodeTransformations.transformParseCalls(fixed, AvroVersion.AVRO_1_7, minAvro, maxAvro);
+      fixed = CodeTransformations.addGetClassSchemaMethod(fixed, AvroVersion.AVRO_1_7, minAvro, maxAvro);
       fixed = CodeTransformations.removeBuilderSupport(fixed, minAvro, maxAvro);
       fixed = CodeTransformations.removeBinaryMessageCodecSupport(fixed, minAvro, maxAvro);
       fixed = CodeTransformations.removeAvroGeneratedAnnotation(fixed, minAvro, maxAvro);

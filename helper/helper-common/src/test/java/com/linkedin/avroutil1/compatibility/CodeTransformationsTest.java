@@ -61,4 +61,13 @@ public class CodeTransformationsTest {
         Arrays.asList("xxxxxxxxxx","x\\u1234xxx"),
         CodeTransformations.safeSplit("xxxxxxxxxxx\\u1234xxx", 10));
   }
+
+  @Test
+  public void testFindEndOfSchemaDeclaration() {
+    String normal = "public static final org.apache.avro.Schema SCHEMA$ = whatever(\"{json}\"); fluff";
+    String huge = "public static final org.apache.avro.Schema SCHEMA$ = whatever(new StringBuilder().append(\"{json}\").append(\"{more json}\").toString());";
+
+    Assert.assertEquals(CodeTransformations.findEndOfSchemaDeclaration(normal), normal.length() - 6);
+    Assert.assertEquals(CodeTransformations.findEndOfSchemaDeclaration(huge), huge.length());
+  }
 }
