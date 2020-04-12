@@ -255,9 +255,10 @@ public class FastSerializerGenerator<T> extends FastSerializerGeneratorBase<T> {
       throw new RuntimeException("Union schema expected, but received: " + unionSchema.getType());
     }
     List<Schema> subSchemas = unionSchema.getTypes();
+    String schemaFullName = SchemaAssistant.getSchemaFullName(schema);
     int index = 0;
     for (Schema subSchema : subSchemas) {
-      if (subSchema.getType().equals(schema.getType())) {
+      if (SchemaAssistant.getSchemaFullName(subSchema).equals(schemaFullName)) {
         return index;
       }
       index++;
@@ -282,6 +283,13 @@ public class FastSerializerGenerator<T> extends FastSerializerGeneratorBase<T> {
       JClass optionClass = schemaAssistant.classFromSchema(schemaOption);
       JClass rawOptionClass = schemaAssistant.classFromSchema(schemaOption, true, true);
       JExpression condition = unionExpr._instanceof(rawOptionClass);
+      /**
+       * In Avro-1.4, neither GenericEnumSymbol or GenericFixed has associated schema, so we don't expect to see
+       * two or more Enum types or two or more Fixed types in the same Union in generic mode since the writer couldn't
+       * differentiate the Enum types or the Fixed types, but those scenarios are well supported in Avro-1.7 or above since
+       * both of them have associated 'Schema', so the serializer could recognize the right type
+       * by checking the associated 'Schema' in generic mode.
+       */
       if (useGenericTypes && SchemaAssistant.isNamedType(schemaOption)) {
         condition = condition.cand(JExpr.invoke(JExpr.lit(schemaOption.getFullName()), "equals")
             .arg(JExpr.invoke(JExpr.cast(optionClass, unionExpr), "getSchema").invoke("getFullName")));
