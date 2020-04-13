@@ -68,6 +68,15 @@ public class SchemaAssistant {
     }
   }
 
+  public static String getSchemaFullName(Schema schema) {
+    Schema.Type type = schema.getType();
+    boolean isNamedType = type.equals(Schema.Type.ENUM) || type.equals(Schema.Type.FIXED) || type.equals(Schema.Type.RECORD);
+    /**
+     * Avro-1.4 doesn't support {@link Schema#getFullName()} if the Schema is not a NamedSchema.
+     */
+    return isNamedType ? schema.getFullName() : type.name();
+  }
+
   public static boolean isNamedType(Schema schema) {
     switch (schema.getType()) {
       case RECORD:

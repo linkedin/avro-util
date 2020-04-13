@@ -188,6 +188,27 @@ public class FastGenericSerializerGeneratorTest {
   }
 
   @Test(groups = {"serializationTest"})
+  public void shouldWriteRightUnionIndex() {
+    // Create two record schemas
+    Schema recordSchema1 = createRecord("record1", createField("record1_field1", Schema.create(Schema.Type.STRING)));
+    Schema recordSchema2 = createRecord("record2", createField("record2_field1", Schema.create(Schema.Type.STRING)));
+    Schema unionSchema = createUnionSchema(recordSchema1, recordSchema2);
+    Schema recordWrapperSchema = createRecord("recordWrapper", createField("union_field", unionSchema));
+
+    GenericData.Record objectOfRecordSchema2 = new GenericData.Record(recordSchema2);
+    objectOfRecordSchema2.put("record2_field1", "abc");
+    GenericData.Record wrapperObject = new GenericData.Record(recordWrapperSchema);
+    wrapperObject.put("union_field", objectOfRecordSchema2);
+
+    GenericRecord record = decodeRecord(recordWrapperSchema, dataAsBinaryDecoder(wrapperObject));
+
+    Object unionField = record.get("union_field");
+    Assert.assertTrue(unionField instanceof GenericData.Record);
+    GenericData.Record unionRecord = (GenericData.Record)unionField;
+    Assert.assertEquals(unionRecord.getSchema().getName(), "record2");
+  }
+
+  @Test(groups = {"serializationTest"})
   public void shouldWriteSubRecordCollectionsField() {
     // given
     Schema subRecordSchema = createRecord("subRecord", createPrimitiveUnionFieldSchema("subField", Schema.Type.STRING));
