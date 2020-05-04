@@ -677,6 +677,70 @@ public class FastGenericDeserializerGeneratorTest {
     Assert.assertEquals(new Utf8("abc"), map.get(new Utf8("2")).get("field"));
   }
 
+  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
+  public void shouldReadNestedMap(Boolean whetherUseFastDeserializer) {
+    // given
+    Schema nestedMapSchema = createRecord("record", createMapFieldSchema(
+        "mapField", Schema.createMap(Schema.createArray(Schema.create(Schema.Type.INT)))));
+
+    Map<String, List> value = new HashMap<>();
+    value.put("subKey1", Arrays.asList(1));
+    value.put("subKey2", Arrays.asList(2));
+    Map<String, Map<String, List>> mapField = new HashMap<>();
+    mapField.put("key1", value);
+
+    GenericData.Record recordData = new GenericData.Record(nestedMapSchema);
+    recordData.put("mapField", mapField);
+
+    // when
+    GenericData.Record decodedRecord = null;
+    if (whetherUseFastDeserializer) {
+      decodedRecord = decodeRecordFast(nestedMapSchema, nestedMapSchema,
+          FastSerdeTestsSupport.genericDataAsDecoder(recordData, nestedMapSchema));
+    } else {
+      decodedRecord = decodeRecordSlow(nestedMapSchema, nestedMapSchema,
+          FastSerdeTestsSupport.genericDataAsDecoder(recordData, nestedMapSchema));
+    }
+
+    // then
+    Object decodedMapField = decodedRecord.get("mapField");
+    Assert.assertEquals("{key1={subKey1=[1], subKey2=[2]}}", decodedMapField.toString());
+    Assert.assertTrue(decodedMapField instanceof Map);
+    Object subMap = ((Map) decodedMapField).get(new Utf8("key1"));
+    Assert.assertTrue(subMap instanceof Map);
+    Assert.assertEquals(Arrays.asList(1), ((List) ((Map) subMap).get(new Utf8("subKey1"))));
+    Assert.assertEquals(Arrays.asList(2), ((List) ((Map) subMap).get(new Utf8("subKey2"))));
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
+  public void shouldReadRecursiveUnionRecord(Boolean whetherUseFastDeserializer) {
+    // given
+    Schema unionRecordSchema = Schema.parse("{\"type\":\"record\",\"name\":\"recordName\",\"namespace\":\"com.linkedin.avro.fastserde.generated.avro\",\"fields\":[{\"name\":\"strField\",\"type\":\"string\"},{\"name\":\"unionField\",\"type\":[\"null\",\"recordName\"]}]}");
+
+    GenericData.Record recordData = new GenericData.Record(unionRecordSchema);
+    recordData.put("strField", "foo");
+
+    GenericData.Record unionField = new GenericData.Record(unionRecordSchema);
+    unionField.put("strField", "bar");
+    recordData.put("unionField", unionField);
+
+    // when
+    GenericData.Record decodedRecord = null;
+    if (whetherUseFastDeserializer) {
+      decodedRecord = decodeRecordFast(unionRecordSchema, unionRecordSchema,
+          FastSerdeTestsSupport.genericDataAsDecoder(recordData, unionRecordSchema));
+    } else {
+      decodedRecord = decodeRecordSlow(unionRecordSchema, unionRecordSchema,
+          FastSerdeTestsSupport.genericDataAsDecoder(recordData, unionRecordSchema));
+    }
+
+    // then
+    Assert.assertEquals(new Utf8("foo"), decodedRecord.get("strField"));
+    Object decodedUnionField = decodedRecord.get("unionField");
+    Assert.assertTrue(decodedUnionField instanceof GenericData.Record);
+    Assert.assertEquals(new Utf8("bar"), ((GenericData.Record) decodedUnionField).get("strField"));
+  }
+
   public <T> T decodeRecordFast(Schema writerSchema, Schema readerSchema, Decoder decoder) {
     FastDeserializer<T> deserializer =
         new FastGenericDeserializerGenerator<T>(writerSchema, readerSchema, tempDir, classLoader,
