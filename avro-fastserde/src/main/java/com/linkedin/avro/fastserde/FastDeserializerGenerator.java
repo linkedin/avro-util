@@ -363,9 +363,11 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
 
   private void updateActualExceptions(JMethod method) {
     Set<Class<? extends Exception>> exceptionFromMethod = exceptionFromMethodMap.get(method);
-    for (Class<? extends Exception> exceptionClass : exceptionFromMethod) {
-      method._throws(exceptionClass);
-      schemaAssistant.getExceptionsFromStringable().add(exceptionClass);
+    if (exceptionFromMethod != null) {
+      for (Class<? extends Exception> exceptionClass : exceptionFromMethod) {
+        method._throws(exceptionClass);
+        schemaAssistant.getExceptionsFromStringable().add(exceptionClass);
+      }
     }
   }
 
@@ -696,9 +698,20 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       JBlock parentBody, FieldAction action, BiConsumer<JBlock, JExpression> putMapIntoParent,
       Supplier<JExpression> reuseSupplier) {
 
+    /**
+     * Determine the action symbol for Map value. {@link ResolvingGrammarGenerator} generates
+     * resolving grammar symbols with reversed order of production sequence. If this symbol is
+     * a terminal, its production list will be <tt>null</tt>. Otherwise the production list
+     * holds the the sequence of the symbols that forms this symbol.
+     *
+     * The {@link FastDeserializerGenerator.generateDeserializer} tries to proceed as a depth-first,
+     * left-to-right traversal of the schema. So for a nested Map, we need to iterate production list
+     * in reverse order to get the correct "map-end" symbol of internal Maps.
+     */
     if (action.getShouldRead()) {
       Symbol valuesActionSymbol = null;
-      for (Symbol symbol : action.getSymbol().production) {
+      for (int i = action.getSymbol().production.length - 1; i >= 0; --i) {
+        Symbol symbol = action.getSymbol().production[i];
         if (Symbol.Kind.REPEATER.equals(symbol.kind) && "map-end".equals(
             getSymbolPrintName(((Symbol.Repeater) symbol).end))) {
           valuesActionSymbol = symbol;
