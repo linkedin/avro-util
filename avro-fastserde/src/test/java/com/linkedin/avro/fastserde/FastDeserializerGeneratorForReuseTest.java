@@ -204,7 +204,7 @@ public class FastDeserializerGeneratorForReuseTest {
     List<Float> list = (List<Float>)genericRecord.get(1);
     Assert.assertEquals(list.size(), 3);
 
-    // new record array length shorter than reuse record.
+    // new record array length same as before for reusing byte buffers
     arrayList.clear();
     arrayList.add((float)10);
     arrayList.add((float)20);
