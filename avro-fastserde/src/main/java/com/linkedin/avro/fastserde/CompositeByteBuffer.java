@@ -19,7 +19,7 @@ public class CompositeByteBuffer {
     ByteBuffer byteBuffer;
 
     // Check if we can reuse the old record's byteBuffers, else allocate a new one.
-    if (byteBuffers.size() > index && byteBuffers.get(index).capacity() > size) {
+    if (byteBuffers.size() > index && byteBuffers.get(index).capacity() >= size) {
       byteBuffer = byteBuffers.get(index);
       byteBuffer.clear();
     } else {
