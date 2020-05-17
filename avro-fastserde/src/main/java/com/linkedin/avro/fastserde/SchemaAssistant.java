@@ -291,7 +291,7 @@ public class SchemaAssistant {
     return codeModel.ref(Utf8.class);
   }
 
-  public JExpression getEnumValueByName(Schema enumSchema, JExpression nameExpr, JInvocation getSchemaExpr) {
+  public JExpression getEnumValueByName(Schema enumSchema, JExpression nameExpr, JExpression getSchemaExpr) {
     if (useGenericTypes) {
       if (Utils.isAvro14()) {
         return JExpr._new(codeModel.ref(GenericData.EnumSymbol.class)).arg(nameExpr);
@@ -303,7 +303,7 @@ public class SchemaAssistant {
     }
   }
 
-  public JExpression getEnumValueByIndex(Schema enumSchema, JExpression indexExpr, JInvocation getSchemaExpr) {
+  public JExpression getEnumValueByIndex(Schema enumSchema, JExpression indexExpr, JExpression getSchemaExpr) {
     if (useGenericTypes) {
       if (Utils.isAvro14()) {
         return JExpr._new(codeModel.ref(GenericData.EnumSymbol.class))
