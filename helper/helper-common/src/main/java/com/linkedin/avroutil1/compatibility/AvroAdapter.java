@@ -37,6 +37,9 @@ public interface AvroAdapter {
 
   BinaryDecoder newBinaryDecoder(ObjectInput in);
 
+  BinaryDecoder configureBinaryDecoder(byte[] bytes, int offset,
+      int length, BinaryDecoder reuse);
+
   JsonEncoder newJsonEncoder(Schema schema, OutputStream out, boolean pretty) throws IOException;
 
   JsonDecoder newJsonDecoder(Schema schema, InputStream in) throws IOException;

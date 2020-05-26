@@ -36,6 +36,7 @@ import org.apache.avro.Avro14SchemaAccessUtil;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
+import org.apache.avro.io.Avro14BinaryDecoderConfigurer;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.DecoderFactory;
@@ -55,6 +56,7 @@ public class Avro14Adapter implements AvroAdapter {
   private final Method compilerCompileMethod;
   private final Field outputFilePathField;
   private final Field outputFileContentsField;
+  private final Avro14BinaryDecoderConfigurer configurer;
 
   public Avro14Adapter() {
     try {
@@ -67,6 +69,7 @@ public class Avro14Adapter implements AvroAdapter {
       outputFilePathField.setAccessible(true);
       outputFileContentsField = outputFileClass.getDeclaredField("contents");
       outputFileContentsField.setAccessible(true);
+      configurer = new Avro14BinaryDecoderConfigurer();
     } catch (Exception e) {
       //avro 1.4 bundles the compiler into the regular jar, hence this is not expected
       throw new IllegalStateException("error initializing compiler-related fields", e);
@@ -104,6 +107,11 @@ public class Avro14Adapter implements AvroAdapter {
   @Override
   public BinaryDecoder newBinaryDecoder(ObjectInput in) {
     return newBinaryDecoder(new ObjectInputToInputStreamAdapter(in), false, null);
+  }
+
+  @Override
+  public BinaryDecoder configureBinaryDecoder(byte[] bytes, int offset, int length, BinaryDecoder reuse) {
+    return configurer.configureBinaryDecoder(bytes, offset, length, reuse);
   }
 
   @Override
