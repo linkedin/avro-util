@@ -9,7 +9,6 @@ import com.sun.codemodel.JConditional;
 import com.sun.codemodel.JDoLoop;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
-import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JForLoop;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
@@ -59,8 +58,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
   private static final Supplier<JExpression> EMPTY_SUPPLIER = () -> JExpr._null();
 
   private boolean useGenericTypes;
-  private JMethod schemaMapMethod;
-  private JFieldVar schemaMapField;
+  private JMethod constructor;
   private Map<Long, Schema> schemaMap = new HashMap<>();
   private Map<Long, JVar> schemaVarMap = new HashMap<>();
   private Map<String, JMethod> deserializeMethodMap = new HashMap<>();
@@ -83,7 +81,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       deserializerClass = classPackage._class(className);
 
       JVar readerSchemaVar = deserializerClass.field(JMod.PRIVATE | JMod.FINAL, Schema.class, "readerSchema");
-      JMethod constructor = deserializerClass.constructor(JMod.PUBLIC);
+      constructor = deserializerClass.constructor(JMod.PUBLIC);
       JVar constructorParam = constructor.param(Schema.class, "readerSchema");
       constructor.body().assign(JExpr.refthis(readerSchemaVar.name()), constructorParam);
 
@@ -99,14 +97,6 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       FieldAction fieldAction = FieldAction.fromValues(aliasedWriterSchema.getType(), true, resolvingGrammar);
 
       if (useGenericTypes) {
-        schemaMapField =
-            deserializerClass.field(JMod.PRIVATE, codeModel.ref(Map.class).narrow(Long.class).narrow(Schema.class),
-                "readerSchemaMap");
-        schemaMapMethod = deserializerClass.method(JMod.PRIVATE | JMod.FINAL, void.class, "schemaMap");
-        constructor.body().invoke(schemaMapMethod);
-        schemaMapMethod.body()
-            .assign(schemaMapField,
-                JExpr._new(codeModel.ref(HashMap.class).narrow(Long.class).narrow(Schema.class)));
         registerSchema(aliasedWriterSchema, readerSchemaVar);
       }
 
@@ -276,7 +266,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       JClass indexedRecordClass = codeModel.ref(IndexedRecord.class);
       JInvocation newRecord = JExpr._new(schemaAssistant.classFromSchema(recordWriterSchema, false));
       if (useGenericTypes) {
-        JExpression recordSchema = schemaMapField.invoke("get").arg(JExpr.lit(Utils.getSchemaFingerprint(recordWriterSchema)));
+        JExpression recordSchema = schemaVarMap.get(Utils.getSchemaFingerprint(recordWriterSchema));
         newRecord = newRecord.arg(recordSchema);
         JInvocation finalNewRecordInvocation = newRecord;
 
@@ -1021,10 +1011,11 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       if (schemaVarMap.get(schemaId) != null) {
         return schemaVarMap.get(schemaId);
       } else {
-        JVar schemaVar = schemaMapMethod.body()
-            .decl(codeModel.ref(Schema.class), getVariableName(StringUtils.uncapitalize(variableName)), getValueType);
+        JVar schemaVar = deserializerClass.field(JMod.PRIVATE | JMod.FINAL, Schema.class,
+            getVariableName(StringUtils.uncapitalize(variableName)));
+        constructor.body().assign(JExpr.refthis(schemaVar.name()), getValueType);
+
         registerSchema(valueSchema, schemaId, schemaVar);
-        schemaVarMap.put(schemaId, schemaVar);
         return schemaVar;
       }
     } else {
@@ -1040,7 +1031,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     if ((Schema.Type.RECORD.equals(writerSchema.getType()) || Schema.Type.ENUM.equals(writerSchema.getType())
         || Schema.Type.ARRAY.equals(writerSchema.getType())) && schemaNotRegistered(writerSchema)) {
       schemaMap.put(schemaId, writerSchema);
-      schemaMapMethod.body().invoke(schemaMapField, "put").arg(JExpr.lit(schemaId)).arg(schemaVar);
+      schemaVarMap.put(schemaId, schemaVar);
     }
   }
 
@@ -1087,7 +1078,8 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     return method;
   }
 
-  private JInvocation getSchemaExpr(Schema schema) {
-    return useGenericTypes ? schemaMapField.invoke("get").arg(JExpr.lit(Utils.getSchemaFingerprint(schema))) : null;
+  private JExpression getSchemaExpr(Schema schema) {
+    Long index = Utils.getSchemaFingerprint(schema);
+    return (useGenericTypes && schemaVarMap.containsKey(index)) ? schemaVarMap.get(index) : JExpr._null();
   }
 }
