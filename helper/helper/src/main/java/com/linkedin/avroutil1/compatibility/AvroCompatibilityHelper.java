@@ -134,6 +134,22 @@ public class AvroCompatibilityHelper {
   }
 
   /**
+   * constructs or reinitializes a {@link BinaryDecoder} with the byte array
+   * provided as the source of data.
+   * @param bytes The byte array to initialize to
+   * @param offset The offset to start reading from
+   * @param length The maximum number of bytes to read from the byte array
+   * @param reuse The BinaryDecoder to attempt to reinitialize.
+   * @return A BinaryDecoder that uses <i>bytes</i> as its source of data. If
+   * <i>reuse</i> is null, this will be a new instance.
+   */
+  public static BinaryDecoder newBinaryDecoder(byte[] bytes, int offset,
+      int length, BinaryDecoder reuse) {
+    assertAvroAvailable();
+    return ADAPTER.newBinaryDecoder(bytes, offset, length, reuse);
+  }
+
+  /**
    * convenience method for getting a {@link BinaryDecoder} for a given byte[]
    * @param in byte array with data
    * @return a {@link BinaryDecoder} for decoding the given array
