@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaNormalization;
 import org.apache.avro.generic.GenericData;
+import org.apache.avro.io.Avro19BinaryDecoderConfigurer;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.DecoderFactory;
@@ -56,6 +57,7 @@ public class Avro19Adapter implements AvroAdapter {
   private Method setFieldVisibilityMethod;
   private Object charSequenceStringTypeEnumInstance;
   private Method setStringTypeMethod;
+  private Avro19BinaryDecoderConfigurer configurer;
 
   public Avro19Adapter() {
     tryInitializeCompilerFields();
@@ -90,6 +92,7 @@ public class Avro19Adapter implements AvroAdapter {
       compilerSupported = false;
       //ignore
     }
+    configurer = new Avro19BinaryDecoderConfigurer();
   }
 
   @Override
@@ -115,6 +118,11 @@ public class Avro19Adapter implements AvroAdapter {
   @Override
   public BinaryDecoder newBinaryDecoder(ObjectInput in) {
     return newBinaryDecoder(new ObjectInputToInputStreamAdapter(in), false, null);
+  }
+
+  @Override
+  public BinaryDecoder configureBinaryDecoder(byte[] bytes, int offset, int length, BinaryDecoder reuse) {
+    return configurer.configureBinaryDecoder(bytes, offset, length, reuse);
   }
 
   @Override
