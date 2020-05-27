@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaNormalization;
 import org.apache.avro.generic.GenericData;
+import org.apache.avro.io.Avro17BinaryDecoderAccessUtil;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.DecoderFactory;
@@ -156,6 +157,11 @@ public class Avro17Adapter implements AvroAdapter {
   @Override
   public BinaryDecoder newBinaryDecoder(ObjectInput in) {
     return newBinaryDecoder(new ObjectInputToInputStreamAdapter(in), false, null);
+  }
+
+  @Override
+  public BinaryDecoder newBinaryDecoder(byte[] bytes, int offset, int length, BinaryDecoder reuse) {
+    return Avro17BinaryDecoderAccessUtil.newBinaryDecoder(bytes, offset, length, reuse);
   }
 
   @Override
