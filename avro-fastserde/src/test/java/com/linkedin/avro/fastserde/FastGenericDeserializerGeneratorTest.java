@@ -1,5 +1,6 @@
 package com.linkedin.avro.fastserde;
 
+import com.linkedin.avro.api.PrimitiveFloatList;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
@@ -20,6 +22,7 @@ import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.util.Utf8;
 import org.testng.Assert;
+import org.testng.SkipException;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -29,9 +32,43 @@ import static com.linkedin.avro.fastserde.FastSerdeTestsSupport.*;
 
 public class FastGenericDeserializerGeneratorTest {
 
-  private File tempDir;
-  private ClassLoader classLoader;
+  private static File tempDir;
+  private static ClassLoader classLoader;
 
+  enum Implementation {
+    VANILLA_AVRO(false, FastGenericDeserializerGeneratorTest::decodeRecordSlow),
+    COLD_FAST_AVRO(true, FastGenericDeserializerGeneratorTest::decodeRecordColdFast),
+    WARM_FAST_AVRO(true, FastGenericDeserializerGeneratorTest::decodeRecordWarmFast);
+
+    boolean isFast;
+    DecodeFunction decodeFunction;
+    Implementation(boolean isFast, DecodeFunction decodeFunction) {
+      this.isFast = isFast;
+      this.decodeFunction = decodeFunction;
+    }
+
+    interface DecodeFunction<T> {
+      T decode(Schema writerSchema, Schema readerSchema, Decoder decoder);
+    }
+
+    <T> T decode(Schema writerSchema, Schema readerSchema, Decoder decoder) {
+      return (T) decodeFunction.decode(writerSchema, readerSchema, decoder);
+    }
+  }
+
+  @DataProvider(name = "Implementation")
+  public static Object[][] implementations() {
+    return new Object[][]{
+        {Implementation.VANILLA_AVRO},
+        {Implementation.COLD_FAST_AVRO},
+        {Implementation.WARM_FAST_AVRO}
+    };
+  }
+
+  /**
+   * @deprecated TODO Migrate to {@link #implementations()}
+   */
+  @Deprecated
   @DataProvider(name = "SlowFastDeserializer")
   public static Object[][] deserializers() {
     return new Object[][]{{true}, {false}};
@@ -46,8 +83,8 @@ public class FastGenericDeserializerGeneratorTest {
         FastGenericDeserializerGeneratorTest.class.getClassLoader());
   }
 
-  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
-  public void shouldReadPrimitives(Boolean whetherUseFastDeserializer) {
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadPrimitives(Implementation implementation) {
     // given
     Schema recordSchema = createRecord("testRecord", createField("testInt", Schema.create(Schema.Type.INT)),
         createPrimitiveUnionFieldSchema("testIntUnion", Schema.Type.INT),
@@ -81,12 +118,7 @@ public class FastGenericDeserializerGeneratorTest {
     record.put("testBytesUnion", ByteBuffer.wrap(new byte[]{0x01, 0x02}));
 
     // when
-    GenericRecord decodedRecord = null;
-    if (whetherUseFastDeserializer) {
-      decodedRecord = decodeRecordFast(recordSchema, recordSchema, genericDataAsDecoder(record));
-    } else {
-      decodedRecord = decodeRecordSlow(recordSchema, recordSchema, genericDataAsDecoder(record));
-    }
+    GenericRecord decodedRecord = implementation.decode(recordSchema, recordSchema, genericDataAsDecoder(record));
 
     // then
     Assert.assertEquals(1, decodedRecord.get("testInt"));
@@ -111,8 +143,8 @@ public class FastGenericDeserializerGeneratorTest {
     return fixed;
   }
 
-  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
-  public void shouldReadFixed(Boolean whetherUseFastDeserializer) {
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadFixed(Implementation implementation) {
     // given
     Schema fixedSchema = createFixedSchema("testFixed", 2);
     Schema recordSchema = createRecord("testRecord", createField("testFixed", fixedSchema),
@@ -126,12 +158,7 @@ public class FastGenericDeserializerGeneratorTest {
     originalRecord.put("testFixedUnionArray", Arrays.asList(newFixed(fixedSchema, new byte[]{0x07, 0x08})));
 
     // when
-    GenericRecord record = null;
-    if (whetherUseFastDeserializer) {
-      record = decodeRecordFast(recordSchema, recordSchema, genericDataAsDecoder(originalRecord));
-    } else {
-      record = decodeRecordFast(recordSchema, recordSchema, genericDataAsDecoder(originalRecord));
-    }
+    GenericRecord record = implementation.decode(recordSchema, recordSchema, genericDataAsDecoder(originalRecord));
 
     // then
     Assert.assertEquals(new byte[]{0x01, 0x02}, ((GenericData.Fixed) record.get("testFixed")).bytes());
@@ -142,8 +169,8 @@ public class FastGenericDeserializerGeneratorTest {
         ((List<GenericData.Fixed>) record.get("testFixedUnionArray")).get(0).bytes());
   }
 
-  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
-  public void shouldReadEnum(Boolean whetherUseFastDeserializer) {
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadEnum(Implementation implementation) {
     // given
     Schema enumSchema = createEnumSchema("testEnum", new String[]{"A", "B"});
     Schema recordSchema =
@@ -162,12 +189,7 @@ public class FastGenericDeserializerGeneratorTest {
         Arrays.asList(AvroCompatibilityHelper.newEnumSymbol(enumSchema, "A")));//new GenericData.EnumSymbol("A")));
 
     // when
-    GenericRecord record = null;
-    if (whetherUseFastDeserializer) {
-      record = decodeRecordFast(recordSchema, recordSchema, genericDataAsDecoder(originalRecord));
-    } else {
-      record = decodeRecordFast(recordSchema, recordSchema, genericDataAsDecoder(originalRecord));
-    }
+    GenericRecord record = implementation.decode(recordSchema, recordSchema, genericDataAsDecoder(originalRecord));
 
     // then
     Assert.assertEquals("A", record.get("testEnum").toString());
@@ -176,8 +198,8 @@ public class FastGenericDeserializerGeneratorTest {
     Assert.assertEquals("A", ((List<GenericData.EnumSymbol>) record.get("testEnumUnionArray")).get(0).toString());
   }
 
-  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
-  public void shouldReadPermutatedEnum(Boolean whetherUseFastDeserializer) {
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadPermutatedEnum(Implementation implementation) {
     // given
     Schema enumSchema = createEnumSchema("testEnum", new String[]{"A", "B", "C", "D", "E"});
     Schema recordSchema =
@@ -202,12 +224,7 @@ public class FastGenericDeserializerGeneratorTest {
             createArrayFieldSchema("testEnumUnionArray", createUnionSchema(enumSchema1)));
 
     // when
-    GenericRecord record = null;
-    if (whetherUseFastDeserializer) {
-      record = decodeRecordFast(recordSchema, recordSchema1, genericDataAsDecoder(originalRecord));
-    } else {
-      record = decodeRecordFast(recordSchema, recordSchema1, genericDataAsDecoder(originalRecord));
-    }
+    GenericRecord record = implementation.decode(recordSchema, recordSchema1, genericDataAsDecoder(originalRecord));
 
     // then
     Assert.assertEquals("A", record.get("testEnum").toString());
@@ -230,11 +247,11 @@ public class FastGenericDeserializerGeneratorTest {
     Schema recordSchema1 = createRecord("testRecord", createField("testEnum", enumSchema1));
 
     // when
-    GenericRecord record = decodeRecordFast(recordSchema, recordSchema1, genericDataAsDecoder(originalRecord));
+    GenericRecord record = decodeRecordWarmFast(recordSchema, recordSchema1, genericDataAsDecoder(originalRecord));
   }
 
-  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
-  public void shouldReadSubRecordField(Boolean whetherUseFastDeserializer) {
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadSubRecordField(Implementation implementation) {
     // given
     Schema subRecordSchema = createRecord("subRecord", createPrimitiveUnionFieldSchema("subField", Schema.Type.STRING));
 
@@ -251,12 +268,7 @@ public class FastGenericDeserializerGeneratorTest {
     builder.put("field", "abc");
 
     // when
-    GenericRecord record = null;
-    if (whetherUseFastDeserializer) {
-      record = decodeRecordFast(recordSchema, recordSchema, genericDataAsDecoder(builder));
-    } else {
-      record = decodeRecordSlow(recordSchema, recordSchema, genericDataAsDecoder(builder));
-    }
+    GenericRecord record = implementation.decode(recordSchema, recordSchema, genericDataAsDecoder(builder));
 
     // then
     Assert.assertEquals(new Utf8("abc"), ((GenericRecord) record.get("record")).get("subField"));
@@ -266,8 +278,8 @@ public class FastGenericDeserializerGeneratorTest {
     Assert.assertEquals(new Utf8("abc"), record.get("field"));
   }
 
-  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
-  public void shouldReadSubRecordCollectionsField(Boolean whetherUseFastDeserializer) {
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadSubRecordCollectionsField(Implementation implementation) {
     // given
     Schema subRecordSchema = createRecord("subRecord", createPrimitiveUnionFieldSchema("subField", Schema.Type.STRING));
     Schema recordSchema = createRecord("test", createArrayFieldSchema("recordsArray", subRecordSchema),
@@ -289,12 +301,7 @@ public class FastGenericDeserializerGeneratorTest {
     builder.put("recordsMapUnion", recordsMap);
 
     // when
-    GenericRecord record = null;
-    if (whetherUseFastDeserializer) {
-      record = decodeRecordFast(recordSchema, recordSchema, genericDataAsDecoder(builder));
-    } else {
-      record = decodeRecordFast(recordSchema, recordSchema, genericDataAsDecoder(builder));
-    }
+    GenericRecord record = implementation.decode(recordSchema, recordSchema, genericDataAsDecoder(builder));
 
     // then
     Assert.assertEquals(new Utf8("abc"),
@@ -307,8 +314,8 @@ public class FastGenericDeserializerGeneratorTest {
         ((Map<String, GenericData.Record>) record.get("recordsMapUnion")).get(new Utf8("1")).get("subField"));
   }
 
-  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
-  public void shouldReadSubRecordComplexCollectionsField(Boolean whetherUseFastDeserializer) {
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadSubRecordComplexCollectionsField(Implementation implementation) {
     // given
     Schema subRecordSchema = createRecord("subRecord", createPrimitiveUnionFieldSchema("subField", Schema.Type.STRING));
     Schema recordSchema = createRecord("test",
@@ -340,12 +347,7 @@ public class FastGenericDeserializerGeneratorTest {
     builder.put("recordsMapArrayUnion", recordsMapArray);
 
     // when
-    GenericRecord record = null;
-    if (whetherUseFastDeserializer) {
-      record = decodeRecordFast(recordSchema, recordSchema, genericDataAsDecoder(builder));
-    } else {
-      record = decodeRecordSlow(recordSchema, recordSchema, genericDataAsDecoder(builder));
-    }
+    GenericRecord record = implementation.decode(recordSchema, recordSchema, genericDataAsDecoder(builder));
 
     // then
     Assert.assertEquals(new Utf8("abc"),
@@ -361,36 +363,56 @@ public class FastGenericDeserializerGeneratorTest {
             .get("subField"));
   }
 
-  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
-  public void shouldReadAliasedField(Boolean whetherUseFastDeserializer) {
-    // given
-    Schema record1Schema = createRecord("test", createPrimitiveUnionFieldSchema("testString", Schema.Type.STRING),
-        createPrimitiveUnionFieldSchema("testStringUnion", Schema.Type.STRING));
-    Schema record2Schema = createRecord("test", createPrimitiveUnionFieldSchema("testString", Schema.Type.STRING),
-        addAliases(createPrimitiveUnionFieldSchema("testStringUnionAlias", Schema.Type.STRING), "testStringUnion"));
-
-    GenericData.Record builder = new GenericData.Record(record1Schema);
-    builder.put("testString", "abc");
-    builder.put("testStringUnion", "def");
-
-    // when
-    GenericRecord record = null;
-    if (whetherUseFastDeserializer) {
-      record = decodeRecordFast(record1Schema, record2Schema, genericDataAsDecoder(builder));
-    } else {
-      record = decodeRecordFast(record1Schema, record2Schema, genericDataAsDecoder(builder));
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadAliasedField(Implementation implementation) {
+    if (Utils.isAvro14()) {
+      /**
+       * The rest of the code in this function has been "adapted" to work with 1.4's bugs, but the end result is so
+       * contrived that it's probably better to not run this at all. Feel free to comment the Skip and try it out...
+       */
+      throw new SkipException("Aliases are not properly supported in Avro 1.4");
     }
 
+    // given
+    String field1Name = "testString";
+    String field1Value = "abc";
+    /** A Supplier is needed because Avro doesn't tolerate reusing {@link Field} instances in multiple {@link Schema}... */
+    Supplier<Schema.Field> field1Supplier = () -> createPrimitiveUnionFieldSchema(field1Name, Schema.Type.STRING);
+    /**
+     * Avro 1.4's support for aliases is so broken that if any of the fields have an alias, then ALL fields must have one.
+     * Therefore, we are "fixing" the new schema in this weird way by having an alias which is the same as the original
+     * name, otherwise that field is completely gone when decoding. This is due to a bug in the 1.4 implementation of
+     * {@link Schema#getFieldAlias(Schema.Name, String, Map)}.
+     */
+    Schema.Field newField1 = Utils.isAvro14()
+        ? addAliases(createPrimitiveUnionFieldSchema(field1Name, Schema.Type.STRING), field1Name)
+        : field1Supplier.get();
+
+    String originalField2Name = "testStringUnion";
+    String newField2Name = "testStringUnionAlias";
+    String field2Value = "def";
+    Schema.Field originalField2 = createPrimitiveUnionFieldSchema(originalField2Name, Schema.Type.STRING);
+    Schema.Field newField2 = addAliases(createPrimitiveUnionFieldSchema(newField2Name, Schema.Type.STRING), originalField2Name);
+
+    Schema record1Schema = createRecord("test", field1Supplier.get(), originalField2);
+    Schema record2Schema = createRecord("test", newField1, newField2);
+
+    GenericData.Record builder = new GenericData.Record(record1Schema);
+    builder.put(field1Name, field1Value);
+    builder.put(originalField2Name, field2Value);
+
+    // when
+    GenericRecord record = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builder));
+
     // then
-    Assert.assertEquals(new Utf8("abc"), record.get("testString"));
-    // Alias is not well supported in avro-1.4
+    Assert.assertEquals(record.get(field1Name), new Utf8(field1Value));
     if (!Utils.isAvro14()) {
-      Assert.assertEquals(new Utf8("def"), record.get("testStringUnionAlias"));
+      Assert.assertEquals(record.get(newField2Name), new Utf8(field2Value));
     }
   }
 
-  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
-  public void shouldSkipRemovedField(Boolean whetherUseFastDeserializer) {
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldSkipRemovedField(Implementation implementation) {
     // given
     Schema subRecord1Schema =
         createRecord("subRecord", createPrimitiveUnionFieldSchema("testNotRemoved", Schema.Type.STRING),
@@ -426,12 +448,7 @@ public class FastGenericDeserializerGeneratorTest {
     builder.put("subRecordMap", recordsMap);
 
     // when
-    GenericRecord record = null;
-    if (whetherUseFastDeserializer) {
-      record = decodeRecordFast(record1Schema, record2Schema, genericDataAsDecoder(builder));
-    } else {
-      record = decodeRecordFast(record1Schema, record2Schema, genericDataAsDecoder(builder));
-    }
+    GenericRecord record = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builder));
 
     // then
     Assert.assertEquals(new Utf8("abc"), record.get("testNotRemoved"));
@@ -444,8 +461,8 @@ public class FastGenericDeserializerGeneratorTest {
         ((Map<String, GenericRecord>) record.get("subRecordMap")).get(new Utf8("1")).get("testNotRemoved2"));
   }
 
-  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
-  public void shouldSkipRemovedRecord(Boolean whetherUseFastDeserializer) {
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldSkipRemovedRecord(Implementation implementation) {
     // given
     Schema subRecord1Schema = createRecord("subRecord", createPrimitiveFieldSchema("test1", Schema.Type.STRING),
         createPrimitiveFieldSchema("test2", Schema.Type.STRING));
@@ -474,12 +491,7 @@ public class FastGenericDeserializerGeneratorTest {
     builder.put("subRecord4", subRecordBuilder);
 
     // when
-    GenericRecord record = null;
-    if (whetherUseFastDeserializer) {
-      record = decodeRecordFast(record1Schema, record2Schema, genericDataAsDecoder(builder));
-    } else {
-      record = decodeRecordFast(record1Schema, record2Schema, genericDataAsDecoder(builder));
-    }
+    GenericRecord record = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builder));
 
     // then
     Assert.assertEquals(new Utf8("abc"), ((GenericRecord) record.get("subRecord1")).get("test1"));
@@ -488,8 +500,8 @@ public class FastGenericDeserializerGeneratorTest {
     Assert.assertEquals(new Utf8("def"), ((GenericRecord) record.get("subRecord4")).get("test2"));
   }
 
-  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
-  public void shouldSkipRemovedNestedRecord(Boolean whetherUseFastDeserializer) {
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldSkipRemovedNestedRecord(Implementation implementation) {
     // given
     Schema subSubRecordSchema = createRecord("subSubRecord", createPrimitiveFieldSchema("test1", Schema.Type.STRING),
         createPrimitiveFieldSchema("test2", Schema.Type.STRING));
@@ -517,20 +529,15 @@ public class FastGenericDeserializerGeneratorTest {
     builder.put("subRecord", subRecordBuilder);
 
     // when
-    GenericRecord record = null;
-    if (whetherUseFastDeserializer) {
-      record = decodeRecordFast(record1Schema, record2Schema, genericDataAsDecoder(builder));
-    } else {
-      record = decodeRecordSlow(record2Schema, record1Schema, genericDataAsDecoder(builder));
-    }
+    GenericRecord record = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builder));
 
     // then
     Assert.assertEquals(new Utf8("abc"), ((GenericRecord) record.get("subRecord")).get("test1"));
     Assert.assertEquals(new Utf8("def"), ((GenericRecord) record.get("subRecord")).get("test4"));
   }
 
-  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
-  public void shouldReadMultipleChoiceUnion(Boolean whetherUseFastDeserializer) {
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadMultipleChoiceUnion(Implementation implementation) {
     // given
     Schema subRecordSchema = createRecord("subRecord", createPrimitiveUnionFieldSchema("subField", Schema.Type.STRING));
 
@@ -544,12 +551,7 @@ public class FastGenericDeserializerGeneratorTest {
     builder.put("union", subRecordBuilder);
 
     // when
-    GenericRecord record = null;
-    if (whetherUseFastDeserializer) {
-      record = decodeRecordFast(recordSchema, recordSchema, genericDataAsDecoder(builder));
-    } else {
-      record = decodeRecordSlow(recordSchema, recordSchema, genericDataAsDecoder(builder));
-    }
+    GenericRecord record = implementation.decode(recordSchema, recordSchema, genericDataAsDecoder(builder));
 
     // then
     Assert.assertEquals(new Utf8("abc"), ((GenericData.Record) record.get("union")).get("subField"));
@@ -559,11 +561,8 @@ public class FastGenericDeserializerGeneratorTest {
     builder.put("union", "abc");
 
     // when
-    if (whetherUseFastDeserializer) {
-      record = decodeRecordFast(recordSchema, recordSchema, genericDataAsDecoder(builder));
-    } else {
-      record = decodeRecordSlow(recordSchema, recordSchema, genericDataAsDecoder(builder));
-    }
+    record = implementation.decode(recordSchema, recordSchema, genericDataAsDecoder(builder));
+
     // then
     Assert.assertEquals(new Utf8("abc"), record.get("union"));
 
@@ -572,14 +571,14 @@ public class FastGenericDeserializerGeneratorTest {
     builder.put("union", 1);
 
     // when
-    record = decodeRecordFast(recordSchema, recordSchema, genericDataAsDecoder(builder));
+    record = implementation.decode(recordSchema, recordSchema, genericDataAsDecoder(builder));
 
     // then
     Assert.assertEquals(1, record.get("union"));
   }
 
-  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
-  public void shouldReadArrayOfRecords(Boolean whetherUseFastDeserializer) {
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadArrayOfRecords(Implementation implementation) {
     // given
     Schema recordSchema = createRecord("record", createPrimitiveUnionFieldSchema("field", Schema.Type.STRING));
 
@@ -593,12 +592,7 @@ public class FastGenericDeserializerGeneratorTest {
     recordsArray.add(subRecordBuilder);
 
     // when
-    GenericData.Array<GenericRecord> array = null;
-    if (whetherUseFastDeserializer) {
-      array = decodeRecordFast(arrayRecordSchema, arrayRecordSchema, genericDataAsDecoder(recordsArray));
-    } else {
-      array = decodeRecordSlow(arrayRecordSchema, arrayRecordSchema, genericDataAsDecoder(recordsArray));
-    }
+    GenericData.Array<GenericRecord> array = implementation.decode(arrayRecordSchema, arrayRecordSchema, genericDataAsDecoder(recordsArray));
 
     // then
     Assert.assertEquals(2, array.size());
@@ -617,19 +611,46 @@ public class FastGenericDeserializerGeneratorTest {
     recordsArray.add(subRecordBuilder);
 
     // when
-    if (whetherUseFastDeserializer) {
-      array = decodeRecordFast(arrayRecordSchema, arrayRecordSchema, genericDataAsDecoder(recordsArray));
-    } else {
-      array = decodeRecordSlow(arrayRecordSchema, arrayRecordSchema, genericDataAsDecoder(recordsArray));
-    }
+    array = implementation.decode(arrayRecordSchema, arrayRecordSchema, genericDataAsDecoder(recordsArray));
+
     // then
     Assert.assertEquals(2, array.size());
     Assert.assertEquals(new Utf8("abc"), array.get(0).get("field"));
     Assert.assertEquals(new Utf8("abc"), array.get(1).get("field"));
   }
 
-  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
-  public void shouldReadMapOfRecords(Boolean whetherUseFastDeserializer) {
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadArrayOfFloats(Implementation implementation) {
+    // given
+    Schema elementSchema = Schema.create(Schema.Type.FLOAT);
+    Schema arraySchema = Schema.createArray(elementSchema);
+
+    List<Float> data = new ArrayList<>(2);
+    data.add(1.0f);
+    data.add(2.0f);
+
+    GenericData.Array<Float> avroArray = new GenericData.Array<>(0, arraySchema);
+    for (float f: data) {
+      avroArray.add(f);
+    }
+
+    // when
+    List<Float> array = implementation.decode(arraySchema, arraySchema, genericDataAsDecoder(avroArray));
+
+    // then
+    if (implementation.isFast) {
+      // The extended API should always be available, regardless of whether warm or cold
+      Assert.assertTrue(array instanceof PrimitiveFloatList,
+          "The returned type should implement " + PrimitiveFloatList.class.getSimpleName());
+    }
+    Assert.assertEquals(array.size(), data.size());
+    for (int i = 0; i < data.size(); i++) {
+      Assert.assertEquals(array.get(i), data.get(i));
+    }
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadMapOfRecords(Implementation implementation) {
     // given
     Schema recordSchema = createRecord("record", createPrimitiveUnionFieldSchema("field", Schema.Type.STRING));
 
@@ -643,14 +664,8 @@ public class FastGenericDeserializerGeneratorTest {
     recordsMap.put("2", subRecordBuilder);
 
     // when
-    Map<String, GenericRecord> map = null;
-    if (whetherUseFastDeserializer) {
-      map = decodeRecordFast(mapRecordSchema, mapRecordSchema,
-          FastSerdeTestsSupport.genericDataAsDecoder(recordsMap, mapRecordSchema));
-    } else {
-      map = decodeRecordSlow(mapRecordSchema, mapRecordSchema,
-          FastSerdeTestsSupport.genericDataAsDecoder(recordsMap, mapRecordSchema));
-    }
+    Map<String, GenericRecord> map = implementation.decode(mapRecordSchema, mapRecordSchema,
+        FastSerdeTestsSupport.genericDataAsDecoder(recordsMap, mapRecordSchema));
 
     // then
     Assert.assertEquals(2, map.size());
@@ -668,7 +683,7 @@ public class FastGenericDeserializerGeneratorTest {
     recordsMap.put("2", subRecordBuilder);
 
     // when
-    map = decodeRecordFast(mapRecordSchema, mapRecordSchema,
+    map = decodeRecordWarmFast(mapRecordSchema, mapRecordSchema,
         FastSerdeTestsSupport.genericDataAsDecoder(recordsMap, mapRecordSchema));
 
     // then
@@ -677,8 +692,8 @@ public class FastGenericDeserializerGeneratorTest {
     Assert.assertEquals(new Utf8("abc"), map.get(new Utf8("2")).get("field"));
   }
 
-  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
-  public void shouldReadNestedMap(Boolean whetherUseFastDeserializer) {
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadNestedMap(Implementation implementation) {
     // given
     Schema nestedMapSchema = createRecord("record", createMapFieldSchema(
         "mapField", Schema.createMap(Schema.createArray(Schema.create(Schema.Type.INT)))));
@@ -693,14 +708,8 @@ public class FastGenericDeserializerGeneratorTest {
     recordData.put("mapField", mapField);
 
     // when
-    GenericData.Record decodedRecord = null;
-    if (whetherUseFastDeserializer) {
-      decodedRecord = decodeRecordFast(nestedMapSchema, nestedMapSchema,
-          FastSerdeTestsSupport.genericDataAsDecoder(recordData, nestedMapSchema));
-    } else {
-      decodedRecord = decodeRecordSlow(nestedMapSchema, nestedMapSchema,
-          FastSerdeTestsSupport.genericDataAsDecoder(recordData, nestedMapSchema));
-    }
+    GenericData.Record decodedRecord = implementation.decode(nestedMapSchema, nestedMapSchema,
+        FastSerdeTestsSupport.genericDataAsDecoder(recordData, nestedMapSchema));
 
     // then
     Object decodedMapField = decodedRecord.get("mapField");
@@ -712,8 +721,8 @@ public class FastGenericDeserializerGeneratorTest {
     Assert.assertEquals(Arrays.asList(2), ((List) ((Map) subMap).get(new Utf8("subKey2"))));
   }
 
-  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
-  public void shouldReadRecursiveUnionRecord(Boolean whetherUseFastDeserializer) {
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadRecursiveUnionRecord(Implementation implementation) {
     // given
     Schema unionRecordSchema = Schema.parse("{\"type\":\"record\",\"name\":\"recordName\",\"namespace\":\"com.linkedin.avro.fastserde.generated.avro\",\"fields\":[{\"name\":\"strField\",\"type\":\"string\"},{\"name\":\"unionField\",\"type\":[\"null\",\"recordName\"]}]}");
 
@@ -725,14 +734,8 @@ public class FastGenericDeserializerGeneratorTest {
     recordData.put("unionField", unionField);
 
     // when
-    GenericData.Record decodedRecord = null;
-    if (whetherUseFastDeserializer) {
-      decodedRecord = decodeRecordFast(unionRecordSchema, unionRecordSchema,
-          FastSerdeTestsSupport.genericDataAsDecoder(recordData, unionRecordSchema));
-    } else {
-      decodedRecord = decodeRecordSlow(unionRecordSchema, unionRecordSchema,
-          FastSerdeTestsSupport.genericDataAsDecoder(recordData, unionRecordSchema));
-    }
+    GenericData.Record decodedRecord = implementation.decode(unionRecordSchema, unionRecordSchema,
+        FastSerdeTestsSupport.genericDataAsDecoder(recordData, unionRecordSchema));
 
     // then
     Assert.assertEquals(new Utf8("foo"), decodedRecord.get("strField"));
@@ -741,11 +744,22 @@ public class FastGenericDeserializerGeneratorTest {
     Assert.assertEquals(new Utf8("bar"), ((GenericData.Record) decodedUnionField).get("strField"));
   }
 
-  public <T> T decodeRecordFast(Schema writerSchema, Schema readerSchema, Decoder decoder) {
+  private static <T> T decodeRecordColdFast(Schema writerSchema, Schema readerSchema, Decoder decoder) {
+    FastDeserializer<T> deserializer =
+        new FastSerdeCache.FastDeserializerWithAvroGenericImpl<>(writerSchema, readerSchema);
+
+    return decodeRecordFast(deserializer, decoder);
+  }
+
+  private static <T> T decodeRecordWarmFast(Schema writerSchema, Schema readerSchema, Decoder decoder) {
     FastDeserializer<T> deserializer =
         new FastGenericDeserializerGenerator<T>(writerSchema, readerSchema, tempDir, classLoader,
             null).generateDeserializer();
 
+    return decodeRecordFast(deserializer, decoder);
+  }
+
+  private static <T> T decodeRecordFast(FastDeserializer<T> deserializer, Decoder decoder) {
     try {
       return deserializer.deserialize(null, decoder);
     } catch (Exception e) {
@@ -754,7 +768,7 @@ public class FastGenericDeserializerGeneratorTest {
   }
 
   @SuppressWarnings("unchecked")
-  private <T> T decodeRecordSlow(Schema readerSchema, Schema writerSchema, Decoder decoder) {
+  private static <T> T decodeRecordSlow(Schema writerSchema, Schema readerSchema, Decoder decoder) {
     org.apache.avro.io.DatumReader<GenericData> datumReader = new GenericDatumReader<>(writerSchema, readerSchema);
     try {
       return (T) datumReader.read(null, decoder);

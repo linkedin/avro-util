@@ -1,5 +1,7 @@
 package com.linkedin.avro.fastserde;
 
+import org.apache.avro.generic.ColdGenericDatumReader;
+import org.apache.avro.generic.ColdSpecificDatumReader;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
@@ -478,7 +480,7 @@ public final class FastSerdeCache {
     private final SpecificDatumReader<V> datumReader;
 
     public FastDeserializerWithAvroSpecificImpl(Schema writerSchema, Schema readerSchema) {
-      this.datumReader = new SpecificDatumReader<>(writerSchema, readerSchema);
+      this.datumReader = new ColdSpecificDatumReader<>(writerSchema, readerSchema);
     }
 
     @Override
@@ -491,7 +493,7 @@ public final class FastSerdeCache {
     private final GenericDatumReader<V> datumReader;
 
     public FastDeserializerWithAvroGenericImpl(Schema writerSchema, Schema readerSchema) {
-      this.datumReader = new GenericDatumReader<>(writerSchema, readerSchema);
+      this.datumReader = new ColdGenericDatumReader<>(writerSchema, readerSchema);
     }
 
     @Override

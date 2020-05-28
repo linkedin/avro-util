@@ -87,7 +87,7 @@ public class FastDeserializerDefaultsTest {
     long startTime = System.currentTimeMillis();
 
     for (int i = 0; i < iteration; i++) {
-      PrimitiveFloatList list = new PrimitiveFloatList(array_size);
+      ByteBufferBackedPrimitiveFloatList list = new ByteBufferBackedPrimitiveFloatList(array_size);
 
       for (int l = 0; l < array_size; l++) {
         list.addPrimitive((float) l);

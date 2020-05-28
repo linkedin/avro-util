@@ -589,10 +589,10 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
 
     final JVar arrayVar = action.getShouldRead() ? declareValueVar(name, arraySchema, parentBody) : null;
     /**
-     * Special optimization for float array by leveraging {@link PrimitiveFloatList}.
+     * Special optimization for float array by leveraging {@link ByteBufferBackedPrimitiveFloatList}.
      */
     if (action.getShouldRead() && arraySchema.getElementType().getType().equals(Schema.Type.FLOAT)) {
-      JClass primitiveFloatList = codeModel.ref(PrimitiveFloatList.class);
+      JClass primitiveFloatList = codeModel.ref(ByteBufferBackedPrimitiveFloatList.class);
       JExpression readPrimitiveFloatArrayInvocation = primitiveFloatList.staticInvoke("readPrimitiveFloatArray").
           arg(reuseSupplier.get()).arg(JExpr.direct(DECODER));
       JExpression castedResult =
