@@ -590,6 +590,8 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     final JVar arrayVar = action.getShouldRead() ? declareValueVar(name, arraySchema, parentBody) : null;
     /**
      * Special optimization for float array by leveraging {@link ByteBufferBackedPrimitiveFloatList}.
+     *
+     * TODO: Handle other primitive element types here.
      */
     if (action.getShouldRead() && arraySchema.getElementType().getType().equals(Schema.Type.FLOAT)) {
       JClass primitiveFloatList = codeModel.ref(ByteBufferBackedPrimitiveFloatList.class);
