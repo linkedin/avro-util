@@ -17,4 +17,14 @@ public interface PrimitiveFloatList extends List<Float> {
    * @return <tt>true</tt> if this collection changed as a result of the call
    */
   boolean addPrimitive(float e);
+
+  /**
+   * Replaces the element at the specified position in this list with the
+   * specified element (optional operation).
+   *
+   * @param index index of the element to replace
+   * @param element element to be stored at the specified position
+   * @return the element previously at the specified position
+   */
+  float setPrimitive(int index, float element);
 }

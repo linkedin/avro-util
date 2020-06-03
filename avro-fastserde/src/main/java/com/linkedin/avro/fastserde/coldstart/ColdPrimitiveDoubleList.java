@@ -29,4 +29,9 @@ public class ColdPrimitiveDoubleList extends GenericData.Array<Double> implement
   public boolean addPrimitive(double o) {
     return add(o);
   }
+
+  @Override
+  public double setPrimitive(int index, double o) {
+    return set(index, o);
+  }
 }

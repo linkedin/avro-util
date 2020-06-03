@@ -1,10 +1,22 @@
 package com.linkedin.avro.fastserde;
 
+import com.linkedin.avro.api.PrimitiveBooleanList;
+import com.linkedin.avro.api.PrimitiveDoubleList;
+import com.linkedin.avro.api.PrimitiveFloatList;
+import com.linkedin.avro.api.PrimitiveIntList;
+import com.linkedin.avro.api.PrimitiveLongList;
+import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveBooleanList;
+import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveDoubleList;
+import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveFloatList;
+import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveIntList;
+import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveLongList;
+import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JInvocation;
+import com.sun.codemodel.JVar;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
@@ -18,10 +30,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
-import org.apache.avro.util.Utf8;
 
 
 public class SchemaAssistant {
@@ -31,6 +44,7 @@ public class SchemaAssistant {
 
   private final JCodeModel codeModel;
   private final boolean useGenericTypes;
+  private final JClass defaultStringType;
   private Set<Class<? extends Exception>> exceptionsFromStringable;
   /**
    * This is used to collect all the fully qualified classes being used by the
@@ -41,14 +55,11 @@ public class SchemaAssistant {
    */
   private final Set<String> fullyQualifiedClassNameSet = new HashSet<>();
 
-  public SchemaAssistant(JCodeModel codeModel, boolean useGenericTypes) {
+  public SchemaAssistant(JCodeModel codeModel, boolean useGenericTypes, Class defaultStringClass) {
     this.codeModel = codeModel;
     this.useGenericTypes = useGenericTypes;
     this.exceptionsFromStringable = new HashSet<>();
-  }
-
-  protected JCodeModel getCodeModel() {
-    return codeModel;
+    this.defaultStringType = codeModel.ref(defaultStringClass);
   }
 
   protected Set<String> getUsedFullyQualifiedClassNameSet() {
@@ -65,6 +76,40 @@ public class SchemaAssistant {
         return true;
       default:
         return false;
+    }
+  }
+
+  public static boolean isPrimitive(Schema schema) {
+    switch (schema.getType()) {
+      case BOOLEAN:
+      case DOUBLE:
+      case FLOAT:
+      case INT:
+      case LONG:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  /**
+   * Determines if a data type is capable of reuse
+   *
+   * @param schema of the data type in question
+   * @return true if that data type is reusable (by mutating it), false otherwise
+   */
+  public static boolean isCapableOfReuse(Schema schema) {
+    // TODO: Add special handling for Strings... {@link org.apache.avro.util.Utf8} is reusable, but {@link String} is not.
+    switch (schema.getType()) {
+      case BOOLEAN:
+      case DOUBLE:
+      case ENUM:
+      case FLOAT:
+      case INT:
+      case LONG:
+        return false;
+      default:
+        return true;
     }
   }
 
@@ -207,8 +252,12 @@ public class SchemaAssistant {
     return classFromSchema(schema, abstractType, false);
   }
 
-  /* Note that settings abstractType and rawType are not passed to subcalls */
   public JClass classFromSchema(Schema schema, boolean abstractType, boolean rawType) {
+    return classFromSchema(schema, abstractType, rawType, false);
+  }
+
+  /* Note that settings abstractType and rawType are not passed to subcalls */
+  public JClass classFromSchema(Schema schema, boolean abstractType, boolean rawType, boolean primitiveList) {
     JClass outputClass;
 
     switch (schema.getType()) {
@@ -226,16 +275,33 @@ public class SchemaAssistant {
         break;
 
       case ARRAY:
-        if (abstractType) {
-          outputClass = codeModel.ref(List.class);
-        } else {
-          if (useGenericTypes) {
-            outputClass = codeModel.ref(GenericData.Array.class);
-          } else {
-            outputClass = codeModel.ref(ArrayList.class);
+        Class klass = null;
+        if (primitiveList) {
+          switch (schema.getElementType().getType()) {
+            case BOOLEAN: klass = abstractType ? PrimitiveBooleanList.class : ColdPrimitiveBooleanList.class; break;
+            case DOUBLE: klass = abstractType ? PrimitiveDoubleList.class : ColdPrimitiveDoubleList.class; break;
+            /**
+             * N.B.: FLOAT will get superseded in
+             * {@link FastDeserializerGenerator#processArray(JVar, String, Schema, Schema, JBlock, FastDeserializerGeneratorBase.FieldAction, BiConsumer, Supplier)}
+             */
+            case FLOAT: klass = abstractType ? PrimitiveFloatList.class : ColdPrimitiveFloatList.class; break;
+            case INT: klass = abstractType ? PrimitiveIntList.class : ColdPrimitiveIntList.class; break;
+            case LONG: klass = abstractType ? PrimitiveLongList.class : ColdPrimitiveLongList.class; break;
+            default: // no-op
           }
         }
-        if (!rawType) {
+        if (null == klass) {
+          if (abstractType) {
+            klass = List.class;
+          } else if (useGenericTypes) {
+            klass = GenericData.Array.class;
+          } else {
+            klass = ArrayList.class;
+          }
+        }
+        outputClass = codeModel.ref(klass);
+
+        if (!rawType && !(primitiveList && isPrimitive(schema.getElementType()))) {
           outputClass = outputClass.narrow(elementClassFromArraySchema(schema));
         }
         break;
@@ -301,7 +367,7 @@ public class SchemaAssistant {
   }
 
   protected JClass defaultStringType() {
-    return codeModel.ref(Utf8.class);
+    return defaultStringType;
   }
 
   public JExpression getEnumValueByName(Schema enumSchema, JExpression nameExpr, JExpression getSchemaExpr) {
@@ -318,6 +384,10 @@ public class SchemaAssistant {
 
   public JExpression getEnumValueByIndex(Schema enumSchema, JExpression indexExpr, JExpression getSchemaExpr) {
     if (useGenericTypes) {
+      /**
+       * TODO: Consider ways to avoid instantiating a new {@link org.apache.avro.generic.GenericData.EnumSymbol}
+       *       instance, e.g. can we pre-allocate one "canonical" enum instance for each ordinal and keep handing
+       *       out the same one repeatedly, given that they are not mutable? */
       if (Utils.isAvro14()) {
         return JExpr._new(codeModel.ref(GenericData.EnumSymbol.class))
             .arg(getSchemaExpr.invoke("getEnumSymbols").invoke("get").arg(indexExpr));

@@ -29,4 +29,9 @@ public class ColdPrimitiveBooleanList extends GenericData.Array<Boolean> impleme
   public boolean addPrimitive(boolean o) {
     return add(o);
   }
+
+  @Override
+  public boolean setPrimitive(int index, boolean o) {
+    return set(index, o);
+  }
 }

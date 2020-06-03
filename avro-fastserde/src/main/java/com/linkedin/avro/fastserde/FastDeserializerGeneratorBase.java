@@ -1,51 +1,28 @@
 package com.linkedin.avro.fastserde;
 
 import com.google.common.collect.Lists;
-import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.sun.codemodel.JBlock;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.ListIterator;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import javax.tools.JavaCompiler;
-import javax.tools.ToolProvider;
 import org.apache.avro.Schema;
 import org.apache.avro.io.parsing.Symbol;
-import org.apache.log4j.Logger;
-
-import static com.linkedin.avro.fastserde.Utils.*;
+import org.apache.avro.util.Utf8;
 
 
+/** TODO all of this could be moved to {@link FastDeserializerGenerator} */
 public abstract class FastDeserializerGeneratorBase<T> extends FastSerdeBase {
-  public static final String GENERATED_PACKAGE_NAME = "com.linkedin.avro.fastserde.generated.deserialization."
-      + AvroCompatibilityHelper.getRuntimeAvroVersion().name();
-  public static final String GENERATED_SOURCES_PATH = generateSourcePathFromPackageName(GENERATED_PACKAGE_NAME);
-
   protected static final Symbol EMPTY_SYMBOL = new Symbol(Symbol.Kind.TERMINAL, new Symbol[]{}) {};
   protected static final Symbol END_SYMBOL = new Symbol(Symbol.Kind.TERMINAL, new Symbol[]{}) {};
-  protected static final String SEP = "_";
-  private static final Logger LOGGER = Logger.getLogger(FastDeserializerGeneratorBase.class);
   protected final Schema writer;
   protected final Schema reader;
-  protected JCodeModel codeModel;
-  protected JDefinedClass deserializerClass;
-  private File destination;
-  private ClassLoader classLoader;
-  private String compileClassPath;
 
-  FastDeserializerGeneratorBase(Schema writer, Schema reader, File destination, ClassLoader classLoader,
+  FastDeserializerGeneratorBase(boolean useGenericTypes, Schema writer, Schema reader, File destination, ClassLoader classLoader,
       String compileClassPath) {
+    super("deserialization", useGenericTypes, Utf8.class, destination, classLoader, compileClassPath);
     this.writer = writer;
     this.reader = reader;
-    this.destination = destination;
-    this.classLoader = classLoader;
-    this.compileClassPath = (null == compileClassPath ? "" : compileClassPath);
-    this.codeModel = new JCodeModel();
   }
 
   protected static Symbol[] reverseSymbolArray(Symbol[] symbols) {
@@ -93,30 +70,6 @@ public abstract class FastDeserializerGeneratorBase<T> extends FastSerdeBase {
   }
 
   public abstract FastDeserializer<T> generateDeserializer();
-
-  @SuppressWarnings("unchecked")
-  protected Class<FastDeserializer<T>> compileClass(final String className, Set<String> knownUsedFullyQualifiedClassNameSet)
-      throws IOException, ClassNotFoundException {
-    codeModel.build(destination);
-
-    String filePath = destination.getAbsolutePath() + GENERATED_SOURCES_PATH + className + ".java";
-    LOGGER.info("Generated deserializer source file: " + filePath);
-    JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-    String compileClassPathForCurrentFile = Utils.inferCompileDependencies(compileClassPath, filePath, knownUsedFullyQualifiedClassNameSet);
-    LOGGER.info("For source file: " + filePath + ", and the inferred compile class path: " + compileClassPathForCurrentFile);
-    int compileResult;
-    try {
-      compileResult = compiler.run(null, null, null, "-cp", compileClassPathForCurrentFile, filePath);
-    } catch (Exception e) {
-      throw new FastDeserializerGeneratorException("Unable to compile:" + className, e);
-    }
-
-    if (compileResult != 0) {
-      throw new FastDeserializerGeneratorException("Unable to compile:" + className);
-    }
-
-    return (Class<FastDeserializer<T>>) classLoader.loadClass(GENERATED_PACKAGE_NAME + "." + className);
-  }
 
   protected ListIterator<Symbol> actionIterator(FieldAction action) {
     ListIterator<Symbol> actionIterator = null;

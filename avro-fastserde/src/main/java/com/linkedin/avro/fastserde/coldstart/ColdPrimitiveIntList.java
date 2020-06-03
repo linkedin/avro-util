@@ -29,4 +29,9 @@ public class ColdPrimitiveIntList extends GenericData.Array<Integer> implements 
   public boolean addPrimitive(int o) {
     return add(o);
   }
+
+  @Override
+  public int setPrimitive(int index, int o) {
+    return set(index, o);
+  }
 }

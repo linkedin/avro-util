@@ -1,6 +1,10 @@
 package com.linkedin.avro.fastserde;
 
+import com.linkedin.avro.api.PrimitiveBooleanList;
+import com.linkedin.avro.api.PrimitiveDoubleList;
 import com.linkedin.avro.api.PrimitiveFloatList;
+import com.linkedin.avro.api.PrimitiveIntList;
+import com.linkedin.avro.api.PrimitiveLongList;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import java.io.File;
 import java.io.IOException;
@@ -639,7 +643,7 @@ public class FastGenericDeserializerGeneratorTest {
     data.add(false);
 
     // then
-    shouldReadArrayOfPrimitives(implementation, Schema.Type.BOOLEAN, GenericData.Array.class, data);
+    shouldReadArrayOfPrimitives(implementation, Schema.Type.BOOLEAN, PrimitiveBooleanList.class, data);
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
@@ -650,7 +654,7 @@ public class FastGenericDeserializerGeneratorTest {
     data.add(2.0D);
 
     // then
-    shouldReadArrayOfPrimitives(implementation, Schema.Type.DOUBLE, GenericData.Array.class, data);
+    shouldReadArrayOfPrimitives(implementation, Schema.Type.DOUBLE, PrimitiveDoubleList.class, data);
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
@@ -672,7 +676,7 @@ public class FastGenericDeserializerGeneratorTest {
     data.add(2);
 
     // then
-    shouldReadArrayOfPrimitives(implementation, Schema.Type.INT, GenericData.Array.class, data);
+    shouldReadArrayOfPrimitives(implementation, Schema.Type.INT, PrimitiveIntList.class, data);
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
@@ -683,7 +687,7 @@ public class FastGenericDeserializerGeneratorTest {
     data.add(2L);
 
     // then
-    shouldReadArrayOfPrimitives(implementation, Schema.Type.LONG, GenericData.Array.class, data);
+    shouldReadArrayOfPrimitives(implementation, Schema.Type.LONG, PrimitiveLongList.class, data);
   }
 
   private <E, L> void shouldReadArrayOfPrimitives(Implementation implementation, Schema.Type elementType, Class<L> expectedListClass, List<E> data) {
@@ -706,19 +710,17 @@ public class FastGenericDeserializerGeneratorTest {
     }
 
     if (implementation.isFast) {
-      if (expectedListClass.equals(PrimitiveFloatList.class)) {
-        // The extended API should always be available, regardless of whether warm or cold
-        Assert.assertTrue(Arrays.stream(array.getClass().getInterfaces()).anyMatch(c -> c.equals(expectedListClass)),
-            "The returned type should implement " + expectedListClass.getSimpleName());
+      // The extended API should always be available, regardless of whether warm or cold
+      Assert.assertTrue(Arrays.stream(array.getClass().getInterfaces()).anyMatch(c -> c.equals(expectedListClass)),
+          "The returned type should implement " + expectedListClass.getSimpleName());
 
-        try {
-          Method getPrimitiveMethod = expectedListClass.getMethod("getPrimitive", int.class);
-          for (int i = 0; i < data.size(); i++) {
-            Assert.assertEquals(getPrimitiveMethod.invoke(array, i), data.get(i));
-          }
-        } catch (Exception e) {
-          Assert.fail("Failed to access the getPrimitive function!");
+      try {
+        Method getPrimitiveMethod = expectedListClass.getMethod("getPrimitive", int.class);
+        for (int i = 0; i < data.size(); i++) {
+          Assert.assertEquals(getPrimitiveMethod.invoke(array, i), data.get(i));
         }
+      } catch (Exception e) {
+        Assert.fail("Failed to access the getPrimitive function!");
       }
     }
   }

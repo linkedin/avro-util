@@ -235,11 +235,16 @@ public class ByteBufferBackedPrimitiveFloatList extends AbstractList<Float>
 
   @Override
   public Float set(int i, Float o) {
+    return set(i, o);
+  }
+
+  @Override
+  public float setPrimitive(int i, float o) {
     if (i >= size) {
       throw new IndexOutOfBoundsException("Index " + i + " out of bounds.");
     }
     cacheFromByteBuffer();
-    Float response = elements[i];
+    float response = elements[i];
     elements[i] = o;
 
     return response;
