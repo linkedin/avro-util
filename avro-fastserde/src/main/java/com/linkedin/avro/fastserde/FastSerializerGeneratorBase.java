@@ -1,5 +1,6 @@
 package com.linkedin.avro.fastserde;
 
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import java.io.File;
@@ -20,10 +21,12 @@ import static com.linkedin.avro.fastserde.Utils.*;
  * @param <T> type of Datum to be operated on
  */
 public abstract class FastSerializerGeneratorBase<T> {
-  public static final String GENERATED_PACKAGE_NAME = "com.linkedin.avro.fastserde.serialization.generated";
+  public static final String GENERATED_PACKAGE_NAME = "com.linkedin.avro.fastserde.generated.serialization."
+      + AvroCompatibilityHelper.getRuntimeAvroVersion().name();
   public static final String GENERATED_SOURCES_PATH = generateSourcePathFromPackageName(GENERATED_PACKAGE_NAME);
 
   private static final AtomicInteger UNIQUE_ID_BASE = new AtomicInteger(0);
+  protected static final String SEP = "_";
 
   private static final Logger LOGGER = Logger.getLogger(FastSerializerGeneratorBase.class);
 
@@ -44,14 +47,8 @@ public abstract class FastSerializerGeneratorBase<T> {
 
   public static String getClassName(Schema schema, String description) {
     Long schemaId = Math.abs(Utils.getSchemaFingerprint(schema));
-    if (Schema.Type.RECORD.equals(schema.getType())) {
-      return schema.getName() + description + "Serializer" + "_" + schemaId;
-    } else if (Schema.Type.ARRAY.equals(schema.getType())) {
-      return "Array" + description + "Serializer" + "_" + schemaId;
-    } else if (Schema.Type.MAP.equals(schema.getType())) {
-      return "Map" + description + "Serializer" + "_" + schemaId;
-    }
-    throw new FastSerializerGeneratorException("Unsupported return type: " + schema.getType());
+    String typeName = SchemaAssistant.getTypeName(schema);
+    return typeName + SEP + description + "Serializer" + SEP + schemaId;
   }
 
   protected static String getVariableName(String name) {

@@ -4,11 +4,10 @@ import com.linkedin.avro.api.PrimitiveFloatList;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.ByteBuffer;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -76,8 +75,7 @@ public class FastGenericDeserializerGeneratorTest {
 
   @BeforeTest(groups = {"deserializationTest"})
   public void prepare() throws Exception {
-    Path tempPath = Files.createTempDirectory("generated");
-    tempDir = tempPath.toFile();
+    tempDir = getCodeGenDirectory();
 
     classLoader = URLClassLoader.newInstance(new URL[]{tempDir.toURI().toURL()},
         FastGenericDeserializerGeneratorTest.class.getClassLoader());
@@ -86,7 +84,8 @@ public class FastGenericDeserializerGeneratorTest {
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
   public void shouldReadPrimitives(Implementation implementation) {
     // given
-    Schema recordSchema = createRecord("testRecord", createField("testInt", Schema.create(Schema.Type.INT)),
+    Schema recordSchema = createRecord(
+        createField("testInt", Schema.create(Schema.Type.INT)),
         createPrimitiveUnionFieldSchema("testIntUnion", Schema.Type.INT),
         createField("testString", Schema.create(Schema.Type.STRING)),
         createPrimitiveUnionFieldSchema("testStringUnion", Schema.Type.STRING),
@@ -147,8 +146,10 @@ public class FastGenericDeserializerGeneratorTest {
   public void shouldReadFixed(Implementation implementation) {
     // given
     Schema fixedSchema = createFixedSchema("testFixed", 2);
-    Schema recordSchema = createRecord("testRecord", createField("testFixed", fixedSchema),
-        createUnionField("testFixedUnion", fixedSchema), createArrayFieldSchema("testFixedArray", fixedSchema),
+    Schema recordSchema = createRecord(
+        createField("testFixed", fixedSchema),
+        createUnionField("testFixedUnion", fixedSchema),
+        createArrayFieldSchema("testFixedArray", fixedSchema),
         createArrayFieldSchema("testFixedUnionArray", createUnionSchema(fixedSchema)));
 
     GenericRecord originalRecord = new GenericData.Record(recordSchema);
@@ -173,10 +174,11 @@ public class FastGenericDeserializerGeneratorTest {
   public void shouldReadEnum(Implementation implementation) {
     // given
     Schema enumSchema = createEnumSchema("testEnum", new String[]{"A", "B"});
-    Schema recordSchema =
-        createRecord("testRecord", createField("testEnum", enumSchema), createUnionField("testEnumUnion", enumSchema),
-            createArrayFieldSchema("testEnumArray", enumSchema),
-            createArrayFieldSchema("testEnumUnionArray", createUnionSchema(enumSchema)));
+    Schema recordSchema = createRecord(
+        createField("testEnum", enumSchema),
+        createUnionField("testEnumUnion", enumSchema),
+        createArrayFieldSchema("testEnumArray", enumSchema),
+        createArrayFieldSchema("testEnumUnionArray", createUnionSchema(enumSchema)));
 
     GenericRecord originalRecord = new GenericData.Record(recordSchema);
     originalRecord.put("testEnum",
@@ -202,10 +204,11 @@ public class FastGenericDeserializerGeneratorTest {
   public void shouldReadPermutatedEnum(Implementation implementation) {
     // given
     Schema enumSchema = createEnumSchema("testEnum", new String[]{"A", "B", "C", "D", "E"});
-    Schema recordSchema =
-        createRecord("testRecord", createField("testEnum", enumSchema), createUnionField("testEnumUnion", enumSchema),
-            createArrayFieldSchema("testEnumArray", enumSchema),
-            createArrayFieldSchema("testEnumUnionArray", createUnionSchema(enumSchema)));
+    Schema recordSchema = createRecord(
+        createField("testEnum", enumSchema),
+        createUnionField("testEnumUnion", enumSchema),
+        createArrayFieldSchema("testEnumArray", enumSchema),
+        createArrayFieldSchema("testEnumUnionArray", createUnionSchema(enumSchema)));
 
     GenericRecord originalRecord = new GenericData.Record(recordSchema);
     originalRecord.put("testEnum",
@@ -218,10 +221,11 @@ public class FastGenericDeserializerGeneratorTest {
         Arrays.asList(AvroCompatibilityHelper.newEnumSymbol(enumSchema, "D")));//new GenericData.EnumSymbol("D")));
 
     Schema enumSchema1 = createEnumSchema("testEnum", new String[]{"B", "A", "D", "E", "C"});
-    Schema recordSchema1 =
-        createRecord("testRecord", createField("testEnum", enumSchema1), createUnionField("testEnumUnion", enumSchema1),
-            createArrayFieldSchema("testEnumArray", enumSchema1),
-            createArrayFieldSchema("testEnumUnionArray", createUnionSchema(enumSchema1)));
+    Schema recordSchema1 = createRecord(
+        createField("testEnum", enumSchema1),
+        createUnionField("testEnumUnion", enumSchema1),
+        createArrayFieldSchema("testEnumArray", enumSchema1),
+        createArrayFieldSchema("testEnumUnionArray", createUnionSchema(enumSchema1)));
 
     // when
     GenericRecord record = implementation.decode(recordSchema, recordSchema1, genericDataAsDecoder(originalRecord));
@@ -255,9 +259,10 @@ public class FastGenericDeserializerGeneratorTest {
     // given
     Schema subRecordSchema = createRecord("subRecord", createPrimitiveUnionFieldSchema("subField", Schema.Type.STRING));
 
-    Schema recordSchema =
-        createRecord("test", createUnionField("record", subRecordSchema), createField("record1", subRecordSchema),
-            createPrimitiveUnionFieldSchema("field", Schema.Type.STRING));
+    Schema recordSchema = createRecord(
+        createUnionField("record", subRecordSchema),
+        createField("record1", subRecordSchema),
+        createPrimitiveUnionFieldSchema("field", Schema.Type.STRING));
 
     GenericRecord subRecordBuilder = new GenericData.Record(subRecordSchema);
     subRecordBuilder.put("subField", "abc");
@@ -282,7 +287,8 @@ public class FastGenericDeserializerGeneratorTest {
   public void shouldReadSubRecordCollectionsField(Implementation implementation) {
     // given
     Schema subRecordSchema = createRecord("subRecord", createPrimitiveUnionFieldSchema("subField", Schema.Type.STRING));
-    Schema recordSchema = createRecord("test", createArrayFieldSchema("recordsArray", subRecordSchema),
+    Schema recordSchema = createRecord(
+        createArrayFieldSchema("recordsArray", subRecordSchema),
         createMapFieldSchema("recordsMap", subRecordSchema),
         createUnionField("recordsArrayUnion", Schema.createArray(createUnionSchema(subRecordSchema))),
         createUnionField("recordsMapUnion", Schema.createMap(createUnionSchema(subRecordSchema))));
@@ -318,7 +324,7 @@ public class FastGenericDeserializerGeneratorTest {
   public void shouldReadSubRecordComplexCollectionsField(Implementation implementation) {
     // given
     Schema subRecordSchema = createRecord("subRecord", createPrimitiveUnionFieldSchema("subField", Schema.Type.STRING));
-    Schema recordSchema = createRecord("test",
+    Schema recordSchema = createRecord(
         createArrayFieldSchema("recordsArrayMap", Schema.createMap(createUnionSchema(subRecordSchema))),
         createMapFieldSchema("recordsMapArray", Schema.createArray(createUnionSchema(subRecordSchema))),
         createUnionField("recordsArrayMapUnion",
@@ -394,8 +400,8 @@ public class FastGenericDeserializerGeneratorTest {
     Schema.Field originalField2 = createPrimitiveUnionFieldSchema(originalField2Name, Schema.Type.STRING);
     Schema.Field newField2 = addAliases(createPrimitiveUnionFieldSchema(newField2Name, Schema.Type.STRING), originalField2Name);
 
-    Schema record1Schema = createRecord("test", field1Supplier.get(), originalField2);
-    Schema record2Schema = createRecord("test", newField1, newField2);
+    Schema record1Schema = createRecord(field1Supplier.get(), originalField2);
+    Schema record2Schema = createRecord(newField1, newField2);
 
     GenericData.Record builder = new GenericData.Record(record1Schema);
     builder.put(field1Name, field1Value);
@@ -414,21 +420,25 @@ public class FastGenericDeserializerGeneratorTest {
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
   public void shouldSkipRemovedField(Implementation implementation) {
     // given
-    Schema subRecord1Schema =
-        createRecord("subRecord", createPrimitiveUnionFieldSchema("testNotRemoved", Schema.Type.STRING),
-            createPrimitiveUnionFieldSchema("testRemoved", Schema.Type.STRING),
-            createPrimitiveUnionFieldSchema("testNotRemoved2", Schema.Type.STRING));
-    Schema record1Schema = createRecord("test", createPrimitiveUnionFieldSchema("testNotRemoved", Schema.Type.STRING),
+    Schema subRecord1Schema = createRecord("subRecord",
+        createPrimitiveUnionFieldSchema("testNotRemoved", Schema.Type.STRING),
+        createPrimitiveUnionFieldSchema("testRemoved", Schema.Type.STRING),
+        createPrimitiveUnionFieldSchema("testNotRemoved2", Schema.Type.STRING));
+    Schema record1Schema = createRecord(
+        createPrimitiveUnionFieldSchema("testNotRemoved", Schema.Type.STRING),
         createPrimitiveUnionFieldSchema("testRemoved", Schema.Type.STRING),
         createPrimitiveUnionFieldSchema("testNotRemoved2", Schema.Type.STRING),
-        createUnionField("subRecord", subRecord1Schema), createMapFieldSchema("subRecordMap", subRecord1Schema),
+        createUnionField("subRecord", subRecord1Schema),
+        createMapFieldSchema("subRecordMap", subRecord1Schema),
         createArrayFieldSchema("subRecordArray", subRecord1Schema));
-    Schema subRecord2Schema =
-        createRecord("subRecord", createPrimitiveUnionFieldSchema("testNotRemoved", Schema.Type.STRING),
-            createPrimitiveUnionFieldSchema("testNotRemoved2", Schema.Type.STRING));
-    Schema record2Schema = createRecord("test", createPrimitiveUnionFieldSchema("testNotRemoved", Schema.Type.STRING),
+    Schema subRecord2Schema = createRecord("subRecord",
+        createPrimitiveUnionFieldSchema("testNotRemoved", Schema.Type.STRING),
+        createPrimitiveUnionFieldSchema("testNotRemoved2", Schema.Type.STRING));
+    Schema record2Schema = createRecord(
+        createPrimitiveUnionFieldSchema("testNotRemoved", Schema.Type.STRING),
         createPrimitiveUnionFieldSchema("testNotRemoved2", Schema.Type.STRING),
-        createUnionField("subRecord", subRecord2Schema), createMapFieldSchema("subRecordMap", subRecord2Schema),
+        createUnionField("subRecord", subRecord2Schema),
+        createMapFieldSchema("subRecordMap", subRecord2Schema),
         createArrayFieldSchema("subRecordArray", subRecord2Schema));
 
     GenericData.Record subRecordBuilder = new GenericData.Record(subRecord1Schema);
@@ -469,12 +479,15 @@ public class FastGenericDeserializerGeneratorTest {
     Schema subRecord2Schema = createRecord("subRecord2", createPrimitiveFieldSchema("test1", Schema.Type.STRING),
         createPrimitiveFieldSchema("test2", Schema.Type.STRING));
 
-    Schema record1Schema =
-        createRecord("test", createField("subRecord1", subRecord1Schema), createField("subRecord2", subRecord2Schema),
-            createUnionField("subRecord3", subRecord2Schema), createField("subRecord4", subRecord1Schema));
+    Schema record1Schema = createRecord(
+        createField("subRecord1", subRecord1Schema),
+        createField("subRecord2", subRecord2Schema),
+        createUnionField("subRecord3", subRecord2Schema),
+        createField("subRecord4", subRecord1Schema));
 
-    Schema record2Schema =
-        createRecord("test", createField("subRecord1", subRecord1Schema), createField("subRecord4", subRecord1Schema));
+    Schema record2Schema = createRecord(
+        createField("subRecord1", subRecord1Schema),
+        createField("subRecord4", subRecord1Schema));
 
     GenericData.Record subRecordBuilder = new GenericData.Record(subRecord1Schema);
     subRecordBuilder.put("test1", "abc");
@@ -511,9 +524,9 @@ public class FastGenericDeserializerGeneratorTest {
     Schema subRecord2Schema = createRecord("subRecord", createPrimitiveFieldSchema("test1", Schema.Type.STRING),
         createPrimitiveFieldSchema("test4", Schema.Type.STRING));
 
-    Schema record1Schema = createRecord("test", createField("subRecord", subRecord1Schema));
+    Schema record1Schema = createRecord(createField("subRecord", subRecord1Schema));
 
-    Schema record2Schema = createRecord("test", createField("subRecord", subRecord2Schema));
+    Schema record2Schema = createRecord(createField("subRecord", subRecord2Schema));
 
     GenericData.Record subSubRecordBuilder = new GenericData.Record(subSubRecordSchema);
     subSubRecordBuilder.put("test1", "abc");
@@ -541,8 +554,7 @@ public class FastGenericDeserializerGeneratorTest {
     // given
     Schema subRecordSchema = createRecord("subRecord", createPrimitiveUnionFieldSchema("subField", Schema.Type.STRING));
 
-    Schema recordSchema = createRecord("test",
-        createUnionField("union", subRecordSchema, Schema.create(Schema.Type.STRING), Schema.create(Schema.Type.INT)));
+    Schema recordSchema = createRecord(createUnionField("union", subRecordSchema, Schema.create(Schema.Type.STRING), Schema.create(Schema.Type.INT)));
 
     GenericData.Record subRecordBuilder = new GenericData.Record(subRecordSchema);
     subRecordBuilder.put("subField", "abc");
@@ -620,32 +632,94 @@ public class FastGenericDeserializerGeneratorTest {
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadArrayOfBoolean(Implementation implementation) {
+    // given
+    List<Boolean> data = new ArrayList<>(2);
+    data.add(true);
+    data.add(false);
+
+    // then
+    shouldReadArrayOfPrimitives(implementation, Schema.Type.BOOLEAN, GenericData.Array.class, data);
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadArrayOfDouble(Implementation implementation) {
+    // given
+    List<Double> data = new ArrayList<>(2);
+    data.add(1.0D);
+    data.add(2.0D);
+
+    // then
+    shouldReadArrayOfPrimitives(implementation, Schema.Type.DOUBLE, GenericData.Array.class, data);
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
   public void shouldReadArrayOfFloats(Implementation implementation) {
     // given
-    Schema elementSchema = Schema.create(Schema.Type.FLOAT);
+    List<Float> data = new ArrayList<>(2);
+    data.add(1.0F);
+    data.add(2.0F);
+
+    // then
+    shouldReadArrayOfPrimitives(implementation, Schema.Type.FLOAT, PrimitiveFloatList.class, data);
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadArrayOfInts(Implementation implementation) {
+    // given
+    List<Integer> data = new ArrayList<>(2);
+    data.add(1);
+    data.add(2);
+
+    // then
+    shouldReadArrayOfPrimitives(implementation, Schema.Type.INT, GenericData.Array.class, data);
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadArrayOfLongs(Implementation implementation) {
+    // given
+    List<Long> data = new ArrayList<>(2);
+    data.add(1L);
+    data.add(2L);
+
+    // then
+    shouldReadArrayOfPrimitives(implementation, Schema.Type.LONG, GenericData.Array.class, data);
+  }
+
+  private <E, L> void shouldReadArrayOfPrimitives(Implementation implementation, Schema.Type elementType, Class<L> expectedListClass, List<E> data) {
+    // given
+    Schema elementSchema = Schema.create(elementType);
     Schema arraySchema = Schema.createArray(elementSchema);
 
-    List<Float> data = new ArrayList<>(2);
-    data.add(1.0f);
-    data.add(2.0f);
-
-    GenericData.Array<Float> avroArray = new GenericData.Array<>(0, arraySchema);
-    for (float f: data) {
-      avroArray.add(f);
+    GenericData.Array<E> avroArray = new GenericData.Array<>(0, arraySchema);
+    for (E element: data) {
+      avroArray.add(element);
     }
 
     // when
-    List<Float> array = implementation.decode(arraySchema, arraySchema, genericDataAsDecoder(avroArray));
+    List<E> array = implementation.decode(arraySchema, arraySchema, genericDataAsDecoder(avroArray));
 
     // then
-    if (implementation.isFast) {
-      // The extended API should always be available, regardless of whether warm or cold
-      Assert.assertTrue(array instanceof PrimitiveFloatList,
-          "The returned type should implement " + PrimitiveFloatList.class.getSimpleName());
-    }
     Assert.assertEquals(array.size(), data.size());
     for (int i = 0; i < data.size(); i++) {
       Assert.assertEquals(array.get(i), data.get(i));
+    }
+
+    if (implementation.isFast) {
+      if (expectedListClass.equals(PrimitiveFloatList.class)) {
+        // The extended API should always be available, regardless of whether warm or cold
+        Assert.assertTrue(Arrays.stream(array.getClass().getInterfaces()).anyMatch(c -> c.equals(expectedListClass)),
+            "The returned type should implement " + expectedListClass.getSimpleName());
+
+        try {
+          Method getPrimitiveMethod = expectedListClass.getMethod("getPrimitive", int.class);
+          for (int i = 0; i < data.size(); i++) {
+            Assert.assertEquals(getPrimitiveMethod.invoke(array, i), data.get(i));
+          }
+        } catch (Exception e) {
+          Assert.fail("Failed to access the getPrimitive function!");
+        }
+      }
     }
   }
 
@@ -695,8 +769,8 @@ public class FastGenericDeserializerGeneratorTest {
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
   public void shouldReadNestedMap(Implementation implementation) {
     // given
-    Schema nestedMapSchema = createRecord("record", createMapFieldSchema(
-        "mapField", Schema.createMap(Schema.createArray(Schema.create(Schema.Type.INT)))));
+    Schema nestedMapSchema = createRecord(
+        createMapFieldSchema("mapField", Schema.createMap(Schema.createArray(Schema.create(Schema.Type.INT)))));
 
     Map<String, List> value = new HashMap<>();
     value.put("subKey1", Arrays.asList(1));

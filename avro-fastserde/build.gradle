@@ -46,6 +46,10 @@ jmh {
   }
 }
 
+sourceSets {
+  codegen
+}
+
 dependencies {
   compile project(":helper:helper")
 
@@ -83,6 +87,11 @@ dependencies {
   avro18 ("org.apache.avro:avro-compiler:1.8.2") {
     exclude group: "org.slf4j"
   }
+
+  codegenCompile ("org.apache.avro:avro-compiler:1.8.2") {
+    exclude group: "org.slf4j"
+  }
+  codegenCompile project(":avro-fastserde")
 }
 
 compileJmhJava {
@@ -120,7 +129,16 @@ test {
   testLogging.showStandardStreams = true
 }
 
-build.dependsOn testAvro14, testAvro17, testAvro18
+task cleanGeneratedClassFiles(type: Delete) {
+  delete fileTree(dir: 'src/codegen', include: '**/*.class')
+}
+
+task cleanAllGeneratedFiles(type: Delete) {
+  delete fileTree(dir: 'src/codegen', include: '**/*.java')
+}
+
+build.dependsOn cleanAllGeneratedFiles, testAvro14, testAvro17, testAvro18
+build.finalizedBy cleanGeneratedClassFiles
 
 task generateAvroClasses14(type:Exec) {
   commandLine "./regenerate_avro.sh"

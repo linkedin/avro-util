@@ -1,6 +1,7 @@
 package com.linkedin.avro.fastserde;
 
 import com.google.common.collect.Lists;
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
@@ -21,15 +22,15 @@ import static com.linkedin.avro.fastserde.Utils.*;
 
 
 public abstract class FastDeserializerGeneratorBase<T> {
-  public static final String GENERATED_PACKAGE_NAME = "com.linkedin.avro.fastserde.deserialization.generated";
+  public static final String GENERATED_PACKAGE_NAME = "com.linkedin.avro.fastserde.generated.deserialization."
+      + AvroCompatibilityHelper.getRuntimeAvroVersion().name();
   public static final String GENERATED_SOURCES_PATH = generateSourcePathFromPackageName(GENERATED_PACKAGE_NAME);
 
   private static final AtomicInteger UNIQUE_ID_BASE = new AtomicInteger(0);
 
-  protected static final Symbol EMPTY_SYMBOL = new Symbol(Symbol.Kind.TERMINAL, new Symbol[]{}) {
-  };
-  protected static final Symbol END_SYMBOL = new Symbol(Symbol.Kind.TERMINAL, new Symbol[]{}) {
-  };
+  protected static final Symbol EMPTY_SYMBOL = new Symbol(Symbol.Kind.TERMINAL, new Symbol[]{}) {};
+  protected static final Symbol END_SYMBOL = new Symbol(Symbol.Kind.TERMINAL, new Symbol[]{}) {};
+  protected static final String SEP = "_";
   private static final Logger LOGGER = Logger.getLogger(FastDeserializerGeneratorBase.class);
   protected final Schema writer;
   protected final Schema reader;
@@ -63,14 +64,8 @@ public abstract class FastDeserializerGeneratorBase<T> {
     Long writerSchemaId = Math.abs(Utils.getSchemaFingerprint(writerSchema));
     Long readerSchemaId = Math.abs(Utils.getSchemaFingerprint(readerSchema));
     Schema.Type readerSchemaType = readerSchema.getType();
-    if (Schema.Type.RECORD.equals(readerSchemaType)) {
-      return readerSchema.getName() + description + "Deserializer" + writerSchemaId + "_" + readerSchemaId;
-    } else if (Schema.Type.ARRAY.equals(readerSchemaType)) {
-      return "Array" + description + "Deserializer" + writerSchemaId + "_" + readerSchemaId;
-    } else if (Schema.Type.MAP.equals(readerSchemaType)) {
-      return "Map" + description + "Deserializer" + writerSchemaId + "_" + readerSchemaId;
-    }
-    throw new FastDeserializerGeneratorException("Unsupported return type: " + readerSchema.getType());
+    String typeName = SchemaAssistant.getTypeName(readerSchema);
+    return typeName + SEP + description + "Deserializer" + SEP + writerSchemaId + SEP + readerSchemaId;
   }
 
   protected static String getVariableName(String name) {
