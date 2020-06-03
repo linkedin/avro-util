@@ -29,4 +29,9 @@ public class ColdPrimitiveLongList extends GenericData.Array<Long> implements Pr
   public boolean addPrimitive(long o) {
     return add(o);
   }
+
+  @Override
+  public long setPrimitive(int index, long o) {
+    return set(index, o);
+  }
 }

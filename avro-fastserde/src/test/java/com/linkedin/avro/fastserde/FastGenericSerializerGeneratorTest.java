@@ -1,6 +1,12 @@
 package com.linkedin.avro.fastserde;
 
 import com.linkedin.avro.api.PrimitiveFloatList;
+import com.linkedin.avro.api.PrimitiveLongList;
+import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveBooleanList;
+import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveDoubleList;
+import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveFloatList;
+import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveIntList;
+import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveLongList;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -12,6 +18,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericContainer;
 import org.apache.avro.generic.GenericData;
@@ -429,75 +436,124 @@ public class FastGenericSerializerGeneratorTest {
   @Test(groups = {"serializationTest"})
   public void shouldWriteArrayOfBoolean() {
     // given
-    List<Boolean> data = new ArrayList<>(2);
+    AtomicBoolean primitiveApiCalled = new AtomicBoolean(false);
+    List<Boolean> data = new ColdPrimitiveBooleanList(2) {
+      @Override
+      public boolean getPrimitive(int index) {
+        primitiveApiCalled.set(true);
+        return get(index);
+      }
+    };
     data.add(true);
     data.add(false);
 
     // then
     shouldWriteArrayOfPrimitives(Schema.Type.BOOLEAN, data);
+    Assert.assertTrue(primitiveApiCalled.get());
   }
 
   @Test(groups = {"serializationTest"})
   public void shouldWriteArrayOfDouble() {
     // given
-    List<Double> data = new ArrayList<>(2);
+    AtomicBoolean primitiveApiCalled = new AtomicBoolean(false);
+    List<Double> data = new ColdPrimitiveDoubleList(2) {
+      @Override
+      public double getPrimitive(int index) {
+        primitiveApiCalled.set(true);
+        return get(index);
+      }
+    };
     data.add(1.0D);
     data.add(2.0D);
 
     // then
     shouldWriteArrayOfPrimitives(Schema.Type.DOUBLE, data);
+    Assert.assertTrue(primitiveApiCalled.get());
   }
 
   @Test(groups = {"serializationTest"})
   public void shouldWriteArrayOfFloats() {
     // given
-    List<Float> data = new ArrayList<>(2);
+    AtomicBoolean primitiveApiCalled = new AtomicBoolean(false);
+    List<Float> data = new ColdPrimitiveFloatList(2) {
+      @Override
+      public float getPrimitive(int index) {
+        primitiveApiCalled.set(true);
+        return get(index);
+      }
+    };
     data.add(1.0F);
     data.add(2.0F);
 
     // then
     shouldWriteArrayOfPrimitives(Schema.Type.FLOAT, data);
+    Assert.assertTrue(primitiveApiCalled.get());
   }
 
   @Test(groups = {"serializationTest"})
   public void shouldWriteArrayOfInts() {
     // given
-    List<Integer> data = new ArrayList<>(2);
+    AtomicBoolean primitiveApiCalled = new AtomicBoolean(false);
+    List<Integer> data = new ColdPrimitiveIntList(2) {
+      @Override
+      public int getPrimitive(int index) {
+        primitiveApiCalled.set(true);
+        return get(index);
+      }
+    };
     data.add(1);
     data.add(2);
 
     // then
     shouldWriteArrayOfPrimitives(Schema.Type.INT, data);
+    Assert.assertTrue(primitiveApiCalled.get());
   }
 
   @Test(groups = {"serializationTest"})
   public void shouldWriteArrayOfLongs() {
     // given
-    List<Long> data = new ArrayList<>(2);
+    AtomicBoolean primitiveApiCalled = new AtomicBoolean(false);
+    List<Long> data = new ColdPrimitiveLongList(2) {
+      @Override
+      public long getPrimitive(int index) {
+        primitiveApiCalled.set(true);
+        return get(index);
+      }
+    };
     data.add(1L);
     data.add(2L);
 
     // then
     shouldWriteArrayOfPrimitives(Schema.Type.LONG, data);
+    Assert.assertTrue(primitiveApiCalled.get());
   }
 
-  private <E, L> void shouldWriteArrayOfPrimitives(Schema.Type elementType, List<E> data) {
+  private <E> void shouldWriteArrayOfPrimitives(Schema.Type elementType, List<E> data) {
     // given
     Schema elementSchema = Schema.create(elementType);
     Schema arraySchema = Schema.createArray(elementSchema);
 
-    GenericData.Array<E> avroArray = new GenericData.Array<>(0, arraySchema);
+    // Serialization should work on various types of lists
+    GenericData.Array<E> vanillaAvroList = new GenericData.Array<>(0, arraySchema);
+    ArrayList<E> javaList = new ArrayList<>(0);
     for (E element: data) {
-      avroArray.add(element);
+      vanillaAvroList.add(element);
+      javaList.add(element);
     }
 
     // when
-    GenericData.Array<GenericRecord> array = decodeRecord(arraySchema, dataAsBinaryDecoder(avroArray));
+    List<E> resultFromAvroList = decodeRecord(arraySchema, dataAsBinaryDecoder(vanillaAvroList));
+    List<E> resultFromJavaList = decodeRecord(arraySchema, dataAsBinaryDecoder(javaList, arraySchema));
+    List<E> resultFromPrimitiveList = decodeRecord(arraySchema, dataAsBinaryDecoder(data, arraySchema));
 
     // then
-    Assert.assertEquals(array.size(), data.size());
+    Assert.assertEquals(resultFromAvroList.size(), data.size());
+    Assert.assertEquals(resultFromJavaList.size(), data.size());
+    Assert.assertEquals(resultFromPrimitiveList.size(), data.size());
     for (int i = 0; i < data.size(); i++) {
-      Assert.assertEquals(array.get(i), data.get(i));
+      Assert.assertEquals(resultFromAvroList.get(i), data.get(i));
+      Assert.assertEquals(resultFromJavaList.get(i), data.get(i));
+      Assert.assertEquals(resultFromPrimitiveList.get(i), data.get(i));
     }
   }
 

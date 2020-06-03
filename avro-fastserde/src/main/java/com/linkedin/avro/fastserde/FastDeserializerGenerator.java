@@ -1,5 +1,6 @@
 package com.linkedin.avro.fastserde;
 
+import com.linkedin.avro.api.PrimitiveFloatList;
 import com.sun.codemodel.JArray;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JCatchBlock;
@@ -23,12 +24,10 @@ import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.apache.avro.AvroRuntimeException;
@@ -57,31 +56,27 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
    */
   private static final Supplier<JExpression> EMPTY_SUPPLIER = () -> JExpr._null();
 
-  private boolean useGenericTypes;
   private JMethod constructor;
   private Map<Long, Schema> schemaMap = new HashMap<>();
   private Map<Long, JVar> schemaVarMap = new HashMap<>();
   private Map<String, JMethod> deserializeMethodMap = new HashMap<>();
   private Map<String, JMethod> skipMethodMap = new HashMap<>();
   private Map<JMethod, Set<Class<? extends Exception>>> exceptionFromMethodMap = new HashMap<>();
-  private SchemaAssistant schemaAssistant;
 
   FastDeserializerGenerator(boolean useGenericTypes, Schema writer, Schema reader, File destination,
       ClassLoader classLoader, String compileClassPath) {
-    super(writer, reader, destination, classLoader, compileClassPath);
-    this.useGenericTypes = useGenericTypes;
-    this.schemaAssistant = new SchemaAssistant(codeModel, useGenericTypes);
+    super(useGenericTypes, writer, reader, destination, classLoader, compileClassPath);
   }
 
   public FastDeserializer<T> generateDeserializer() {
     String className = getClassName(writer, reader, useGenericTypes ? "Generic" : "Specific");
-    JPackage classPackage = codeModel._package(GENERATED_PACKAGE_NAME);
+    JPackage classPackage = codeModel._package(generatedPackageName);
 
     try {
-      deserializerClass = classPackage._class(className);
+      generatedClass = classPackage._class(className);
 
-      JVar readerSchemaVar = deserializerClass.field(JMod.PRIVATE | JMod.FINAL, Schema.class, "readerSchema");
-      constructor = deserializerClass.constructor(JMod.PUBLIC);
+      JVar readerSchemaVar = generatedClass.field(JMod.PRIVATE | JMod.FINAL, Schema.class, "readerSchema");
+      constructor = generatedClass.constructor(JMod.PUBLIC);
       JVar constructorParam = constructor.param(Schema.class, "readerSchema");
       constructor.body().assign(JExpr.refthis(readerSchemaVar.name()), constructorParam);
 
@@ -103,8 +98,8 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       JClass readerSchemaClass = schemaAssistant.classFromSchema(reader);
       JClass writerSchemaClass = schemaAssistant.classFromSchema(aliasedWriterSchema);
 
-      deserializerClass._implements(codeModel.ref(FastDeserializer.class).narrow(writerSchemaClass));
-      JMethod deserializeMethod = deserializerClass.method(JMod.PUBLIC, readerSchemaClass, "deserialize");
+      generatedClass._implements(codeModel.ref(FastDeserializer.class).narrow(writerSchemaClass));
+      JMethod deserializeMethod = generatedClass.method(JMod.PUBLIC, readerSchemaClass, "deserialize");
 
       JBlock topLevelDeserializeBlock = new JBlock();
 
@@ -191,19 +186,6 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
         processPrimitive(schema, methodBody, action, putExpressionIntoParent, reuseSupplier);
         break;
     }
-  }
-
-  private void ifCodeGen(JBlock parentBody, JExpression condition, Consumer<JBlock> thenClosure) {
-    JConditional ifCondition = parentBody._if(condition);
-    thenClosure.accept(ifCondition._then());
-  }
-
-
-  private void ifCodeGen(JBlock parentBody, JExpression condition, Consumer<JBlock> thenClosure,
-      Consumer<JBlock> elseClosure) {
-    JConditional ifCondition = parentBody._if(condition);
-    thenClosure.accept(ifCondition._then());
-    elseClosure.accept(ifCondition._else());
   }
 
   private void processRecord(JVar recordSchemaVar, String recordName, final Schema recordWriterSchema,
@@ -587,7 +569,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       action = FieldAction.fromValues(arraySchema.getElementType().getType(), false, EMPTY_SYMBOL);
     }
 
-    final JVar arrayVar = action.getShouldRead() ? declareValueVar(name, arraySchema, parentBody) : null;
+    final JVar arrayVar = action.getShouldRead() ? declareValueVar(name, arraySchema, parentBody, true, false, true) : null;
     /**
      * Special optimization for float array by leveraging {@link ByteBufferBackedPrimitiveFloatList}.
      *
@@ -598,88 +580,95 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       JExpression readPrimitiveFloatArrayInvocation = primitiveFloatList.staticInvoke("readPrimitiveFloatArray").
           arg(reuseSupplier.get()).arg(JExpr.direct(DECODER));
       JExpression castedResult =
-          JExpr.cast(codeModel.ref(List.class).narrow(Float.class), readPrimitiveFloatArrayInvocation);
+          JExpr.cast(codeModel.ref(PrimitiveFloatList.class), readPrimitiveFloatArrayInvocation);
 
       parentBody.assign(arrayVar, castedResult);
       putArrayIntoParent.accept(parentBody, arrayVar);
       return;
     }
 
-    JClass arrayClass = schemaAssistant.classFromSchema(arraySchema, false);
+    JClass arrayClass = schemaAssistant.classFromSchema(arraySchema, false, false, true);
+    JClass abstractErasedArrayClass = schemaAssistant.classFromSchema(arraySchema, true, false, true).erasure();
 
     JVar chunkLen =
         parentBody.decl(codeModel.LONG, getUniqueName("chunkLen"), JExpr.direct(DECODER + ".readArrayStart()"));
 
-    JConditional conditional = parentBody._if(chunkLen.gt(JExpr.lit(0)));
-    JBlock ifBlockForChunkLenCheck = conditional._then();
-    if (action.getShouldRead()) {
-      JVar reuse = declareValueVar(name + "Reuse", arraySchema, ifBlockForChunkLenCheck);
-
-      ifCodeGen(ifBlockForChunkLenCheck,
-          reuseSupplier.get()._instanceof(codeModel.ref(List.class)),
-          thenBlock -> thenBlock.assign(reuse, JExpr.cast(codeModel.ref(List.class), reuseSupplier.get())));
-
-      JInvocation newArrayExp = JExpr._new(arrayClass);
-      if (useGenericTypes) {
-        newArrayExp = newArrayExp.arg(JExpr.cast(codeModel.INT, chunkLen)).arg(getSchemaExpr(arraySchema));
+    final FieldAction finalAction = action;
+    JInvocation newArrayExp = JExpr._new(arrayClass);
+    if (useGenericTypes) {
+      newArrayExp = newArrayExp.arg(JExpr.cast(codeModel.INT, chunkLen));
+      if (!SchemaAssistant.isPrimitive(arraySchema.getElementType())) {
+        /**
+         * N.B.: The ColdPrimitiveXList implementations do not take the schema as a constructor param,
+         * but the {@link org.apache.avro.generic.GenericData.Array} does.
+         */
+        newArrayExp = newArrayExp.arg(getSchemaExpr(arraySchema));
       }
-      JInvocation finalNewArrayExp = newArrayExp;
-      // check whether the reuse is null or not
-      ifCodeGen(ifBlockForChunkLenCheck,
-          reuse.ne(JExpr.direct("null")),
-          thenBlock -> {
-            thenBlock.invoke(reuse, "clear");
-            thenBlock.assign(arrayVar, reuse);
-          },
-          (elseBlock -> elseBlock.assign(arrayVar, finalNewArrayExp))
-      );
+    }
+    JInvocation finalNewArrayExp = newArrayExp;
 
-      JBlock elseBlock = conditional._else();
-      if (useGenericTypes) {
-        elseBlock.assign(arrayVar, JExpr._new(arrayClass).arg(JExpr.lit(0)).arg(getSchemaExpr(arraySchema)));
+    JExpression chunkLengthGreaterThanZero = chunkLen.gt(JExpr.lit(0));
+
+    ifCodeGen(parentBody, chunkLengthGreaterThanZero, then1 -> {
+      if (finalAction.getShouldRead()) {
+        /** N.B.: Need to use the erasure because instanceof does not support generic types */
+        ifCodeGen(then1, reuseSupplier.get()._instanceof(abstractErasedArrayClass), then2 -> {
+          then2.assign(arrayVar, JExpr.cast(abstractErasedArrayClass, reuseSupplier.get()));
+          then2.invoke(arrayVar, "clear");
+        }, else2 -> {
+          else2.assign(arrayVar, finalNewArrayExp);
+        });
+      }
+
+      JDoLoop doLoop = then1._do(chunkLengthGreaterThanZero);
+      JForLoop forLoop = doLoop.body()._for();
+      JVar counter = forLoop.init(codeModel.INT, getUniqueName("counter"), JExpr.lit(0));
+      forLoop.test(counter.lt(chunkLen));
+      forLoop.update(counter.incr());
+      JBlock forBody = forLoop.body();
+
+      JVar elementSchemaVar = null;
+      BiConsumer<JBlock, JExpression> putValueInArray = null;
+      if (finalAction.getShouldRead()) {
+        String addMethod = SchemaAssistant.isPrimitive(arraySchema.getElementType())
+            ? "addPrimitive"
+            : "add";
+        putValueInArray = (block, expression) -> block.invoke(arrayVar, addMethod).arg(expression);
+        if (useGenericTypes) {
+          elementSchemaVar = declareSchemaVar(arraySchema.getElementType(), name + "ArrayElemSchema",
+              arraySchemaVar.invoke("getElementType"));
+        }
+      }
+
+      Supplier<JExpression> elementReuseSupplier = null;
+      if (SchemaAssistant.isCapableOfReuse(arraySchema.getElementType())) {
+        // Define element reuse variable here (but only for mutable types)
+        JVar elementReuseVar = forBody.decl(codeModel.ref(Object.class), getUniqueName(name + "ArrayElementReuseVar"), JExpr._null());
+        ifCodeGen(forBody, reuseSupplier.get()._instanceof(codeModel.ref(GenericArray.class)), then2 -> {
+          then2.assign(elementReuseVar, JExpr.invoke(JExpr.cast(codeModel.ref(GenericArray.class), reuseSupplier.get()), "peek"));
+        });
+        elementReuseSupplier = () -> elementReuseVar;
+      }
+
+      if (SchemaAssistant.isComplexType(arraySchema.getElementType())) {
+        String elemName = name + "Elem";
+        Schema readerArrayElementSchema = null;
+        if (finalAction.getShouldRead()) {
+          readerArrayElementSchema = readerArraySchema.getElementType();
+        }
+        processComplexType(elementSchemaVar, elemName, arraySchema.getElementType(), readerArrayElementSchema, forBody,
+            finalAction, putValueInArray, elementReuseSupplier);
       } else {
-        elseBlock.assign(arrayVar, codeModel.ref(Collections.class).staticInvoke("emptyList"));
+        processSimpleType(arraySchema.getElementType(), forBody, finalAction, putValueInArray, elementReuseSupplier);
       }
-    }
-
-    JDoLoop doLoop = ifBlockForChunkLenCheck._do(chunkLen.gt(JExpr.lit(0)));
-    JForLoop forLoop = doLoop.body()._for();
-    JVar counter = forLoop.init(codeModel.INT, getUniqueName("counter"), JExpr.lit(0));
-    forLoop.test(counter.lt(chunkLen));
-    forLoop.update(counter.incr());
-    JBlock forBody = forLoop.body();
-
-    JVar elementSchemaVar = null;
-    BiConsumer<JBlock, JExpression> putValueInArray = null;
-    if (action.getShouldRead()) {
-      putValueInArray = (block, expression) -> block.invoke(arrayVar, "add").arg(expression);
+      doLoop.body().assign(chunkLen, JExpr.direct(DECODER + ".arrayNext()"));
+    }, else1 -> {
       if (useGenericTypes) {
-        elementSchemaVar = declareSchemaVar(arraySchema.getElementType(), name + "ArrayElemSchema",
-            arraySchemaVar.invoke("getElementType"));
+        else1.assign(arrayVar, finalNewArrayExp);
+      } else {
+        else1.assign(arrayVar, codeModel.ref(Collections.class).staticInvoke("emptyList"));
       }
-    }
-
-    // Define element reuse variable here
-    JVar elementReuseVar = forBody.decl(codeModel.ref(Object.class), getUniqueName(name + "ArrayElementReuseVar"), JExpr._null());
-    ifCodeGen(forBody,
-        reuseSupplier.get()._instanceof(codeModel.ref(GenericArray.class)),
-        then ->
-            then.assign(elementReuseVar, JExpr.invoke(JExpr.cast(codeModel.ref(GenericArray.class), reuseSupplier.get()), "peek"))
-    );
-    Supplier<JExpression> elementReuseSupplier = () -> elementReuseVar;
-
-    if (SchemaAssistant.isComplexType(arraySchema.getElementType())) {
-      String elemName = name + "Elem";
-      Schema readerArrayElementSchema = null;
-      if (action.getShouldRead()) {
-        readerArrayElementSchema = readerArraySchema.getElementType();
-      }
-      processComplexType(elementSchemaVar, elemName, arraySchema.getElementType(), readerArrayElementSchema, forBody,
-          action, putValueInArray, elementReuseSupplier);
-    } else {
-      processSimpleType(arraySchema.getElementType(), forBody, action, putValueInArray, elementReuseSupplier);
-    }
-    doLoop.body().assign(chunkLen, JExpr.direct(DECODER + ".arrayNext()"));
+    });
 
     if (action.getShouldRead()) {
       putArrayIntoParent.accept(parentBody, arrayVar);
@@ -995,15 +984,6 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     return declareSchemaVar(schema, name + "Field", schemaVar.invoke("getField").arg(name).invoke("schema"));
   }
 
-  private JVar declareValueVar(final String name, final Schema schema, JBlock block) {
-    if (SchemaAssistant.isComplexType(schema)) {
-      return block.decl(schemaAssistant.classFromSchema(schema), getUniqueName(StringUtils.uncapitalize(name)),
-          JExpr._null());
-    } else {
-      throw new FastDeserializerGeneratorException("Only complex types allowed!");
-    }
-  }
-
   private JVar declareSchemaVar(Schema valueSchema, String variableName, JInvocation getValueType) {
     if (!useGenericTypes) {
       return null;
@@ -1013,7 +993,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       if (schemaVarMap.get(schemaId) != null) {
         return schemaVarMap.get(schemaId);
       } else {
-        JVar schemaVar = deserializerClass.field(JMod.PRIVATE | JMod.FINAL, Schema.class,
+        JVar schemaVar = generatedClass.field(JMod.PRIVATE | JMod.FINAL, Schema.class,
             getUniqueName(StringUtils.uncapitalize(variableName)));
         constructor.body().assign(JExpr.refthis(schemaVar.name()), getValueType);
 
@@ -1068,7 +1048,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     }
 
     JClass schemaClass = schemaAssistant.classFromSchema(schema);
-    JMethod method = deserializerClass.method(JMod.PUBLIC, read ? schemaClass : codeModel.VOID,
+    JMethod method = generatedClass.method(JMod.PUBLIC, read ? schemaClass : codeModel.VOID,
         getUniqueName("deserialize" + schema.getName()));
 
     method._throws(IOException.class);

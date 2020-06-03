@@ -4,6 +4,7 @@ import com.linkedin.avro.api.PrimitiveFloatList;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 
+
 /**
  * A {@link PrimitiveFloatList} implementation which is equivalent in all respect to the vanilla Avro
  * implementation, both in terms of functionality and (lack of) performance. It provides the primitive
@@ -27,5 +28,10 @@ public class ColdPrimitiveFloatList extends GenericData.Array<Float> implements 
   @Override
   public boolean addPrimitive(float o) {
     return add(o);
+  }
+
+  @Override
+  public float setPrimitive(int index, float o) {
+    return set(index, o);
   }
 }
