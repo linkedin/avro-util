@@ -4,7 +4,8 @@ build/
 
 #temp artifacts
 avro_tools/
-generated/
+avro-fastserde/src/test/java/com/linkedin/avro/fastserde/generated/
+*.class
 
 #IDEA artifacts
 out/

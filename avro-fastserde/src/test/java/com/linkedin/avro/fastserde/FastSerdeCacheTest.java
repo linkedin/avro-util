@@ -37,14 +37,6 @@ public class FastSerdeCacheTest {
         FastDeserializerGeneratorBase.getClassName(schema, schema, "");
       } else {
         Assert.assertFalse(FastSerdeCache.isSupportedForFastDeserializer(type));
-        try {
-          FastDeserializerGeneratorBase.getClassName(schema, schema, "");
-          Assert.fail("FastDeserializerGeneratorException should be thrown since " + type + " is not supported");
-        } catch (FastDeserializerGeneratorException e) {
-          // expected since currently, this lib only supports RECORD, MAP and ARRAY for top-level schema.
-        } catch (Exception ee) {
-          Assert.fail("Only FastDeserializerGeneratorException should be thrown when " + type + " is not supported");
-        }
       }
     }
   }

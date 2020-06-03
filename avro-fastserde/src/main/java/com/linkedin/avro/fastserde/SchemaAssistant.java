@@ -116,6 +116,19 @@ public class SchemaAssistant {
     }
   }
 
+  public static String getTypeName (Schema schema) {
+    Schema.Type schemaType = schema.getType();
+    if (Schema.Type.RECORD.equals(schemaType)) {
+      return schema.getName();
+    } else if (Schema.Type.ARRAY.equals(schemaType)) {
+      return "Array_of_" + getTypeName(schema.getElementType());
+    } else if (Schema.Type.MAP.equals(schemaType)) {
+      return "Map_of_" + getTypeName(schema.getValueType());
+    } else {
+      return schema.getType().name();
+    }
+  }
+
   public void resetExceptionsFromStringable() {
     exceptionsFromStringable = new HashSet<>();
   }
