@@ -4,9 +4,7 @@ package com.linkedin.avro.fastserde.generated.serialization.AVRO_1_4;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import com.linkedin.avro.fastserde.FastSerializer;
-import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.util.Utf8;
@@ -15,7 +13,6 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordCollectionsF
     implements FastSerializer<IndexedRecord>
 {
 
-    private Map<Long, Schema> enumSchemaMap = new ConcurrentHashMap<Long, Schema>();
 
     public void serialize(IndexedRecord data, Encoder encoder)
         throws IOException
