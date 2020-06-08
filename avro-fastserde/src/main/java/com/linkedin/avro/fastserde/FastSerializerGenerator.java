@@ -6,7 +6,6 @@ import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JConditional;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
-import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JForEach;
 import com.sun.codemodel.JForLoop;
 import com.sun.codemodel.JMethod;
@@ -16,11 +15,8 @@ import com.sun.codemodel.JVar;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import org.apache.avro.Schema;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.util.Utf8;
@@ -36,13 +32,9 @@ public class FastSerializerGenerator<T> extends FastSerializerGeneratorBase<T> {
   private final SchemaAssistant schemaAssistant;
 
   /**
-   * Enum schema mapping for Avro-1.4.
+   * Enum schema mapping for Avro-1.4 to record schema id and corresponding schema JVar.
    */
-  private JFieldVar enumSchemaMapField;
-  /**
-   * This field is used to decide whether the corresponding schema is already in {@link #enumSchemaMapField} or not.
-   */
-  private final Set<Long> enumSchemaIdSet = new HashSet<>();
+  private final Map<Long, JVar> enumSchemaVarMap = new HashMap<>();
 
 
   public FastSerializerGenerator(boolean useGenericTypes, Schema schema, File destination, ClassLoader classLoader,
@@ -59,20 +51,6 @@ public class FastSerializerGenerator<T> extends FastSerializerGeneratorBase<T> {
 
     try {
       serializerClass = classPackage._class(className);
-
-      if (Utils.isAvro14()) {
-        /**
-         * In Avro-1.4, there is no way to infer/extract enum schema from {@link org.apache.avro.generic.GenericData.EnumSymbol}, so
-         * the serializer needs to maintain a mapping between the schema id and the actual {@link org.apache.avro.Schema.EnumSchema},
-         * and get the enum id from the corresponding EnumSchema in {@link #processEnum(Schema, JExpression, JBlock)}.
-         */
-        enumSchemaMapField =
-            serializerClass.field(
-                JMod.PRIVATE,
-                codeModel.ref(Map.class).narrow(Long.class).narrow(Schema.class),
-                "enumSchemaMap",
-                JExpr._new(codeModel.ref(ConcurrentHashMap.class).narrow(Long.class).narrow(Schema.class)));
-      }
 
       final JMethod serializeMethod = serializerClass.method(JMod.PUBLIC, void.class, "serialize");
       final JVar serializeMethodParam;
@@ -323,26 +301,18 @@ public class FastSerializerGenerator<T> extends FastSerializerGeneratorBase<T> {
     if (useGenericTypes) {
       if (Utils.isAvro14()) {
         /**
-         * Register/retrieve the corresponding {@link org.apache.avro.Schema.EnumSchema} from the mapping.
+         * In Avro-1.4, there is no way to infer/extract enum schema from {@link org.apache.avro.generic.GenericData.EnumSymbol},
+         * so the serializer needs to record the schema id and the corresponding {@link org.apache.avro.Schema.EnumSchema},
+         * and maintain a mapping between the schema id and EnumSchema JVar for future use.
          */
-        long enumSchemaFingerprint = Utils.getSchemaFingerprint(enumSchema);
-        if (enumSchemaIdSet.contains(enumSchemaFingerprint)) {
-          valueToWrite = JExpr.invoke(
-              enumSchemaMapField.invoke("get").arg(JExpr.lit(enumSchemaFingerprint)),
-              "getEnumOrdinal"
-          ).arg(enumValueCasted.invoke("toString"));
-        } else {
-          enumSchemaIdSet.add(enumSchemaFingerprint);
-          JVar enumSchemaVar = body.decl(codeModel.ref(Schema.class),
-              getVariableName(enumSchema.getName() + "EnumSchema"),
-              enumSchemaMapField.invoke("get").arg(JExpr.lit(enumSchemaFingerprint)));
-          JConditional schemaCheckCond = body._if(JExpr._null().eq(enumSchemaVar));
-          JBlock thenBody = schemaCheckCond._then();
-          thenBody.assign(enumSchemaVar, codeModel.ref(Schema.class).staticInvoke("parse").arg(enumSchema.toString()));
-          thenBody.invoke(enumSchemaMapField, "put").arg(JExpr.lit(enumSchemaFingerprint)).arg(enumSchemaVar);
-
-          valueToWrite = JExpr.invoke(enumSchemaVar, "getEnumOrdinal").arg(enumValueCasted.invoke("toString"));
-        }
+        JVar enumSchemaVar = enumSchemaVarMap.computeIfAbsent(Utils.getSchemaFingerprint(enumSchema), s->
+            serializerClass.field(
+                JMod.PRIVATE | JMod.FINAL,
+                Schema.class,
+                getVariableName(enumSchema.getName() + "EnumSchema"),
+                codeModel.ref(Schema.class).staticInvoke("parse").arg(enumSchema.toString()))
+        );
+        valueToWrite = JExpr.invoke(enumSchemaVar, "getEnumOrdinal").arg(enumValueCasted.invoke("toString"));
       } else {
         valueToWrite = JExpr.invoke(
             enumValueCasted.invoke("getSchema"),
