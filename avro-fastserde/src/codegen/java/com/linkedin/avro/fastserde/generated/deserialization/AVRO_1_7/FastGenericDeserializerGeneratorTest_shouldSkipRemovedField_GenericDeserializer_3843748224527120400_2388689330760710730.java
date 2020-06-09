@@ -18,34 +18,34 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
 {
 
     private final Schema readerSchema;
-    private final Schema testNotRemoved908;
-    private final Schema testNotRemoved2911;
-    private final Schema subRecord913;
-    private final Schema subRecordOptionSchema915;
-    private final Schema testNotRemoved917;
-    private final Schema testNotRemoved2920;
-    private final Schema subRecordMap922;
-    private final Schema subRecordArray928;
+    private final Schema testNotRemoved0;
+    private final Schema testNotRemoved20;
+    private final Schema subRecord0;
+    private final Schema subRecordOptionSchema0;
+    private final Schema testNotRemoved1;
+    private final Schema testNotRemoved21;
+    private final Schema subRecordMap0;
+    private final Schema subRecordArray0;
 
     public FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_GenericDeserializer_3843748224527120400_2388689330760710730(Schema readerSchema) {
         this.readerSchema = readerSchema;
-        this.testNotRemoved908 = readerSchema.getField("testNotRemoved").schema();
-        this.testNotRemoved2911 = readerSchema.getField("testNotRemoved2").schema();
-        this.subRecord913 = readerSchema.getField("subRecord").schema();
-        this.subRecordOptionSchema915 = subRecord913 .getTypes().get(1);
-        this.testNotRemoved917 = subRecordOptionSchema915 .getField("testNotRemoved").schema();
-        this.testNotRemoved2920 = subRecordOptionSchema915 .getField("testNotRemoved2").schema();
-        this.subRecordMap922 = readerSchema.getField("subRecordMap").schema();
-        this.subRecordArray928 = readerSchema.getField("subRecordArray").schema();
+        this.testNotRemoved0 = readerSchema.getField("testNotRemoved").schema();
+        this.testNotRemoved20 = readerSchema.getField("testNotRemoved2").schema();
+        this.subRecord0 = readerSchema.getField("subRecord").schema();
+        this.subRecordOptionSchema0 = subRecord0 .getTypes().get(1);
+        this.testNotRemoved1 = subRecordOptionSchema0 .getField("testNotRemoved").schema();
+        this.testNotRemoved21 = subRecordOptionSchema0 .getField("testNotRemoved2").schema();
+        this.subRecordMap0 = readerSchema.getField("subRecordMap").schema();
+        this.subRecordArray0 = readerSchema.getField("subRecordArray").schema();
     }
 
     public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
         throws IOException
     {
-        return deserializeFastGenericDeserializerGeneratorTest_shouldSkipRemovedField907((reuse), (decoder));
+        return deserializeFastGenericDeserializerGeneratorTest_shouldSkipRemovedField0((reuse), (decoder));
     }
 
-    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldSkipRemovedField907(Object reuse, Decoder decoder)
+    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldSkipRemovedField0(Object reuse, Decoder decoder)
         throws IOException
     {
         IndexedRecord FastGenericDeserializerGeneratorTest_shouldSkipRemovedField;
@@ -54,128 +54,128 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
         } else {
             FastGenericDeserializerGeneratorTest_shouldSkipRemovedField = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
-        int unionIndex909 = (decoder.readIndex());
-        if (unionIndex909 == 0) {
+        int unionIndex0 = (decoder.readIndex());
+        if (unionIndex0 == 0) {
             decoder.readNull();
         }
-        if (unionIndex909 == 1) {
+        if (unionIndex0 == 1) {
             if (FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(0) instanceof Utf8) {
                 FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(0, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(0))));
             } else {
                 FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(0, (decoder).readString(null));
             }
         }
-        int unionIndex910 = (decoder.readIndex());
-        if (unionIndex910 == 0) {
+        int unionIndex1 = (decoder.readIndex());
+        if (unionIndex1 == 0) {
             decoder.readNull();
         }
-        if (unionIndex910 == 1) {
+        if (unionIndex1 == 1) {
             decoder.skipString();
         }
-        int unionIndex912 = (decoder.readIndex());
-        if (unionIndex912 == 0) {
+        int unionIndex2 = (decoder.readIndex());
+        if (unionIndex2 == 0) {
             decoder.readNull();
         }
-        if (unionIndex912 == 1) {
+        if (unionIndex2 == 1) {
             if (FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(1) instanceof Utf8) {
                 FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(1, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(1))));
             } else {
                 FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(1, (decoder).readString(null));
             }
         }
-        int unionIndex914 = (decoder.readIndex());
-        if (unionIndex914 == 0) {
+        int unionIndex3 = (decoder.readIndex());
+        if (unionIndex3 == 0) {
             decoder.readNull();
         }
-        if (unionIndex914 == 1) {
-            FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(2, deserializesubRecord916(FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(2), (decoder)));
+        if (unionIndex3 == 1) {
+            FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(2, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(2), (decoder)));
         }
-        Map<Utf8, IndexedRecord> subRecordMap923 = null;
-        long chunkLen924 = (decoder.readMapStart());
-        if (chunkLen924 > 0) {
-            Map<Utf8, IndexedRecord> subRecordMapReuse925 = null;
+        Map<Utf8, IndexedRecord> subRecordMap1 = null;
+        long chunkLen0 = (decoder.readMapStart());
+        if (chunkLen0 > 0) {
+            Map<Utf8, IndexedRecord> subRecordMapReuse0 = null;
             if (FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(3) instanceof Map) {
-                subRecordMapReuse925 = ((Map) FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(3));
+                subRecordMapReuse0 = ((Map) FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(3));
             }
-            if (subRecordMapReuse925 != (null)) {
-                subRecordMapReuse925 .clear();
-                subRecordMap923 = subRecordMapReuse925;
+            if (subRecordMapReuse0 != (null)) {
+                subRecordMapReuse0 .clear();
+                subRecordMap1 = subRecordMapReuse0;
             } else {
-                subRecordMap923 = new HashMap<Utf8, IndexedRecord>();
+                subRecordMap1 = new HashMap<Utf8, IndexedRecord>();
             }
             do {
-                for (int counter926 = 0; (counter926 <chunkLen924); counter926 ++) {
-                    Utf8 key927 = (decoder.readString(null));
-                    subRecordMap923 .put(key927, deserializesubRecord916(null, (decoder)));
+                for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
+                    Utf8 key0 = (decoder.readString(null));
+                    subRecordMap1 .put(key0, deserializesubRecord0(null, (decoder)));
                 }
-                chunkLen924 = (decoder.mapNext());
-            } while (chunkLen924 > 0);
+                chunkLen0 = (decoder.mapNext());
+            } while (chunkLen0 > 0);
         } else {
-            subRecordMap923 = Collections.emptyMap();
+            subRecordMap1 = Collections.emptyMap();
         }
-        FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(3, subRecordMap923);
-        List<IndexedRecord> subRecordArray929 = null;
-        long chunkLen930 = (decoder.readArrayStart());
-        if (chunkLen930 > 0) {
-            List<IndexedRecord> subRecordArrayReuse931 = null;
+        FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(3, subRecordMap1);
+        List<IndexedRecord> subRecordArray1 = null;
+        long chunkLen1 = (decoder.readArrayStart());
+        if (chunkLen1 > 0) {
+            List<IndexedRecord> subRecordArrayReuse0 = null;
             if (FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(4) instanceof List) {
-                subRecordArrayReuse931 = ((List) FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(4));
+                subRecordArrayReuse0 = ((List) FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(4));
             }
-            if (subRecordArrayReuse931 != (null)) {
-                subRecordArrayReuse931 .clear();
-                subRecordArray929 = subRecordArrayReuse931;
+            if (subRecordArrayReuse0 != (null)) {
+                subRecordArrayReuse0 .clear();
+                subRecordArray1 = subRecordArrayReuse0;
             } else {
-                subRecordArray929 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen930), subRecordArray928);
+                subRecordArray1 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen1), subRecordArray0);
             }
             do {
-                for (int counter932 = 0; (counter932 <chunkLen930); counter932 ++) {
-                    Object subRecordArrayArrayElementReuseVar933 = null;
+                for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {
+                    Object subRecordArrayArrayElementReuseVar0 = null;
                     if (FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(4) instanceof GenericArray) {
-                        subRecordArrayArrayElementReuseVar933 = ((GenericArray) FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(4)).peek();
+                        subRecordArrayArrayElementReuseVar0 = ((GenericArray) FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(4)).peek();
                     }
-                    subRecordArray929 .add(deserializesubRecord916(subRecordArrayArrayElementReuseVar933, (decoder)));
+                    subRecordArray1 .add(deserializesubRecord0(subRecordArrayArrayElementReuseVar0, (decoder)));
                 }
-                chunkLen930 = (decoder.arrayNext());
-            } while (chunkLen930 > 0);
+                chunkLen1 = (decoder.arrayNext());
+            } while (chunkLen1 > 0);
         } else {
-            subRecordArray929 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(0, subRecordArray928);
+            subRecordArray1 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(0, subRecordArray0);
         }
-        FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(4, subRecordArray929);
+        FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(4, subRecordArray1);
         return FastGenericDeserializerGeneratorTest_shouldSkipRemovedField;
     }
 
-    public IndexedRecord deserializesubRecord916(Object reuse, Decoder decoder)
+    public IndexedRecord deserializesubRecord0(Object reuse, Decoder decoder)
         throws IOException
     {
         IndexedRecord subRecord;
-        if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == subRecordOptionSchema915)) {
+        if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == subRecordOptionSchema0)) {
             subRecord = ((IndexedRecord)(reuse));
         } else {
-            subRecord = new org.apache.avro.generic.GenericData.Record(subRecordOptionSchema915);
+            subRecord = new org.apache.avro.generic.GenericData.Record(subRecordOptionSchema0);
         }
-        int unionIndex918 = (decoder.readIndex());
-        if (unionIndex918 == 0) {
+        int unionIndex4 = (decoder.readIndex());
+        if (unionIndex4 == 0) {
             decoder.readNull();
         }
-        if (unionIndex918 == 1) {
+        if (unionIndex4 == 1) {
             if (subRecord.get(0) instanceof Utf8) {
                 subRecord.put(0, (decoder).readString(((Utf8) subRecord.get(0))));
             } else {
                 subRecord.put(0, (decoder).readString(null));
             }
         }
-        int unionIndex919 = (decoder.readIndex());
-        if (unionIndex919 == 0) {
+        int unionIndex5 = (decoder.readIndex());
+        if (unionIndex5 == 0) {
             decoder.readNull();
         }
-        if (unionIndex919 == 1) {
+        if (unionIndex5 == 1) {
             decoder.skipString();
         }
-        int unionIndex921 = (decoder.readIndex());
-        if (unionIndex921 == 0) {
+        int unionIndex6 = (decoder.readIndex());
+        if (unionIndex6 == 0) {
             decoder.readNull();
         }
-        if (unionIndex921 == 1) {
+        if (unionIndex6 == 1) {
             if (subRecord.get(1) instanceof Utf8) {
                 subRecord.put(1, (decoder).readString(((Utf8) subRecord.get(1))));
             } else {

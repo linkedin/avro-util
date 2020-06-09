@@ -21,32 +21,32 @@ public class Map_of_record_GenericSerializer_2141121767969292399
             (encoder).setItemCount(0);
         } else {
             (encoder).setItemCount(data.size());
-            for (CharSequence key82 : ((Map<CharSequence, IndexedRecord> ) data).keySet()) {
+            for (CharSequence key0 : ((Map<CharSequence, IndexedRecord> ) data).keySet()) {
                 (encoder).startItem();
-                (encoder).writeString(key82);
-                IndexedRecord record83 = null;
-                record83 = ((Map<CharSequence, IndexedRecord> ) data).get(key82);
-                serializerecord84(record83, (encoder));
+                (encoder).writeString(key0);
+                IndexedRecord record0 = null;
+                record0 = ((Map<CharSequence, IndexedRecord> ) data).get(key0);
+                serializeRecord0(record0, (encoder));
             }
         }
         (encoder).writeMapEnd();
     }
 
     @SuppressWarnings("unchecked")
-    public void serializerecord84(IndexedRecord data, Encoder encoder)
+    public void serializeRecord0(IndexedRecord data, Encoder encoder)
         throws IOException
     {
-        CharSequence field85 = ((CharSequence) data.get(0));
-        if (field85 == null) {
+        CharSequence field0 = ((CharSequence) data.get(0));
+        if (field0 == null) {
             (encoder).writeIndex(0);
             (encoder).writeNull();
         } else {
-            if (field85 instanceof CharSequence) {
+            if (field0 instanceof CharSequence) {
                 (encoder).writeIndex(1);
-                if (field85 instanceof Utf8) {
-                    (encoder).writeString(((Utf8) field85));
+                if (field0 instanceof Utf8) {
+                    (encoder).writeString(((Utf8) field0));
                 } else {
-                    (encoder).writeString(field85 .toString());
+                    (encoder).writeString(field0 .toString());
                 }
             }
         }

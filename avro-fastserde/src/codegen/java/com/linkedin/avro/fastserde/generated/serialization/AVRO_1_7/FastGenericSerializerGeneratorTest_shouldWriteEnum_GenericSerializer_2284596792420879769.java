@@ -15,53 +15,53 @@ public class FastGenericSerializerGeneratorTest_shouldWriteEnum_GenericSerialize
     public void serialize(IndexedRecord data, Encoder encoder)
         throws IOException
     {
-        serializeFastGenericSerializerGeneratorTest_shouldWriteEnum68(data, (encoder));
+        serializeFastGenericSerializerGeneratorTest_shouldWriteEnum0(data, (encoder));
     }
 
     @SuppressWarnings("unchecked")
-    public void serializeFastGenericSerializerGeneratorTest_shouldWriteEnum68(IndexedRecord data, Encoder encoder)
+    public void serializeFastGenericSerializerGeneratorTest_shouldWriteEnum0(IndexedRecord data, Encoder encoder)
         throws IOException
     {
         (encoder).writeEnum(((org.apache.avro.generic.GenericData.EnumSymbol) data.get(0)).getSchema().getEnumOrdinal(((org.apache.avro.generic.GenericData.EnumSymbol) data.get(0)).toString()));
-        org.apache.avro.generic.GenericData.EnumSymbol testEnumUnion69 = ((org.apache.avro.generic.GenericData.EnumSymbol) data.get(1));
-        if (testEnumUnion69 == null) {
+        org.apache.avro.generic.GenericData.EnumSymbol testEnumUnion0 = ((org.apache.avro.generic.GenericData.EnumSymbol) data.get(1));
+        if (testEnumUnion0 == null) {
             (encoder).writeIndex(0);
             (encoder).writeNull();
         } else {
-            if ((testEnumUnion69 instanceof org.apache.avro.generic.GenericData.EnumSymbol)&&"com.adpilot.utils.generated.avro.testEnum".equals(((org.apache.avro.generic.GenericData.EnumSymbol) testEnumUnion69).getSchema().getFullName())) {
+            if ((testEnumUnion0 instanceof org.apache.avro.generic.GenericData.EnumSymbol)&&"com.adpilot.utils.generated.avro.testEnum".equals(((org.apache.avro.generic.GenericData.EnumSymbol) testEnumUnion0).getSchema().getFullName())) {
                 (encoder).writeIndex(1);
-                (encoder).writeEnum(((org.apache.avro.generic.GenericData.EnumSymbol) testEnumUnion69).getSchema().getEnumOrdinal(((org.apache.avro.generic.GenericData.EnumSymbol) testEnumUnion69).toString()));
+                (encoder).writeEnum(((org.apache.avro.generic.GenericData.EnumSymbol) testEnumUnion0).getSchema().getEnumOrdinal(((org.apache.avro.generic.GenericData.EnumSymbol) testEnumUnion0).toString()));
             }
         }
-        List<org.apache.avro.generic.GenericData.EnumSymbol> testEnumArray70 = ((List<org.apache.avro.generic.GenericData.EnumSymbol> ) data.get(2));
+        List<org.apache.avro.generic.GenericData.EnumSymbol> testEnumArray0 = ((List<org.apache.avro.generic.GenericData.EnumSymbol> ) data.get(2));
         (encoder).writeArrayStart();
-        if ((testEnumArray70 == null)||testEnumArray70 .isEmpty()) {
+        if ((testEnumArray0 == null)||testEnumArray0 .isEmpty()) {
             (encoder).setItemCount(0);
         } else {
-            (encoder).setItemCount(testEnumArray70 .size());
-            for (int counter71 = 0; (counter71 <((List<org.apache.avro.generic.GenericData.EnumSymbol> ) testEnumArray70).size()); counter71 ++) {
+            (encoder).setItemCount(testEnumArray0 .size());
+            for (int counter0 = 0; (counter0 <((List<org.apache.avro.generic.GenericData.EnumSymbol> ) testEnumArray0).size()); counter0 ++) {
                 (encoder).startItem();
-                (encoder).writeEnum(((org.apache.avro.generic.GenericData.EnumSymbol) testEnumArray70 .get(counter71)).getSchema().getEnumOrdinal(((org.apache.avro.generic.GenericData.EnumSymbol) testEnumArray70 .get(counter71)).toString()));
+                (encoder).writeEnum(((org.apache.avro.generic.GenericData.EnumSymbol) testEnumArray0 .get(counter0)).getSchema().getEnumOrdinal(((org.apache.avro.generic.GenericData.EnumSymbol) testEnumArray0 .get(counter0)).toString()));
             }
         }
         (encoder).writeArrayEnd();
-        List<org.apache.avro.generic.GenericData.EnumSymbol> testEnumUnionArray72 = ((List<org.apache.avro.generic.GenericData.EnumSymbol> ) data.get(3));
+        List<org.apache.avro.generic.GenericData.EnumSymbol> testEnumUnionArray0 = ((List<org.apache.avro.generic.GenericData.EnumSymbol> ) data.get(3));
         (encoder).writeArrayStart();
-        if ((testEnumUnionArray72 == null)||testEnumUnionArray72 .isEmpty()) {
+        if ((testEnumUnionArray0 == null)||testEnumUnionArray0 .isEmpty()) {
             (encoder).setItemCount(0);
         } else {
-            (encoder).setItemCount(testEnumUnionArray72 .size());
-            for (int counter73 = 0; (counter73 <((List<org.apache.avro.generic.GenericData.EnumSymbol> ) testEnumUnionArray72).size()); counter73 ++) {
+            (encoder).setItemCount(testEnumUnionArray0 .size());
+            for (int counter1 = 0; (counter1 <((List<org.apache.avro.generic.GenericData.EnumSymbol> ) testEnumUnionArray0).size()); counter1 ++) {
                 (encoder).startItem();
-                org.apache.avro.generic.GenericData.EnumSymbol union74 = null;
-                union74 = ((List<org.apache.avro.generic.GenericData.EnumSymbol> ) testEnumUnionArray72).get(counter73);
-                if (union74 == null) {
+                org.apache.avro.generic.GenericData.EnumSymbol union0 = null;
+                union0 = ((List<org.apache.avro.generic.GenericData.EnumSymbol> ) testEnumUnionArray0).get(counter1);
+                if (union0 == null) {
                     (encoder).writeIndex(0);
                     (encoder).writeNull();
                 } else {
-                    if ((union74 instanceof org.apache.avro.generic.GenericData.EnumSymbol)&&"com.adpilot.utils.generated.avro.testEnum".equals(((org.apache.avro.generic.GenericData.EnumSymbol) union74).getSchema().getFullName())) {
+                    if ((union0 instanceof org.apache.avro.generic.GenericData.EnumSymbol)&&"com.adpilot.utils.generated.avro.testEnum".equals(((org.apache.avro.generic.GenericData.EnumSymbol) union0).getSchema().getFullName())) {
                         (encoder).writeIndex(1);
-                        (encoder).writeEnum(((org.apache.avro.generic.GenericData.EnumSymbol) union74).getSchema().getEnumOrdinal(((org.apache.avro.generic.GenericData.EnumSymbol) union74).toString()));
+                        (encoder).writeEnum(((org.apache.avro.generic.GenericData.EnumSymbol) union0).getSchema().getEnumOrdinal(((org.apache.avro.generic.GenericData.EnumSymbol) union0).toString()));
                     }
                 }
             }

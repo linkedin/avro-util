@@ -17,40 +17,40 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexColle
     public void serialize(IndexedRecord data, Encoder encoder)
         throws IOException
     {
-        serializeFastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexCollectionsField130(data, (encoder));
+        serializeFastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexCollectionsField0(data, (encoder));
     }
 
     @SuppressWarnings("unchecked")
-    public void serializeFastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexCollectionsField130(IndexedRecord data, Encoder encoder)
+    public void serializeFastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexCollectionsField0(IndexedRecord data, Encoder encoder)
         throws IOException
     {
-        List<Map<CharSequence, IndexedRecord>> recordsArrayMap131 = ((List<Map<CharSequence, IndexedRecord>> ) data.get(0));
+        List<Map<CharSequence, IndexedRecord>> recordsArrayMap0 = ((List<Map<CharSequence, IndexedRecord>> ) data.get(0));
         (encoder).writeArrayStart();
-        if ((recordsArrayMap131 == null)||recordsArrayMap131 .isEmpty()) {
+        if ((recordsArrayMap0 == null)||recordsArrayMap0 .isEmpty()) {
             (encoder).setItemCount(0);
         } else {
-            (encoder).setItemCount(recordsArrayMap131 .size());
-            for (int counter132 = 0; (counter132 <((List<Map<CharSequence, IndexedRecord>> ) recordsArrayMap131).size()); counter132 ++) {
+            (encoder).setItemCount(recordsArrayMap0 .size());
+            for (int counter0 = 0; (counter0 <((List<Map<CharSequence, IndexedRecord>> ) recordsArrayMap0).size()); counter0 ++) {
                 (encoder).startItem();
-                Map<CharSequence, IndexedRecord> map133 = null;
-                map133 = ((List<Map<CharSequence, IndexedRecord>> ) recordsArrayMap131).get(counter132);
+                Map<CharSequence, IndexedRecord> map0 = null;
+                map0 = ((List<Map<CharSequence, IndexedRecord>> ) recordsArrayMap0).get(counter0);
                 (encoder).writeMapStart();
-                if ((map133 == null)||map133 .isEmpty()) {
+                if ((map0 == null)||map0 .isEmpty()) {
                     (encoder).setItemCount(0);
                 } else {
-                    (encoder).setItemCount(map133 .size());
-                    for (CharSequence key134 : ((Map<CharSequence, IndexedRecord> ) map133).keySet()) {
+                    (encoder).setItemCount(map0 .size());
+                    for (CharSequence key0 : ((Map<CharSequence, IndexedRecord> ) map0).keySet()) {
                         (encoder).startItem();
-                        (encoder).writeString(key134);
-                        IndexedRecord union135 = null;
-                        union135 = ((Map<CharSequence, IndexedRecord> ) map133).get(key134);
-                        if (union135 == null) {
+                        (encoder).writeString(key0);
+                        IndexedRecord union0 = null;
+                        union0 = ((Map<CharSequence, IndexedRecord> ) map0).get(key0);
+                        if (union0 == null) {
                             (encoder).writeIndex(0);
                             (encoder).writeNull();
                         } else {
-                            if ((union135 instanceof IndexedRecord)&&"com.adpilot.utils.generated.avro.subRecord".equals(((IndexedRecord) union135).getSchema().getFullName())) {
+                            if ((union0 instanceof IndexedRecord)&&"com.adpilot.utils.generated.avro.subRecord".equals(((IndexedRecord) union0).getSchema().getFullName())) {
                                 (encoder).writeIndex(1);
-                                serializesubRecord136(((IndexedRecord) union135), (encoder));
+                                serializeSubRecord0(((IndexedRecord) union0), (encoder));
                             }
                         }
                     }
@@ -59,33 +59,33 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexColle
             }
         }
         (encoder).writeArrayEnd();
-        Map<CharSequence, List<IndexedRecord>> recordsMapArray138 = ((Map<CharSequence, List<IndexedRecord>> ) data.get(1));
+        Map<CharSequence, List<IndexedRecord>> recordsMapArray0 = ((Map<CharSequence, List<IndexedRecord>> ) data.get(1));
         (encoder).writeMapStart();
-        if ((recordsMapArray138 == null)||recordsMapArray138 .isEmpty()) {
+        if ((recordsMapArray0 == null)||recordsMapArray0 .isEmpty()) {
             (encoder).setItemCount(0);
         } else {
-            (encoder).setItemCount(recordsMapArray138 .size());
-            for (CharSequence key139 : ((Map<CharSequence, List<IndexedRecord>> ) recordsMapArray138).keySet()) {
+            (encoder).setItemCount(recordsMapArray0 .size());
+            for (CharSequence key1 : ((Map<CharSequence, List<IndexedRecord>> ) recordsMapArray0).keySet()) {
                 (encoder).startItem();
-                (encoder).writeString(key139);
-                List<IndexedRecord> array140 = null;
-                array140 = ((Map<CharSequence, List<IndexedRecord>> ) recordsMapArray138).get(key139);
+                (encoder).writeString(key1);
+                List<IndexedRecord> array0 = null;
+                array0 = ((Map<CharSequence, List<IndexedRecord>> ) recordsMapArray0).get(key1);
                 (encoder).writeArrayStart();
-                if ((array140 == null)||array140 .isEmpty()) {
+                if ((array0 == null)||array0 .isEmpty()) {
                     (encoder).setItemCount(0);
                 } else {
-                    (encoder).setItemCount(array140 .size());
-                    for (int counter141 = 0; (counter141 <((List<IndexedRecord> ) array140).size()); counter141 ++) {
+                    (encoder).setItemCount(array0 .size());
+                    for (int counter1 = 0; (counter1 <((List<IndexedRecord> ) array0).size()); counter1 ++) {
                         (encoder).startItem();
-                        IndexedRecord union142 = null;
-                        union142 = ((List<IndexedRecord> ) array140).get(counter141);
-                        if (union142 == null) {
+                        IndexedRecord union1 = null;
+                        union1 = ((List<IndexedRecord> ) array0).get(counter1);
+                        if (union1 == null) {
                             (encoder).writeIndex(0);
                             (encoder).writeNull();
                         } else {
-                            if ((union142 instanceof IndexedRecord)&&"com.adpilot.utils.generated.avro.subRecord".equals(((IndexedRecord) union142).getSchema().getFullName())) {
+                            if ((union1 instanceof IndexedRecord)&&"com.adpilot.utils.generated.avro.subRecord".equals(((IndexedRecord) union1).getSchema().getFullName())) {
                                 (encoder).writeIndex(1);
-                                serializesubRecord136(((IndexedRecord) union142), (encoder));
+                                serializeSubRecord0(((IndexedRecord) union1), (encoder));
                             }
                         }
                     }
@@ -94,39 +94,39 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexColle
             }
         }
         (encoder).writeMapEnd();
-        List<Map<CharSequence, IndexedRecord>> recordsArrayMapUnion143 = ((List<Map<CharSequence, IndexedRecord>> ) data.get(2));
-        if (recordsArrayMapUnion143 == null) {
+        List<Map<CharSequence, IndexedRecord>> recordsArrayMapUnion0 = ((List<Map<CharSequence, IndexedRecord>> ) data.get(2));
+        if (recordsArrayMapUnion0 == null) {
             (encoder).writeIndex(0);
             (encoder).writeNull();
         } else {
-            if (recordsArrayMapUnion143 instanceof List) {
+            if (recordsArrayMapUnion0 instanceof List) {
                 (encoder).writeIndex(1);
                 (encoder).writeArrayStart();
-                if ((((List<Map<CharSequence, IndexedRecord>> ) recordsArrayMapUnion143) == null)||((List<Map<CharSequence, IndexedRecord>> ) recordsArrayMapUnion143).isEmpty()) {
+                if ((((List<Map<CharSequence, IndexedRecord>> ) recordsArrayMapUnion0) == null)||((List<Map<CharSequence, IndexedRecord>> ) recordsArrayMapUnion0).isEmpty()) {
                     (encoder).setItemCount(0);
                 } else {
-                    (encoder).setItemCount(((List<Map<CharSequence, IndexedRecord>> ) recordsArrayMapUnion143).size());
-                    for (int counter144 = 0; (counter144 <((List<Map<CharSequence, IndexedRecord>> )((List<Map<CharSequence, IndexedRecord>> ) recordsArrayMapUnion143)).size()); counter144 ++) {
+                    (encoder).setItemCount(((List<Map<CharSequence, IndexedRecord>> ) recordsArrayMapUnion0).size());
+                    for (int counter2 = 0; (counter2 <((List<Map<CharSequence, IndexedRecord>> )((List<Map<CharSequence, IndexedRecord>> ) recordsArrayMapUnion0)).size()); counter2 ++) {
                         (encoder).startItem();
-                        Map<CharSequence, IndexedRecord> map145 = null;
-                        map145 = ((List<Map<CharSequence, IndexedRecord>> )((List<Map<CharSequence, IndexedRecord>> ) recordsArrayMapUnion143)).get(counter144);
+                        Map<CharSequence, IndexedRecord> map1 = null;
+                        map1 = ((List<Map<CharSequence, IndexedRecord>> )((List<Map<CharSequence, IndexedRecord>> ) recordsArrayMapUnion0)).get(counter2);
                         (encoder).writeMapStart();
-                        if ((map145 == null)||map145 .isEmpty()) {
+                        if ((map1 == null)||map1 .isEmpty()) {
                             (encoder).setItemCount(0);
                         } else {
-                            (encoder).setItemCount(map145 .size());
-                            for (CharSequence key146 : ((Map<CharSequence, IndexedRecord> ) map145).keySet()) {
+                            (encoder).setItemCount(map1 .size());
+                            for (CharSequence key2 : ((Map<CharSequence, IndexedRecord> ) map1).keySet()) {
                                 (encoder).startItem();
-                                (encoder).writeString(key146);
-                                IndexedRecord union147 = null;
-                                union147 = ((Map<CharSequence, IndexedRecord> ) map145).get(key146);
-                                if (union147 == null) {
+                                (encoder).writeString(key2);
+                                IndexedRecord union2 = null;
+                                union2 = ((Map<CharSequence, IndexedRecord> ) map1).get(key2);
+                                if (union2 == null) {
                                     (encoder).writeIndex(0);
                                     (encoder).writeNull();
                                 } else {
-                                    if ((union147 instanceof IndexedRecord)&&"com.adpilot.utils.generated.avro.subRecord".equals(((IndexedRecord) union147).getSchema().getFullName())) {
+                                    if ((union2 instanceof IndexedRecord)&&"com.adpilot.utils.generated.avro.subRecord".equals(((IndexedRecord) union2).getSchema().getFullName())) {
                                         (encoder).writeIndex(1);
-                                        serializesubRecord136(((IndexedRecord) union147), (encoder));
+                                        serializeSubRecord0(((IndexedRecord) union2), (encoder));
                                     }
                                 }
                             }
@@ -137,39 +137,39 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexColle
                 (encoder).writeArrayEnd();
             }
         }
-        Map<CharSequence, List<IndexedRecord>> recordsMapArrayUnion148 = ((Map<CharSequence, List<IndexedRecord>> ) data.get(3));
-        if (recordsMapArrayUnion148 == null) {
+        Map<CharSequence, List<IndexedRecord>> recordsMapArrayUnion0 = ((Map<CharSequence, List<IndexedRecord>> ) data.get(3));
+        if (recordsMapArrayUnion0 == null) {
             (encoder).writeIndex(0);
             (encoder).writeNull();
         } else {
-            if (recordsMapArrayUnion148 instanceof Map) {
+            if (recordsMapArrayUnion0 instanceof Map) {
                 (encoder).writeIndex(1);
                 (encoder).writeMapStart();
-                if ((((Map<CharSequence, List<IndexedRecord>> ) recordsMapArrayUnion148) == null)||((Map<CharSequence, List<IndexedRecord>> ) recordsMapArrayUnion148).isEmpty()) {
+                if ((((Map<CharSequence, List<IndexedRecord>> ) recordsMapArrayUnion0) == null)||((Map<CharSequence, List<IndexedRecord>> ) recordsMapArrayUnion0).isEmpty()) {
                     (encoder).setItemCount(0);
                 } else {
-                    (encoder).setItemCount(((Map<CharSequence, List<IndexedRecord>> ) recordsMapArrayUnion148).size());
-                    for (CharSequence key149 : ((Map<CharSequence, List<IndexedRecord>> )((Map<CharSequence, List<IndexedRecord>> ) recordsMapArrayUnion148)).keySet()) {
+                    (encoder).setItemCount(((Map<CharSequence, List<IndexedRecord>> ) recordsMapArrayUnion0).size());
+                    for (CharSequence key3 : ((Map<CharSequence, List<IndexedRecord>> )((Map<CharSequence, List<IndexedRecord>> ) recordsMapArrayUnion0)).keySet()) {
                         (encoder).startItem();
-                        (encoder).writeString(key149);
-                        List<IndexedRecord> array150 = null;
-                        array150 = ((Map<CharSequence, List<IndexedRecord>> )((Map<CharSequence, List<IndexedRecord>> ) recordsMapArrayUnion148)).get(key149);
+                        (encoder).writeString(key3);
+                        List<IndexedRecord> array1 = null;
+                        array1 = ((Map<CharSequence, List<IndexedRecord>> )((Map<CharSequence, List<IndexedRecord>> ) recordsMapArrayUnion0)).get(key3);
                         (encoder).writeArrayStart();
-                        if ((array150 == null)||array150 .isEmpty()) {
+                        if ((array1 == null)||array1 .isEmpty()) {
                             (encoder).setItemCount(0);
                         } else {
-                            (encoder).setItemCount(array150 .size());
-                            for (int counter151 = 0; (counter151 <((List<IndexedRecord> ) array150).size()); counter151 ++) {
+                            (encoder).setItemCount(array1 .size());
+                            for (int counter3 = 0; (counter3 <((List<IndexedRecord> ) array1).size()); counter3 ++) {
                                 (encoder).startItem();
-                                IndexedRecord union152 = null;
-                                union152 = ((List<IndexedRecord> ) array150).get(counter151);
-                                if (union152 == null) {
+                                IndexedRecord union3 = null;
+                                union3 = ((List<IndexedRecord> ) array1).get(counter3);
+                                if (union3 == null) {
                                     (encoder).writeIndex(0);
                                     (encoder).writeNull();
                                 } else {
-                                    if ((union152 instanceof IndexedRecord)&&"com.adpilot.utils.generated.avro.subRecord".equals(((IndexedRecord) union152).getSchema().getFullName())) {
+                                    if ((union3 instanceof IndexedRecord)&&"com.adpilot.utils.generated.avro.subRecord".equals(((IndexedRecord) union3).getSchema().getFullName())) {
                                         (encoder).writeIndex(1);
-                                        serializesubRecord136(((IndexedRecord) union152), (encoder));
+                                        serializeSubRecord0(((IndexedRecord) union3), (encoder));
                                     }
                                 }
                             }
@@ -183,20 +183,20 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexColle
     }
 
     @SuppressWarnings("unchecked")
-    public void serializesubRecord136(IndexedRecord data, Encoder encoder)
+    public void serializeSubRecord0(IndexedRecord data, Encoder encoder)
         throws IOException
     {
-        CharSequence subField137 = ((CharSequence) data.get(0));
-        if (subField137 == null) {
+        CharSequence subField0 = ((CharSequence) data.get(0));
+        if (subField0 == null) {
             (encoder).writeIndex(0);
             (encoder).writeNull();
         } else {
-            if (subField137 instanceof CharSequence) {
+            if (subField0 instanceof CharSequence) {
                 (encoder).writeIndex(1);
-                if (subField137 instanceof Utf8) {
-                    (encoder).writeString(((Utf8) subField137));
+                if (subField0 instanceof Utf8) {
+                    (encoder).writeString(((Utf8) subField0));
                 } else {
-                    (encoder).writeString(subField137 .toString());
+                    (encoder).writeString(subField0 .toString());
                 }
             }
         }

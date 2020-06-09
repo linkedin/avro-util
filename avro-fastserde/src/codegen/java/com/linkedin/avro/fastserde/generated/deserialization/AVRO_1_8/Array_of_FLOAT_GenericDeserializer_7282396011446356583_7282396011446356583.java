@@ -21,9 +21,9 @@ public class Array_of_FLOAT_GenericDeserializer_7282396011446356583_728239601144
     public List<Float> deserialize(List<Float> reuse, Decoder decoder)
         throws IOException
     {
-        List<Float> array602 = null;
-        array602 = ((List<Float> ) ByteBufferBackedPrimitiveFloatList.readPrimitiveFloatArray((reuse), (decoder)));
-        return array602;
+        List<Float> array0 = null;
+        array0 = ((List<Float> ) ByteBufferBackedPrimitiveFloatList.readPrimitiveFloatArray((reuse), (decoder)));
+        return array0;
     }
 
 }

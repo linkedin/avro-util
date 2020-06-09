@@ -18,24 +18,24 @@ public class FastGenericDeserializerGeneratorTest_shouldReadNestedMap_GenericDes
 {
 
     private final Schema readerSchema;
-    private final Schema mapField736;
-    private final Schema mapFieldMapValueSchema742;
-    private final Schema mapFieldValueMapValueSchema748;
+    private final Schema mapField0;
+    private final Schema mapFieldMapValueSchema0;
+    private final Schema mapFieldValueMapValueSchema0;
 
     public FastGenericDeserializerGeneratorTest_shouldReadNestedMap_GenericDeserializer_3649952671819772385_3649952671819772385(Schema readerSchema) {
         this.readerSchema = readerSchema;
-        this.mapField736 = readerSchema.getField("mapField").schema();
-        this.mapFieldMapValueSchema742 = mapField736 .getValueType();
-        this.mapFieldValueMapValueSchema748 = mapFieldMapValueSchema742 .getValueType();
+        this.mapField0 = readerSchema.getField("mapField").schema();
+        this.mapFieldMapValueSchema0 = mapField0 .getValueType();
+        this.mapFieldValueMapValueSchema0 = mapFieldMapValueSchema0 .getValueType();
     }
 
     public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
         throws IOException
     {
-        return deserializeFastGenericDeserializerGeneratorTest_shouldReadNestedMap735((reuse), (decoder));
+        return deserializeFastGenericDeserializerGeneratorTest_shouldReadNestedMap0((reuse), (decoder));
     }
 
-    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadNestedMap735(Object reuse, Decoder decoder)
+    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadNestedMap0(Object reuse, Decoder decoder)
         throws IOException
     {
         IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadNestedMap;
@@ -44,79 +44,79 @@ public class FastGenericDeserializerGeneratorTest_shouldReadNestedMap_GenericDes
         } else {
             FastGenericDeserializerGeneratorTest_shouldReadNestedMap = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
-        Map<Utf8, Map<Utf8, List<Integer>>> mapField737 = null;
-        long chunkLen738 = (decoder.readMapStart());
-        if (chunkLen738 > 0) {
-            Map<Utf8, Map<Utf8, List<Integer>>> mapFieldReuse739 = null;
+        Map<Utf8, Map<Utf8, List<Integer>>> mapField1 = null;
+        long chunkLen0 = (decoder.readMapStart());
+        if (chunkLen0 > 0) {
+            Map<Utf8, Map<Utf8, List<Integer>>> mapFieldReuse0 = null;
             if (FastGenericDeserializerGeneratorTest_shouldReadNestedMap.get(0) instanceof Map) {
-                mapFieldReuse739 = ((Map) FastGenericDeserializerGeneratorTest_shouldReadNestedMap.get(0));
+                mapFieldReuse0 = ((Map) FastGenericDeserializerGeneratorTest_shouldReadNestedMap.get(0));
             }
-            if (mapFieldReuse739 != (null)) {
-                mapFieldReuse739 .clear();
-                mapField737 = mapFieldReuse739;
+            if (mapFieldReuse0 != (null)) {
+                mapFieldReuse0 .clear();
+                mapField1 = mapFieldReuse0;
             } else {
-                mapField737 = new HashMap<Utf8, Map<Utf8, List<Integer>>>();
+                mapField1 = new HashMap<Utf8, Map<Utf8, List<Integer>>>();
             }
             do {
-                for (int counter740 = 0; (counter740 <chunkLen738); counter740 ++) {
-                    Utf8 key741 = (decoder.readString(null));
-                    Map<Utf8, List<Integer>> mapFieldValue743 = null;
-                    long chunkLen744 = (decoder.readMapStart());
-                    if (chunkLen744 > 0) {
-                        Map<Utf8, List<Integer>> mapFieldValueReuse745 = null;
+                for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
+                    Utf8 key0 = (decoder.readString(null));
+                    Map<Utf8, List<Integer>> mapFieldValue0 = null;
+                    long chunkLen1 = (decoder.readMapStart());
+                    if (chunkLen1 > 0) {
+                        Map<Utf8, List<Integer>> mapFieldValueReuse0 = null;
                         if (null instanceof Map) {
-                            mapFieldValueReuse745 = ((Map) null);
+                            mapFieldValueReuse0 = ((Map) null);
                         }
-                        if (mapFieldValueReuse745 != (null)) {
-                            mapFieldValueReuse745 .clear();
-                            mapFieldValue743 = mapFieldValueReuse745;
+                        if (mapFieldValueReuse0 != (null)) {
+                            mapFieldValueReuse0 .clear();
+                            mapFieldValue0 = mapFieldValueReuse0;
                         } else {
-                            mapFieldValue743 = new HashMap<Utf8, List<Integer>>();
+                            mapFieldValue0 = new HashMap<Utf8, List<Integer>>();
                         }
                         do {
-                            for (int counter746 = 0; (counter746 <chunkLen744); counter746 ++) {
-                                Utf8 key747 = (decoder.readString(null));
-                                List<Integer> mapFieldValueValue749 = null;
-                                long chunkLen750 = (decoder.readArrayStart());
-                                if (chunkLen750 > 0) {
-                                    List<Integer> mapFieldValueValueReuse751 = null;
+                            for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {
+                                Utf8 key1 = (decoder.readString(null));
+                                List<Integer> mapFieldValueValue0 = null;
+                                long chunkLen2 = (decoder.readArrayStart());
+                                if (chunkLen2 > 0) {
+                                    List<Integer> mapFieldValueValueReuse0 = null;
                                     if (null instanceof List) {
-                                        mapFieldValueValueReuse751 = ((List) null);
+                                        mapFieldValueValueReuse0 = ((List) null);
                                     }
-                                    if (mapFieldValueValueReuse751 != (null)) {
-                                        mapFieldValueValueReuse751 .clear();
-                                        mapFieldValueValue749 = mapFieldValueValueReuse751;
+                                    if (mapFieldValueValueReuse0 != (null)) {
+                                        mapFieldValueValueReuse0 .clear();
+                                        mapFieldValueValue0 = mapFieldValueValueReuse0;
                                     } else {
-                                        mapFieldValueValue749 = new org.apache.avro.generic.GenericData.Array<Integer>(((int) chunkLen750), mapFieldValueMapValueSchema748);
+                                        mapFieldValueValue0 = new org.apache.avro.generic.GenericData.Array<Integer>(((int) chunkLen2), mapFieldValueMapValueSchema0);
                                     }
                                     do {
-                                        for (int counter752 = 0; (counter752 <chunkLen750); counter752 ++) {
-                                            Object mapFieldValueValueArrayElementReuseVar753 = null;
+                                        for (int counter2 = 0; (counter2 <chunkLen2); counter2 ++) {
+                                            Object mapFieldValueValueArrayElementReuseVar0 = null;
                                             if (null instanceof GenericArray) {
-                                                mapFieldValueValueArrayElementReuseVar753 = ((GenericArray) null).peek();
+                                                mapFieldValueValueArrayElementReuseVar0 = ((GenericArray) null).peek();
                                             }
-                                            mapFieldValueValue749 .add((decoder.readInt()));
+                                            mapFieldValueValue0 .add((decoder.readInt()));
                                         }
-                                        chunkLen750 = (decoder.arrayNext());
-                                    } while (chunkLen750 > 0);
+                                        chunkLen2 = (decoder.arrayNext());
+                                    } while (chunkLen2 > 0);
                                 } else {
-                                    mapFieldValueValue749 = new org.apache.avro.generic.GenericData.Array<Integer>(0, mapFieldValueMapValueSchema748);
+                                    mapFieldValueValue0 = new org.apache.avro.generic.GenericData.Array<Integer>(0, mapFieldValueMapValueSchema0);
                                 }
-                                mapFieldValue743 .put(key747, mapFieldValueValue749);
+                                mapFieldValue0 .put(key1, mapFieldValueValue0);
                             }
-                            chunkLen744 = (decoder.mapNext());
-                        } while (chunkLen744 > 0);
+                            chunkLen1 = (decoder.mapNext());
+                        } while (chunkLen1 > 0);
                     } else {
-                        mapFieldValue743 = Collections.emptyMap();
+                        mapFieldValue0 = Collections.emptyMap();
                     }
-                    mapField737 .put(key741, mapFieldValue743);
+                    mapField1 .put(key0, mapFieldValue0);
                 }
-                chunkLen738 = (decoder.mapNext());
-            } while (chunkLen738 > 0);
+                chunkLen0 = (decoder.mapNext());
+            } while (chunkLen0 > 0);
         } else {
-            mapField737 = Collections.emptyMap();
+            mapField1 = Collections.emptyMap();
         }
-        FastGenericDeserializerGeneratorTest_shouldReadNestedMap.put(0, mapField737);
+        FastGenericDeserializerGeneratorTest_shouldReadNestedMap.put(0, mapField1);
         return FastGenericDeserializerGeneratorTest_shouldReadNestedMap;
     }
 

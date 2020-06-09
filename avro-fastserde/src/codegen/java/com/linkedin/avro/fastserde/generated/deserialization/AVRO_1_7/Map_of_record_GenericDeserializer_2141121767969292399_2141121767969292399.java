@@ -16,58 +16,58 @@ public class Map_of_record_GenericDeserializer_2141121767969292399_2141121767969
 {
 
     private final Schema readerSchema;
-    private final Schema mapMapValueSchema699;
-    private final Schema field701;
+    private final Schema mapMapValueSchema0;
+    private final Schema field0;
 
     public Map_of_record_GenericDeserializer_2141121767969292399_2141121767969292399(Schema readerSchema) {
         this.readerSchema = readerSchema;
-        this.mapMapValueSchema699 = readerSchema.getValueType();
-        this.field701 = mapMapValueSchema699 .getField("field").schema();
+        this.mapMapValueSchema0 = readerSchema.getValueType();
+        this.field0 = mapMapValueSchema0 .getField("field").schema();
     }
 
     public Map<Utf8, IndexedRecord> deserialize(Map<Utf8, IndexedRecord> reuse, Decoder decoder)
         throws IOException
     {
-        Map<Utf8, IndexedRecord> map694 = null;
-        long chunkLen695 = (decoder.readMapStart());
-        if (chunkLen695 > 0) {
-            Map<Utf8, IndexedRecord> mapReuse696 = null;
+        Map<Utf8, IndexedRecord> map0 = null;
+        long chunkLen0 = (decoder.readMapStart());
+        if (chunkLen0 > 0) {
+            Map<Utf8, IndexedRecord> mapReuse0 = null;
             if ((reuse) instanceof Map) {
-                mapReuse696 = ((Map)(reuse));
+                mapReuse0 = ((Map)(reuse));
             }
-            if (mapReuse696 != (null)) {
-                mapReuse696 .clear();
-                map694 = mapReuse696;
+            if (mapReuse0 != (null)) {
+                mapReuse0 .clear();
+                map0 = mapReuse0;
             } else {
-                map694 = new HashMap<Utf8, IndexedRecord>();
+                map0 = new HashMap<Utf8, IndexedRecord>();
             }
             do {
-                for (int counter697 = 0; (counter697 <chunkLen695); counter697 ++) {
-                    Utf8 key698 = (decoder.readString(null));
-                    map694 .put(key698, deserializerecord700(null, (decoder)));
+                for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
+                    Utf8 key0 = (decoder.readString(null));
+                    map0 .put(key0, deserializerecord0(null, (decoder)));
                 }
-                chunkLen695 = (decoder.mapNext());
-            } while (chunkLen695 > 0);
+                chunkLen0 = (decoder.mapNext());
+            } while (chunkLen0 > 0);
         } else {
-            map694 = Collections.emptyMap();
+            map0 = Collections.emptyMap();
         }
-        return map694;
+        return map0;
     }
 
-    public IndexedRecord deserializerecord700(Object reuse, Decoder decoder)
+    public IndexedRecord deserializerecord0(Object reuse, Decoder decoder)
         throws IOException
     {
         IndexedRecord record;
-        if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == mapMapValueSchema699)) {
+        if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == mapMapValueSchema0)) {
             record = ((IndexedRecord)(reuse));
         } else {
-            record = new org.apache.avro.generic.GenericData.Record(mapMapValueSchema699);
+            record = new org.apache.avro.generic.GenericData.Record(mapMapValueSchema0);
         }
-        int unionIndex702 = (decoder.readIndex());
-        if (unionIndex702 == 0) {
+        int unionIndex0 = (decoder.readIndex());
+        if (unionIndex0 == 0) {
             decoder.readNull();
         }
-        if (unionIndex702 == 1) {
+        if (unionIndex0 == 1) {
             if (record.get(0) instanceof Utf8) {
                 record.put(0, (decoder).readString(((Utf8) record.get(0))));
             } else {

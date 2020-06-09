@@ -21,33 +21,33 @@ public class Array_of_BOOLEAN_GenericDeserializer_5988037297456147388_5988037297
     public List<Boolean> deserialize(List<Boolean> reuse, Decoder decoder)
         throws IOException
     {
-        List<Boolean> array592 = null;
-        long chunkLen593 = (decoder.readArrayStart());
-        if (chunkLen593 > 0) {
-            List<Boolean> arrayReuse594 = null;
+        List<Boolean> array0 = null;
+        long chunkLen0 = (decoder.readArrayStart());
+        if (chunkLen0 > 0) {
+            List<Boolean> arrayReuse0 = null;
             if ((reuse) instanceof List) {
-                arrayReuse594 = ((List)(reuse));
+                arrayReuse0 = ((List)(reuse));
             }
-            if (arrayReuse594 != (null)) {
-                arrayReuse594 .clear();
-                array592 = arrayReuse594;
+            if (arrayReuse0 != (null)) {
+                arrayReuse0 .clear();
+                array0 = arrayReuse0;
             } else {
-                array592 = new org.apache.avro.generic.GenericData.Array<Boolean>(((int) chunkLen593), readerSchema);
+                array0 = new org.apache.avro.generic.GenericData.Array<Boolean>(((int) chunkLen0), readerSchema);
             }
             do {
-                for (int counter595 = 0; (counter595 <chunkLen593); counter595 ++) {
-                    Object arrayArrayElementReuseVar596 = null;
+                for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
+                    Object arrayArrayElementReuseVar0 = null;
                     if ((reuse) instanceof GenericArray) {
-                        arrayArrayElementReuseVar596 = ((GenericArray)(reuse)).peek();
+                        arrayArrayElementReuseVar0 = ((GenericArray)(reuse)).peek();
                     }
-                    array592 .add((decoder.readBoolean()));
+                    array0 .add((decoder.readBoolean()));
                 }
-                chunkLen593 = (decoder.arrayNext());
-            } while (chunkLen593 > 0);
+                chunkLen0 = (decoder.arrayNext());
+            } while (chunkLen0 > 0);
         } else {
-            array592 = new org.apache.avro.generic.GenericData.Array<Boolean>(0, readerSchema);
+            array0 = new org.apache.avro.generic.GenericData.Array<Boolean>(0, readerSchema);
         }
-        return array592;
+        return array0;
     }
 
 }

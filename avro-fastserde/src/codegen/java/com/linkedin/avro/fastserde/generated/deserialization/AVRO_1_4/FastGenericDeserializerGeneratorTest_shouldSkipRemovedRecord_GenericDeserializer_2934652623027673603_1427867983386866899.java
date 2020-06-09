@@ -13,20 +13,20 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord_Generi
 {
 
     private final Schema readerSchema;
-    private final Schema subRecord11086;
+    private final Schema subRecord10;
 
     public FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord_GenericDeserializer_2934652623027673603_1427867983386866899(Schema readerSchema) {
         this.readerSchema = readerSchema;
-        this.subRecord11086 = readerSchema.getField("subRecord1").schema();
+        this.subRecord10 = readerSchema.getField("subRecord1").schema();
     }
 
     public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
         throws IOException
     {
-        return deserializeFastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord1085((reuse), (decoder));
+        return deserializeFastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord0((reuse), (decoder));
     }
 
-    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord1085(Object reuse, Decoder decoder)
+    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord0(Object reuse, Decoder decoder)
         throws IOException
     {
         IndexedRecord FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord;
@@ -35,27 +35,27 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord_Generi
         } else {
             FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
-        FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.put(0, deserializesubRecord1087(FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.get(0), (decoder)));
-        deserializesubRecord21088(null, (decoder));
-        int unionIndex1089 = (decoder.readIndex());
-        if (unionIndex1089 == 0) {
+        FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.put(0, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.get(0), (decoder)));
+        deserializesubRecord20(null, (decoder));
+        int unionIndex0 = (decoder.readIndex());
+        if (unionIndex0 == 0) {
             decoder.readNull();
         }
-        if (unionIndex1089 == 1) {
-            deserializesubRecord21088(null, (decoder));
+        if (unionIndex0 == 1) {
+            deserializesubRecord20(null, (decoder));
         }
-        FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.put(1, deserializesubRecord1087(FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.get(1), (decoder)));
+        FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.put(1, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.get(1), (decoder)));
         return FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord;
     }
 
-    public IndexedRecord deserializesubRecord1087(Object reuse, Decoder decoder)
+    public IndexedRecord deserializesubRecord0(Object reuse, Decoder decoder)
         throws IOException
     {
         IndexedRecord subRecord;
-        if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == subRecord11086)) {
+        if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == subRecord10)) {
             subRecord = ((IndexedRecord)(reuse));
         } else {
-            subRecord = new org.apache.avro.generic.GenericData.Record(subRecord11086);
+            subRecord = new org.apache.avro.generic.GenericData.Record(subRecord10);
         }
         if (subRecord.get(0) instanceof Utf8) {
             subRecord.put(0, (decoder).readString(((Utf8) subRecord.get(0))));
@@ -70,7 +70,7 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord_Generi
         return subRecord;
     }
 
-    public void deserializesubRecord21088(Object reuse, Decoder decoder)
+    public void deserializesubRecord20(Object reuse, Decoder decoder)
         throws IOException
     {
         decoder.skipString();

@@ -13,22 +13,22 @@ public class FastGenericDeserializerGeneratorTest_shouldReadAliasedField_Generic
 {
 
     private final Schema readerSchema;
-    private final Schema testString588;
-    private final Schema testStringUnionAlias590;
+    private final Schema testString0;
+    private final Schema testStringUnionAlias0;
 
     public FastGenericDeserializerGeneratorTest_shouldReadAliasedField_GenericDeserializer_7444250593254323838_5967444021771418968(Schema readerSchema) {
         this.readerSchema = readerSchema;
-        this.testString588 = readerSchema.getField("testString").schema();
-        this.testStringUnionAlias590 = readerSchema.getField("testStringUnionAlias").schema();
+        this.testString0 = readerSchema.getField("testString").schema();
+        this.testStringUnionAlias0 = readerSchema.getField("testStringUnionAlias").schema();
     }
 
     public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
         throws IOException
     {
-        return deserializeFastGenericDeserializerGeneratorTest_shouldReadAliasedField587((reuse), (decoder));
+        return deserializeFastGenericDeserializerGeneratorTest_shouldReadAliasedField0((reuse), (decoder));
     }
 
-    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadAliasedField587(Object reuse, Decoder decoder)
+    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadAliasedField0(Object reuse, Decoder decoder)
         throws IOException
     {
         IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadAliasedField;
@@ -37,22 +37,22 @@ public class FastGenericDeserializerGeneratorTest_shouldReadAliasedField_Generic
         } else {
             FastGenericDeserializerGeneratorTest_shouldReadAliasedField = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
-        int unionIndex589 = (decoder.readIndex());
-        if (unionIndex589 == 0) {
+        int unionIndex0 = (decoder.readIndex());
+        if (unionIndex0 == 0) {
             decoder.readNull();
         }
-        if (unionIndex589 == 1) {
+        if (unionIndex0 == 1) {
             if (FastGenericDeserializerGeneratorTest_shouldReadAliasedField.get(0) instanceof Utf8) {
                 FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(0, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldReadAliasedField.get(0))));
             } else {
                 FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(0, (decoder).readString(null));
             }
         }
-        int unionIndex591 = (decoder.readIndex());
-        if (unionIndex591 == 0) {
+        int unionIndex1 = (decoder.readIndex());
+        if (unionIndex1 == 0) {
             decoder.readNull();
         }
-        if (unionIndex591 == 1) {
+        if (unionIndex1 == 1) {
             if (FastGenericDeserializerGeneratorTest_shouldReadAliasedField.get(1) instanceof Utf8) {
                 FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(1, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldReadAliasedField.get(1))));
             } else {

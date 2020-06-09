@@ -13,26 +13,26 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordField_Gener
 {
 
     private final Schema readerSchema;
-    private final Schema record1045;
-    private final Schema recordOptionSchema1047;
-    private final Schema subField1049;
-    private final Schema field1051;
+    private final Schema record0;
+    private final Schema recordOptionSchema0;
+    private final Schema subField0;
+    private final Schema field0;
 
     public FastGenericDeserializerGeneratorTest_shouldReadSubRecordField_GenericDeserializer_1226932714285867531_1226932714285867531(Schema readerSchema) {
         this.readerSchema = readerSchema;
-        this.record1045 = readerSchema.getField("record").schema();
-        this.recordOptionSchema1047 = record1045 .getTypes().get(1);
-        this.subField1049 = recordOptionSchema1047 .getField("subField").schema();
-        this.field1051 = readerSchema.getField("field").schema();
+        this.record0 = readerSchema.getField("record").schema();
+        this.recordOptionSchema0 = record0 .getTypes().get(1);
+        this.subField0 = recordOptionSchema0 .getField("subField").schema();
+        this.field0 = readerSchema.getField("field").schema();
     }
 
     public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
         throws IOException
     {
-        return deserializeFastGenericDeserializerGeneratorTest_shouldReadSubRecordField1044((reuse), (decoder));
+        return deserializeFastGenericDeserializerGeneratorTest_shouldReadSubRecordField0((reuse), (decoder));
     }
 
-    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadSubRecordField1044(Object reuse, Decoder decoder)
+    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadSubRecordField0(Object reuse, Decoder decoder)
         throws IOException
     {
         IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadSubRecordField;
@@ -41,19 +41,19 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordField_Gener
         } else {
             FastGenericDeserializerGeneratorTest_shouldReadSubRecordField = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
-        int unionIndex1046 = (decoder.readIndex());
-        if (unionIndex1046 == 0) {
+        int unionIndex0 = (decoder.readIndex());
+        if (unionIndex0 == 0) {
             decoder.readNull();
         }
-        if (unionIndex1046 == 1) {
-            FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(0, deserializesubRecord1048(FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(0), (decoder)));
+        if (unionIndex0 == 1) {
+            FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(0, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(0), (decoder)));
         }
-        FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(1, deserializesubRecord1048(FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(1), (decoder)));
-        int unionIndex1052 = (decoder.readIndex());
-        if (unionIndex1052 == 0) {
+        FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(1, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(1), (decoder)));
+        int unionIndex2 = (decoder.readIndex());
+        if (unionIndex2 == 0) {
             decoder.readNull();
         }
-        if (unionIndex1052 == 1) {
+        if (unionIndex2 == 1) {
             if (FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(2) instanceof Utf8) {
                 FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(2, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(2))));
             } else {
@@ -63,20 +63,20 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordField_Gener
         return FastGenericDeserializerGeneratorTest_shouldReadSubRecordField;
     }
 
-    public IndexedRecord deserializesubRecord1048(Object reuse, Decoder decoder)
+    public IndexedRecord deserializesubRecord0(Object reuse, Decoder decoder)
         throws IOException
     {
         IndexedRecord subRecord;
-        if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == recordOptionSchema1047)) {
+        if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == recordOptionSchema0)) {
             subRecord = ((IndexedRecord)(reuse));
         } else {
-            subRecord = new org.apache.avro.generic.GenericData.Record(recordOptionSchema1047);
+            subRecord = new org.apache.avro.generic.GenericData.Record(recordOptionSchema0);
         }
-        int unionIndex1050 = (decoder.readIndex());
-        if (unionIndex1050 == 0) {
+        int unionIndex1 = (decoder.readIndex());
+        if (unionIndex1 == 0) {
             decoder.readNull();
         }
-        if (unionIndex1050 == 1) {
+        if (unionIndex1 == 1) {
             if (subRecord.get(0) instanceof Utf8) {
                 subRecord.put(0, (decoder).readString(((Utf8) subRecord.get(0))));
             } else {
