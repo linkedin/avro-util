@@ -20,12 +20,11 @@ import static com.linkedin.avro.fastserde.Utils.*;
  * TODO: refactor {@link FastSerializerGeneratorBase} and {@link FastDeserializerGeneratorBase} to eliminate the duplicate code.
  * @param <T> type of Datum to be operated on
  */
-public abstract class FastSerializerGeneratorBase<T> {
+public abstract class FastSerializerGeneratorBase<T> extends FastSerdeBase {
   public static final String GENERATED_PACKAGE_NAME = "com.linkedin.avro.fastserde.generated.serialization."
       + AvroCompatibilityHelper.getRuntimeAvroVersion().name();
   public static final String GENERATED_SOURCES_PATH = generateSourcePathFromPackageName(GENERATED_PACKAGE_NAME);
 
-  private static final AtomicInteger UNIQUE_ID_BASE = new AtomicInteger(0);
   protected static final String SEP = "_";
 
   private static final Logger LOGGER = Logger.getLogger(FastSerializerGeneratorBase.class);
@@ -49,14 +48,6 @@ public abstract class FastSerializerGeneratorBase<T> {
     Long schemaId = Math.abs(Utils.getSchemaFingerprint(schema));
     String typeName = SchemaAssistant.getTypeName(schema);
     return typeName + SEP + description + "Serializer" + SEP + schemaId;
-  }
-
-  protected static String getVariableName(String name) {
-    return StringUtils.uncapitalize(name) + nextUniqueInt();
-  }
-
-  protected static int nextUniqueInt() {
-    return UNIQUE_ID_BASE.getAndIncrement();
   }
 
   public abstract FastSerializer<T> generateSerializer();
