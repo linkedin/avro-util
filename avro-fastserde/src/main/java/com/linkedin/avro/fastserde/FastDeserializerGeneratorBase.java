@@ -21,12 +21,10 @@ import org.apache.log4j.Logger;
 import static com.linkedin.avro.fastserde.Utils.*;
 
 
-public abstract class FastDeserializerGeneratorBase<T> {
+public abstract class FastDeserializerGeneratorBase<T> extends FastSerdeBase {
   public static final String GENERATED_PACKAGE_NAME = "com.linkedin.avro.fastserde.generated.deserialization."
       + AvroCompatibilityHelper.getRuntimeAvroVersion().name();
   public static final String GENERATED_SOURCES_PATH = generateSourcePathFromPackageName(GENERATED_PACKAGE_NAME);
-
-  private static final AtomicInteger UNIQUE_ID_BASE = new AtomicInteger(0);
 
   protected static final Symbol EMPTY_SYMBOL = new Symbol(Symbol.Kind.TERMINAL, new Symbol[]{}) {};
   protected static final Symbol END_SYMBOL = new Symbol(Symbol.Kind.TERMINAL, new Symbol[]{}) {};
@@ -63,13 +61,8 @@ public abstract class FastDeserializerGeneratorBase<T> {
   public static String getClassName(Schema writerSchema, Schema readerSchema, String description) {
     Long writerSchemaId = Math.abs(Utils.getSchemaFingerprint(writerSchema));
     Long readerSchemaId = Math.abs(Utils.getSchemaFingerprint(readerSchema));
-    Schema.Type readerSchemaType = readerSchema.getType();
     String typeName = SchemaAssistant.getTypeName(readerSchema);
     return typeName + SEP + description + "Deserializer" + SEP + writerSchemaId + SEP + readerSchemaId;
-  }
-
-  protected static String getVariableName(String name) {
-    return name + UNIQUE_ID_BASE.getAndIncrement();
   }
 
   protected static String getSymbolPrintName(Symbol symbol) {

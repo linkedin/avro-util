@@ -389,7 +389,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
             valueInitializationExpr = valueInitializationExpr.arg(getSchemaExpr(schema));
           }
           valueVar =
-              body.decl(defaultValueClass, getVariableName("default" + schema.getName()), valueInitializationExpr);
+              body.decl(defaultValueClass, getUniqueName("default" + schema.getName()), valueInitializationExpr);
           // Avro-1.4 depends on an old jackson-mapper-asl-1.4.2, which requires the following typecast.
           for (Iterator<Map.Entry<String, JsonNode>> it = ((ObjectNode) defaultValue).getFields(); it.hasNext(); ) {
             Map.Entry<String, JsonNode> subFieldEntry = it.next();
@@ -413,7 +413,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
                 declareSchemaVar(schema.getElementType(), "defaultElementSchema", schemaVar.invoke("getElementType"));
           }
 
-          valueVar = body.decl(defaultValueClass, getVariableName("defaultArray"), valueInitializationExpr);
+          valueVar = body.decl(defaultValueClass, getUniqueName("defaultArray"), valueInitializationExpr);
 
           for (JsonNode arrayElementValue : defaultValue) {
             JExpression arrayElementExpression =
@@ -428,7 +428,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
                 declareSchemaVar(schema.getValueType(), "defaultMapValueSchema", schemaVar.invoke("getValueType"));
           }
 
-          valueVar = body.decl(defaultValueClass, getVariableName("defaultMap"), valueInitializationExpr);
+          valueVar = body.decl(defaultValueClass, getUniqueName("defaultMap"), valueInitializationExpr);
 
           // Avro-1.4 depends on an old jackson-mapper-asl-1.4.2, which requires the following typecast.
           for (Iterator<Map.Entry<String, JsonNode>> it = ((ObjectNode) defaultValue).getFields(); it.hasNext(); ) {
@@ -469,7 +469,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
             }
             return newFixedExpr;
           } else {
-            JVar fixed = body.decl(fixedClass, getVariableName(schema.getName()));
+            JVar fixed = body.decl(fixedClass, getUniqueName(schema.getName()));
             JInvocation newFixedExpr = JExpr._new(fixedClass);
             body.assign(fixed, newFixedExpr);
             body.invoke(fixed, "bytes").arg(fixedBytesArray);
@@ -503,7 +503,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
   private void processUnion(JVar unionSchemaVar, final String name, final Schema unionSchema,
       final Schema readerUnionSchema, JBlock body, FieldAction action,
       BiConsumer<JBlock, JExpression> putValueIntoParent, Supplier<JExpression> reuseSupplier) {
-    JVar unionIndex = body.decl(codeModel.INT, getVariableName("unionIndex"), JExpr.direct(DECODER + ".readIndex()"));
+    JVar unionIndex = body.decl(codeModel.INT, getUniqueName("unionIndex"), JExpr.direct(DECODER + ".readIndex()"));
     JConditional ifBlock = null;
     for (int i = 0; i < unionSchema.getTypes().size(); i++) {
       Schema optionSchema = unionSchema.getTypes().get(i);
@@ -606,7 +606,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     JClass arrayClass = schemaAssistant.classFromSchema(arraySchema, false);
 
     JVar chunkLen =
-        parentBody.decl(codeModel.LONG, getVariableName("chunkLen"), JExpr.direct(DECODER + ".readArrayStart()"));
+        parentBody.decl(codeModel.LONG, getUniqueName("chunkLen"), JExpr.direct(DECODER + ".readArrayStart()"));
 
     JConditional conditional = parentBody._if(chunkLen.gt(JExpr.lit(0)));
     JBlock ifBlockForChunkLenCheck = conditional._then();
@@ -642,7 +642,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
 
     JDoLoop doLoop = ifBlockForChunkLenCheck._do(chunkLen.gt(JExpr.lit(0)));
     JForLoop forLoop = doLoop.body()._for();
-    JVar counter = forLoop.init(codeModel.INT, getVariableName("counter"), JExpr.lit(0));
+    JVar counter = forLoop.init(codeModel.INT, getUniqueName("counter"), JExpr.lit(0));
     forLoop.test(counter.lt(chunkLen));
     forLoop.update(counter.incr());
     JBlock forBody = forLoop.body();
@@ -658,7 +658,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     }
 
     // Define element reuse variable here
-    JVar elementReuseVar = forBody.decl(codeModel.ref(Object.class), getVariableName(name + "ArrayElementReuseVar"), JExpr._null());
+    JVar elementReuseVar = forBody.decl(codeModel.ref(Object.class), getUniqueName(name + "ArrayElementReuseVar"), JExpr._null());
     ifCodeGen(forBody,
         reuseSupplier.get()._instanceof(codeModel.ref(GenericArray.class)),
         then ->
@@ -720,7 +720,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
 
     final JVar mapVar = action.getShouldRead() ? declareValueVar(name, mapSchema, parentBody) : null;
     JVar chunkLen =
-        parentBody.decl(codeModel.LONG, getVariableName("chunkLen"), JExpr.direct(DECODER + ".readMapStart()"));
+        parentBody.decl(codeModel.LONG, getUniqueName("chunkLen"), JExpr.direct(DECODER + ".readMapStart()"));
 
     JConditional conditional = parentBody._if(chunkLen.gt(JExpr.lit(0)));
     JBlock ifBlockForChunkLenCheck = conditional._then();
@@ -749,7 +749,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
 
     JDoLoop doLoop = ifBlockForChunkLenCheck._do(chunkLen.gt(JExpr.lit(0)));
     JForLoop forLoop = doLoop.body()._for();
-    JVar counter = forLoop.init(codeModel.INT, getVariableName("counter"), JExpr.lit(0));
+    JVar counter = forLoop.init(codeModel.INT, getUniqueName("counter"), JExpr.lit(0));
     forLoop.test(counter.lt(chunkLen));
     forLoop.update(counter.incr());
     JBlock forBody = forLoop.body();
@@ -761,7 +761,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       keyValueExpression = JExpr._new(keyClass).arg(keyValueExpression);
     }
 
-    JVar key = forBody.decl(keyClass, getVariableName("key"), keyValueExpression);
+    JVar key = forBody.decl(keyClass, getUniqueName("key"), keyValueExpression);
     JVar mapValueSchemaVar = null;
     if (action.getShouldRead() && useGenericTypes) {
       mapValueSchemaVar =
@@ -791,7 +791,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
   private void processFixed(final Schema schema, JBlock body, FieldAction action,
       BiConsumer<JBlock, JExpression> putFixedIntoParent, Supplier<JExpression> reuseSupplier) {
     if (action.getShouldRead()) {
-      JVar fixedBuffer = body.decl(codeModel.ref(byte[].class), getVariableName(schema.getName()), null);
+      JVar fixedBuffer = body.decl(codeModel.ref(byte[].class), getUniqueName(schema.getName()), null);
       if (reuseSupplier.get().equals(JExpr._null())) {
         body.assign(fixedBuffer, JExpr.direct(" new byte[" + schema.getFixedSize() + "]"));
       } else {
@@ -823,7 +823,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       } else {
         // fixed implementation in avro-1.4
         // The specific fixed type only has a constructor with empty param
-        JVar fixed = body.decl(fixedClass, getVariableName(schema.getName()));
+        JVar fixed = body.decl(fixedClass, getUniqueName(schema.getName()));
         JInvocation newFixedExpr = JExpr._new(fixedClass);
         body.assign(fixed, newFixedExpr);
         body.directStatement(fixed.name() + ".bytes(" + fixedBuffer.name() + ");");
@@ -867,9 +867,9 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       if (enumOrderCorrect) {
         newEnum = schemaAssistant.getEnumValueByIndex(schema, enumValueExpr, getSchemaExpr(schema));
       } else {
-        JVar enumIndex = body.decl(codeModel.INT, getVariableName("enumIndex"), enumValueExpr);
+        JVar enumIndex = body.decl(codeModel.INT, getUniqueName("enumIndex"), enumValueExpr);
         JClass enumClass = schemaAssistant.classFromSchema(schema);
-        newEnum = body.decl(enumClass, getVariableName("enumValue"), JExpr._null());
+        newEnum = body.decl(enumClass, getUniqueName("enumValue"), JExpr._null());
 
         for (int i = 0; i < enumAdjustAction.adjustments.length; i++) {
           JExpression ithVal =
@@ -995,7 +995,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
 
   private JVar declareValueVar(final String name, final Schema schema, JBlock block) {
     if (SchemaAssistant.isComplexType(schema)) {
-      return block.decl(schemaAssistant.classFromSchema(schema), getVariableName(StringUtils.uncapitalize(name)),
+      return block.decl(schemaAssistant.classFromSchema(schema), getUniqueName(StringUtils.uncapitalize(name)),
           JExpr._null());
     } else {
       throw new FastDeserializerGeneratorException("Only complex types allowed!");
@@ -1012,7 +1012,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
         return schemaVarMap.get(schemaId);
       } else {
         JVar schemaVar = deserializerClass.field(JMod.PRIVATE | JMod.FINAL, Schema.class,
-            getVariableName(StringUtils.uncapitalize(variableName)));
+            getUniqueName(StringUtils.uncapitalize(variableName)));
         constructor.body().assign(JExpr.refthis(schemaVar.name()), getValueType);
 
         registerSchema(valueSchema, schemaId, schemaVar);
@@ -1067,7 +1067,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
 
     JClass schemaClass = schemaAssistant.classFromSchema(schema);
     JMethod method = deserializerClass.method(JMod.PUBLIC, read ? schemaClass : codeModel.VOID,
-        getVariableName("deserialize" + schema.getName()));
+        getUniqueName("deserialize" + schema.getName()));
 
     method._throws(IOException.class);
     method.param(Object.class, VAR_NAME_FOR_REUSE);

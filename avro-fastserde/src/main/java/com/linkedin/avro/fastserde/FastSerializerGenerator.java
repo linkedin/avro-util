@@ -157,7 +157,7 @@ public class FastSerializerGenerator<T> extends FastSerializerGeneratorBase<T> {
     final JBlock nonEmptyArrayBlock = emptyArrayIf._else();
     nonEmptyArrayBlock.invoke(JExpr.direct(ENCODER), "setItemCount").arg(JExpr.invoke(arrayExpr, "size"));
     final JForLoop forLoop = nonEmptyArrayBlock._for();
-    final JVar counter = forLoop.init(codeModel.INT, getVariableName("counter"), JExpr.lit(0));
+    final JVar counter = forLoop.init(codeModel.INT, getUniqueName("counter"), JExpr.lit(0));
     forLoop.test(counter.lt(JExpr.invoke(JExpr.cast(arrayClass, arrayExpr), "size")));
     forLoop.update(counter.incr());
     final JBlock forBody = forLoop.body();
@@ -190,7 +190,7 @@ public class FastSerializerGenerator<T> extends FastSerializerGeneratorBase<T> {
     final JBlock nonEmptyMapBlock = emptyMapIf._else();
     nonEmptyMapBlock.invoke(JExpr.direct(ENCODER), "setItemCount").arg(JExpr.invoke(mapExpr, "size"));
 
-    final JForEach mapKeysLoop = nonEmptyMapBlock.forEach(keyClass, getVariableName("key"),
+    final JForEach mapKeysLoop = nonEmptyMapBlock.forEach(keyClass, getUniqueName("key"),
         JExpr.invoke(JExpr.cast(mapClass, mapExpr), "keySet"));
 
     final JBlock forBody = mapKeysLoop.body();
@@ -199,7 +199,7 @@ public class FastSerializerGenerator<T> extends FastSerializerGeneratorBase<T> {
     JVar keyStringVar;
     if (SchemaAssistant.hasStringableKey(mapSchema)) {
       keyStringVar =
-          forBody.decl(codeModel.ref(String.class), getVariableName("keyString"), mapKeysLoop.var().invoke("toString"));
+          forBody.decl(codeModel.ref(String.class), getUniqueName("keyString"), mapKeysLoop.var().invoke("toString"));
     } else {
       keyStringVar = mapKeysLoop.var();
     }
@@ -309,7 +309,7 @@ public class FastSerializerGenerator<T> extends FastSerializerGeneratorBase<T> {
             serializerClass.field(
                 JMod.PRIVATE | JMod.FINAL,
                 Schema.class,
-                getVariableName(enumSchema.getName() + "EnumSchema"),
+                getUniqueName(enumSchema.getName() + "EnumSchema"),
                 codeModel.ref(Schema.class).staticInvoke("parse").arg(enumSchema.toString()))
         );
         valueToWrite = JExpr.invoke(enumSchemaVar, "getEnumOrdinal").arg(enumValueCasted.invoke("toString"));
@@ -376,7 +376,7 @@ public class FastSerializerGenerator<T> extends FastSerializerGeneratorBase<T> {
 
   private JVar declareValueVar(final String name, final Schema schema, JBlock block) {
     if (SchemaAssistant.isComplexType(schema)) {
-      return block.decl(schemaAssistant.classFromSchema(schema, true), getVariableName(StringUtils.uncapitalize(name)),
+      return block.decl(schemaAssistant.classFromSchema(schema, true), getUniqueName(StringUtils.uncapitalize(name)),
           JExpr._null());
     } else {
       throw new FastDeserializerGeneratorException("Incorrect container variable: " + schema.getType()); //.getName());
@@ -400,8 +400,10 @@ public class FastSerializerGenerator<T> extends FastSerializerGeneratorBase<T> {
   private JMethod createMethod(final Schema schema) {
     if (Schema.Type.RECORD.equals(schema.getType())) {
       if (!methodAlreadyDefined(schema)) {
-        JMethod method =
-            serializerClass.method(JMod.PUBLIC, codeModel.VOID, "serialize" + schema.getName() + nextUniqueInt());
+        JMethod method = serializerClass.method(
+            JMod.PUBLIC,
+            codeModel.VOID,
+            getUniqueName("serialize" + StringUtils.capitalize(schema.getName())));
         method._throws(IOException.class);
         method.param(schemaAssistant.classFromSchema(schema), "data");
         method.param(Encoder.class, ENCODER);
