@@ -21,33 +21,33 @@ public class Array_of_LONG_GenericDeserializer_2055015354772118358_2055015354772
     public List<Long> deserialize(List<Long> reuse, Decoder decoder)
         throws IOException
     {
-        List<Long> array754 = null;
-        long chunkLen755 = (decoder.readArrayStart());
-        if (chunkLen755 > 0) {
-            List<Long> arrayReuse756 = null;
+        List<Long> array0 = null;
+        long chunkLen0 = (decoder.readArrayStart());
+        if (chunkLen0 > 0) {
+            List<Long> arrayReuse0 = null;
             if ((reuse) instanceof List) {
-                arrayReuse756 = ((List)(reuse));
+                arrayReuse0 = ((List)(reuse));
             }
-            if (arrayReuse756 != (null)) {
-                arrayReuse756 .clear();
-                array754 = arrayReuse756;
+            if (arrayReuse0 != (null)) {
+                arrayReuse0 .clear();
+                array0 = arrayReuse0;
             } else {
-                array754 = new org.apache.avro.generic.GenericData.Array<Long>(((int) chunkLen755), readerSchema);
+                array0 = new org.apache.avro.generic.GenericData.Array<Long>(((int) chunkLen0), readerSchema);
             }
             do {
-                for (int counter757 = 0; (counter757 <chunkLen755); counter757 ++) {
-                    Object arrayArrayElementReuseVar758 = null;
+                for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
+                    Object arrayArrayElementReuseVar0 = null;
                     if ((reuse) instanceof GenericArray) {
-                        arrayArrayElementReuseVar758 = ((GenericArray)(reuse)).peek();
+                        arrayArrayElementReuseVar0 = ((GenericArray)(reuse)).peek();
                     }
-                    array754 .add((decoder.readLong()));
+                    array0 .add((decoder.readLong()));
                 }
-                chunkLen755 = (decoder.arrayNext());
-            } while (chunkLen755 > 0);
+                chunkLen0 = (decoder.arrayNext());
+            } while (chunkLen0 > 0);
         } else {
-            array754 = new org.apache.avro.generic.GenericData.Array<Long>(0, readerSchema);
+            array0 = new org.apache.avro.generic.GenericData.Array<Long>(0, readerSchema);
         }
-        return array754;
+        return array0;
     }
 
 }

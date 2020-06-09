@@ -18,38 +18,38 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
 {
 
     private final Schema readerSchema;
-    private final Schema recordsArray945;
-    private final Schema recordsArrayArrayElemSchema950;
-    private final Schema subField953;
-    private final Schema recordsMap955;
-    private final Schema recordsArrayUnion961;
-    private final Schema recordsArrayUnionOptionSchema963;
-    private final Schema recordsArrayUnionOptionArrayElemSchema968;
-    private final Schema recordsMapUnion971;
-    private final Schema recordsMapUnionOptionSchema973;
-    private final Schema recordsMapUnionOptionMapValueSchema979;
+    private final Schema recordsArray0;
+    private final Schema recordsArrayArrayElemSchema0;
+    private final Schema subField0;
+    private final Schema recordsMap0;
+    private final Schema recordsArrayUnion0;
+    private final Schema recordsArrayUnionOptionSchema0;
+    private final Schema recordsArrayUnionOptionArrayElemSchema0;
+    private final Schema recordsMapUnion0;
+    private final Schema recordsMapUnionOptionSchema0;
+    private final Schema recordsMapUnionOptionMapValueSchema0;
 
     public FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField_GenericDeserializer_3518250962527328123_3518250962527328123(Schema readerSchema) {
         this.readerSchema = readerSchema;
-        this.recordsArray945 = readerSchema.getField("recordsArray").schema();
-        this.recordsArrayArrayElemSchema950 = recordsArray945 .getElementType();
-        this.subField953 = recordsArrayArrayElemSchema950 .getField("subField").schema();
-        this.recordsMap955 = readerSchema.getField("recordsMap").schema();
-        this.recordsArrayUnion961 = readerSchema.getField("recordsArrayUnion").schema();
-        this.recordsArrayUnionOptionSchema963 = recordsArrayUnion961 .getTypes().get(1);
-        this.recordsArrayUnionOptionArrayElemSchema968 = recordsArrayUnionOptionSchema963 .getElementType();
-        this.recordsMapUnion971 = readerSchema.getField("recordsMapUnion").schema();
-        this.recordsMapUnionOptionSchema973 = recordsMapUnion971 .getTypes().get(1);
-        this.recordsMapUnionOptionMapValueSchema979 = recordsMapUnionOptionSchema973 .getValueType();
+        this.recordsArray0 = readerSchema.getField("recordsArray").schema();
+        this.recordsArrayArrayElemSchema0 = recordsArray0 .getElementType();
+        this.subField0 = recordsArrayArrayElemSchema0 .getField("subField").schema();
+        this.recordsMap0 = readerSchema.getField("recordsMap").schema();
+        this.recordsArrayUnion0 = readerSchema.getField("recordsArrayUnion").schema();
+        this.recordsArrayUnionOptionSchema0 = recordsArrayUnion0 .getTypes().get(1);
+        this.recordsArrayUnionOptionArrayElemSchema0 = recordsArrayUnionOptionSchema0 .getElementType();
+        this.recordsMapUnion0 = readerSchema.getField("recordsMapUnion").schema();
+        this.recordsMapUnionOptionSchema0 = recordsMapUnion0 .getTypes().get(1);
+        this.recordsMapUnionOptionMapValueSchema0 = recordsMapUnionOptionSchema0 .getValueType();
     }
 
     public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
         throws IOException
     {
-        return deserializeFastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField944((reuse), (decoder));
+        return deserializeFastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField0((reuse), (decoder));
     }
 
-    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField944(Object reuse, Decoder decoder)
+    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField0(Object reuse, Decoder decoder)
         throws IOException
     {
         IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField;
@@ -58,149 +58,149 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
         } else {
             FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
-        List<IndexedRecord> recordsArray946 = null;
-        long chunkLen947 = (decoder.readArrayStart());
-        if (chunkLen947 > 0) {
-            List<IndexedRecord> recordsArrayReuse948 = null;
+        List<IndexedRecord> recordsArray1 = null;
+        long chunkLen0 = (decoder.readArrayStart());
+        if (chunkLen0 > 0) {
+            List<IndexedRecord> recordsArrayReuse0 = null;
             if (FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.get(0) instanceof List) {
-                recordsArrayReuse948 = ((List) FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.get(0));
+                recordsArrayReuse0 = ((List) FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.get(0));
             }
-            if (recordsArrayReuse948 != (null)) {
-                recordsArrayReuse948 .clear();
-                recordsArray946 = recordsArrayReuse948;
+            if (recordsArrayReuse0 != (null)) {
+                recordsArrayReuse0 .clear();
+                recordsArray1 = recordsArrayReuse0;
             } else {
-                recordsArray946 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen947), recordsArray945);
+                recordsArray1 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen0), recordsArray0);
             }
             do {
-                for (int counter949 = 0; (counter949 <chunkLen947); counter949 ++) {
-                    Object recordsArrayArrayElementReuseVar951 = null;
+                for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
+                    Object recordsArrayArrayElementReuseVar0 = null;
                     if (FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.get(0) instanceof GenericArray) {
-                        recordsArrayArrayElementReuseVar951 = ((GenericArray) FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.get(0)).peek();
+                        recordsArrayArrayElementReuseVar0 = ((GenericArray) FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.get(0)).peek();
                     }
-                    recordsArray946 .add(deserializesubRecord952(recordsArrayArrayElementReuseVar951, (decoder)));
+                    recordsArray1 .add(deserializesubRecord0(recordsArrayArrayElementReuseVar0, (decoder)));
                 }
-                chunkLen947 = (decoder.arrayNext());
-            } while (chunkLen947 > 0);
+                chunkLen0 = (decoder.arrayNext());
+            } while (chunkLen0 > 0);
         } else {
-            recordsArray946 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(0, recordsArray945);
+            recordsArray1 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(0, recordsArray0);
         }
-        FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.put(0, recordsArray946);
-        Map<Utf8, IndexedRecord> recordsMap956 = null;
-        long chunkLen957 = (decoder.readMapStart());
-        if (chunkLen957 > 0) {
-            Map<Utf8, IndexedRecord> recordsMapReuse958 = null;
+        FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.put(0, recordsArray1);
+        Map<Utf8, IndexedRecord> recordsMap1 = null;
+        long chunkLen1 = (decoder.readMapStart());
+        if (chunkLen1 > 0) {
+            Map<Utf8, IndexedRecord> recordsMapReuse0 = null;
             if (FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.get(1) instanceof Map) {
-                recordsMapReuse958 = ((Map) FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.get(1));
+                recordsMapReuse0 = ((Map) FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.get(1));
             }
-            if (recordsMapReuse958 != (null)) {
-                recordsMapReuse958 .clear();
-                recordsMap956 = recordsMapReuse958;
+            if (recordsMapReuse0 != (null)) {
+                recordsMapReuse0 .clear();
+                recordsMap1 = recordsMapReuse0;
             } else {
-                recordsMap956 = new HashMap<Utf8, IndexedRecord>();
+                recordsMap1 = new HashMap<Utf8, IndexedRecord>();
             }
             do {
-                for (int counter959 = 0; (counter959 <chunkLen957); counter959 ++) {
-                    Utf8 key960 = (decoder.readString(null));
-                    recordsMap956 .put(key960, deserializesubRecord952(null, (decoder)));
+                for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {
+                    Utf8 key0 = (decoder.readString(null));
+                    recordsMap1 .put(key0, deserializesubRecord0(null, (decoder)));
                 }
-                chunkLen957 = (decoder.mapNext());
-            } while (chunkLen957 > 0);
+                chunkLen1 = (decoder.mapNext());
+            } while (chunkLen1 > 0);
         } else {
-            recordsMap956 = Collections.emptyMap();
+            recordsMap1 = Collections.emptyMap();
         }
-        FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.put(1, recordsMap956);
-        int unionIndex962 = (decoder.readIndex());
-        if (unionIndex962 == 0) {
+        FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.put(1, recordsMap1);
+        int unionIndex1 = (decoder.readIndex());
+        if (unionIndex1 == 0) {
             decoder.readNull();
         }
-        if (unionIndex962 == 1) {
-            List<IndexedRecord> recordsArrayUnionOption964 = null;
-            long chunkLen965 = (decoder.readArrayStart());
-            if (chunkLen965 > 0) {
-                List<IndexedRecord> recordsArrayUnionOptionReuse966 = null;
+        if (unionIndex1 == 1) {
+            List<IndexedRecord> recordsArrayUnionOption0 = null;
+            long chunkLen2 = (decoder.readArrayStart());
+            if (chunkLen2 > 0) {
+                List<IndexedRecord> recordsArrayUnionOptionReuse0 = null;
                 if (FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.get(2) instanceof List) {
-                    recordsArrayUnionOptionReuse966 = ((List) FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.get(2));
+                    recordsArrayUnionOptionReuse0 = ((List) FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.get(2));
                 }
-                if (recordsArrayUnionOptionReuse966 != (null)) {
-                    recordsArrayUnionOptionReuse966 .clear();
-                    recordsArrayUnionOption964 = recordsArrayUnionOptionReuse966;
+                if (recordsArrayUnionOptionReuse0 != (null)) {
+                    recordsArrayUnionOptionReuse0 .clear();
+                    recordsArrayUnionOption0 = recordsArrayUnionOptionReuse0;
                 } else {
-                    recordsArrayUnionOption964 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen965), recordsArrayUnionOptionSchema963);
+                    recordsArrayUnionOption0 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen2), recordsArrayUnionOptionSchema0);
                 }
                 do {
-                    for (int counter967 = 0; (counter967 <chunkLen965); counter967 ++) {
-                        Object recordsArrayUnionOptionArrayElementReuseVar969 = null;
+                    for (int counter2 = 0; (counter2 <chunkLen2); counter2 ++) {
+                        Object recordsArrayUnionOptionArrayElementReuseVar0 = null;
                         if (FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.get(2) instanceof GenericArray) {
-                            recordsArrayUnionOptionArrayElementReuseVar969 = ((GenericArray) FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.get(2)).peek();
+                            recordsArrayUnionOptionArrayElementReuseVar0 = ((GenericArray) FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.get(2)).peek();
                         }
-                        int unionIndex970 = (decoder.readIndex());
-                        if (unionIndex970 == 0) {
+                        int unionIndex2 = (decoder.readIndex());
+                        if (unionIndex2 == 0) {
                             decoder.readNull();
                         }
-                        if (unionIndex970 == 1) {
-                            recordsArrayUnionOption964 .add(deserializesubRecord952(recordsArrayUnionOptionArrayElementReuseVar969, (decoder)));
+                        if (unionIndex2 == 1) {
+                            recordsArrayUnionOption0 .add(deserializesubRecord0(recordsArrayUnionOptionArrayElementReuseVar0, (decoder)));
                         }
                     }
-                    chunkLen965 = (decoder.arrayNext());
-                } while (chunkLen965 > 0);
+                    chunkLen2 = (decoder.arrayNext());
+                } while (chunkLen2 > 0);
             } else {
-                recordsArrayUnionOption964 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(0, recordsArrayUnionOptionSchema963);
+                recordsArrayUnionOption0 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(0, recordsArrayUnionOptionSchema0);
             }
-            FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.put(2, recordsArrayUnionOption964);
+            FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.put(2, recordsArrayUnionOption0);
         }
-        int unionIndex972 = (decoder.readIndex());
-        if (unionIndex972 == 0) {
+        int unionIndex3 = (decoder.readIndex());
+        if (unionIndex3 == 0) {
             decoder.readNull();
         }
-        if (unionIndex972 == 1) {
-            Map<Utf8, IndexedRecord> recordsMapUnionOption974 = null;
-            long chunkLen975 = (decoder.readMapStart());
-            if (chunkLen975 > 0) {
-                Map<Utf8, IndexedRecord> recordsMapUnionOptionReuse976 = null;
+        if (unionIndex3 == 1) {
+            Map<Utf8, IndexedRecord> recordsMapUnionOption0 = null;
+            long chunkLen3 = (decoder.readMapStart());
+            if (chunkLen3 > 0) {
+                Map<Utf8, IndexedRecord> recordsMapUnionOptionReuse0 = null;
                 if (FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.get(3) instanceof Map) {
-                    recordsMapUnionOptionReuse976 = ((Map) FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.get(3));
+                    recordsMapUnionOptionReuse0 = ((Map) FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.get(3));
                 }
-                if (recordsMapUnionOptionReuse976 != (null)) {
-                    recordsMapUnionOptionReuse976 .clear();
-                    recordsMapUnionOption974 = recordsMapUnionOptionReuse976;
+                if (recordsMapUnionOptionReuse0 != (null)) {
+                    recordsMapUnionOptionReuse0 .clear();
+                    recordsMapUnionOption0 = recordsMapUnionOptionReuse0;
                 } else {
-                    recordsMapUnionOption974 = new HashMap<Utf8, IndexedRecord>();
+                    recordsMapUnionOption0 = new HashMap<Utf8, IndexedRecord>();
                 }
                 do {
-                    for (int counter977 = 0; (counter977 <chunkLen975); counter977 ++) {
-                        Utf8 key978 = (decoder.readString(null));
-                        int unionIndex980 = (decoder.readIndex());
-                        if (unionIndex980 == 0) {
+                    for (int counter3 = 0; (counter3 <chunkLen3); counter3 ++) {
+                        Utf8 key1 = (decoder.readString(null));
+                        int unionIndex4 = (decoder.readIndex());
+                        if (unionIndex4 == 0) {
                             decoder.readNull();
                         }
-                        if (unionIndex980 == 1) {
-                            recordsMapUnionOption974 .put(key978, deserializesubRecord952(null, (decoder)));
+                        if (unionIndex4 == 1) {
+                            recordsMapUnionOption0 .put(key1, deserializesubRecord0(null, (decoder)));
                         }
                     }
-                    chunkLen975 = (decoder.mapNext());
-                } while (chunkLen975 > 0);
+                    chunkLen3 = (decoder.mapNext());
+                } while (chunkLen3 > 0);
             } else {
-                recordsMapUnionOption974 = Collections.emptyMap();
+                recordsMapUnionOption0 = Collections.emptyMap();
             }
-            FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.put(3, recordsMapUnionOption974);
+            FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.put(3, recordsMapUnionOption0);
         }
         return FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField;
     }
 
-    public IndexedRecord deserializesubRecord952(Object reuse, Decoder decoder)
+    public IndexedRecord deserializesubRecord0(Object reuse, Decoder decoder)
         throws IOException
     {
         IndexedRecord subRecord;
-        if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == recordsArrayArrayElemSchema950)) {
+        if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == recordsArrayArrayElemSchema0)) {
             subRecord = ((IndexedRecord)(reuse));
         } else {
-            subRecord = new org.apache.avro.generic.GenericData.Record(recordsArrayArrayElemSchema950);
+            subRecord = new org.apache.avro.generic.GenericData.Record(recordsArrayArrayElemSchema0);
         }
-        int unionIndex954 = (decoder.readIndex());
-        if (unionIndex954 == 0) {
+        int unionIndex0 = (decoder.readIndex());
+        if (unionIndex0 == 0) {
             decoder.readNull();
         }
-        if (unionIndex954 == 1) {
+        if (unionIndex0 == 1) {
             if (subRecord.get(0) instanceof Utf8) {
                 subRecord.put(0, (decoder).readString(((Utf8) subRecord.get(0))));
             } else {

@@ -13,20 +13,20 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord_
 {
 
     private final Schema readerSchema;
-    private final Schema subRecord935;
+    private final Schema subRecord0;
 
     public FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord_GenericDeserializer_859610261780137064_1500282458003629018(Schema readerSchema) {
         this.readerSchema = readerSchema;
-        this.subRecord935 = readerSchema.getField("subRecord").schema();
+        this.subRecord0 = readerSchema.getField("subRecord").schema();
     }
 
     public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
         throws IOException
     {
-        return deserializeFastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord934((reuse), (decoder));
+        return deserializeFastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord0((reuse), (decoder));
     }
 
-    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord934(Object reuse, Decoder decoder)
+    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord0(Object reuse, Decoder decoder)
         throws IOException
     {
         IndexedRecord FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord;
@@ -35,31 +35,31 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord_
         } else {
             FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
-        FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord.put(0, deserializesubRecord936(FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord.get(0), (decoder)));
+        FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord.put(0, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord.get(0), (decoder)));
         return FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord;
     }
 
-    public IndexedRecord deserializesubRecord936(Object reuse, Decoder decoder)
+    public IndexedRecord deserializesubRecord0(Object reuse, Decoder decoder)
         throws IOException
     {
         IndexedRecord subRecord;
-        if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == subRecord935)) {
+        if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == subRecord0)) {
             subRecord = ((IndexedRecord)(reuse));
         } else {
-            subRecord = new org.apache.avro.generic.GenericData.Record(subRecord935);
+            subRecord = new org.apache.avro.generic.GenericData.Record(subRecord0);
         }
         if (subRecord.get(0) instanceof Utf8) {
             subRecord.put(0, (decoder).readString(((Utf8) subRecord.get(0))));
         } else {
             subRecord.put(0, (decoder).readString(null));
         }
-        deserializesubSubRecord937(null, (decoder));
-        int unionIndex938 = (decoder.readIndex());
-        if (unionIndex938 == 0) {
+        deserializesubSubRecord0(null, (decoder));
+        int unionIndex0 = (decoder.readIndex());
+        if (unionIndex0 == 0) {
             decoder.readNull();
         }
-        if (unionIndex938 == 1) {
-            deserializesubSubRecord937(null, (decoder));
+        if (unionIndex0 == 1) {
+            deserializesubSubRecord0(null, (decoder));
         }
         if (subRecord.get(1) instanceof Utf8) {
             subRecord.put(1, (decoder).readString(((Utf8) subRecord.get(1))));
@@ -69,7 +69,7 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord_
         return subRecord;
     }
 
-    public void deserializesubSubRecord937(Object reuse, Decoder decoder)
+    public void deserializesubSubRecord0(Object reuse, Decoder decoder)
         throws IOException
     {
         decoder.skipString();

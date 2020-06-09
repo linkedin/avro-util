@@ -15,53 +15,53 @@ public class FastGenericSerializerGeneratorTest_shouldWriteFixed_GenericSerializ
     public void serialize(IndexedRecord data, Encoder encoder)
         throws IOException
     {
-        serializeFastGenericSerializerGeneratorTest_shouldWriteFixed76(data, (encoder));
+        serializeFastGenericSerializerGeneratorTest_shouldWriteFixed0(data, (encoder));
     }
 
     @SuppressWarnings("unchecked")
-    public void serializeFastGenericSerializerGeneratorTest_shouldWriteFixed76(IndexedRecord data, Encoder encoder)
+    public void serializeFastGenericSerializerGeneratorTest_shouldWriteFixed0(IndexedRecord data, Encoder encoder)
         throws IOException
     {
         (encoder).writeFixed(((org.apache.avro.generic.GenericData.Fixed) data.get(0)).bytes());
-        org.apache.avro.generic.GenericData.Fixed testFixedUnion77 = ((org.apache.avro.generic.GenericData.Fixed) data.get(1));
-        if (testFixedUnion77 == null) {
+        org.apache.avro.generic.GenericData.Fixed testFixedUnion0 = ((org.apache.avro.generic.GenericData.Fixed) data.get(1));
+        if (testFixedUnion0 == null) {
             (encoder).writeIndex(0);
             (encoder).writeNull();
         } else {
-            if (testFixedUnion77 instanceof org.apache.avro.generic.GenericData.Fixed) {
+            if (testFixedUnion0 instanceof org.apache.avro.generic.GenericData.Fixed) {
                 (encoder).writeIndex(1);
-                (encoder).writeFixed(((org.apache.avro.generic.GenericData.Fixed) testFixedUnion77).bytes());
+                (encoder).writeFixed(((org.apache.avro.generic.GenericData.Fixed) testFixedUnion0).bytes());
             }
         }
-        List<org.apache.avro.generic.GenericData.Fixed> testFixedArray78 = ((List<org.apache.avro.generic.GenericData.Fixed> ) data.get(2));
+        List<org.apache.avro.generic.GenericData.Fixed> testFixedArray0 = ((List<org.apache.avro.generic.GenericData.Fixed> ) data.get(2));
         (encoder).writeArrayStart();
-        if ((testFixedArray78 == null)||testFixedArray78 .isEmpty()) {
+        if ((testFixedArray0 == null)||testFixedArray0 .isEmpty()) {
             (encoder).setItemCount(0);
         } else {
-            (encoder).setItemCount(testFixedArray78 .size());
-            for (int counter79 = 0; (counter79 <((List<org.apache.avro.generic.GenericData.Fixed> ) testFixedArray78).size()); counter79 ++) {
+            (encoder).setItemCount(testFixedArray0 .size());
+            for (int counter0 = 0; (counter0 <((List<org.apache.avro.generic.GenericData.Fixed> ) testFixedArray0).size()); counter0 ++) {
                 (encoder).startItem();
-                (encoder).writeFixed(((org.apache.avro.generic.GenericData.Fixed) testFixedArray78 .get(counter79)).bytes());
+                (encoder).writeFixed(((org.apache.avro.generic.GenericData.Fixed) testFixedArray0 .get(counter0)).bytes());
             }
         }
         (encoder).writeArrayEnd();
-        List<org.apache.avro.generic.GenericData.Fixed> testFixedUnionArray80 = ((List<org.apache.avro.generic.GenericData.Fixed> ) data.get(3));
+        List<org.apache.avro.generic.GenericData.Fixed> testFixedUnionArray0 = ((List<org.apache.avro.generic.GenericData.Fixed> ) data.get(3));
         (encoder).writeArrayStart();
-        if ((testFixedUnionArray80 == null)||testFixedUnionArray80 .isEmpty()) {
+        if ((testFixedUnionArray0 == null)||testFixedUnionArray0 .isEmpty()) {
             (encoder).setItemCount(0);
         } else {
-            (encoder).setItemCount(testFixedUnionArray80 .size());
-            for (int counter81 = 0; (counter81 <((List<org.apache.avro.generic.GenericData.Fixed> ) testFixedUnionArray80).size()); counter81 ++) {
+            (encoder).setItemCount(testFixedUnionArray0 .size());
+            for (int counter1 = 0; (counter1 <((List<org.apache.avro.generic.GenericData.Fixed> ) testFixedUnionArray0).size()); counter1 ++) {
                 (encoder).startItem();
-                org.apache.avro.generic.GenericData.Fixed union82 = null;
-                union82 = ((List<org.apache.avro.generic.GenericData.Fixed> ) testFixedUnionArray80).get(counter81);
-                if (union82 == null) {
+                org.apache.avro.generic.GenericData.Fixed union0 = null;
+                union0 = ((List<org.apache.avro.generic.GenericData.Fixed> ) testFixedUnionArray0).get(counter1);
+                if (union0 == null) {
                     (encoder).writeIndex(0);
                     (encoder).writeNull();
                 } else {
-                    if (union82 instanceof org.apache.avro.generic.GenericData.Fixed) {
+                    if (union0 instanceof org.apache.avro.generic.GenericData.Fixed) {
                         (encoder).writeIndex(1);
-                        (encoder).writeFixed(((org.apache.avro.generic.GenericData.Fixed) union82).bytes());
+                        (encoder).writeFixed(((org.apache.avro.generic.GenericData.Fixed) union0).bytes());
                     }
                 }
             }

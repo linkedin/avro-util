@@ -15,56 +15,56 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordField_Generi
     public void serialize(IndexedRecord data, Encoder encoder)
         throws IOException
     {
-        serializeFastGenericSerializerGeneratorTest_shouldWriteSubRecordField152(data, (encoder));
+        serializeFastGenericSerializerGeneratorTest_shouldWriteSubRecordField0(data, (encoder));
     }
 
     @SuppressWarnings("unchecked")
-    public void serializeFastGenericSerializerGeneratorTest_shouldWriteSubRecordField152(IndexedRecord data, Encoder encoder)
+    public void serializeFastGenericSerializerGeneratorTest_shouldWriteSubRecordField0(IndexedRecord data, Encoder encoder)
         throws IOException
     {
-        IndexedRecord record153 = ((IndexedRecord) data.get(0));
-        if (record153 == null) {
+        IndexedRecord record0 = ((IndexedRecord) data.get(0));
+        if (record0 == null) {
             (encoder).writeIndex(0);
             (encoder).writeNull();
         } else {
-            if ((record153 instanceof IndexedRecord)&&"com.adpilot.utils.generated.avro.subRecord".equals(((IndexedRecord) record153).getSchema().getFullName())) {
+            if ((record0 instanceof IndexedRecord)&&"com.adpilot.utils.generated.avro.subRecord".equals(((IndexedRecord) record0).getSchema().getFullName())) {
                 (encoder).writeIndex(1);
-                serializesubRecord154(((IndexedRecord) record153), (encoder));
+                serializeSubRecord0(((IndexedRecord) record0), (encoder));
             }
         }
-        IndexedRecord record1156 = ((IndexedRecord) data.get(1));
-        serializesubRecord154(record1156, (encoder));
-        CharSequence field157 = ((CharSequence) data.get(2));
-        if (field157 == null) {
+        IndexedRecord record10 = ((IndexedRecord) data.get(1));
+        serializeSubRecord0(record10, (encoder));
+        CharSequence field0 = ((CharSequence) data.get(2));
+        if (field0 == null) {
             (encoder).writeIndex(0);
             (encoder).writeNull();
         } else {
-            if (field157 instanceof CharSequence) {
+            if (field0 instanceof CharSequence) {
                 (encoder).writeIndex(1);
-                if (field157 instanceof Utf8) {
-                    (encoder).writeString(((Utf8) field157));
+                if (field0 instanceof Utf8) {
+                    (encoder).writeString(((Utf8) field0));
                 } else {
-                    (encoder).writeString(field157 .toString());
+                    (encoder).writeString(field0 .toString());
                 }
             }
         }
     }
 
     @SuppressWarnings("unchecked")
-    public void serializesubRecord154(IndexedRecord data, Encoder encoder)
+    public void serializeSubRecord0(IndexedRecord data, Encoder encoder)
         throws IOException
     {
-        CharSequence subField155 = ((CharSequence) data.get(0));
-        if (subField155 == null) {
+        CharSequence subField0 = ((CharSequence) data.get(0));
+        if (subField0 == null) {
             (encoder).writeIndex(0);
             (encoder).writeNull();
         } else {
-            if (subField155 instanceof CharSequence) {
+            if (subField0 instanceof CharSequence) {
                 (encoder).writeIndex(1);
-                if (subField155 instanceof Utf8) {
-                    (encoder).writeString(((Utf8) subField155));
+                if (subField0 instanceof Utf8) {
+                    (encoder).writeString(((Utf8) subField0));
                 } else {
-                    (encoder).writeString(subField155 .toString());
+                    (encoder).writeString(subField0 .toString());
                 }
             }
         }

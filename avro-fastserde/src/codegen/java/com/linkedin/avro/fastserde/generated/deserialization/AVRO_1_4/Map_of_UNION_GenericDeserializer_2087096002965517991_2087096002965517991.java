@@ -16,66 +16,66 @@ public class Map_of_UNION_GenericDeserializer_2087096002965517991_20870960029655
 {
 
     private final Schema readerSchema;
-    private final Schema mapMapValueSchema854;
-    private final Schema mapValueOptionSchema856;
-    private final Schema field858;
+    private final Schema mapMapValueSchema0;
+    private final Schema mapValueOptionSchema0;
+    private final Schema field0;
 
     public Map_of_UNION_GenericDeserializer_2087096002965517991_2087096002965517991(Schema readerSchema) {
         this.readerSchema = readerSchema;
-        this.mapMapValueSchema854 = readerSchema.getValueType();
-        this.mapValueOptionSchema856 = mapMapValueSchema854 .getTypes().get(1);
-        this.field858 = mapValueOptionSchema856 .getField("field").schema();
+        this.mapMapValueSchema0 = readerSchema.getValueType();
+        this.mapValueOptionSchema0 = mapMapValueSchema0 .getTypes().get(1);
+        this.field0 = mapValueOptionSchema0 .getField("field").schema();
     }
 
     public Map<Utf8, IndexedRecord> deserialize(Map<Utf8, IndexedRecord> reuse, Decoder decoder)
         throws IOException
     {
-        Map<Utf8, IndexedRecord> map849 = null;
-        long chunkLen850 = (decoder.readMapStart());
-        if (chunkLen850 > 0) {
-            Map<Utf8, IndexedRecord> mapReuse851 = null;
+        Map<Utf8, IndexedRecord> map0 = null;
+        long chunkLen0 = (decoder.readMapStart());
+        if (chunkLen0 > 0) {
+            Map<Utf8, IndexedRecord> mapReuse0 = null;
             if ((reuse) instanceof Map) {
-                mapReuse851 = ((Map)(reuse));
+                mapReuse0 = ((Map)(reuse));
             }
-            if (mapReuse851 != (null)) {
-                mapReuse851 .clear();
-                map849 = mapReuse851;
+            if (mapReuse0 != (null)) {
+                mapReuse0 .clear();
+                map0 = mapReuse0;
             } else {
-                map849 = new HashMap<Utf8, IndexedRecord>();
+                map0 = new HashMap<Utf8, IndexedRecord>();
             }
             do {
-                for (int counter852 = 0; (counter852 <chunkLen850); counter852 ++) {
-                    Utf8 key853 = (decoder.readString(null));
-                    int unionIndex855 = (decoder.readIndex());
-                    if (unionIndex855 == 0) {
+                for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
+                    Utf8 key0 = (decoder.readString(null));
+                    int unionIndex0 = (decoder.readIndex());
+                    if (unionIndex0 == 0) {
                         decoder.readNull();
                     }
-                    if (unionIndex855 == 1) {
-                        map849 .put(key853, deserializerecord857(null, (decoder)));
+                    if (unionIndex0 == 1) {
+                        map0 .put(key0, deserializerecord0(null, (decoder)));
                     }
                 }
-                chunkLen850 = (decoder.mapNext());
-            } while (chunkLen850 > 0);
+                chunkLen0 = (decoder.mapNext());
+            } while (chunkLen0 > 0);
         } else {
-            map849 = Collections.emptyMap();
+            map0 = Collections.emptyMap();
         }
-        return map849;
+        return map0;
     }
 
-    public IndexedRecord deserializerecord857(Object reuse, Decoder decoder)
+    public IndexedRecord deserializerecord0(Object reuse, Decoder decoder)
         throws IOException
     {
         IndexedRecord record;
-        if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == mapValueOptionSchema856)) {
+        if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == mapValueOptionSchema0)) {
             record = ((IndexedRecord)(reuse));
         } else {
-            record = new org.apache.avro.generic.GenericData.Record(mapValueOptionSchema856);
+            record = new org.apache.avro.generic.GenericData.Record(mapValueOptionSchema0);
         }
-        int unionIndex859 = (decoder.readIndex());
-        if (unionIndex859 == 0) {
+        int unionIndex1 = (decoder.readIndex());
+        if (unionIndex1 == 0) {
             decoder.readNull();
         }
-        if (unionIndex859 == 1) {
+        if (unionIndex1 == 1) {
             if (record.get(0) instanceof Utf8) {
                 record.put(0, (decoder).readString(((Utf8) record.get(0))));
             } else {

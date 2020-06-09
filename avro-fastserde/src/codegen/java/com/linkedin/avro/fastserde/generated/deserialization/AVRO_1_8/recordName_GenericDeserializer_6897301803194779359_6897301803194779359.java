@@ -13,20 +13,20 @@ public class recordName_GenericDeserializer_6897301803194779359_6897301803194779
 {
 
     private final Schema readerSchema;
-    private final Schema unionField796;
+    private final Schema unionField0;
 
     public recordName_GenericDeserializer_6897301803194779359_6897301803194779359(Schema readerSchema) {
         this.readerSchema = readerSchema;
-        this.unionField796 = readerSchema.getField("unionField").schema();
+        this.unionField0 = readerSchema.getField("unionField").schema();
     }
 
     public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
         throws IOException
     {
-        return deserializerecordName795((reuse), (decoder));
+        return deserializerecordName0((reuse), (decoder));
     }
 
-    public IndexedRecord deserializerecordName795(Object reuse, Decoder decoder)
+    public IndexedRecord deserializerecordName0(Object reuse, Decoder decoder)
         throws IOException
     {
         IndexedRecord recordName;
@@ -40,12 +40,12 @@ public class recordName_GenericDeserializer_6897301803194779359_6897301803194779
         } else {
             recordName.put(0, (decoder).readString(null));
         }
-        int unionIndex797 = (decoder.readIndex());
-        if (unionIndex797 == 0) {
+        int unionIndex0 = (decoder.readIndex());
+        if (unionIndex0 == 0) {
             decoder.readNull();
         }
-        if (unionIndex797 == 1) {
-            recordName.put(1, deserializerecordName795(recordName.get(1), (decoder)));
+        if (unionIndex0 == 1) {
+            recordName.put(1, deserializerecordName0(recordName.get(1), (decoder)));
         }
         return recordName;
     }

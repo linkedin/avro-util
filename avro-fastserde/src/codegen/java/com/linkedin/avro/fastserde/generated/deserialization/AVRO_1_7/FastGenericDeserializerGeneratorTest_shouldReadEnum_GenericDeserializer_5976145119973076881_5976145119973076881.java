@@ -14,28 +14,28 @@ public class FastGenericDeserializerGeneratorTest_shouldReadEnum_GenericDeserial
 {
 
     private final Schema readerSchema;
-    private final Schema testEnum634;
-    private final Schema testEnumUnion635;
-    private final Schema testEnumArray637;
-    private final Schema testEnumUnionArray643;
-    private final Schema testEnumUnionArrayArrayElemSchema648;
+    private final Schema testEnum0;
+    private final Schema testEnumUnion0;
+    private final Schema testEnumArray0;
+    private final Schema testEnumUnionArray0;
+    private final Schema testEnumUnionArrayArrayElemSchema0;
 
     public FastGenericDeserializerGeneratorTest_shouldReadEnum_GenericDeserializer_5976145119973076881_5976145119973076881(Schema readerSchema) {
         this.readerSchema = readerSchema;
-        this.testEnum634 = readerSchema.getField("testEnum").schema();
-        this.testEnumUnion635 = readerSchema.getField("testEnumUnion").schema();
-        this.testEnumArray637 = readerSchema.getField("testEnumArray").schema();
-        this.testEnumUnionArray643 = readerSchema.getField("testEnumUnionArray").schema();
-        this.testEnumUnionArrayArrayElemSchema648 = testEnumUnionArray643 .getElementType();
+        this.testEnum0 = readerSchema.getField("testEnum").schema();
+        this.testEnumUnion0 = readerSchema.getField("testEnumUnion").schema();
+        this.testEnumArray0 = readerSchema.getField("testEnumArray").schema();
+        this.testEnumUnionArray0 = readerSchema.getField("testEnumUnionArray").schema();
+        this.testEnumUnionArrayArrayElemSchema0 = testEnumUnionArray0 .getElementType();
     }
 
     public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
         throws IOException
     {
-        return deserializeFastGenericDeserializerGeneratorTest_shouldReadEnum633((reuse), (decoder));
+        return deserializeFastGenericDeserializerGeneratorTest_shouldReadEnum0((reuse), (decoder));
     }
 
-    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadEnum633(Object reuse, Decoder decoder)
+    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadEnum0(Object reuse, Decoder decoder)
         throws IOException
     {
         IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadEnum;
@@ -44,74 +44,74 @@ public class FastGenericDeserializerGeneratorTest_shouldReadEnum_GenericDeserial
         } else {
             FastGenericDeserializerGeneratorTest_shouldReadEnum = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
-        FastGenericDeserializerGeneratorTest_shouldReadEnum.put(0, new org.apache.avro.generic.GenericData.EnumSymbol(testEnum634, testEnum634 .getEnumSymbols().get((decoder.readEnum()))));
-        int unionIndex636 = (decoder.readIndex());
-        if (unionIndex636 == 0) {
+        FastGenericDeserializerGeneratorTest_shouldReadEnum.put(0, new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get((decoder.readEnum()))));
+        int unionIndex0 = (decoder.readIndex());
+        if (unionIndex0 == 0) {
             decoder.readNull();
         }
-        if (unionIndex636 == 1) {
-            FastGenericDeserializerGeneratorTest_shouldReadEnum.put(1, new org.apache.avro.generic.GenericData.EnumSymbol(testEnum634, testEnum634 .getEnumSymbols().get((decoder.readEnum()))));
+        if (unionIndex0 == 1) {
+            FastGenericDeserializerGeneratorTest_shouldReadEnum.put(1, new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get((decoder.readEnum()))));
         }
-        List<org.apache.avro.generic.GenericData.EnumSymbol> testEnumArray638 = null;
-        long chunkLen639 = (decoder.readArrayStart());
-        if (chunkLen639 > 0) {
-            List<org.apache.avro.generic.GenericData.EnumSymbol> testEnumArrayReuse640 = null;
+        List<org.apache.avro.generic.GenericData.EnumSymbol> testEnumArray1 = null;
+        long chunkLen0 = (decoder.readArrayStart());
+        if (chunkLen0 > 0) {
+            List<org.apache.avro.generic.GenericData.EnumSymbol> testEnumArrayReuse0 = null;
             if (FastGenericDeserializerGeneratorTest_shouldReadEnum.get(2) instanceof List) {
-                testEnumArrayReuse640 = ((List) FastGenericDeserializerGeneratorTest_shouldReadEnum.get(2));
+                testEnumArrayReuse0 = ((List) FastGenericDeserializerGeneratorTest_shouldReadEnum.get(2));
             }
-            if (testEnumArrayReuse640 != (null)) {
-                testEnumArrayReuse640 .clear();
-                testEnumArray638 = testEnumArrayReuse640;
+            if (testEnumArrayReuse0 != (null)) {
+                testEnumArrayReuse0 .clear();
+                testEnumArray1 = testEnumArrayReuse0;
             } else {
-                testEnumArray638 = new org.apache.avro.generic.GenericData.Array<org.apache.avro.generic.GenericData.EnumSymbol>(((int) chunkLen639), testEnumArray637);
+                testEnumArray1 = new org.apache.avro.generic.GenericData.Array<org.apache.avro.generic.GenericData.EnumSymbol>(((int) chunkLen0), testEnumArray0);
             }
             do {
-                for (int counter641 = 0; (counter641 <chunkLen639); counter641 ++) {
-                    Object testEnumArrayArrayElementReuseVar642 = null;
+                for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
+                    Object testEnumArrayArrayElementReuseVar0 = null;
                     if (FastGenericDeserializerGeneratorTest_shouldReadEnum.get(2) instanceof GenericArray) {
-                        testEnumArrayArrayElementReuseVar642 = ((GenericArray) FastGenericDeserializerGeneratorTest_shouldReadEnum.get(2)).peek();
+                        testEnumArrayArrayElementReuseVar0 = ((GenericArray) FastGenericDeserializerGeneratorTest_shouldReadEnum.get(2)).peek();
                     }
-                    testEnumArray638 .add(new org.apache.avro.generic.GenericData.EnumSymbol(testEnum634, testEnum634 .getEnumSymbols().get((decoder.readEnum()))));
+                    testEnumArray1 .add(new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get((decoder.readEnum()))));
                 }
-                chunkLen639 = (decoder.arrayNext());
-            } while (chunkLen639 > 0);
+                chunkLen0 = (decoder.arrayNext());
+            } while (chunkLen0 > 0);
         } else {
-            testEnumArray638 = new org.apache.avro.generic.GenericData.Array<org.apache.avro.generic.GenericData.EnumSymbol>(0, testEnumArray637);
+            testEnumArray1 = new org.apache.avro.generic.GenericData.Array<org.apache.avro.generic.GenericData.EnumSymbol>(0, testEnumArray0);
         }
-        FastGenericDeserializerGeneratorTest_shouldReadEnum.put(2, testEnumArray638);
-        List<org.apache.avro.generic.GenericData.EnumSymbol> testEnumUnionArray644 = null;
-        long chunkLen645 = (decoder.readArrayStart());
-        if (chunkLen645 > 0) {
-            List<org.apache.avro.generic.GenericData.EnumSymbol> testEnumUnionArrayReuse646 = null;
+        FastGenericDeserializerGeneratorTest_shouldReadEnum.put(2, testEnumArray1);
+        List<org.apache.avro.generic.GenericData.EnumSymbol> testEnumUnionArray1 = null;
+        long chunkLen1 = (decoder.readArrayStart());
+        if (chunkLen1 > 0) {
+            List<org.apache.avro.generic.GenericData.EnumSymbol> testEnumUnionArrayReuse0 = null;
             if (FastGenericDeserializerGeneratorTest_shouldReadEnum.get(3) instanceof List) {
-                testEnumUnionArrayReuse646 = ((List) FastGenericDeserializerGeneratorTest_shouldReadEnum.get(3));
+                testEnumUnionArrayReuse0 = ((List) FastGenericDeserializerGeneratorTest_shouldReadEnum.get(3));
             }
-            if (testEnumUnionArrayReuse646 != (null)) {
-                testEnumUnionArrayReuse646 .clear();
-                testEnumUnionArray644 = testEnumUnionArrayReuse646;
+            if (testEnumUnionArrayReuse0 != (null)) {
+                testEnumUnionArrayReuse0 .clear();
+                testEnumUnionArray1 = testEnumUnionArrayReuse0;
             } else {
-                testEnumUnionArray644 = new org.apache.avro.generic.GenericData.Array<org.apache.avro.generic.GenericData.EnumSymbol>(((int) chunkLen645), testEnumUnionArray643);
+                testEnumUnionArray1 = new org.apache.avro.generic.GenericData.Array<org.apache.avro.generic.GenericData.EnumSymbol>(((int) chunkLen1), testEnumUnionArray0);
             }
             do {
-                for (int counter647 = 0; (counter647 <chunkLen645); counter647 ++) {
-                    Object testEnumUnionArrayArrayElementReuseVar649 = null;
+                for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {
+                    Object testEnumUnionArrayArrayElementReuseVar0 = null;
                     if (FastGenericDeserializerGeneratorTest_shouldReadEnum.get(3) instanceof GenericArray) {
-                        testEnumUnionArrayArrayElementReuseVar649 = ((GenericArray) FastGenericDeserializerGeneratorTest_shouldReadEnum.get(3)).peek();
+                        testEnumUnionArrayArrayElementReuseVar0 = ((GenericArray) FastGenericDeserializerGeneratorTest_shouldReadEnum.get(3)).peek();
                     }
-                    int unionIndex650 = (decoder.readIndex());
-                    if (unionIndex650 == 0) {
+                    int unionIndex1 = (decoder.readIndex());
+                    if (unionIndex1 == 0) {
                         decoder.readNull();
                     }
-                    if (unionIndex650 == 1) {
-                        testEnumUnionArray644 .add(new org.apache.avro.generic.GenericData.EnumSymbol(testEnum634, testEnum634 .getEnumSymbols().get((decoder.readEnum()))));
+                    if (unionIndex1 == 1) {
+                        testEnumUnionArray1 .add(new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get((decoder.readEnum()))));
                     }
                 }
-                chunkLen645 = (decoder.arrayNext());
-            } while (chunkLen645 > 0);
+                chunkLen1 = (decoder.arrayNext());
+            } while (chunkLen1 > 0);
         } else {
-            testEnumUnionArray644 = new org.apache.avro.generic.GenericData.Array<org.apache.avro.generic.GenericData.EnumSymbol>(0, testEnumUnionArray643);
+            testEnumUnionArray1 = new org.apache.avro.generic.GenericData.Array<org.apache.avro.generic.GenericData.EnumSymbol>(0, testEnumUnionArray0);
         }
-        FastGenericDeserializerGeneratorTest_shouldReadEnum.put(3, testEnumUnionArray644);
+        FastGenericDeserializerGeneratorTest_shouldReadEnum.put(3, testEnumUnionArray1);
         return FastGenericDeserializerGeneratorTest_shouldReadEnum;
     }
 

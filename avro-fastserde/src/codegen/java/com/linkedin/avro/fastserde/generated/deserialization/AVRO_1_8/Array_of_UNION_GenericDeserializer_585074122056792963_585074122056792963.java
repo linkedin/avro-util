@@ -15,69 +15,69 @@ public class Array_of_UNION_GenericDeserializer_585074122056792963_5850741220567
 {
 
     private final Schema readerSchema;
-    private final Schema arrayArrayElemSchema626;
-    private final Schema arrayElemOptionSchema629;
-    private final Schema field631;
+    private final Schema arrayArrayElemSchema0;
+    private final Schema arrayElemOptionSchema0;
+    private final Schema field0;
 
     public Array_of_UNION_GenericDeserializer_585074122056792963_585074122056792963(Schema readerSchema) {
         this.readerSchema = readerSchema;
-        this.arrayArrayElemSchema626 = readerSchema.getElementType();
-        this.arrayElemOptionSchema629 = arrayArrayElemSchema626 .getTypes().get(1);
-        this.field631 = arrayElemOptionSchema629 .getField("field").schema();
+        this.arrayArrayElemSchema0 = readerSchema.getElementType();
+        this.arrayElemOptionSchema0 = arrayArrayElemSchema0 .getTypes().get(1);
+        this.field0 = arrayElemOptionSchema0 .getField("field").schema();
     }
 
     public List<IndexedRecord> deserialize(List<IndexedRecord> reuse, Decoder decoder)
         throws IOException
     {
-        List<IndexedRecord> array622 = null;
-        long chunkLen623 = (decoder.readArrayStart());
-        if (chunkLen623 > 0) {
-            List<IndexedRecord> arrayReuse624 = null;
+        List<IndexedRecord> array0 = null;
+        long chunkLen0 = (decoder.readArrayStart());
+        if (chunkLen0 > 0) {
+            List<IndexedRecord> arrayReuse0 = null;
             if ((reuse) instanceof List) {
-                arrayReuse624 = ((List)(reuse));
+                arrayReuse0 = ((List)(reuse));
             }
-            if (arrayReuse624 != (null)) {
-                arrayReuse624 .clear();
-                array622 = arrayReuse624;
+            if (arrayReuse0 != (null)) {
+                arrayReuse0 .clear();
+                array0 = arrayReuse0;
             } else {
-                array622 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen623), readerSchema);
+                array0 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen0), readerSchema);
             }
             do {
-                for (int counter625 = 0; (counter625 <chunkLen623); counter625 ++) {
-                    Object arrayArrayElementReuseVar627 = null;
+                for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
+                    Object arrayArrayElementReuseVar0 = null;
                     if ((reuse) instanceof GenericArray) {
-                        arrayArrayElementReuseVar627 = ((GenericArray)(reuse)).peek();
+                        arrayArrayElementReuseVar0 = ((GenericArray)(reuse)).peek();
                     }
-                    int unionIndex628 = (decoder.readIndex());
-                    if (unionIndex628 == 0) {
+                    int unionIndex0 = (decoder.readIndex());
+                    if (unionIndex0 == 0) {
                         decoder.readNull();
                     }
-                    if (unionIndex628 == 1) {
-                        array622 .add(deserializerecord630(arrayArrayElementReuseVar627, (decoder)));
+                    if (unionIndex0 == 1) {
+                        array0 .add(deserializerecord0(arrayArrayElementReuseVar0, (decoder)));
                     }
                 }
-                chunkLen623 = (decoder.arrayNext());
-            } while (chunkLen623 > 0);
+                chunkLen0 = (decoder.arrayNext());
+            } while (chunkLen0 > 0);
         } else {
-            array622 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(0, readerSchema);
+            array0 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(0, readerSchema);
         }
-        return array622;
+        return array0;
     }
 
-    public IndexedRecord deserializerecord630(Object reuse, Decoder decoder)
+    public IndexedRecord deserializerecord0(Object reuse, Decoder decoder)
         throws IOException
     {
         IndexedRecord record;
-        if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == arrayElemOptionSchema629)) {
+        if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == arrayElemOptionSchema0)) {
             record = ((IndexedRecord)(reuse));
         } else {
-            record = new org.apache.avro.generic.GenericData.Record(arrayElemOptionSchema629);
+            record = new org.apache.avro.generic.GenericData.Record(arrayElemOptionSchema0);
         }
-        int unionIndex632 = (decoder.readIndex());
-        if (unionIndex632 == 0) {
+        int unionIndex1 = (decoder.readIndex());
+        if (unionIndex1 == 0) {
             decoder.readNull();
         }
-        if (unionIndex632 == 1) {
+        if (unionIndex1 == 1) {
             if (record.get(0) instanceof Utf8) {
                 record.put(0, (decoder).readString(((Utf8) record.get(0))));
             } else {

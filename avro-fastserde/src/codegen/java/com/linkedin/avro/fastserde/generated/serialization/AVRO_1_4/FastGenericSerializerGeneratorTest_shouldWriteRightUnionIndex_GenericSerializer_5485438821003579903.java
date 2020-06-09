@@ -15,32 +15,32 @@ public class FastGenericSerializerGeneratorTest_shouldWriteRightUnionIndex_Gener
     public void serialize(IndexedRecord data, Encoder encoder)
         throws IOException
     {
-        serializeFastGenericSerializerGeneratorTest_shouldWriteRightUnionIndex111(data, (encoder));
+        serializeFastGenericSerializerGeneratorTest_shouldWriteRightUnionIndex0(data, (encoder));
     }
 
     @SuppressWarnings("unchecked")
-    public void serializeFastGenericSerializerGeneratorTest_shouldWriteRightUnionIndex111(IndexedRecord data, Encoder encoder)
+    public void serializeFastGenericSerializerGeneratorTest_shouldWriteRightUnionIndex0(IndexedRecord data, Encoder encoder)
         throws IOException
     {
-        Object union_field112 = ((Object) data.get(0));
-        if (union_field112 == null) {
+        Object union_field0 = ((Object) data.get(0));
+        if (union_field0 == null) {
             (encoder).writeIndex(0);
             (encoder).writeNull();
         } else {
-            if ((union_field112 instanceof IndexedRecord)&&"com.adpilot.utils.generated.avro.record1".equals(((IndexedRecord) union_field112).getSchema().getFullName())) {
+            if ((union_field0 instanceof IndexedRecord)&&"com.adpilot.utils.generated.avro.record1".equals(((IndexedRecord) union_field0).getSchema().getFullName())) {
                 (encoder).writeIndex(1);
-                serializerecord1113(((IndexedRecord) union_field112), (encoder));
+                serializeRecord10(((IndexedRecord) union_field0), (encoder));
             } else {
-                if ((union_field112 instanceof IndexedRecord)&&"com.adpilot.utils.generated.avro.record2".equals(((IndexedRecord) union_field112).getSchema().getFullName())) {
+                if ((union_field0 instanceof IndexedRecord)&&"com.adpilot.utils.generated.avro.record2".equals(((IndexedRecord) union_field0).getSchema().getFullName())) {
                     (encoder).writeIndex(2);
-                    serializerecord2114(((IndexedRecord) union_field112), (encoder));
+                    serializeRecord20(((IndexedRecord) union_field0), (encoder));
                 }
             }
         }
     }
 
     @SuppressWarnings("unchecked")
-    public void serializerecord1113(IndexedRecord data, Encoder encoder)
+    public void serializeRecord10(IndexedRecord data, Encoder encoder)
         throws IOException
     {
         if (data.get(0) instanceof Utf8) {
@@ -51,7 +51,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteRightUnionIndex_Gener
     }
 
     @SuppressWarnings("unchecked")
-    public void serializerecord2114(IndexedRecord data, Encoder encoder)
+    public void serializeRecord20(IndexedRecord data, Encoder encoder)
         throws IOException
     {
         if (data.get(0) instanceof Utf8) {

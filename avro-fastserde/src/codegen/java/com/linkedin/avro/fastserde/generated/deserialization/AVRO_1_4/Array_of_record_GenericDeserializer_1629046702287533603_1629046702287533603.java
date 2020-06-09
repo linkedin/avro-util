@@ -15,61 +15,61 @@ public class Array_of_record_GenericDeserializer_1629046702287533603_16290467022
 {
 
     private final Schema readerSchema;
-    private final Schema arrayArrayElemSchema763;
-    private final Schema field766;
+    private final Schema arrayArrayElemSchema0;
+    private final Schema field0;
 
     public Array_of_record_GenericDeserializer_1629046702287533603_1629046702287533603(Schema readerSchema) {
         this.readerSchema = readerSchema;
-        this.arrayArrayElemSchema763 = readerSchema.getElementType();
-        this.field766 = arrayArrayElemSchema763 .getField("field").schema();
+        this.arrayArrayElemSchema0 = readerSchema.getElementType();
+        this.field0 = arrayArrayElemSchema0 .getField("field").schema();
     }
 
     public List<IndexedRecord> deserialize(List<IndexedRecord> reuse, Decoder decoder)
         throws IOException
     {
-        List<IndexedRecord> array759 = null;
-        long chunkLen760 = (decoder.readArrayStart());
-        if (chunkLen760 > 0) {
-            List<IndexedRecord> arrayReuse761 = null;
+        List<IndexedRecord> array0 = null;
+        long chunkLen0 = (decoder.readArrayStart());
+        if (chunkLen0 > 0) {
+            List<IndexedRecord> arrayReuse0 = null;
             if ((reuse) instanceof List) {
-                arrayReuse761 = ((List)(reuse));
+                arrayReuse0 = ((List)(reuse));
             }
-            if (arrayReuse761 != (null)) {
-                arrayReuse761 .clear();
-                array759 = arrayReuse761;
+            if (arrayReuse0 != (null)) {
+                arrayReuse0 .clear();
+                array0 = arrayReuse0;
             } else {
-                array759 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen760), readerSchema);
+                array0 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen0), readerSchema);
             }
             do {
-                for (int counter762 = 0; (counter762 <chunkLen760); counter762 ++) {
-                    Object arrayArrayElementReuseVar764 = null;
+                for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
+                    Object arrayArrayElementReuseVar0 = null;
                     if ((reuse) instanceof GenericArray) {
-                        arrayArrayElementReuseVar764 = ((GenericArray)(reuse)).peek();
+                        arrayArrayElementReuseVar0 = ((GenericArray)(reuse)).peek();
                     }
-                    array759 .add(deserializerecord765(arrayArrayElementReuseVar764, (decoder)));
+                    array0 .add(deserializerecord0(arrayArrayElementReuseVar0, (decoder)));
                 }
-                chunkLen760 = (decoder.arrayNext());
-            } while (chunkLen760 > 0);
+                chunkLen0 = (decoder.arrayNext());
+            } while (chunkLen0 > 0);
         } else {
-            array759 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(0, readerSchema);
+            array0 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(0, readerSchema);
         }
-        return array759;
+        return array0;
     }
 
-    public IndexedRecord deserializerecord765(Object reuse, Decoder decoder)
+    public IndexedRecord deserializerecord0(Object reuse, Decoder decoder)
         throws IOException
     {
         IndexedRecord record;
-        if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == arrayArrayElemSchema763)) {
+        if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == arrayArrayElemSchema0)) {
             record = ((IndexedRecord)(reuse));
         } else {
-            record = new org.apache.avro.generic.GenericData.Record(arrayArrayElemSchema763);
+            record = new org.apache.avro.generic.GenericData.Record(arrayArrayElemSchema0);
         }
-        int unionIndex767 = (decoder.readIndex());
-        if (unionIndex767 == 0) {
+        int unionIndex0 = (decoder.readIndex());
+        if (unionIndex0 == 0) {
             decoder.readNull();
         }
-        if (unionIndex767 == 1) {
+        if (unionIndex0 == 1) {
             if (record.get(0) instanceof Utf8) {
                 record.put(0, (decoder).readString(((Utf8) record.get(0))));
             } else {
