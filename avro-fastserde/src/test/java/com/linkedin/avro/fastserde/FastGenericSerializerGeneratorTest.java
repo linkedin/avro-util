@@ -1,5 +1,6 @@
 package com.linkedin.avro.fastserde;
 
+import com.linkedin.avro.api.PrimitiveFloatList;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -423,6 +424,81 @@ public class FastGenericSerializerGeneratorTest {
     Assert.assertEquals(2, map.size());
     Assert.assertEquals("abc", map.get(new Utf8("1")).get("field").toString());
     Assert.assertEquals("abc", map.get(new Utf8("2")).get("field").toString());
+  }
+
+  @Test(groups = {"serializationTest"})
+  public void shouldWriteArrayOfBoolean() {
+    // given
+    List<Boolean> data = new ArrayList<>(2);
+    data.add(true);
+    data.add(false);
+
+    // then
+    shouldWriteArrayOfPrimitives(Schema.Type.BOOLEAN, data);
+  }
+
+  @Test(groups = {"serializationTest"})
+  public void shouldWriteArrayOfDouble() {
+    // given
+    List<Double> data = new ArrayList<>(2);
+    data.add(1.0D);
+    data.add(2.0D);
+
+    // then
+    shouldWriteArrayOfPrimitives(Schema.Type.DOUBLE, data);
+  }
+
+  @Test(groups = {"serializationTest"})
+  public void shouldWriteArrayOfFloats() {
+    // given
+    List<Float> data = new ArrayList<>(2);
+    data.add(1.0F);
+    data.add(2.0F);
+
+    // then
+    shouldWriteArrayOfPrimitives(Schema.Type.FLOAT, data);
+  }
+
+  @Test(groups = {"serializationTest"})
+  public void shouldWriteArrayOfInts() {
+    // given
+    List<Integer> data = new ArrayList<>(2);
+    data.add(1);
+    data.add(2);
+
+    // then
+    shouldWriteArrayOfPrimitives(Schema.Type.INT, data);
+  }
+
+  @Test(groups = {"serializationTest"})
+  public void shouldWriteArrayOfLongs() {
+    // given
+    List<Long> data = new ArrayList<>(2);
+    data.add(1L);
+    data.add(2L);
+
+    // then
+    shouldWriteArrayOfPrimitives(Schema.Type.LONG, data);
+  }
+
+  private <E, L> void shouldWriteArrayOfPrimitives(Schema.Type elementType, List<E> data) {
+    // given
+    Schema elementSchema = Schema.create(elementType);
+    Schema arraySchema = Schema.createArray(elementSchema);
+
+    GenericData.Array<E> avroArray = new GenericData.Array<>(0, arraySchema);
+    for (E element: data) {
+      avroArray.add(element);
+    }
+
+    // when
+    GenericData.Array<GenericRecord> array = decodeRecord(arraySchema, dataAsBinaryDecoder(avroArray));
+
+    // then
+    Assert.assertEquals(array.size(), data.size());
+    for (int i = 0; i < data.size(); i++) {
+      Assert.assertEquals(array.get(i), data.get(i));
+    }
   }
 
   public <T extends GenericContainer> Decoder dataAsBinaryDecoder(T data) {
