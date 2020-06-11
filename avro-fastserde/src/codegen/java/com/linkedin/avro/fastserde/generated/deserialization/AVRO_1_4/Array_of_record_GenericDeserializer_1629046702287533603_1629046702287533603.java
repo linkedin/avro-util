@@ -30,13 +30,9 @@ public class Array_of_record_GenericDeserializer_1629046702287533603_16290467022
         List<IndexedRecord> array0 = null;
         long chunkLen0 = (decoder.readArrayStart());
         if (chunkLen0 > 0) {
-            List<IndexedRecord> arrayReuse0 = null;
             if ((reuse) instanceof List) {
-                arrayReuse0 = ((List)(reuse));
-            }
-            if (arrayReuse0 != (null)) {
-                arrayReuse0 .clear();
-                array0 = arrayReuse0;
+                array0 = ((List)(reuse));
+                array0 .clear();
             } else {
                 array0 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen0), readerSchema);
             }
@@ -51,7 +47,7 @@ public class Array_of_record_GenericDeserializer_1629046702287533603_16290467022
                 chunkLen0 = (decoder.arrayNext());
             } while (chunkLen0 > 0);
         } else {
-            array0 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(0, readerSchema);
+            array0 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen0), readerSchema);
         }
         return array0;
     }

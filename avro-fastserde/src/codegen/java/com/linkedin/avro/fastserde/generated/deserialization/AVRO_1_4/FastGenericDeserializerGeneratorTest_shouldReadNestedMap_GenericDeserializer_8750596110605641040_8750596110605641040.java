@@ -6,9 +6,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.linkedin.avro.api.PrimitiveIntList;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveIntList;
 import org.apache.avro.Schema;
-import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.util.Utf8;
@@ -76,31 +77,23 @@ public class FastGenericDeserializerGeneratorTest_shouldReadNestedMap_GenericDes
                         do {
                             for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {
                                 Utf8 key1 = (decoder.readString(null));
-                                List<Integer> mapFieldValueValue0 = null;
+                                PrimitiveIntList mapFieldValueValue0 = null;
                                 long chunkLen2 = (decoder.readArrayStart());
                                 if (chunkLen2 > 0) {
-                                    List<Integer> mapFieldValueValueReuse0 = null;
-                                    if (null instanceof List) {
-                                        mapFieldValueValueReuse0 = ((List) null);
-                                    }
-                                    if (mapFieldValueValueReuse0 != (null)) {
-                                        mapFieldValueValueReuse0 .clear();
-                                        mapFieldValueValue0 = mapFieldValueValueReuse0;
+                                    if (null instanceof PrimitiveIntList) {
+                                        mapFieldValueValue0 = ((PrimitiveIntList) null);
+                                        mapFieldValueValue0 .clear();
                                     } else {
-                                        mapFieldValueValue0 = new org.apache.avro.generic.GenericData.Array<Integer>(((int) chunkLen2), mapFieldValueMapValueSchema0);
+                                        mapFieldValueValue0 = new ColdPrimitiveIntList(((int) chunkLen2));
                                     }
                                     do {
                                         for (int counter2 = 0; (counter2 <chunkLen2); counter2 ++) {
-                                            Object mapFieldValueValueArrayElementReuseVar0 = null;
-                                            if (null instanceof GenericArray) {
-                                                mapFieldValueValueArrayElementReuseVar0 = ((GenericArray) null).peek();
-                                            }
-                                            mapFieldValueValue0 .add((decoder.readInt()));
+                                            mapFieldValueValue0 .addPrimitive((decoder.readInt()));
                                         }
                                         chunkLen2 = (decoder.arrayNext());
                                     } while (chunkLen2 > 0);
                                 } else {
-                                    mapFieldValueValue0 = new org.apache.avro.generic.GenericData.Array<Integer>(0, mapFieldValueMapValueSchema0);
+                                    mapFieldValueValue0 = new ColdPrimitiveIntList(((int) chunkLen2));
                                 }
                                 mapFieldValue0 .put(key1, mapFieldValueValue0);
                             }

@@ -41,7 +41,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteEnum_GenericSerialize
             (encoder).setItemCount(0);
         } else {
             (encoder).setItemCount(testEnumArray0 .size());
-            for (int counter0 = 0; (counter0 <((List<org.apache.avro.generic.GenericData.EnumSymbol> ) testEnumArray0).size()); counter0 ++) {
+            for (int counter0 = 0; (counter0 <testEnumArray0 .size()); counter0 ++) {
                 (encoder).startItem();
                 (encoder).writeEnum(testEnumEnumSchema0 .getEnumOrdinal(((org.apache.avro.generic.GenericData.EnumSymbol) testEnumArray0 .get(counter0)).toString()));
             }
@@ -53,7 +53,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteEnum_GenericSerialize
             (encoder).setItemCount(0);
         } else {
             (encoder).setItemCount(testEnumUnionArray0 .size());
-            for (int counter1 = 0; (counter1 <((List<org.apache.avro.generic.GenericData.EnumSymbol> ) testEnumUnionArray0).size()); counter1 ++) {
+            for (int counter1 = 0; (counter1 <testEnumUnionArray0 .size()); counter1 ++) {
                 (encoder).startItem();
                 org.apache.avro.generic.GenericData.EnumSymbol union0 = null;
                 union0 = ((List<org.apache.avro.generic.GenericData.EnumSymbol> ) testEnumUnionArray0).get(counter1);

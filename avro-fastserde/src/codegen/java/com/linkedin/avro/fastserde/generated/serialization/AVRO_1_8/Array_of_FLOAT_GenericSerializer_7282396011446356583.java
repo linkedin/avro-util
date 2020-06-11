@@ -3,6 +3,7 @@ package com.linkedin.avro.fastserde.generated.serialization.AVRO_1_8;
 
 import java.io.IOException;
 import java.util.List;
+import com.linkedin.avro.api.PrimitiveFloatList;
 import com.linkedin.avro.fastserde.FastSerializer;
 import org.apache.avro.io.Encoder;
 
@@ -19,9 +20,18 @@ public class Array_of_FLOAT_GenericSerializer_7282396011446356583
             (encoder).setItemCount(0);
         } else {
             (encoder).setItemCount(data.size());
-            for (int counter0 = 0; (counter0 <((List<Float> ) data).size()); counter0 ++) {
-                (encoder).startItem();
-                (encoder).writeFloat(((Float) data.get(counter0)));
+            if (data instanceof PrimitiveFloatList) {
+                PrimitiveFloatList primitiveList0 = null;
+                primitiveList0 = ((PrimitiveFloatList) data);
+                for (int counter0 = 0; (counter0 <primitiveList0 .size()); counter0 ++) {
+                    (encoder).startItem();
+                    (encoder).writeFloat(primitiveList0 .getPrimitive(counter0));
+                }
+            } else {
+                for (int counter1 = 0; (counter1 <data.size()); counter1 ++) {
+                    (encoder).startItem();
+                    (encoder).writeFloat(data.get(counter1));
+                }
             }
         }
         (encoder).writeArrayEnd();

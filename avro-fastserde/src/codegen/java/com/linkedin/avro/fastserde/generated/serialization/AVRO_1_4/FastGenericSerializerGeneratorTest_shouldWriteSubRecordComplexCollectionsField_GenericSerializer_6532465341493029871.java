@@ -30,7 +30,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexColle
             (encoder).setItemCount(0);
         } else {
             (encoder).setItemCount(recordsArrayMap0 .size());
-            for (int counter0 = 0; (counter0 <((List<Map<CharSequence, IndexedRecord>> ) recordsArrayMap0).size()); counter0 ++) {
+            for (int counter0 = 0; (counter0 <recordsArrayMap0 .size()); counter0 ++) {
                 (encoder).startItem();
                 Map<CharSequence, IndexedRecord> map0 = null;
                 map0 = ((List<Map<CharSequence, IndexedRecord>> ) recordsArrayMap0).get(counter0);
@@ -75,7 +75,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexColle
                     (encoder).setItemCount(0);
                 } else {
                     (encoder).setItemCount(array0 .size());
-                    for (int counter1 = 0; (counter1 <((List<IndexedRecord> ) array0).size()); counter1 ++) {
+                    for (int counter1 = 0; (counter1 <array0 .size()); counter1 ++) {
                         (encoder).startItem();
                         IndexedRecord union1 = null;
                         union1 = ((List<IndexedRecord> ) array0).get(counter1);
@@ -106,7 +106,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexColle
                     (encoder).setItemCount(0);
                 } else {
                     (encoder).setItemCount(((List<Map<CharSequence, IndexedRecord>> ) recordsArrayMapUnion0).size());
-                    for (int counter2 = 0; (counter2 <((List<Map<CharSequence, IndexedRecord>> )((List<Map<CharSequence, IndexedRecord>> ) recordsArrayMapUnion0)).size()); counter2 ++) {
+                    for (int counter2 = 0; (counter2 <((List<Map<CharSequence, IndexedRecord>> ) recordsArrayMapUnion0).size()); counter2 ++) {
                         (encoder).startItem();
                         Map<CharSequence, IndexedRecord> map1 = null;
                         map1 = ((List<Map<CharSequence, IndexedRecord>> )((List<Map<CharSequence, IndexedRecord>> ) recordsArrayMapUnion0)).get(counter2);
@@ -159,7 +159,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexColle
                             (encoder).setItemCount(0);
                         } else {
                             (encoder).setItemCount(array1 .size());
-                            for (int counter3 = 0; (counter3 <((List<IndexedRecord> ) array1).size()); counter3 ++) {
+                            for (int counter3 = 0; (counter3 <array1 .size()); counter3 ++) {
                                 (encoder).startItem();
                                 IndexedRecord union3 = null;
                                 union3 = ((List<IndexedRecord> ) array1).get(counter3);

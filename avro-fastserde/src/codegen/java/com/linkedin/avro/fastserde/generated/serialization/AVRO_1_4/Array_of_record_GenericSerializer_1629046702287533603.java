@@ -21,7 +21,7 @@ public class Array_of_record_GenericSerializer_1629046702287533603
             (encoder).setItemCount(0);
         } else {
             (encoder).setItemCount(data.size());
-            for (int counter0 = 0; (counter0 <((List<IndexedRecord> ) data).size()); counter0 ++) {
+            for (int counter0 = 0; (counter0 <data.size()); counter0 ++) {
                 (encoder).startItem();
                 IndexedRecord record0 = null;
                 record0 = ((List<IndexedRecord> ) data).get(counter0);

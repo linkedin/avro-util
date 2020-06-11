@@ -3,9 +3,10 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_7;
 
 import java.io.IOException;
 import java.util.List;
+import com.linkedin.avro.api.PrimitiveLongList;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveLongList;
 import org.apache.avro.Schema;
-import org.apache.avro.generic.GenericArray;
 import org.apache.avro.io.Decoder;
 
 public class Array_of_LONG_GenericDeserializer_2055015354772118358_2055015354772118358
@@ -21,31 +22,23 @@ public class Array_of_LONG_GenericDeserializer_2055015354772118358_2055015354772
     public List<Long> deserialize(List<Long> reuse, Decoder decoder)
         throws IOException
     {
-        List<Long> array0 = null;
+        PrimitiveLongList array0 = null;
         long chunkLen0 = (decoder.readArrayStart());
         if (chunkLen0 > 0) {
-            List<Long> arrayReuse0 = null;
-            if ((reuse) instanceof List) {
-                arrayReuse0 = ((List)(reuse));
-            }
-            if (arrayReuse0 != (null)) {
-                arrayReuse0 .clear();
-                array0 = arrayReuse0;
+            if ((reuse) instanceof PrimitiveLongList) {
+                array0 = ((PrimitiveLongList)(reuse));
+                array0 .clear();
             } else {
-                array0 = new org.apache.avro.generic.GenericData.Array<Long>(((int) chunkLen0), readerSchema);
+                array0 = new ColdPrimitiveLongList(((int) chunkLen0));
             }
             do {
                 for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
-                    Object arrayArrayElementReuseVar0 = null;
-                    if ((reuse) instanceof GenericArray) {
-                        arrayArrayElementReuseVar0 = ((GenericArray)(reuse)).peek();
-                    }
-                    array0 .add((decoder.readLong()));
+                    array0 .addPrimitive((decoder.readLong()));
                 }
                 chunkLen0 = (decoder.arrayNext());
             } while (chunkLen0 > 0);
         } else {
-            array0 = new org.apache.avro.generic.GenericData.Array<Long>(0, readerSchema);
+            array0 = new ColdPrimitiveLongList(((int) chunkLen0));
         }
         return array0;
     }
