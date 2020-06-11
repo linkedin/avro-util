@@ -21,7 +21,7 @@ public class Array_of_UNION_GenericSerializer_585074122056792963
             (encoder).setItemCount(0);
         } else {
             (encoder).setItemCount(data.size());
-            for (int counter0 = 0; (counter0 <((List<IndexedRecord> ) data).size()); counter0 ++) {
+            for (int counter0 = 0; (counter0 <data.size()); counter0 ++) {
                 (encoder).startItem();
                 IndexedRecord union0 = null;
                 union0 = ((List<IndexedRecord> ) data).get(counter0);

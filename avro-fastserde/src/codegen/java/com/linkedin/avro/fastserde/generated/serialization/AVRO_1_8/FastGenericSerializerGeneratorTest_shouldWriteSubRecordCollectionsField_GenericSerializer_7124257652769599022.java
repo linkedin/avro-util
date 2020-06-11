@@ -30,7 +30,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordCollectionsF
             (encoder).setItemCount(0);
         } else {
             (encoder).setItemCount(recordsArray0 .size());
-            for (int counter0 = 0; (counter0 <((List<IndexedRecord> ) recordsArray0).size()); counter0 ++) {
+            for (int counter0 = 0; (counter0 <recordsArray0 .size()); counter0 ++) {
                 (encoder).startItem();
                 IndexedRecord subRecord0 = null;
                 subRecord0 = ((List<IndexedRecord> ) recordsArray0).get(counter0);
@@ -65,7 +65,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordCollectionsF
                     (encoder).setItemCount(0);
                 } else {
                     (encoder).setItemCount(((List<IndexedRecord> ) recordsArrayUnion0).size());
-                    for (int counter1 = 0; (counter1 <((List<IndexedRecord> )((List<IndexedRecord> ) recordsArrayUnion0)).size()); counter1 ++) {
+                    for (int counter1 = 0; (counter1 <((List<IndexedRecord> ) recordsArrayUnion0).size()); counter1 ++) {
                         (encoder).startItem();
                         IndexedRecord union0 = null;
                         union0 = ((List<IndexedRecord> )((List<IndexedRecord> ) recordsArrayUnion0)).get(counter1);

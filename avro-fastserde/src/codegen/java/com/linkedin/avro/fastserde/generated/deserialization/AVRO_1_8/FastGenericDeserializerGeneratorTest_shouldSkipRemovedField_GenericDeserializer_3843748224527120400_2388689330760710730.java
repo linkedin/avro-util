@@ -117,13 +117,9 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
         List<IndexedRecord> subRecordArray1 = null;
         long chunkLen1 = (decoder.readArrayStart());
         if (chunkLen1 > 0) {
-            List<IndexedRecord> subRecordArrayReuse0 = null;
             if (FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(4) instanceof List) {
-                subRecordArrayReuse0 = ((List) FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(4));
-            }
-            if (subRecordArrayReuse0 != (null)) {
-                subRecordArrayReuse0 .clear();
-                subRecordArray1 = subRecordArrayReuse0;
+                subRecordArray1 = ((List) FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(4));
+                subRecordArray1 .clear();
             } else {
                 subRecordArray1 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen1), subRecordArray0);
             }
@@ -138,7 +134,7 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
                 chunkLen1 = (decoder.arrayNext());
             } while (chunkLen1 > 0);
         } else {
-            subRecordArray1 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(0, subRecordArray0);
+            subRecordArray1 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen1), subRecordArray0);
         }
         FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(4, subRecordArray1);
         return FastGenericDeserializerGeneratorTest_shouldSkipRemovedField;
