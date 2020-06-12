@@ -10,6 +10,11 @@ import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveDoubleList;
 import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveFloatList;
 import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveIntList;
 import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveLongList;
+import com.linkedin.avro.fastserde.primitive.PrimitiveBooleanArrayList;
+import com.linkedin.avro.fastserde.primitive.PrimitiveDoubleArrayList;
+import com.linkedin.avro.fastserde.primitive.PrimitiveFloatArrayList;
+import com.linkedin.avro.fastserde.primitive.PrimitiveIntArrayList;
+import com.linkedin.avro.fastserde.primitive.PrimitiveLongArrayList;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
@@ -278,15 +283,15 @@ public class SchemaAssistant {
         Class klass = null;
         if (primitiveList) {
           switch (schema.getElementType().getType()) {
-            case BOOLEAN: klass = abstractType ? PrimitiveBooleanList.class : ColdPrimitiveBooleanList.class; break;
-            case DOUBLE: klass = abstractType ? PrimitiveDoubleList.class : ColdPrimitiveDoubleList.class; break;
+            case BOOLEAN: klass = abstractType ? PrimitiveBooleanList.class : PrimitiveBooleanArrayList.class; break;
+            case DOUBLE: klass = abstractType ? PrimitiveDoubleList.class : PrimitiveDoubleArrayList.class; break;
             /**
              * N.B.: FLOAT will get superseded in
              * {@link FastDeserializerGenerator#processArray(JVar, String, Schema, Schema, JBlock, FastDeserializerGeneratorBase.FieldAction, BiConsumer, Supplier)}
              */
-            case FLOAT: klass = abstractType ? PrimitiveFloatList.class : ColdPrimitiveFloatList.class; break;
-            case INT: klass = abstractType ? PrimitiveIntList.class : ColdPrimitiveIntList.class; break;
-            case LONG: klass = abstractType ? PrimitiveLongList.class : ColdPrimitiveLongList.class; break;
+            case FLOAT: klass = abstractType ? PrimitiveFloatList.class : PrimitiveFloatArrayList.class; break;
+            case INT: klass = abstractType ? PrimitiveIntList.class : PrimitiveIntArrayList.class; break;
+            case LONG: klass = abstractType ? PrimitiveLongList.class : PrimitiveLongArrayList.class; break;
             default: // no-op
           }
         }
