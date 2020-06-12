@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.List;
 import com.linkedin.avro.api.PrimitiveDoubleList;
 import com.linkedin.avro.fastserde.FastDeserializer;
-import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveDoubleList;
+import com.linkedin.avro.fastserde.primitive.PrimitiveDoubleArrayList;
 import org.apache.avro.Schema;
 import org.apache.avro.io.Decoder;
 
@@ -29,7 +29,7 @@ public class Array_of_DOUBLE_GenericDeserializer_6064316435611861740_60643164356
                 array0 = ((PrimitiveDoubleList)(reuse));
                 array0 .clear();
             } else {
-                array0 = new ColdPrimitiveDoubleList(((int) chunkLen0));
+                array0 = new PrimitiveDoubleArrayList(((int) chunkLen0));
             }
             do {
                 for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
@@ -38,7 +38,7 @@ public class Array_of_DOUBLE_GenericDeserializer_6064316435611861740_60643164356
                 chunkLen0 = (decoder.arrayNext());
             } while (chunkLen0 > 0);
         } else {
-            array0 = new ColdPrimitiveDoubleList(((int) chunkLen0));
+            array0 = new PrimitiveDoubleArrayList(((int) chunkLen0));
         }
         return array0;
     }

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import com.linkedin.avro.api.PrimitiveIntList;
 import com.linkedin.avro.fastserde.FastDeserializer;
-import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveIntList;
+import com.linkedin.avro.fastserde.primitive.PrimitiveIntArrayList;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
@@ -84,7 +84,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadNestedMap_GenericDes
                                         mapFieldValueValue0 = ((PrimitiveIntList) null);
                                         mapFieldValueValue0 .clear();
                                     } else {
-                                        mapFieldValueValue0 = new ColdPrimitiveIntList(((int) chunkLen2));
+                                        mapFieldValueValue0 = new PrimitiveIntArrayList(((int) chunkLen2));
                                     }
                                     do {
                                         for (int counter2 = 0; (counter2 <chunkLen2); counter2 ++) {
@@ -93,7 +93,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadNestedMap_GenericDes
                                         chunkLen2 = (decoder.arrayNext());
                                     } while (chunkLen2 > 0);
                                 } else {
-                                    mapFieldValueValue0 = new ColdPrimitiveIntList(((int) chunkLen2));
+                                    mapFieldValueValue0 = new PrimitiveIntArrayList(((int) chunkLen2));
                                 }
                                 mapFieldValue0 .put(key1, mapFieldValueValue0);
                             }
