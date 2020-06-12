@@ -25,9 +25,17 @@ public class FastAvroConcurrentHashMap<K, V> extends ConcurrentHashMap<K, V> {
    * optimization might not be ideal for the workload that most keys are unique, so be cautious
    * about the workload before adopting the FastAvroConcurrentHashMap.
    *
-   * @param key
-   * @param mappingFunction
-   * @return
+   * @param key key with which the specified value is to be associated
+   * @param mappingFunction the function to compute a value
+   * @return the current (existing or computed) value associated with
+   *         the specified key, or null if the computed value is null
+   * @throws NullPointerException if the specified key or mappingFunction
+   *         is null
+   * @throws IllegalStateException if the computation detectably
+   *         attempts a recursive update to this map that would
+   *         otherwise never complete
+   * @throws RuntimeException or Error if the mappingFunction does so,
+   *         in which case the mapping is left unestablished
    */
   @Override
   public V computeIfAbsent(K key, Function<? super K, ? extends V> mappingFunction) {

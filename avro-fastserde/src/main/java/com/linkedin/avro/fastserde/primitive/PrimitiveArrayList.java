@@ -39,15 +39,15 @@ public abstract class PrimitiveArrayList<T, L> extends AbstractList<T>
   /**
    * @param that an instance of primitive list to use for comparison
    * @param index the index of the element to compare
-   * @return the comparison result between element of this and {@param that} list at the provided {@param index}
+   * @return the comparison result between element of this and that list at the provided index
    */
   protected abstract int compareElementAtIndex(L that, int index);
 
   /**
-   * @param o instance of an Object that may or may not be a primitive list
-   * @return true if {@param o} instanceof the right type of primitive list for comparison
+   * @param object instance of an Object that may or may not be a primitive list
+   * @return true if the passed in object is an instance of the right type of primitive list for comparison
    */
-  protected abstract boolean isInstanceOfCorrectPrimitiveList(Object o);
+  protected abstract boolean isInstanceOfCorrectPrimitiveList(Object object);
 
   // Public API
 
@@ -138,12 +138,12 @@ public abstract class PrimitiveArrayList<T, L> extends AbstractList<T>
    * instance had a larger number of elements than the new one, in which case, we will reuse the array, but
    * use the {@link #size} as a boundary within the larger array.
    *
-   * @param i an index position which may or may not be within bound of the current list
-   * @throws IndexOutOfBoundsException if {@param i} is larger than the index of the last valid element
+   * @param index an index position which may or may not be within bound of the current list
+   * @throws IndexOutOfBoundsException if the index param is larger than the index of the last valid element
    */
-  protected void checkIfLargerThanSize(int i) {
-    if (i >= size) {
-      throw new IndexOutOfBoundsException("Index " + i + " out of bounds.");
+  protected void checkIfLargerThanSize(int index) {
+    if (index >= size) {
+      throw new IndexOutOfBoundsException("Index " + index + " out of bounds.");
     }
   }
 
@@ -167,7 +167,11 @@ public abstract class PrimitiveArrayList<T, L> extends AbstractList<T>
     }
   }
 
-  /** Create an empty space in the array at the index specified by {@param location} by shifting the elements to the right */
+  /**
+   * Create an empty space in the array at the index specified by shifting the elements to the right
+   *
+   * @param location index where the element will be added
+   */
   protected void addInternal(int location) {
     if (location > size || location < 0) {
       throw new IndexOutOfBoundsException("Index " + location + " out of bounds.");

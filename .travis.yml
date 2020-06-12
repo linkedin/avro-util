@@ -21,7 +21,7 @@ addons:
 install: true
 
 script:
-  - ./gradlew clean build
+  - ./gradlew clean build javadoc
 
 # required for gradle artifact caching (see https://docs.travis-ci.com/user/languages/java/#caching)
 before_cache:

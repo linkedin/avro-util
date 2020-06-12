@@ -63,7 +63,7 @@ public abstract class FastSerdeBase {
    * schema pair).
    *
    * @param prefix String to serve as a prefix for the unique name
-   * @return a unique prefix composed of the {@param prefix} appended by a unique number
+   * @return a unique prefix composed of the prefix appended by a unique number
    */
   protected String getUniqueName(String prefix) {
     String uncapitalizedPrefix = StringUtils.uncapitalize(prefix);

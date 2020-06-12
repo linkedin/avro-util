@@ -252,9 +252,9 @@ public class CodeTransformations {
    * producing uncompilable code (see see AVRO-1316). this was only fixed in avro 1.7.5+
    *
    * also - avro 1.6+ issues "new org.apache.avro.Schema.Parser().parse(...)" calls which will not compile
-   * under avro < 1.6
+   * under {@literal avro < 1.6}
    *
-   * in addition, avro < 1.6 fails to properly escape control characters in the schema string (like newlines
+   * in addition, {@literal avro < 1.6} fails to properly escape control characters in the schema string (like newlines
    * in doc properties) which will result in a json parse error when trying to instantiate the
    * generated java class (because at that point it will fail to parse the avsc in SCHEMA$)
    *

@@ -86,7 +86,7 @@ public class PrimitiveIntArrayList extends PrimitiveArrayList<Integer, Primitive
   }
 
   @Override
-  protected boolean isInstanceOfCorrectPrimitiveList(Object o) {
-    return o instanceof PrimitiveBooleanList;
+  protected boolean isInstanceOfCorrectPrimitiveList(Object object) {
+    return object instanceof PrimitiveBooleanList;
   }
 }

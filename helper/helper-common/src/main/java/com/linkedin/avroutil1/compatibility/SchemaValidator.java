@@ -23,7 +23,7 @@ import org.codehaus.jackson.JsonNode;
  * a utility class that (in combination with {@link AvroSchemaUtil#traverseSchema(Schema, SchemaVisitor)})
  * can validate avro schemas vs the avro specification. <br>
  * this class exists because historically avro has been very bad at validating its own specification
- * and this allows proper validation under older (<1.9) versions of avro
+ * and this allows proper validation under versions of {@literal avro < 1.9}
  */
 public class SchemaValidator implements SchemaVisitor {
   private final static Set<Schema.Type> NAMED_TYPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
