@@ -5,12 +5,15 @@ import com.linkedin.avro.api.PrimitiveFloatList;
 import org.apache.avro.Schema;
 
 
-public class PrimitiveFloatArrayList extends PrimitiveArrayList<Float, PrimitiveFloatList> implements PrimitiveFloatList {
+public class PrimitiveFloatArrayList extends PrimitiveArrayList<Float, PrimitiveFloatList, float[]> implements PrimitiveFloatList {
   public static final Schema SCHEMA = Schema.createArray(Schema.create(Schema.Type.FLOAT));
-  float[] elementsArray;
 
   public PrimitiveFloatArrayList(int capacity) {
-    this.elementsArray = new float[capacity];
+    super(capacity);
+  }
+
+  public PrimitiveFloatArrayList() {
+    super();
   }
 
   @Override
@@ -66,17 +69,7 @@ public class PrimitiveFloatArrayList extends PrimitiveArrayList<Float, Primitive
   }
 
   @Override
-  protected void setElementsArray(Object newElements) {
-    this.elementsArray = (float[]) newElements;
-  }
-
-  @Override
-  protected Object getElementsArray() {
-    return this.elementsArray;
-  }
-
-  @Override
-  protected Object newArray(int capacity) {
+  protected float[] newArray(int capacity) {
     return new float[capacity];
   }
 

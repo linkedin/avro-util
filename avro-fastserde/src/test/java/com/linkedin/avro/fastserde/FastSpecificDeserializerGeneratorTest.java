@@ -47,14 +47,20 @@ public class FastSpecificDeserializerGeneratorTest {
     TestFixed testFixed1 = new TestFixed();
     testFixed1.bytes(new byte[]{0x01});
     record.testFixed = testFixed1;
-    record.testFixedArray = Collections.EMPTY_LIST;
+    record.testFixedArray = Collections.emptyList();
     TestFixed testFixed2 = new TestFixed();
     testFixed2.bytes(new byte[]{0x01});
     record.testFixedUnionArray = Arrays.asList(testFixed2);
 
     record.testEnum = TestEnum.A;
-    record.testEnumArray = Collections.EMPTY_LIST;
+    record.testEnumArray = Collections.emptyList();
     record.testEnumUnionArray = Arrays.asList(TestEnum.A);
+    record.booleanArray = Collections.emptyList();
+    record.doubleArray = Collections.emptyList();
+    record.floatArray = Collections.emptyList();
+    record.intArray = Collections.emptyList();
+    record.longArray = Collections.emptyList();
+    record.stringArray = Collections.emptyList();
     record.subRecord = new SubRecord();
 
     record.recordsArray = Collections.emptyList();

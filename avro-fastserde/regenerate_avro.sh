@@ -46,7 +46,7 @@ FULL_CODE_GEN_PATH=(
 )
 FULL_CODE_GEN_ROOT_PATH="${CODE_GEN_PATH}/com/linkedin/avro/fastserde/generated/avro"
 
-if [[ $# < 1 ]]; then
+if [[ $# -lt 1 ]]; then
   echo "Usage: $0 avro_tools_path"
   echo ""
   echo "    avro_tools_path: full path to the avro-tools-1.x.x.jar file (required). If you use 'default_avro_140', it will take:"
@@ -93,7 +93,7 @@ for file in `ls ${FULL_CODE_GEN_ROOT_PATH}/*.java`; do
   rm -f ${file}
 done
 
-echo "Finished deleting old files. About to generate new ones..."
+echo "Finished deleting old files. About to generate new ones using $AVRO_TOOLS_JAR..."
 
 for file in `ls ${AVRO_SCHEMAS_ROOT_PATH}/*.avsc`; do
   echo ${file}

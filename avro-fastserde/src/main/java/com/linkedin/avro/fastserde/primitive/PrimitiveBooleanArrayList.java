@@ -4,12 +4,15 @@ import com.linkedin.avro.api.PrimitiveBooleanList;
 import org.apache.avro.Schema;
 
 
-public class PrimitiveBooleanArrayList extends PrimitiveArrayList<Boolean, PrimitiveBooleanList> implements PrimitiveBooleanList {
+public class PrimitiveBooleanArrayList extends PrimitiveArrayList<Boolean, PrimitiveBooleanList, boolean[]> implements PrimitiveBooleanList {
   public static final Schema SCHEMA = Schema.createArray(Schema.create(Schema.Type.BOOLEAN));
-  boolean[] elementsArray;
 
   public PrimitiveBooleanArrayList(int capacity) {
-    this.elementsArray = new boolean[capacity];
+    super(capacity);
+  }
+
+  public PrimitiveBooleanArrayList() {
+    super();
   }
 
   @Override
@@ -65,17 +68,7 @@ public class PrimitiveBooleanArrayList extends PrimitiveArrayList<Boolean, Primi
   }
 
   @Override
-  protected void setElementsArray(Object newElements) {
-    this.elementsArray = (boolean[]) newElements;
-  }
-
-  @Override
-  protected Object getElementsArray() {
-    return this.elementsArray;
-  }
-
-  @Override
-  protected Object newArray(int capacity) {
+  protected boolean[] newArray(int capacity) {
     return new boolean[capacity];
   }
 

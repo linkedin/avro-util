@@ -439,6 +439,13 @@ public class FastDeserializerDefaultsTest {
     oldRecord.put("subRecordUnion", subRecord);
     oldRecord.put("subRecord", subRecord);
     oldRecord.put("recordsArray", Collections.singletonList(subRecord));
+    oldRecord.put("booleanArray", Collections.emptyList());
+    oldRecord.put("doubleArray", Collections.emptyList());
+    oldRecord.put("floatArray", Collections.emptyList());
+    oldRecord.put("intArray", Collections.emptyList());
+    oldRecord.put("longArray", Collections.emptyList());
+    oldRecord.put("stringArray", Collections.emptyList());
+
     Map<String, GenericData.Record> recordsMap = new HashMap<>();
     recordsMap.put("1", subRecord);
     oldRecord.put("recordsMap", recordsMap);
