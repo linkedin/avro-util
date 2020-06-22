@@ -112,7 +112,21 @@ public abstract class FastSerdeBase {
     LOGGER.info("For source file: " + filePath + ", and the inferred compile class path: " + compileClassPathForCurrentFile);
     int compileResult;
     try {
-      compileResult = compiler.run(null, null, null, "-cp", compileClassPathForCurrentFile, filePath);
+      /*
+       * Disable sharedNameTable in runtime complication
+       *
+       * The SharedNameTable was introduced to speed up Java complication by using soft references
+       * to avoid re-allocations. However, in fast-avro runtime compilation, sharedNameTable brings
+       * severe Memory and GC issue. When fast-avro needed to process a large number of different
+       * schemas, SharedNameTable objects will consume huge memory and cannot be freed.
+       *
+       * SharedNameTable should be disabled for runtime compilation by “-XDuseUnsharedTable” config.
+       * The memory issue by SharedNameTable does not exist in Java 11 (tested JDK-11_0_5-zulu
+       * and JDK-11_0_5-zing_19_12_100_0_1), thus the change can be reverted in java 11.
+       * Keeping this config also does not bring any downgrade.
+       *
+       */
+      compileResult = compiler.run(null, null, null, "-cp", compileClassPathForCurrentFile, filePath, "-XDuseUnsharedTable");
     } catch (Exception e) {
       throw new FastSerdeGeneratorException("Unable to compile:" + className, e);
     }
