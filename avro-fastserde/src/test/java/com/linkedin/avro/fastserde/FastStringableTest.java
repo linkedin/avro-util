@@ -14,11 +14,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Collections;
 import org.apache.avro.Schema;
-import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.io.Encoder;
@@ -46,9 +43,7 @@ public class FastStringableTest {
 
   @BeforeTest(groups = {"deserializationTest", "serializationTest"})
   public void prepare() throws Exception {
-    Path tempPath = Files.createTempDirectory("generated");
-    tempDir = tempPath.toFile();
-
+    tempDir = getCodeGenDirectory();
     classLoader = URLClassLoader.newInstance(new URL[]{tempDir.toURI().toURL()},
         FastDeserializerDefaultsTest.class.getClassLoader());
   }
