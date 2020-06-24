@@ -19,7 +19,6 @@ import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.io.Decoder;
-import org.apache.avro.util.Utf8;
 
 public class StringableRecord_SpecificDeserializer_1822942669987229249_1822942669987229249
     implements FastDeserializer<com.linkedin.avro.fastserde.generated.avro.StringableRecord>
@@ -38,9 +37,9 @@ public class StringableRecord_SpecificDeserializer_1822942669987229249_182294266
             return deserializeStringableRecord0((reuse), (decoder));
         } catch (NumberFormatException e) {
             throw new AvroRuntimeException(e);
-        } catch (URISyntaxException e) {
-            throw new AvroRuntimeException(e);
         } catch (MalformedURLException e) {
+            throw new AvroRuntimeException(e);
+        } catch (URISyntaxException e) {
             throw new AvroRuntimeException(e);
         }
     }
@@ -54,31 +53,11 @@ public class StringableRecord_SpecificDeserializer_1822942669987229249_182294266
         } else {
             StringableRecord = new com.linkedin.avro.fastserde.generated.avro.StringableRecord();
         }
-        if (StringableRecord.get(0) instanceof Utf8) {
-            StringableRecord.put(0, new BigInteger((decoder).readString(((Utf8) StringableRecord.get(0))).toString()));
-        } else {
-            StringableRecord.put(0, new BigInteger((decoder).readString(null).toString()));
-        }
-        if (StringableRecord.get(1) instanceof Utf8) {
-            StringableRecord.put(1, new BigDecimal((decoder).readString(((Utf8) StringableRecord.get(1))).toString()));
-        } else {
-            StringableRecord.put(1, new BigDecimal((decoder).readString(null).toString()));
-        }
-        if (StringableRecord.get(2) instanceof Utf8) {
-            StringableRecord.put(2, new URI((decoder).readString(((Utf8) StringableRecord.get(2))).toString()));
-        } else {
-            StringableRecord.put(2, new URI((decoder).readString(null).toString()));
-        }
-        if (StringableRecord.get(3) instanceof Utf8) {
-            StringableRecord.put(3, new URL((decoder).readString(((Utf8) StringableRecord.get(3))).toString()));
-        } else {
-            StringableRecord.put(3, new URL((decoder).readString(null).toString()));
-        }
-        if (StringableRecord.get(4) instanceof Utf8) {
-            StringableRecord.put(4, new File((decoder).readString(((Utf8) StringableRecord.get(4))).toString()));
-        } else {
-            StringableRecord.put(4, new File((decoder).readString(null).toString()));
-        }
+        StringableRecord.put(0, new BigInteger((decoder.readString())));
+        StringableRecord.put(1, new BigDecimal((decoder.readString())));
+        StringableRecord.put(2, new URI((decoder.readString())));
+        StringableRecord.put(3, new URL((decoder.readString())));
+        StringableRecord.put(4, new File((decoder.readString())));
         List<URL> urlArray0 = null;
         long chunkLen0 = (decoder.readArrayStart());
         if (chunkLen0 > 0) {
@@ -94,11 +73,7 @@ public class StringableRecord_SpecificDeserializer_1822942669987229249_182294266
                     if (StringableRecord.get(5) instanceof GenericArray) {
                         urlArrayArrayElementReuseVar0 = ((GenericArray) StringableRecord.get(5)).peek();
                     }
-                    if (urlArrayArrayElementReuseVar0 instanceof Utf8) {
-                        urlArray0 .add(new URL((decoder).readString(((Utf8) urlArrayArrayElementReuseVar0)).toString()));
-                    } else {
-                        urlArray0 .add(new URL((decoder).readString(null).toString()));
-                    }
+                    urlArray0 .add(new URL((decoder.readString())));
                 }
                 chunkLen0 = (decoder.arrayNext());
             } while (chunkLen0 > 0);
@@ -121,8 +96,8 @@ public class StringableRecord_SpecificDeserializer_1822942669987229249_182294266
             }
             do {
                 for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {
-                    URL key0 = new URL((decoder.readString(null).toString()));
-                    urlMap0 .put(key0, new BigInteger((decoder).readString(null).toString()));
+                    URL key0 = new URL((decoder.readString()));
+                    urlMap0 .put(key0, new BigInteger((decoder.readString())));
                 }
                 chunkLen1 = (decoder.mapNext());
             } while (chunkLen1 > 0);
@@ -144,11 +119,7 @@ public class StringableRecord_SpecificDeserializer_1822942669987229249_182294266
         } else {
             StringableSubRecord = new com.linkedin.avro.fastserde.generated.avro.StringableSubRecord();
         }
-        if (StringableSubRecord.get(0) instanceof Utf8) {
-            StringableSubRecord.put(0, new URI((decoder).readString(((Utf8) StringableSubRecord.get(0))).toString()));
-        } else {
-            StringableSubRecord.put(0, new URI((decoder).readString(null).toString()));
-        }
+        StringableSubRecord.put(0, new URI((decoder.readString())));
         return StringableSubRecord;
     }
 

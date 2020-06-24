@@ -16,6 +16,10 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collections;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericDatumReader;
+import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.DatumReader;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.io.Encoder;
@@ -101,7 +105,7 @@ public class FastStringableTest {
 
       // when
       StringableRecord afterDecoding =
-          specificDataFromDecoder(StringableRecord.SCHEMA$, writeWithFastAvro(record, StringableRecord.SCHEMA$));
+          specificDataFromDecoder(StringableRecord.SCHEMA$, writeWithFastAvro(record, StringableRecord.SCHEMA$, true));
 
       // then
       if (Utils.isAvro14()) {
@@ -133,6 +137,30 @@ public class FastStringableTest {
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
+  public void javaStringPropertyTest(Boolean whetherUseFastDeserializer) throws IOException {
+    Schema javaStringSchema = Schema.parse("{\n" + "  \"type\":\"string\",\n" + "  \"avro.java.string\":\"String\"} ");
+    Schema schema = createRecord(createField("testString", javaStringSchema));
+
+    GenericRecord record = new GenericData.Record(schema);
+    record.put("testString", "aaa");
+
+    Decoder decoder = writeWithFastAvro(record, schema, false);
+
+    GenericRecord afterDecoding;
+    if (whetherUseFastDeserializer) {
+      afterDecoding = readWithFastAvro(schema, schema, decoder, false);
+    } else {
+      afterDecoding = readWithSlowAvro(schema, schema, decoder, false);
+    }
+
+    if (Utils.isAvro14()){
+      Assert.assertTrue(afterDecoding.get(0) instanceof Utf8, "Utf8 is expected, but got: " + afterDecoding.get(0).getClass());
+    }  else {
+      Assert.assertTrue(afterDecoding.get(0) instanceof String, "String is expected, but got: " + afterDecoding.get(0).getClass());
+    }
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
   public void deserializeStringableFields(Boolean whetherUseFastDeserializer)
       throws URISyntaxException, MalformedURLException {
     // given
@@ -148,10 +176,10 @@ public class FastStringableTest {
     StringableRecord afterDecoding = null;
     if (whetherUseFastDeserializer) {
       afterDecoding =
-          readWithFastAvro(StringableRecord.SCHEMA$, StringableRecord.SCHEMA$, specificDataAsDecoder(record));
+          readWithFastAvro(StringableRecord.SCHEMA$, StringableRecord.SCHEMA$, specificDataAsDecoder(record), true);
     } else {
       afterDecoding =
-          readWithSlowAvro(StringableRecord.SCHEMA$, StringableRecord.SCHEMA$, specificDataAsDecoder(record));
+          readWithSlowAvro(StringableRecord.SCHEMA$, StringableRecord.SCHEMA$, specificDataAsDecoder(record), true);
     }
 
     // then
@@ -182,14 +210,19 @@ public class FastStringableTest {
     }
   }
 
-  public <T> Decoder writeWithFastAvro(T data, Schema schema) {
+  public <T> Decoder writeWithFastAvro(T data, Schema schema, boolean specific) {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     Encoder binaryEncoder = AvroCompatibilityHelper.newBinaryEncoder(baos, true, null);
 
     try {
-      FastSpecificSerializerGenerator<T> fastSpecificSerializerGenerator =
-          new FastSpecificSerializerGenerator<>(schema, tempDir, classLoader, null);
-      FastSerializer<T> fastSerializer = fastSpecificSerializerGenerator.generateSerializer();
+      FastSerializer<T> fastSerializer;
+      if (specific) {
+        FastSpecificSerializerGenerator<T> fastSpecificSerializerGenerator = new FastSpecificSerializerGenerator<>(schema, tempDir, classLoader, null);
+        fastSerializer = fastSpecificSerializerGenerator.generateSerializer();
+      } else {
+        FastGenericSerializerGenerator<T> fastGenericSerializerGenerator = new FastGenericSerializerGenerator<>(schema, tempDir, classLoader, null);
+        fastSerializer = fastGenericSerializerGenerator.generateSerializer();
+      }
       fastSerializer.serialize(data, binaryEncoder);
       binaryEncoder.flush();
     } catch (Exception e) {
@@ -199,10 +232,13 @@ public class FastStringableTest {
     return DecoderFactory.defaultFactory().createBinaryDecoder(baos.toByteArray(), null);
   }
 
-  public <T> T readWithFastAvro(Schema writerSchema, Schema readerSchema, Decoder decoder) {
-    FastDeserializer<T> deserializer =
-        new FastSpecificDeserializerGenerator<T>(writerSchema, readerSchema, tempDir, classLoader,
-            null).generateDeserializer();
+  public <T> T readWithFastAvro(Schema writerSchema, Schema readerSchema, Decoder decoder, boolean specific) {
+    FastDeserializer<T> deserializer;
+    if (specific) {
+      deserializer = new FastSpecificDeserializerGenerator<T>(writerSchema, readerSchema, tempDir, classLoader, null).generateDeserializer();
+    } else {
+      deserializer = new FastGenericDeserializerGenerator<T>(writerSchema, readerSchema, tempDir, classLoader, null).generateDeserializer();
+    }
     try {
       return deserializer.deserialize(decoder);
     } catch (Exception e) {
@@ -210,8 +246,13 @@ public class FastStringableTest {
     }
   }
 
-  private <T> T readWithSlowAvro(Schema readerSchema, Schema writerSchema, Decoder decoder) {
-    org.apache.avro.io.DatumReader<T> datumReader = new SpecificDatumReader<>(writerSchema, readerSchema);
+  private <T> T readWithSlowAvro(Schema readerSchema, Schema writerSchema, Decoder decoder, boolean specific) {
+    DatumReader<T> datumReader;
+    if (specific) {
+      datumReader = new SpecificDatumReader<>(writerSchema, readerSchema);
+    } else {
+      datumReader = new GenericDatumReader<>(writerSchema, readerSchema);
+    }
     try {
       return datumReader.read(null, decoder);
     } catch (IOException e) {
