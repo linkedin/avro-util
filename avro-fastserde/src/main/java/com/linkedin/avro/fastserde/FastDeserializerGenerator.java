@@ -274,7 +274,6 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     } else {
       result = null;
     }
-
     for (Schema.Field field : recordWriterSchema.getFields()) {
       FieldAction action = seekFieldAction(recordAction.getShouldRead(), field, actionIterator);
       if (action.getSymbol() == END_SYMBOL) {
@@ -297,7 +296,6 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
         }
         fieldReuseSupplier = () -> result.invoke("get").arg(JExpr.lit(readerFieldPos));
       }
-
       if (SchemaAssistant.isComplexType(field.schema())) {
         processComplexType(fieldSchemaVar, field.name(), field.schema(), readerFieldSchema, methodBody, action,
             putExpressionInRecord, fieldReuseSupplier);
@@ -417,7 +415,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
             Map.Entry<String, JsonNode> mapEntry = it.next();
             JExpression mapKeyExpr;
             if (SchemaAssistant.hasStringableKey(schema)) {
-              mapKeyExpr = JExpr._new(schemaAssistant.keyClassFromMapSchema(schema)).arg(mapEntry.getKey());
+              mapKeyExpr = JExpr._new(schemaAssistant.findStringClass(schema)).arg(mapEntry.getKey());
             } else {
               mapKeyExpr = JExpr._new(codeModel.ref(Utf8.class)).arg(mapEntry.getKey());
             }
@@ -675,6 +673,25 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     }
   }
 
+  /**
+   * Return a JExpression, which will read a string from decoder and construct a stringable object.
+   * @param stringbleClass
+   * @return
+   */
+  private JExpression readStringableExpression(JClass stringbleClass) {
+    JExpression stringableArgExpr;
+    if (Utils.isAvro14()) {
+      /**
+       * {@link BinaryDecoder#readString()} is not available in avro-1.4.
+       */
+      stringableArgExpr = JExpr.direct(DECODER + ".readString(null).toString()");
+    } else {
+      // More GC-efficient
+      stringableArgExpr = JExpr.direct(DECODER + ".readString()");
+    }
+    return JExpr._new(stringbleClass).arg(stringableArgExpr);
+  }
+
   private void processMap(JVar mapSchemaVar, final String name, final Schema mapSchema, final Schema readerMapSchema,
       JBlock parentBody, FieldAction action, BiConsumer<JBlock, JExpression> putMapIntoParent,
       Supplier<JExpression> reuseSupplier) {
@@ -745,11 +762,12 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     forLoop.update(counter.incr());
     JBlock forBody = forLoop.body();
 
-    JClass keyClass = schemaAssistant.keyClassFromMapSchema(mapSchema);
-    JExpression keyValueExpression = JExpr.direct(DECODER + ".readString(null)");
+    JClass keyClass = schemaAssistant.findStringClass(mapSchema);
+    JExpression keyValueExpression;
     if (SchemaAssistant.hasStringableKey(mapSchema)) {
-      keyValueExpression = JExpr.direct(DECODER + ".readString(null).toString()");
-      keyValueExpression = JExpr._new(keyClass).arg(keyValueExpression);
+      keyValueExpression = readStringableExpression(keyClass);
+    } else {
+      keyValueExpression = JExpr.direct(DECODER + ".readString(null)");
     }
 
     JVar key = forBody.decl(keyClass, getUniqueName("key"), keyValueExpression);
@@ -897,45 +915,20 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
   private void processString(Schema schema, JBlock body, FieldAction action,
       BiConsumer<JBlock, JExpression> putValueIntoParent, Supplier<JExpression> reuseSupplier) {
     if (action.getShouldRead()) {
-      if (reuseSupplier.get().equals(JExpr._null())) {
-        JExpression readStringInvocation;
-
-        if (schema.getType().equals(Schema.Type.STRING) && !useGenericTypes && SchemaAssistant.isStringable(schema)) {
-          readStringInvocation = JExpr._new(schemaAssistant.classFromSchema(schema))
-              .arg(JExpr.invoke(JExpr.direct(DECODER), "readString").arg(JExpr._null()).
-                  invoke("toString"));
+      JClass stringClass = schemaAssistant.findStringClass(schema);
+      if (stringClass.equals(codeModel.ref(Utf8.class))) {
+        if (reuseSupplier.equals(EMPTY_SUPPLIER)) {
+          putValueIntoParent.accept(body, JExpr.invoke(JExpr.direct(DECODER), "readString").arg(JExpr._null()));
         } else {
-          readStringInvocation = JExpr.invoke(JExpr.direct(DECODER), "readString").arg(JExpr._null());
+          ifCodeGen(body, reuseSupplier.get()._instanceof(codeModel.ref(Utf8.class)),
+              thenBlock -> putValueIntoParent.accept(thenBlock, JExpr.invoke(JExpr.direct(DECODER), "readString").arg(JExpr.cast(codeModel.ref(Utf8.class), reuseSupplier.get()))),
+              elseBlock -> putValueIntoParent.accept(elseBlock,
+                  JExpr.invoke(JExpr.direct(DECODER), "readString").arg(JExpr._null())));
         }
-        putValueIntoParent.accept(body, readStringInvocation);
+      } else if (stringClass.equals(codeModel.ref(String.class))) {
+        putValueIntoParent.accept(body, JExpr.invoke(JExpr.direct(DECODER), "readString"));
       } else {
-        ifCodeGen(body,
-            reuseSupplier.get()._instanceof(codeModel.ref("org.apache.avro.util.Utf8")),
-            thenBlock -> {
-              JExpression readStringInvocation;
-              if (!useGenericTypes && schema.getType().equals(Schema.Type.STRING) && SchemaAssistant.isStringable(
-                  schema)) {
-                readStringInvocation = JExpr._new(schemaAssistant.classFromSchema(schema))
-                    .arg(JExpr.invoke(JExpr.direct(DECODER), "readString").
-                        arg(JExpr.cast(codeModel.ref(Utf8.class), reuseSupplier.get())).invoke("toString"));
-              } else {
-                readStringInvocation = JExpr.invoke(JExpr.direct(DECODER), "readString").arg(JExpr.cast(codeModel.ref(Utf8.class), reuseSupplier.get()));
-              }
-              putValueIntoParent.accept(thenBlock, readStringInvocation);
-            },
-            elseBlock -> {
-              JExpression readStringInvocation;
-              if (!useGenericTypes && schema.getType().equals(Schema.Type.STRING) && SchemaAssistant.isStringable(
-                  schema)) {
-                readStringInvocation = JExpr._new(schemaAssistant.classFromSchema(schema))
-                    .arg(JExpr.invoke(JExpr.direct(DECODER), "readString").
-                        arg(JExpr._null()).invoke("toString"));
-              } else {
-                readStringInvocation = JExpr.invoke(JExpr.direct(DECODER), "readString").arg(JExpr._null());
-              }
-              putValueIntoParent.accept(elseBlock, readStringInvocation);
-            }
-        );
+        putValueIntoParent.accept(body, readStringableExpression(stringClass));
       }
     } else {
       body.directStatement(DECODER + ".skipString();");

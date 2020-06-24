@@ -198,10 +198,8 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
   }
 
   private void processMap(final Schema mapSchema, JExpression mapExpr, JBlock body) {
-
     final JClass mapClass = schemaAssistant.classFromSchema(mapSchema);
-
-    JClass keyClass = schemaAssistant.keyClassFromMapSchema(mapSchema);
+    JClass keyClass = schemaAssistant.findStringClass(mapSchema);
 
     body.invoke(JExpr.direct(ENCODER), "writeMapStart");
 

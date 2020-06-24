@@ -5,11 +5,6 @@ import com.linkedin.avro.api.PrimitiveDoubleList;
 import com.linkedin.avro.api.PrimitiveFloatList;
 import com.linkedin.avro.api.PrimitiveIntList;
 import com.linkedin.avro.api.PrimitiveLongList;
-import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveBooleanList;
-import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveDoubleList;
-import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveFloatList;
-import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveIntList;
-import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveLongList;
 import com.linkedin.avro.fastserde.primitive.PrimitiveBooleanArrayList;
 import com.linkedin.avro.fastserde.primitive.PrimitiveDoubleArrayList;
 import com.linkedin.avro.fastserde.primitive.PrimitiveFloatArrayList;
@@ -30,11 +25,13 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import org.apache.avro.Schema;
@@ -42,10 +39,13 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 
 
+
 public class SchemaAssistant {
   // The following constants are not available in avro-1.4
   public static final String CLASS_PROP = "java-class";
   public static final String KEY_CLASS_PROP = "java-key-class";
+  public static final String STRING_PROP = "avro.java.string";
+  public static final String STRING_TYPE_STRING = "String";
 
   private final JCodeModel codeModel;
   private final boolean useGenericTypes;
@@ -63,7 +63,10 @@ public class SchemaAssistant {
   public SchemaAssistant(JCodeModel codeModel, boolean useGenericTypes, Class defaultStringClass) {
     this.codeModel = codeModel;
     this.useGenericTypes = useGenericTypes;
-    this.exceptionsFromStringable = new HashSet<>();
+    /**
+     * Use {@link TreeSet} here to make sure the code gen is deterministic.
+     */
+    this.exceptionsFromStringable = new TreeSet<>(Comparator.comparing(Class::getCanonicalName));
     this.defaultStringType = codeModel.ref(defaultStringClass);
   }
 
@@ -201,17 +204,6 @@ public class SchemaAssistant {
     }
   }
 
-  public JClass keyClassFromMapSchema(Schema schema) {
-    if (!Schema.Type.MAP.equals(schema.getType())) {
-      throw new SchemaAssistantException("Map schema was expected, instead got:" + schema.getType()); //.getName());
-    }
-    if (hasStringableKey(schema) && !useGenericTypes) {
-      extendExceptionsFromStringable(schema.getProp(KEY_CLASS_PROP));
-      return codeModel.ref(schema.getProp(KEY_CLASS_PROP));
-    } else {
-      return defaultStringType();
-    }
-  }
 
   private JClass valueClassFromMapSchema(Schema schema) {
     if (!Schema.Type.MAP.equals(schema.getType())) {
@@ -317,7 +309,7 @@ public class SchemaAssistant {
           outputClass = codeModel.ref(Map.class);
         }
         if (!rawType) {
-          outputClass = outputClass.narrow(keyClassFromMapSchema(schema), valueClassFromMapSchema(schema));
+          outputClass = outputClass.narrow(findStringClass(schema), valueClassFromMapSchema(schema));
         }
         break;
       case UNION:
@@ -346,12 +338,7 @@ public class SchemaAssistant {
         outputClass = codeModel.ref(Long.class);
         break;
       case STRING:
-        if (!Utils.isAvro14() && isStringable(schema) && !useGenericTypes) {
-          outputClass = codeModel.ref(schema.getProp(CLASS_PROP));
-          extendExceptionsFromStringable(schema.getProp(CLASS_PROP));
-        } else {
-          outputClass = defaultStringType();
-        }
+        outputClass = findStringClass(schema);
         break;
       case BYTES:
         outputClass = codeModel.ref(ByteBuffer.class);
@@ -368,6 +355,46 @@ public class SchemaAssistant {
      */
     fullyQualifiedClassNameSet.add(outputClass.erasure().fullName());
 
+    return outputClass;
+  }
+
+  /**
+   * Infer String class for the passed schema.
+   * If the current Avro lib is avro-1.4, this function will return default String type directly.
+   * Otherwise, according to Avro specification, this function only supports the following property to specify
+   * Stringable class while using Specific deserializer:
+   * 1. {@link Schema.Type#STRING} : {@link #CLASS_PROP};
+   * 2. {@link Schema.Type#MAP} :  {@link #KEY_CLASS_PROP};
+   *
+   * If the above property is absent for Specific deserializer or the current deserializer is generic,
+   * this function will try to look at {@link #STRING_PROP} to decide whether it should use {@link String}
+   * or the default String type.
+   * @param schema
+   * @return
+   */
+  public JClass findStringClass(Schema schema) {
+    Schema.Type schemaType = schema.getType();
+    if (!schemaType.equals(Schema.Type.STRING) && !schemaType.equals(Schema.Type.MAP)) {
+      throw new SchemaAssistantException("Function `findStringClass` only supports schema types: " + Schema.Type.STRING + " and " + Schema.Type.MAP);
+    }
+    JClass outputClass = defaultStringType();
+    if (!Utils.isAvro14()) {
+      String stringClassProp;
+      if (schemaType.equals(Schema.Type.STRING)) {
+        stringClassProp = schema.getProp(CLASS_PROP);
+      } else {
+        stringClassProp = schema.getProp(KEY_CLASS_PROP);
+      }
+      if (!useGenericTypes && null != stringClassProp) {
+          outputClass = codeModel.ref(stringClassProp);
+          extendExceptionsFromStringable(schema.getProp(CLASS_PROP));
+      } else {
+        String stringProp = schema.getProp(STRING_PROP);
+        if (null != stringProp && stringProp.equals(STRING_TYPE_STRING)) {
+          outputClass = codeModel.ref(String.class);
+        }
+      }
+    }
     return outputClass;
   }
 
