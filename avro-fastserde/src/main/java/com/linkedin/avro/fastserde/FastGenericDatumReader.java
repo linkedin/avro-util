@@ -4,14 +4,15 @@ import java.io.IOException;
 import org.apache.avro.Schema;
 import org.apache.avro.io.DatumReader;
 import org.apache.avro.io.Decoder;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * Generic {@link DatumReader} backed by generated deserialization code.
  */
 public class FastGenericDatumReader<T> implements DatumReader<T> {
-  private static final Logger LOGGER = Logger.getLogger(FastGenericDatumReader.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(FastGenericDatumReader.class);
 
   private Schema writerSchema;
   private Schema readerSchema;
