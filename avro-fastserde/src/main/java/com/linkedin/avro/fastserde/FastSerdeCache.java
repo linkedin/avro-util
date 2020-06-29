@@ -26,7 +26,8 @@ import org.apache.avro.io.Decoder;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificDatumWriter;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -39,7 +40,7 @@ public final class FastSerdeCache {
   public static final String CLASSPATH = "avro.fast.serde.classpath";
   public static final String CLASSPATH_SUPPLIER = "avro.fast.serde.classpath.supplier";
 
-  private static final Logger LOGGER = Logger.getLogger(FastSerdeCache.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(FastSerdeCache.class);
 
   private static volatile FastSerdeCache _INSTANCE;
 

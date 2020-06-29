@@ -4,14 +4,15 @@ import java.io.IOException;
 import org.apache.avro.Schema;
 import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.Encoder;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * Generic {@link DatumWriter} backed by generated serialization code.
  */
 public class FastGenericDatumWriter<T> implements DatumWriter<T> {
-  private static final Logger LOGGER = Logger.getLogger(FastGenericDatumWriter.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(FastGenericDatumWriter.class);
   private final FastSerdeCache cache;
   private Schema writerSchema;
   private FastSerializer<T> cachedFastSerializer;

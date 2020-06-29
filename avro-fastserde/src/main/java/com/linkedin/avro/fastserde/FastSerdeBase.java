@@ -18,7 +18,8 @@ import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 import org.apache.avro.Schema;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.linkedin.avro.fastserde.Utils.*;
 
@@ -27,7 +28,7 @@ import static com.linkedin.avro.fastserde.Utils.*;
  * Utilities used by both serialization and deserialization code.
  */
 public abstract class FastSerdeBase {
-  private static final Logger LOGGER = Logger.getLogger(FastSerdeBase.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(FastSerdeBase.class);
   protected static final String SEP = "_";
   public static final String GENERATED_PACKAGE_NAME_PREFIX = "com.linkedin.avro.fastserde.generated.";
 
