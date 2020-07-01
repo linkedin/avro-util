@@ -38,7 +38,7 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
 
   public FastSerializerGenerator(boolean useGenericTypes, Schema schema, File destination, ClassLoader classLoader,
       String compileClassPath) {
-    super("serialization", useGenericTypes, CharSequence.class, destination, classLoader, compileClassPath);
+    super("serialization", useGenericTypes, CharSequence.class, destination, classLoader, compileClassPath, true);
     this.schema = schema;
   }
 

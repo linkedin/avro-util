@@ -48,9 +48,9 @@ public abstract class FastSerdeBase {
   protected JDefinedClass generatedClass;
 
   public FastSerdeBase(String description, boolean useGenericTypes, Class defaultStringClass, File destination, ClassLoader classLoader,
-      String compileClassPath) {
+      String compileClassPath, boolean isForSerializer) {
     this.useGenericTypes = useGenericTypes;
-    this.schemaAssistant = new SchemaAssistant(codeModel, useGenericTypes, defaultStringClass);
+    this.schemaAssistant = new SchemaAssistant(codeModel, useGenericTypes, defaultStringClass, isForSerializer);
     this.destination = destination;
     this.classLoader = classLoader;
     this.compileClassPath = (null == compileClassPath ? "" : compileClassPath);
@@ -129,11 +129,11 @@ public abstract class FastSerdeBase {
        */
       compileResult = compiler.run(null, null, null, "-cp", compileClassPathForCurrentFile, filePath, "-XDuseUnsharedTable");
     } catch (Exception e) {
-      throw new FastSerdeGeneratorException("Unable to compile:" + className, e);
+      throw new FastSerdeGeneratorException("Unable to compile:" + className + " from source file: " + filePath, e);
     }
 
     if (compileResult != 0) {
-      throw new FastSerdeGeneratorException("Unable to compile:" + className);
+      throw new FastSerdeGeneratorException("Unable to compile:" + className + " from source file: " + filePath);
     }
 
     return classLoader.loadClass(generatedPackageName + "." + className);

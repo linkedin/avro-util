@@ -34,6 +34,9 @@ import static com.linkedin.avro.fastserde.FastSerdeTestsSupport.*;
 
 
 public class FastStringableTest {
+  private static final Schema javaStringSchema = Schema.parse("{\n" + "  \"type\":\"string\",\n" + "  \"avro.java.string\":\"String\"} ");
+
+
   private File tempDir;
   private ClassLoader classLoader;
 
@@ -138,7 +141,6 @@ public class FastStringableTest {
 
   @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
   public void javaStringPropertyTest(Boolean whetherUseFastDeserializer) throws IOException {
-    Schema javaStringSchema = Schema.parse("{\n" + "  \"type\":\"string\",\n" + "  \"avro.java.string\":\"String\"} ");
     Schema schema = createRecord(createField("testString", javaStringSchema));
 
     GenericRecord record = new GenericData.Record(schema);
@@ -157,6 +159,35 @@ public class FastStringableTest {
       Assert.assertTrue(afterDecoding.get(0) instanceof Utf8, "Utf8 is expected, but got: " + afterDecoding.get(0).getClass());
     }  else {
       Assert.assertTrue(afterDecoding.get(0) instanceof String, "String is expected, but got: " + afterDecoding.get(0).getClass());
+    }
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
+  public void javaStringPropertyInsideUnionTest(Boolean whetherUseFastDeserializer) {
+    Schema schema = createRecord(
+        createField("name", javaStringSchema),
+        createUnionField("favorite_number", Schema.create(Schema.Type.INT)),
+        createUnionField("favorite_color", javaStringSchema)
+    );
+    GenericRecord record  = new GenericData.Record(schema);
+    record.put("name", "test_user");
+    record.put("favorite_number", 10);
+    record.put("favorite_color", "blue");
+    Decoder decoder = writeWithFastAvro(record, schema, false);
+
+    GenericRecord afterDecoding;
+    if (whetherUseFastDeserializer) {
+      afterDecoding = readWithFastAvro(schema, schema, decoder, false);
+    } else {
+      afterDecoding = readWithSlowAvro(schema, schema, decoder, false);
+    }
+
+    if (Utils.isAvro14()){
+      Assert.assertTrue(afterDecoding.get(0) instanceof Utf8, "Utf8 is expected, but got: " + afterDecoding.get(0).getClass());
+      Assert.assertTrue(afterDecoding.get(2) instanceof Utf8, "Utf8 is expected, but got: " + afterDecoding.get(2).getClass());
+    }  else {
+      Assert.assertTrue(afterDecoding.get(0) instanceof String, "String is expected, but got: " + afterDecoding.get(0).getClass());
+      Assert.assertTrue(afterDecoding.get(2) instanceof String, "String is expected, but got: " + afterDecoding.get(2).getClass());
     }
   }
 
