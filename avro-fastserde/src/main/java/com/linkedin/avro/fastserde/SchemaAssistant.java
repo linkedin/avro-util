@@ -59,8 +59,14 @@ public class SchemaAssistant {
    * the libraries, which define those classes, and put them in the compile classpath.
    */
   private final Set<String> fullyQualifiedClassNameSet = new HashSet<>();
+  /**
+   * Whether this schema assistant is for serializer generation or not.
+   * The reason to differentiate serializer from de-serializer is that for some Avro features, such as java string property,
+   * it is not meaningful for serializer in generic mode.
+   */
+  private final boolean isForSerializer;
 
-  public SchemaAssistant(JCodeModel codeModel, boolean useGenericTypes, Class defaultStringClass) {
+  public SchemaAssistant(JCodeModel codeModel, boolean useGenericTypes, Class defaultStringClass, boolean isForSerializer) {
     this.codeModel = codeModel;
     this.useGenericTypes = useGenericTypes;
     /**
@@ -68,6 +74,7 @@ public class SchemaAssistant {
      */
     this.exceptionsFromStringable = new TreeSet<>(Comparator.comparing(Class::getCanonicalName));
     this.defaultStringType = codeModel.ref(defaultStringClass);
+    this.isForSerializer = isForSerializer;
   }
 
   protected Set<String> getUsedFullyQualifiedClassNameSet() {
@@ -378,6 +385,12 @@ public class SchemaAssistant {
       throw new SchemaAssistantException("Function `findStringClass` only supports schema types: " + Schema.Type.STRING + " and " + Schema.Type.MAP);
     }
     JClass outputClass = defaultStringType();
+    /**
+     * When generating fast-serializer in generic mode, those java string property doesn't have any effect.
+     */
+    if (useGenericTypes && isForSerializer) {
+      return outputClass;
+    }
     if (!Utils.isAvro14()) {
       String stringClassProp;
       if (schemaType.equals(Schema.Type.STRING)) {
