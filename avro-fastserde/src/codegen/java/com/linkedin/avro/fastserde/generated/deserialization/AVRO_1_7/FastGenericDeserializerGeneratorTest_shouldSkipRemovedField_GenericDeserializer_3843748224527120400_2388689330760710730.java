@@ -57,38 +57,42 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex0 == 1) {
-            if (FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(0) instanceof Utf8) {
-                FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(0, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(0))));
-            } else {
-                FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(0, (decoder).readString(null));
+        } else {
+            if (unionIndex0 == 1) {
+                if (FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(0) instanceof Utf8) {
+                    FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(0, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(0))));
+                } else {
+                    FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(0, (decoder).readString(null));
+                }
             }
         }
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex1 == 1) {
-            decoder.skipString();
+        } else {
+            if (unionIndex1 == 1) {
+                decoder.skipString();
+            }
         }
         int unionIndex2 = (decoder.readIndex());
         if (unionIndex2 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex2 == 1) {
-            if (FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(1) instanceof Utf8) {
-                FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(1, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(1))));
-            } else {
-                FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(1, (decoder).readString(null));
+        } else {
+            if (unionIndex2 == 1) {
+                if (FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(1) instanceof Utf8) {
+                    FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(1, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(1))));
+                } else {
+                    FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(1, (decoder).readString(null));
+                }
             }
         }
         int unionIndex3 = (decoder.readIndex());
         if (unionIndex3 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex3 == 1) {
-            FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(2, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(2), (decoder)));
+        } else {
+            if (unionIndex3 == 1) {
+                FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(2, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(2), (decoder)));
+            }
         }
         Map<Utf8, IndexedRecord> subRecordMap1 = null;
         long chunkLen0 = (decoder.readMapStart());
@@ -152,30 +156,33 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
         int unionIndex4 = (decoder.readIndex());
         if (unionIndex4 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex4 == 1) {
-            if (subRecord.get(0) instanceof Utf8) {
-                subRecord.put(0, (decoder).readString(((Utf8) subRecord.get(0))));
-            } else {
-                subRecord.put(0, (decoder).readString(null));
+        } else {
+            if (unionIndex4 == 1) {
+                if (subRecord.get(0) instanceof Utf8) {
+                    subRecord.put(0, (decoder).readString(((Utf8) subRecord.get(0))));
+                } else {
+                    subRecord.put(0, (decoder).readString(null));
+                }
             }
         }
         int unionIndex5 = (decoder.readIndex());
         if (unionIndex5 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex5 == 1) {
-            decoder.skipString();
+        } else {
+            if (unionIndex5 == 1) {
+                decoder.skipString();
+            }
         }
         int unionIndex6 = (decoder.readIndex());
         if (unionIndex6 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex6 == 1) {
-            if (subRecord.get(1) instanceof Utf8) {
-                subRecord.put(1, (decoder).readString(((Utf8) subRecord.get(1))));
-            } else {
-                subRecord.put(1, (decoder).readString(null));
+        } else {
+            if (unionIndex6 == 1) {
+                if (subRecord.get(1) instanceof Utf8) {
+                    subRecord.put(1, (decoder).readString(((Utf8) subRecord.get(1))));
+                } else {
+                    subRecord.put(1, (decoder).readString(null));
+                }
             }
         }
         return subRecord;

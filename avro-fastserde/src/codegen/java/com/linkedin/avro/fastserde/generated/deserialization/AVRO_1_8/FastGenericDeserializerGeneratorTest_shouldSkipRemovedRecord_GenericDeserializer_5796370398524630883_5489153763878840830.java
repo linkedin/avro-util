@@ -40,9 +40,10 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord_Generi
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex0 == 1) {
-            deserializesubRecord20(null, (decoder));
+        } else {
+            if (unionIndex0 == 1) {
+                deserializesubRecord20(null, (decoder));
+            }
         }
         FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.put(1, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.get(1), (decoder)));
         return FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord;

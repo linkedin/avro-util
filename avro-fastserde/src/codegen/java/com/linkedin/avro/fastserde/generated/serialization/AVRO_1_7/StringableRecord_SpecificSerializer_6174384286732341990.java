@@ -12,7 +12,7 @@ import com.linkedin.avro.fastserde.generated.avro.StringableRecord;
 import com.linkedin.avro.fastserde.generated.avro.StringableSubRecord;
 import org.apache.avro.io.Encoder;
 
-public class StringableRecord_SpecificSerializer_1822942669987229249
+public class StringableRecord_SpecificSerializer_6174384286732341990
     implements FastSerializer<StringableRecord>
 {
 
@@ -62,6 +62,14 @@ public class StringableRecord_SpecificSerializer_1822942669987229249
         serializeStringableSubRecord0(subRecord0, (encoder));
         AnotherSubRecord subRecordWithSubRecord0 = ((AnotherSubRecord) data.get(8));
         serializeAnotherSubRecord0(subRecordWithSubRecord0, (encoder));
+        String stringUnion0 = ((String) data.get(9));
+        if (stringUnion0 == null) {
+            (encoder).writeIndex(0);
+            (encoder).writeNull();
+        } else {
+            (encoder).writeIndex(1);
+            (encoder).writeString(stringUnion0);
+        }
     }
 
     @SuppressWarnings("unchecked")

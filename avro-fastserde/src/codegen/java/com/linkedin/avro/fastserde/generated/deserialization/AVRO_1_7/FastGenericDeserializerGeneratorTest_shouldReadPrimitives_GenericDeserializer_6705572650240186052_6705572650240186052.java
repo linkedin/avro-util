@@ -52,9 +52,10 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex0 == 1) {
-            FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(1, (decoder.readInt()));
+        } else {
+            if (unionIndex0 == 1) {
+                FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(1, (decoder.readInt()));
+            }
         }
         if (FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(2) instanceof Utf8) {
             FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(2, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(2))));
@@ -64,45 +65,50 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex1 == 1) {
-            if (FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(3) instanceof Utf8) {
-                FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(3, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(3))));
-            } else {
-                FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(3, (decoder).readString(null));
+        } else {
+            if (unionIndex1 == 1) {
+                if (FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(3) instanceof Utf8) {
+                    FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(3, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(3))));
+                } else {
+                    FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(3, (decoder).readString(null));
+                }
             }
         }
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(4, (decoder.readLong()));
         int unionIndex2 = (decoder.readIndex());
         if (unionIndex2 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex2 == 1) {
-            FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(5, (decoder.readLong()));
+        } else {
+            if (unionIndex2 == 1) {
+                FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(5, (decoder.readLong()));
+            }
         }
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(6, (decoder.readDouble()));
         int unionIndex3 = (decoder.readIndex());
         if (unionIndex3 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex3 == 1) {
-            FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(7, (decoder.readDouble()));
+        } else {
+            if (unionIndex3 == 1) {
+                FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(7, (decoder.readDouble()));
+            }
         }
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(8, (decoder.readFloat()));
         int unionIndex4 = (decoder.readIndex());
         if (unionIndex4 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex4 == 1) {
-            FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(9, (decoder.readFloat()));
+        } else {
+            if (unionIndex4 == 1) {
+                FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(9, (decoder.readFloat()));
+            }
         }
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(10, (decoder.readBoolean()));
         int unionIndex5 = (decoder.readIndex());
         if (unionIndex5 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex5 == 1) {
-            FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(11, (decoder.readBoolean()));
+        } else {
+            if (unionIndex5 == 1) {
+                FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(11, (decoder.readBoolean()));
+            }
         }
         if (FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(12) instanceof ByteBuffer) {
             FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(12, (decoder).readBytes(((ByteBuffer) FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(12))));
@@ -112,12 +118,13 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
         int unionIndex6 = (decoder.readIndex());
         if (unionIndex6 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex6 == 1) {
-            if (FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(13) instanceof ByteBuffer) {
-                FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(13, (decoder).readBytes(((ByteBuffer) FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(13))));
-            } else {
-                FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(13, (decoder).readBytes((null)));
+        } else {
+            if (unionIndex6 == 1) {
+                if (FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(13) instanceof ByteBuffer) {
+                    FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(13, (decoder).readBytes(((ByteBuffer) FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(13))));
+                } else {
+                    FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(13, (decoder).readBytes((null)));
+                }
             }
         }
         return FastGenericDeserializerGeneratorTest_shouldReadPrimitives;

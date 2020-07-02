@@ -44,20 +44,22 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordField_Gener
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex0 == 1) {
-            FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(0, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(0), (decoder)));
+        } else {
+            if (unionIndex0 == 1) {
+                FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(0, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(0), (decoder)));
+            }
         }
         FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(1, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(1), (decoder)));
         int unionIndex2 = (decoder.readIndex());
         if (unionIndex2 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex2 == 1) {
-            if (FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(2) instanceof Utf8) {
-                FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(2, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(2))));
-            } else {
-                FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(2, (decoder).readString(null));
+        } else {
+            if (unionIndex2 == 1) {
+                if (FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(2) instanceof Utf8) {
+                    FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(2, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(2))));
+                } else {
+                    FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(2, (decoder).readString(null));
+                }
             }
         }
         return FastGenericDeserializerGeneratorTest_shouldReadSubRecordField;
@@ -75,12 +77,13 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordField_Gener
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex1 == 1) {
-            if (subRecord.get(0) instanceof Utf8) {
-                subRecord.put(0, (decoder).readString(((Utf8) subRecord.get(0))));
-            } else {
-                subRecord.put(0, (decoder).readString(null));
+        } else {
+            if (unionIndex1 == 1) {
+                if (subRecord.get(0) instanceof Utf8) {
+                    subRecord.put(0, (decoder).readString(((Utf8) subRecord.get(0))));
+                } else {
+                    subRecord.put(0, (decoder).readString(null));
+                }
             }
         }
         return subRecord;

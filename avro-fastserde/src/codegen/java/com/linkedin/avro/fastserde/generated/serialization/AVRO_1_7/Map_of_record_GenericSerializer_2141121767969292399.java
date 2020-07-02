@@ -41,13 +41,11 @@ public class Map_of_record_GenericSerializer_2141121767969292399
             (encoder).writeIndex(0);
             (encoder).writeNull();
         } else {
-            if (field0 instanceof CharSequence) {
-                (encoder).writeIndex(1);
-                if (field0 instanceof Utf8) {
-                    (encoder).writeString(((Utf8) field0));
-                } else {
-                    (encoder).writeString(field0 .toString());
-                }
+            (encoder).writeIndex(1);
+            if (field0 instanceof Utf8) {
+                (encoder).writeString(((Utf8) field0));
+            } else {
+                (encoder).writeString(field0 .toString());
             }
         }
     }

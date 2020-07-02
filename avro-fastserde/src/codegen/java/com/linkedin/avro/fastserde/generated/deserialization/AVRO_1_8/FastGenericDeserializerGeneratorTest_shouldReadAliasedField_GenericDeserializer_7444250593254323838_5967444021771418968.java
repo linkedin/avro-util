@@ -40,23 +40,25 @@ public class FastGenericDeserializerGeneratorTest_shouldReadAliasedField_Generic
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex0 == 1) {
-            if (FastGenericDeserializerGeneratorTest_shouldReadAliasedField.get(0) instanceof Utf8) {
-                FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(0, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldReadAliasedField.get(0))));
-            } else {
-                FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(0, (decoder).readString(null));
+        } else {
+            if (unionIndex0 == 1) {
+                if (FastGenericDeserializerGeneratorTest_shouldReadAliasedField.get(0) instanceof Utf8) {
+                    FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(0, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldReadAliasedField.get(0))));
+                } else {
+                    FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(0, (decoder).readString(null));
+                }
             }
         }
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex1 == 1) {
-            if (FastGenericDeserializerGeneratorTest_shouldReadAliasedField.get(1) instanceof Utf8) {
-                FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(1, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldReadAliasedField.get(1))));
-            } else {
-                FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(1, (decoder).readString(null));
+        } else {
+            if (unionIndex1 == 1) {
+                if (FastGenericDeserializerGeneratorTest_shouldReadAliasedField.get(1) instanceof Utf8) {
+                    FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(1, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldReadAliasedField.get(1))));
+                } else {
+                    FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(1, (decoder).readString(null));
+                }
             }
         }
         return FastGenericDeserializerGeneratorTest_shouldReadAliasedField;

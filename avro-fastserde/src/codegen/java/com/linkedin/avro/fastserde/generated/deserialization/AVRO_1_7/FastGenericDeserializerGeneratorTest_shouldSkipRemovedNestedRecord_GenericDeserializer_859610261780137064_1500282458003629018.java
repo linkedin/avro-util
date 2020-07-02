@@ -57,9 +57,10 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord_
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex0 == 1) {
-            deserializesubSubRecord0(null, (decoder));
+        } else {
+            if (unionIndex0 == 1) {
+                deserializesubSubRecord0(null, (decoder));
+            }
         }
         if (subRecord.get(1) instanceof Utf8) {
             subRecord.put(1, (decoder).readString(((Utf8) subRecord.get(1))));

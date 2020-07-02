@@ -32,23 +32,19 @@ public class FastStringableTest_javaStringPropertyInsideUnionTest_GenericSeriali
             (encoder).writeIndex(0);
             (encoder).writeNull();
         } else {
-            if (favorite_number0 instanceof Integer) {
-                (encoder).writeIndex(1);
-                (encoder).writeInt(((Integer) favorite_number0));
-            }
+            (encoder).writeIndex(1);
+            (encoder).writeInt(((Integer) favorite_number0));
         }
         CharSequence favorite_color0 = ((CharSequence) data.get(2));
         if (favorite_color0 == null) {
             (encoder).writeIndex(0);
             (encoder).writeNull();
         } else {
-            if (favorite_color0 instanceof CharSequence) {
-                (encoder).writeIndex(1);
-                if (favorite_color0 instanceof Utf8) {
-                    (encoder).writeString(((Utf8) favorite_color0));
-                } else {
-                    (encoder).writeString(favorite_color0 .toString());
-                }
+            (encoder).writeIndex(1);
+            if (favorite_color0 instanceof Utf8) {
+                (encoder).writeString(((Utf8) favorite_color0));
+            } else {
+                (encoder).writeString(favorite_color0 .toString());
             }
         }
     }

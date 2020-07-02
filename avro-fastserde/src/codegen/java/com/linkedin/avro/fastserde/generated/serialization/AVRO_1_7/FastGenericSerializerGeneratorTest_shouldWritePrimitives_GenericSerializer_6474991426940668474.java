@@ -29,10 +29,8 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
             (encoder).writeIndex(0);
             (encoder).writeNull();
         } else {
-            if (testIntUnion0 instanceof Integer) {
-                (encoder).writeIndex(1);
-                (encoder).writeInt(((Integer) testIntUnion0));
-            }
+            (encoder).writeIndex(1);
+            (encoder).writeInt(((Integer) testIntUnion0));
         }
         if (data.get(2) instanceof Utf8) {
             (encoder).writeString(((Utf8) data.get(2)));
@@ -44,13 +42,11 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
             (encoder).writeIndex(0);
             (encoder).writeNull();
         } else {
-            if (testStringUnion0 instanceof CharSequence) {
-                (encoder).writeIndex(1);
-                if (testStringUnion0 instanceof Utf8) {
-                    (encoder).writeString(((Utf8) testStringUnion0));
-                } else {
-                    (encoder).writeString(testStringUnion0 .toString());
-                }
+            (encoder).writeIndex(1);
+            if (testStringUnion0 instanceof Utf8) {
+                (encoder).writeString(((Utf8) testStringUnion0));
+            } else {
+                (encoder).writeString(testStringUnion0 .toString());
             }
         }
         (encoder).writeLong(((Long) data.get(4)));
@@ -59,10 +55,8 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
             (encoder).writeIndex(0);
             (encoder).writeNull();
         } else {
-            if (testLongUnion0 instanceof Long) {
-                (encoder).writeIndex(1);
-                (encoder).writeLong(((Long) testLongUnion0));
-            }
+            (encoder).writeIndex(1);
+            (encoder).writeLong(((Long) testLongUnion0));
         }
         (encoder).writeDouble(((Double) data.get(6)));
         Double testDoubleUnion0 = ((Double) data.get(7));
@@ -70,10 +64,8 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
             (encoder).writeIndex(0);
             (encoder).writeNull();
         } else {
-            if (testDoubleUnion0 instanceof Double) {
-                (encoder).writeIndex(1);
-                (encoder).writeDouble(((Double) testDoubleUnion0));
-            }
+            (encoder).writeIndex(1);
+            (encoder).writeDouble(((Double) testDoubleUnion0));
         }
         (encoder).writeFloat(((Float) data.get(8)));
         Float testFloatUnion0 = ((Float) data.get(9));
@@ -81,10 +73,8 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
             (encoder).writeIndex(0);
             (encoder).writeNull();
         } else {
-            if (testFloatUnion0 instanceof Float) {
-                (encoder).writeIndex(1);
-                (encoder).writeFloat(((Float) testFloatUnion0));
-            }
+            (encoder).writeIndex(1);
+            (encoder).writeFloat(((Float) testFloatUnion0));
         }
         (encoder).writeBoolean(((Boolean) data.get(10)));
         Boolean testBooleanUnion0 = ((Boolean) data.get(11));
@@ -92,10 +82,8 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
             (encoder).writeIndex(0);
             (encoder).writeNull();
         } else {
-            if (testBooleanUnion0 instanceof Boolean) {
-                (encoder).writeIndex(1);
-                (encoder).writeBoolean(((Boolean) testBooleanUnion0));
-            }
+            (encoder).writeIndex(1);
+            (encoder).writeBoolean(((Boolean) testBooleanUnion0));
         }
         (encoder).writeBytes(((ByteBuffer) data.get(12)));
         ByteBuffer testBytesUnion0 = ((ByteBuffer) data.get(13));
@@ -103,10 +91,8 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
             (encoder).writeIndex(0);
             (encoder).writeNull();
         } else {
-            if (testBytesUnion0 instanceof ByteBuffer) {
-                (encoder).writeIndex(1);
-                (encoder).writeBytes(((ByteBuffer) testBytesUnion0));
-            }
+            (encoder).writeIndex(1);
+            (encoder).writeBytes(((ByteBuffer) testBytesUnion0));
         }
     }
 

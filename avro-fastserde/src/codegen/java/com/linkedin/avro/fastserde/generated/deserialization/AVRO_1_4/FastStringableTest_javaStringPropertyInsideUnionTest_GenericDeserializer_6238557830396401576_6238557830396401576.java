@@ -45,19 +45,21 @@ public class FastStringableTest_javaStringPropertyInsideUnionTest_GenericDeseria
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex0 == 1) {
-            FastStringableTest_javaStringPropertyInsideUnionTest.put(1, (decoder.readInt()));
+        } else {
+            if (unionIndex0 == 1) {
+                FastStringableTest_javaStringPropertyInsideUnionTest.put(1, (decoder.readInt()));
+            }
         }
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex1 == 1) {
-            if (FastStringableTest_javaStringPropertyInsideUnionTest.get(2) instanceof Utf8) {
-                FastStringableTest_javaStringPropertyInsideUnionTest.put(2, (decoder).readString(((Utf8) FastStringableTest_javaStringPropertyInsideUnionTest.get(2))));
-            } else {
-                FastStringableTest_javaStringPropertyInsideUnionTest.put(2, (decoder).readString(null));
+        } else {
+            if (unionIndex1 == 1) {
+                if (FastStringableTest_javaStringPropertyInsideUnionTest.get(2) instanceof Utf8) {
+                    FastStringableTest_javaStringPropertyInsideUnionTest.put(2, (decoder).readString(((Utf8) FastStringableTest_javaStringPropertyInsideUnionTest.get(2))));
+                } else {
+                    FastStringableTest_javaStringPropertyInsideUnionTest.put(2, (decoder).readString(null));
+                }
             }
         }
         return FastStringableTest_javaStringPropertyInsideUnionTest;
