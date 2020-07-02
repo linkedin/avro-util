@@ -1,5 +1,5 @@
 
-package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_7;
+package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_8;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,13 +20,13 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.io.Decoder;
 
-public class StringableRecord_SpecificDeserializer_1822942669987229249_1822942669987229249
+public class StringableRecord_SpecificDeserializer_6174384286732341990_6174384286732341990
     implements FastDeserializer<com.linkedin.avro.fastserde.generated.avro.StringableRecord>
 {
 
     private final Schema readerSchema;
 
-    public StringableRecord_SpecificDeserializer_1822942669987229249_1822942669987229249(Schema readerSchema) {
+    public StringableRecord_SpecificDeserializer_6174384286732341990_6174384286732341990(Schema readerSchema) {
         this.readerSchema = readerSchema;
     }
 
@@ -107,6 +107,14 @@ public class StringableRecord_SpecificDeserializer_1822942669987229249_182294266
         StringableRecord.put(6, urlMap0);
         StringableRecord.put(7, deserializeStringableSubRecord0(StringableRecord.get(7), (decoder)));
         StringableRecord.put(8, deserializeAnotherSubRecord0(StringableRecord.get(8), (decoder)));
+        int unionIndex0 = (decoder.readIndex());
+        if (unionIndex0 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex0 == 1) {
+                StringableRecord.put(9, (decoder).readString());
+            }
+        }
         return StringableRecord;
     }
 

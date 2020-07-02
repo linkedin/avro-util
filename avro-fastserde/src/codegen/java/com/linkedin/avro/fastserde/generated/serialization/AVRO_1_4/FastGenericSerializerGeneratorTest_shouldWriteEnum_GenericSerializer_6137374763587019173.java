@@ -30,10 +30,8 @@ public class FastGenericSerializerGeneratorTest_shouldWriteEnum_GenericSerialize
             (encoder).writeIndex(0);
             (encoder).writeNull();
         } else {
-            if (testEnumUnion0 instanceof org.apache.avro.generic.GenericData.EnumSymbol) {
-                (encoder).writeIndex(1);
-                (encoder).writeEnum(testEnumEnumSchema0 .getEnumOrdinal(((org.apache.avro.generic.GenericData.EnumSymbol) testEnumUnion0).toString()));
-            }
+            (encoder).writeIndex(1);
+            (encoder).writeEnum(testEnumEnumSchema0 .getEnumOrdinal(((org.apache.avro.generic.GenericData.EnumSymbol) testEnumUnion0).toString()));
         }
         List<org.apache.avro.generic.GenericData.EnumSymbol> testEnumArray0 = ((List<org.apache.avro.generic.GenericData.EnumSymbol> ) data.get(2));
         (encoder).writeArrayStart();
@@ -61,10 +59,8 @@ public class FastGenericSerializerGeneratorTest_shouldWriteEnum_GenericSerialize
                     (encoder).writeIndex(0);
                     (encoder).writeNull();
                 } else {
-                    if (union0 instanceof org.apache.avro.generic.GenericData.EnumSymbol) {
-                        (encoder).writeIndex(1);
-                        (encoder).writeEnum(testEnumEnumSchema0 .getEnumOrdinal(((org.apache.avro.generic.GenericData.EnumSymbol) union0).toString()));
-                    }
+                    (encoder).writeIndex(1);
+                    (encoder).writeEnum(testEnumEnumSchema0 .getEnumOrdinal(((org.apache.avro.generic.GenericData.EnumSymbol) union0).toString()));
                 }
             }
         }

@@ -40,16 +40,18 @@ public class FastStringableTest_javaStringPropertyInsideUnionTest_GenericDeseria
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex0 == 1) {
-            FastStringableTest_javaStringPropertyInsideUnionTest.put(1, (decoder.readInt()));
+        } else {
+            if (unionIndex0 == 1) {
+                FastStringableTest_javaStringPropertyInsideUnionTest.put(1, (decoder.readInt()));
+            }
         }
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex1 == 1) {
-            FastStringableTest_javaStringPropertyInsideUnionTest.put(2, (decoder).readString());
+        } else {
+            if (unionIndex1 == 1) {
+                FastStringableTest_javaStringPropertyInsideUnionTest.put(2, (decoder).readString());
+            }
         }
         return FastStringableTest_javaStringPropertyInsideUnionTest;
     }

@@ -54,16 +54,17 @@ public class FastGenericDeserializerGeneratorTest_shouldReadFixed_GenericDeseria
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex0 == 1) {
-            byte[] testFixed1;
-            if ((FastGenericDeserializerGeneratorTest_shouldReadFixed.get(1) instanceof GenericFixed)&&(((GenericFixed) FastGenericDeserializerGeneratorTest_shouldReadFixed.get(1)).bytes().length == (2))) {
-                testFixed1 = ((GenericFixed) FastGenericDeserializerGeneratorTest_shouldReadFixed.get(1)).bytes();
-            } else {
-                testFixed1 = ( new byte[2]);
+        } else {
+            if (unionIndex0 == 1) {
+                byte[] testFixed1;
+                if ((FastGenericDeserializerGeneratorTest_shouldReadFixed.get(1) instanceof GenericFixed)&&(((GenericFixed) FastGenericDeserializerGeneratorTest_shouldReadFixed.get(1)).bytes().length == (2))) {
+                    testFixed1 = ((GenericFixed) FastGenericDeserializerGeneratorTest_shouldReadFixed.get(1)).bytes();
+                } else {
+                    testFixed1 = ( new byte[2]);
+                }
+                decoder.readFixed(testFixed1);
+                FastGenericDeserializerGeneratorTest_shouldReadFixed.put(1, new org.apache.avro.generic.GenericData.Fixed(null, testFixed1));
             }
-            decoder.readFixed(testFixed1);
-            FastGenericDeserializerGeneratorTest_shouldReadFixed.put(1, new org.apache.avro.generic.GenericData.Fixed(null, testFixed1));
         }
         List<org.apache.avro.generic.GenericData.Fixed> testFixedArray1 = null;
         long chunkLen0 = (decoder.readArrayStart());
@@ -113,16 +114,17 @@ public class FastGenericDeserializerGeneratorTest_shouldReadFixed_GenericDeseria
                     int unionIndex1 = (decoder.readIndex());
                     if (unionIndex1 == 0) {
                         decoder.readNull();
-                    }
-                    if (unionIndex1 == 1) {
-                        byte[] testFixed3;
-                        if ((testFixedUnionArrayArrayElementReuseVar0 instanceof GenericFixed)&&(((GenericFixed) testFixedUnionArrayArrayElementReuseVar0).bytes().length == (2))) {
-                            testFixed3 = ((GenericFixed) testFixedUnionArrayArrayElementReuseVar0).bytes();
-                        } else {
-                            testFixed3 = ( new byte[2]);
+                    } else {
+                        if (unionIndex1 == 1) {
+                            byte[] testFixed3;
+                            if ((testFixedUnionArrayArrayElementReuseVar0 instanceof GenericFixed)&&(((GenericFixed) testFixedUnionArrayArrayElementReuseVar0).bytes().length == (2))) {
+                                testFixed3 = ((GenericFixed) testFixedUnionArrayArrayElementReuseVar0).bytes();
+                            } else {
+                                testFixed3 = ( new byte[2]);
+                            }
+                            decoder.readFixed(testFixed3);
+                            testFixedUnionArray1 .add(new org.apache.avro.generic.GenericData.Fixed(null, testFixed3));
                         }
-                        decoder.readFixed(testFixed3);
-                        testFixedUnionArray1 .add(new org.apache.avro.generic.GenericData.Fixed(null, testFixed3));
                     }
                 }
                 chunkLen1 = (decoder.arrayNext());

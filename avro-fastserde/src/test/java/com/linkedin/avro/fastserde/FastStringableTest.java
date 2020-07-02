@@ -56,7 +56,7 @@ public class FastStringableTest {
   }
 
   StringableRecord generateRecord(URL exampleURL, URI exampleURI, File exampleFile, BigDecimal exampleBigDecimal,
-      BigInteger exampleBigInteger) {
+      BigInteger exampleBigInteger, String exampleString) {
 
     StringableSubRecord subRecord = new StringableSubRecord();
     if (Utils.isAvro14()) {
@@ -79,6 +79,7 @@ public class FastStringableTest {
       record.put(6, Collections.singletonMap(exampleURL.toString(), exampleBigInteger.toString()));
       record.put(7, subRecord);
       record.put(8, anotherSubRecord);
+      record.put(9, exampleString);
     } else {
       record.put(0, exampleBigInteger);
       record.put(1, exampleBigDecimal);
@@ -89,6 +90,7 @@ public class FastStringableTest {
       record.put(6, Collections.singletonMap(exampleURL, exampleBigInteger));
       record.put(7, subRecord);
       record.put(8, anotherSubRecord);
+      record.put(9, exampleString);
     }
     return record;
   }
@@ -101,10 +103,11 @@ public class FastStringableTest {
     File exampleFile = new File("/tmp/test");
     URI exampleURI = new URI("urn:ISSN:1522-3611");
     URL exampleURL = new URL("http://www.example.com");
+    String exampleString = "test_string";
 
     if (Utils.isSupportedAvroVersionsForSerializer()) {
       StringableRecord record =
-          generateRecord(exampleURL, exampleURI, exampleFile, exampleBigDecimal, exampleBigInteger);
+          generateRecord(exampleURL, exampleURI, exampleFile, exampleBigDecimal, exampleBigInteger, exampleString);
 
       // when
       StringableRecord afterDecoding =
@@ -200,14 +203,15 @@ public class FastStringableTest {
     File exampleFile = new File("/tmp/test");
     URI exampleURI = new URI("urn:ISSN:1522-3611");
     URL exampleURL = new URL("http://www.example.com");
+    String exampleString = "test_string";
 
-    StringableRecord record = generateRecord(exampleURL, exampleURI, exampleFile, exampleBigDecimal, exampleBigInteger);
+    StringableRecord record = generateRecord(exampleURL, exampleURI, exampleFile, exampleBigDecimal, exampleBigInteger, exampleString);
 
     // when
     StringableRecord afterDecoding = null;
     if (whetherUseFastDeserializer) {
       afterDecoding =
-          readWithFastAvro(StringableRecord.SCHEMA$, StringableRecord.SCHEMA$, specificDataAsDecoder(record), true);
+          readWithFastAvro(StringableRecord.SCHEMA$, StringableRecord.SCHEMA$, writeWithFastAvro(record, StringableRecord.SCHEMA$, true), true);
     } else {
       afterDecoding =
           readWithSlowAvro(StringableRecord.SCHEMA$, StringableRecord.SCHEMA$, specificDataAsDecoder(record), true);

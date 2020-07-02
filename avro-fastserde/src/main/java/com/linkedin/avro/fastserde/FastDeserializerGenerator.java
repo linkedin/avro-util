@@ -489,9 +489,11 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       Schema optionSchema = unionSchema.getTypes().get(i);
       Schema readerOptionSchema = null;
       FieldAction unionAction;
+      JExpression condition = unionIndex.eq(JExpr.lit(i));
 
       if (Schema.Type.NULL.equals(optionSchema.getType())) {
-        body._if(unionIndex.eq(JExpr.lit(i)))._then().directStatement(DECODER + ".readNull();");
+        ifBlock = ifBlock != null ? ifBlock._elseif(condition) : body._if(condition);
+        ifBlock._then().directStatement(DECODER + ".readNull();");
         continue;
       }
 
@@ -520,7 +522,6 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
         unionAction = FieldAction.fromValues(optionSchema.getType(), false, EMPTY_SYMBOL);
       }
 
-      JExpression condition = unionIndex.eq(JExpr.lit(i));
       ifBlock = ifBlock != null ? ifBlock._elseif(condition) : body._if(condition);
       final JBlock thenBlock = ifBlock._then();
 
@@ -880,11 +881,14 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
         JClass enumClass = schemaAssistant.classFromSchema(schema);
         newEnum = body.decl(enumClass, getUniqueName("enumValue"), JExpr._null());
 
+        JConditional ifBlock = null;
         for (int i = 0; i < enumAdjustAction.adjustments.length; i++) {
           JExpression ithVal =
               schemaAssistant.getEnumValueByIndex(schema, JExpr.lit((Integer) enumAdjustAction.adjustments[i]),
                   getSchemaExpr(schema));
-          body._if(enumIndex.eq(JExpr.lit(i)))._then().assign((JVar) newEnum, ithVal);
+          JExpression condition = enumIndex.eq(JExpr.lit(i));
+          ifBlock = ifBlock != null ? ifBlock._elseif(condition) : body._if(condition);
+          ifBlock._then().assign((JVar) newEnum, ithVal);
         }
       }
       putEnumIntoParent.accept(body, newEnum);

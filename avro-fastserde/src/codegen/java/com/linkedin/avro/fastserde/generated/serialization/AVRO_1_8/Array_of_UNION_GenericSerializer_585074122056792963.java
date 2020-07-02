@@ -48,13 +48,11 @@ public class Array_of_UNION_GenericSerializer_585074122056792963
             (encoder).writeIndex(0);
             (encoder).writeNull();
         } else {
-            if (field0 instanceof CharSequence) {
-                (encoder).writeIndex(1);
-                if (field0 instanceof Utf8) {
-                    (encoder).writeString(((Utf8) field0));
-                } else {
-                    (encoder).writeString(field0 .toString());
-                }
+            (encoder).writeIndex(1);
+            if (field0 instanceof Utf8) {
+                (encoder).writeString(((Utf8) field0));
+            } else {
+                (encoder).writeString(field0 .toString());
             }
         }
     }

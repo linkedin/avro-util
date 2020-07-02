@@ -42,19 +42,20 @@ public class FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion_
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex0 == 1) {
-            FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.put(0, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.get(0), (decoder)));
         } else {
-            if (unionIndex0 == 2) {
-                if (FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.get(0) instanceof Utf8) {
-                    FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.put(0, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.get(0))));
-                } else {
-                    FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.put(0, (decoder).readString(null));
-                }
+            if (unionIndex0 == 1) {
+                FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.put(0, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.get(0), (decoder)));
             } else {
-                if (unionIndex0 == 3) {
-                    FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.put(0, (decoder.readInt()));
+                if (unionIndex0 == 2) {
+                    if (FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.get(0) instanceof Utf8) {
+                        FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.put(0, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.get(0))));
+                    } else {
+                        FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.put(0, (decoder).readString(null));
+                    }
+                } else {
+                    if (unionIndex0 == 3) {
+                        FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.put(0, (decoder.readInt()));
+                    }
                 }
             }
         }
@@ -73,12 +74,13 @@ public class FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion_
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex1 == 1) {
-            if (subRecord.get(0) instanceof Utf8) {
-                subRecord.put(0, (decoder).readString(((Utf8) subRecord.get(0))));
-            } else {
-                subRecord.put(0, (decoder).readString(null));
+        } else {
+            if (unionIndex1 == 1) {
+                if (subRecord.get(0) instanceof Utf8) {
+                    subRecord.put(0, (decoder).readString(((Utf8) subRecord.get(0))));
+                } else {
+                    subRecord.put(0, (decoder).readString(null));
+                }
             }
         }
         return subRecord;

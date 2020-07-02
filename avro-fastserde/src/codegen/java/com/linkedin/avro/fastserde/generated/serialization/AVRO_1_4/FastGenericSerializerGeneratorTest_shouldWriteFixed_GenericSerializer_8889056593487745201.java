@@ -28,10 +28,8 @@ public class FastGenericSerializerGeneratorTest_shouldWriteFixed_GenericSerializ
             (encoder).writeIndex(0);
             (encoder).writeNull();
         } else {
-            if (testFixedUnion0 instanceof org.apache.avro.generic.GenericData.Fixed) {
-                (encoder).writeIndex(1);
-                (encoder).writeFixed(((org.apache.avro.generic.GenericData.Fixed) testFixedUnion0).bytes());
-            }
+            (encoder).writeIndex(1);
+            (encoder).writeFixed(((org.apache.avro.generic.GenericData.Fixed) testFixedUnion0).bytes());
         }
         List<org.apache.avro.generic.GenericData.Fixed> testFixedArray0 = ((List<org.apache.avro.generic.GenericData.Fixed> ) data.get(2));
         (encoder).writeArrayStart();
@@ -59,10 +57,8 @@ public class FastGenericSerializerGeneratorTest_shouldWriteFixed_GenericSerializ
                     (encoder).writeIndex(0);
                     (encoder).writeNull();
                 } else {
-                    if (union0 instanceof org.apache.avro.generic.GenericData.Fixed) {
-                        (encoder).writeIndex(1);
-                        (encoder).writeFixed(((org.apache.avro.generic.GenericData.Fixed) union0).bytes());
-                    }
+                    (encoder).writeIndex(1);
+                    (encoder).writeFixed(((org.apache.avro.generic.GenericData.Fixed) union0).bytes());
                 }
             }
         }

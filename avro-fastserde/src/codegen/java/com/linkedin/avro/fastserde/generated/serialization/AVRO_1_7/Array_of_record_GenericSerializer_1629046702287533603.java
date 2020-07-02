@@ -40,13 +40,11 @@ public class Array_of_record_GenericSerializer_1629046702287533603
             (encoder).writeIndex(0);
             (encoder).writeNull();
         } else {
-            if (field0 instanceof CharSequence) {
-                (encoder).writeIndex(1);
-                if (field0 instanceof Utf8) {
-                    (encoder).writeString(((Utf8) field0));
-                } else {
-                    (encoder).writeString(field0 .toString());
-                }
+            (encoder).writeIndex(1);
+            if (field0 instanceof Utf8) {
+                (encoder).writeString(((Utf8) field0));
+            } else {
+                (encoder).writeString(field0 .toString());
             }
         }
     }

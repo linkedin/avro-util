@@ -66,12 +66,13 @@ public class Map_of_record_GenericDeserializer_2141121767969292399_2141121767969
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
-        }
-        if (unionIndex0 == 1) {
-            if (record.get(0) instanceof Utf8) {
-                record.put(0, (decoder).readString(((Utf8) record.get(0))));
-            } else {
-                record.put(0, (decoder).readString(null));
+        } else {
+            if (unionIndex0 == 1) {
+                if (record.get(0) instanceof Utf8) {
+                    record.put(0, (decoder).readString(((Utf8) record.get(0))));
+                } else {
+                    record.put(0, (decoder).readString(null));
+                }
             }
         }
         return record;
