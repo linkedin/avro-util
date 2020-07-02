@@ -160,7 +160,7 @@ public class SchemaAssistant {
     if (Utils.isAvro14()) {
       return false;
     } else {
-      return schema.getProp(CLASS_PROP) != null;
+      return schema.getProp(CLASS_PROP) != null || schema.getProp(STRING_PROP) != null;
     }
   }
 

@@ -267,6 +267,7 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
 
   private void processUnion(final Schema unionSchema, JExpression unionExpr, JBlock body) {
     JConditional ifBlock = null;
+
     for (Schema schemaOption : unionSchema.getTypes()) {
       // Special handling for null
       if (Schema.Type.NULL.equals(schemaOption.getType())) {
@@ -281,7 +282,7 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
 
       JClass optionClass = schemaAssistant.classFromSchema(schemaOption);
       JClass rawOptionClass = schemaAssistant.classFromSchema(schemaOption, true, true);
-      JExpression condition = unionExpr._instanceof(rawOptionClass);
+      JExpression condition;
       /**
        * In Avro-1.4, neither GenericEnumSymbol or GenericFixed has associated schema, so we don't expect to see
        * two or more Enum types or two or more Fixed types in the same Union in generic mode since the writer couldn't
@@ -290,21 +291,32 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
        * by checking the associated 'Schema' in generic mode.
        */
       if (useGenericTypes && SchemaAssistant.isNamedType(schemaOption)) {
-        condition = condition.cand(JExpr.invoke(JExpr.lit(schemaOption.getFullName()), "equals")
+        condition = unionExpr._instanceof(rawOptionClass).cand(JExpr.invoke(JExpr.lit(schemaOption.getFullName()), "equals")
             .arg(JExpr.invoke(JExpr.cast(optionClass, unionExpr), "getSchema").invoke("getFullName")));
+      } else {
+        if (unionExpr instanceof JVar && ((JVar)unionExpr).type().equals(rawOptionClass)) {
+          condition = null;
+        } else {
+          condition = unionExpr._instanceof(rawOptionClass);
+        }
       }
-      ifBlock = ifBlock != null ? ifBlock._elseif(condition) : body._if(condition);
-      JBlock thenBlock = ifBlock._then();
-      thenBlock.invoke(JExpr.direct(ENCODER), "writeIndex")
+      JBlock unionTypeProcessingBlock;
+      if (condition == null) {
+        unionTypeProcessingBlock = ifBlock != null ? ifBlock._else() : body;
+      } else {
+        ifBlock = ifBlock != null ? ifBlock._elseif(condition) : body._if(condition);
+        unionTypeProcessingBlock = ifBlock._then();
+      }
+      unionTypeProcessingBlock.invoke(JExpr.direct(ENCODER), "writeIndex")
           .arg(JExpr.lit(getIndexNamedForUnion(unionSchema, schemaOption)));
 
       if (schemaOption.getType().equals(Schema.Type.UNION) || schemaOption.getType().equals(Schema.Type.NULL)) {
         throw new FastSerdeGeneratorException("Incorrect union subschema processing: " + schemaOption);
       }
       if (SchemaAssistant.isComplexType(schemaOption)) {
-        processComplexType(schemaOption, JExpr.cast(optionClass, unionExpr), thenBlock);
+        processComplexType(schemaOption, JExpr.cast(optionClass, unionExpr), unionTypeProcessingBlock);
       } else {
-        processSimpleType(schemaOption, unionExpr, thenBlock);
+        processSimpleType(schemaOption, unionExpr, unionTypeProcessingBlock);
       }
     }
   }
@@ -351,7 +363,12 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
     String writeFunction = "writeString";
     JExpression encodeVar = JExpr.direct(ENCODER);
     if (!useGenericTypes && SchemaAssistant.isStringable(primitiveSchema)) {
-      body.invoke(encodeVar, writeFunction).arg(primitiveValueExpression.invoke("toString"));
+      if (primitiveValueExpression instanceof JVar
+          && ((JVar) primitiveValueExpression).type().equals(codeModel.ref(String.class))) {
+        body.invoke(encodeVar, writeFunction).arg(primitiveValueExpression);
+      } else {
+        body.invoke(encodeVar, writeFunction).arg(primitiveValueExpression.invoke("toString"));
+      }
     } else {
       JConditional stringTypeCheck = body._if(primitiveValueExpression._instanceof(codeModel.ref(Utf8.class)));
       stringTypeCheck._then()
