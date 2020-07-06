@@ -160,11 +160,13 @@ for (String avroVersion : avroVersions) {
 
     project.tasks.getByName("build").dependsOn("testAvro${avroVersion}")
 
-    def gradleIsFun = avroVersion
-    doFirst {
-      System.out.println("classpath for avro " + gradleIsFun + " is:")
-      classpath.each { System.out.println(it) }
-    }
+    //useful for debug, so left here
+    //def gradleIsFun = avroVersion
+    //doFirst {
+    //  System.out.println("classpath for avro " + gradleIsFun + " is:")
+    //  classpath.each { System.out.println(it) }
+    //}
+    //outputs.upToDateWhen { false }
   }
 
 }

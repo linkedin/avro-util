@@ -376,8 +376,8 @@ public class SchemaAssistant {
    * If the above property is absent for Specific deserializer or the current deserializer is generic,
    * this function will try to look at {@link #STRING_PROP} to decide whether it should use {@link String}
    * or the default String type.
-   * @param schema
-   * @return
+   * @param schema a schema who's string impl class we want to infer
+   * @return the string class used by given schema
    */
   public JClass findStringClass(Schema schema) {
     Schema.Type schemaType = schema.getType();
