@@ -4,7 +4,7 @@ on: pull_request
 
 jobs:
   gradle-java8:
-    name: Gradle-Java8
+    name: Java 8 build
     runs-on: ubuntu-latest
     steps:
       # see https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions
@@ -27,6 +27,33 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+      - name: create/restore gradle wrapper cache
+        # see inspiration here - https://docs.github.com/en/actions/language-and-framework-guides/building-and-testing-java-with-gradle#caching-dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/wrapper
+          key: gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+      - name: create/restore gradle cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: gradle-cache-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/*.gradle') }}
       - name: Build with Gradle
         # add --info or --debug below for more details when trying to understand issues
+        run: ./gradlew clean build javadoc --stacktrace --warning-mode all
+
+  gradle-javaLatestLTS:
+    name: Latest Java LTS build
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - name: Set up latest LTS JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Build with Gradle
         run: ./gradlew clean build javadoc --stacktrace --warning-mode all

@@ -127,7 +127,7 @@ public abstract class Avro18Encoder extends Encoder implements Flushable {
 
   /**
    * Writes a byte string.
-   * Equivalent to <tt>writeBytes(bytes, 0, bytes.length)</tt>
+   * Equivalent to <code>writeBytes(bytes, 0, bytes.length)</code>
    * @throws IOException on in errors
    * @throws AvroTypeException If this is a stateful writer and a
    * byte-string is not expected
@@ -139,7 +139,7 @@ public abstract class Avro18Encoder extends Encoder implements Flushable {
   /**
    * Writes a fixed size binary object.
    * @param bytes The contents to write
-   * @param start The position within <tt>bytes</tt> where the contents
+   * @param start The position within <code>bytes</code> where the contents
    * start.
    * @param len The number of bytes to write.
    * @throws AvroTypeException If this is a stateful writer and a
@@ -149,7 +149,7 @@ public abstract class Avro18Encoder extends Encoder implements Flushable {
   public abstract void writeFixed(byte[] bytes, int start, int len) throws IOException;
 
   /**
-   * A shorthand for <tt>writeFixed(bytes, 0, bytes.length)</tt>
+   * A shorthand for <code>writeFixed(bytes, 0, bytes.length)</code>
    * @param bytes data to write
    */
   public void writeFixed(byte[] bytes) throws IOException {
@@ -177,7 +177,7 @@ public abstract class Avro18Encoder extends Encoder implements Flushable {
    * Writes an enumeration.
    * @param e ordinal of the enum to write
    * @throws AvroTypeException If this is a stateful writer and an enumeration
-   * is not expected or the <tt>e</tt> is out of range.
+   * is not expected or the <code>e</code> is out of range.
    * @throws IOException on io errors
    */
   public abstract void writeEnum(int e) throws IOException;

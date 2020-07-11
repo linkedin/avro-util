@@ -700,7 +700,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     /**
      * Determine the action symbol for Map value. {@link ResolvingGrammarGenerator} generates
      * resolving grammar symbols with reversed order of production sequence. If this symbol is
-     * a terminal, its production list will be <tt>null</tt>. Otherwise the production list
+     * a terminal, its production list will be <code>null</code>. Otherwise the production list
      * holds the the sequence of the symbols that forms this symbol.
      *
      * The {@link FastDeserializerGenerator.generateDeserializer} tries to proceed as a depth-first,
