@@ -15,7 +15,7 @@ public interface PrimitiveLongList extends List<Long> {
 
   /**
    * @param e element whose presence in this collection is to be ensured
-   * @return <tt>true</tt> if this collection changed as a result of the call
+   * @return <code>true</code> if this collection changed as a result of the call
    */
   boolean addPrimitive(long e);
 
