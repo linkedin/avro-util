@@ -6,6 +6,7 @@
 
 plugins {
   id "java-library"
+  id "jacoco"
   id "checkstyle"
   id "com.github.johnrengelman.shadow"
 }

@@ -40,7 +40,21 @@ jobs:
           key: gradle-cache-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/*.gradle') }}
       - name: Build with Gradle
         # add --info or --debug below for more details when trying to understand issues
-        run: ./gradlew clean build javadoc --stacktrace --warning-mode all
+        run: ./gradlew clean build javadoc --stacktrace --warning-mode all --no-daemon
+      - name: Generate aggregate coverage report
+        run: ./gradlew codeCoverageReport --no-daemon
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./build/reports/jacoco/report.xml
+      - name: Upload coverage to Coveralls
+        # looks like its impossible to get this to work from a PR so long as a token is required to submit a coverage report.
+        # see https://github.community/t/make-secrets-available-to-builds-of-forks/16166 for more details
+        env:
+          # github actions not supported out-of-the-box (yet?). see https://github.com/kt3k/coveralls-gradle-plugin
+          CI_NAME: github-actions
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        run: ./gradlew coveralls --no-daemon
 
   gradle-javaLatestLTS:
     name: Latest Java LTS build
@@ -56,4 +70,4 @@ jobs:
         with:
           java-version: 11
       - name: Build with Gradle
-        run: ./gradlew clean build javadoc --stacktrace --warning-mode all
+        run: ./gradlew clean build javadoc --stacktrace --warning-mode all --no-daemon

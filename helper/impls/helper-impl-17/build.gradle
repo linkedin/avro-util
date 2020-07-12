@@ -5,12 +5,12 @@
  */
 
 plugins {
-  id "java"
+  id "java-library"
+  id "jacoco"
   id "checkstyle"
 }
 
 dependencies {
   implementation (project(":helper:helper-common"))
-//  implementation "org.slf4j:slf4j-api:1.7.30"
   compileOnly ("org.apache.avro:avro:1.7.7")
 }

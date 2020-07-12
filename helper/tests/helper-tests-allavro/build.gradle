@@ -5,7 +5,8 @@
  */
 
 plugins {
-  id "java"
+  id "java-library"
+  id "jacoco"
   id "checkstyle"
 }
 
@@ -29,6 +30,15 @@ test {
   //we run test multiple times with different avro versions
   //(see below)), so dont use the default test task
   enabled = false
+}
+
+jacocoTestReport {
+  executionData.setFrom(files(fileTree("${buildDir}/jacoco").include("*.exec")))
+  //by default this task would skip because we've disabled the default test task.
+  //we enable it (in case any developer wants to run it. its still not included by "build")
+  setOnlyIf {
+    true
+  }
 }
 
 dependencies {
