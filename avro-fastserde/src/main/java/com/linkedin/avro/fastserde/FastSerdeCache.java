@@ -2,6 +2,8 @@ package com.linkedin.avro.fastserde;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -44,6 +46,21 @@ public final class FastSerdeCache {
 
   private static volatile FastSerdeCache _INSTANCE;
 
+  /**
+   * Fast-avro will generate and load serializer and deserializer(SerDes) classes into metaspace during runtime.
+   * During serialization and deserialization, fast-avro also leverages JIT compilation to boost the SerDes speed.
+   * And JIT compilation code is saved in code cache.
+   * Too much usage of metaspace and code cache will bring GC/OOM issue.
+   *
+   * We set a hard limit of the total number of SerDes classes generated and loaded by fast-avro.
+   * By default, the limit is set to MAX_INT.
+   * Fast-avro will fall back to regular avro after the limit is hit.
+   * One could set the limit through {@link FastSerdeCache} constructors.
+   * And get the limit by {@link #getGeneratedFastClassNumLimit}
+   */
+  private volatile int generatedFastClassNumLimit = Integer.MAX_VALUE;
+  private AtomicInteger schemaNum = new AtomicInteger(0);
+
   private final Map<String, FastDeserializer<?>> fastSpecificRecordDeserializersCache =
       new FastAvroConcurrentHashMap<>();
   private final Map<String, FastDeserializer<?>> fastGenericRecordDeserializersCache =
@@ -79,6 +96,20 @@ public final class FastSerdeCache {
    */
   public FastSerdeCache(Executor executorService, Supplier<String> compileClassPathSupplier) {
     this(executorService, compileClassPathSupplier.get());
+  }
+
+  /**
+   *
+   * @param executorService
+   *            {@link Executor} used by serializer/deserializer compile threads
+   * @param compileClassPathSupplier
+   *            custom classpath {@link Supplier}
+   * @param limit
+   *            custom number {@link #generatedFastClassNumLimit}
+   */
+  public FastSerdeCache(Executor executorService, Supplier<String> compileClassPathSupplier, int limit) {
+    this(executorService, compileClassPathSupplier);
+    setGeneratedFastClassNumLimit(limit);
   }
 
   public FastSerdeCache(String compileClassPath) {
@@ -120,6 +151,15 @@ public final class FastSerdeCache {
 
   private FastSerdeCache() {
     this((Executor) null);
+  }
+
+  /**
+   * @param limit
+   *            custom number {@link #generatedFastClassNumLimit}
+   */
+  public FastSerdeCache(int limit) {
+    this();
+    setGeneratedFastClassNumLimit(limit);
   }
 
   /**
@@ -198,22 +238,8 @@ public final class FastSerdeCache {
    * @return specific-class aware avro {@link FastDeserializer}
    */
   public FastDeserializer<?> getFastSpecificDeserializer(Schema writerSchema, Schema readerSchema) {
-    String schemaKey = getSchemaKey(writerSchema, readerSchema);
-    FastDeserializer<?> deserializer = fastSpecificRecordDeserializersCache.get(schemaKey);
-
-    if (deserializer == null) {
-      deserializer = fastSpecificRecordDeserializersCache.putIfAbsent(schemaKey,
-          new FastDeserializerWithAvroSpecificImpl<>(writerSchema, readerSchema));
-      if (deserializer == null) {
-        deserializer = fastSpecificRecordDeserializersCache.get(schemaKey);
-        CompletableFuture.supplyAsync(() -> buildSpecificDeserializer(writerSchema, readerSchema), executor)
-            .thenAccept(d -> {
-              fastSpecificRecordDeserializersCache.put(schemaKey, d);
-            });
-      }
-    }
-
-    return deserializer;
+    return getDeSerializer(writerSchema, readerSchema, fastSpecificRecordDeserializersCache,
+        FastDeserializerWithAvroSpecificImpl.class, "buildSpecificDeserializer");
   }
 
   /**
@@ -226,21 +252,8 @@ public final class FastSerdeCache {
    * @return generic-class aware avro {@link FastDeserializer}
    */
   public FastDeserializer<?> getFastGenericDeserializer(Schema writerSchema, Schema readerSchema) {
-    String schemaKey = getSchemaKey(writerSchema, readerSchema);
-    FastDeserializer<?> deserializer = fastGenericRecordDeserializersCache.get(schemaKey);
-
-    if (deserializer == null) {
-      deserializer = fastGenericRecordDeserializersCache.putIfAbsent(schemaKey,
-          new FastDeserializerWithAvroGenericImpl(writerSchema, readerSchema));
-      if (deserializer == null) {
-        deserializer = fastGenericRecordDeserializersCache.get(schemaKey);
-        CompletableFuture.supplyAsync(() -> buildGenericDeserializer(writerSchema, readerSchema), executor)
-            .thenAccept(d -> {
-              fastGenericRecordDeserializersCache.put(schemaKey, d);
-            });
-      }
-    }
-    return deserializer;
+    return getDeSerializer(writerSchema, readerSchema, fastGenericRecordDeserializersCache,
+        FastDeserializerWithAvroGenericImpl.class, "buildFastGenericDeserializer");
   }
 
   /**
@@ -251,20 +264,8 @@ public final class FastSerdeCache {
    * @return specific-class aware avro {@link FastSerializer}
    */
   public FastSerializer<?> getFastSpecificSerializer(Schema schema) {
-    String schemaKey = getSchemaKey(schema, schema);
-    FastSerializer<?> serializer = fastSpecificRecordSerializersCache.get(schemaKey);
-    if (serializer == null) {
-      serializer =
-          fastSpecificRecordSerializersCache.putIfAbsent(schemaKey, new FastSerializerWithAvroSpecificImpl(schema));
-      if (serializer == null) {
-        serializer = fastSpecificRecordSerializersCache.get(schemaKey);
-        CompletableFuture.supplyAsync(() -> buildSpecificSerializer(schema), executor).thenAccept(s -> {
-          fastSpecificRecordSerializersCache.put(schemaKey, s);
-        });
-      }
-    }
-
-    return serializer;
+    return getDeSerializer(schema, schema, fastSpecificRecordSerializersCache,
+        FastSerializerWithAvroSpecificImpl.class, "buildSpecificSerializer");
   }
 
   /**
@@ -275,25 +276,82 @@ public final class FastSerdeCache {
    * @return generic-class aware avro {@link FastSerializer}
    */
   public FastSerializer<?> getFastGenericSerializer(Schema schema) {
-    String schemaKey = getSchemaKey(schema, schema);
-
-    FastSerializer<?> serializer = fastGenericRecordSerializersCache.get(schemaKey);
-    if (serializer == null) {
-      serializer =
-          fastGenericRecordSerializersCache.putIfAbsent(schemaKey, new FastSerializerWithAvroGenericImpl(schema));
-      if (serializer == null) {
-        serializer = fastGenericRecordSerializersCache.get(schemaKey);
-        CompletableFuture.supplyAsync(() -> buildGenericSerializer(schema), executor).thenAccept(s -> {
-          fastGenericRecordSerializersCache.put(schemaKey, s);
-        });
-      }
-    }
-    return serializer;
+    return getDeSerializer(schema, schema, fastGenericRecordSerializersCache,
+        FastSerializerWithAvroGenericImpl.class, "buildGenericSerializer");
   }
 
   private String getSchemaKey(Schema writerSchema, Schema readerSchema) {
     return String.valueOf(Math.abs(Utils.getSchemaFingerprint(writerSchema))) + Math.abs(
         Utils.getSchemaFingerprint(readerSchema));
+  }
+
+  /**
+   * This function can get the total schema number limit for {@link FastSerdeCache}
+   *
+   * @return current schema number limit
+   */
+  public int getGeneratedFastClassNumLimit() {
+    return generatedFastClassNumLimit;
+  }
+
+  /**
+   * Set the total schema number limit for {@link FastSerdeCache}.
+   * It is the total limit for fast Generic/Specific De/Serializer
+   */
+  private void setGeneratedFastClassNumLimit(int limit) {
+    generatedFastClassNumLimit = limit;
+  }
+
+  /**
+   * This function is a template to generate if needed and return specific/generic-class aware avro de/serializer
+   *
+   * @param writerSchema writer schema
+   * @param readerSchema reader schema (for serializer, this can be null)
+   * @param cache cache for specific/generic de/serializer
+   * @param avroImplClass generator for regular avro de/serializer
+   * @param buildFastDeSerializerFuncName the name of helper function to build specific/generic de/serializer
+   *
+   * @return a fast specific/generic de/serializer
+   */
+  private <T> T getDeSerializer(Schema writerSchema, Schema readerSchema, Map<String, T> cache, Class<?> avroImplClass,
+      String buildFastDeSerializerFuncName){
+    String schemaKey = getSchemaKey(writerSchema, readerSchema);
+    T deserializer = cache.get(schemaKey);
+    if (deserializer == null) {
+      try {
+        Constructor cs = avroImplClass.getConstructor(Schema.class, Schema.class);
+        deserializer = cache.putIfAbsent(schemaKey, (T)cs.newInstance(writerSchema, readerSchema));
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      if (deserializer == null) {
+        deserializer = cache.get(schemaKey);
+        if (schemaNum.get() < generatedFastClassNumLimit) {
+          try {
+            Method
+                buildDeSerializer = FastSerdeCache.class.getMethod(buildFastDeSerializerFuncName, Schema.class, Schema.class);
+            CompletableFuture.supplyAsync(() -> {
+              try {
+                return (T)buildDeSerializer.invoke(_INSTANCE ,writerSchema, readerSchema);
+              } catch (Exception e) {
+                e.printStackTrace();
+              }
+              return null;
+            }, executor).thenAccept(s -> {
+              cache.put(schemaKey, s);
+            });
+          }
+          catch (Exception e) {
+            e.printStackTrace();
+          }
+        } else {
+          LOGGER.warn("Generated fast de/serializer number hits " + generatedFastClassNumLimit + " limit\n" +
+              "Total de/serializer used is " + schemaNum.get());
+        }
+        schemaNum.incrementAndGet();
+      }
+    }
+    return deserializer;
   }
 
   /**
@@ -398,7 +456,7 @@ public final class FastSerdeCache {
     return generator.generateSerializer();
   }
 
-  private FastSerializer<?> buildSpecificSerializer(Schema schema) {
+  private FastSerializer<?> buildSpecificSerializer(Schema schema, Schema uselessSchema) {
     if (Utils.isSupportedAvroVersionsForSerializer()) {
       // Only build fast specific serializer for supported Avro versions.
       try {
@@ -434,7 +492,7 @@ public final class FastSerdeCache {
     return generator.generateSerializer();
   }
 
-  private FastSerializer<?> buildGenericSerializer(Schema schema) {
+  private FastSerializer<?> buildGenericSerializer(Schema schema, Schema uselessSchema) {
     if (Utils.isSupportedAvroVersionsForSerializer()) {
       // Only build fast generic serializer for supported Avro versions.
       try {
@@ -504,6 +562,10 @@ public final class FastSerdeCache {
       this.datumWriter = new SpecificDatumWriter<>(schema);
     }
 
+    public FastSerializerWithAvroSpecificImpl(Schema writerSchema, Schema readerSchema) {
+      this(writerSchema);
+    }
+
     @Override
     public void serialize(V data, Encoder e) throws IOException {
       datumWriter.write(data, e);
@@ -515,6 +577,10 @@ public final class FastSerdeCache {
 
     public FastSerializerWithAvroGenericImpl(Schema schema) {
       this.datumWriter = new GenericDatumWriter<>(schema);
+    }
+
+    public FastSerializerWithAvroGenericImpl(Schema writerSchema, Schema readerSchema) {
+      this(writerSchema);
     }
 
     @Override

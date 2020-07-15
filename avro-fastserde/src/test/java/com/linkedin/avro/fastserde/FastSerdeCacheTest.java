@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.function.Supplier;
 import org.apache.avro.Schema;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -67,5 +69,20 @@ public class FastSerdeCacheTest {
   public void testBuildFastSpecificDeserializerWithCorrectClasspath() throws Exception {
     FastSerdeCache cache = FastSerdeCache.getDefaultInstance();
     cache.buildFastSpecificDeserializer(TestRecord.SCHEMA$, TestRecord.SCHEMA$);
+  }
+
+  @Test
+  public void testSchemaNumLimit() throws Exception {
+    FastSerdeCache cache = new FastSerdeCache(100);
+    Assert.assertEquals(cache.getGeneratedFastClassNumLimit(), 100);
+
+    Supplier<String> supplier = new Supplier<String>() {
+      @Override
+      public String get() {
+        return ".";
+      }
+    };
+    FastSerdeCache cache2 = new FastSerdeCache(Runnable::run, supplier, 100);
+    Assert.assertEquals(cache2.getGeneratedFastClassNumLimit(), 100);
   }
 }
