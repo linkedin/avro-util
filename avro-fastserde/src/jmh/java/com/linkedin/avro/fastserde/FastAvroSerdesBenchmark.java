@@ -6,6 +6,7 @@ import com.linkedin.avro.fastserde.micro.benchmark.AvroGenericSerializer;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -126,22 +127,48 @@ public class FastAvroSerdesBenchmark {
   @Benchmark
   @OperationsPerInvocation(NUMBER_OF_OPERATIONS)
   public void testAvroDeserialization(Blackhole bh) throws Exception {
-    testDeserialization(deserializer, bh);
+    testDeserialization(deserializer, bh, 0);
   }
 
   @Benchmark
   @OperationsPerInvocation(NUMBER_OF_OPERATIONS)
   public void testFastAvroDeserialization(Blackhole bh) throws Exception {
-    testDeserialization(fastDeserializer, bh);
+    testDeserialization(fastDeserializer, bh, 0);
   }
 
-  private void testDeserialization(DatumReader<GenericRecord> datumReader, Blackhole bh) throws Exception {
+  @Benchmark
+  @OperationsPerInvocation(NUMBER_OF_OPERATIONS)
+  public void testFastAvroDeserializationAccess(Blackhole bh) throws Exception {
+    testDeserialization(fastDeserializer, bh, 1);
+  }
+
+  @Benchmark
+  @OperationsPerInvocation(NUMBER_OF_OPERATIONS)
+  public void testFastAvroDeserializationAccess8(Blackhole bh) throws Exception {
+    testDeserialization(fastDeserializer, bh, 8);
+  }
+
+  @Benchmark
+  @OperationsPerInvocation(NUMBER_OF_OPERATIONS)
+  public void testFastAvroDeserializationAccess16(Blackhole bh) throws Exception {
+    testDeserialization(fastDeserializer, bh, 16);
+  }
+
+  private void testDeserialization(DatumReader<GenericRecord> datumReader, Blackhole bh, int access) throws Exception {
     GenericRecord record = null;
     BinaryDecoder decoder = AvroCompatibilityHelper.newBinaryDecoder(serializedBytes);
     for (int i = 0; i < NUMBER_OF_OPERATIONS; i++) {
+      float w = 0;
       decoder = AvroCompatibilityHelper.newBinaryDecoder(new ByteArrayInputStream(serializedBytes), false, decoder);
       record = datumReader.read(record, decoder);
+      if (access > 0) {
+        List<Float> list = (List<Float>) (record).get(0);
+        for (int j = 0; j < list.size(); j += access) {
+          w += list.get(j);
+        }
+      }
       bh.consume(record);
+      bh.consume(w);
     }
   }
 }

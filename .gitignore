@@ -6,6 +6,7 @@ build/
 avro_tools/
 avro-fastserde/src/test/java/com/linkedin/avro/fastserde/generated/
 *.class
+avro-fastserde/src/codegen
 
 #IDEA artifacts
 out/

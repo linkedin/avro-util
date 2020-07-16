@@ -8,7 +8,7 @@
       "name": "testArray",
       "type": {
         "type": "array",
-        "items": "double"
+        "items": "float"
       }
     }
   ]
