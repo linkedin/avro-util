@@ -1,7 +1,13 @@
 package com.linkedin.avro.fastserde;
 
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
+import com.linkedin.avroutil1.compatibility.AvroSchemaUtil;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,6 +32,26 @@ public final class FastSerdeTestsSupport {
           Arrays.asList("A", "B", "C", "D", "E"));
 
   private FastSerdeTestsSupport() {
+  }
+
+  /**
+   * Ths function will infer a standardized name for the generated record, to help make generated deserializers
+   * more easily recognizable...
+   *
+   * @param fields
+   * @return
+   */
+  public static Schema createRecord(Schema.Field... fields) {
+    // Function name retrieval magic lifted from: https://stackoverflow.com/a/4065546
+    StackTraceElement[] stacktrace = Thread.currentThread().getStackTrace();
+    StackTraceElement e = stacktrace[2]; //maybe this number needs to be corrected
+    String methodName = e.getMethodName();
+
+    String className = e.getClassName();
+    String simpleClassName = className.substring(className.lastIndexOf("."));
+
+    String recordName = simpleClassName + "_" + methodName;
+    return createRecord(recordName, fields);
   }
 
   public static Schema createRecord(String name, Schema.Field... fields) {
@@ -140,5 +166,16 @@ public final class FastSerdeTestsSupport {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  public static File getCodeGenDirectory() throws IOException {
+    Path codeGenOutput = Paths.get("./src/codegen/java/");
+    File dir;
+    if (Files.notExists(codeGenOutput)) {
+      dir = Files.createDirectories(codeGenOutput).toFile();
+    } else {
+      dir = codeGenOutput.toFile();
+    }
+    return dir;
   }
 }

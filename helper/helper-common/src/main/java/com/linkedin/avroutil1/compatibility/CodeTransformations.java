@@ -37,6 +37,10 @@ public class CodeTransformations {
   private static final String  ESCAPED_QUOTE = "\\\"";
   private static final String  BACKSLASH = "\\";
   private static final String  DOUBLE_BACKSLASH = "\\\\";
+  private static final Pattern GET_CLASS_SCHEMA_PATTERN = Pattern.compile(Pattern.quote("public static org.apache.avro.Schema getClassSchema()"));
+  private static final Pattern SCHEMA_DOLLAR_DECL_PATTERN = Pattern.compile(Pattern.quote("public static final org.apache.avro.Schema SCHEMA$"));
+  private static final Pattern END_OF_SCHEMA_DOLLAR_DECL_PATTERN = Pattern.compile("}\"\\)(\\.toString\\(\\)\\))?;");
+  private static final String  GET_CLASS_SCHEMA_METHOD = "public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }";
   private static final Pattern NEW_BUILDER_METHOD_PATTERN = Pattern.compile("public static ([\\w.]+) newBuilder\\(\\)");
   private static final Pattern END_BUILDER_CLASS_PATTERN = Pattern.compile("}\\s+}\\s+}");
   private static final Pattern FROM_BYTEBUFFER_METHOD_END_PATTERN = Pattern.compile("return DECODER.decode\\s*\\(\\s*b\\s*\\)\\s*;\\s*}");
@@ -248,9 +252,9 @@ public class CodeTransformations {
    * producing uncompilable code (see see AVRO-1316). this was only fixed in avro 1.7.5+
    *
    * also - avro 1.6+ issues "new org.apache.avro.Schema.Parser().parse(...)" calls which will not compile
-   * under avro < 1.6
+   * under {@literal avro < 1.6}
    *
-   * in addition, avro < 1.6 fails to properly escape control characters in the schema string (like newlines
+   * in addition, {@literal avro < 1.6} fails to properly escape control characters in the schema string (like newlines
    * in doc properties) which will result in a json parse error when trying to instantiate the
    * generated java class (because at that point it will fail to parse the avsc in SCHEMA$)
    *
@@ -373,6 +377,50 @@ public class CodeTransformations {
     result.append(str, lastEnd, str.length());
 
     return result.toString();
+  }
+
+  /**
+   * avro 1.7+ adds a static getClassSchema() method that returns SCHEMA$
+   * @param code avro generated source code which may lack getClassSchema()
+   * @param generatedWith version of avro that generated the original code
+   * @param minSupportedVersion lowest avro version under which the generated code should work
+   * @param maxSupportedVersion highest avro version under which the generated code should work
+   * @return source code that contains getClassSchema()
+   */
+  public static String addGetClassSchemaMethod(
+      String code,
+      AvroVersion generatedWith,
+      AvroVersion minSupportedVersion,
+      AvroVersion maxSupportedVersion
+  ) {
+    Matcher classMatcher = GET_CLASS_SCHEMA_PATTERN.matcher(code);
+    if (classMatcher.find()) {
+      //this code already has the method
+      return code;
+    }
+    int schema$EndPosition = findEndOfSchemaDeclaration(code);
+    return code.substring(0, schema$EndPosition) + "\n  " + GET_CLASS_SCHEMA_METHOD + "\n" + code.substring(schema$EndPosition);
+  }
+
+  /**
+   * find the end of the SCHEMA$ declaration, for either simple declarations or those where the schema is huge and
+   * we had to use a StringBuilder
+   * @param code avro class code
+   * @return location of the ending of the SCHEMA$ declaration i the given code
+   */
+  static int findEndOfSchemaDeclaration(String code) {
+    Matcher schema$Matcher = SCHEMA_DOLLAR_DECL_PATTERN.matcher(code);
+    if (!schema$Matcher.find()) {
+      throw new IllegalStateException("unable to locate SCHEMA$ in " + code);
+    }
+    int schema$Position = schema$Matcher.end();
+    //locate the end of the SCHEMA$ declaration (allow to StringBuilder().toString() code if the schema
+    //was huge and we split is in transformParseCalls())
+    Matcher schema$EndMatcher = END_OF_SCHEMA_DOLLAR_DECL_PATTERN.matcher(code);
+    if (!schema$EndMatcher.find(schema$Position)) {
+      throw new IllegalStateException("unable to locate SCHEMA$ ending in " + code);
+    }
+    return schema$EndMatcher.end();
   }
 
   /**

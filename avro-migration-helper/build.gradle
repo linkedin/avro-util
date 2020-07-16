@@ -36,10 +36,10 @@ dependencies {
   //comment above and uncomment these when trying to
   //work on a particular version of avro in an IDE
 
-  //compile 'org.apache.avro:avro:1.8.2'
-  //compile 'org.apache.avro:avro-compiler:1.8.2'
+  //api 'org.apache.avro:avro:1.8.2'
+  //api 'org.apache.avro:avro-compiler:1.8.2'
 
-  compile 'org.json:json:20180813'
+  implementation 'org.json:json:20180813'
 
   testCompileOnly ('org.apache.avro:avro:1.4.1') {
     exclude group: "org.mortbay.jetty"
@@ -49,10 +49,10 @@ dependencies {
     exclude group: "com.thoughtworks.paranamer", module: "paranamer-ant"
   }
 
-  testCompile 'org.testng:testng:6.14.3'
-  testCompile 'commons-io:commons-io:2.6'
-  testCompile 'org.skyscreamer:jsonassert:1.5.0'
-  testCompile 'net.openhft:compiler:2.3.1'
+  testImplementation 'org.testng:testng:6.14.3'
+  testImplementation 'commons-io:commons-io:2.6'
+  testImplementation 'org.skyscreamer:jsonassert:1.5.0'
+  testImplementation 'net.openhft:compiler:2.3.6'
 
   testRuntimeOnly 'org.slf4j:slf4j-simple:1.7.26'
 

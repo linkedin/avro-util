@@ -1,24 +1,29 @@
 package com.linkedin.avro.fastserde;
 
+import com.linkedin.avro.api.PrimitiveFloatList;
+import com.linkedin.avro.api.PrimitiveLongList;
+import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveBooleanList;
+import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveDoubleList;
+import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveFloatList;
+import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveIntList;
+import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveLongList;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.ByteBuffer;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericContainer;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.io.Encoder;
@@ -37,8 +42,7 @@ public class FastGenericSerializerGeneratorTest {
 
   @BeforeTest(groups = {"serializationTest"})
   public void prepare() throws Exception {
-    Path tempPath = Files.createTempDirectory("generated");
-    tempDir = tempPath.toFile();
+    tempDir = getCodeGenDirectory();
 
     classLoader = URLClassLoader.newInstance(new URL[]{tempDir.toURI().toURL()},
         FastGenericSerializerGeneratorTest.class.getClassLoader());
@@ -47,7 +51,8 @@ public class FastGenericSerializerGeneratorTest {
   @Test(groups = {"serializationTest"})
   public void shouldWritePrimitives() {
     // given
-    Schema recordSchema = createRecord("testRecord", createField("testInt", Schema.create(Schema.Type.INT)),
+    Schema recordSchema = createRecord(
+        createField("testInt", Schema.create(Schema.Type.INT)),
         createPrimitiveUnionFieldSchema("testIntUnion", Schema.Type.INT),
         createField("testString", Schema.create(Schema.Type.STRING)),
         createPrimitiveUnionFieldSchema("testStringUnion", Schema.Type.STRING),
@@ -108,8 +113,10 @@ public class FastGenericSerializerGeneratorTest {
   public void shouldWriteFixed() {
     // given
     Schema fixedSchema = createFixedSchema("testFixed", 2);
-    Schema recordSchema = createRecord("testRecord", createField("testFixed", fixedSchema),
-        createUnionField("testFixedUnion", fixedSchema), createArrayFieldSchema("testFixedArray", fixedSchema),
+    Schema recordSchema = createRecord(
+        createField("testFixed", fixedSchema),
+        createUnionField("testFixedUnion", fixedSchema),
+        createArrayFieldSchema("testFixedArray", fixedSchema),
         createArrayFieldSchema("testFixedUnionArray", createUnionSchema(fixedSchema)));
 
     GenericData.Record builder = new GenericData.Record(recordSchema);
@@ -134,10 +141,11 @@ public class FastGenericSerializerGeneratorTest {
   public void shouldWriteEnum() {
     // given
     Schema enumSchema = createEnumSchema("testEnum", new String[]{"A", "B"});
-    Schema recordSchema =
-        createRecord("testRecord", createField("testEnum", enumSchema), createUnionField("testEnumUnion", enumSchema),
-            createArrayFieldSchema("testEnumArray", enumSchema),
-            createArrayFieldSchema("testEnumUnionArray", createUnionSchema(enumSchema)));
+    Schema recordSchema = createRecord(
+        createField("testEnum", enumSchema),
+        createUnionField("testEnumUnion", enumSchema),
+        createArrayFieldSchema("testEnumArray", enumSchema),
+        createArrayFieldSchema("testEnumUnionArray", createUnionSchema(enumSchema)));
 
     GenericData.Record builder = new GenericData.Record(recordSchema);
     builder.put("testEnum",
@@ -164,9 +172,10 @@ public class FastGenericSerializerGeneratorTest {
     // given
     Schema subRecordSchema = createRecord("subRecord", createPrimitiveUnionFieldSchema("subField", Schema.Type.STRING));
 
-    Schema recordSchema =
-        createRecord("test", createUnionField("record", subRecordSchema), createField("record1", subRecordSchema),
-            createPrimitiveUnionFieldSchema("field", Schema.Type.STRING));
+    Schema recordSchema = createRecord(
+        createUnionField("record", subRecordSchema),
+        createField("record1", subRecordSchema),
+        createPrimitiveUnionFieldSchema("field", Schema.Type.STRING));
 
     GenericData.Record subRecordBuilder = new GenericData.Record(subRecordSchema);
     subRecordBuilder.put("subField", "abc");
@@ -188,10 +197,32 @@ public class FastGenericSerializerGeneratorTest {
   }
 
   @Test(groups = {"serializationTest"})
+  public void shouldWriteRightUnionIndex() {
+    // Create two record schemas
+    Schema recordSchema1 = createRecord("record1", createField("record1_field1", Schema.create(Schema.Type.STRING)));
+    Schema recordSchema2 = createRecord("record2", createField("record2_field1", Schema.create(Schema.Type.STRING)));
+    Schema unionSchema = createUnionSchema(recordSchema1, recordSchema2);
+    Schema recordWrapperSchema = createRecord(createField("union_field", unionSchema));
+
+    GenericData.Record objectOfRecordSchema2 = new GenericData.Record(recordSchema2);
+    objectOfRecordSchema2.put("record2_field1", "abc");
+    GenericData.Record wrapperObject = new GenericData.Record(recordWrapperSchema);
+    wrapperObject.put("union_field", objectOfRecordSchema2);
+
+    GenericRecord record = decodeRecord(recordWrapperSchema, dataAsBinaryDecoder(wrapperObject));
+
+    Object unionField = record.get("union_field");
+    Assert.assertTrue(unionField instanceof GenericData.Record);
+    GenericData.Record unionRecord = (GenericData.Record)unionField;
+    Assert.assertEquals(unionRecord.getSchema().getName(), "record2");
+  }
+
+  @Test(groups = {"serializationTest"})
   public void shouldWriteSubRecordCollectionsField() {
     // given
     Schema subRecordSchema = createRecord("subRecord", createPrimitiveUnionFieldSchema("subField", Schema.Type.STRING));
-    Schema recordSchema = createRecord("test", createArrayFieldSchema("recordsArray", subRecordSchema),
+    Schema recordSchema = createRecord(
+        createArrayFieldSchema("recordsArray", subRecordSchema),
         createMapFieldSchema("recordsMap", subRecordSchema),
         createUnionField("recordsArrayUnion", Schema.createArray(createUnionSchema(subRecordSchema))),
         createUnionField("recordsMapUnion", Schema.createMap(createUnionSchema(subRecordSchema))));
@@ -228,7 +259,7 @@ public class FastGenericSerializerGeneratorTest {
   public void shouldWriteSubRecordComplexCollectionsField() {
     // given
     Schema subRecordSchema = createRecord("subRecord", createPrimitiveUnionFieldSchema("subField", Schema.Type.STRING));
-    Schema recordSchema = createRecord("test",
+    Schema recordSchema = createRecord(
         createArrayFieldSchema("recordsArrayMap", Schema.createMap(createUnionSchema(subRecordSchema))),
         createMapFieldSchema("recordsMapArray", Schema.createArray(createUnionSchema(subRecordSchema))),
         createUnionField("recordsArrayMapUnion",
@@ -283,7 +314,7 @@ public class FastGenericSerializerGeneratorTest {
     // given
     Schema subRecordSchema = createRecord("subRecord", createPrimitiveUnionFieldSchema("subField", Schema.Type.STRING));
 
-    Schema recordSchema = createRecord("test",
+    Schema recordSchema = createRecord(
         createUnionField("union", subRecordSchema, Schema.create(Schema.Type.STRING), Schema.create(Schema.Type.INT)));
 
     GenericData.Record subRecordBuilder = new GenericData.Record(subRecordSchema);
@@ -400,6 +431,130 @@ public class FastGenericSerializerGeneratorTest {
     Assert.assertEquals(2, map.size());
     Assert.assertEquals("abc", map.get(new Utf8("1")).get("field").toString());
     Assert.assertEquals("abc", map.get(new Utf8("2")).get("field").toString());
+  }
+
+  @Test(groups = {"serializationTest"})
+  public void shouldWriteArrayOfBoolean() {
+    // given
+    AtomicBoolean primitiveApiCalled = new AtomicBoolean(false);
+    List<Boolean> data = new ColdPrimitiveBooleanList(2) {
+      @Override
+      public boolean getPrimitive(int index) {
+        primitiveApiCalled.set(true);
+        return get(index);
+      }
+    };
+    data.add(true);
+    data.add(false);
+
+    // then
+    shouldWriteArrayOfPrimitives(Schema.Type.BOOLEAN, data);
+    Assert.assertTrue(primitiveApiCalled.get());
+  }
+
+  @Test(groups = {"serializationTest"})
+  public void shouldWriteArrayOfDouble() {
+    // given
+    AtomicBoolean primitiveApiCalled = new AtomicBoolean(false);
+    List<Double> data = new ColdPrimitiveDoubleList(2) {
+      @Override
+      public double getPrimitive(int index) {
+        primitiveApiCalled.set(true);
+        return get(index);
+      }
+    };
+    data.add(1.0D);
+    data.add(2.0D);
+
+    // then
+    shouldWriteArrayOfPrimitives(Schema.Type.DOUBLE, data);
+    Assert.assertTrue(primitiveApiCalled.get());
+  }
+
+  @Test(groups = {"serializationTest"})
+  public void shouldWriteArrayOfFloats() {
+    // given
+    AtomicBoolean primitiveApiCalled = new AtomicBoolean(false);
+    List<Float> data = new ColdPrimitiveFloatList(2) {
+      @Override
+      public float getPrimitive(int index) {
+        primitiveApiCalled.set(true);
+        return get(index);
+      }
+    };
+    data.add(1.0F);
+    data.add(2.0F);
+
+    // then
+    shouldWriteArrayOfPrimitives(Schema.Type.FLOAT, data);
+    Assert.assertTrue(primitiveApiCalled.get());
+  }
+
+  @Test(groups = {"serializationTest"})
+  public void shouldWriteArrayOfInts() {
+    // given
+    AtomicBoolean primitiveApiCalled = new AtomicBoolean(false);
+    List<Integer> data = new ColdPrimitiveIntList(2) {
+      @Override
+      public int getPrimitive(int index) {
+        primitiveApiCalled.set(true);
+        return get(index);
+      }
+    };
+    data.add(1);
+    data.add(2);
+
+    // then
+    shouldWriteArrayOfPrimitives(Schema.Type.INT, data);
+    Assert.assertTrue(primitiveApiCalled.get());
+  }
+
+  @Test(groups = {"serializationTest"})
+  public void shouldWriteArrayOfLongs() {
+    // given
+    AtomicBoolean primitiveApiCalled = new AtomicBoolean(false);
+    List<Long> data = new ColdPrimitiveLongList(2) {
+      @Override
+      public long getPrimitive(int index) {
+        primitiveApiCalled.set(true);
+        return get(index);
+      }
+    };
+    data.add(1L);
+    data.add(2L);
+
+    // then
+    shouldWriteArrayOfPrimitives(Schema.Type.LONG, data);
+    Assert.assertTrue(primitiveApiCalled.get());
+  }
+
+  private <E> void shouldWriteArrayOfPrimitives(Schema.Type elementType, List<E> data) {
+    // given
+    Schema elementSchema = Schema.create(elementType);
+    Schema arraySchema = Schema.createArray(elementSchema);
+
+    // Serialization should work on various types of lists
+    GenericData.Array<E> vanillaAvroList = new GenericData.Array<>(0, arraySchema);
+    ArrayList<E> javaList = new ArrayList<>(0);
+    for (E element: data) {
+      vanillaAvroList.add(element);
+      javaList.add(element);
+    }
+
+    // when
+    List<E> resultFromAvroList = decodeRecord(arraySchema, dataAsBinaryDecoder(vanillaAvroList));
+    List<E> resultFromJavaList = decodeRecord(arraySchema, dataAsBinaryDecoder(javaList, arraySchema));
+    List<E> resultFromPrimitiveList = decodeRecord(arraySchema, dataAsBinaryDecoder(data, arraySchema));
+
+    // then
+    Assert.assertEquals(resultFromAvroList.size(), data.size());
+    Assert.assertEquals(resultFromJavaList.size(), data.size());
+    Assert.assertEquals(resultFromPrimitiveList.size(), data.size());
+    for (int i = 0; i < data.size(); i++) {
+      Assert.assertEquals(resultFromAvroList.get(i), data.get(i));
+      Assert.assertEquals(resultFromJavaList.get(i), data.get(i));
+      Assert.assertEquals(resultFromPrimitiveList.get(i), data.get(i));
+    }
   }
 
   public <T extends GenericContainer> Decoder dataAsBinaryDecoder(T data) {

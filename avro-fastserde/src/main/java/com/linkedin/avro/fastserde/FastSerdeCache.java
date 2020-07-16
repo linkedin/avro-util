@@ -7,15 +7,17 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.ColdGenericDatumReader;
+import org.apache.avro.generic.ColdSpecificDatumReader;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.io.DatumReader;
@@ -24,7 +26,8 @@ import org.apache.avro.io.Decoder;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificDatumWriter;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -37,19 +40,19 @@ public final class FastSerdeCache {
   public static final String CLASSPATH = "avro.fast.serde.classpath";
   public static final String CLASSPATH_SUPPLIER = "avro.fast.serde.classpath.supplier";
 
-  private static final Logger LOGGER = Logger.getLogger(FastSerdeCache.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(FastSerdeCache.class);
 
   private static volatile FastSerdeCache _INSTANCE;
 
-  private final ConcurrentHashMap<String, FastDeserializer<?>> fastSpecificRecordDeserializersCache =
-      new ConcurrentHashMap<>();
-  private final ConcurrentHashMap<String, FastDeserializer<?>> fastGenericRecordDeserializersCache =
-      new ConcurrentHashMap<>();
+  private final Map<String, FastDeserializer<?>> fastSpecificRecordDeserializersCache =
+      new FastAvroConcurrentHashMap<>();
+  private final Map<String, FastDeserializer<?>> fastGenericRecordDeserializersCache =
+      new FastAvroConcurrentHashMap<>();
 
-  private final ConcurrentHashMap<String, FastSerializer<?>> fastSpecificRecordSerializersCache =
-      new ConcurrentHashMap<>();
-  private final ConcurrentHashMap<String, FastSerializer<?>> fastGenericRecordSerializersCache =
-      new ConcurrentHashMap<>();
+  private final Map<String, FastSerializer<?>> fastSpecificRecordSerializersCache =
+      new FastAvroConcurrentHashMap<>();
+  private final Map<String, FastSerializer<?>> fastGenericRecordSerializersCache =
+      new FastAvroConcurrentHashMap<>();
 
   private Executor executor;
 
@@ -302,14 +305,11 @@ public final class FastSerdeCache {
    * @return a fast deserializer
    */
   public FastDeserializer<?> buildFastSpecificDeserializer(Schema writerSchema, Schema readerSchema) {
-    LOGGER.info("Start buildFastSpecificDeserializer for reader schema: [" + readerSchema + "] and write schema: ["
-        + writerSchema + "]");
-
     FastSpecificDeserializerGenerator<?> generator =
         new FastSpecificDeserializerGenerator<>(writerSchema, readerSchema, classesDir, classLoader,
             compileClassPath.orElseGet(() -> null));
-    LOGGER.info("Generated classes dir: " + classesDir + ", and generation of specific FastDeserializer"
-        + " is done for reader schema: [" + readerSchema + "] and write schema: [" + writerSchema + "]");
+    LOGGER.info("Generated class dir: {}, and generation of specific FastDeserializer is done for writer schema: "
+            + "[\n{}\n] and reader schema: [\n{}\n]", classesDir, writerSchema.toString(true), readerSchema.toString(true));
     return generator.generateDeserializer();
   }
 
@@ -324,7 +324,8 @@ public final class FastSerdeCache {
     try {
       return buildFastSpecificDeserializer(writerSchema, readerSchema);
     } catch (FastDeserializerGeneratorException e) {
-      LOGGER.warn("Deserializer generation exception", e);
+      LOGGER.warn("Deserializer generation exception when generating specific FastDeserializer for writer schema: "
+              + "[\n{}\n] and reader schema: [\n{}\n]", writerSchema.toString(true), readerSchema.toString(true), e);
     } catch (Exception e) {
       LOGGER.warn("Deserializer class instantiation exception", e);
     }
@@ -348,14 +349,11 @@ public final class FastSerdeCache {
    * @return a fast deserializer
    */
   public FastDeserializer<?> buildFastGenericDeserializer(Schema writerSchema, Schema readerSchema) {
-    LOGGER.info("Start buildFastGenericDeserializer for reader schema: [" + readerSchema + "] and write schema: ["
-        + writerSchema + "]");
-
     FastGenericDeserializerGenerator<?> generator =
         new FastGenericDeserializerGenerator<>(writerSchema, readerSchema, classesDir, classLoader,
             compileClassPath.orElseGet(() -> null));
-    LOGGER.info("Generated classes dir: " + classesDir + " and generation of generic FastDeserializer"
-        + " is done for reader schema: [" + readerSchema + "] is done");
+    LOGGER.info("Generated classes dir: {} and generation of generic FastDeserializer is done for writer schema: "
+            + "[\n{}\n] and reader schema:[\n{}\n]", classesDir, writerSchema.toString(true), readerSchema.toString(true));
     return generator.generateDeserializer();
   }
 
@@ -371,7 +369,8 @@ public final class FastSerdeCache {
     try {
       return buildFastGenericDeserializer(writerSchema, readerSchema);
     } catch (FastDeserializerGeneratorException e) {
-      LOGGER.warn("Deserializer generation exception:" + e);
+      LOGGER.warn("Deserializer generation exception when generating generic FastDeserializer for writer schema: [\n"
+          + writerSchema.toString(true) + "\n] and reader schema:[\n" + readerSchema.toString(true) + "\n]", e);
     } catch (Exception e) {
       LOGGER.warn("Deserializer class instantiation exception:" + e);
     }
@@ -389,15 +388,13 @@ public final class FastSerdeCache {
   public FastSerializer<?> buildFastSpecificSerializer(Schema schema) {
     // Defensive code
     if (!Utils.isSupportedAvroVersionsForSerializer()) {
-      throw new FastDeserializerGeneratorException("Fast specific serializer is only supported in following Avro versions: " +
+      throw new FastDeserializerGeneratorException("Specific FastSerializer is only supported in following Avro versions: " +
           Utils.getAvroVersionsSupportedForSerializer());
     }
-    LOGGER.info("Start buildFastSpecificSerializer for schema: [" + schema + "]");
     FastSpecificSerializerGenerator<?> generator =
         new FastSpecificSerializerGenerator<>(schema, classesDir, classLoader, compileClassPath.orElseGet(() -> null));
-    LOGGER.info(
-        "Generated classes dir: " + classesDir + " and generation of specific FastSerializer" + " is done for schema: ["
-            + schema + "] is done");
+    LOGGER.info("Generated classes dir: {} and generation of specific FastSerializer is done for schema: [\n{}\n]",
+        classesDir, schema.toString(true));
     return generator.generateSerializer();
   }
 
@@ -407,7 +404,8 @@ public final class FastSerdeCache {
       try {
         return buildFastSpecificSerializer(schema);
       } catch (FastDeserializerGeneratorException e) {
-        LOGGER.warn("Serializer generation exception", e);
+        LOGGER.warn("Serializer generation exception when generating specific FastSerializer for schema: [\n{}\n]",
+            schema.toString(true), e);
       } catch (Exception e) {
         LOGGER.warn("Serializer class instantiation exception", e);
       }
@@ -426,15 +424,13 @@ public final class FastSerdeCache {
   public FastSerializer<?> buildFastGenericSerializer(Schema schema) {
     // Defensive code
     if (!Utils.isSupportedAvroVersionsForSerializer()) {
-      throw new FastDeserializerGeneratorException("Fast generic serializer is only supported in following avro versions:"
+      throw new FastDeserializerGeneratorException("Generic FastSerializer is only supported in following avro versions:"
           + Utils.getAvroVersionsSupportedForSerializer());
     }
-    LOGGER.info("Start buildFastGenericSerializer for schema: [" + schema + "]");
     FastGenericSerializerGenerator<?> generator =
         new FastGenericSerializerGenerator<>(schema, classesDir, classLoader, compileClassPath.orElseGet(() -> null));
-    LOGGER.info(
-        "Generated classes dir: " + classesDir + " and generation of generic FastSerializer" + " is done for schema: ["
-            + schema + "] is done");
+    LOGGER.info("Generated classes dir: {} and generation of generic FastSerializer is done for schema: [\n{}\n]",
+        classesDir, schema.toString(true));
     return generator.generateSerializer();
   }
 
@@ -444,7 +440,8 @@ public final class FastSerdeCache {
       try {
         return buildFastGenericSerializer(schema);
       } catch (FastDeserializerGeneratorException e) {
-        LOGGER.warn("Serializer generation exception", e);
+        LOGGER.warn("Serializer generation exception when generating generic FastSerializer for schema: [\n{}\n]",
+            schema.toString(true), e);
       } catch (Exception e) {
         LOGGER.warn("Serializer class instantiation exception", e);
       }
@@ -478,7 +475,7 @@ public final class FastSerdeCache {
     private final SpecificDatumReader<V> datumReader;
 
     public FastDeserializerWithAvroSpecificImpl(Schema writerSchema, Schema readerSchema) {
-      this.datumReader = new SpecificDatumReader<>(writerSchema, readerSchema);
+      this.datumReader = new ColdSpecificDatumReader<>(writerSchema, readerSchema);
     }
 
     @Override
@@ -491,7 +488,7 @@ public final class FastSerdeCache {
     private final GenericDatumReader<V> datumReader;
 
     public FastDeserializerWithAvroGenericImpl(Schema writerSchema, Schema readerSchema) {
-      this.datumReader = new GenericDatumReader<>(writerSchema, readerSchema);
+      this.datumReader = new ColdGenericDatumReader<>(writerSchema, readerSchema);
     }
 
     @Override

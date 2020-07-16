@@ -4,7 +4,6 @@
  * See License in the project root for license information.
  */
 
-import javax.xml.bind.DatatypeConverter
 import java.security.MessageDigest
 import java.util.regex.Pattern
 
@@ -20,11 +19,19 @@ buildscript {
 
 plugins {
   id "maven-publish"
+  id "jacoco"
   id "com.jfrog.bintray" version "1.8.4"
   id 'com.github.johnrengelman.shadow' version '5.2.0' apply false
+  id 'com.github.kt3k.coveralls' version '2.10.1'
+  id "org.sonarqube" version "3.0"
 }
 
 group = 'com.linkedin.avroutil1'
+
+repositories {
+  mavenLocal()
+  jcenter()
+}
 
 //does not include "helper" as that module has its own publishing section (because fat jar)
 //does not include "avro-fastserde" as that module has its own publishing section (because we want it to depend on the fat jar)
@@ -52,6 +59,10 @@ subprojects {
 
     dependencies {
       testImplementation "org.testng:testng:6.14.3"
+
+      //redirect logging to log4j2 for tests
+      testRuntimeOnly "org.apache.logging.log4j:log4j-core:2.11.2"
+      testRuntimeOnly "org.apache.logging.log4j:log4j-slf4j-impl:2.11.2"
     }
 
     test {
@@ -90,8 +101,8 @@ subprojects {
           md.update(String.valueOf(project.group).getBytes("UTF-8"))
           md.update(String.valueOf(project.name).getBytes("UTF-8"))
           md.update(String.valueOf(project.version).getBytes("UTF-8"))
-          byte[] digest = md.digest();
-          String hash = DatatypeConverter.printHexBinary(digest).toUpperCase()
+          byte[] digest = md.digest()
+          String hash = hex(digest)
 
           String versioningFileName = "__Versioning__" + hash
           String versioningPayload = "{" +
@@ -105,20 +116,20 @@ subprojects {
           String outFolder = "${project.buildDir}/resources/main/META-INF/"
           mkdir outFolder
           file("${outFolder}/${versioningFileName}").text = versioningPayload
+        }
 
-          manifest {
-            //embed module names and version information
-            //into jar manifests
-            attributes(
-                'Name': "${project.name}",
-                'Specification-Title': "${project.name}",
-                'Specification-Version': "${project.version}",
-                'Specification-Vendor': "LinkedIn",
-                'Implementation-Title': "${project.name}",
-                'Implementation-Version': "${project.version}",
-                'Implementation-Vendor': "LinkedIn",
-            )
-          }
+        manifest {
+          //embed module names and version information
+          //into jar manifests
+          attributes(
+                  'Name': "${project.name}",
+                  'Specification-Title': "${project.name}",
+                  'Specification-Version': "${project.version}",
+                  'Specification-Vendor': "LinkedIn",
+                  'Implementation-Title': "${project.name}",
+                  'Implementation-Version': "${project.version}",
+                  'Implementation-Vendor': "LinkedIn",
+          )
         }
       }
     }
@@ -221,6 +232,63 @@ subprojects {
       toolVersion '8.25'
     }
   }
+
+  plugins.withType(JacocoPlugin) {
+    jacoco {
+      toolVersion = "0.8.5"
+    }
+
+    //we dont need reports at the individual module level as we generate an aggregate
+    jacocoTestReport {
+      reports {
+        xml.enabled false
+        html.enabled false
+        csv.enabled false
+      }
+    }
+  }
+}
+
+//generates an aggregate coverage report for the entire project
+task codeCoverageReport(type: JacocoReport) {
+  executionData files()
+
+  project.afterEvaluate {  //delay until this (parent) project is fully configured
+    subprojects.each { Project subproject ->
+      subproject.afterEvaluate { //delay until sub-module is fully configured (or there wont be any plugins applied)
+        if (subproject.pluginManager.hasPlugin('jacoco')) {
+          //add source sets from all relevant submodules
+          sourceSets subproject.sourceSets.main
+        }
+      }
+    }
+    executionData.setFrom(fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec"))
+  }
+
+  reports {
+    xml.enabled true
+    xml.destination = new File("${buildDir}/reports/jacoco/report.xml")
+    html.enabled false //useful as a debug aid and for local dev
+    csv.enabled false
+  }
+}
+
+coveralls {
+  jacocoReportPath "${buildDir}/reports/jacoco/report.xml"
+}
+
+sonarqube {
+  properties {
+    property "sonar.organization", "linkedin"
+    property "sonar.host.url", "https://sonarcloud.io"
+  }
+}
+
+//the root project doesnt have a clean task applied (?!), so we add one ourselves.
+task clean {
+  doLast {
+    delete "${buildDir}"
+  }
 }
 
 bintray {
@@ -243,7 +311,7 @@ bintray {
 }
 
 wrapper {
-  gradleVersion = '6.2'
+  gradleVersion = '6.5.1'
   distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -295,4 +363,12 @@ tasks.register("parseGitInfo") {
       logger.info("git working copy is at ${type} ${rootProject.gitName} at revision ${rootProject.gitHash}")
     }
   }
+}
+
+static String hex(byte[] bytes) {
+  StringBuilder result = new StringBuilder(bytes.length * 2);
+  for (byte b : bytes) {
+    result.append(String.format("%02X", b));
+  }
+  return result.toString();
 }

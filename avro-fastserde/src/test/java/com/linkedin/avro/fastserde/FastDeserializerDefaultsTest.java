@@ -81,6 +81,26 @@ public class FastDeserializerDefaultsTest {
   }
 
   @Test
+  public void testPrimitiveFloatListAddPrimitive() {
+    int array_size = 250, iteration = 100;
+    float w = 0;
+    long startTime = System.currentTimeMillis();
+
+    for (int i = 0; i < iteration; i++) {
+      ByteBufferBackedPrimitiveFloatList list = new ByteBufferBackedPrimitiveFloatList(array_size);
+
+      for (int l = 0; l < array_size; l++) {
+        list.addPrimitive((float) l);
+      }
+      for (Float f : list) {
+        w += f;
+      }
+    }
+    long endTime = System.currentTimeMillis();
+    System.out.println(String.format("time taken to addPrimitive to float list: %d", endTime - startTime));
+  }
+
+  @Test
   public void testFastFloatArraySerDes()  {
     int array_size = 2500, iteration = 100_000;
     long total = 0, endTime, startTime, w = 0;

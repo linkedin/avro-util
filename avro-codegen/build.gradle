@@ -17,7 +17,7 @@ dependencies {
     implementation "org.apache.logging.log4j:log4j-api:2.11.2"
     implementation "com.beust:jcommander:1.78"
     implementation "org.apache.ant:ant:1.10.7"
-    
+
     compileOnly ("org.apache.avro:avro:1.4.1") {
         exclude group: "org.mortbay.jetty"
         exclude group: "org.apache.velocity"
@@ -27,7 +27,7 @@ dependencies {
         exclude group: "org.slf4j"
     }
 
-    testCompile ("org.apache.avro:avro:1.4.1") {
+    testImplementation ("org.apache.avro:avro:1.4.1") {
         exclude group: "org.mortbay.jetty"
         exclude group: "org.apache.velocity"
         exclude group: "commons-lang"
@@ -35,11 +35,7 @@ dependencies {
         exclude group: "com.thoughtworks.paranamer", module: "paranamer-ant"
         exclude group: "org.slf4j"
     }
-    testCompile 'net.openhft:compiler:2.3.1'
-
-    //redirect logging to log4j2 for tests
-    testRuntimeOnly "org.apache.logging.log4j:log4j-core:2.11.2"
-    testRuntimeOnly "org.apache.logging.log4j:log4j-slf4j-impl:2.11.2"
+    testImplementation 'net.openhft:compiler:2.3.6'
 }
 
 jar {

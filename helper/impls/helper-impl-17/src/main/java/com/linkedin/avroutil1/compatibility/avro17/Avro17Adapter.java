@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaNormalization;
 import org.apache.avro.generic.GenericData;
+import org.apache.avro.io.Avro17BinaryDecoderAccessUtil;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.DecoderFactory;
@@ -156,6 +157,11 @@ public class Avro17Adapter implements AvroAdapter {
   @Override
   public BinaryDecoder newBinaryDecoder(ObjectInput in) {
     return newBinaryDecoder(new ObjectInputToInputStreamAdapter(in), false, null);
+  }
+
+  @Override
+  public BinaryDecoder newBinaryDecoder(byte[] bytes, int offset, int length, BinaryDecoder reuse) {
+    return Avro17BinaryDecoderAccessUtil.newBinaryDecoder(bytes, offset, length, reuse);
   }
 
   @Override
@@ -307,6 +313,7 @@ public class Avro17Adapter implements AvroAdapter {
       fixed = CodeTransformations.transformFixedClass(fixed, minAvro, maxAvro);
       fixed = CodeTransformations.transformEnumClass(fixed, minAvro, maxAvro);
       fixed = CodeTransformations.transformParseCalls(fixed, AvroVersion.AVRO_1_7, minAvro, maxAvro);
+      fixed = CodeTransformations.addGetClassSchemaMethod(fixed, AvroVersion.AVRO_1_7, minAvro, maxAvro);
       fixed = CodeTransformations.removeBuilderSupport(fixed, minAvro, maxAvro);
       fixed = CodeTransformations.removeBinaryMessageCodecSupport(fixed, minAvro, maxAvro);
       fixed = CodeTransformations.removeAvroGeneratedAnnotation(fixed, minAvro, maxAvro);

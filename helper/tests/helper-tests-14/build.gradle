@@ -5,7 +5,8 @@
  */
 
 plugins {
-  id "java"
+  id "java-library"
+  id "jacoco"
   id "checkstyle"
 }
 

@@ -21,17 +21,14 @@ addons:
 install: true
 
 script:
-  - ./gradlew clean build
+  - ./gradlew clean build javadoc --no-daemon
 
 # required for gradle artifact caching (see https://docs.travis-ci.com/user/languages/java/#caching)
 before_cache:
-  - rm -rvf $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -rvf $HOME/.gradle/caches/*/fileHashes/fileHashes.lock
-  - rm -rvf $HOME/.gradle/caches/*/javaCompile/javaCompile.lock
   - rm -rvf $HOME/.gradle/caches/journal-*/file-access.bin
-  - rm -rvf $HOME/.gradle/caches/journal-*/*.lock
   - rm -rvf $HOME/.gradle/caches/*/plugin-resolution/
-  - rm -rvf $HOME/.gradle/caches/*/scripts/*/cp_proj/
+  - rm -rvf $HOME/.gradle/caches/*/scripts/
+  - rm -rvf $HOME/.gradle/caches/*/*.lock
   - sync
 
 cache:

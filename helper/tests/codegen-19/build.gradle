@@ -6,6 +6,7 @@
 
 plugins {
   id "java-library"
+  id "jacoco"
   id "checkstyle"
 }
 
@@ -70,6 +71,7 @@ runCompatAvroCodegen.dependsOn ":helper:tests:helper-tests-common:jar"
 dependencies {
   codegen "org.apache.avro:avro-tools:1.9.2"
   codegen "org.apache.avro:avro-compiler:1.9.2"
+  codegen files('../codegenClasspath')
   codegen project(":helper:tests:helper-tests-common")
   codegen project(":helper:helper")
 

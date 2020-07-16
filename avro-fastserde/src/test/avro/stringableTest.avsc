@@ -54,6 +54,10 @@
           { "type" : "StringableSubRecord", "name": "subRecord" }
         ]
       }
+    },
+    {
+      "name": "stringUnion",
+      "type": ["null", {"type":  "string", "avro.java.string":  "String"}]
     }
   ]
 }
