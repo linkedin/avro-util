@@ -18,4 +18,9 @@ public class BenchmarkConstants {
    * Size of the genreted AVRO Primitive Bytes
    */
   public static final Integer BYTES_SIZE = 20;
+
+  /**
+   * Length of generated Float Array.
+   */
+  public static final Integer FLOAT_ARRAY_SIZE = 2500;
 }
