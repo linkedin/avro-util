@@ -185,8 +185,10 @@ public class ByteBufferBackedPrimitiveFloatList extends AbstractList<Float>
     if (i >= size) {
       throw new IndexOutOfBoundsException("Index " + i + " out of bounds.");
     }
-    cacheFromByteBuffer();
-    return elements[i];
+    if (isCached) {
+      return elements[i];
+    }
+    return byteBuffer.getElement(i);
   }
 
   @Override

@@ -43,6 +43,24 @@ public class CompositeByteBuffer {
     byteBufferCount = count;
   }
 
+  public float getElement(int i) {
+    int index = i * 4;
+    // most common case:
+    if (byteBufferCount == 1) {
+      return byteBuffers.get(0).getFloat(index);
+    }
+
+    int k = 0, size = 0;
+    // find which byteBuffer holds the i-th item
+    while (index >= size) {
+      size += byteBuffers.get(k++).limit();
+    }
+    k--;
+    // find the index on the byte buffer
+    int j = i - (size - byteBuffers.get(k).limit());
+    return byteBuffers.get(k).getFloat(j);
+  }
+
   public void setArray(float[] array) {
     int k = 0;
     for (int i = 0; i < byteBufferCount; i++) {
