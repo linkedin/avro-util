@@ -65,29 +65,25 @@ public class StringableRecord_SpecificDeserializer_6174384286732341990_617438428
         }
         List<Utf8> urlArray0 = null;
         long chunkLen0 = (decoder.readArrayStart());
-        if (chunkLen0 > 0) {
-            if (StringableRecord.get(5) instanceof List) {
-                urlArray0 = ((List) StringableRecord.get(5));
-                urlArray0 .clear();
-            } else {
-                urlArray0 = new ArrayList<Utf8>();
-            }
-            do {
-                for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
-                    Object urlArrayArrayElementReuseVar0 = null;
-                    if (StringableRecord.get(5) instanceof GenericArray) {
-                        urlArrayArrayElementReuseVar0 = ((GenericArray) StringableRecord.get(5)).peek();
-                    }
-                    if (urlArrayArrayElementReuseVar0 instanceof Utf8) {
-                        urlArray0 .add((decoder).readString(((Utf8) urlArrayArrayElementReuseVar0)));
-                    } else {
-                        urlArray0 .add((decoder).readString(null));
-                    }
-                }
-                chunkLen0 = (decoder.arrayNext());
-            } while (chunkLen0 > 0);
+        if (StringableRecord.get(5) instanceof List) {
+            urlArray0 = ((List) StringableRecord.get(5));
+            urlArray0 .clear();
         } else {
-            urlArray0 = Collections.emptyList();
+            urlArray0 = new ArrayList<Utf8>();
+        }
+        while (chunkLen0 > 0) {
+            for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
+                Object urlArrayArrayElementReuseVar0 = null;
+                if (StringableRecord.get(5) instanceof GenericArray) {
+                    urlArrayArrayElementReuseVar0 = ((GenericArray) StringableRecord.get(5)).peek();
+                }
+                if (urlArrayArrayElementReuseVar0 instanceof Utf8) {
+                    urlArray0 .add((decoder).readString(((Utf8) urlArrayArrayElementReuseVar0)));
+                } else {
+                    urlArray0 .add((decoder).readString(null));
+                }
+            }
+            chunkLen0 = (decoder.arrayNext());
         }
         StringableRecord.put(5, urlArray0);
         Map<Utf8, Utf8> urlMap0 = null;

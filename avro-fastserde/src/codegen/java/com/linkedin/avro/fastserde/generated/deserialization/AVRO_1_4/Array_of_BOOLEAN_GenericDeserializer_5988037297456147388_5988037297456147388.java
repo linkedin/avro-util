@@ -24,21 +24,17 @@ public class Array_of_BOOLEAN_GenericDeserializer_5988037297456147388_5988037297
     {
         PrimitiveBooleanList array0 = null;
         long chunkLen0 = (decoder.readArrayStart());
-        if (chunkLen0 > 0) {
-            if ((reuse) instanceof PrimitiveBooleanList) {
-                array0 = ((PrimitiveBooleanList)(reuse));
-                array0 .clear();
-            } else {
-                array0 = new PrimitiveBooleanArrayList(((int) chunkLen0));
-            }
-            do {
-                for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
-                    array0 .addPrimitive((decoder.readBoolean()));
-                }
-                chunkLen0 = (decoder.arrayNext());
-            } while (chunkLen0 > 0);
+        if ((reuse) instanceof PrimitiveBooleanList) {
+            array0 = ((PrimitiveBooleanList)(reuse));
+            array0 .clear();
         } else {
             array0 = new PrimitiveBooleanArrayList(((int) chunkLen0));
+        }
+        while (chunkLen0 > 0) {
+            for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
+                array0 .addPrimitive((decoder.readBoolean()));
+            }
+            chunkLen0 = (decoder.arrayNext());
         }
         return array0;
     }

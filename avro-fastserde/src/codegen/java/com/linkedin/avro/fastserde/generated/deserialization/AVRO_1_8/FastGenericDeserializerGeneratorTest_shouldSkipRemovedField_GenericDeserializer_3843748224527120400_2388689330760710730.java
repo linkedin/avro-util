@@ -120,25 +120,21 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
         FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(3, subRecordMap1);
         List<IndexedRecord> subRecordArray1 = null;
         long chunkLen1 = (decoder.readArrayStart());
-        if (chunkLen1 > 0) {
-            if (FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(4) instanceof List) {
-                subRecordArray1 = ((List) FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(4));
-                subRecordArray1 .clear();
-            } else {
-                subRecordArray1 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen1), subRecordArray0);
-            }
-            do {
-                for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {
-                    Object subRecordArrayArrayElementReuseVar0 = null;
-                    if (FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(4) instanceof GenericArray) {
-                        subRecordArrayArrayElementReuseVar0 = ((GenericArray) FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(4)).peek();
-                    }
-                    subRecordArray1 .add(deserializesubRecord0(subRecordArrayArrayElementReuseVar0, (decoder)));
-                }
-                chunkLen1 = (decoder.arrayNext());
-            } while (chunkLen1 > 0);
+        if (FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(4) instanceof List) {
+            subRecordArray1 = ((List) FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(4));
+            subRecordArray1 .clear();
         } else {
             subRecordArray1 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen1), subRecordArray0);
+        }
+        while (chunkLen1 > 0) {
+            for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {
+                Object subRecordArrayArrayElementReuseVar0 = null;
+                if (FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(4) instanceof GenericArray) {
+                    subRecordArrayArrayElementReuseVar0 = ((GenericArray) FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(4)).peek();
+                }
+                subRecordArray1 .add(deserializesubRecord0(subRecordArrayArrayElementReuseVar0, (decoder)));
+            }
+            chunkLen1 = (decoder.arrayNext());
         }
         FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(4, subRecordArray1);
         return FastGenericDeserializerGeneratorTest_shouldSkipRemovedField;

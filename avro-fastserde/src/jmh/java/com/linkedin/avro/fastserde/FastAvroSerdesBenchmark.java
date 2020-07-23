@@ -127,48 +127,22 @@ public class FastAvroSerdesBenchmark {
   @Benchmark
   @OperationsPerInvocation(NUMBER_OF_OPERATIONS)
   public void testAvroDeserialization(Blackhole bh) throws Exception {
-    testDeserialization(deserializer, bh, 0);
+    testDeserialization(deserializer, bh);
   }
 
   @Benchmark
   @OperationsPerInvocation(NUMBER_OF_OPERATIONS)
   public void testFastAvroDeserialization(Blackhole bh) throws Exception {
-    testDeserialization(fastDeserializer, bh, 0);
+    testDeserialization(fastDeserializer, bh);
   }
 
-  @Benchmark
-  @OperationsPerInvocation(NUMBER_OF_OPERATIONS)
-  public void testFastAvroDeserializationAccess(Blackhole bh) throws Exception {
-    testDeserialization(fastDeserializer, bh, 1);
-  }
-
-  @Benchmark
-  @OperationsPerInvocation(NUMBER_OF_OPERATIONS)
-  public void testFastAvroDeserializationAccess8(Blackhole bh) throws Exception {
-    testDeserialization(fastDeserializer, bh, 8);
-  }
-
-  @Benchmark
-  @OperationsPerInvocation(NUMBER_OF_OPERATIONS)
-  public void testFastAvroDeserializationAccess16(Blackhole bh) throws Exception {
-    testDeserialization(fastDeserializer, bh, 16);
-  }
-
-  private void testDeserialization(DatumReader<GenericRecord> datumReader, Blackhole bh, int access) throws Exception {
+  private void testDeserialization(DatumReader<GenericRecord> datumReader, Blackhole bh) throws Exception {
     GenericRecord record = null;
     BinaryDecoder decoder = AvroCompatibilityHelper.newBinaryDecoder(serializedBytes);
     for (int i = 0; i < NUMBER_OF_OPERATIONS; i++) {
-      float w = 0;
       decoder = AvroCompatibilityHelper.newBinaryDecoder(new ByteArrayInputStream(serializedBytes), false, decoder);
       record = datumReader.read(record, decoder);
-      if (access > 0) {
-        List<Float> list = (List<Float>) (record).get(0);
-        for (int j = 0; j < list.size(); j += access) {
-          w += list.get(j);
-        }
-      }
       bh.consume(record);
-      bh.consume(w);
     }
   }
 }

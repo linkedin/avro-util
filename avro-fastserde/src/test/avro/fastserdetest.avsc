@@ -309,6 +309,54 @@
         "int"
       ],
       "default": null
+    },
+    {
+      "name": "booleanArray",
+      "type": {
+        "type": "array",
+        "items": "boolean"
+      },
+      "default": []
+    },
+    {
+      "name": "doubleArray",
+      "type": {
+        "type": "array",
+        "items": "double"
+      },
+      "default": []
+    },
+    {
+      "name": "floatArray",
+      "type": {
+        "type": "array",
+        "items": "float"
+      },
+      "default": []
+    },
+    {
+      "name": "intArray",
+      "type": {
+        "type": "array",
+        "items": "int"
+      },
+      "default": []
+    },
+    {
+      "name": "longArray",
+      "type": {
+        "type": "array",
+        "items": "long"
+      },
+      "default": []
+    },
+    {
+      "name": "stringArray",
+      "type": {
+        "type": "array",
+        "items": "string"
+      },
+      "default": []
     }
   ]
 }

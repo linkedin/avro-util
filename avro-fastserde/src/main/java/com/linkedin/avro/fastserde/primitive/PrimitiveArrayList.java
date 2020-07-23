@@ -7,9 +7,18 @@ import org.apache.avro.generic.GenericContainer;
 import org.apache.avro.generic.GenericData;
 
 
-public abstract class PrimitiveArrayList<T, L> extends AbstractList<T>
+public abstract class PrimitiveArrayList<T, L, A> extends AbstractList<T>
     implements GenericContainer, Comparable<GenericArray<T>> {
   private int size = 0;
+  protected A elementsArray;
+
+  public PrimitiveArrayList(int capacity) {
+    this.elementsArray = newArray(capacity);
+  }
+
+  public PrimitiveArrayList() {
+    this(10);
+  }
 
   // Abstract functions required by child classes
 
@@ -19,22 +28,10 @@ public abstract class PrimitiveArrayList<T, L> extends AbstractList<T>
   protected abstract int capacity();
 
   /**
-   * A function used to replace the primitve array instance, in cases where it needs to be resized.
-   *
-   * @param newElements primitive array instance to replace the current one
-   */
-  protected abstract void setElementsArray(Object newElements);
-
-  /**
-   * @return the primitive array instance of the child class
-   */
-  protected abstract Object getElementsArray();
-
-  /**
    * @param capacity of the new primitive array
    * @return an instance of the right type of primitive array used by the child class
    */
-  protected abstract Object newArray(int capacity);
+  protected abstract A newArray(int capacity);
 
   /**
    * @param that an instance of primitive list to use for comparison
@@ -88,7 +85,7 @@ public abstract class PrimitiveArrayList<T, L> extends AbstractList<T>
     checkIfLargerThanSize(i);
     T result = (T) get(i);
     --size;
-    System.arraycopy(getElementsArray(), i+1, getElementsArray(), i, (size-i));
+    System.arraycopy(elementsArray, i+1, elementsArray, i, (size-i));
     return result;
   }
 
@@ -161,9 +158,9 @@ public abstract class PrimitiveArrayList<T, L> extends AbstractList<T>
   /** Checks if the primitve array is at capacity, and if so, resizes it to 1.5x + 1. */
   protected void capacityCheck() {
     if (size == capacity()) {
-      Object newElements = newArray((size * 3)/2 + 1);
-      System.arraycopy(getElementsArray(), 0, newElements, 0, size);
-      setElementsArray(newElements);
+      A newElements = newArray((size * 3)/2 + 1);
+      System.arraycopy(elementsArray, 0, newElements, 0, size);
+      this.elementsArray = newElements;
     }
   }
 
@@ -177,16 +174,16 @@ public abstract class PrimitiveArrayList<T, L> extends AbstractList<T>
       throw new IndexOutOfBoundsException("Index " + location + " out of bounds.");
     }
     if (size == capacity()) {
-      Object newElements = newArray((size * 3)/2 + 1);
+      A newElements = newArray((size * 3)/2 + 1);
       if (location > 0) {
         // Copy the elements before the insertion location, if any, with same index
-        System.arraycopy(getElementsArray(), 0, newElements, 0, location - 1);
+        System.arraycopy(elementsArray, 0, newElements, 0, location - 1);
       }
       // Copy the elements after the insertion location, with index offset by 1
-      System.arraycopy(getElementsArray(), location, newElements, location + 1, size - location);
-      setElementsArray(newElements);
+      System.arraycopy(elementsArray, location, newElements, location + 1, size - location);
+      this.elementsArray = newElements;
     } else {
-      System.arraycopy(getElementsArray(), location, getElementsArray(), location + 1, size - location);
+      System.arraycopy(elementsArray, location, elementsArray, location + 1, size - location);
     }
     size++;
   }
