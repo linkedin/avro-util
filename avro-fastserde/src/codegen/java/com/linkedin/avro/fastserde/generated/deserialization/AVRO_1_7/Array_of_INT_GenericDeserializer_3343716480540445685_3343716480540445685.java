@@ -24,21 +24,17 @@ public class Array_of_INT_GenericDeserializer_3343716480540445685_33437164805404
     {
         PrimitiveIntList array0 = null;
         long chunkLen0 = (decoder.readArrayStart());
-        if (chunkLen0 > 0) {
-            if ((reuse) instanceof PrimitiveIntList) {
-                array0 = ((PrimitiveIntList)(reuse));
-                array0 .clear();
-            } else {
-                array0 = new PrimitiveIntArrayList(((int) chunkLen0));
-            }
-            do {
-                for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
-                    array0 .addPrimitive((decoder.readInt()));
-                }
-                chunkLen0 = (decoder.arrayNext());
-            } while (chunkLen0 > 0);
+        if ((reuse) instanceof PrimitiveIntList) {
+            array0 = ((PrimitiveIntList)(reuse));
+            array0 .clear();
         } else {
             array0 = new PrimitiveIntArrayList(((int) chunkLen0));
+        }
+        while (chunkLen0 > 0) {
+            for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
+                array0 .addPrimitive((decoder.readInt()));
+            }
+            chunkLen0 = (decoder.arrayNext());
         }
         return array0;
     }
