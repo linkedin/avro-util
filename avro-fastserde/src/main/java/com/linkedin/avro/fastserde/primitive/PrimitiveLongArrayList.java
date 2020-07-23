@@ -5,12 +5,15 @@ import com.linkedin.avro.api.PrimitiveLongList;
 import org.apache.avro.Schema;
 
 
-public class PrimitiveLongArrayList extends PrimitiveArrayList<Long, PrimitiveLongList> implements PrimitiveLongList {
+public class PrimitiveLongArrayList extends PrimitiveArrayList<Long, PrimitiveLongList, long[]> implements PrimitiveLongList {
   public static final Schema SCHEMA = Schema.createArray(Schema.create(Schema.Type.LONG));
-  long[] elementsArray;
 
   public PrimitiveLongArrayList(int capacity) {
-    this.elementsArray = new long[capacity];
+    super(capacity);
+  }
+
+  public PrimitiveLongArrayList() {
+    super();
   }
 
   @Override
@@ -66,17 +69,7 @@ public class PrimitiveLongArrayList extends PrimitiveArrayList<Long, PrimitiveLo
   }
 
   @Override
-  protected void setElementsArray(Object newElements) {
-    this.elementsArray = (long[]) newElements;
-  }
-
-  @Override
-  protected Object getElementsArray() {
-    return this.elementsArray;
-  }
-
-  @Override
-  protected Object newArray(int capacity) {
+  protected long[] newArray(int capacity) {
     return new long[capacity];
   }
 

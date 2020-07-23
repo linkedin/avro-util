@@ -18,6 +18,7 @@ import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JStatement;
 import com.sun.codemodel.JTryBlock;
 import com.sun.codemodel.JVar;
+import com.sun.codemodel.JWhileLoop;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -42,10 +43,12 @@ import org.apache.avro.util.Utf8;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<T> {
-
+  private static final Logger LOGGER = LoggerFactory.getLogger(FastDeserializerGenerator.class);
   private static final String DECODER = "decoder";
   private static final String VAR_NAME_FOR_REUSE = "reuse";
 
@@ -606,68 +609,61 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     }
     JInvocation finalNewArrayExp = newArrayExp;
 
+
+    if (finalAction.getShouldRead()) {
+      /** N.B.: Need to use the erasure because instanceof does not support generic types */
+      ifCodeGen(parentBody, reuseSupplier.get()._instanceof(abstractErasedArrayClass), then2 -> {
+        then2.assign(arrayVar, JExpr.cast(abstractErasedArrayClass, reuseSupplier.get()));
+        then2.invoke(arrayVar, "clear");
+      }, else2 -> {
+        else2.assign(arrayVar, finalNewArrayExp);
+      });
+    }
+
     JExpression chunkLengthGreaterThanZero = chunkLen.gt(JExpr.lit(0));
 
-    ifCodeGen(parentBody, chunkLengthGreaterThanZero, then1 -> {
-      if (finalAction.getShouldRead()) {
-        /** N.B.: Need to use the erasure because instanceof does not support generic types */
-        ifCodeGen(then1, reuseSupplier.get()._instanceof(abstractErasedArrayClass), then2 -> {
-          then2.assign(arrayVar, JExpr.cast(abstractErasedArrayClass, reuseSupplier.get()));
-          then2.invoke(arrayVar, "clear");
-        }, else2 -> {
-          else2.assign(arrayVar, finalNewArrayExp);
-        });
-      }
+    JWhileLoop whileLoopToIterateOnBlocks = parentBody._while(chunkLengthGreaterThanZero);
+    JForLoop forLoopToIterateOnElementsOfCurrentBlock = whileLoopToIterateOnBlocks.body()._for();
+    JVar counter = forLoopToIterateOnElementsOfCurrentBlock.init(codeModel.INT, getUniqueName("counter"), JExpr.lit(0));
+    forLoopToIterateOnElementsOfCurrentBlock.test(counter.lt(chunkLen));
+    forLoopToIterateOnElementsOfCurrentBlock.update(counter.incr());
+    JBlock forBody = forLoopToIterateOnElementsOfCurrentBlock.body();
 
-      JDoLoop doLoop = then1._do(chunkLengthGreaterThanZero);
-      JForLoop forLoop = doLoop.body()._for();
-      JVar counter = forLoop.init(codeModel.INT, getUniqueName("counter"), JExpr.lit(0));
-      forLoop.test(counter.lt(chunkLen));
-      forLoop.update(counter.incr());
-      JBlock forBody = forLoop.body();
-
-      JVar elementSchemaVar = null;
-      BiConsumer<JBlock, JExpression> putValueInArray = null;
-      if (finalAction.getShouldRead()) {
-        String addMethod = SchemaAssistant.isPrimitive(arraySchema.getElementType())
-            ? "addPrimitive"
-            : "add";
-        putValueInArray = (block, expression) -> block.invoke(arrayVar, addMethod).arg(expression);
-        if (useGenericTypes) {
-          elementSchemaVar = declareSchemaVar(arraySchema.getElementType(), name + "ArrayElemSchema",
-              arraySchemaVar.invoke("getElementType"));
-        }
-      }
-
-      Supplier<JExpression> elementReuseSupplier = null;
-      if (SchemaAssistant.isCapableOfReuse(arraySchema.getElementType())) {
-        // Define element reuse variable here (but only for mutable types)
-        JVar elementReuseVar = forBody.decl(codeModel.ref(Object.class), getUniqueName(name + "ArrayElementReuseVar"), JExpr._null());
-        ifCodeGen(forBody, reuseSupplier.get()._instanceof(codeModel.ref(GenericArray.class)), then2 -> {
-          then2.assign(elementReuseVar, JExpr.invoke(JExpr.cast(codeModel.ref(GenericArray.class), reuseSupplier.get()), "peek"));
-        });
-        elementReuseSupplier = () -> elementReuseVar;
-      }
-
-      if (SchemaAssistant.isComplexType(arraySchema.getElementType())) {
-        String elemName = name + "Elem";
-        Schema readerArrayElementSchema = null;
-        if (finalAction.getShouldRead()) {
-          readerArrayElementSchema = readerArraySchema.getElementType();
-        }
-        processComplexType(elementSchemaVar, elemName, arraySchema.getElementType(), readerArrayElementSchema, forBody,
-            finalAction, putValueInArray, elementReuseSupplier);
-      } else {
-        processSimpleType(arraySchema.getElementType(), forBody, finalAction, putValueInArray, elementReuseSupplier);
-      }
-      doLoop.body().assign(chunkLen, JExpr.direct(DECODER + ".arrayNext()"));
-    }, else1 -> {
+    JVar elementSchemaVar = null;
+    BiConsumer<JBlock, JExpression> putValueInArray = null;
+    if (finalAction.getShouldRead()) {
+      String addMethod = SchemaAssistant.isPrimitive(arraySchema.getElementType())
+          ? "addPrimitive"
+          : "add";
+      putValueInArray = (block, expression) -> block.invoke(arrayVar, addMethod).arg(expression);
       if (useGenericTypes) {
-        else1.assign(arrayVar, finalNewArrayExp);
-      } else {
-        else1.assign(arrayVar, codeModel.ref(Collections.class).staticInvoke("emptyList"));
+        elementSchemaVar = declareSchemaVar(arraySchema.getElementType(), name + "ArrayElemSchema",
+            arraySchemaVar.invoke("getElementType"));
       }
-    });
+    }
+
+    Supplier<JExpression> elementReuseSupplier = null;
+    if (SchemaAssistant.isCapableOfReuse(arraySchema.getElementType())) {
+      // Define element reuse variable here (but only for mutable types)
+      JVar elementReuseVar = forBody.decl(codeModel.ref(Object.class), getUniqueName(name + "ArrayElementReuseVar"), JExpr._null());
+      ifCodeGen(forBody, reuseSupplier.get()._instanceof(codeModel.ref(GenericArray.class)), then2 -> {
+        then2.assign(elementReuseVar, JExpr.invoke(JExpr.cast(codeModel.ref(GenericArray.class), reuseSupplier.get()), "peek"));
+      });
+      elementReuseSupplier = () -> elementReuseVar;
+    }
+
+    if (SchemaAssistant.isComplexType(arraySchema.getElementType())) {
+      String elemName = name + "Elem";
+      Schema readerArrayElementSchema = null;
+      if (finalAction.getShouldRead()) {
+        readerArrayElementSchema = readerArraySchema.getElementType();
+      }
+      processComplexType(elementSchemaVar, elemName, arraySchema.getElementType(), readerArrayElementSchema, forBody,
+          finalAction, putValueInArray, elementReuseSupplier);
+    } else {
+      processSimpleType(arraySchema.getElementType(), forBody, finalAction, putValueInArray, elementReuseSupplier);
+    }
+    whileLoopToIterateOnBlocks.body().assign(chunkLen, JExpr.direct(DECODER + ".arrayNext()"));
 
     if (action.getShouldRead()) {
       putArrayIntoParent.accept(parentBody, arrayVar);

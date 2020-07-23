@@ -5,12 +5,15 @@ import com.linkedin.avro.api.PrimitiveIntList;
 import org.apache.avro.Schema;
 
 
-public class PrimitiveIntArrayList extends PrimitiveArrayList<Integer, PrimitiveIntList> implements PrimitiveIntList {
+public class PrimitiveIntArrayList extends PrimitiveArrayList<Integer, PrimitiveIntList, int[]> implements PrimitiveIntList {
   public static final Schema SCHEMA = Schema.createArray(Schema.create(Schema.Type.INT));
-  int[] elementsArray;
 
   public PrimitiveIntArrayList(int capacity) {
-    this.elementsArray = new int[capacity];
+    super(capacity);
+  }
+
+  public PrimitiveIntArrayList() {
+    super();
   }
 
   @Override
@@ -66,17 +69,7 @@ public class PrimitiveIntArrayList extends PrimitiveArrayList<Integer, Primitive
   }
 
   @Override
-  protected void setElementsArray(Object newElements) {
-    this.elementsArray = (int[]) newElements;
-  }
-
-  @Override
-  protected Object getElementsArray() {
-    return this.elementsArray;
-  }
-
-  @Override
-  protected Object newArray(int capacity) {
+  protected int[] newArray(int capacity) {
     return new int[capacity];
   }
 

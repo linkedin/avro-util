@@ -24,21 +24,17 @@ public class Array_of_LONG_GenericDeserializer_2055015354772118358_2055015354772
     {
         PrimitiveLongList array0 = null;
         long chunkLen0 = (decoder.readArrayStart());
-        if (chunkLen0 > 0) {
-            if ((reuse) instanceof PrimitiveLongList) {
-                array0 = ((PrimitiveLongList)(reuse));
-                array0 .clear();
-            } else {
-                array0 = new PrimitiveLongArrayList(((int) chunkLen0));
-            }
-            do {
-                for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
-                    array0 .addPrimitive((decoder.readLong()));
-                }
-                chunkLen0 = (decoder.arrayNext());
-            } while (chunkLen0 > 0);
+        if ((reuse) instanceof PrimitiveLongList) {
+            array0 = ((PrimitiveLongList)(reuse));
+            array0 .clear();
         } else {
             array0 = new PrimitiveLongArrayList(((int) chunkLen0));
+        }
+        while (chunkLen0 > 0) {
+            for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
+                array0 .addPrimitive((decoder.readLong()));
+            }
+            chunkLen0 = (decoder.arrayNext());
         }
         return array0;
     }

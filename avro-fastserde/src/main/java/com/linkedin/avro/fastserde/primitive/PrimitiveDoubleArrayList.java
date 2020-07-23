@@ -5,12 +5,15 @@ import com.linkedin.avro.api.PrimitiveDoubleList;
 import org.apache.avro.Schema;
 
 
-public class PrimitiveDoubleArrayList extends PrimitiveArrayList<Double, PrimitiveDoubleList> implements PrimitiveDoubleList {
+public class PrimitiveDoubleArrayList extends PrimitiveArrayList<Double, PrimitiveDoubleList, double[]> implements PrimitiveDoubleList {
   public static final Schema SCHEMA = Schema.createArray(Schema.create(Schema.Type.DOUBLE));
-  double[] elementsArray;
 
   public PrimitiveDoubleArrayList(int capacity) {
-    this.elementsArray = new double[capacity];
+    super(capacity);
+  }
+
+  public PrimitiveDoubleArrayList() {
+    super();
   }
 
   @Override
@@ -66,17 +69,7 @@ public class PrimitiveDoubleArrayList extends PrimitiveArrayList<Double, Primiti
   }
 
   @Override
-  protected void setElementsArray(Object newElements) {
-    this.elementsArray = (double[]) newElements;
-  }
-
-  @Override
-  protected Object getElementsArray() {
-    return this.elementsArray;
-  }
-
-  @Override
-  protected Object newArray(int capacity) {
+  protected double[] newArray(int capacity) {
     return new double[capacity];
   }
 
