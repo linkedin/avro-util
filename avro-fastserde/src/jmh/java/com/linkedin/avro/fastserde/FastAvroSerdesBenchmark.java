@@ -6,7 +6,6 @@ import com.linkedin.avro.fastserde.micro.benchmark.AvroGenericSerializer;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
