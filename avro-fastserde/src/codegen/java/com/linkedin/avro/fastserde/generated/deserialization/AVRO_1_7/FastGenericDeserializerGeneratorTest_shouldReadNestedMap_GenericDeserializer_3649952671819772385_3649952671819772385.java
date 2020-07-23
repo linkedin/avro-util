@@ -79,21 +79,17 @@ public class FastGenericDeserializerGeneratorTest_shouldReadNestedMap_GenericDes
                                 Utf8 key1 = (decoder.readString(null));
                                 PrimitiveIntList mapFieldValueValue0 = null;
                                 long chunkLen2 = (decoder.readArrayStart());
-                                if (chunkLen2 > 0) {
-                                    if (null instanceof PrimitiveIntList) {
-                                        mapFieldValueValue0 = ((PrimitiveIntList) null);
-                                        mapFieldValueValue0 .clear();
-                                    } else {
-                                        mapFieldValueValue0 = new PrimitiveIntArrayList(((int) chunkLen2));
-                                    }
-                                    do {
-                                        for (int counter2 = 0; (counter2 <chunkLen2); counter2 ++) {
-                                            mapFieldValueValue0 .addPrimitive((decoder.readInt()));
-                                        }
-                                        chunkLen2 = (decoder.arrayNext());
-                                    } while (chunkLen2 > 0);
+                                if (null instanceof PrimitiveIntList) {
+                                    mapFieldValueValue0 = ((PrimitiveIntList) null);
+                                    mapFieldValueValue0 .clear();
                                 } else {
                                     mapFieldValueValue0 = new PrimitiveIntArrayList(((int) chunkLen2));
+                                }
+                                while (chunkLen2 > 0) {
+                                    for (int counter2 = 0; (counter2 <chunkLen2); counter2 ++) {
+                                        mapFieldValueValue0 .addPrimitive((decoder.readInt()));
+                                    }
+                                    chunkLen2 = (decoder.arrayNext());
                                 }
                                 mapFieldValue0 .put(key1, mapFieldValueValue0);
                             }

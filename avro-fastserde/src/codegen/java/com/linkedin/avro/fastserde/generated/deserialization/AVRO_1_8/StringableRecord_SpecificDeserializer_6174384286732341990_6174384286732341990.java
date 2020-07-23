@@ -60,25 +60,21 @@ public class StringableRecord_SpecificDeserializer_6174384286732341990_617438428
         StringableRecord.put(4, new File((decoder.readString())));
         List<URL> urlArray0 = null;
         long chunkLen0 = (decoder.readArrayStart());
-        if (chunkLen0 > 0) {
-            if (StringableRecord.get(5) instanceof List) {
-                urlArray0 = ((List) StringableRecord.get(5));
-                urlArray0 .clear();
-            } else {
-                urlArray0 = new ArrayList<URL>();
-            }
-            do {
-                for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
-                    Object urlArrayArrayElementReuseVar0 = null;
-                    if (StringableRecord.get(5) instanceof GenericArray) {
-                        urlArrayArrayElementReuseVar0 = ((GenericArray) StringableRecord.get(5)).peek();
-                    }
-                    urlArray0 .add(new URL((decoder.readString())));
-                }
-                chunkLen0 = (decoder.arrayNext());
-            } while (chunkLen0 > 0);
+        if (StringableRecord.get(5) instanceof List) {
+            urlArray0 = ((List) StringableRecord.get(5));
+            urlArray0 .clear();
         } else {
-            urlArray0 = Collections.emptyList();
+            urlArray0 = new ArrayList<URL>();
+        }
+        while (chunkLen0 > 0) {
+            for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
+                Object urlArrayArrayElementReuseVar0 = null;
+                if (StringableRecord.get(5) instanceof GenericArray) {
+                    urlArrayArrayElementReuseVar0 = ((GenericArray) StringableRecord.get(5)).peek();
+                }
+                urlArray0 .add(new URL((decoder.readString())));
+            }
+            chunkLen0 = (decoder.arrayNext());
         }
         StringableRecord.put(5, urlArray0);
         Map<URL, BigInteger> urlMap0 = null;

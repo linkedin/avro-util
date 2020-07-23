@@ -24,21 +24,17 @@ public class Array_of_DOUBLE_GenericDeserializer_6064316435611861740_60643164356
     {
         PrimitiveDoubleList array0 = null;
         long chunkLen0 = (decoder.readArrayStart());
-        if (chunkLen0 > 0) {
-            if ((reuse) instanceof PrimitiveDoubleList) {
-                array0 = ((PrimitiveDoubleList)(reuse));
-                array0 .clear();
-            } else {
-                array0 = new PrimitiveDoubleArrayList(((int) chunkLen0));
-            }
-            do {
-                for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
-                    array0 .addPrimitive((decoder.readDouble()));
-                }
-                chunkLen0 = (decoder.arrayNext());
-            } while (chunkLen0 > 0);
+        if ((reuse) instanceof PrimitiveDoubleList) {
+            array0 = ((PrimitiveDoubleList)(reuse));
+            array0 .clear();
         } else {
             array0 = new PrimitiveDoubleArrayList(((int) chunkLen0));
+        }
+        while (chunkLen0 > 0) {
+            for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
+                array0 .addPrimitive((decoder.readDouble()));
+            }
+            chunkLen0 = (decoder.arrayNext());
         }
         return array0;
     }

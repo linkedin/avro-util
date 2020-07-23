@@ -31,32 +31,28 @@ public class Array_of_UNION_GenericDeserializer_585074122056792963_5850741220567
     {
         List<IndexedRecord> array0 = null;
         long chunkLen0 = (decoder.readArrayStart());
-        if (chunkLen0 > 0) {
-            if ((reuse) instanceof List) {
-                array0 = ((List)(reuse));
-                array0 .clear();
-            } else {
-                array0 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen0), readerSchema);
-            }
-            do {
-                for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
-                    Object arrayArrayElementReuseVar0 = null;
-                    if ((reuse) instanceof GenericArray) {
-                        arrayArrayElementReuseVar0 = ((GenericArray)(reuse)).peek();
-                    }
-                    int unionIndex0 = (decoder.readIndex());
-                    if (unionIndex0 == 0) {
-                        decoder.readNull();
-                    } else {
-                        if (unionIndex0 == 1) {
-                            array0 .add(deserializerecord0(arrayArrayElementReuseVar0, (decoder)));
-                        }
-                    }
-                }
-                chunkLen0 = (decoder.arrayNext());
-            } while (chunkLen0 > 0);
+        if ((reuse) instanceof List) {
+            array0 = ((List)(reuse));
+            array0 .clear();
         } else {
             array0 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen0), readerSchema);
+        }
+        while (chunkLen0 > 0) {
+            for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
+                Object arrayArrayElementReuseVar0 = null;
+                if ((reuse) instanceof GenericArray) {
+                    arrayArrayElementReuseVar0 = ((GenericArray)(reuse)).peek();
+                }
+                int unionIndex0 = (decoder.readIndex());
+                if (unionIndex0 == 0) {
+                    decoder.readNull();
+                } else {
+                    if (unionIndex0 == 1) {
+                        array0 .add(deserializerecord0(arrayArrayElementReuseVar0, (decoder)));
+                    }
+                }
+            }
+            chunkLen0 = (decoder.arrayNext());
         }
         return array0;
     }
