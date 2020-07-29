@@ -25,6 +25,13 @@ public abstract class FastDeserializerGeneratorBase<T> extends FastSerdeBase {
     this.reader = reader;
   }
 
+  FastDeserializerGeneratorBase(boolean useGenericTypes, Schema writer, Schema reader, File destination, ClassLoader classLoader,
+      String compileClassPath, int loadClassLimit) {
+    super("deserialization", useGenericTypes, Utf8.class, destination, classLoader, compileClassPath, false, loadClassLimit);
+    this.writer = writer;
+    this.reader = reader;
+  }
+
   protected static Symbol[] reverseSymbolArray(Symbol[] symbols) {
     Symbol[] reversedSymbols = new Symbol[symbols.length];
 

@@ -10,4 +10,9 @@ public class FastSpecificSerializerGenerator<T> extends FastSerializerGenerator<
       String compileClassPath) {
     super(false, schema, destination, classLoader, compileClassPath);
   }
+
+  public FastSpecificSerializerGenerator(Schema schema, File destination, ClassLoader classLoader,
+      String compileClassPath, int loadClassLimit) {
+    super(false, schema, destination, classLoader, compileClassPath, loadClassLimit);
+  }
 }

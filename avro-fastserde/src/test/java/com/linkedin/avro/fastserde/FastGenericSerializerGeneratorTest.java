@@ -10,6 +10,7 @@ import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveLongList;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.ByteBuffer;
@@ -18,6 +19,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericContainer;
@@ -526,6 +529,24 @@ public class FastGenericSerializerGeneratorTest {
     // then
     shouldWriteArrayOfPrimitives(Schema.Type.LONG, data);
     Assert.assertTrue(primitiveApiCalled.get());
+  }
+
+  @Test(expectedExceptions = FastSerdeGeneratorException.class)
+  public void shouldNotGenerateFastSerializer() throws IOException {
+    // given
+    Schema recordSchema = createRecord("TestSchema");
+    GenericRecord record = new GenericData.Record(recordSchema);
+
+    // create a specific classloader for this test to avoid useless generated codes
+    Path tempPath = Files.createTempDirectory("generated");
+    File tempDir = tempPath.toFile();
+    ClassLoader tempClassLoader = URLClassLoader.newInstance(new URL[]{tempDir.toURI().toURL()},
+        FastGenericSerializerGeneratorTest.class.getClassLoader());
+
+    // when
+    FastGenericSerializerGenerator fastGenericSerializerGenerator =
+        new FastGenericSerializerGenerator<>(recordSchema, tempDir, tempClassLoader, null, 0);
+    fastGenericSerializerGenerator.generateSerializer();
   }
 
   private <E> void shouldWriteArrayOfPrimitives(Schema.Type elementType, List<E> data) {

@@ -71,6 +71,11 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     super(useGenericTypes, writer, reader, destination, classLoader, compileClassPath);
   }
 
+  FastDeserializerGenerator(boolean useGenericTypes, Schema writer, Schema reader, File destination,
+      ClassLoader classLoader, String compileClassPath, int loadClassLimit) {
+    super(useGenericTypes, writer, reader, destination, classLoader, compileClassPath, loadClassLimit);
+  }
+
   public FastDeserializer<T> generateDeserializer() {
     String className = getClassName(writer, reader, useGenericTypes ? "Generic" : "Specific");
     JPackage classPackage = codeModel._package(generatedPackageName);

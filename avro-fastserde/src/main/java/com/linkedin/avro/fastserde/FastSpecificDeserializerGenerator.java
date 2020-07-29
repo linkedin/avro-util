@@ -10,4 +10,9 @@ public final class FastSpecificDeserializerGenerator<T> extends FastDeserializer
       String compileClassPath) {
     super(false, writer, reader, destination, classLoader, compileClassPath);
   }
+
+  FastSpecificDeserializerGenerator(Schema writer, Schema reader, File destination, ClassLoader classLoader,
+      String compileClassPath, int loadClassLimit) {
+    super(false, writer, reader, destination, classLoader, compileClassPath, loadClassLimit);
+  }
 }

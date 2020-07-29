@@ -10,4 +10,9 @@ public final class FastGenericDeserializerGenerator<T> extends FastDeserializerG
       String compileClassPath) {
     super(true, writer, reader, destination, classLoader, compileClassPath);
   }
+
+  FastGenericDeserializerGenerator(Schema writer, Schema reader, File destination, ClassLoader classLoader,
+      String compileClassPath, int loadClassLimit) {
+    super(true, writer, reader, destination, classLoader, compileClassPath, loadClassLimit);
+  }
 }
