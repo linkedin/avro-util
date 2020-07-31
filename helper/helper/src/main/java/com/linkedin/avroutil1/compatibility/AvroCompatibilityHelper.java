@@ -6,12 +6,6 @@
 
 package com.linkedin.avroutil1.compatibility;
 
-import com.linkedin.avroutil1.compatibility.avro14.Avro14Adapter;
-import com.linkedin.avroutil1.compatibility.avro15.Avro15Adapter;
-import com.linkedin.avroutil1.compatibility.avro16.Avro16Adapter;
-import com.linkedin.avroutil1.compatibility.avro17.Avro17Adapter;
-import com.linkedin.avroutil1.compatibility.avro18.Avro18Adapter;
-import com.linkedin.avroutil1.compatibility.avro19.Avro19Adapter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,6 +14,7 @@ import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
+
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
@@ -28,6 +23,13 @@ import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificRecord;
+
+import com.linkedin.avroutil1.compatibility.avro14.Avro14Adapter;
+import com.linkedin.avroutil1.compatibility.avro15.Avro15Adapter;
+import com.linkedin.avroutil1.compatibility.avro16.Avro16Adapter;
+import com.linkedin.avroutil1.compatibility.avro17.Avro17Adapter;
+import com.linkedin.avroutil1.compatibility.avro18.Avro18Adapter;
+import com.linkedin.avroutil1.compatibility.avro19.Avro19Adapter;
 
 
 /**
@@ -472,4 +474,20 @@ public class AvroCompatibilityHelper {
 
     return AvroVersion.AVRO_1_9;
   }
+
+  /**
+   * Get the full schema name for records or type name for primitives. This adds compatibility
+   * layer for {@link Schema#getFullName} implementation in avro 1.4, which defaults to throwing exception.
+   *
+   * @param schema the schema whose full name should be retrieved
+   * @return full schema name or primitive type name
+   */
+  public static String getSchemaFullName(Schema schema) {
+    try {
+      return schema.getFullName();
+    } catch (RuntimeException e) {
+      return schema.getType().name();
+    }
+  }
+
 }
