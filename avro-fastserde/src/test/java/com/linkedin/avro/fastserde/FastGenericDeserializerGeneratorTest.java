@@ -476,6 +476,53 @@ public class FastGenericDeserializerGeneratorTest {
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void testAddNewUnionField(Implementation implementation) {
+    // given
+    String writerSchemaStr = "{"
+        + "\"type\" : \"record\","
+        + "  \"name\" : \"features\","
+        + "  \"fields\" : ["
+        + "    {\"name\" : \"field1\","
+        + "     \"type\" : [ \"int\", \"null\" ],"
+        + "     \"default\" : null"
+        + "    }"
+        + "  ]"
+        + "}";
+    Schema writerSchema = Schema.parse(writerSchemaStr);
+
+    /**
+     * Reader schema has a new UNION filed: "filed2", the schema type for the first entry is "long" and the schema type
+     * for the second entry is "null"; default value is "null"
+     */
+    String readerSchemaStr = "{"
+        + "  \"type\" : \"record\","
+        + "  \"name\" : \"features\","
+        + "  \"fields\" : ["
+        + "    {"
+        + "      \"name\" : \"field1\","
+        + "      \"type\" : [ \"int\", \"null\" ],"
+        + "      \"default\" : null"
+        + "    },"
+        + "    {"
+        + "      \"name\" : \"field2\","
+        + "      \"type\" : [ \"long\", \"null\" ],"
+        + "      \"default\" : null"
+        + "    }"
+        + "  ]"
+        + "}";
+    Schema readerSchema = Schema.parse(readerSchemaStr);
+    GenericData.Record writerRecord = new GenericData.Record(writerSchema);
+    writerRecord.put("field1", 1);
+
+    // when
+    GenericRecord record = implementation.decode(writerSchema, readerSchema, genericDataAsDecoder(writerRecord));
+
+    // then
+    Assert.assertEquals(1, record.get("field1"));
+    Assert.assertNull(record.get("field2"));
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
   public void shouldSkipRemovedRecord(Implementation implementation) {
     // given
     Schema subRecord1Schema = createRecord("subRecord", createPrimitiveFieldSchema("test1", Schema.Type.STRING),
