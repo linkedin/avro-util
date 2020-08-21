@@ -476,6 +476,106 @@ public class FastGenericDeserializerGeneratorTest {
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldTolerateUnionReorderingThatIncludeString(Implementation implementation) {
+    // given
+    Schema record1Schema = createRecord(
+        createPrimitiveUnionFieldSchema("test", Schema.Type.STRING, Schema.Type.INT));
+    Schema record2Schema = createRecord(
+        createPrimitiveUnionFieldSchema("test", Schema.Type.INT, Schema.Type.STRING));
+
+    GenericData.Record builderForSchema1WithString = new GenericData.Record(record1Schema);
+    builderForSchema1WithString.put("test", "abc");
+    GenericData.Record builderForSchema1WithInt = new GenericData.Record(record1Schema);
+    builderForSchema1WithInt.put("test", 1);
+    GenericData.Record builderForSchema2WithString = new GenericData.Record(record2Schema);
+    builderForSchema2WithString.put("test", "abc");
+    GenericData.Record builderForSchema2WithInt = new GenericData.Record(record2Schema);
+    builderForSchema2WithInt.put("test", 1);
+
+    // when
+
+    // Evolution:
+    GenericRecord recordA = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithString));
+    try {
+      GenericRecord recordB = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithInt));
+    } catch (Exception e) {
+      // broken
+    }
+    GenericRecord recordC = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithString));
+    try {
+      GenericRecord recordD = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithInt));
+    } catch (Exception e) {
+      // broken
+    }
+
+    // Non-evolution
+    GenericRecord recordE = implementation.decode(record1Schema, record1Schema, genericDataAsDecoder(builderForSchema1WithString));
+    GenericRecord recordF = implementation.decode(record2Schema, record2Schema, genericDataAsDecoder(builderForSchema2WithString));
+    GenericRecord recordG = implementation.decode(record1Schema, record1Schema, genericDataAsDecoder(builderForSchema1WithInt));
+    GenericRecord recordH = implementation.decode(record2Schema, record2Schema, genericDataAsDecoder(builderForSchema2WithInt));
+
+    // then
+
+    // Evolution:
+    Assert.assertEquals(recordA.get("test"), new Utf8("abc"));
+//    Assert.assertEquals(recordB.get("test"), 1);
+    Assert.assertEquals(recordC.get("test"), new Utf8("abc"));
+//    Assert.assertEquals(recordD.get("test"), 1);
+
+    // Non-evolution
+    Assert.assertEquals(recordE.get("test"), new Utf8("abc"));
+    Assert.assertEquals(recordF.get("test"), new Utf8("abc"));
+    Assert.assertEquals(recordG.get("test"), 1);
+    Assert.assertEquals(recordH.get("test"), 1);
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldTolerateUnionReorderingWithNonString(Implementation implementation) {
+    // given
+    Schema record1Schema = createRecord(
+        createPrimitiveUnionFieldSchema("test", Schema.Type.BOOLEAN, Schema.Type.INT));
+    Schema record2Schema = createRecord(
+        createPrimitiveUnionFieldSchema("test", Schema.Type.INT, Schema.Type.BOOLEAN));
+
+    GenericData.Record builderForSchema1WithBoolean = new GenericData.Record(record1Schema);
+    builderForSchema1WithBoolean.put("test", true);
+    GenericData.Record builderForSchema1WithInt = new GenericData.Record(record1Schema);
+    builderForSchema1WithInt.put("test", 1);
+    GenericData.Record builderForSchema2WithBoolean = new GenericData.Record(record2Schema);
+    builderForSchema2WithBoolean.put("test", true);
+    GenericData.Record builderForSchema2WithInt = new GenericData.Record(record2Schema);
+    builderForSchema2WithInt.put("test", 1);
+
+    // when
+
+    // Evolution:
+    GenericRecord recordA = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithBoolean));
+    GenericRecord recordB = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithInt));
+    GenericRecord recordC = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithBoolean));
+    GenericRecord recordD = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithInt));
+
+    // Non-evolution
+    GenericRecord recordE = implementation.decode(record1Schema, record1Schema, genericDataAsDecoder(builderForSchema1WithBoolean));
+    GenericRecord recordF = implementation.decode(record2Schema, record2Schema, genericDataAsDecoder(builderForSchema2WithBoolean));
+    GenericRecord recordG = implementation.decode(record1Schema, record1Schema, genericDataAsDecoder(builderForSchema1WithInt));
+    GenericRecord recordH = implementation.decode(record2Schema, record2Schema, genericDataAsDecoder(builderForSchema2WithInt));
+
+    // then
+
+    // Evolution:
+    Assert.assertEquals(recordA.get("test"), true);
+    Assert.assertEquals(recordB.get("test"), 1);
+    Assert.assertEquals(recordC.get("test"), true);
+    Assert.assertEquals(recordD.get("test"), 1);
+
+    // Non-evolution
+    Assert.assertEquals(recordE.get("test"), true);
+    Assert.assertEquals(recordF.get("test"), true);
+    Assert.assertEquals(recordG.get("test"), 1);
+    Assert.assertEquals(recordH.get("test"), 1);
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
   public void shouldSkipRemovedRecord(Implementation implementation) {
     // given
     Schema subRecord1Schema = createRecord("subRecord", createPrimitiveFieldSchema("test1", Schema.Type.STRING),
