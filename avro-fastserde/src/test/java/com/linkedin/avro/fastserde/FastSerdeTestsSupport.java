@@ -65,9 +65,17 @@ public final class FastSerdeTestsSupport {
     return new Schema.Field(name, schema, "", null, Schema.Field.Order.ASCENDING);
   }
 
+  public static Schema.Field createUnionFieldWithNull(String name, Schema... schemas) {
+    Schema[] schemasWithNull = new Schema[schemas.length + 1];
+    schemasWithNull[0] = Schema.create(Schema.Type.NULL);
+    for (int i = 0; i < schemas.length; i++) {
+      schemasWithNull[i + 1] = schemas[i];
+    }
+    return createUnionField(name, schemasWithNull);
+  }
+
   public static Schema.Field createUnionField(String name, Schema... schemas) {
     List<Schema> typeList = new ArrayList<>();
-    typeList.add(Schema.create(Schema.Type.NULL));
     typeList.addAll(Arrays.asList(schemas));
 
     Schema unionSchema = Schema.createUnion(typeList);
