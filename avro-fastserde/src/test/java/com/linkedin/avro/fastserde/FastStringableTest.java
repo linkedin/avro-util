@@ -151,7 +151,7 @@ public class FastStringableTest {
   public void javaStringPropertyTest(Boolean whetherUseFastDeserializer) {
     Schema schema = createRecord(
             createField("testString", javaStringSchema),
-            createUnionField("testUnionString", javaStringSchema),
+            createUnionFieldWithNull("testUnionString", javaStringSchema),
             createArrayFieldSchema("testStringArray", javaStringSchema),
             createField("testStringMap", javaStringKeyedMapOfJavaStringsSchema)
     );
@@ -201,13 +201,13 @@ public class FastStringableTest {
   public void javaStringPropertyInReaderSchemaTest(Boolean whetherUseFastDeserializer) {
     Schema writerSchema = createRecord(
             createField("testString", Schema.create(Schema.Type.STRING)),
-            createUnionField("testUnionString", Schema.create(Schema.Type.STRING)),
+            createUnionFieldWithNull("testUnionString", Schema.create(Schema.Type.STRING)),
             createArrayFieldSchema("testStringArray", Schema.create(Schema.Type.STRING)),
             createMapFieldSchema("testStringMap", Schema.create(Schema.Type.STRING))
     );
     Schema readerSchema = createRecord(
             createField("testString", javaStringSchema),
-            createUnionField("testUnionString", javaStringSchema),
+            createUnionFieldWithNull("testUnionString", javaStringSchema),
             createArrayFieldSchema("testStringArray", javaStringSchema),
             createField("testStringMap", javaStringKeyedMapOfJavaStringsSchema)
     );

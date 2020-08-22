@@ -1,7 +1,5 @@
 package com.linkedin.avro.fastserde;
 
-import com.linkedin.avro.api.PrimitiveFloatList;
-import com.linkedin.avro.api.PrimitiveLongList;
 import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveBooleanList;
 import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveDoubleList;
 import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveFloatList;
@@ -115,7 +113,7 @@ public class FastGenericSerializerGeneratorTest {
     Schema fixedSchema = createFixedSchema("testFixed", 2);
     Schema recordSchema = createRecord(
         createField("testFixed", fixedSchema),
-        createUnionField("testFixedUnion", fixedSchema),
+        createUnionFieldWithNull("testFixedUnion", fixedSchema),
         createArrayFieldSchema("testFixedArray", fixedSchema),
         createArrayFieldSchema("testFixedUnionArray", createUnionSchema(fixedSchema)));
 
@@ -143,7 +141,7 @@ public class FastGenericSerializerGeneratorTest {
     Schema enumSchema = createEnumSchema("testEnum", new String[]{"A", "B"});
     Schema recordSchema = createRecord(
         createField("testEnum", enumSchema),
-        createUnionField("testEnumUnion", enumSchema),
+        createUnionFieldWithNull("testEnumUnion", enumSchema),
         createArrayFieldSchema("testEnumArray", enumSchema),
         createArrayFieldSchema("testEnumUnionArray", createUnionSchema(enumSchema)));
 
@@ -173,7 +171,7 @@ public class FastGenericSerializerGeneratorTest {
     Schema subRecordSchema = createRecord("subRecord", createPrimitiveUnionFieldSchema("subField", Schema.Type.STRING));
 
     Schema recordSchema = createRecord(
-        createUnionField("record", subRecordSchema),
+        createUnionFieldWithNull("record", subRecordSchema),
         createField("record1", subRecordSchema),
         createPrimitiveUnionFieldSchema("field", Schema.Type.STRING));
 
@@ -224,8 +222,8 @@ public class FastGenericSerializerGeneratorTest {
     Schema recordSchema = createRecord(
         createArrayFieldSchema("recordsArray", subRecordSchema),
         createMapFieldSchema("recordsMap", subRecordSchema),
-        createUnionField("recordsArrayUnion", Schema.createArray(createUnionSchema(subRecordSchema))),
-        createUnionField("recordsMapUnion", Schema.createMap(createUnionSchema(subRecordSchema))));
+        createUnionFieldWithNull("recordsArrayUnion", Schema.createArray(createUnionSchema(subRecordSchema))),
+        createUnionFieldWithNull("recordsMapUnion", Schema.createMap(createUnionSchema(subRecordSchema))));
 
     GenericData.Record subRecordBuilder = new GenericData.Record(subRecordSchema);
     subRecordBuilder.put("subField", "abc");
@@ -262,9 +260,9 @@ public class FastGenericSerializerGeneratorTest {
     Schema recordSchema = createRecord(
         createArrayFieldSchema("recordsArrayMap", Schema.createMap(createUnionSchema(subRecordSchema))),
         createMapFieldSchema("recordsMapArray", Schema.createArray(createUnionSchema(subRecordSchema))),
-        createUnionField("recordsArrayMapUnion",
+        createUnionFieldWithNull("recordsArrayMapUnion",
             Schema.createArray(Schema.createMap(createUnionSchema(subRecordSchema)))),
-        createUnionField("recordsMapArrayUnion",
+        createUnionFieldWithNull("recordsMapArrayUnion",
             Schema.createMap(Schema.createArray(createUnionSchema(subRecordSchema)))));
 
     GenericData.Record subRecordBuilder = new GenericData.Record(subRecordSchema);
@@ -315,7 +313,7 @@ public class FastGenericSerializerGeneratorTest {
     Schema subRecordSchema = createRecord("subRecord", createPrimitiveUnionFieldSchema("subField", Schema.Type.STRING));
 
     Schema recordSchema = createRecord(
-        createUnionField("union", subRecordSchema, Schema.create(Schema.Type.STRING), Schema.create(Schema.Type.INT)));
+        createUnionFieldWithNull("union", subRecordSchema, Schema.create(Schema.Type.STRING), Schema.create(Schema.Type.INT)));
 
     GenericData.Record subRecordBuilder = new GenericData.Record(subRecordSchema);
     subRecordBuilder.put("subField", "abc");
