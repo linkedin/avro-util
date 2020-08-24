@@ -60,8 +60,9 @@ public class StringableRecord_SpecificDeserializer_6174384286732341990_617438428
         StringableRecord.put(4, new File((decoder.readString())));
         List<URL> urlArray0 = null;
         long chunkLen0 = (decoder.readArrayStart());
-        if (StringableRecord.get(5) instanceof List) {
-            urlArray0 = ((List) StringableRecord.get(5));
+        Object oldArray0 = StringableRecord.get(5);
+        if (oldArray0 instanceof List) {
+            urlArray0 = ((List) oldArray0);
             urlArray0 .clear();
         } else {
             urlArray0 = new ArrayList<URL>();
@@ -69,8 +70,8 @@ public class StringableRecord_SpecificDeserializer_6174384286732341990_617438428
         while (chunkLen0 > 0) {
             for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
                 Object urlArrayArrayElementReuseVar0 = null;
-                if (StringableRecord.get(5) instanceof GenericArray) {
-                    urlArrayArrayElementReuseVar0 = ((GenericArray) StringableRecord.get(5)).peek();
+                if (oldArray0 instanceof GenericArray) {
+                    urlArrayArrayElementReuseVar0 = ((GenericArray) oldArray0).peek();
                 }
                 urlArray0 .add(new URL((decoder.readString())));
             }
@@ -81,8 +82,9 @@ public class StringableRecord_SpecificDeserializer_6174384286732341990_617438428
         long chunkLen1 = (decoder.readMapStart());
         if (chunkLen1 > 0) {
             Map<URL, BigInteger> urlMapReuse0 = null;
-            if (StringableRecord.get(6) instanceof Map) {
-                urlMapReuse0 = ((Map) StringableRecord.get(6));
+            Object oldMap0 = StringableRecord.get(6);
+            if (oldMap0 instanceof Map) {
+                urlMapReuse0 = ((Map) oldMap0);
             }
             if (urlMapReuse0 != (null)) {
                 urlMapReuse0 .clear();
@@ -104,12 +106,15 @@ public class StringableRecord_SpecificDeserializer_6174384286732341990_617438428
         StringableRecord.put(7, deserializeStringableSubRecord0(StringableRecord.get(7), (decoder)));
         StringableRecord.put(8, deserializeAnotherSubRecord0(StringableRecord.get(8), (decoder)));
         int unionIndex0 = (decoder.readIndex());
-        if (unionIndex0 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex0 == 1) {
+        switch (unionIndex0) {
+            case  0 :
+                decoder.readNull();
+                break;
+            case  1 :
                 StringableRecord.put(9, (decoder).readString());
-            }
+                break;
+            default:
+                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
         }
         return StringableRecord;
     }

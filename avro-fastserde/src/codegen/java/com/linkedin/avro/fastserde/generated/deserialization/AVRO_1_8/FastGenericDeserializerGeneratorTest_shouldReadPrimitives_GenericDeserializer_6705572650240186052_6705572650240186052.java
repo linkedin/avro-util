@@ -50,82 +50,111 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
         }
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(0, (decoder.readInt()));
         int unionIndex0 = (decoder.readIndex());
-        if (unionIndex0 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex0 == 1) {
+        switch (unionIndex0) {
+            case  0 :
+                decoder.readNull();
+                break;
+            case  1 :
                 FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(1, (decoder.readInt()));
-            }
+                break;
+            default:
+                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
         }
-        if (FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(2) instanceof Utf8) {
-            FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(2, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(2))));
+        Object oldString0 = FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(2);
+        if (oldString0 instanceof Utf8) {
+            FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(2, (decoder).readString(((Utf8) oldString0)));
         } else {
             FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(2, (decoder).readString(null));
         }
         int unionIndex1 = (decoder.readIndex());
-        if (unionIndex1 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex1 == 1) {
-                if (FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(3) instanceof Utf8) {
-                    FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(3, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(3))));
+        switch (unionIndex1) {
+            case  0 :
+                decoder.readNull();
+                break;
+            case  1 :
+            {
+                Object oldString1 = FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(3);
+                if (oldString1 instanceof Utf8) {
+                    FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(3, (decoder).readString(((Utf8) oldString1)));
                 } else {
                     FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(3, (decoder).readString(null));
                 }
+                break;
             }
+            default:
+                throw new RuntimeException(("Illegal union index: "+ unionIndex1));
         }
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(4, (decoder.readLong()));
         int unionIndex2 = (decoder.readIndex());
-        if (unionIndex2 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex2 == 1) {
+        switch (unionIndex2) {
+            case  0 :
+                decoder.readNull();
+                break;
+            case  1 :
                 FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(5, (decoder.readLong()));
-            }
+                break;
+            default:
+                throw new RuntimeException(("Illegal union index: "+ unionIndex2));
         }
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(6, (decoder.readDouble()));
         int unionIndex3 = (decoder.readIndex());
-        if (unionIndex3 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex3 == 1) {
+        switch (unionIndex3) {
+            case  0 :
+                decoder.readNull();
+                break;
+            case  1 :
                 FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(7, (decoder.readDouble()));
-            }
+                break;
+            default:
+                throw new RuntimeException(("Illegal union index: "+ unionIndex3));
         }
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(8, (decoder.readFloat()));
         int unionIndex4 = (decoder.readIndex());
-        if (unionIndex4 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex4 == 1) {
+        switch (unionIndex4) {
+            case  0 :
+                decoder.readNull();
+                break;
+            case  1 :
                 FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(9, (decoder.readFloat()));
-            }
+                break;
+            default:
+                throw new RuntimeException(("Illegal union index: "+ unionIndex4));
         }
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(10, (decoder.readBoolean()));
         int unionIndex5 = (decoder.readIndex());
-        if (unionIndex5 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex5 == 1) {
+        switch (unionIndex5) {
+            case  0 :
+                decoder.readNull();
+                break;
+            case  1 :
                 FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(11, (decoder.readBoolean()));
-            }
+                break;
+            default:
+                throw new RuntimeException(("Illegal union index: "+ unionIndex5));
         }
-        if (FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(12) instanceof ByteBuffer) {
-            FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(12, (decoder).readBytes(((ByteBuffer) FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(12))));
+        Object oldBytes0 = FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(12);
+        if (oldBytes0 instanceof ByteBuffer) {
+            FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(12, (decoder).readBytes(((ByteBuffer) oldBytes0)));
         } else {
             FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(12, (decoder).readBytes((null)));
         }
         int unionIndex6 = (decoder.readIndex());
-        if (unionIndex6 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex6 == 1) {
-                if (FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(13) instanceof ByteBuffer) {
-                    FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(13, (decoder).readBytes(((ByteBuffer) FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(13))));
+        switch (unionIndex6) {
+            case  0 :
+                decoder.readNull();
+                break;
+            case  1 :
+            {
+                Object oldBytes1 = FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(13);
+                if (oldBytes1 instanceof ByteBuffer) {
+                    FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(13, (decoder).readBytes(((ByteBuffer) oldBytes1)));
                 } else {
                     FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(13, (decoder).readBytes((null)));
                 }
+                break;
             }
+            default:
+                throw new RuntimeException(("Illegal union index: "+ unionIndex6));
         }
         return FastGenericDeserializerGeneratorTest_shouldReadPrimitives;
     }

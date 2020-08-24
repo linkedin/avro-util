@@ -39,16 +39,18 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingW
             FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         int unionIndex0 = (decoder.readIndex());
-        if (unionIndex0 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex0 == 1) {
+        switch (unionIndex0) {
+            case  0 :
+                decoder.readNull();
+                break;
+            case  1 :
                 FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords.put(0, deserializesubRecord10(FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords.get(0), (decoder)));
-            } else {
-                if (unionIndex0 == 2) {
-                    FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords.put(0, deserializesubRecord20(FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords.get(0), (decoder)));
-                }
-            }
+                break;
+            case  2 :
+                FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords.put(0, deserializesubRecord20(FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords.get(0), (decoder)));
+                break;
+            default:
+                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
         }
         return FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords;
     }

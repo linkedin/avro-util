@@ -45,17 +45,21 @@ public class FastStringableTest_javaStringPropertyTest_GenericDeserializer_34111
         }
         FastStringableTest_javaStringPropertyTest.put(0, (decoder).readString());
         int unionIndex0 = (decoder.readIndex());
-        if (unionIndex0 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex0 == 1) {
+        switch (unionIndex0) {
+            case  0 :
+                decoder.readNull();
+                break;
+            case  1 :
                 FastStringableTest_javaStringPropertyTest.put(1, (decoder).readString());
-            }
+                break;
+            default:
+                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
         }
         List<String> testStringArray1 = null;
         long chunkLen0 = (decoder.readArrayStart());
-        if (FastStringableTest_javaStringPropertyTest.get(2) instanceof List) {
-            testStringArray1 = ((List) FastStringableTest_javaStringPropertyTest.get(2));
+        Object oldArray0 = FastStringableTest_javaStringPropertyTest.get(2);
+        if (oldArray0 instanceof List) {
+            testStringArray1 = ((List) oldArray0);
             testStringArray1 .clear();
         } else {
             testStringArray1 = new org.apache.avro.generic.GenericData.Array<String>(((int) chunkLen0), testStringArray0);
@@ -63,8 +67,8 @@ public class FastStringableTest_javaStringPropertyTest_GenericDeserializer_34111
         while (chunkLen0 > 0) {
             for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
                 Object testStringArrayArrayElementReuseVar0 = null;
-                if (FastStringableTest_javaStringPropertyTest.get(2) instanceof GenericArray) {
-                    testStringArrayArrayElementReuseVar0 = ((GenericArray) FastStringableTest_javaStringPropertyTest.get(2)).peek();
+                if (oldArray0 instanceof GenericArray) {
+                    testStringArrayArrayElementReuseVar0 = ((GenericArray) oldArray0).peek();
                 }
                 testStringArray1 .add((decoder).readString());
             }
@@ -75,8 +79,9 @@ public class FastStringableTest_javaStringPropertyTest_GenericDeserializer_34111
         long chunkLen1 = (decoder.readMapStart());
         if (chunkLen1 > 0) {
             Map<String, String> testStringMapReuse0 = null;
-            if (FastStringableTest_javaStringPropertyTest.get(3) instanceof Map) {
-                testStringMapReuse0 = ((Map) FastStringableTest_javaStringPropertyTest.get(3));
+            Object oldMap0 = FastStringableTest_javaStringPropertyTest.get(3);
+            if (oldMap0 instanceof Map) {
+                testStringMapReuse0 = ((Map) oldMap0);
             }
             if (testStringMapReuse0 != (null)) {
                 testStringMapReuse0 .clear();

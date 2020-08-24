@@ -38,12 +38,15 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord_Generi
         FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.put(0, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.get(0), (decoder)));
         deserializesubRecord20(null, (decoder));
         int unionIndex0 = (decoder.readIndex());
-        if (unionIndex0 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex0 == 1) {
+        switch (unionIndex0) {
+            case  0 :
+                decoder.readNull();
+                break;
+            case  1 :
                 deserializesubRecord20(null, (decoder));
-            }
+                break;
+            default:
+                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
         }
         FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.put(1, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.get(1), (decoder)));
         return FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord;
@@ -58,13 +61,15 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord_Generi
         } else {
             subRecord = new org.apache.avro.generic.GenericData.Record(subRecord10);
         }
-        if (subRecord.get(0) instanceof Utf8) {
-            subRecord.put(0, (decoder).readString(((Utf8) subRecord.get(0))));
+        Object oldString0 = subRecord.get(0);
+        if (oldString0 instanceof Utf8) {
+            subRecord.put(0, (decoder).readString(((Utf8) oldString0)));
         } else {
             subRecord.put(0, (decoder).readString(null));
         }
-        if (subRecord.get(1) instanceof Utf8) {
-            subRecord.put(1, (decoder).readString(((Utf8) subRecord.get(1))));
+        Object oldString1 = subRecord.get(1);
+        if (oldString1 instanceof Utf8) {
+            subRecord.put(1, (decoder).readString(((Utf8) oldString1)));
         } else {
             subRecord.put(1, (decoder).readString(null));
         }

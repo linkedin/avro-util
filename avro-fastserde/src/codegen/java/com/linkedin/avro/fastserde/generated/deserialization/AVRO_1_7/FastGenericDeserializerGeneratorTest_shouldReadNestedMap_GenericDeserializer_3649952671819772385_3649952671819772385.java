@@ -49,8 +49,9 @@ public class FastGenericDeserializerGeneratorTest_shouldReadNestedMap_GenericDes
         long chunkLen0 = (decoder.readMapStart());
         if (chunkLen0 > 0) {
             Map<Utf8, Map<Utf8, List<Integer>>> mapFieldReuse0 = null;
-            if (FastGenericDeserializerGeneratorTest_shouldReadNestedMap.get(0) instanceof Map) {
-                mapFieldReuse0 = ((Map) FastGenericDeserializerGeneratorTest_shouldReadNestedMap.get(0));
+            Object oldMap0 = FastGenericDeserializerGeneratorTest_shouldReadNestedMap.get(0);
+            if (oldMap0 instanceof Map) {
+                mapFieldReuse0 = ((Map) oldMap0);
             }
             if (mapFieldReuse0 != (null)) {
                 mapFieldReuse0 .clear();

@@ -38,35 +38,41 @@ public class StringableRecord_SpecificDeserializer_6174384286732341990_617438428
         } else {
             StringableRecord = new com.linkedin.avro.fastserde.generated.avro.StringableRecord();
         }
-        if (StringableRecord.get(0) instanceof Utf8) {
-            StringableRecord.put(0, (decoder).readString(((Utf8) StringableRecord.get(0))));
+        Object oldString0 = StringableRecord.get(0);
+        if (oldString0 instanceof Utf8) {
+            StringableRecord.put(0, (decoder).readString(((Utf8) oldString0)));
         } else {
             StringableRecord.put(0, (decoder).readString(null));
         }
-        if (StringableRecord.get(1) instanceof Utf8) {
-            StringableRecord.put(1, (decoder).readString(((Utf8) StringableRecord.get(1))));
+        Object oldString1 = StringableRecord.get(1);
+        if (oldString1 instanceof Utf8) {
+            StringableRecord.put(1, (decoder).readString(((Utf8) oldString1)));
         } else {
             StringableRecord.put(1, (decoder).readString(null));
         }
-        if (StringableRecord.get(2) instanceof Utf8) {
-            StringableRecord.put(2, (decoder).readString(((Utf8) StringableRecord.get(2))));
+        Object oldString2 = StringableRecord.get(2);
+        if (oldString2 instanceof Utf8) {
+            StringableRecord.put(2, (decoder).readString(((Utf8) oldString2)));
         } else {
             StringableRecord.put(2, (decoder).readString(null));
         }
-        if (StringableRecord.get(3) instanceof Utf8) {
-            StringableRecord.put(3, (decoder).readString(((Utf8) StringableRecord.get(3))));
+        Object oldString3 = StringableRecord.get(3);
+        if (oldString3 instanceof Utf8) {
+            StringableRecord.put(3, (decoder).readString(((Utf8) oldString3)));
         } else {
             StringableRecord.put(3, (decoder).readString(null));
         }
-        if (StringableRecord.get(4) instanceof Utf8) {
-            StringableRecord.put(4, (decoder).readString(((Utf8) StringableRecord.get(4))));
+        Object oldString4 = StringableRecord.get(4);
+        if (oldString4 instanceof Utf8) {
+            StringableRecord.put(4, (decoder).readString(((Utf8) oldString4)));
         } else {
             StringableRecord.put(4, (decoder).readString(null));
         }
         List<Utf8> urlArray0 = null;
         long chunkLen0 = (decoder.readArrayStart());
-        if (StringableRecord.get(5) instanceof List) {
-            urlArray0 = ((List) StringableRecord.get(5));
+        Object oldArray0 = StringableRecord.get(5);
+        if (oldArray0 instanceof List) {
+            urlArray0 = ((List) oldArray0);
             urlArray0 .clear();
         } else {
             urlArray0 = new ArrayList<Utf8>();
@@ -74,8 +80,8 @@ public class StringableRecord_SpecificDeserializer_6174384286732341990_617438428
         while (chunkLen0 > 0) {
             for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
                 Object urlArrayArrayElementReuseVar0 = null;
-                if (StringableRecord.get(5) instanceof GenericArray) {
-                    urlArrayArrayElementReuseVar0 = ((GenericArray) StringableRecord.get(5)).peek();
+                if (oldArray0 instanceof GenericArray) {
+                    urlArrayArrayElementReuseVar0 = ((GenericArray) oldArray0).peek();
                 }
                 if (urlArrayArrayElementReuseVar0 instanceof Utf8) {
                     urlArray0 .add((decoder).readString(((Utf8) urlArrayArrayElementReuseVar0)));
@@ -90,8 +96,9 @@ public class StringableRecord_SpecificDeserializer_6174384286732341990_617438428
         long chunkLen1 = (decoder.readMapStart());
         if (chunkLen1 > 0) {
             Map<Utf8, Utf8> urlMapReuse0 = null;
-            if (StringableRecord.get(6) instanceof Map) {
-                urlMapReuse0 = ((Map) StringableRecord.get(6));
+            Object oldMap0 = StringableRecord.get(6);
+            if (oldMap0 instanceof Map) {
+                urlMapReuse0 = ((Map) oldMap0);
             }
             if (urlMapReuse0 != (null)) {
                 urlMapReuse0 .clear();
@@ -113,16 +120,22 @@ public class StringableRecord_SpecificDeserializer_6174384286732341990_617438428
         StringableRecord.put(7, deserializeStringableSubRecord0(StringableRecord.get(7), (decoder)));
         StringableRecord.put(8, deserializeAnotherSubRecord0(StringableRecord.get(8), (decoder)));
         int unionIndex0 = (decoder.readIndex());
-        if (unionIndex0 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex0 == 1) {
-                if (StringableRecord.get(9) instanceof Utf8) {
-                    StringableRecord.put(9, (decoder).readString(((Utf8) StringableRecord.get(9))));
+        switch (unionIndex0) {
+            case  0 :
+                decoder.readNull();
+                break;
+            case  1 :
+            {
+                Object oldString6 = StringableRecord.get(9);
+                if (oldString6 instanceof Utf8) {
+                    StringableRecord.put(9, (decoder).readString(((Utf8) oldString6)));
                 } else {
                     StringableRecord.put(9, (decoder).readString(null));
                 }
+                break;
             }
+            default:
+                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
         }
         return StringableRecord;
     }
@@ -136,8 +149,9 @@ public class StringableRecord_SpecificDeserializer_6174384286732341990_617438428
         } else {
             StringableSubRecord = new com.linkedin.avro.fastserde.generated.avro.StringableSubRecord();
         }
-        if (StringableSubRecord.get(0) instanceof Utf8) {
-            StringableSubRecord.put(0, (decoder).readString(((Utf8) StringableSubRecord.get(0))));
+        Object oldString5 = StringableSubRecord.get(0);
+        if (oldString5 instanceof Utf8) {
+            StringableSubRecord.put(0, (decoder).readString(((Utf8) oldString5)));
         } else {
             StringableSubRecord.put(0, (decoder).readString(null));
         }

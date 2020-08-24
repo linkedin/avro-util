@@ -67,10 +67,12 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum_Gener
         }
         FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum.put(0, enumValue0);
         int unionIndex0 = (decoder.readIndex());
-        if (unionIndex0 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex0 == 1) {
+        switch (unionIndex0) {
+            case  0 :
+                decoder.readNull();
+                break;
+            case  1 :
+            {
                 int enumIndex1 = (decoder.readEnum());
                 org.apache.avro.generic.GenericData.EnumSymbol enumValue1 = null;
                 if (enumIndex1 == 0) {
@@ -93,12 +95,16 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum_Gener
                     }
                 }
                 FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum.put(1, enumValue1);
+                break;
             }
+            default:
+                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
         }
         List<org.apache.avro.generic.GenericData.EnumSymbol> testEnumArray1 = null;
         long chunkLen0 = (decoder.readArrayStart());
-        if (FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum.get(2) instanceof List) {
-            testEnumArray1 = ((List) FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum.get(2));
+        Object oldArray0 = FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum.get(2);
+        if (oldArray0 instanceof List) {
+            testEnumArray1 = ((List) oldArray0);
             testEnumArray1 .clear();
         } else {
             testEnumArray1 = new org.apache.avro.generic.GenericData.Array<org.apache.avro.generic.GenericData.EnumSymbol>(((int) chunkLen0), testEnumArray0);
@@ -133,8 +139,9 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum_Gener
         FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum.put(2, testEnumArray1);
         List<org.apache.avro.generic.GenericData.EnumSymbol> testEnumUnionArray1 = null;
         long chunkLen1 = (decoder.readArrayStart());
-        if (FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum.get(3) instanceof List) {
-            testEnumUnionArray1 = ((List) FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum.get(3));
+        Object oldArray1 = FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum.get(3);
+        if (oldArray1 instanceof List) {
+            testEnumUnionArray1 = ((List) oldArray1);
             testEnumUnionArray1 .clear();
         } else {
             testEnumUnionArray1 = new org.apache.avro.generic.GenericData.Array<org.apache.avro.generic.GenericData.EnumSymbol>(((int) chunkLen1), testEnumUnionArray0);
@@ -142,14 +149,16 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum_Gener
         while (chunkLen1 > 0) {
             for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {
                 Object testEnumUnionArrayArrayElementReuseVar0 = null;
-                if (FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum.get(3) instanceof GenericArray) {
-                    testEnumUnionArrayArrayElementReuseVar0 = ((GenericArray) FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum.get(3)).peek();
+                if (oldArray1 instanceof GenericArray) {
+                    testEnumUnionArrayArrayElementReuseVar0 = ((GenericArray) oldArray1).peek();
                 }
                 int unionIndex1 = (decoder.readIndex());
-                if (unionIndex1 == 0) {
-                    decoder.readNull();
-                } else {
-                    if (unionIndex1 == 1) {
+                switch (unionIndex1) {
+                    case  0 :
+                        decoder.readNull();
+                        break;
+                    case  1 :
+                    {
                         int enumIndex3 = (decoder.readEnum());
                         org.apache.avro.generic.GenericData.EnumSymbol enumValue3 = null;
                         if (enumIndex3 == 0) {
@@ -172,7 +181,10 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum_Gener
                             }
                         }
                         testEnumUnionArray1 .add(enumValue3);
+                        break;
                     }
+                    default:
+                        throw new RuntimeException(("Illegal union index: "+ unionIndex1));
                 }
             }
             chunkLen1 = (decoder.arrayNext());

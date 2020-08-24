@@ -44,27 +44,35 @@ public class FastStringableTest_javaStringPropertyInReaderSchemaTest_GenericDese
         } else {
             FastStringableTest_javaStringPropertyInReaderSchemaTest = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
-        if (FastStringableTest_javaStringPropertyInReaderSchemaTest.get(0) instanceof Utf8) {
-            FastStringableTest_javaStringPropertyInReaderSchemaTest.put(0, (decoder).readString(((Utf8) FastStringableTest_javaStringPropertyInReaderSchemaTest.get(0))));
+        Object oldString0 = FastStringableTest_javaStringPropertyInReaderSchemaTest.get(0);
+        if (oldString0 instanceof Utf8) {
+            FastStringableTest_javaStringPropertyInReaderSchemaTest.put(0, (decoder).readString(((Utf8) oldString0)));
         } else {
             FastStringableTest_javaStringPropertyInReaderSchemaTest.put(0, (decoder).readString(null));
         }
         int unionIndex0 = (decoder.readIndex());
-        if (unionIndex0 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex0 == 1) {
-                if (FastStringableTest_javaStringPropertyInReaderSchemaTest.get(1) instanceof Utf8) {
-                    FastStringableTest_javaStringPropertyInReaderSchemaTest.put(1, (decoder).readString(((Utf8) FastStringableTest_javaStringPropertyInReaderSchemaTest.get(1))));
+        switch (unionIndex0) {
+            case  0 :
+                decoder.readNull();
+                break;
+            case  1 :
+            {
+                Object oldString1 = FastStringableTest_javaStringPropertyInReaderSchemaTest.get(1);
+                if (oldString1 instanceof Utf8) {
+                    FastStringableTest_javaStringPropertyInReaderSchemaTest.put(1, (decoder).readString(((Utf8) oldString1)));
                 } else {
                     FastStringableTest_javaStringPropertyInReaderSchemaTest.put(1, (decoder).readString(null));
                 }
+                break;
             }
+            default:
+                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
         }
         List<Utf8> testStringArray1 = null;
         long chunkLen0 = (decoder.readArrayStart());
-        if (FastStringableTest_javaStringPropertyInReaderSchemaTest.get(2) instanceof List) {
-            testStringArray1 = ((List) FastStringableTest_javaStringPropertyInReaderSchemaTest.get(2));
+        Object oldArray0 = FastStringableTest_javaStringPropertyInReaderSchemaTest.get(2);
+        if (oldArray0 instanceof List) {
+            testStringArray1 = ((List) oldArray0);
             testStringArray1 .clear();
         } else {
             testStringArray1 = new org.apache.avro.generic.GenericData.Array<Utf8>(((int) chunkLen0), testStringArray0);
@@ -72,8 +80,8 @@ public class FastStringableTest_javaStringPropertyInReaderSchemaTest_GenericDese
         while (chunkLen0 > 0) {
             for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
                 Object testStringArrayArrayElementReuseVar0 = null;
-                if (FastStringableTest_javaStringPropertyInReaderSchemaTest.get(2) instanceof GenericArray) {
-                    testStringArrayArrayElementReuseVar0 = ((GenericArray) FastStringableTest_javaStringPropertyInReaderSchemaTest.get(2)).peek();
+                if (oldArray0 instanceof GenericArray) {
+                    testStringArrayArrayElementReuseVar0 = ((GenericArray) oldArray0).peek();
                 }
                 if (testStringArrayArrayElementReuseVar0 instanceof Utf8) {
                     testStringArray1 .add((decoder).readString(((Utf8) testStringArrayArrayElementReuseVar0)));
@@ -88,8 +96,9 @@ public class FastStringableTest_javaStringPropertyInReaderSchemaTest_GenericDese
         long chunkLen1 = (decoder.readMapStart());
         if (chunkLen1 > 0) {
             Map<Utf8, Utf8> testStringMapReuse0 = null;
-            if (FastStringableTest_javaStringPropertyInReaderSchemaTest.get(3) instanceof Map) {
-                testStringMapReuse0 = ((Map) FastStringableTest_javaStringPropertyInReaderSchemaTest.get(3));
+            Object oldMap0 = FastStringableTest_javaStringPropertyInReaderSchemaTest.get(3);
+            if (oldMap0 instanceof Map) {
+                testStringMapReuse0 = ((Map) oldMap0);
             }
             if (testStringMapReuse0 != (null)) {
                 testStringMapReuse0 .clear();

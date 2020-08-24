@@ -35,18 +35,22 @@ public class recordName_GenericDeserializer_6897301803194779359_6897301803194779
         } else {
             recordName = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
-        if (recordName.get(0) instanceof Utf8) {
-            recordName.put(0, (decoder).readString(((Utf8) recordName.get(0))));
+        Object oldString0 = recordName.get(0);
+        if (oldString0 instanceof Utf8) {
+            recordName.put(0, (decoder).readString(((Utf8) oldString0)));
         } else {
             recordName.put(0, (decoder).readString(null));
         }
         int unionIndex0 = (decoder.readIndex());
-        if (unionIndex0 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex0 == 1) {
+        switch (unionIndex0) {
+            case  0 :
+                decoder.readNull();
+                break;
+            case  1 :
                 recordName.put(1, deserializerecordName0(recordName.get(1), (decoder)));
-            }
+                break;
+            default:
+                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
         }
         return recordName;
     }

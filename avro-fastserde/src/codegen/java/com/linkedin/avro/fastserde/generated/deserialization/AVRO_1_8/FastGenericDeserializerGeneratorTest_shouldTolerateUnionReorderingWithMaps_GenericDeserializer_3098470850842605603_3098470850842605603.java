@@ -41,16 +41,19 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingW
             FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         int unionIndex0 = (decoder.readIndex());
-        if (unionIndex0 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex0 == 1) {
+        switch (unionIndex0) {
+            case  0 :
+                decoder.readNull();
+                break;
+            case  1 :
+            {
                 Map<Utf8, Integer> testOption0 = null;
                 long chunkLen0 = (decoder.readMapStart());
                 if (chunkLen0 > 0) {
                     Map<Utf8, Integer> testOptionReuse0 = null;
-                    if (FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps.get(0) instanceof Map) {
-                        testOptionReuse0 = ((Map) FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps.get(0));
+                    Object oldMap0 = FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps.get(0);
+                    if (oldMap0 instanceof Map) {
+                        testOptionReuse0 = ((Map) oldMap0);
                     }
                     if (testOptionReuse0 != (null)) {
                         testOptionReuse0 .clear();
@@ -69,7 +72,10 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingW
                     testOption0 = Collections.emptyMap();
                 }
                 FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps.put(0, testOption0);
+                break;
             }
+            default:
+                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
         }
         return FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps;
     }

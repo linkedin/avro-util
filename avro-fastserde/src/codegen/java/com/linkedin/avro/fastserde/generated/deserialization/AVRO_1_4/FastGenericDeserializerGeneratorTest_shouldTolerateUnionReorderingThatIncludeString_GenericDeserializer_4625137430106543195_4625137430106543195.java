@@ -36,20 +36,25 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingT
             FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         int unionIndex0 = (decoder.readIndex());
-        if (unionIndex0 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex0 == 1) {
-                if (FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString.get(0) instanceof Utf8) {
-                    FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString.put(0, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString.get(0))));
+        switch (unionIndex0) {
+            case  0 :
+                decoder.readNull();
+                break;
+            case  1 :
+            {
+                Object oldString0 = FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString.get(0);
+                if (oldString0 instanceof Utf8) {
+                    FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString.put(0, (decoder).readString(((Utf8) oldString0)));
                 } else {
                     FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString.put(0, (decoder).readString(null));
                 }
-            } else {
-                if (unionIndex0 == 2) {
-                    FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString.put(0, (decoder.readInt()));
-                }
+                break;
             }
+            case  2 :
+                FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString.put(0, (decoder.readInt()));
+                break;
+            default:
+                throw new RuntimeException(("Illegal union index for 'test': "+ unionIndex0));
         }
         return FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString;
     }
