@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.function.Supplier;
+import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
@@ -477,6 +478,58 @@ public class FastGenericDeserializerGeneratorTest {
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType(Implementation implementation) {
+    // given
+    Schema record1Schema = createRecord(
+        createPrimitiveUnionFieldSchema("test", Schema.Type.STRING, Schema.Type.LONG));
+    Schema record2Schema = createRecord(
+        createPrimitiveUnionFieldSchema("test", Schema.Type.STRING));
+
+    GenericData.Record builderForSchema1WithString = new GenericData.Record(record1Schema);
+    builderForSchema1WithString.put("test", "abc");
+    GenericData.Record builderForSchema1WithLong = new GenericData.Record(record1Schema);
+    builderForSchema1WithLong.put("test", 1L);
+    GenericData.Record builderForSchema2WithString = new GenericData.Record(record2Schema);
+    builderForSchema2WithString.put("test", "abc");
+
+    // when
+
+    // Evolution:
+    try {
+      GenericRecord recordA = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithString));
+    } catch (Exception e) {
+      // broken
+    }
+    GenericRecord recordB = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithString));
+
+    // Non-evolution
+    GenericRecord recordC = implementation.decode(record1Schema, record1Schema, genericDataAsDecoder(builderForSchema1WithString));
+    GenericRecord recordD = implementation.decode(record2Schema, record2Schema, genericDataAsDecoder(builderForSchema2WithString));
+    GenericRecord recordE = implementation.decode(record1Schema, record1Schema, genericDataAsDecoder(builderForSchema1WithLong));
+
+    // Broken
+    try {
+      GenericRecord recordF = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithLong));
+      Assert.fail("Should have thrown an AvroTypeException.");
+    } catch (AvroTypeException e) {
+      // Expected
+    } catch (Exception e) {
+      // broken
+    }
+
+    // then
+
+    // Evolution:
+//    Assert.assertEquals(recordA.get("test"), new Utf8("abc"));
+    Assert.assertEquals(recordB.get("test"), new Utf8("abc"));
+
+    // Non-evolution
+    Assert.assertEquals(recordC.get("test"), new Utf8("abc"));
+    Assert.assertEquals(recordD.get("test"), new Utf8("abc"));
+    Assert.assertEquals(recordE.get("test"), 1L);
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
   public void shouldTolerateUnionReorderingThatIncludeString(Implementation implementation) {
     // given
     Schema record1Schema = createRecord(
@@ -705,19 +758,22 @@ public class FastGenericDeserializerGeneratorTest {
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
-  public void shouldTolerateUnionReorderingWithSubRecord(Implementation implementation) {
+  public void shouldTolerateUnionReorderingWithSubRecords(Implementation implementation) {
     // given
-    Schema subRecordSchema = createRecord("subRecord", createField("someInt", Schema.create(Schema.Type.INT)));
+    Schema subRecordSchema1 = createRecord("subRecord1", createField("someInt1", Schema.create(Schema.Type.INT)));
+    Schema subRecordSchema2 = createRecord("subRecord2", createField("someInt2", Schema.create(Schema.Type.INT)));
 
     Schema record1Schema = createRecord(createUnionField("test",
         Schema.create(Schema.Type.NULL),
-        subRecordSchema));
+        subRecordSchema1,
+        subRecordSchema2));
     Schema record2Schema = createRecord(createUnionField("test",
-        subRecordSchema,
+        subRecordSchema2,
+        subRecordSchema1,
         Schema.create(Schema.Type.NULL)));
 
-    GenericData.Record subRecord = new GenericData.Record(subRecordSchema);
-    subRecord.put("someInt", 1);
+    GenericData.Record subRecord = new GenericData.Record(subRecordSchema1);
+    subRecord.put("someInt1", 1);
     GenericData.Record builderForSchema1WithSubRecord = new GenericData.Record(record1Schema);
     builderForSchema1WithSubRecord.put("test", subRecord);
     GenericData.Record builderForSchema1WithNull = new GenericData.Record(record1Schema);
@@ -1136,6 +1192,8 @@ public class FastGenericDeserializerGeneratorTest {
   private static <T> T decodeRecordFast(FastDeserializer<T> deserializer, Decoder decoder) {
     try {
       return deserializer.deserialize(null, decoder);
+    } catch (AvroTypeException e) {
+      throw e;
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
