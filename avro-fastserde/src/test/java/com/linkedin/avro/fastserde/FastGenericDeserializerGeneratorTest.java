@@ -495,11 +495,7 @@ public class FastGenericDeserializerGeneratorTest {
     // when
 
     // Evolution:
-    try {
-      GenericRecord recordA = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithString));
-    } catch (Exception e) {
-      // broken
-    }
+    GenericRecord recordA = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithString));
     GenericRecord recordB = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithString));
 
     // Non-evolution
@@ -513,14 +509,12 @@ public class FastGenericDeserializerGeneratorTest {
       Assert.fail("Should have thrown an AvroTypeException.");
     } catch (AvroTypeException e) {
       // Expected
-    } catch (Exception e) {
-      // broken
     }
 
     // then
 
     // Evolution:
-//    Assert.assertEquals(recordA.get("test"), new Utf8("abc"));
+    Assert.assertEquals(recordA.get("test"), new Utf8("abc"));
     Assert.assertEquals(recordB.get("test"), new Utf8("abc"));
 
     // Non-evolution
@@ -550,17 +544,9 @@ public class FastGenericDeserializerGeneratorTest {
 
     // Evolution:
     GenericRecord recordA = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithString));
-    try {
-      GenericRecord recordB = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithInt));
-    } catch (Exception e) {
-      // broken
-    }
+    GenericRecord recordB = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithInt));
     GenericRecord recordC = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithString));
-    try {
-      GenericRecord recordD = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithInt));
-    } catch (Exception e) {
-      // broken
-    }
+    GenericRecord recordD = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithInt));
 
     // Non-evolution
     GenericRecord recordE = implementation.decode(record1Schema, record1Schema, genericDataAsDecoder(builderForSchema1WithString));
@@ -572,9 +558,9 @@ public class FastGenericDeserializerGeneratorTest {
 
     // Evolution:
     Assert.assertEquals(recordA.get("test"), new Utf8("abc"));
-//    Assert.assertEquals(recordB.get("test"), 1);
+    Assert.assertEquals(recordB.get("test"), 1);
     Assert.assertEquals(recordC.get("test"), new Utf8("abc"));
-//    Assert.assertEquals(recordD.get("test"), 1);
+    Assert.assertEquals(recordD.get("test"), 1);
 
     // Non-evolution
     Assert.assertEquals(recordE.get("test"), new Utf8("abc"));
@@ -651,26 +637,10 @@ public class FastGenericDeserializerGeneratorTest {
     // when
 
     // Evolution:
-    try {
-      GenericRecord recordA = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithArray));
-    } catch (Exception e) {
-      // broken
-    }
-    try {
-      GenericRecord recordB = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithNull));
-    } catch (Exception e) {
-      // broken
-    }
-    try {
-      GenericRecord recordC = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithArray));
-    } catch (Exception e) {
-      // broken
-    }
-    try {
-      GenericRecord recordD = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithNull));
-    } catch (Exception e) {
-      // broken
-    }
+    GenericRecord recordA = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithArray));
+    GenericRecord recordB = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithNull));
+    GenericRecord recordC = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithArray));
+    GenericRecord recordD = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithNull));
 
     // Non-evolution
     GenericRecord recordE = implementation.decode(record1Schema, record1Schema, genericDataAsDecoder(builderForSchema1WithArray));
@@ -681,10 +651,10 @@ public class FastGenericDeserializerGeneratorTest {
     // then
 
     // Evolution:
-//    Assert.assertEquals((List<Integer>) recordA.get("test"), new ArrayList<Integer>());
-//    Assert.assertEquals(recordB.get("test"), null);
-//    Assert.assertEquals((List<Integer>) recordC.get("test"), new ArrayList<Integer>());
-//    Assert.assertEquals(recordD.get("test"), null);
+    Assert.assertEquals((List<Integer>) recordA.get("test"), new ArrayList<Integer>());
+    Assert.assertEquals(recordB.get("test"), null);
+    Assert.assertEquals((List<Integer>) recordC.get("test"), new ArrayList<Integer>());
+    Assert.assertEquals(recordD.get("test"), null);
 
     // Non-evolution
     Assert.assertEquals((List<Integer>) recordE.get("test"), new ArrayList<Integer>());
@@ -715,26 +685,10 @@ public class FastGenericDeserializerGeneratorTest {
     // when
 
     // Evolution:
-    try {
-      GenericRecord recordA = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithArray));
-    } catch (Exception e) {
-      // broken
-    }
-    try {
-      GenericRecord recordB = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithNull));
-    } catch (Exception e) {
-      // broken
-    }
-    try {
-      GenericRecord recordC = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithArray));
-    } catch (Exception e) {
-      // broken
-    }
-    try {
-      GenericRecord recordD = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithNull));
-    } catch (Exception e) {
-      // broken
-    }
+    GenericRecord recordA = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithArray));
+    GenericRecord recordB = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithNull));
+    GenericRecord recordC = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithArray));
+    GenericRecord recordD = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithNull));
 
     // Non-evolution
     GenericRecord recordE = implementation.decode(record1Schema, record1Schema, genericDataAsDecoder(builderForSchema1WithArray));
@@ -745,10 +699,10 @@ public class FastGenericDeserializerGeneratorTest {
     // then
 
     // Evolution:
-//    Assert.assertEquals((Map<String, Integer>) recordA.get("test"), new HashMap<String, Integer>());
-//    Assert.assertEquals(recordB.get("test"), null);
-//    Assert.assertEquals((Map<String, Integer>) recordC.get("test"), new HashMap<String, Integer>());
-//    Assert.assertEquals(recordD.get("test"), null);
+    Assert.assertEquals((Map<String, Integer>) recordA.get("test"), new HashMap<String, Integer>());
+    Assert.assertEquals(recordB.get("test"), null);
+    Assert.assertEquals((Map<String, Integer>) recordC.get("test"), new HashMap<String, Integer>());
+    Assert.assertEquals(recordD.get("test"), null);
 
     // Non-evolution
     Assert.assertEquals((Map<String, Integer>) recordE.get("test"), new HashMap<String, Integer>());
@@ -786,26 +740,10 @@ public class FastGenericDeserializerGeneratorTest {
     // when
 
     // Evolution:
-    try {
-      GenericRecord recordA = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithSubRecord));
-    } catch (Exception e) {
-      // broken
-    }
-    try {
-      GenericRecord recordB = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithNull));
-    } catch (Exception e) {
-      // broken
-    }
-    try {
-      GenericRecord recordC = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithSubRecord));
-    } catch (Exception e) {
-      // broken
-    }
-    try {
-      GenericRecord recordD = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithNull));
-    } catch (Exception e) {
-      // broken
-    }
+    GenericRecord recordA = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithSubRecord));
+    GenericRecord recordB = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithNull));
+    GenericRecord recordC = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithSubRecord));
+    GenericRecord recordD = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithNull));
 
     // Non-evolution
     GenericRecord recordE = implementation.decode(record1Schema, record1Schema, genericDataAsDecoder(builderForSchema1WithSubRecord));
@@ -816,10 +754,10 @@ public class FastGenericDeserializerGeneratorTest {
     // then
 
     // Evolution:
-//    Assert.assertEquals(recordA.get("test"), subRecord);
-//    Assert.assertEquals(recordB.get("test"), null);
-//    Assert.assertEquals(recordC.get("test"), subRecord);
-//    Assert.assertEquals(recordD.get("test"), null);
+    Assert.assertEquals(recordA.get("test"), subRecord);
+    Assert.assertEquals(recordB.get("test"), null);
+    Assert.assertEquals(recordC.get("test"), subRecord);
+    Assert.assertEquals(recordD.get("test"), null);
 
     // Non-evolution
     Assert.assertEquals(recordE.get("test"), subRecord);

@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
@@ -335,6 +336,8 @@ public class FastStringableTest {
     }
     try {
       return deserializer.deserialize(decoder);
+    } catch (AvroTypeException e) {
+      throw e;
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

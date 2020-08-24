@@ -290,7 +290,7 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
        * both of them have associated 'Schema', so the serializer could recognize the right type
        * by checking the associated 'Schema' in generic mode.
        */
-      if (useGenericTypes && SchemaAssistant.isNamedType(schemaOption)) {
+      if (useGenericTypes && SchemaAssistant.isNamedTypeWithSchema(schemaOption)) {
         condition = unionExpr._instanceof(rawOptionClass).cand(JExpr.invoke(JExpr.lit(schemaOption.getFullName()), "equals")
             .arg(JExpr.invoke(JExpr.cast(optionClass, unionExpr), "getSchema").invoke("getFullName")));
       } else {
