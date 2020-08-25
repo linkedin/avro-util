@@ -52,6 +52,7 @@ public class FastGenericSerializerGeneratorTest {
     Schema recordSchema = createRecord(
         createField("testInt", Schema.create(Schema.Type.INT)),
         createPrimitiveUnionFieldSchema("testIntUnion", Schema.Type.INT),
+        createUnionField("testFlippedIntUnion", Schema.create(Schema.Type.INT), Schema.create(Schema.Type.NULL)),
         createField("testString", Schema.create(Schema.Type.STRING)),
         createPrimitiveUnionFieldSchema("testStringUnion", Schema.Type.STRING),
         createField("testLong", Schema.create(Schema.Type.LONG)),
@@ -68,6 +69,7 @@ public class FastGenericSerializerGeneratorTest {
     GenericData.Record builder = new GenericData.Record(recordSchema);
     builder.put("testInt", 1);
     builder.put("testIntUnion", 1);
+    builder.put("testFlippedIntUnion", null);
     builder.put("testString", "aaa");
     builder.put("testStringUnion", "aaa");
     builder.put("testLong", 1l);
@@ -87,6 +89,7 @@ public class FastGenericSerializerGeneratorTest {
     // then
     Assert.assertEquals(1, record.get("testInt"));
     Assert.assertEquals(1, record.get("testIntUnion"));
+    Assert.assertEquals(null, record.get("testFlippedIntUnion"));
     Assert.assertEquals("aaa", record.get("testString").toString());
     Assert.assertEquals("aaa", record.get("testStringUnion").toString());
     Assert.assertEquals(1l, record.get("testLong"));

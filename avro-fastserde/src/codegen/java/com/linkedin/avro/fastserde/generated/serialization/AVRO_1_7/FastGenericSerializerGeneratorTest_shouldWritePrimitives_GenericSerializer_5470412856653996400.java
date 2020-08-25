@@ -1,5 +1,5 @@
 
-package com.linkedin.avro.fastserde.generated.serialization.AVRO_1_4;
+package com.linkedin.avro.fastserde.generated.serialization.AVRO_1_7;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -8,7 +8,7 @@ import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.util.Utf8;
 
-public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSerializer_5300080091170871849
+public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSerializer_5470412856653996400
     implements FastSerializer<IndexedRecord>
 {
 
@@ -32,12 +32,19 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
             (encoder).writeIndex(1);
             (encoder).writeInt(((Integer) testIntUnion0));
         }
-        if (data.get(2) instanceof Utf8) {
-            (encoder).writeString(((Utf8) data.get(2)));
-        } else {
-            (encoder).writeString(data.get(2).toString());
+        Integer testFlippedIntUnion0 = ((Integer) data.get(2));
+        (encoder).writeIndex(0);
+        (encoder).writeInt(((Integer) testFlippedIntUnion0));
+        if (testFlippedIntUnion0 == null) {
+            (encoder).writeIndex(1);
+            (encoder).writeNull();
         }
-        CharSequence testStringUnion0 = ((CharSequence) data.get(3));
+        if (data.get(3) instanceof Utf8) {
+            (encoder).writeString(((Utf8) data.get(3)));
+        } else {
+            (encoder).writeString(data.get(3).toString());
+        }
+        CharSequence testStringUnion0 = ((CharSequence) data.get(4));
         if (testStringUnion0 == null) {
             (encoder).writeIndex(0);
             (encoder).writeNull();
@@ -49,8 +56,8 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
                 (encoder).writeString(testStringUnion0 .toString());
             }
         }
-        (encoder).writeLong(((Long) data.get(4)));
-        Long testLongUnion0 = ((Long) data.get(5));
+        (encoder).writeLong(((Long) data.get(5)));
+        Long testLongUnion0 = ((Long) data.get(6));
         if (testLongUnion0 == null) {
             (encoder).writeIndex(0);
             (encoder).writeNull();
@@ -58,8 +65,8 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
             (encoder).writeIndex(1);
             (encoder).writeLong(((Long) testLongUnion0));
         }
-        (encoder).writeDouble(((Double) data.get(6)));
-        Double testDoubleUnion0 = ((Double) data.get(7));
+        (encoder).writeDouble(((Double) data.get(7)));
+        Double testDoubleUnion0 = ((Double) data.get(8));
         if (testDoubleUnion0 == null) {
             (encoder).writeIndex(0);
             (encoder).writeNull();
@@ -67,8 +74,8 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
             (encoder).writeIndex(1);
             (encoder).writeDouble(((Double) testDoubleUnion0));
         }
-        (encoder).writeFloat(((Float) data.get(8)));
-        Float testFloatUnion0 = ((Float) data.get(9));
+        (encoder).writeFloat(((Float) data.get(9)));
+        Float testFloatUnion0 = ((Float) data.get(10));
         if (testFloatUnion0 == null) {
             (encoder).writeIndex(0);
             (encoder).writeNull();
@@ -76,8 +83,8 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
             (encoder).writeIndex(1);
             (encoder).writeFloat(((Float) testFloatUnion0));
         }
-        (encoder).writeBoolean(((Boolean) data.get(10)));
-        Boolean testBooleanUnion0 = ((Boolean) data.get(11));
+        (encoder).writeBoolean(((Boolean) data.get(11)));
+        Boolean testBooleanUnion0 = ((Boolean) data.get(12));
         if (testBooleanUnion0 == null) {
             (encoder).writeIndex(0);
             (encoder).writeNull();
@@ -85,8 +92,8 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
             (encoder).writeIndex(1);
             (encoder).writeBoolean(((Boolean) testBooleanUnion0));
         }
-        (encoder).writeBytes(((ByteBuffer) data.get(12)));
-        ByteBuffer testBytesUnion0 = ((ByteBuffer) data.get(13));
+        (encoder).writeBytes(((ByteBuffer) data.get(13)));
+        ByteBuffer testBytesUnion0 = ((ByteBuffer) data.get(14));
         if (testBytesUnion0 == null) {
             (encoder).writeIndex(0);
             (encoder).writeNull();
