@@ -33,11 +33,12 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
             (encoder).writeInt(((Integer) testIntUnion0));
         }
         Integer testFlippedIntUnion0 = ((Integer) data.get(2));
-        (encoder).writeIndex(0);
-        (encoder).writeInt(((Integer) testFlippedIntUnion0));
         if (testFlippedIntUnion0 == null) {
             (encoder).writeIndex(1);
             (encoder).writeNull();
+        } else {
+            (encoder).writeIndex(0);
+            (encoder).writeInt(((Integer) testFlippedIntUnion0));
         }
         if (data.get(3) instanceof Utf8) {
             (encoder).writeString(((Utf8) data.get(3)));
