@@ -269,14 +269,27 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
     JConditional ifBlock = null;
 
     for (Schema schemaOption : unionSchema.getTypes()) {
-      // Special handling for null
       if (Schema.Type.NULL.equals(schemaOption.getType())) {
+        /**
+         * We always handle the null branch of the union first, otherwise, it leads to a bug in the
+         * case where there is an optional field where the null is the second branch of the union.
+         */
         JExpression condition = unionExpr.eq(JExpr._null());
         ifBlock = ifBlock != null ? ifBlock._elseif(condition) : body._if(condition);
         JBlock thenBlock = ifBlock._then();
         thenBlock.invoke(JExpr.direct(ENCODER), "writeIndex")
             .arg(JExpr.lit(getIndexNamedForUnion(unionSchema, schemaOption)));
         thenBlock.invoke(JExpr.direct(ENCODER), "writeNull");
+        break;
+      }
+    }
+
+    for (Schema schemaOption : unionSchema.getTypes()) {
+      if (Schema.Type.NULL.equals(schemaOption.getType())) {
+        /**
+         * Since we've already added code to process the null branch, we can skip it when processing
+         * the other types.
+         */
         continue;
       }
 
