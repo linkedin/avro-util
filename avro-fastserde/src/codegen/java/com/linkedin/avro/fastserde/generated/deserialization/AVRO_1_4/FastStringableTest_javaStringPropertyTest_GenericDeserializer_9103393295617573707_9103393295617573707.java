@@ -66,7 +66,7 @@ public class FastStringableTest_javaStringPropertyTest_GenericDeserializer_91033
                 break;
             }
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
+                throw new RuntimeException(("Illegal union index for 'testUnionString': "+ unionIndex0));
         }
         List<Utf8> testStringArray1 = null;
         long chunkLen0 = (decoder.readArrayStart());

@@ -46,7 +46,7 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord_Generi
                 deserializesubRecord20(null, (decoder));
                 break;
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
+                throw new RuntimeException(("Illegal union index for 'subRecord3': "+ unionIndex0));
         }
         FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.put(1, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.get(1), (decoder)));
         return FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord;

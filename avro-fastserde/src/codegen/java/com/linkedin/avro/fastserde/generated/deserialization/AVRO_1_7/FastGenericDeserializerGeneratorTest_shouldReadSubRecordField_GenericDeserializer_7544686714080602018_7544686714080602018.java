@@ -50,7 +50,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordField_Gener
                 FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(0, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(0), (decoder)));
                 break;
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
+                throw new RuntimeException(("Illegal union index for 'record': "+ unionIndex0));
         }
         FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(1, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(1), (decoder)));
         int unionIndex2 = (decoder.readIndex());
@@ -69,7 +69,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordField_Gener
                 break;
             }
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex2));
+                throw new RuntimeException(("Illegal union index for 'field': "+ unionIndex2));
         }
         return FastGenericDeserializerGeneratorTest_shouldReadSubRecordField;
     }
@@ -99,7 +99,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordField_Gener
                 break;
             }
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex1));
+                throw new RuntimeException(("Illegal union index for 'subField': "+ unionIndex1));
         }
         return subRecord;
     }

@@ -71,7 +71,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadFixed_GenericDeseria
                 break;
             }
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
+                throw new RuntimeException(("Illegal union index for 'testFixedUnion': "+ unionIndex0));
         }
         List<org.apache.avro.generic.GenericData.Fixed> testFixedArray1 = null;
         long chunkLen0 = (decoder.readArrayStart());
@@ -135,7 +135,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadFixed_GenericDeseria
                         break;
                     }
                     default:
-                        throw new RuntimeException(("Illegal union index: "+ unionIndex1));
+                        throw new RuntimeException(("Illegal union index for 'testFixedUnionArrayElem': "+ unionIndex1));
                 }
             }
             chunkLen1 = (decoder.arrayNext());

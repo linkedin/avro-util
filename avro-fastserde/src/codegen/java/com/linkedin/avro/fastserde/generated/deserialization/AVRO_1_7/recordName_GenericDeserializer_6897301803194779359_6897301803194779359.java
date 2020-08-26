@@ -50,7 +50,7 @@ public class recordName_GenericDeserializer_6897301803194779359_6897301803194779
                 recordName.put(1, deserializerecordName0(recordName.get(1), (decoder)));
                 break;
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
+                throw new RuntimeException(("Illegal union index for 'unionField': "+ unionIndex0));
         }
         return recordName;
     }

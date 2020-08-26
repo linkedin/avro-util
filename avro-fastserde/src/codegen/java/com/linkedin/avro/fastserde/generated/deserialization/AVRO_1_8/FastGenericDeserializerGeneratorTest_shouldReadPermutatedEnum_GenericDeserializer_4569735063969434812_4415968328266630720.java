@@ -98,7 +98,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum_Gener
                 break;
             }
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
+                throw new RuntimeException(("Illegal union index for 'testEnumUnion': "+ unionIndex0));
         }
         List<org.apache.avro.generic.GenericData.EnumSymbol> testEnumArray1 = null;
         long chunkLen0 = (decoder.readArrayStart());
@@ -184,7 +184,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum_Gener
                         break;
                     }
                     default:
-                        throw new RuntimeException(("Illegal union index: "+ unionIndex1));
+                        throw new RuntimeException(("Illegal union index for 'testEnumUnionArrayElem': "+ unionIndex1));
                 }
             }
             chunkLen1 = (decoder.arrayNext());

@@ -135,7 +135,7 @@ public class StringableRecord_SpecificDeserializer_6174384286732341990_617438428
                 break;
             }
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
+                throw new RuntimeException(("Illegal union index for 'stringUnion': "+ unionIndex0));
         }
         return StringableRecord;
     }
