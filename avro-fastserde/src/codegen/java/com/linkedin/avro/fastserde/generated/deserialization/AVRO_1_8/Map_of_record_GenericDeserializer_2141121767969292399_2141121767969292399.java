@@ -79,7 +79,7 @@ public class Map_of_record_GenericDeserializer_2141121767969292399_2141121767969
                 break;
             }
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
+                throw new RuntimeException(("Illegal union index for 'field': "+ unionIndex0));
         }
         return record;
     }

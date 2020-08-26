@@ -55,7 +55,7 @@ public class Map_of_UNION_GenericDeserializer_2087096002965517991_20870960029655
                             map0 .put(key0, deserializerecord0(null, (decoder)));
                             break;
                         default:
-                            throw new RuntimeException(("Illegal union index: "+ unionIndex0));
+                            throw new RuntimeException(("Illegal union index for 'mapValue': "+ unionIndex0));
                     }
                 }
                 chunkLen0 = (decoder.mapNext());
@@ -91,7 +91,7 @@ public class Map_of_UNION_GenericDeserializer_2087096002965517991_20870960029655
                 break;
             }
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex1));
+                throw new RuntimeException(("Illegal union index for 'field': "+ unionIndex1));
         }
         return record;
     }

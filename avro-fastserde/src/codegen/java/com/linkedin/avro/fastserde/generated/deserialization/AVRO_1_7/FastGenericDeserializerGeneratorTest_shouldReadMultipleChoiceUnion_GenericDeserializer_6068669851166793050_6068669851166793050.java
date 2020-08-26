@@ -61,7 +61,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion_
                 FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.put(0, (decoder.readInt()));
                 break;
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
+                throw new RuntimeException(("Illegal union index for 'union': "+ unionIndex0));
         }
         return FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion;
     }
@@ -91,7 +91,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion_
                 break;
             }
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex1));
+                throw new RuntimeException(("Illegal union index for 'subField': "+ unionIndex1));
         }
         return subRecord;
     }

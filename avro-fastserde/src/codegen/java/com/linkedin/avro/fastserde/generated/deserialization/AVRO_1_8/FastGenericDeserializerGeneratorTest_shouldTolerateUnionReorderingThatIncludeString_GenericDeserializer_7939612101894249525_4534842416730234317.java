@@ -54,7 +54,7 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingT
                 FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString.put(0, (decoder.readInt()));
                 break;
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
+                throw new RuntimeException(("Illegal union index for 'test': "+ unionIndex0));
         }
         return FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString;
     }

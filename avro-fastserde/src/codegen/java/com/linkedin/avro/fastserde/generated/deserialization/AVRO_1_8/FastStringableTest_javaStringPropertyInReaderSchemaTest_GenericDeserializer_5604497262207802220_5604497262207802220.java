@@ -53,7 +53,7 @@ public class FastStringableTest_javaStringPropertyInReaderSchemaTest_GenericDese
                 FastStringableTest_javaStringPropertyInReaderSchemaTest.put(1, (decoder).readString());
                 break;
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
+                throw new RuntimeException(("Illegal union index for 'testUnionString': "+ unionIndex0));
         }
         List<String> testStringArray1 = null;
         long chunkLen0 = (decoder.readArrayStart());

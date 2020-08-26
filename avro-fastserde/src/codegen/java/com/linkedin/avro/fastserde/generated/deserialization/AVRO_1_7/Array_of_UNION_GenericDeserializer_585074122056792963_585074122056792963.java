@@ -52,7 +52,7 @@ public class Array_of_UNION_GenericDeserializer_585074122056792963_5850741220567
                         array0 .add(deserializerecord0(arrayArrayElementReuseVar0, (decoder)));
                         break;
                     default:
-                        throw new RuntimeException(("Illegal union index: "+ unionIndex0));
+                        throw new RuntimeException(("Illegal union index for 'arrayElem': "+ unionIndex0));
                 }
             }
             chunkLen0 = (decoder.arrayNext());
@@ -85,7 +85,7 @@ public class Array_of_UNION_GenericDeserializer_585074122056792963_5850741220567
                 break;
             }
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex1));
+                throw new RuntimeException(("Illegal union index for 'field': "+ unionIndex1));
         }
         return record;
     }

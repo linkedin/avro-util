@@ -106,7 +106,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexColl
                                     recordsArrayMapElem0 .put(key0, deserializesubRecord0(null, (decoder)));
                                     break;
                                 default:
-                                    throw new RuntimeException(("Illegal union index: "+ unionIndex0));
+                                    throw new RuntimeException(("Illegal union index for 'recordsArrayMapElemValue': "+ unionIndex0));
                             }
                         }
                         chunkLen1 = (decoder.mapNext());
@@ -159,7 +159,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexColl
                                     recordsMapArrayValue0 .add(deserializesubRecord0(recordsMapArrayValueArrayElementReuseVar0, (decoder)));
                                     break;
                                 default:
-                                    throw new RuntimeException(("Illegal union index: "+ unionIndex2));
+                                    throw new RuntimeException(("Illegal union index for 'recordsMapArrayValueElem': "+ unionIndex2));
                             }
                         }
                         chunkLen3 = (decoder.arrayNext());
@@ -219,7 +219,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexColl
                                             recordsArrayMapUnionOptionElem0 .put(key2, deserializesubRecord0(null, (decoder)));
                                             break;
                                         default:
-                                            throw new RuntimeException(("Illegal union index: "+ unionIndex4));
+                                            throw new RuntimeException(("Illegal union index for 'recordsArrayMapUnionOptionElemValue': "+ unionIndex4));
                                     }
                                 }
                                 chunkLen5 = (decoder.mapNext());
@@ -235,7 +235,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexColl
                 break;
             }
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex3));
+                throw new RuntimeException(("Illegal union index for 'recordsArrayMapUnion': "+ unionIndex3));
         }
         int unionIndex5 = (decoder.readIndex());
         switch (unionIndex5) {
@@ -284,7 +284,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexColl
                                             recordsMapArrayUnionOptionValue0 .add(deserializesubRecord0(recordsMapArrayUnionOptionValueArrayElementReuseVar0, (decoder)));
                                             break;
                                         default:
-                                            throw new RuntimeException(("Illegal union index: "+ unionIndex6));
+                                            throw new RuntimeException(("Illegal union index for 'recordsMapArrayUnionOptionValueElem': "+ unionIndex6));
                                     }
                                 }
                                 chunkLen7 = (decoder.arrayNext());
@@ -300,7 +300,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexColl
                 break;
             }
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex5));
+                throw new RuntimeException(("Illegal union index for 'recordsMapArrayUnion': "+ unionIndex5));
         }
         return FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexCollectionsField;
     }
@@ -330,7 +330,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexColl
                 break;
             }
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex1));
+                throw new RuntimeException(("Illegal union index for 'subField': "+ unionIndex1));
         }
         return subRecord;
     }

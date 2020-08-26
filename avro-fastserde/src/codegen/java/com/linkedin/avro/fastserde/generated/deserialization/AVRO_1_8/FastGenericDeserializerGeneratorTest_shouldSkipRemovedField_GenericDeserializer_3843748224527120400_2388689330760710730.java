@@ -70,7 +70,7 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
                 break;
             }
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
+                throw new RuntimeException(("Illegal union index for 'testNotRemoved': "+ unionIndex0));
         }
         int unionIndex1 = (decoder.readIndex());
         switch (unionIndex1) {
@@ -81,7 +81,7 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
                 decoder.skipString();
                 break;
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex1));
+                throw new RuntimeException(("Illegal union index for 'testRemoved': "+ unionIndex1));
         }
         int unionIndex2 = (decoder.readIndex());
         switch (unionIndex2) {
@@ -99,7 +99,7 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
                 break;
             }
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex2));
+                throw new RuntimeException(("Illegal union index for 'testNotRemoved2': "+ unionIndex2));
         }
         int unionIndex3 = (decoder.readIndex());
         switch (unionIndex3) {
@@ -110,7 +110,7 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
                 FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(2, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(2), (decoder)));
                 break;
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex3));
+                throw new RuntimeException(("Illegal union index for 'subRecord': "+ unionIndex3));
         }
         Map<Utf8, IndexedRecord> subRecordMap1 = null;
         long chunkLen0 = (decoder.readMapStart());
@@ -185,7 +185,7 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
                 break;
             }
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex4));
+                throw new RuntimeException(("Illegal union index for 'testNotRemoved': "+ unionIndex4));
         }
         int unionIndex5 = (decoder.readIndex());
         switch (unionIndex5) {
@@ -196,7 +196,7 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
                 decoder.skipString();
                 break;
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex5));
+                throw new RuntimeException(("Illegal union index for 'testRemoved': "+ unionIndex5));
         }
         int unionIndex6 = (decoder.readIndex());
         switch (unionIndex6) {
@@ -214,7 +214,7 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
                 break;
             }
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex6));
+                throw new RuntimeException(("Illegal union index for 'testNotRemoved2': "+ unionIndex6));
         }
         return subRecord;
     }

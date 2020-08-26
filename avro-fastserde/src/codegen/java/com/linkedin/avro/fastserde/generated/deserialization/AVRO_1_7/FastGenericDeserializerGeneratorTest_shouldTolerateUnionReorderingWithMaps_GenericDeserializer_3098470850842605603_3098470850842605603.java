@@ -75,7 +75,7 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingW
                 break;
             }
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
+                throw new RuntimeException(("Illegal union index for 'test': "+ unionIndex0));
         }
         return FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps;
     }

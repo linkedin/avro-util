@@ -134,7 +134,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
                                 recordsArrayUnionOption0 .add(deserializesubRecord0(recordsArrayUnionOptionArrayElementReuseVar0, (decoder)));
                                 break;
                             default:
-                                throw new RuntimeException(("Illegal union index: "+ unionIndex2));
+                                throw new RuntimeException(("Illegal union index for 'recordsArrayUnionOptionElem': "+ unionIndex2));
                         }
                     }
                     chunkLen2 = (decoder.arrayNext());
@@ -143,7 +143,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
                 break;
             }
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex1));
+                throw new RuntimeException(("Illegal union index for 'recordsArrayUnion': "+ unionIndex1));
         }
         int unionIndex3 = (decoder.readIndex());
         switch (unionIndex3) {
@@ -178,7 +178,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
                                     recordsMapUnionOption0 .put(key1, deserializesubRecord0(null, (decoder)));
                                     break;
                                 default:
-                                    throw new RuntimeException(("Illegal union index: "+ unionIndex4));
+                                    throw new RuntimeException(("Illegal union index for 'recordsMapUnionOptionValue': "+ unionIndex4));
                             }
                         }
                         chunkLen3 = (decoder.mapNext());
@@ -190,7 +190,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
                 break;
             }
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex3));
+                throw new RuntimeException(("Illegal union index for 'recordsMapUnion': "+ unionIndex3));
         }
         return FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField;
     }
@@ -220,7 +220,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
                 break;
             }
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
+                throw new RuntimeException(("Illegal union index for 'subField': "+ unionIndex0));
         }
         return subRecord;
     }

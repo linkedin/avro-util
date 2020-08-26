@@ -54,7 +54,7 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanill
             case  2 :
                 throw new AvroTypeException("Found \"long\", expecting [\"null\", \"string\"]");
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
+                throw new RuntimeException(("Illegal union index for 'test': "+ unionIndex0));
         }
         return FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType;
     }

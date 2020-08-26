@@ -54,7 +54,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadEnum_GenericDeserial
                 FastGenericDeserializerGeneratorTest_shouldReadEnum.put(1, new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get((decoder.readEnum()))));
                 break;
             default:
-                throw new RuntimeException(("Illegal union index: "+ unionIndex0));
+                throw new RuntimeException(("Illegal union index for 'testEnumUnion': "+ unionIndex0));
         }
         List<org.apache.avro.generic.GenericData.EnumSymbol> testEnumArray1 = null;
         long chunkLen0 = (decoder.readArrayStart());
@@ -96,7 +96,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadEnum_GenericDeserial
                         testEnumUnionArray1 .add(new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get((decoder.readEnum()))));
                         break;
                     default:
-                        throw new RuntimeException(("Illegal union index: "+ unionIndex1));
+                        throw new RuntimeException(("Illegal union index for 'testEnumUnionArrayElem': "+ unionIndex1));
                 }
             }
             chunkLen1 = (decoder.arrayNext());
