@@ -26,6 +26,7 @@ dependencies {
   implementation project(":helper:impls:helper-impl-17")
   implementation project(":helper:impls:helper-impl-18")
   implementation project(":helper:impls:helper-impl-19")
+  implementation project(":helper:impls:helper-impl-110")
 }
 
 shadowJar {

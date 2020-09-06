@@ -10,7 +10,7 @@ package org.apache.avro.io;
  * this class exists to allow us access to package-private classes and methods on class {@link BinaryDecoder}
  *
  * the difference between this method and {@link DecoderFactory#binaryDecoder(byte[], int, int, BinaryDecoder)}
- * is that this method supports configuring custom BinaryDecoder since it does not check class type of BinaryDecoder.
+ * is that this method supports reusing a custom BinaryDecoder since it does not check class type of BinaryDecoder.
  */
 public class Avro19BinaryDecoderAccessUtil {
   public static BinaryDecoder newBinaryDecoder(byte[] bytes, int offset,

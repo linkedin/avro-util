@@ -24,6 +24,8 @@ configurations {
   avro18NoCompiler
   avro19
   avro19NoCompiler
+  avro110
+  avro110NoCompiler
 }
 
 test {
@@ -60,6 +62,9 @@ dependencies {
     exclude group: "org.apache.avro"
   }
   testImplementation (project(":helper:tests:codegen-19")) {
+    exclude group: "org.apache.avro"
+  }
+  testImplementation (project(":helper:tests:codegen-110")) {
     exclude group: "org.apache.avro"
   }
 
@@ -130,6 +135,16 @@ dependencies {
   avro19NoCompiler ("org.apache.avro:avro:1.9.2") {
     exclude group: "org.slf4j"
   }
+
+  avro110 ("org.apache.avro:avro:1.10.0") {
+    exclude group: "org.slf4j"
+  }
+  avro110 ("org.apache.avro:avro-compiler:1.10.0") {
+    exclude group: "org.slf4j"
+  }
+  avro110NoCompiler ("org.apache.avro:avro:1.10.0") {
+    exclude group: "org.slf4j"
+  }
 }
 
 def avroVersions = [
@@ -145,7 +160,9 @@ def avroVersions = [
         "18",
         "18NoCompiler",
         "19",
-        "19NoCompiler"
+        "19NoCompiler",
+        "110",
+        "110NoCompiler"
 ]
 
 for (String avroVersion : avroVersions) {

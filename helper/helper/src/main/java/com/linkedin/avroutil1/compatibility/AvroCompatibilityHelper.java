@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 
+import com.linkedin.avroutil1.compatibility.avro110.Avro110Adapter;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
@@ -68,6 +69,9 @@ public class AvroCompatibilityHelper {
             break;
           case AVRO_1_9:
             ADAPTER = new Avro19Adapter();
+            break;
+          case AVRO_1_10:
+            ADAPTER = new Avro110Adapter();
             break;
           default:
             throw new IllegalStateException("unhandled avro version " + DETECTED_VERSION);
@@ -297,7 +301,6 @@ public class AvroCompatibilityHelper {
    * @param schema schema to be used if the class is indeed a SchemaConstructable
    * @return an instance of the class
    */
-  @SuppressWarnings("JavadocReference")
   public static Object newInstance(Class<?> clazz, Schema schema) {
     assertAvroAvailable();
     return ADAPTER.newInstance(clazz, schema);
@@ -464,7 +467,6 @@ public class AvroCompatibilityHelper {
     //method added for 1.9.0 as part of AVRO-2360
     try {
       Class<?> conversionClass = Class.forName("org.apache.avro.Conversion");
-      //noinspection JavaReflectionMemberAccess
       conversionClass.getMethod("adjustAndSetValue", String.class, String.class);
     } catch (NoSuchMethodException expected) {
       return AvroVersion.AVRO_1_8;
@@ -472,7 +474,15 @@ public class AvroCompatibilityHelper {
       throw new IllegalStateException("unable to find class org.apache.avro.Conversion", unexpected);
     }
 
-    return AvroVersion.AVRO_1_9;
+    //method added for 1.10.0 as part of AVRO-2822
+    try {
+      //noinspection JavaReflectionMemberAccess
+      schemaClass.getMethod("toString", Collection.class, Boolean.TYPE);
+    } catch (NoSuchMethodException expected) {
+      return AvroVersion.AVRO_1_9;
+    }
+
+    return AvroVersion.AVRO_1_10;
   }
 
   /**
