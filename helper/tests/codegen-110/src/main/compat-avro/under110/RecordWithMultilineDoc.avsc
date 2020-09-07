@@ -1,0 +1,13 @@
+{
+  "type": "record",
+  "namespace": "under110",
+  "name": "RecordWithMultilineDoc",
+  "doc": "A perfectly normal record\nNow with line breaks! \" and quotes",
+  "fields": [
+    {
+      "name": "stringField",
+      "type": "string",
+      "doc": "Look mom!\nA newline! and quote: \""
+    }
+  ]
+}

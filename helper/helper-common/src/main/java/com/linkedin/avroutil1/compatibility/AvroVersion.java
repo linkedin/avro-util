@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 public enum AvroVersion {
   //MUST BE ORDERED IN INCREASING ORDER
-  AVRO_1_4, AVRO_1_5, AVRO_1_6, AVRO_1_7, AVRO_1_8, AVRO_1_9;
+  AVRO_1_4, AVRO_1_5, AVRO_1_6, AVRO_1_7, AVRO_1_8, AVRO_1_9, AVRO_1_10;
 
   private final static AvroVersion EARLIEST;
   private final static AvroVersion LATEST;
