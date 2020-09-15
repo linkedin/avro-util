@@ -17,7 +17,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
+import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
@@ -152,7 +154,7 @@ public class FastGenericDeserializerGeneratorTest {
     Schema fixedSchema = createFixedSchema("testFixed", 2);
     Schema recordSchema = createRecord(
         createField("testFixed", fixedSchema),
-        createUnionField("testFixedUnion", fixedSchema),
+        createUnionFieldWithNull("testFixedUnion", fixedSchema),
         createArrayFieldSchema("testFixedArray", fixedSchema),
         createArrayFieldSchema("testFixedUnionArray", createUnionSchema(fixedSchema)));
 
@@ -180,7 +182,7 @@ public class FastGenericDeserializerGeneratorTest {
     Schema enumSchema = createEnumSchema("testEnum", new String[]{"A", "B"});
     Schema recordSchema = createRecord(
         createField("testEnum", enumSchema),
-        createUnionField("testEnumUnion", enumSchema),
+        createUnionFieldWithNull("testEnumUnion", enumSchema),
         createArrayFieldSchema("testEnumArray", enumSchema),
         createArrayFieldSchema("testEnumUnionArray", createUnionSchema(enumSchema)));
 
@@ -210,7 +212,7 @@ public class FastGenericDeserializerGeneratorTest {
     Schema enumSchema = createEnumSchema("testEnum", new String[]{"A", "B", "C", "D", "E"});
     Schema recordSchema = createRecord(
         createField("testEnum", enumSchema),
-        createUnionField("testEnumUnion", enumSchema),
+        createUnionFieldWithNull("testEnumUnion", enumSchema),
         createArrayFieldSchema("testEnumArray", enumSchema),
         createArrayFieldSchema("testEnumUnionArray", createUnionSchema(enumSchema)));
 
@@ -227,7 +229,7 @@ public class FastGenericDeserializerGeneratorTest {
     Schema enumSchema1 = createEnumSchema("testEnum", new String[]{"B", "A", "D", "E", "C"});
     Schema recordSchema1 = createRecord(
         createField("testEnum", enumSchema1),
-        createUnionField("testEnumUnion", enumSchema1),
+        createUnionFieldWithNull("testEnumUnion", enumSchema1),
         createArrayFieldSchema("testEnumArray", enumSchema1),
         createArrayFieldSchema("testEnumUnionArray", createUnionSchema(enumSchema1)));
 
@@ -264,7 +266,7 @@ public class FastGenericDeserializerGeneratorTest {
     Schema subRecordSchema = createRecord("subRecord", createPrimitiveUnionFieldSchema("subField", Schema.Type.STRING));
 
     Schema recordSchema = createRecord(
-        createUnionField("record", subRecordSchema),
+        createUnionFieldWithNull("record", subRecordSchema),
         createField("record1", subRecordSchema),
         createPrimitiveUnionFieldSchema("field", Schema.Type.STRING));
 
@@ -294,8 +296,8 @@ public class FastGenericDeserializerGeneratorTest {
     Schema recordSchema = createRecord(
         createArrayFieldSchema("recordsArray", subRecordSchema),
         createMapFieldSchema("recordsMap", subRecordSchema),
-        createUnionField("recordsArrayUnion", Schema.createArray(createUnionSchema(subRecordSchema))),
-        createUnionField("recordsMapUnion", Schema.createMap(createUnionSchema(subRecordSchema))));
+        createUnionFieldWithNull("recordsArrayUnion", Schema.createArray(createUnionSchema(subRecordSchema))),
+        createUnionFieldWithNull("recordsMapUnion", Schema.createMap(createUnionSchema(subRecordSchema))));
 
     GenericData.Record subRecordBuilder = new GenericData.Record(subRecordSchema);
     subRecordBuilder.put("subField", "abc");
@@ -331,9 +333,9 @@ public class FastGenericDeserializerGeneratorTest {
     Schema recordSchema = createRecord(
         createArrayFieldSchema("recordsArrayMap", Schema.createMap(createUnionSchema(subRecordSchema))),
         createMapFieldSchema("recordsMapArray", Schema.createArray(createUnionSchema(subRecordSchema))),
-        createUnionField("recordsArrayMapUnion",
+        createUnionFieldWithNull("recordsArrayMapUnion",
             Schema.createArray(Schema.createMap(createUnionSchema(subRecordSchema)))),
-        createUnionField("recordsMapArrayUnion",
+        createUnionFieldWithNull("recordsMapArrayUnion",
             Schema.createMap(Schema.createArray(createUnionSchema(subRecordSchema)))));
 
     GenericData.Record subRecordBuilder = new GenericData.Record(subRecordSchema);
@@ -432,7 +434,7 @@ public class FastGenericDeserializerGeneratorTest {
         createPrimitiveUnionFieldSchema("testNotRemoved", Schema.Type.STRING),
         createPrimitiveUnionFieldSchema("testRemoved", Schema.Type.STRING),
         createPrimitiveUnionFieldSchema("testNotRemoved2", Schema.Type.STRING),
-        createUnionField("subRecord", subRecord1Schema),
+        createUnionFieldWithNull("subRecord", subRecord1Schema),
         createMapFieldSchema("subRecordMap", subRecord1Schema),
         createArrayFieldSchema("subRecordArray", subRecord1Schema));
     Schema subRecord2Schema = createRecord("subRecord",
@@ -441,7 +443,7 @@ public class FastGenericDeserializerGeneratorTest {
     Schema record2Schema = createRecord(
         createPrimitiveUnionFieldSchema("testNotRemoved", Schema.Type.STRING),
         createPrimitiveUnionFieldSchema("testNotRemoved2", Schema.Type.STRING),
-        createUnionField("subRecord", subRecord2Schema),
+        createUnionFieldWithNull("subRecord", subRecord2Schema),
         createMapFieldSchema("subRecordMap", subRecord2Schema),
         createArrayFieldSchema("subRecordArray", subRecord2Schema));
 
@@ -476,6 +478,295 @@ public class FastGenericDeserializerGeneratorTest {
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType(Implementation implementation) {
+    // given
+    Schema record1Schema = createRecord(
+        createPrimitiveUnionFieldSchema("test", Schema.Type.STRING, Schema.Type.LONG));
+    Schema record2Schema = createRecord(
+        createPrimitiveUnionFieldSchema("test", Schema.Type.STRING));
+
+    GenericData.Record builderForSchema1WithString = new GenericData.Record(record1Schema);
+    builderForSchema1WithString.put("test", "abc");
+    GenericData.Record builderForSchema1WithLong = new GenericData.Record(record1Schema);
+    builderForSchema1WithLong.put("test", 1L);
+    GenericData.Record builderForSchema2WithString = new GenericData.Record(record2Schema);
+    builderForSchema2WithString.put("test", "abc");
+
+    // when
+
+    // Evolution:
+    GenericRecord recordA = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithString));
+    GenericRecord recordB = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithString));
+
+    // Non-evolution
+    GenericRecord recordC = implementation.decode(record1Schema, record1Schema, genericDataAsDecoder(builderForSchema1WithString));
+    GenericRecord recordD = implementation.decode(record2Schema, record2Schema, genericDataAsDecoder(builderForSchema2WithString));
+    GenericRecord recordE = implementation.decode(record1Schema, record1Schema, genericDataAsDecoder(builderForSchema1WithLong));
+
+    // Broken
+    try {
+      GenericRecord recordF = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithLong));
+      Assert.fail("Should have thrown an AvroTypeException.");
+    } catch (AvroTypeException e) {
+      // Expected
+    }
+
+    // then
+
+    // Evolution:
+    Assert.assertEquals(recordA.get("test"), new Utf8("abc"));
+    Assert.assertEquals(recordB.get("test"), new Utf8("abc"));
+
+    // Non-evolution
+    Assert.assertEquals(recordC.get("test"), new Utf8("abc"));
+    Assert.assertEquals(recordD.get("test"), new Utf8("abc"));
+    Assert.assertEquals(recordE.get("test"), 1L);
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldTolerateUnionReorderingThatIncludeString(Implementation implementation) {
+    // given
+    Schema record1Schema = createRecord(
+        createPrimitiveUnionFieldSchema("test", Schema.Type.STRING, Schema.Type.INT));
+    Schema record2Schema = createRecord(
+        createPrimitiveUnionFieldSchema("test", Schema.Type.INT, Schema.Type.STRING));
+
+    GenericData.Record builderForSchema1WithString = new GenericData.Record(record1Schema);
+    builderForSchema1WithString.put("test", "abc");
+    GenericData.Record builderForSchema1WithInt = new GenericData.Record(record1Schema);
+    builderForSchema1WithInt.put("test", 1);
+    GenericData.Record builderForSchema2WithString = new GenericData.Record(record2Schema);
+    builderForSchema2WithString.put("test", "abc");
+    GenericData.Record builderForSchema2WithInt = new GenericData.Record(record2Schema);
+    builderForSchema2WithInt.put("test", 1);
+
+    // when
+
+    // Evolution:
+    GenericRecord recordA = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithString));
+    GenericRecord recordB = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithInt));
+    GenericRecord recordC = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithString));
+    GenericRecord recordD = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithInt));
+
+    // Non-evolution
+    GenericRecord recordE = implementation.decode(record1Schema, record1Schema, genericDataAsDecoder(builderForSchema1WithString));
+    GenericRecord recordF = implementation.decode(record2Schema, record2Schema, genericDataAsDecoder(builderForSchema2WithString));
+    GenericRecord recordG = implementation.decode(record1Schema, record1Schema, genericDataAsDecoder(builderForSchema1WithInt));
+    GenericRecord recordH = implementation.decode(record2Schema, record2Schema, genericDataAsDecoder(builderForSchema2WithInt));
+
+    // then
+
+    // Evolution:
+    Assert.assertEquals(recordA.get("test"), new Utf8("abc"));
+    Assert.assertEquals(recordB.get("test"), 1);
+    Assert.assertEquals(recordC.get("test"), new Utf8("abc"));
+    Assert.assertEquals(recordD.get("test"), 1);
+
+    // Non-evolution
+    Assert.assertEquals(recordE.get("test"), new Utf8("abc"));
+    Assert.assertEquals(recordF.get("test"), new Utf8("abc"));
+    Assert.assertEquals(recordG.get("test"), 1);
+    Assert.assertEquals(recordH.get("test"), 1);
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldTolerateUnionReorderingWithNonString(Implementation implementation) {
+    // given
+    Schema record1Schema = createRecord(
+        createPrimitiveUnionFieldSchema("test", Schema.Type.BOOLEAN, Schema.Type.INT));
+    Schema record2Schema = createRecord(
+        createPrimitiveUnionFieldSchema("test", Schema.Type.INT, Schema.Type.BOOLEAN));
+
+    GenericData.Record builderForSchema1WithBoolean = new GenericData.Record(record1Schema);
+    builderForSchema1WithBoolean.put("test", true);
+    GenericData.Record builderForSchema1WithInt = new GenericData.Record(record1Schema);
+    builderForSchema1WithInt.put("test", 1);
+    GenericData.Record builderForSchema2WithBoolean = new GenericData.Record(record2Schema);
+    builderForSchema2WithBoolean.put("test", true);
+    GenericData.Record builderForSchema2WithInt = new GenericData.Record(record2Schema);
+    builderForSchema2WithInt.put("test", 1);
+
+    // when
+
+    // Evolution:
+    GenericRecord recordA = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithBoolean));
+    GenericRecord recordB = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithInt));
+    GenericRecord recordC = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithBoolean));
+    GenericRecord recordD = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithInt));
+
+    // Non-evolution
+    GenericRecord recordE = implementation.decode(record1Schema, record1Schema, genericDataAsDecoder(builderForSchema1WithBoolean));
+    GenericRecord recordF = implementation.decode(record2Schema, record2Schema, genericDataAsDecoder(builderForSchema2WithBoolean));
+    GenericRecord recordG = implementation.decode(record1Schema, record1Schema, genericDataAsDecoder(builderForSchema1WithInt));
+    GenericRecord recordH = implementation.decode(record2Schema, record2Schema, genericDataAsDecoder(builderForSchema2WithInt));
+
+    // then
+
+    // Evolution:
+    Assert.assertEquals(recordA.get("test"), true);
+    Assert.assertEquals(recordB.get("test"), 1);
+    Assert.assertEquals(recordC.get("test"), true);
+    Assert.assertEquals(recordD.get("test"), 1);
+
+    // Non-evolution
+    Assert.assertEquals(recordE.get("test"), true);
+    Assert.assertEquals(recordF.get("test"), true);
+    Assert.assertEquals(recordG.get("test"), 1);
+    Assert.assertEquals(recordH.get("test"), 1);
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldTolerateUnionReorderingWithArrays(Implementation implementation) {
+    // given
+    Schema record1Schema = createRecord(createUnionField("test",
+        Schema.create(Schema.Type.NULL),
+        Schema.createArray(Schema.create(Schema.Type.INT))));
+    Schema record2Schema = createRecord(createUnionField("test",
+        Schema.createArray(Schema.create(Schema.Type.INT)),
+        Schema.create(Schema.Type.NULL)));
+
+    GenericData.Record builderForSchema1WithArray = new GenericData.Record(record1Schema);
+    builderForSchema1WithArray.put("test", new ArrayList<Integer>());
+    GenericData.Record builderForSchema1WithNull = new GenericData.Record(record1Schema);
+    builderForSchema1WithNull.put("test", null);
+    GenericData.Record builderForSchema2WithArray = new GenericData.Record(record2Schema);
+    builderForSchema2WithArray.put("test", new ArrayList<Integer>());
+    GenericData.Record builderForSchema2WithNull = new GenericData.Record(record2Schema);
+    builderForSchema2WithNull.put("test", null);
+
+    // when
+
+    // Evolution:
+    GenericRecord recordA = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithArray));
+    GenericRecord recordB = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithNull));
+    GenericRecord recordC = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithArray));
+    GenericRecord recordD = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithNull));
+
+    // Non-evolution
+    GenericRecord recordE = implementation.decode(record1Schema, record1Schema, genericDataAsDecoder(builderForSchema1WithArray));
+    GenericRecord recordF = implementation.decode(record2Schema, record2Schema, genericDataAsDecoder(builderForSchema2WithArray));
+    GenericRecord recordG = implementation.decode(record1Schema, record1Schema, genericDataAsDecoder(builderForSchema1WithNull));
+    GenericRecord recordH = implementation.decode(record2Schema, record2Schema, genericDataAsDecoder(builderForSchema2WithNull));
+
+    // then
+
+    // Evolution:
+    Assert.assertEquals((List<Integer>) recordA.get("test"), new ArrayList<Integer>());
+    Assert.assertEquals(recordB.get("test"), null);
+    Assert.assertEquals((List<Integer>) recordC.get("test"), new ArrayList<Integer>());
+    Assert.assertEquals(recordD.get("test"), null);
+
+    // Non-evolution
+    Assert.assertEquals((List<Integer>) recordE.get("test"), new ArrayList<Integer>());
+    Assert.assertEquals((List<Integer>) recordF.get("test"), new ArrayList<Integer>());
+    Assert.assertEquals(recordG.get("test"), null);
+    Assert.assertEquals(recordH.get("test"), null);
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldTolerateUnionReorderingWithMaps(Implementation implementation) {
+    // given
+    Schema record1Schema = createRecord(createUnionField("test",
+        Schema.create(Schema.Type.NULL),
+        Schema.createMap(Schema.create(Schema.Type.INT))));
+    Schema record2Schema = createRecord(createUnionField("test",
+        Schema.createMap(Schema.create(Schema.Type.INT)),
+        Schema.create(Schema.Type.NULL)));
+
+    GenericData.Record builderForSchema1WithArray = new GenericData.Record(record1Schema);
+    builderForSchema1WithArray.put("test", new HashMap<String, Integer>());
+    GenericData.Record builderForSchema1WithNull = new GenericData.Record(record1Schema);
+    builderForSchema1WithNull.put("test", null);
+    GenericData.Record builderForSchema2WithArray = new GenericData.Record(record2Schema);
+    builderForSchema2WithArray.put("test", new HashMap<String, Integer>());
+    GenericData.Record builderForSchema2WithNull = new GenericData.Record(record2Schema);
+    builderForSchema2WithNull.put("test", null);
+
+    // when
+
+    // Evolution:
+    GenericRecord recordA = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithArray));
+    GenericRecord recordB = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithNull));
+    GenericRecord recordC = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithArray));
+    GenericRecord recordD = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithNull));
+
+    // Non-evolution
+    GenericRecord recordE = implementation.decode(record1Schema, record1Schema, genericDataAsDecoder(builderForSchema1WithArray));
+    GenericRecord recordF = implementation.decode(record2Schema, record2Schema, genericDataAsDecoder(builderForSchema2WithArray));
+    GenericRecord recordG = implementation.decode(record1Schema, record1Schema, genericDataAsDecoder(builderForSchema1WithNull));
+    GenericRecord recordH = implementation.decode(record2Schema, record2Schema, genericDataAsDecoder(builderForSchema2WithNull));
+
+    // then
+
+    // Evolution:
+    Assert.assertEquals((Map<String, Integer>) recordA.get("test"), new HashMap<String, Integer>());
+    Assert.assertEquals(recordB.get("test"), null);
+    Assert.assertEquals((Map<String, Integer>) recordC.get("test"), new HashMap<String, Integer>());
+    Assert.assertEquals(recordD.get("test"), null);
+
+    // Non-evolution
+    Assert.assertEquals((Map<String, Integer>) recordE.get("test"), new HashMap<String, Integer>());
+    Assert.assertEquals((Map<String, Integer>) recordF.get("test"), new HashMap<String, Integer>());
+    Assert.assertEquals(recordG.get("test"), null);
+    Assert.assertEquals(recordH.get("test"), null);
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldTolerateUnionReorderingWithSubRecords(Implementation implementation) {
+    // given
+    Schema subRecordSchema1 = createRecord("subRecord1", createField("someInt1", Schema.create(Schema.Type.INT)));
+    Schema subRecordSchema2 = createRecord("subRecord2", createField("someInt2", Schema.create(Schema.Type.INT)));
+
+    Schema record1Schema = createRecord(createUnionField("test",
+        Schema.create(Schema.Type.NULL),
+        subRecordSchema1,
+        subRecordSchema2));
+    Schema record2Schema = createRecord(createUnionField("test",
+        subRecordSchema2,
+        subRecordSchema1,
+        Schema.create(Schema.Type.NULL)));
+
+    GenericData.Record subRecord = new GenericData.Record(subRecordSchema1);
+    subRecord.put("someInt1", 1);
+    GenericData.Record builderForSchema1WithSubRecord = new GenericData.Record(record1Schema);
+    builderForSchema1WithSubRecord.put("test", subRecord);
+    GenericData.Record builderForSchema1WithNull = new GenericData.Record(record1Schema);
+    builderForSchema1WithNull.put("test", null);
+    GenericData.Record builderForSchema2WithSubRecord = new GenericData.Record(record2Schema);
+    builderForSchema2WithSubRecord.put("test", subRecord);
+    GenericData.Record builderForSchema2WithNull = new GenericData.Record(record2Schema);
+    builderForSchema2WithNull.put("test", null);
+
+    // when
+
+    // Evolution:
+    GenericRecord recordA = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithSubRecord));
+    GenericRecord recordB = implementation.decode(record1Schema, record2Schema, genericDataAsDecoder(builderForSchema1WithNull));
+    GenericRecord recordC = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithSubRecord));
+    GenericRecord recordD = implementation.decode(record2Schema, record1Schema, genericDataAsDecoder(builderForSchema2WithNull));
+
+    // Non-evolution
+    GenericRecord recordE = implementation.decode(record1Schema, record1Schema, genericDataAsDecoder(builderForSchema1WithSubRecord));
+    GenericRecord recordF = implementation.decode(record2Schema, record2Schema, genericDataAsDecoder(builderForSchema2WithSubRecord));
+    GenericRecord recordG = implementation.decode(record1Schema, record1Schema, genericDataAsDecoder(builderForSchema1WithNull));
+    GenericRecord recordH = implementation.decode(record2Schema, record2Schema, genericDataAsDecoder(builderForSchema2WithNull));
+
+    // then
+
+    // Evolution:
+    Assert.assertEquals(recordA.get("test"), subRecord);
+    Assert.assertEquals(recordB.get("test"), null);
+    Assert.assertEquals(recordC.get("test"), subRecord);
+    Assert.assertEquals(recordD.get("test"), null);
+
+    // Non-evolution
+    Assert.assertEquals(recordE.get("test"), subRecord);
+    Assert.assertEquals(recordF.get("test"), subRecord);
+    Assert.assertEquals(recordG.get("test"), null);
+    Assert.assertEquals(recordH.get("test"), null);
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
   public void shouldSkipRemovedRecord(Implementation implementation) {
     // given
     Schema subRecord1Schema = createRecord("subRecord", createPrimitiveFieldSchema("test1", Schema.Type.STRING),
@@ -486,7 +777,7 @@ public class FastGenericDeserializerGeneratorTest {
     Schema record1Schema = createRecord(
         createField("subRecord1", subRecord1Schema),
         createField("subRecord2", subRecord2Schema),
-        createUnionField("subRecord3", subRecord2Schema),
+        createUnionFieldWithNull("subRecord3", subRecord2Schema),
         createField("subRecord4", subRecord1Schema));
 
     Schema record2Schema = createRecord(
@@ -523,7 +814,7 @@ public class FastGenericDeserializerGeneratorTest {
     Schema subSubRecordSchema = createRecord("subSubRecord", createPrimitiveFieldSchema("test1", Schema.Type.STRING),
         createPrimitiveFieldSchema("test2", Schema.Type.STRING));
     Schema subRecord1Schema = createRecord("subRecord", createPrimitiveFieldSchema("test1", Schema.Type.STRING),
-        createField("test2", subSubRecordSchema), createUnionField("test3", subSubRecordSchema),
+        createField("test2", subSubRecordSchema), createUnionFieldWithNull("test3", subSubRecordSchema),
         createPrimitiveFieldSchema("test4", Schema.Type.STRING));
     Schema subRecord2Schema = createRecord("subRecord", createPrimitiveFieldSchema("test1", Schema.Type.STRING),
         createPrimitiveFieldSchema("test4", Schema.Type.STRING));
@@ -558,7 +849,8 @@ public class FastGenericDeserializerGeneratorTest {
     // given
     Schema subRecordSchema = createRecord("subRecord", createPrimitiveUnionFieldSchema("subField", Schema.Type.STRING));
 
-    Schema recordSchema = createRecord(createUnionField("union", subRecordSchema, Schema.create(Schema.Type.STRING), Schema.create(Schema.Type.INT)));
+    Schema recordSchema = createRecord(
+        createUnionFieldWithNull("union", subRecordSchema, Schema.create(Schema.Type.STRING), Schema.create(Schema.Type.INT)));
 
     GenericData.Record subRecordBuilder = new GenericData.Record(subRecordSchema);
     subRecordBuilder.put("subField", "abc");
@@ -838,6 +1130,8 @@ public class FastGenericDeserializerGeneratorTest {
   private static <T> T decodeRecordFast(FastDeserializer<T> deserializer, Decoder decoder) {
     try {
       return deserializer.deserialize(null, decoder);
+    } catch (AvroTypeException e) {
+      throw e;
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

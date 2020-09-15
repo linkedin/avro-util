@@ -1,5 +1,8 @@
 package com.linkedin.avro.fastserde;
 
+import static com.linkedin.avro.fastserde.Utils.getSchemaFingerprint;
+import static com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.getSchemaFullName;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
@@ -15,6 +18,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
+
 import org.apache.avro.Schema;
 import org.apache.avro.generic.ColdGenericDatumReader;
 import org.apache.avro.generic.ColdSpecificDatumReader;
@@ -292,8 +296,8 @@ public final class FastSerdeCache {
   }
 
   private String getSchemaKey(Schema writerSchema, Schema readerSchema) {
-    return String.valueOf(Math.abs(Utils.getSchemaFingerprint(writerSchema))) + Math.abs(
-        Utils.getSchemaFingerprint(readerSchema));
+    return String.valueOf(Math.abs(getSchemaFingerprint(writerSchema))) + Math.abs(
+        getSchemaFingerprint(readerSchema));
   }
 
   /**
@@ -308,9 +312,20 @@ public final class FastSerdeCache {
     FastSpecificDeserializerGenerator<?> generator =
         new FastSpecificDeserializerGenerator<>(writerSchema, readerSchema, classesDir, classLoader,
             compileClassPath.orElseGet(() -> null));
-    LOGGER.info("Generated class dir: {}, and generation of specific FastDeserializer is done for writer schema: "
-            + "[\n{}\n] and reader schema: [\n{}\n]", classesDir, writerSchema.toString(true), readerSchema.toString(true));
-    return generator.generateDeserializer();
+    FastDeserializer<?> fastDeserializer = generator.generateDeserializer();
+
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Generated classes dir: {} and generation of specific FastDeserializer is done for writer schema of type: {} with fingerprint: {}"
+              + " and content: [\n{}\n] and reader schema of type: {} with fingerprint: {} and content: [\n{}\n]", classesDir, getSchemaFullName(writerSchema),
+              writerSchema.toString(true), getSchemaFingerprint(writerSchema), getSchemaFullName(readerSchema), getSchemaFingerprint(readerSchema),
+              readerSchema.toString(true));
+    } else {
+      LOGGER.info("Generated classes dir: {} and generation of specific FastDeserializer is done for writer schema of type: {} with fingerprint: {}"
+              + " and reader schema of type: {} with fingerprint: {}", classesDir, getSchemaFullName(writerSchema), getSchemaFingerprint(writerSchema),
+              getSchemaFullName(readerSchema), getSchemaFingerprint(readerSchema));
+    }
+
+    return fastDeserializer;
   }
 
   /**
@@ -352,9 +367,21 @@ public final class FastSerdeCache {
     FastGenericDeserializerGenerator<?> generator =
         new FastGenericDeserializerGenerator<>(writerSchema, readerSchema, classesDir, classLoader,
             compileClassPath.orElseGet(() -> null));
-    LOGGER.info("Generated classes dir: {} and generation of generic FastDeserializer is done for writer schema: "
-            + "[\n{}\n] and reader schema:[\n{}\n]", classesDir, writerSchema.toString(true), readerSchema.toString(true));
-    return generator.generateDeserializer();
+
+    FastDeserializer<?> fastDeserializer = generator.generateDeserializer();
+
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Generated classes dir: {} and generation of generic FastDeserializer is done for writer schema of type: {} with fingerprint: {}"
+              + " and content: [\n{}\n] and reader schema of type: {} with fingerprint: {} and content: [\n{}\n]", classesDir, getSchemaFullName(writerSchema),
+              writerSchema.toString(true), getSchemaFingerprint(writerSchema), getSchemaFullName(readerSchema), getSchemaFingerprint(readerSchema),
+              readerSchema.toString(true));
+    } else {
+      LOGGER.info("Generated classes dir: {} and generation of generic FastDeserializer is done for writer schema of type: {} with fingerprint: {}"
+              + " and reader schema of type: {} with fingerprint: {}", classesDir, getSchemaFullName(writerSchema), getSchemaFingerprint(writerSchema),
+              getSchemaFullName(readerSchema), getSchemaFingerprint(readerSchema));
+    }
+
+    return fastDeserializer;
   }
 
   /**
@@ -393,8 +420,16 @@ public final class FastSerdeCache {
     }
     FastSpecificSerializerGenerator<?> generator =
         new FastSpecificSerializerGenerator<>(schema, classesDir, classLoader, compileClassPath.orElseGet(() -> null));
-    LOGGER.info("Generated classes dir: {} and generation of specific FastSerializer is done for schema: [\n{}\n]",
-        classesDir, schema.toString(true));
+
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Generated classes dir: {} and generation of specific FastSerializer is done for schema of type: {}" +
+              " and fingerprint: {} and content: [\n{}\n]", classesDir, getSchemaFullName(schema), getSchemaFingerprint(schema),
+              schema.toString(true));
+    } else {
+      LOGGER.info("Generated classes dir: {} and generation of specific FastSerializer is done for schema of type: {}" +
+              " and fingerprint: {}", classesDir, getSchemaFullName(schema), getSchemaFingerprint(schema));
+    }
+
     return generator.generateSerializer();
   }
 
@@ -429,8 +464,16 @@ public final class FastSerdeCache {
     }
     FastGenericSerializerGenerator<?> generator =
         new FastGenericSerializerGenerator<>(schema, classesDir, classLoader, compileClassPath.orElseGet(() -> null));
-    LOGGER.info("Generated classes dir: {} and generation of generic FastSerializer is done for schema: [\n{}\n]",
-        classesDir, schema.toString(true));
+
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Generated classes dir: {} and generation of generic FastSerializer is done for schema of type: {}" +
+              " and fingerprint: {} and content: [\n{}\n]", classesDir, getSchemaFullName(schema), getSchemaFingerprint(schema),
+              schema.toString(true));
+    } else {
+      LOGGER.info("Generated classes dir: {} and generation of generic FastSerializer is done for schema of type: {}" +
+              " and fingerprint: {}", classesDir, getSchemaFullName(schema), getSchemaFingerprint(schema));
+    }
+
     return generator.generateSerializer();
   }
 

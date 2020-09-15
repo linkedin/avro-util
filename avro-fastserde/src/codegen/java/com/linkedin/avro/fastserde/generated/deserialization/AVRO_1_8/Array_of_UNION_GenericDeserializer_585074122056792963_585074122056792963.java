@@ -44,12 +44,15 @@ public class Array_of_UNION_GenericDeserializer_585074122056792963_5850741220567
                     arrayArrayElementReuseVar0 = ((GenericArray)(reuse)).peek();
                 }
                 int unionIndex0 = (decoder.readIndex());
-                if (unionIndex0 == 0) {
-                    decoder.readNull();
-                } else {
-                    if (unionIndex0 == 1) {
+                switch (unionIndex0) {
+                    case  0 :
+                        decoder.readNull();
+                        break;
+                    case  1 :
                         array0 .add(deserializerecord0(arrayArrayElementReuseVar0, (decoder)));
-                    }
+                        break;
+                    default:
+                        throw new RuntimeException(("Illegal union index for 'arrayElem': "+ unionIndex0));
                 }
             }
             chunkLen0 = (decoder.arrayNext());
@@ -67,16 +70,22 @@ public class Array_of_UNION_GenericDeserializer_585074122056792963_5850741220567
             record = new org.apache.avro.generic.GenericData.Record(arrayElemOptionSchema0);
         }
         int unionIndex1 = (decoder.readIndex());
-        if (unionIndex1 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex1 == 1) {
-                if (record.get(0) instanceof Utf8) {
-                    record.put(0, (decoder).readString(((Utf8) record.get(0))));
+        switch (unionIndex1) {
+            case  0 :
+                decoder.readNull();
+                break;
+            case  1 :
+            {
+                Object oldString0 = record.get(0);
+                if (oldString0 instanceof Utf8) {
+                    record.put(0, (decoder).readString(((Utf8) oldString0)));
                 } else {
                     record.put(0, (decoder).readString(null));
                 }
+                break;
             }
+            default:
+                throw new RuntimeException(("Illegal union index for 'field': "+ unionIndex1));
         }
         return record;
     }

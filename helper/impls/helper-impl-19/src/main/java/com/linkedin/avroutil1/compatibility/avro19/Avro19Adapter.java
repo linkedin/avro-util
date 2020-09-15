@@ -159,7 +159,7 @@ public class Avro19Adapter implements AvroAdapter {
     }
     Schema mainSchema = parser.parse(schemaJson);
     Map<String, Schema> knownByFullName = parser.getTypes();
-    //todo - depending on hos https://issues.apache.org/jira/browse/AVRO-2742 is settled, may need to use out own validator here
+    //todo - depending on how https://issues.apache.org/jira/browse/AVRO-2742 is settled, may need to use our own validator here
     return new SchemaParseResult(mainSchema, knownByFullName, new SchemaParseConfiguration(validateNames, validateDefaults));
   }
 

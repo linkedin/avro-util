@@ -42,25 +42,34 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordField_Gener
             FastGenericDeserializerGeneratorTest_shouldReadSubRecordField = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         int unionIndex0 = (decoder.readIndex());
-        if (unionIndex0 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex0 == 1) {
+        switch (unionIndex0) {
+            case  0 :
+                decoder.readNull();
+                break;
+            case  1 :
                 FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(0, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(0), (decoder)));
-            }
+                break;
+            default:
+                throw new RuntimeException(("Illegal union index for 'record': "+ unionIndex0));
         }
         FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(1, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(1), (decoder)));
         int unionIndex2 = (decoder.readIndex());
-        if (unionIndex2 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex2 == 1) {
-                if (FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(2) instanceof Utf8) {
-                    FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(2, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(2))));
+        switch (unionIndex2) {
+            case  0 :
+                decoder.readNull();
+                break;
+            case  1 :
+            {
+                Object oldString1 = FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(2);
+                if (oldString1 instanceof Utf8) {
+                    FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(2, (decoder).readString(((Utf8) oldString1)));
                 } else {
                     FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(2, (decoder).readString(null));
                 }
+                break;
             }
+            default:
+                throw new RuntimeException(("Illegal union index for 'field': "+ unionIndex2));
         }
         return FastGenericDeserializerGeneratorTest_shouldReadSubRecordField;
     }
@@ -75,16 +84,22 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordField_Gener
             subRecord = new org.apache.avro.generic.GenericData.Record(recordOptionSchema0);
         }
         int unionIndex1 = (decoder.readIndex());
-        if (unionIndex1 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex1 == 1) {
-                if (subRecord.get(0) instanceof Utf8) {
-                    subRecord.put(0, (decoder).readString(((Utf8) subRecord.get(0))));
+        switch (unionIndex1) {
+            case  0 :
+                decoder.readNull();
+                break;
+            case  1 :
+            {
+                Object oldString0 = subRecord.get(0);
+                if (oldString0 instanceof Utf8) {
+                    subRecord.put(0, (decoder).readString(((Utf8) oldString0)));
                 } else {
                     subRecord.put(0, (decoder).readString(null));
                 }
+                break;
             }
+            default:
+                throw new RuntimeException(("Illegal union index for 'subField': "+ unionIndex1));
         }
         return subRecord;
     }

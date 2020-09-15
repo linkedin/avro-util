@@ -15,8 +15,9 @@ import org.testng.annotations.Test;
 public class AvroCompatibilityHelperNoAvroTest {
 
   @Test
-  public void testAvroVersionDetection() throws Exception {
+  public void testAvroVersionDetection() {
+    AvroVersion expected = null;
     AvroVersion detected = AvroCompatibilityHelper.getRuntimeAvroVersion();
-    Assert.assertNull(detected, "expected null, got " + detected);
+    Assert.assertEquals(detected, expected, "expected " + expected + ", got " + detected);
   }
 }

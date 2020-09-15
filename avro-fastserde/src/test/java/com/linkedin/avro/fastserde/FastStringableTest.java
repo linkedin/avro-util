@@ -15,6 +15,10 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
@@ -35,7 +39,8 @@ import static com.linkedin.avro.fastserde.FastSerdeTestsSupport.*;
 
 public class FastStringableTest {
   private static final Schema javaStringSchema = Schema.parse("{\n" + "  \"type\":\"string\",\n" + "  \"avro.java.string\":\"String\"} ");
-
+  private static final Schema javaStringKeyedMapOfJavaStringsSchema = Schema.parse("{"+
+          "\"type\":\"map\",\"values\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"avro.java.string\":\"String\"}");
 
   private File tempDir;
   private ClassLoader classLoader;
@@ -143,11 +148,24 @@ public class FastStringableTest {
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
-  public void javaStringPropertyTest(Boolean whetherUseFastDeserializer) throws IOException {
-    Schema schema = createRecord(createField("testString", javaStringSchema));
+  @SuppressWarnings("unchecked")
+  public void javaStringPropertyTest(Boolean whetherUseFastDeserializer) {
+    Schema schema = createRecord(
+            createField("testString", javaStringSchema),
+            createUnionFieldWithNull("testUnionString", javaStringSchema),
+            createArrayFieldSchema("testStringArray", javaStringSchema),
+            createField("testStringMap", javaStringKeyedMapOfJavaStringsSchema)
+    );
 
     GenericRecord record = new GenericData.Record(schema);
     record.put("testString", "aaa");
+    record.put("testUnionString", "bbb");
+    GenericData.Array<String> stringArray = new GenericData.Array<>(0, Schema.createArray(javaStringSchema));
+    stringArray.add("ccc");
+    record.put("testStringArray", stringArray);
+    Map<String, String> stringMap = new HashMap<>();
+    stringMap.put("ddd", "eee");
+    record.put("testStringMap", stringMap);
 
     Decoder decoder = writeWithFastAvro(record, schema, false);
 
@@ -160,39 +178,81 @@ public class FastStringableTest {
 
     if (Utils.isAvro14()){
       Assert.assertTrue(afterDecoding.get(0) instanceof Utf8, "Utf8 is expected, but got: " + afterDecoding.get(0).getClass());
+      Assert.assertTrue(afterDecoding.get(1) instanceof Utf8, "Utf8 is expected, but got: " + afterDecoding.get(0).getClass());
+      Assert.assertTrue(((GenericData.Array<Object>) afterDecoding.get(2)).get(0) instanceof Utf8,
+              "Utf8 is expected, but got: " + ((GenericData.Array<Object>) afterDecoding.get(2)).get(0).getClass());
+      Assert.assertTrue(((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next() instanceof Utf8,
+              "Utf8 is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next().getClass());
+      Assert.assertTrue(((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next() instanceof Utf8,
+              "Utf8 is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next().getClass());
     }  else {
       Assert.assertTrue(afterDecoding.get(0) instanceof String, "String is expected, but got: " + afterDecoding.get(0).getClass());
+      Assert.assertTrue(afterDecoding.get(1) instanceof String, "String is expected, but got: " + afterDecoding.get(0).getClass());
+      Assert.assertTrue(((GenericData.Array<Object>) afterDecoding.get(2)).get(0) instanceof String,
+              "String is expected, but got: " + ((GenericData.Array<Object>) afterDecoding.get(2)).get(0).getClass());
+      Assert.assertTrue(((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next() instanceof String,
+              "String is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next().getClass());
+      Assert.assertTrue(((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next() instanceof String,
+              "String is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next().getClass());
     }
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
-  public void javaStringPropertyInsideUnionTest(Boolean whetherUseFastDeserializer) {
-    Schema schema = createRecord(
-        createField("name", javaStringSchema),
-        createUnionField("favorite_number", Schema.create(Schema.Type.INT)),
-        createUnionField("favorite_color", javaStringSchema)
+  @SuppressWarnings("unchecked")
+  public void javaStringPropertyInReaderSchemaTest(Boolean whetherUseFastDeserializer) {
+    Schema writerSchema = createRecord(
+            createField("testString", Schema.create(Schema.Type.STRING)),
+            createUnionFieldWithNull("testUnionString", Schema.create(Schema.Type.STRING)),
+            createArrayFieldSchema("testStringArray", Schema.create(Schema.Type.STRING)),
+            createMapFieldSchema("testStringMap", Schema.create(Schema.Type.STRING))
     );
-    GenericRecord record  = new GenericData.Record(schema);
-    record.put("name", "test_user");
-    record.put("favorite_number", 10);
-    record.put("favorite_color", "blue");
-    Decoder decoder = writeWithFastAvro(record, schema, false);
+    Schema readerSchema = createRecord(
+            createField("testString", javaStringSchema),
+            createUnionFieldWithNull("testUnionString", javaStringSchema),
+            createArrayFieldSchema("testStringArray", javaStringSchema),
+            createField("testStringMap", javaStringKeyedMapOfJavaStringsSchema)
+    );
+
+    GenericRecord record = new GenericData.Record(writerSchema);
+    record.put("testString", "aaa");
+    record.put("testUnionString", "bbb");
+    GenericData.Array<String> stringArray = new GenericData.Array<>(0, Schema.createArray(Schema.create(Schema.Type.STRING)));
+    stringArray.add("ccc");
+    record.put("testStringArray", stringArray);
+    Map<String, String> stringMap = new HashMap<>();
+    stringMap.put("ddd", "eee");
+    record.put("testStringMap", stringMap);
+
+    Decoder decoder = writeWithFastAvro(record, writerSchema, false);
 
     GenericRecord afterDecoding;
     if (whetherUseFastDeserializer) {
-      afterDecoding = readWithFastAvro(schema, schema, decoder, false);
+      afterDecoding = readWithFastAvro(writerSchema, readerSchema, decoder, false);
     } else {
-      afterDecoding = readWithSlowAvro(schema, schema, decoder, false);
+      afterDecoding = readWithSlowAvro(writerSchema, readerSchema, decoder, false);
     }
 
     if (Utils.isAvro14()){
       Assert.assertTrue(afterDecoding.get(0) instanceof Utf8, "Utf8 is expected, but got: " + afterDecoding.get(0).getClass());
-      Assert.assertTrue(afterDecoding.get(2) instanceof Utf8, "Utf8 is expected, but got: " + afterDecoding.get(2).getClass());
+      Assert.assertTrue(afterDecoding.get(1) instanceof Utf8, "Utf8 is expected, but got: " + afterDecoding.get(0).getClass());
+      Assert.assertTrue(((GenericData.Array<Object>) afterDecoding.get(2)).get(0) instanceof Utf8,
+              "Utf8 is expected, but got: " + ((GenericData.Array<Object>) afterDecoding.get(2)).get(0).getClass());
+      Assert.assertTrue(((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next() instanceof Utf8,
+              "Utf8 is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next().getClass());
+      Assert.assertTrue(((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next() instanceof Utf8,
+              "Utf8 is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next().getClass());
     }  else {
       Assert.assertTrue(afterDecoding.get(0) instanceof String, "String is expected, but got: " + afterDecoding.get(0).getClass());
-      Assert.assertTrue(afterDecoding.get(2) instanceof String, "String is expected, but got: " + afterDecoding.get(2).getClass());
+      Assert.assertTrue(afterDecoding.get(1) instanceof String, "String is expected, but got: " + afterDecoding.get(0).getClass());
+      Assert.assertTrue(((GenericData.Array<Object>) afterDecoding.get(2)).get(0) instanceof String,
+              "String is expected, but got: " + ((GenericData.Array<Object>) afterDecoding.get(2)).get(0).getClass());
+      Assert.assertTrue(((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next() instanceof String,
+              "String is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next().getClass());
+      Assert.assertTrue(((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next() instanceof String,
+              "String is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next().getClass());
     }
   }
+
 
   @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
   public void deserializeStringableFields(Boolean whetherUseFastDeserializer)
@@ -276,12 +336,14 @@ public class FastStringableTest {
     }
     try {
       return deserializer.deserialize(decoder);
+    } catch (AvroTypeException e) {
+      throw e;
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
 
-  private <T> T readWithSlowAvro(Schema readerSchema, Schema writerSchema, Decoder decoder, boolean specific) {
+  private <T> T readWithSlowAvro(Schema writerSchema, Schema readerSchema, Decoder decoder, boolean specific) {
     DatumReader<T> datumReader;
     if (specific) {
       datumReader = new SpecificDatumReader<>(writerSchema, readerSchema);

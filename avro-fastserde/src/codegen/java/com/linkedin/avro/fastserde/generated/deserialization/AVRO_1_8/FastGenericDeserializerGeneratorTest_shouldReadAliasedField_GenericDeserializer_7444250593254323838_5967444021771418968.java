@@ -38,28 +38,40 @@ public class FastGenericDeserializerGeneratorTest_shouldReadAliasedField_Generic
             FastGenericDeserializerGeneratorTest_shouldReadAliasedField = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         int unionIndex0 = (decoder.readIndex());
-        if (unionIndex0 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex0 == 1) {
-                if (FastGenericDeserializerGeneratorTest_shouldReadAliasedField.get(0) instanceof Utf8) {
-                    FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(0, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldReadAliasedField.get(0))));
+        switch (unionIndex0) {
+            case  0 :
+                decoder.readNull();
+                break;
+            case  1 :
+            {
+                Object oldString0 = FastGenericDeserializerGeneratorTest_shouldReadAliasedField.get(0);
+                if (oldString0 instanceof Utf8) {
+                    FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(0, (decoder).readString(((Utf8) oldString0)));
                 } else {
                     FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(0, (decoder).readString(null));
                 }
+                break;
             }
+            default:
+                throw new RuntimeException(("Illegal union index for 'testString': "+ unionIndex0));
         }
         int unionIndex1 = (decoder.readIndex());
-        if (unionIndex1 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex1 == 1) {
-                if (FastGenericDeserializerGeneratorTest_shouldReadAliasedField.get(1) instanceof Utf8) {
-                    FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(1, (decoder).readString(((Utf8) FastGenericDeserializerGeneratorTest_shouldReadAliasedField.get(1))));
+        switch (unionIndex1) {
+            case  0 :
+                decoder.readNull();
+                break;
+            case  1 :
+            {
+                Object oldString1 = FastGenericDeserializerGeneratorTest_shouldReadAliasedField.get(1);
+                if (oldString1 instanceof Utf8) {
+                    FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(1, (decoder).readString(((Utf8) oldString1)));
                 } else {
                     FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(1, (decoder).readString(null));
                 }
+                break;
             }
+            default:
+                throw new RuntimeException(("Illegal union index for 'testStringUnionAlias': "+ unionIndex1));
         }
         return FastGenericDeserializerGeneratorTest_shouldReadAliasedField;
     }

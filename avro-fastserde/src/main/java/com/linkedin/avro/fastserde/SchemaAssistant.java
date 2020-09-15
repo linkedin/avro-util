@@ -35,6 +35,7 @@ import java.util.TreeSet;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericContainer;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 
@@ -137,7 +138,10 @@ public class SchemaAssistant {
     return isNamedType ? schema.getFullName() : type.name();
   }
 
-  public static boolean isNamedType(Schema schema) {
+  /**
+   * @return true if it is valid to call both {@link Schema#getName()} and {@link GenericContainer#getSchema()} on this data type
+   */
+  public static boolean isNamedTypeWithSchema(Schema schema) {
     switch (schema.getType()) {
       case RECORD:
         return true;
@@ -147,6 +151,20 @@ public class SchemaAssistant {
          * This is used to avoid `getSchema` call since in Avro-1.4, `getSchema` method is not available for Enum and Fixed.
          */
         return Utils.isAvro14() ? false : true;
+      default:
+        return false;
+    }
+  }
+
+  /**
+   * @return true if it is valid to call {@link Schema#getName()} on this data type
+   */
+  public static boolean isNamedType(Schema schema) {
+    switch (schema.getType()) {
+      case RECORD:
+      case ENUM:
+      case FIXED:
+        return true;
       default:
         return false;
     }

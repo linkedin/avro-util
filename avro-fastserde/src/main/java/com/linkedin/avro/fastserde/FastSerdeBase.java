@@ -106,11 +106,9 @@ public abstract class FastSerdeBase {
     codeModel.build(destination);
 
     String filePath = destination.getAbsolutePath() + generatedSourcesPath + className + ".java";
-    LOGGER.info("Generated source file: " + filePath);
 
     JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
     String compileClassPathForCurrentFile = Utils.inferCompileDependencies(compileClassPath, filePath, knownUsedFullyQualifiedClassNameSet);
-    LOGGER.info("For source file: " + filePath + ", and the inferred compile class path: " + compileClassPathForCurrentFile);
     int compileResult;
     try {
       /*
@@ -127,7 +125,9 @@ public abstract class FastSerdeBase {
        * Keeping this config also does not bring any downgrade.
        *
        */
+      LOGGER.info("Starting compilation for the generated source file: {} with the inferred compile class path: {}", filePath, compileClassPathForCurrentFile);
       compileResult = compiler.run(null, null, null, "-cp", compileClassPathForCurrentFile, filePath, "-XDuseUnsharedTable");
+      LOGGER.info("Successfully compiled class {} defined at source file: {}", className, filePath);
     } catch (Exception e) {
       throw new FastSerdeGeneratorException("Unable to compile:" + className + " from source file: " + filePath, e);
     }

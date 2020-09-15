@@ -6,12 +6,6 @@
 
 package com.linkedin.avroutil1.compatibility;
 
-import com.linkedin.avroutil1.compatibility.avro14.Avro14Adapter;
-import com.linkedin.avroutil1.compatibility.avro15.Avro15Adapter;
-import com.linkedin.avroutil1.compatibility.avro16.Avro16Adapter;
-import com.linkedin.avroutil1.compatibility.avro17.Avro17Adapter;
-import com.linkedin.avroutil1.compatibility.avro18.Avro18Adapter;
-import com.linkedin.avroutil1.compatibility.avro19.Avro19Adapter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,6 +14,8 @@ import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
+
+import com.linkedin.avroutil1.compatibility.avro110.Avro110Adapter;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
@@ -28,6 +24,13 @@ import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificRecord;
+
+import com.linkedin.avroutil1.compatibility.avro14.Avro14Adapter;
+import com.linkedin.avroutil1.compatibility.avro15.Avro15Adapter;
+import com.linkedin.avroutil1.compatibility.avro16.Avro16Adapter;
+import com.linkedin.avroutil1.compatibility.avro17.Avro17Adapter;
+import com.linkedin.avroutil1.compatibility.avro18.Avro18Adapter;
+import com.linkedin.avroutil1.compatibility.avro19.Avro19Adapter;
 
 
 /**
@@ -66,6 +69,9 @@ public class AvroCompatibilityHelper {
             break;
           case AVRO_1_9:
             ADAPTER = new Avro19Adapter();
+            break;
+          case AVRO_1_10:
+            ADAPTER = new Avro110Adapter();
             break;
           default:
             throw new IllegalStateException("unhandled avro version " + DETECTED_VERSION);
@@ -295,7 +301,6 @@ public class AvroCompatibilityHelper {
    * @param schema schema to be used if the class is indeed a SchemaConstructable
    * @return an instance of the class
    */
-  @SuppressWarnings("JavadocReference")
   public static Object newInstance(Class<?> clazz, Schema schema) {
     assertAvroAvailable();
     return ADAPTER.newInstance(clazz, schema);
@@ -462,7 +467,6 @@ public class AvroCompatibilityHelper {
     //method added for 1.9.0 as part of AVRO-2360
     try {
       Class<?> conversionClass = Class.forName("org.apache.avro.Conversion");
-      //noinspection JavaReflectionMemberAccess
       conversionClass.getMethod("adjustAndSetValue", String.class, String.class);
     } catch (NoSuchMethodException expected) {
       return AvroVersion.AVRO_1_8;
@@ -470,6 +474,30 @@ public class AvroCompatibilityHelper {
       throw new IllegalStateException("unable to find class org.apache.avro.Conversion", unexpected);
     }
 
-    return AvroVersion.AVRO_1_9;
+    //method added for 1.10.0 as part of AVRO-2822
+    try {
+      //noinspection JavaReflectionMemberAccess
+      schemaClass.getMethod("toString", Collection.class, Boolean.TYPE);
+    } catch (NoSuchMethodException expected) {
+      return AvroVersion.AVRO_1_9;
+    }
+
+    return AvroVersion.AVRO_1_10;
   }
+
+  /**
+   * Get the full schema name for records or type name for primitives. This adds compatibility
+   * layer for {@link Schema#getFullName} implementation in avro 1.4, which defaults to throwing exception.
+   *
+   * @param schema the schema whose full name should be retrieved
+   * @return full schema name or primitive type name
+   */
+  public static String getSchemaFullName(Schema schema) {
+    try {
+      return schema.getFullName();
+    } catch (RuntimeException e) {
+      return schema.getType().name();
+    }
+  }
+
 }
