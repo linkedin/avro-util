@@ -15,10 +15,12 @@ public class AvroSchemaVerifierTest {
 
   @Test
   public void testSchemaUnionDefaultValidation() {
-    String schemaStr = "{\"type\":\"record\",\"name\":\"KeyRecord\",\"fields\":[{\"name\":\"name\",\"type\":\"string\",\"doc\":\"name field\"},{\"name\":\"experience\",\"type\":[\"int\", \"float\", \"null\"], \"default\" : 32},{\"name\":\"company\",\"type\":\"string\"}]}";
-    Schema schema = Schema.parse(schemaStr);
+    String schemaStr = "{\"type\":\"record\",\"name\":\"KeyRecord\",\"fields\":[{\"name\":\"name\",\"type\":\"string\", \"avro.java.string\": \"String\", \"doc\":\"name field\"},{\"name\":\"experience\",\"type\":[\"int\", \"float\", \"null\"], \"default\" : 32},{\"name\":\"company\",\"type\":\"string\"}]}";
+    String schemaStr1 = "{\"type\":\"record\",\"name\":\"KeyRecord\",\"fields\":[{\"name\":\"name\",\"type\":\"string\",\"doc\":\"name field\", \"aliases\" : [ \"test1\" ]},{\"name\":\"experience\",\"type\":[\"int\", \"float\", \"null\"], \"default\" : 32},{\"name\":\"company\",\"type\":\"string\"}]}";
 
-    AvroSchemaVerifier.get().verifyCompatibility(schema, schema);
+    Schema schema = Schema.parse(schemaStr1);
+    Schema aliasSchema = Schema.parse(schemaStr);
+    AvroSchemaVerifier.get().verifyCompatibility(aliasSchema, schema);
 
     schemaStr = "{\"type\":\"record\",\"name\":\"KeyRecord\",\"fields\":[{\"name\":\"name\",\"type\":\"string\",\"doc\":\"name field\"},{\"name\":\"experience\",\"type\":[\"int\", \"float\", \"null\"], \"default\" : null},{\"name\":\"company\",\"type\":\"string\"}]}";
     schema = Schema.parse(schemaStr);

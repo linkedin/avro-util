@@ -46,9 +46,9 @@ public class AvroSchemaVerifier {
    *
    * @param oldSchema The old schema
    * @param newSchema The new schema
-   * @throws RuntimeException
+   * @throws AvroIncompatibleSchemaException
    */
-  public void verifyCompatibility(Schema oldSchema, Schema newSchema) throws RuntimeException {
+  public void verifyCompatibility(Schema oldSchema, Schema newSchema) throws AvroIncompatibleSchemaException {
     recurseSchema(oldSchema, newSchema, "", new HashSet<Schema>());
   }
 
@@ -58,10 +58,10 @@ public class AvroSchemaVerifier {
    * @param oldSchema
    * @param newSchema
    * @param parent
-   * @throws RuntimeException
+   * @throws AvroIncompatibleSchemaException
    */
   private void recurseSchema(Schema oldSchema, Schema newSchema, String parent, HashSet<Schema> visitedSchema)
-      throws RuntimeException {
+      throws AvroIncompatibleSchemaException {
     Schema.Type oldSchemaType = oldSchema.getType();
     Schema.Type newSchemaType = newSchema.getType();
 
@@ -178,7 +178,7 @@ public class AvroSchemaVerifier {
       message += "\nOld Schema:" + oldSchema;
       message += "\nNew Schema:" + newSchema;
     }
-    throw new RuntimeException(message + " at " + parent + ":" + newSchema.getName());
+    throw new AvroIncompatibleSchemaException(message + " at " + parent + ":" + newSchema.getName());
   }
 
   /**
@@ -202,7 +202,7 @@ public class AvroSchemaVerifier {
         try {
           recurseSchema(oldSchema, schema, "", visitedSchema);
           return true;
-        } catch (RuntimeException e) {
+        } catch (AvroIncompatibleSchemaException e) {
           //e.printStackTrace();
         }
       }
@@ -217,10 +217,10 @@ public class AvroSchemaVerifier {
    * @param oldRecord
    * @param newRecord
    * @param parent
-   * @throws RuntimeException
+   * @throws AvroIncompatibleSchemaException
    */
   private void resolveRecord(Schema oldRecord, Schema newRecord, String parent, HashSet<Schema> visitedSchema)
-      throws RuntimeException {
+      throws AvroIncompatibleSchemaException {
     if (visitedSchema.contains(newRecord)) {
       //System.out.println("Record " + newRecord.getName() + " has been processed. Will not recurse.");
       return;
@@ -240,7 +240,7 @@ public class AvroSchemaVerifier {
       if (oldField != null) {
         // Check that if the old field was set, then the new field would be set too.
         if (oldField.defaultValue() != null && field.defaultValue() == null) {
-          throw new RuntimeException(
+          throw new AvroIncompatibleSchemaException(
               "Field " + field.name() + " in " + parent + " has a missing default value.");
         } else if (field.defaultValue() != null) {
           checkDefaultValue(newRecord, field);
@@ -276,7 +276,7 @@ public class AvroSchemaVerifier {
     }
     for (String fieldName : oldFieldMap.keySet()) {
       if (!newFieldMap.containsKey(fieldName) && !isWhitelisted(parent, fieldName)) {
-        throw new RuntimeException("Field " + fieldName + " in " + parent
+        throw new AvroIncompatibleSchemaException("Field " + fieldName + " in " + parent
             + " existed in a previous version of the schema and has been removed.");
       }
     }
@@ -294,20 +294,20 @@ public class AvroSchemaVerifier {
    *
    * @param parent
    * @param field
-   * @throws RuntimeException
+   * @throws AvroIncompatibleSchemaException
    */
-  private void checkDefaultValue(Schema parent, Field field) throws RuntimeException {
+  private void checkDefaultValue(Schema parent, Field field) throws AvroIncompatibleSchemaException {
     JsonNode defaultJson = field.defaultValue();
 
     if (defaultJson == null) {
-      throw new RuntimeException(
+      throw new AvroIncompatibleSchemaException(
           "Field " + parent.getName() + ":" + field.name() + " needs default value set in record.");
     }
 
     String expectedVal = checkDefaultJson(defaultJson, field.schema());
 
     if (expectedVal != null) {
-      throw new RuntimeException(
+      throw new AvroIncompatibleSchemaException(
           getDefaultValueMessage(parent.getName(), field.name(), expectedVal, defaultJson.toString()));
     }
   }
