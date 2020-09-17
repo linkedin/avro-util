@@ -8,30 +8,23 @@ package com.linkedin.avroutil1.compatibility;
 
 import org.apache.avro.Schema;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 
 public class AvroSchemaVerifierTest {
-
-  AvroSchemaVerifier avroSchemaVerifier;
-  @BeforeClass(alwaysRun = true)
-  public void setup() {
-    avroSchemaVerifier = AvroSchemaVerifier.get();
-  }
 
   @Test
   public void testSchemaUnionDefaultValidation() {
     String schemaStr = "{\"type\":\"record\",\"name\":\"KeyRecord\",\"fields\":[{\"name\":\"name\",\"type\":\"string\", \"avro.java.string\": \"String\", \"default\" : \"name1\", \"doc\":\"name field\"},{\"name\":\"experience\",\"type\":[\"int\", \"float\", \"null\"], \"default\" : 32},{\"name\":\"company\",\"type\":\"string\"}]}";
 
     Schema schema = Schema.parse(schemaStr);
-    avroSchemaVerifier.verifyCompatibility(schema, schema);
+    AvroSchemaVerifier.get().verifyCompatibility(schema, schema);
 
     schemaStr = "{\"type\":\"record\",\"name\":\"KeyRecord\",\"fields\":[{\"name\":\"name\",\"type\":\"string\",\"doc\":\"name field\"},{\"name\":\"experience\",\"type\":[\"int\", \"float\", \"null\"], \"default\" : null},{\"name\":\"company\",\"type\":\"string\"}]}";
 
     try {
       schema = Schema.parse(schemaStr);
-      avroSchemaVerifier.verifyCompatibility(schema, schema);
+      AvroSchemaVerifier.get().verifyCompatibility(schema, schema);
       Assert.fail("Default null should fail with int first union field");
     } catch (RuntimeException e) {
       Assert.assertTrue(true);
@@ -39,7 +32,7 @@ public class AvroSchemaVerifierTest {
 
     schemaStr = "{\"type\":\"record\",\"name\":\"KeyRecord\",\"fields\":[{\"name\":\"name\",\"type\":\"string\",\"doc\":\"name field\", \"default\": \"default_name\"},{\"name\":\"experience\",\"type\":[\"null\", \"int\", \"float\"], \"default\" : null},{\"name\":\"company\",\"type\":\"string\"}]}";
     schema = Schema.parse(schemaStr);
-    avroSchemaVerifier.verifyCompatibility(schema, schema);
+    AvroSchemaVerifier.get().verifyCompatibility(schema, schema);
 
     schemaStr = "{\n" +
         "  \"type\" : \"record\",\n" +
@@ -70,6 +63,6 @@ public class AvroSchemaVerifierTest {
         "}";
 
     schema = Schema.parse(schemaStr);
-    avroSchemaVerifier.verifyCompatibility(schema, schema);
+    AvroSchemaVerifier.get().verifyCompatibility(schema, schema);
   }
 }

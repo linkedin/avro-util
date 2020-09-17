@@ -24,12 +24,12 @@ import org.codehaus.jackson.JsonNode;
  */
 public class AvroSchemaVerifier {
   private final static AvroSchemaVerifier INSTANCE = new AvroSchemaVerifier();
-  private  static boolean isAvroVersionSupported = false;
+  private  static boolean IS_AVRO_VERSION_SUPPORTED;
 
   static {
     // Skip for Avro 1.9+ versions, as schema field.defaultValue() would throw
     // java.lang.NoSuchMethodError: org.apache.avro.Schema$Field.defaultValue()Lorg/codehaus/jackson/JsonNode exception.
-    isAvroVersionSupported = AvroCompatibilityHelper.getRuntimeAvroVersion().earlierThan(AvroVersion.AVRO_1_9);
+    IS_AVRO_VERSION_SUPPORTED = AvroCompatibilityHelper.getRuntimeAvroVersion().earlierThan(AvroVersion.AVRO_1_9);
   }
 
   /**
@@ -55,7 +55,7 @@ public class AvroSchemaVerifier {
    * @throws AvroIncompatibleSchemaException
    */
   public void verifyCompatibility(Schema oldSchema, Schema newSchema) throws AvroIncompatibleSchemaException {
-    if (!isAvroVersionSupported) {
+    if (!IS_AVRO_VERSION_SUPPORTED) {
       return;
     }
     recurseSchema(oldSchema, newSchema, "", new HashSet<Schema>());
