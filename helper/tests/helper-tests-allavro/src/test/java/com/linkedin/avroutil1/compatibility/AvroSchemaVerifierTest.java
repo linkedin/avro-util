@@ -4,37 +4,42 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avro.util;
+package com.linkedin.avroutil1.compatibility;
 
 import org.apache.avro.Schema;
 import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 
 public class AvroSchemaVerifierTest {
 
+  AvroSchemaVerifier avroSchemaVerifier;
+  @BeforeClass(alwaysRun = true)
+  public void setup() {
+    avroSchemaVerifier = AvroSchemaVerifier.get();
+  }
+
   @Test
   public void testSchemaUnionDefaultValidation() {
-    String schemaStr = "{\"type\":\"record\",\"name\":\"KeyRecord\",\"fields\":[{\"name\":\"name\",\"type\":\"string\", \"avro.java.string\": \"String\", \"doc\":\"name field\"},{\"name\":\"experience\",\"type\":[\"int\", \"float\", \"null\"], \"default\" : 32},{\"name\":\"company\",\"type\":\"string\"}]}";
-    String schemaStr1 = "{\"type\":\"record\",\"name\":\"KeyRecord\",\"fields\":[{\"name\":\"name\",\"type\":\"string\",\"doc\":\"name field\", \"aliases\" : [ \"test1\" ]},{\"name\":\"experience\",\"type\":[\"int\", \"float\", \"null\"], \"default\" : 32},{\"name\":\"company\",\"type\":\"string\"}]}";
+    String schemaStr = "{\"type\":\"record\",\"name\":\"KeyRecord\",\"fields\":[{\"name\":\"name\",\"type\":\"string\", \"avro.java.string\": \"String\", \"default\" : \"name1\", \"doc\":\"name field\"},{\"name\":\"experience\",\"type\":[\"int\", \"float\", \"null\"], \"default\" : 32},{\"name\":\"company\",\"type\":\"string\"}]}";
 
-    Schema schema = Schema.parse(schemaStr1);
-    Schema aliasSchema = Schema.parse(schemaStr);
-    AvroSchemaVerifier.get().verifyCompatibility(aliasSchema, schema);
+    Schema schema = Schema.parse(schemaStr);
+    avroSchemaVerifier.verifyCompatibility(schema, schema);
 
     schemaStr = "{\"type\":\"record\",\"name\":\"KeyRecord\",\"fields\":[{\"name\":\"name\",\"type\":\"string\",\"doc\":\"name field\"},{\"name\":\"experience\",\"type\":[\"int\", \"float\", \"null\"], \"default\" : null},{\"name\":\"company\",\"type\":\"string\"}]}";
-    schema = Schema.parse(schemaStr);
 
     try {
-      AvroSchemaVerifier.get().verifyCompatibility(schema, schema);
+      schema = Schema.parse(schemaStr);
+      avroSchemaVerifier.verifyCompatibility(schema, schema);
       Assert.fail("Default null should fail with int first union field");
     } catch (RuntimeException e) {
-      Assert.assertTrue(e.getMessage().equals("Field KeyRecord:experience has invalid default value. Expecting int, instead got null"));
+      Assert.assertTrue(true);
     }
 
     schemaStr = "{\"type\":\"record\",\"name\":\"KeyRecord\",\"fields\":[{\"name\":\"name\",\"type\":\"string\",\"doc\":\"name field\", \"default\": \"default_name\"},{\"name\":\"experience\",\"type\":[\"null\", \"int\", \"float\"], \"default\" : null},{\"name\":\"company\",\"type\":\"string\"}]}";
     schema = Schema.parse(schemaStr);
-    AvroSchemaVerifier.get().verifyCompatibility(schema, schema);
+    avroSchemaVerifier.verifyCompatibility(schema, schema);
 
     schemaStr = "{\n" +
         "  \"type\" : \"record\",\n" +
@@ -65,6 +70,6 @@ public class AvroSchemaVerifierTest {
         "}";
 
     schema = Schema.parse(schemaStr);
-    AvroSchemaVerifier.get().verifyCompatibility(schema, schema);
+    avroSchemaVerifier.verifyCompatibility(schema, schema);
   }
 }
