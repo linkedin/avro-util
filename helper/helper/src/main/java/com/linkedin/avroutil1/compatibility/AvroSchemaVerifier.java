@@ -4,7 +4,7 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avro.util;
+package com.linkedin.avroutil1.compatibility;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,7 +12,6 @@ import java.util.HashSet;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field;
 import org.codehaus.jackson.JsonNode;
-
 
 /**
  * Class that will take two avro schema and see if they are backwards compatible.
@@ -25,12 +24,15 @@ import org.codehaus.jackson.JsonNode;
  */
 public class AvroSchemaVerifier {
   private final static AvroSchemaVerifier INSTANCE = new AvroSchemaVerifier();
+  private  static boolean isAvroVersionSupported = false;
 
   /**
    * Retrieves the verifier instance
    * @return
    */
   public static AvroSchemaVerifier get() {
+    AvroVersion avroVersion = AvroCompatibilityHelper.getRuntimeAvroVersion();
+    isAvroVersionSupported = avroVersion != AvroVersion.AVRO_1_10 && avroVersion != AvroVersion.AVRO_1_9;
     return INSTANCE;
   }
 
@@ -49,6 +51,9 @@ public class AvroSchemaVerifier {
    * @throws AvroIncompatibleSchemaException
    */
   public void verifyCompatibility(Schema oldSchema, Schema newSchema) throws AvroIncompatibleSchemaException {
+    if (!isAvroVersionSupported) {
+      return;
+    }
     recurseSchema(oldSchema, newSchema, "", new HashSet<Schema>());
   }
 

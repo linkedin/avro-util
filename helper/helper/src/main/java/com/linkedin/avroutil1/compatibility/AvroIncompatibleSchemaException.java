@@ -4,7 +4,7 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avro.util;
+package com.linkedin.avroutil1.compatibility;
 
 public class AvroIncompatibleSchemaException extends RuntimeException {
   private static final long serialVersionUID = 1L;
