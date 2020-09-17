@@ -24,7 +24,7 @@ import org.codehaus.jackson.JsonNode;
  */
 public class AvroSchemaVerifier {
   private final static AvroSchemaVerifier INSTANCE = new AvroSchemaVerifier();
-  private  static boolean IS_AVRO_VERSION_SUPPORTED;
+  private final static boolean IS_AVRO_VERSION_SUPPORTED;
 
   static {
     // Skip for Avro 1.9+ versions, as schema field.defaultValue() would throw
