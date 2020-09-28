@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.ByteBuffer;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -82,8 +80,7 @@ public class FastSpecificDeserializerGeneratorTest {
 
   @BeforeTest(groups = {"deserializationTest"})
   public void prepare() throws Exception {
-    Path tempPath = Files.createTempDirectory("generated");
-    tempDir = tempPath.toFile();
+    tempDir = getCodeGenDirectory();
 
     classLoader = URLClassLoader.newInstance(new URL[]{tempDir.toURI().toURL()},
         FastSpecificDeserializerGeneratorTest.class.getClassLoader());
