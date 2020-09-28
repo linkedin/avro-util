@@ -18,6 +18,7 @@ import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JStatement;
 import com.sun.codemodel.JSwitch;
 import com.sun.codemodel.JTryBlock;
+import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 import com.sun.codemodel.JWhileLoop;
 import java.io.File;
@@ -619,29 +620,30 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       return;
     }
 
-    JClass arrayClass = schemaAssistant.classFromSchema(action.getShouldRead() ? readerArraySchema : arraySchema, false, false, true);
-    JClass abstractErasedArrayClass = schemaAssistant.classFromSchema(action.getShouldRead() ? readerArraySchema : arraySchema, true, false, true).erasure();
-
     JVar chunkLen =
         parentBody.decl(codeModel.LONG, getUniqueName("chunkLen"), JExpr.direct(DECODER + ".readArrayStart()"));
 
     final FieldAction finalAction = action;
-    JInvocation newArrayExp = JExpr._new(arrayClass);
-    if (useGenericTypes) {
-      newArrayExp = newArrayExp.arg(JExpr.cast(codeModel.INT, chunkLen));
-      if (!SchemaAssistant.isPrimitive(arraySchema.getElementType())) {
-        /**
-         * N.B.: The ColdPrimitiveXList implementations do not take the schema as a constructor param,
-         * but the {@link org.apache.avro.generic.GenericData.Array} does.
-         */
-        newArrayExp = newArrayExp.arg(getSchemaExpr(arraySchema));
-      }
-    }
-    JInvocation finalNewArrayExp = newArrayExp;
-
 
     final Supplier<JExpression> finalReuseSupplier = potentiallyCacheInvocation(reuseSupplier, parentBody, "oldArray");
     if (finalAction.getShouldRead()) {
+
+      JClass arrayClass = schemaAssistant.classFromSchema(readerArraySchema, false, false, true);
+      JClass abstractErasedArrayClass = schemaAssistant.classFromSchema(readerArraySchema, true, false, true).erasure();
+
+      JInvocation newArrayExp = JExpr._new(arrayClass);
+      if (useGenericTypes) {
+        newArrayExp = newArrayExp.arg(JExpr.cast(codeModel.INT, chunkLen));
+        if (!SchemaAssistant.isPrimitive(arraySchema.getElementType())) {
+          /**
+           * N.B.: The ColdPrimitiveXList implementations do not take the schema as a constructor param,
+           * but the {@link org.apache.avro.generic.GenericData.Array} does.
+           */
+          newArrayExp = newArrayExp.arg(getSchemaExpr(arraySchema));
+        }
+      }
+      JInvocation finalNewArrayExp = newArrayExp;
+
       /** N.B.: Need to use the erasure because instanceof does not support generic types */
       ifCodeGen(parentBody, finalReuseSupplier.get()._instanceof(abstractErasedArrayClass), then2 -> {
         then2.assign(arrayVar, JExpr.cast(abstractErasedArrayClass, finalReuseSupplier.get()));
@@ -1079,8 +1081,8 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       throw new FastDeserializerGeneratorException("Method already exists for: " + schema.getFullName());
     }
 
-    JClass schemaClass = schemaAssistant.classFromSchema(schema);
-    JMethod method = generatedClass.method(JMod.PUBLIC, read ? schemaClass : codeModel.VOID,
+    JType methodType = read ? schemaAssistant.classFromSchema(schema) : codeModel.VOID;
+    JMethod method = generatedClass.method(JMod.PUBLIC, methodType,
         getUniqueName("deserialize" + schema.getName()));
 
     method._throws(IOException.class);
