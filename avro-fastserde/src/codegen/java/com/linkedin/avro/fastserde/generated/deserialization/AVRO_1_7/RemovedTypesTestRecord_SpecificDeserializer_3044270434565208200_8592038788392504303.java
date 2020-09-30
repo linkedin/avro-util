@@ -39,7 +39,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
         } else {
             RemovedTypesTestRecord.put(0, (decoder).readString(null));
         }
-        decoder.skipBytes()
+        decoder.skipBytes();
         long chunkLen0 = (decoder.readArrayStart());
         while (chunkLen0 > 0) {
             for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
@@ -47,7 +47,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
                 if (null instanceof GenericArray) {
                     removedBytesArrayArrayElementReuseVar0 = ((GenericArray) null).peek();
                 }
-                decoder.skipBytes()
+                decoder.skipBytes();
             }
             chunkLen0 = (decoder.arrayNext());
         }
@@ -57,7 +57,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
                 decoder.readNull();
                 break;
             case  1 :
-                decoder.skipBytes()
+                decoder.skipBytes();
                 break;
             default:
                 throw new RuntimeException(("Illegal union index for 'removedBytesUnion': "+ unionIndex0));
@@ -67,7 +67,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
             do {
                 for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {
                     Utf8 key0 = (decoder.readString(null));
-                    decoder.skipBytes()
+                    decoder.skipBytes();
                 }
                 chunkLen1 = (decoder.mapNext());
             } while (chunkLen1 > 0);
@@ -85,7 +85,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
                         decoder.readNull();
                         break;
                     case  1 :
-                        decoder.skipBytes()
+                        decoder.skipBytes();
                         break;
                     default:
                         throw new RuntimeException(("Illegal union index for 'removedBytesUnionArrayElem': "+ unionIndex1));
@@ -104,7 +104,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
                             decoder.readNull();
                             break;
                         case  1 :
-                            decoder.skipBytes()
+                            decoder.skipBytes();
                             break;
                         default:
                             throw new RuntimeException(("Illegal union index for 'removedBytesUnionMapValue': "+ unionIndex2));
