@@ -948,7 +948,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
         );
       }
     } else {
-      body.directStatement(DECODER + ".skipBytes()");
+      body.directStatement(DECODER + ".skipBytes();");
     }
   }
 
