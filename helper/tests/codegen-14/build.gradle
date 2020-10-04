@@ -14,6 +14,9 @@ configurations {
   codegen {
     extendsFrom implementation
   }
+  resourcegen {
+    extendsFrom runtimeClasspath
+  }
 }
 
 sourceSets {
@@ -24,7 +27,7 @@ sourceSets {
       srcDir "$buildDir/generated/sources/compat-avro/java/main"
     }
     resources {
-      srcDirs = ["src/main/raw-avro", "src/main/compat-avro"]
+      srcDirs = ["src/main/raw-avro", "src/main/compat-avro", "$buildDir/generated/resources"]
     }
   }
 }
@@ -62,16 +65,36 @@ task copyCompatAvroCodeToResources(type: Copy) {
   into "$buildDir/resources/main"
 }
 
-copyCompatAvroCodeToResources.dependsOn runCompatAvroCodegen
-compileJava.dependsOn runVanillaAvroCodegen, runCompatAvroCodegen
+task runResourceGeneration(type: JavaExec) {
+  classpath configurations.resourcegen + sourceSets.main.output
+  main = "com.linkedin.avroutil1.compatibility.avro14.Generate14TestResources"
+  args "$buildDir/generated/resources"
+  debug false
+}
+
+jar {
+  //normal contents
+  from sourceSets.main.output
+  //resource generation output. has to be explicitly included in the jar because
+  //"processResources" ran before this was generated
+  from "$buildDir/generated/resources"
+}
+
 //TODO - figure out why this must be done manually
 runCompatAvroCodegen.dependsOn ":helper:tests:helper-tests-common:jar"
+copyCompatAvroCodeToResources.dependsOn runCompatAvroCodegen
+compileJava.dependsOn runVanillaAvroCodegen, runCompatAvroCodegen
+jar.dependsOn runResourceGeneration
 
 dependencies {
   codegen "net.sf.jopt-simple:jopt-simple:3.2"   //avro 1.4 needs this for codegen but is missing a dependency
   codegen "org.apache.hadoop:hadoop-core:0.20.2" //avro 1.4 needs this for codegen but is missing a dependency
   codegen project(":helper:tests:helper-tests-common")
   codegen project(":helper:helper")
+  //redirect logging to log4j2 for code generation
+  codegen "org.apache.logging.log4j:log4j-core:2.11.2"
+  codegen "org.apache.logging.log4j:log4j-slf4j-impl:2.11.2"
+  codegen files('../codegenClasspath')
 
   //required because generated code depends on the helper
   implementation project(":helper:helper")
@@ -82,4 +105,11 @@ dependencies {
     exclude group: "org.jboss.netty"
     exclude group: "com.thoughtworks.paranamer", module: "paranamer-ant"
   }
+
+  //this block required for resource generation code
+  implementation project(":helper:tests:helper-tests-common")
+  //redirect logging to log4j2 for resource generation
+  resourcegen "org.apache.logging.log4j:log4j-core:2.11.2"
+  resourcegen "org.apache.logging.log4j:log4j-slf4j-impl:2.11.2"
+  resourcegen files('../codegenClasspath')
 }
