@@ -317,7 +317,7 @@ public class AvroSchemaVerifier {
 
     if (expectedVal != null) {
       throw new AvroIncompatibleSchemaException(
-          getDefaultValueMessage(parent.getName(), field.name(), expectedVal, defaultJson.toString()));
+          getDefaultValueMessage(parent.getName(), field, expectedVal, defaultJson.toString()));
     }
   }
 
@@ -476,8 +476,12 @@ public class AvroSchemaVerifier {
    * @param value
    * @return
    */
-  private String getDefaultValueMessage(String parent, String field, String expected, String value) {
-    return "Field " + parent + ":" + field + " has invalid default value. Expecting " + expected + ", instead got "
+  private String getDefaultValueMessage(String parent, Field field, String expected, String value) {
+    if (field.schema().getType() == Schema.Type.UNION) {
+      return "Union field " + parent+ "." + field.name() + " has invalid default value. A union's default value type should match the first branch of the union." + " Excepting "
+          + expected + " as its the first branch of : " + field.schema() + " instead got " + value;
+    }
+    return "Field " + parent + "." + field.name() + " has invalid default value. Expecting " + expected + ", instead got "
         + value;
   }
 
