@@ -1,5 +1,6 @@
 package com.linkedin.avro.fastserde;
 
+import com.linkedin.avro.fastserde.generated.avro.ClasspathTestRecord;
 import com.linkedin.avro.fastserde.generated.avro.SubRecord;
 import com.linkedin.avro.fastserde.generated.avro.TestEnum;
 import com.linkedin.avro.fastserde.generated.avro.TestFixed;
@@ -10,8 +11,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.ByteBuffer;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -81,8 +80,7 @@ public class FastSpecificDeserializerGeneratorTest {
 
   @BeforeTest(groups = {"deserializationTest"})
   public void prepare() throws Exception {
-    Path tempPath = Files.createTempDirectory("generated");
-    tempDir = tempPath.toFile();
+    tempDir = getCodeGenDirectory();
 
     classLoader = URLClassLoader.newInstance(new URL[]{tempDir.toURI().toURL()},
         FastSpecificDeserializerGeneratorTest.class.getClassLoader());
@@ -619,6 +617,62 @@ public class FastSpecificDeserializerGeneratorTest {
     Assert.assertEquals(2, map.size());
     Assert.assertEquals(new Utf8("abc"), map.get(new Utf8("1")).testStringUnion);
     Assert.assertEquals(new Utf8("abc"), map.get(new Utf8("2")).testStringUnion);
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
+  public void shouldReadWithTypesDeletedFromReaderSchema(Boolean whetherUseFastDeserializer) throws IOException {
+    // the purpose of this scenario is to test whether types removed in reader schema
+    // will not be considered a part of inferred classpath and will not cause the ClassNotFoundException.
+
+    // given
+    Schema classpathOldRecordSchema = Schema.parse(this.getClass().getResourceAsStream("/schema/classpathOldTest.avsc"));
+    Schema classpathFixedSchema = classpathOldRecordSchema.getField("classpathFixed").schema();
+    Schema classpathEnumSchema = classpathOldRecordSchema.getField("classpathEnum").schema();
+    Schema classpathSubRecordSchema = classpathOldRecordSchema.getField("classpathSubRecord").schema();
+    GenericData.Record classpathOldRecord = new GenericData.Record(classpathOldRecordSchema);
+    classpathOldRecord.put("field", "abc");
+
+    GenericData.Fixed classpathFixed = newFixed(classpathFixedSchema, new byte[]{0x01});
+    Map<String, GenericData.Fixed> classpathFixedMap = new HashMap<>();
+    classpathFixedMap.put("key", classpathFixed);
+    classpathOldRecord.put("classpathFixed", classpathFixed);
+    classpathOldRecord.put("classpathFixedUnion", classpathFixed);
+    classpathOldRecord.put("classpathFixedArray", Arrays.asList(classpathFixed));
+    classpathOldRecord.put("classpathFixedUnionArray", Arrays.asList(classpathFixed));
+    classpathOldRecord.put("classpathFixedMap", classpathFixedMap);
+    classpathOldRecord.put("classpathFixedUnionMap", classpathFixedMap);
+
+    GenericData.EnumSymbol classpathEnum = AvroCompatibilityHelper.newEnumSymbol(classpathEnumSchema, "A");
+    Map<String, GenericData.EnumSymbol> classpathEnumMap = new HashMap<>();
+    classpathEnumMap.put("key", classpathEnum);
+    classpathOldRecord.put("classpathEnum", classpathEnum);
+    classpathOldRecord.put("classpathEnumUnion", classpathEnum);
+    classpathOldRecord.put("classpathEnumArray", Arrays.asList(classpathEnum));
+    classpathOldRecord.put("classpathEnumUnionArray", Arrays.asList(classpathEnum));
+    classpathOldRecord.put("classpathEnumMap", classpathEnumMap);
+    classpathOldRecord.put("classpathEnumUnionMap", classpathEnumMap);
+
+    GenericData.Record classpathSubRecord = new GenericData.Record(classpathSubRecordSchema);
+    Map<String, GenericData.Record> classpathSubRecordMap = new HashMap<>();
+    classpathSubRecordMap.put("key", classpathSubRecord);
+    classpathSubRecord.put("subField", "abc");
+    classpathOldRecord.put("classpathSubRecord", classpathSubRecord);
+    classpathOldRecord.put("classpathSubRecordUnion", classpathSubRecord);
+    classpathOldRecord.put("classpathSubRecordArray", Arrays.asList(classpathSubRecord));
+    classpathOldRecord.put("classpathSubRecordUnionArray", Arrays.asList(classpathSubRecord));
+    classpathOldRecord.put("classpathSubRecordMap", classpathSubRecordMap);
+    classpathOldRecord.put("classpathSubRecordUnionMap", classpathSubRecordMap);
+
+    // when
+    ClasspathTestRecord record = null;
+    if (whetherUseFastDeserializer) {
+      record = decodeRecordFast(ClasspathTestRecord.SCHEMA$, classpathOldRecordSchema, genericDataAsDecoder(classpathOldRecord));
+    } else {
+      record = decodeRecordSlow(ClasspathTestRecord.SCHEMA$, classpathOldRecordSchema, genericDataAsDecoder(classpathOldRecord));
+    }
+
+    // then
+    Assert.assertEquals(new Utf8("abc"), record.field);
   }
 
   @SuppressWarnings("unchecked")

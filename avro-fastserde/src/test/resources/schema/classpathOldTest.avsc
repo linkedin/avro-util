@@ -1,0 +1,157 @@
+{
+  "type": "record",
+  "name": "ClasspathTestRecord",
+  "namespace": "com.linkedin.avro.fastserde.generated.avro",
+  "doc": null,
+  "fields": [
+    {
+      "name": "field",
+      "type": "string"
+    },
+    {
+      "name": "classpathFixed",
+      "type": {
+        "type": "fixed",
+        "name": "ClasspathFixed",
+        "size": 1
+      }
+    },
+    {
+      "name": "classpathFixedUnion",
+      "type": [
+        "null",
+        "ClasspathFixed"
+      ],
+      "default": null
+    },
+    {
+      "name": "classpathFixedArray",
+      "type": {
+        "type": "array",
+        "items": "ClasspathFixed"
+      }
+    },
+    {
+      "name": "classpathFixedMap",
+      "type": {
+        "type": "map",
+        "values": "ClasspathFixed"
+      }
+    },
+    {
+      "name": "classpathFixedUnionArray",
+      "type": {
+        "type": "array",
+        "items": ["null", "ClasspathFixed"]
+      }
+    },
+    {
+      "name": "classpathFixedUnionMap",
+      "type": {
+        "type": "map",
+        "values": ["null", "ClasspathFixed"]
+      }
+    },
+    {
+      "name": "classpathEnum",
+      "type": {
+        "type": "enum",
+        "name": "ClasspathEnum",
+        "doc": null,
+        "symbols": [
+          "E",
+          "D",
+          "B",
+          "C",
+          "A"
+        ]
+      }
+    },
+    {
+      "name": "classpathEnumUnion",
+      "type": [
+        "null",
+        "ClasspathEnum"
+      ],
+      "default": null
+    },
+    {
+      "name": "classpathEnumArray",
+      "type": {
+        "type": "array",
+        "items": "ClasspathEnum"
+      }
+    },
+    {
+      "name": "classpathEnumMap",
+      "type": {
+        "type": "map",
+        "values": "ClasspathEnum"
+      }
+    },
+    {
+      "name": "classpathEnumUnionArray",
+      "type": {
+        "type": "array",
+        "items": ["null", "ClasspathEnum"]
+      }
+    },
+    {
+      "name": "classpathEnumUnionMap",
+      "type": {
+        "type": "map",
+        "values": ["null", "ClasspathEnum"]
+      }
+    },
+    {
+      "name": "classpathSubRecord",
+      "type": {
+          "type": "record",
+          "name": "ClasspathSubRecord",
+          "doc": null,
+          "fields": [
+            {
+              "name": "subField",
+              "type": "string"
+            }
+          ]
+       }
+    },
+    {
+      "name": "classpathSubRecordUnion",
+      "type": [
+        "null",
+        "ClasspathSubRecord"
+      ],
+      "default": null
+    },
+    {
+      "name": "classpathSubRecordArray",
+      "type": {
+        "type": "array",
+        "items": "ClasspathSubRecord"
+      }
+    },
+    {
+      "name": "classpathSubRecordUnionArray",
+      "type": {
+        "type": "array",
+        "items": ["null", "ClasspathSubRecord"]
+      }
+    },
+    {
+      "name": "classpathSubRecordMap",
+      "type": {
+        "type": "map",
+        "values": "ClasspathSubRecord"
+      }
+    },
+    {
+      "name": "classpathSubRecordUnionMap",
+      "type": {
+        "type": "map",
+        "values": ["null", "ClasspathSubRecord"]
+      }
+    }
+  ]
+}

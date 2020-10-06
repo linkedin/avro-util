@@ -42,4 +42,5 @@ jobs:
       - name: Run SonarCloud analysis
         env:
           sonar.login: ${{ secrets.SONARCLOUD_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew sonarqube --no-daemon
