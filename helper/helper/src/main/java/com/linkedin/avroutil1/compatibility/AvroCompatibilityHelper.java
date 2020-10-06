@@ -21,6 +21,7 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
+import org.apache.avro.io.Decoder;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificRecord;
@@ -221,6 +222,16 @@ public class AvroCompatibilityHelper {
   public static JsonDecoder newJsonDecoder(Schema schema, String in) throws IOException {
     assertAvroAvailable();
     return ADAPTER.newJsonDecoder(schema, in);
+  }
+
+  public static Decoder newCompatibleJsonDecoder(Schema schema, InputStream in) throws IOException {
+    assertAvroAvailable();
+    return ADAPTER.newCompatibleJsonDecoder(schema, in);
+  }
+
+  public static Decoder newCompatibleJsonDecoder(Schema schema, String in) throws IOException {
+    assertAvroAvailable();
+    return ADAPTER.newCompatibleJsonDecoder(schema, in);
   }
 
   // schema parsing, and other Schema-related operations

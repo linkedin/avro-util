@@ -16,6 +16,7 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
+import org.apache.avro.io.Decoder;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
 
@@ -45,6 +46,10 @@ public interface AvroAdapter {
   JsonDecoder newJsonDecoder(Schema schema, InputStream in) throws IOException;
 
   JsonDecoder newJsonDecoder(Schema schema, String in) throws IOException;
+
+  Decoder newCompatibleJsonDecoder(Schema schema, InputStream in) throws IOException;
+
+  Decoder newCompatibleJsonDecoder(Schema schema, String in) throws IOException;
 
   //parsing and Schema-related
 
