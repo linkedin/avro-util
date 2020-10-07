@@ -481,8 +481,7 @@ public class AvroSchemaVerifier {
       return "Union field " + parent+ "." + field.name() + " has invalid default value. A union's default value type should match the first branch of the union." + " Excepting "
           + expected + " as its the first branch of : " + field.schema() + " instead got " + value;
     }
-    return "Field " + parent + "." + field.name() + " has invalid default value. Expecting " + expected + ", instead got "
-        + value;
+    return "Field " + parent + "." + field.name() + " has invalid default value. Expecting " + expected + ", instead got " + value;
   }
 
   /**
