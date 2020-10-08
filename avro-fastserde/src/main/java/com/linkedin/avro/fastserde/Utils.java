@@ -33,6 +33,14 @@ public class Utils {
     return AvroCompatibilityHelper.getRuntimeAvroVersion().equals(AvroVersion.AVRO_1_4);
   }
 
+  public static boolean isAbleToSupportAlternativeStrings() {
+    return AvroCompatibilityHelper.getRuntimeAvroVersion().laterThan(AvroVersion.AVRO_1_6);
+  }
+
+  public static boolean isAbleToSupportJavaStrings() {
+    return AvroCompatibilityHelper.getRuntimeAvroVersion().laterThan(AvroVersion.AVRO_1_5);
+  }
+
   public static boolean isSupportedAvroVersionsForDeserializer() {
     return AVRO_VERSIONS_SUPPORTED_FOR_DESERIALIZER.contains(AvroCompatibilityHelper.getRuntimeAvroVersion());
   }

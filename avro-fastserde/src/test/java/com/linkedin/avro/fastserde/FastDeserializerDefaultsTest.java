@@ -5,6 +5,7 @@ import com.linkedin.avro.fastserde.generated.avro.DefaultsFixed;
 import com.linkedin.avro.fastserde.generated.avro.DefaultsNewEnum;
 import com.linkedin.avro.fastserde.generated.avro.DefaultsSubRecord;
 import com.linkedin.avro.fastserde.generated.avro.DefaultsTestRecord;
+import com.linkedin.avro.fastserde.generated.avro.OldSubRecord;
 import com.linkedin.avro.fastserde.generated.avro.TestRecord;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import java.io.ByteArrayOutputStream;
@@ -197,80 +198,79 @@ public class FastDeserializerDefaultsTest {
     }
 
     // then
-    Assert.assertEquals(oldSubRecord.get("oldSubField"), testRecord.oldSubRecord.oldSubField);
+    Assert.assertEquals(oldSubRecord.get("oldSubField"), getField((OldSubRecord) getField(testRecord, "oldSubRecord"), "oldSubField"));
     Assert.assertEquals(new Utf8("defaultOldSubField"),
-        testRecord.newFieldWithOldSubRecord.oldSubField);
-    Assert.assertEquals(42, testRecord.testInt);
-    Assert.assertNull(testRecord.testIntUnion);
-    Assert.assertEquals(9223372036854775807L, testRecord.testLong);
-    Assert.assertNull(testRecord.testLongUnion);
-    Assert.assertEquals(3.14d, testRecord.testDouble, 0);
-    Assert.assertNull(testRecord.testDoubleUnion);
-    Assert.assertEquals(3.14f, testRecord.testFloat, 0);
-    Assert.assertNull(testRecord.testFloatUnion);
-    Assert.assertEquals(true, testRecord.testBoolean);
-    Assert.assertNull(testRecord.testBooleanUnion);
-    Assert.assertEquals(ByteBuffer.wrap("1234".getBytes()), testRecord.testBytes);
-    Assert.assertNull(testRecord.testBytesUnion);
-    Assert.assertEquals(new Utf8("testStringValue"), testRecord.testString);
-    if (Utils.isAvro14()) {
-      Assert.assertEquals(new Utf8("http://www.example.com"), testRecord.testStringable);
+        getField((OldSubRecord) getField(testRecord, "newFieldWithOldSubRecord"), "oldSubField"));
+    Assert.assertEquals(42, getField(testRecord, "testInt"));
+    Assert.assertNull(getField(testRecord, "testIntUnion"));
+    Assert.assertEquals(9223372036854775807L, getField(testRecord, "testLong"));
+    Assert.assertNull(getField(testRecord, "testLongUnion"));
+    Assert.assertEquals(3.14d, (Double) getField(testRecord, "testDouble"), 0);
+    Assert.assertNull(getField(testRecord, "testDoubleUnion"));
+    Assert.assertEquals(3.14f, (Float) getField(testRecord, "testFloat"), 0);
+    Assert.assertNull(getField(testRecord, "testFloatUnion"));
+    Assert.assertEquals(true, getField(testRecord, "testBoolean"));
+    Assert.assertNull(getField(testRecord, "testBooleanUnion"));
+    Assert.assertEquals(ByteBuffer.wrap("1234".getBytes()), getField(testRecord, "testBytes"));
+    Assert.assertNull(getField(testRecord, "testBytesUnion"));
+    Assert.assertEquals(new Utf8("testStringValue"), getField(testRecord, "testString"));
+    if (Utils.isAbleToSupportAlternativeStrings()) {
+      Assert.assertEquals(new URL("http://www.example.com"), getField(testRecord, "testStringable"));
     } else {
-      Assert.assertEquals(new URL("http://www.example.com"), testRecord.testStringable);
+      Assert.assertEquals(new Utf8("http://www.example.com"), getField(testRecord, "testStringable"));
     }
-    Assert.assertNull(testRecord.testStringUnion);
+    Assert.assertNull(getField(testRecord, "testStringUnion"));
     DefaultsFixed expectedDefaultsFixed1 = new DefaultsFixed();
     expectedDefaultsFixed1.bytes(new byte[]{(byte) '5'});
-    Assert.assertEquals(expectedDefaultsFixed1, testRecord.testFixed);
-    Assert.assertNull(testRecord.testFixedUnion);
+    Assert.assertEquals(expectedDefaultsFixed1, getField(testRecord, "testFixed"));
+    Assert.assertNull(getField(testRecord, "testFixedUnion"));
     DefaultsFixed expectedDefaultsFixed2 = new DefaultsFixed();
     expectedDefaultsFixed2.bytes(new byte[]{(byte) '6'});
-    Assert.assertEquals(Collections.singletonList(expectedDefaultsFixed2), testRecord.testFixedArray);
+    Assert.assertEquals(Collections.singletonList(expectedDefaultsFixed2), (List) getField(testRecord, "testFixedArray"));
 
     List listWithNull = new LinkedList();
     listWithNull.add(null);
-    Assert.assertEquals(listWithNull, testRecord.testFixedUnionArray);
-    Assert.assertEquals(DefaultsEnum.C, testRecord.testEnum);
-    Assert.assertNull(testRecord.testEnumUnion);
-    Assert.assertTrue(Arrays.asList(Arrays.asList(DefaultsNewEnum.B)).equals(testRecord.testNewEnumIntUnionArray));
-    Assert.assertEquals(Arrays.asList(DefaultsEnum.E, DefaultsEnum.B), testRecord.testEnumArray);
-    Assert.assertEquals(listWithNull, testRecord.testEnumUnionArray);
-    Assert.assertNull(testRecord.subRecordUnion);
+    Assert.assertEquals(listWithNull, (List) getField(testRecord, "testFixedUnionArray"));
+    Assert.assertEquals(DefaultsEnum.C, getField(testRecord, "testEnum"));
+    Assert.assertNull(getField(testRecord, "testEnumUnion"));
+    Assert.assertTrue(Arrays.asList(Arrays.asList(DefaultsNewEnum.B)).equals(getField(testRecord, "testNewEnumIntUnionArray")));
+    Assert.assertEquals(Arrays.asList(DefaultsEnum.E, DefaultsEnum.B), (List) getField(testRecord, "testEnumArray"));
+    Assert.assertEquals(listWithNull, (List) getField(testRecord, "testEnumUnionArray"));
+    Assert.assertNull(getField(testRecord, "subRecordUnion"));
     DefaultsSubRecord expectedSubRecord1 = new DefaultsSubRecord();
-    expectedSubRecord1.subField = "valueOfSubField";
-    expectedSubRecord1.arrayField = Collections.singletonList(DefaultsEnum.A);
-    Assert.assertEquals(expectedSubRecord1, testRecord.subRecord);
+    setField(expectedSubRecord1, "subField", "valueOfSubField");
+    setField(expectedSubRecord1, "arrayField", Collections.singletonList(DefaultsEnum.A));
+    Assert.assertEquals(expectedSubRecord1, getField(testRecord, "subRecord"));
 
     DefaultsSubRecord expectedSubRecord2 = new DefaultsSubRecord();
-    expectedSubRecord2.subField = "recordArrayValue";
-    expectedSubRecord2.arrayField = Collections.singletonList(DefaultsEnum.A);
-    Assert.assertEquals(Collections.singletonList(expectedSubRecord2), testRecord.recordArray);
-    Assert.assertEquals(listWithNull, testRecord.recordUnionArray);
+    setField(expectedSubRecord2, "subField", "recordArrayValue");
+    setField(expectedSubRecord2, "arrayField", Collections.singletonList(DefaultsEnum.A));
+    Assert.assertEquals(Collections.singletonList(expectedSubRecord2), (List) getField(testRecord, "recordArray"));
+    Assert.assertEquals(listWithNull, (List) getField(testRecord, "recordUnionArray"));
 
     Map stringableMap = new HashMap();
-    // stringable is not supported in avro-1.4
-    if (Utils.isAvro14()) {
-      stringableMap.put(new Utf8("http://www.example2.com"), new Utf8("123"));
-    } else {
+    if (Utils.isAbleToSupportAlternativeStrings()) {
       stringableMap.put(new URL("http://www.example2.com"), new BigInteger("123"));
+    } else {
+      stringableMap.put(new Utf8("http://www.example2.com"), new Utf8("123"));
     }
-    Assert.assertEquals(stringableMap, testRecord.stringableMap);
+    Assert.assertEquals(stringableMap, (Map) getField(testRecord, "stringableMap"));
 
     Map recordMap = new HashMap();
     DefaultsSubRecord subRecord3 = new DefaultsSubRecord();
-    subRecord3.subField = "recordMapValue";
-    subRecord3.arrayField = Collections.singletonList(DefaultsEnum.A);
+    setField(subRecord3, "subField", "recordMapValue");
+    setField(subRecord3, "arrayField", Collections.singletonList(DefaultsEnum.A));
     recordMap.put(new Utf8("test"), subRecord3);
-    Assert.assertEquals(recordMap, testRecord.recordMap);
+    Assert.assertEquals(recordMap, (Map) getField(testRecord, "recordMap"));
 
     Map recordUnionMap = new HashMap();
     recordUnionMap.put(new Utf8("test"), null);
-    Assert.assertEquals(recordUnionMap, testRecord.recordUnionMap);
-    Assert.assertEquals(Collections.singletonList(recordUnionMap), testRecord.recordUnionMapArray);
+    Assert.assertEquals(recordUnionMap, (Map) getField(testRecord, "recordUnionMap"));
+    Assert.assertEquals(Collections.singletonList(recordUnionMap), (List) getField(testRecord, "recordUnionMapArray"));
 
     Map recordUnionArrayMap = new HashMap();
     recordUnionArrayMap.put(new Utf8("test"), listWithNull);
-    Assert.assertTrue(recordUnionArrayMap.equals(testRecord.recordUnionArrayMap));
+    Assert.assertTrue(recordUnionArrayMap.equals(getField(testRecord, "recordUnionArrayMap")));
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
@@ -374,13 +374,10 @@ public class FastDeserializerDefaultsTest {
         decodeSpecificFast(DefaultsTestRecord.SCHEMA$, oldRecordSchema, genericDataAsDecoder(oldRecord));
 
     // then
-    // map compare is not available in avro-1.4
-    System.out.println(testRecordFast);
-    System.out.println(testRecordSlow);
-    if (Utils.isAvro14()) {
-      Assert.assertEquals(testRecordFast.toString(), testRecordSlow.toString());
-    } else {
+    if (Utils.isAbleToSupportAlternativeStrings()) {
       Assert.assertEquals(testRecordSlow, testRecordFast);
+    } else {
+      Assert.assertEquals(testRecordFast.toString(), testRecordSlow.toString());
     }
   }
 

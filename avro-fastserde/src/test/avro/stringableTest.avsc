@@ -40,8 +40,13 @@
       { "type": "record",
         "name":  "StringableSubRecord",
         "fields": [
-          { "type" : {"type": "string", "java-class": "java.net.URI"},
+          {
+            "type" : {"type": "string", "java-class": "java.net.URI"},
             "name": "uriField"
+          },
+          {
+            "name": "nullStringIntUnion",
+            "type": ["null", "string", "int"]
           }
         ]
       }

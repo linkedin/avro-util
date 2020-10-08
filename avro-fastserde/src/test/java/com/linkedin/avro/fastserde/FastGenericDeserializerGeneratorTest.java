@@ -6,6 +6,7 @@ import com.linkedin.avro.api.PrimitiveFloatList;
 import com.linkedin.avro.api.PrimitiveIntList;
 import com.linkedin.avro.api.PrimitiveLongList;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
+import com.linkedin.avroutil1.compatibility.AvroVersion;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.function.Supplier;
+import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -468,7 +470,16 @@ public class FastGenericDeserializerGeneratorTest {
 
     // then
     Assert.assertEquals(new Utf8("abc"), record.get("testNotRemoved"));
-    Assert.assertNull(record.get("testRemoved"));
+    if (AvroCompatibilityHelper.getRuntimeAvroVersion().laterThan(AvroVersion.AVRO_1_9)) {
+      try {
+        record.get("testRemoved");
+        Assert.fail("Should throw for missing fields.");
+      } catch (AvroRuntimeException e) {
+        // expected
+      }
+    } else {
+      Assert.assertNull(record.get("testRemoved"));
+    }
     Assert.assertEquals(new Utf8("ghi"), record.get("testNotRemoved2"));
     Assert.assertEquals(new Utf8("ghi"), ((GenericRecord) record.get("subRecord")).get("testNotRemoved2"));
     Assert.assertEquals(new Utf8("ghi"),
