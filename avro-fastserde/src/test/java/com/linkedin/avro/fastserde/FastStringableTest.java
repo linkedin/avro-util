@@ -16,6 +16,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.avro.AvroTypeException;
@@ -64,16 +65,27 @@ public class FastStringableTest {
       BigInteger exampleBigInteger, String exampleString) {
 
     StringableSubRecord subRecord = new StringableSubRecord();
-    if (Utils.isAvro14()) {
-      subRecord.put(0, exampleURI.toString());
-    } else {
+    if (Utils.isAbleToSupportAlternativeStrings()) {
       subRecord.put(0, exampleURI);
+    } else {
+      subRecord.put(0, exampleURI.toString());
     }
     AnotherSubRecord anotherSubRecord = new AnotherSubRecord();
     anotherSubRecord.put(0, subRecord);
 
     StringableRecord record = new StringableRecord();
-    if (Utils.isAvro14()) {
+    if (Utils.isAbleToSupportAlternativeStrings()) {
+      record.put(0, exampleBigInteger);
+      record.put(1, exampleBigDecimal);
+      record.put(2, exampleURI);
+      record.put(3, exampleURL);
+      record.put(4, exampleFile);
+      record.put(5, Collections.singletonList(exampleURL));
+      record.put(6, Collections.singletonMap(exampleURL, exampleBigInteger));
+      record.put(7, subRecord);
+      record.put(8, anotherSubRecord);
+      record.put(9, exampleString);
+    } else {
       // Avro-1.4 doesn't support stringable field
       record.put(0, exampleBigInteger.toString());
       record.put(1, exampleBigDecimal.toString());
@@ -82,17 +94,6 @@ public class FastStringableTest {
       record.put(4, exampleFile.toString());
       record.put(5, Collections.singletonList(exampleURL.toString()));
       record.put(6, Collections.singletonMap(exampleURL.toString(), exampleBigInteger.toString()));
-      record.put(7, subRecord);
-      record.put(8, anotherSubRecord);
-      record.put(9, exampleString);
-    } else {
-      record.put(0, exampleBigInteger);
-      record.put(1, exampleBigDecimal);
-      record.put(2, exampleURI);
-      record.put(3, exampleURL);
-      record.put(4, exampleFile);
-      record.put(5, Collections.singletonList(exampleURL));
-      record.put(6, Collections.singletonMap(exampleURL, exampleBigInteger));
       record.put(7, subRecord);
       record.put(8, anotherSubRecord);
       record.put(9, exampleString);
@@ -120,29 +121,29 @@ public class FastStringableTest {
 
       // then
       if (Utils.isAvro14()) {
-        Assert.assertEquals(exampleBigDecimal.toString(), afterDecoding.bigdecimal.toString());
-        Assert.assertEquals(exampleBigInteger.toString(), afterDecoding.biginteger.toString());
-        Assert.assertEquals(exampleFile.toString(), afterDecoding.file.toString());
-        Assert.assertEquals(Collections.singletonList(new Utf8(exampleURL.toString())), afterDecoding.urlArray);
+        Assert.assertEquals(exampleBigDecimal.toString(), getField(afterDecoding, "bigdecimal").toString());
+        Assert.assertEquals(exampleBigInteger.toString(), getField(afterDecoding, "biginteger").toString());
+        Assert.assertEquals(exampleFile.toString(), getField(afterDecoding, "file").toString());
+        Assert.assertEquals(Collections.singletonList(new Utf8(exampleURL.toString())), (List) getField(afterDecoding, "urlArray"));
         Assert.assertEquals(
             Collections.singletonMap(new Utf8(exampleURL.toString()), new Utf8(exampleBigInteger.toString())),
-            afterDecoding.urlMap);
-        Assert.assertNotNull(afterDecoding.subRecord);
-        Assert.assertEquals(exampleURI.toString(), afterDecoding.subRecord.uriField.toString());
-        Assert.assertNotNull(afterDecoding.subRecordWithSubRecord);
-        Assert.assertNotNull(afterDecoding.subRecordWithSubRecord.subRecord);
-        Assert.assertEquals(exampleURI.toString(), afterDecoding.subRecordWithSubRecord.subRecord.uriField.toString());
+            getField(afterDecoding, "urlMap"));
+        Assert.assertNotNull(getField(afterDecoding, "subRecord"));
+        Assert.assertEquals(exampleURI.toString(), getField((StringableSubRecord) getField(afterDecoding, "subRecord"), "uriField").toString());
+        Assert.assertNotNull(getField(afterDecoding, "subRecordWithSubRecord"));
+        Assert.assertNotNull(getField((AnotherSubRecord) getField(afterDecoding, "subRecordWithSubRecord"), "subRecord"));
+        Assert.assertEquals(exampleURI.toString(), getField((StringableSubRecord) getField((AnotherSubRecord) getField(afterDecoding, "subRecordWithSubRecord"),"subRecord"), "uriField").toString());
       } else {
-        Assert.assertEquals(exampleBigDecimal, afterDecoding.bigdecimal);
-        Assert.assertEquals(exampleBigInteger, afterDecoding.biginteger);
-        Assert.assertEquals(exampleFile, afterDecoding.file);
-        Assert.assertEquals(Collections.singletonList(exampleURL), afterDecoding.urlArray);
-        Assert.assertEquals(Collections.singletonMap(exampleURL, exampleBigInteger), afterDecoding.urlMap);
-        Assert.assertNotNull(afterDecoding.subRecord);
-        Assert.assertEquals(exampleURI, afterDecoding.subRecord.uriField);
-        Assert.assertNotNull(afterDecoding.subRecordWithSubRecord);
-        Assert.assertNotNull(afterDecoding.subRecordWithSubRecord.subRecord);
-        Assert.assertEquals(exampleURI, afterDecoding.subRecordWithSubRecord.subRecord.uriField);
+        Assert.assertEquals(exampleBigDecimal, getField(afterDecoding, "bigdecimal"));
+        Assert.assertEquals(exampleBigInteger, getField(afterDecoding, "biginteger"));
+        Assert.assertEquals(exampleFile, getField(afterDecoding, "file"));
+        Assert.assertEquals(Collections.singletonList(exampleURL), getField(afterDecoding, "urlArray"));
+        Assert.assertEquals(Collections.singletonMap(exampleURL, exampleBigInteger), getField(afterDecoding, "urlMap"));
+        Assert.assertNotNull(getField(afterDecoding, "subRecord"));
+        Assert.assertEquals(exampleURI, getField((StringableSubRecord) getField(afterDecoding, "subRecord"), "uriField"));
+        Assert.assertNotNull(getField(afterDecoding, "subRecordWithSubRecord"));
+        Assert.assertNotNull(getField((AnotherSubRecord) getField(afterDecoding, "subRecordWithSubRecord"), "subRecord"));
+        Assert.assertEquals(exampleURI, getField((StringableSubRecord) getField((AnotherSubRecord) getField(afterDecoding, "subRecordWithSubRecord"), "subRecord"), "uriField"));
       }
     }
   }
@@ -176,24 +177,24 @@ public class FastStringableTest {
       afterDecoding = readWithSlowAvro(schema, schema, decoder, false);
     }
 
-    if (Utils.isAvro14()){
-      Assert.assertTrue(afterDecoding.get(0) instanceof Utf8, "Utf8 is expected, but got: " + afterDecoding.get(0).getClass());
-      Assert.assertTrue(afterDecoding.get(1) instanceof Utf8, "Utf8 is expected, but got: " + afterDecoding.get(0).getClass());
-      Assert.assertTrue(((GenericData.Array<Object>) afterDecoding.get(2)).get(0) instanceof Utf8,
-              "Utf8 is expected, but got: " + ((GenericData.Array<Object>) afterDecoding.get(2)).get(0).getClass());
-      Assert.assertTrue(((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next() instanceof Utf8,
-              "Utf8 is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next().getClass());
-      Assert.assertTrue(((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next() instanceof Utf8,
-              "Utf8 is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next().getClass());
-    }  else {
+    if (Utils.isAbleToSupportJavaStrings()){
       Assert.assertTrue(afterDecoding.get(0) instanceof String, "String is expected, but got: " + afterDecoding.get(0).getClass());
       Assert.assertTrue(afterDecoding.get(1) instanceof String, "String is expected, but got: " + afterDecoding.get(0).getClass());
       Assert.assertTrue(((GenericData.Array<Object>) afterDecoding.get(2)).get(0) instanceof String,
-              "String is expected, but got: " + ((GenericData.Array<Object>) afterDecoding.get(2)).get(0).getClass());
+          "String is expected, but got: " + ((GenericData.Array<Object>) afterDecoding.get(2)).get(0).getClass());
       Assert.assertTrue(((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next() instanceof String,
-              "String is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next().getClass());
+          "String is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next().getClass());
       Assert.assertTrue(((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next() instanceof String,
-              "String is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next().getClass());
+          "String is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next().getClass());
+    } else {
+      Assert.assertTrue(afterDecoding.get(0) instanceof Utf8, "Utf8 is expected, but got: " + afterDecoding.get(0).getClass());
+      Assert.assertTrue(afterDecoding.get(1) instanceof Utf8, "Utf8 is expected, but got: " + afterDecoding.get(0).getClass());
+      Assert.assertTrue(((GenericData.Array<Object>) afterDecoding.get(2)).get(0) instanceof Utf8,
+          "Utf8 is expected, but got: " + ((GenericData.Array<Object>) afterDecoding.get(2)).get(0).getClass());
+      Assert.assertTrue(((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next() instanceof Utf8,
+          "Utf8 is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next().getClass());
+      Assert.assertTrue(((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next() instanceof Utf8,
+          "Utf8 is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next().getClass());
     }
   }
 
@@ -232,24 +233,24 @@ public class FastStringableTest {
       afterDecoding = readWithSlowAvro(writerSchema, readerSchema, decoder, false);
     }
 
-    if (Utils.isAvro14()){
-      Assert.assertTrue(afterDecoding.get(0) instanceof Utf8, "Utf8 is expected, but got: " + afterDecoding.get(0).getClass());
-      Assert.assertTrue(afterDecoding.get(1) instanceof Utf8, "Utf8 is expected, but got: " + afterDecoding.get(0).getClass());
-      Assert.assertTrue(((GenericData.Array<Object>) afterDecoding.get(2)).get(0) instanceof Utf8,
-              "Utf8 is expected, but got: " + ((GenericData.Array<Object>) afterDecoding.get(2)).get(0).getClass());
-      Assert.assertTrue(((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next() instanceof Utf8,
-              "Utf8 is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next().getClass());
-      Assert.assertTrue(((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next() instanceof Utf8,
-              "Utf8 is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next().getClass());
-    }  else {
+    if (Utils.isAbleToSupportJavaStrings()){
       Assert.assertTrue(afterDecoding.get(0) instanceof String, "String is expected, but got: " + afterDecoding.get(0).getClass());
       Assert.assertTrue(afterDecoding.get(1) instanceof String, "String is expected, but got: " + afterDecoding.get(0).getClass());
       Assert.assertTrue(((GenericData.Array<Object>) afterDecoding.get(2)).get(0) instanceof String,
-              "String is expected, but got: " + ((GenericData.Array<Object>) afterDecoding.get(2)).get(0).getClass());
+          "String is expected, but got: " + ((GenericData.Array<Object>) afterDecoding.get(2)).get(0).getClass());
       Assert.assertTrue(((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next() instanceof String,
-              "String is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next().getClass());
+          "String is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next().getClass());
       Assert.assertTrue(((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next() instanceof String,
-              "String is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next().getClass());
+          "String is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next().getClass());
+    }  else {
+      Assert.assertTrue(afterDecoding.get(0) instanceof Utf8, "Utf8 is expected, but got: " + afterDecoding.get(0).getClass());
+      Assert.assertTrue(afterDecoding.get(1) instanceof Utf8, "Utf8 is expected, but got: " + afterDecoding.get(0).getClass());
+      Assert.assertTrue(((GenericData.Array<Object>) afterDecoding.get(2)).get(0) instanceof Utf8,
+          "Utf8 is expected, but got: " + ((GenericData.Array<Object>) afterDecoding.get(2)).get(0).getClass());
+      Assert.assertTrue(((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next() instanceof Utf8,
+          "Utf8 is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next().getClass());
+      Assert.assertTrue(((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next() instanceof Utf8,
+          "Utf8 is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next().getClass());
     }
   }
 
@@ -278,30 +279,30 @@ public class FastStringableTest {
     }
 
     // then
-    if (Utils.isAvro14()) {
-      Assert.assertEquals(exampleBigDecimal.toString(), afterDecoding.bigdecimal.toString());
-      Assert.assertEquals(exampleBigInteger.toString(), afterDecoding.biginteger.toString());
-      Assert.assertEquals(exampleFile.toString(), afterDecoding.file.toString());
-      Assert.assertEquals(Collections.singletonList(new Utf8(exampleURL.toString())), afterDecoding.urlArray);
+    if (Utils.isAbleToSupportAlternativeStrings()) {
+      Assert.assertEquals(exampleBigDecimal, getField(afterDecoding, "bigdecimal"));
+      Assert.assertEquals(exampleBigInteger, getField(afterDecoding, "biginteger"));
+      Assert.assertEquals(exampleFile, getField(afterDecoding, "file"));
+      Assert.assertEquals(Collections.singletonList(exampleURL), getField(afterDecoding, "urlArray"));
+      Assert.assertEquals(Collections.singletonMap(exampleURL, exampleBigInteger), getField(afterDecoding, "urlMap"));
+      Assert.assertNotNull(getField(afterDecoding, "subRecord"));
+      Assert.assertEquals(exampleURI, getField((StringableSubRecord) getField(afterDecoding, "subRecord"), "uriField"));
+      Assert.assertNotNull(getField(afterDecoding, "subRecordWithSubRecord"));
+      Assert.assertNotNull(getField((AnotherSubRecord) getField(afterDecoding, "subRecordWithSubRecord"), "subRecord"));
+      Assert.assertEquals(exampleURI, getField((StringableSubRecord) getField((AnotherSubRecord) getField(afterDecoding, "subRecordWithSubRecord"), "subRecord"), "uriField"));
+    } else {
+      Assert.assertEquals(exampleBigDecimal.toString(), getField(afterDecoding, "bigdecimal").toString());
+      Assert.assertEquals(exampleBigInteger.toString(), getField(afterDecoding, "biginteger").toString());
+      Assert.assertEquals(exampleFile.toString(), getField(afterDecoding, "file").toString());
+      Assert.assertEquals(Collections.singletonList(new Utf8(exampleURL.toString())), (List) getField(afterDecoding, "urlArray"));
       Assert.assertEquals(
           Collections.singletonMap(new Utf8(exampleURL.toString()), new Utf8(exampleBigInteger.toString())),
-          afterDecoding.urlMap);
-      Assert.assertNotNull(afterDecoding.subRecord);
-      Assert.assertEquals(exampleURI.toString(), afterDecoding.subRecord.uriField.toString());
-      Assert.assertNotNull(afterDecoding.subRecordWithSubRecord);
-      Assert.assertNotNull(afterDecoding.subRecordWithSubRecord.subRecord);
-      Assert.assertEquals(exampleURI.toString(), afterDecoding.subRecordWithSubRecord.subRecord.uriField.toString());
-    } else {
-      Assert.assertEquals(exampleBigDecimal, afterDecoding.bigdecimal);
-      Assert.assertEquals(exampleBigInteger, afterDecoding.biginteger);
-      Assert.assertEquals(exampleFile, afterDecoding.file);
-      Assert.assertEquals(Collections.singletonList(exampleURL), afterDecoding.urlArray);
-      Assert.assertEquals(Collections.singletonMap(exampleURL, exampleBigInteger), afterDecoding.urlMap);
-      Assert.assertNotNull(afterDecoding.subRecord);
-      Assert.assertEquals(exampleURI, afterDecoding.subRecord.uriField);
-      Assert.assertNotNull(afterDecoding.subRecordWithSubRecord);
-      Assert.assertNotNull(afterDecoding.subRecordWithSubRecord.subRecord);
-      Assert.assertEquals(exampleURI, afterDecoding.subRecordWithSubRecord.subRecord.uriField);
+          getField(afterDecoding, "urlMap"));
+      Assert.assertNotNull(getField(afterDecoding, "subRecord"));
+      Assert.assertEquals(exampleURI.toString(), getField(((StringableSubRecord) getField(afterDecoding, "subRecord")), "uriField").toString());
+      Assert.assertNotNull(getField(afterDecoding, "subRecordWithSubRecord"));
+      Assert.assertNotNull(getField((AnotherSubRecord) getField(afterDecoding, "subRecordWithSubRecord"), "subRecord"));
+      Assert.assertEquals(exampleURI.toString(), getField(((StringableSubRecord) getField((AnotherSubRecord) getField(afterDecoding, "subRecordWithSubRecord"), "subRecord")), "uriField").toString());
     }
   }
 

@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericContainer;
-import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.io.Encoder;
@@ -44,27 +43,27 @@ public class FastSpecificSerializerGeneratorTest {
     TestFixed testFixed1 = new TestFixed();
     testFixed1.bytes(new byte[]{0x01});
 
-    record.testFixed = testFixed1;
-    record.testFixedArray = Collections.EMPTY_LIST;
-    record.testFixedUnionArray = Arrays.asList(testFixed1);
+    setField(record, "testFixed", testFixed1);
+    setField(record, "testFixedArray", Collections.EMPTY_LIST);
+    setField(record, "testFixedUnionArray", Arrays.asList(testFixed1));
 
-    record.testEnum = TestEnum.A;
-    record.testEnumArray = Collections.EMPTY_LIST;
-    record.testEnumUnionArray = Arrays.asList(TestEnum.A);
-    record.subRecord = new SubRecord();
+    setField(record, "testEnum", TestEnum.A);
+    setField(record, "testEnumArray", Collections.EMPTY_LIST);
+    setField(record, "testEnumUnionArray", Arrays.asList(TestEnum.A));
+    setField(record, "subRecord", new SubRecord());
 
-    record.recordsArray = Collections.emptyList();
-    record.recordsArrayMap = Collections.emptyList();
-    record.recordsMap = Collections.emptyMap();
-    record.recordsMapArray = Collections.emptyMap();
+    setField(record, "recordsArray", Collections.emptyList());
+    setField(record, "recordsArrayMap", Collections.emptyList());
+    setField(record, "recordsMap", Collections.emptyMap());
+    setField(record, "recordsMapArray", Collections.emptyMap());
 
-    record.testInt = 1;
-    record.testLong = 1l;
-    record.testDouble = 1.0;
-    record.testFloat = 1.0f;
-    record.testBoolean = true;
-    record.testString = "aaa";
-    record.testBytes = ByteBuffer.wrap(new byte[]{0x01, 0x02});
+    setField(record, "testInt", 1);
+    setField(record, "testLong", 1l);
+    setField(record, "testDouble", 1.0);
+    setField(record, "testFloat", 1.0f);
+    setField(record, "testBoolean", true);
+    setField(record, "testString", "aaa");
+    setField(record, "testBytes", ByteBuffer.wrap(new byte[]{0x01, 0x02}));
 
     return record;
   }
@@ -81,39 +80,39 @@ public class FastSpecificSerializerGeneratorTest {
   @Test(groups = {"serializationTest"})
   public void shouldWritePrimitives() {
     TestRecord record = emptyTestRecord();
-    record.testInt = 1;
-    record.testIntUnion = 1;
-    record.testString = "aaa";
-    record.testStringUnion = "aaa";
-    record.testLong = 1l;
-    record.testLongUnion = 1l;
-    record.testDouble = 1.0;
-    record.testDoubleUnion = 1.0;
-    record.testFloat = 1.0f;
-    record.testFloatUnion = 1.0f;
-    record.testBoolean = true;
-    record.testBooleanUnion = true;
-    record.testBytes = ByteBuffer.wrap(new byte[]{0x01, 0x02});
-    record.testBytesUnion = ByteBuffer.wrap(new byte[]{0x01, 0x02});
+    setField(record, "testInt", 1);
+    setField(record, "testIntUnion", 1);
+    setField(record, "testString", "aaa");
+    setField(record, "testStringUnion", "aaa");
+    setField(record, "testLong", 1l);
+    setField(record, "testLongUnion", 1l);
+    setField(record, "testDouble", 1.0);
+    setField(record, "testDoubleUnion", 1.0);
+    setField(record, "testFloat", 1.0f);
+    setField(record, "testFloatUnion", 1.0f);
+    setField(record, "testBoolean", true);
+    setField(record, "testBooleanUnion", true);
+    setField(record, "testBytes", ByteBuffer.wrap(new byte[]{0x01, 0x02}));
+    setField(record, "testBytesUnion", ByteBuffer.wrap(new byte[]{0x01, 0x02}));
 
     // when
     record = decodeRecordFast(TestRecord.SCHEMA$, dataAsDecoder(record));
 
     // then
-    Assert.assertEquals(1, record.testInt);
-    Assert.assertEquals(1, record.testIntUnion.intValue());
-    Assert.assertEquals("aaa", record.testString.toString());
-    Assert.assertEquals("aaa", record.testStringUnion.toString());
-    Assert.assertEquals(1l, record.testLong);
-    Assert.assertEquals(1l, record.testLongUnion.longValue());
-    Assert.assertEquals(1.0, record.testDouble);
-    Assert.assertEquals(1.0, record.testDoubleUnion);
-    Assert.assertEquals(1.0f, record.testFloat);
-    Assert.assertEquals(1.0f, record.testFloatUnion);
-    Assert.assertEquals(true, record.testBoolean);
-    Assert.assertEquals(true, record.testBooleanUnion.booleanValue());
-    Assert.assertEquals(ByteBuffer.wrap(new byte[]{0x01, 0x02}), record.testBytes);
-    Assert.assertEquals(ByteBuffer.wrap(new byte[]{0x01, 0x02}), record.testBytesUnion);
+    Assert.assertEquals(1, getField(record, "testInt"));
+    Assert.assertEquals(1, ((Integer) getField(record, "testIntUnion")).intValue());
+    Assert.assertEquals("aaa", getField(record, "testString").toString());
+    Assert.assertEquals("aaa", getField(record, "testStringUnion").toString());
+    Assert.assertEquals(1l, getField(record, "testLong"));
+    Assert.assertEquals(1l, ((Long) getField(record, "testLongUnion")).longValue());
+    Assert.assertEquals(1.0, getField(record, "testDouble"));
+    Assert.assertEquals(1.0, getField(record, "testDoubleUnion"));
+    Assert.assertEquals(1.0f, getField(record, "testFloat"));
+    Assert.assertEquals(1.0f, getField(record, "testFloatUnion"));
+    Assert.assertEquals(true, getField(record, "testBoolean"));
+    Assert.assertEquals(true, ((Boolean) getField(record, "testBooleanUnion")).booleanValue());
+    Assert.assertEquals(ByteBuffer.wrap(new byte[]{0x01, 0x02}), getField(record, "testBytes"));
+    Assert.assertEquals(ByteBuffer.wrap(new byte[]{0x01, 0x02}), getField(record, "testBytesUnion"));
   }
 
   @Test(groups = {"serializationTest"})
@@ -130,19 +129,19 @@ public class FastSpecificSerializerGeneratorTest {
     TestFixed testFixed4 = new TestFixed();
     testFixed4.bytes(new byte[]{0x04});
 
-    record.testFixed = testFixed1;
-    record.testFixedUnion = testFixed2;
-    record.testFixedArray = Arrays.asList(testFixed3);
-    record.testFixedUnionArray = Arrays.asList(testFixed4);
+    setField(record, "testFixed", testFixed1);
+    setField(record, "testFixedUnion", testFixed2);
+    setField(record, "testFixedArray", Arrays.asList(testFixed3));
+    setField(record, "testFixedUnionArray", Arrays.asList(testFixed4));
 
     // when
     record = decodeRecordFast(TestRecord.SCHEMA$, dataAsDecoder(record));
 
     // then
-    Assert.assertEquals(new byte[]{0x01}, record.testFixed.bytes());
-    Assert.assertEquals(new byte[]{0x02}, record.testFixedUnion.bytes());
-    Assert.assertEquals(new byte[]{0x03}, record.testFixedArray.get(0).bytes());
-    Assert.assertEquals(new byte[]{0x04}, record.testFixedUnionArray.get(0).bytes());
+    Assert.assertEquals(new byte[]{0x01}, ((TestFixed) getField(record, "testFixed")).bytes());
+    Assert.assertEquals(new byte[]{0x02}, ((TestFixed) getField(record, "testFixedUnion")).bytes());
+    Assert.assertEquals(new byte[]{0x03}, ((List<TestFixed>) getField(record, "testFixedArray")).get(0).bytes());
+    Assert.assertEquals(new byte[]{0x04}, ((List<TestFixed>) getField(record, "testFixedUnionArray")).get(0).bytes());
   }
 
   @Test(groups = {"serializationTest"})
@@ -150,19 +149,19 @@ public class FastSpecificSerializerGeneratorTest {
     // given
     TestRecord record = emptyTestRecord();
 
-    record.testEnum = TestEnum.A;
-    record.testEnumUnion = TestEnum.A;
-    record.testEnumArray = Arrays.asList(TestEnum.A);
-    record.testEnumUnionArray = Arrays.asList(TestEnum.A);
+    setField(record, "testEnum", TestEnum.A);
+    setField(record, "testEnumUnion", TestEnum.A);
+    setField(record, "testEnumArray", Arrays.asList(TestEnum.A));
+    setField(record, "testEnumUnionArray", Arrays.asList(TestEnum.A));
 
     // when
     record = decodeRecordFast(TestRecord.SCHEMA$, dataAsDecoder(record));
 
     // then
-    Assert.assertEquals(TestEnum.A, record.testEnum);
-    Assert.assertEquals(TestEnum.A, record.testEnumUnion);
-    Assert.assertEquals(TestEnum.A, record.testEnumArray.get(0));
-    Assert.assertEquals(TestEnum.A, record.testEnumUnionArray.get(0));
+    Assert.assertEquals(TestEnum.A, getField(record, "testEnum"));
+    Assert.assertEquals(TestEnum.A, getField(record, "testEnumUnion"));
+    Assert.assertEquals(TestEnum.A, ((List<TestEnum>) getField(record, "testEnumArray")).get(0));
+    Assert.assertEquals(TestEnum.A, ((List<TestEnum>) getField(record, "testEnumUnionArray")).get(0));
   }
 
   @Test(groups = {"serializationTest"})
@@ -170,17 +169,17 @@ public class FastSpecificSerializerGeneratorTest {
     // given
     TestRecord record = emptyTestRecord();
     SubRecord subRecord = new SubRecord();
-    subRecord.subField = "abc";
+    setField(subRecord, "subField", "abc");
 
-    record.subRecordUnion = subRecord;
-    record.subRecord = subRecord;
+    setField(record, "subRecordUnion", subRecord);
+    setField(record, "subRecord", subRecord);
 
     // when
     record = decodeRecordFast(TestRecord.SCHEMA$, dataAsDecoder(record));
 
     // then
-    Assert.assertEquals("abc", record.subRecordUnion.subField.toString());
-    Assert.assertEquals("abc", record.subRecord.subField.toString());
+    Assert.assertEquals("abc", getField((SubRecord) getField(record, "subRecordUnion"), "subField").toString());
+    Assert.assertEquals("abc", getField((SubRecord) getField(record, "subRecord"), "subField").toString());
   }
 
   @Test(groups = {"serializationTest"})
@@ -189,25 +188,25 @@ public class FastSpecificSerializerGeneratorTest {
     // given
     TestRecord record = emptyTestRecord();
     SubRecord subRecord = new SubRecord();
-    subRecord.subField = "abc";
+    setField(subRecord, "subField", "abc");
 
     List<SubRecord> recordsArray = new ArrayList<>();
     recordsArray.add(subRecord);
-    record.recordsArray = recordsArray;
-    record.recordsArrayUnion = recordsArray;
+    setField(record, "recordsArray", recordsArray);
+    setField(record, "recordsArrayUnion", recordsArray);
     Map<CharSequence, SubRecord> recordsMap = new HashMap<>();
     recordsMap.put("1", subRecord);
-    record.recordsMap = recordsMap;
-    record.recordsMapUnion = recordsMap;
+    setField(record, "recordsMap", recordsMap);
+    setField(record, "recordsMapUnion", recordsMap);
 
     // when
     record = decodeRecordFast(TestRecord.SCHEMA$, dataAsDecoder(record));
 
     // then
-    Assert.assertEquals("abc", record.recordsArray.get(0).subField.toString());
-    Assert.assertEquals("abc", record.recordsArrayUnion.get(0).subField.toString());
-    Assert.assertEquals("abc", record.recordsMap.get(new Utf8("1")).subField.toString());
-    Assert.assertEquals("abc", record.recordsMapUnion.get(new Utf8("1")).subField.toString());
+    Assert.assertEquals("abc", getField(((List<SubRecord>) getField(record, "recordsArray")).get(0), "subField").toString());
+    Assert.assertEquals("abc", getField(((List<SubRecord>) getField(record, "recordsArrayUnion")).get(0), "subField").toString());
+    Assert.assertEquals("abc", getField(((Map<CharSequence, SubRecord>) getField(record, "recordsMap")).get(new Utf8("1")), "subField").toString());
+    Assert.assertEquals("abc", getField(((Map<CharSequence, SubRecord>) getField(record, "recordsMapUnion")).get(new Utf8("1")), "subField").toString());
   }
 
   @Test(groups = {"serializationTest"})
@@ -215,7 +214,7 @@ public class FastSpecificSerializerGeneratorTest {
     // given
     TestRecord record = emptyTestRecord();
     SubRecord subRecord = new SubRecord();
-    subRecord.subField = "abc";
+    setField(subRecord, "subField", "abc");
 
     List<Map<CharSequence, SubRecord>> recordsArrayMap = new ArrayList<>();
     Map<CharSequence, SubRecord> recordMap = new HashMap<>();
@@ -223,25 +222,25 @@ public class FastSpecificSerializerGeneratorTest {
     recordMap.put("1", subRecord);
     recordsArrayMap.add(recordMap);
 
-    record.recordsArrayMap = recordsArrayMap;
-    record.recordsArrayMapUnion = recordsArrayMap;
+    setField(record, "recordsArrayMap", recordsArrayMap);
+    setField(record, "recordsArrayMapUnion", recordsArrayMap);
 
     Map<CharSequence, List<SubRecord>> recordsMapArray = new HashMap<>();
     List<SubRecord> recordList = new ArrayList<>();
     recordList.add(subRecord);
     recordsMapArray.put("1", recordList);
 
-    record.recordsMapArray = recordsMapArray;
-    record.recordsMapArrayUnion = recordsMapArray;
+    setField(record, "recordsMapArray", recordsMapArray);
+    setField(record, "recordsMapArrayUnion", recordsMapArray);
 
     // when
     record = decodeRecordFast(TestRecord.SCHEMA$, dataAsDecoder(record));
 
     // then
-    Assert.assertEquals("abc", record.recordsArrayMap.get(0).get(new Utf8("1")).subField.toString());
-    Assert.assertEquals("abc", record.recordsMapArray.get(new Utf8("1")).get(0).subField.toString());
-    Assert.assertEquals("abc", record.recordsArrayMapUnion.get(0).get(new Utf8("1")).subField.toString());
-    Assert.assertEquals("abc", record.recordsMapArrayUnion.get(new Utf8("1")).get(0).subField.toString());
+    Assert.assertEquals("abc", getField(((List<Map<CharSequence, SubRecord>>) getField(record, "recordsArrayMap")).get(0).get(new Utf8("1")), "subField").toString());
+    Assert.assertEquals("abc", getField(((Map<CharSequence, List<SubRecord>>) getField(record, "recordsMapArray")).get(new Utf8("1")).get(0), "subField").toString());
+    Assert.assertEquals("abc", getField(((List<Map<CharSequence, SubRecord>>) getField(record, "recordsArrayMapUnion")).get(0).get(new Utf8("1")), "subField").toString());
+    Assert.assertEquals("abc", getField(((Map<CharSequence, List<SubRecord>>) getField(record, "recordsMapArrayUnion")).get(new Utf8("1")).get(0), "subField").toString());
   }
 
   @Test(groups = {"serializationTest"})
@@ -249,32 +248,32 @@ public class FastSpecificSerializerGeneratorTest {
     // given
     TestRecord record = emptyTestRecord();
     SubRecord subRecord = new SubRecord();
-    subRecord.subField = "abc";
-    record.union = subRecord;
+    setField(subRecord, "subField", "abc");
+    setField(record, "union", subRecord);
 
     // when
     record = decodeRecordFast(TestRecord.SCHEMA$, dataAsDecoder(record));
 
     // then
-    Assert.assertEquals("abc", ((SubRecord) record.union).subField.toString());
+    Assert.assertEquals("abc", getField(((SubRecord) getField(record, "union")), "subField").toString());
 
     // given
-    record.union = "abc";
+    setField(record, "union", "abc");
 
     // when
     record = decodeRecordFast(TestRecord.SCHEMA$, dataAsDecoder(record));
 
     // then
-    Assert.assertEquals("abc", record.union.toString());
+    Assert.assertEquals("abc", getField(record, "union").toString());
 
     // given
-    record.union = 1;
+    setField(record, "union", 1);
 
     // when
     record = decodeRecordFast(TestRecord.SCHEMA$, dataAsDecoder(record));
 
     // then
-    Assert.assertEquals(1, record.union);
+    Assert.assertEquals(1, getField(record, "union"));
   }
 
   @Test(groups = {"serializationTest"})
@@ -283,7 +282,7 @@ public class FastSpecificSerializerGeneratorTest {
     Schema arrayRecordSchema = Schema.createArray(TestRecord.SCHEMA$);
 
     TestRecord testRecord = emptyTestRecord();
-    testRecord.testString = "abc";
+    setField(testRecord, "testString", "abc");
 
     List<TestRecord> recordsArray = new ArrayList<>();
     recordsArray.add(testRecord);
@@ -294,12 +293,12 @@ public class FastSpecificSerializerGeneratorTest {
 
     // then
     Assert.assertEquals(2, array.size());
-    Assert.assertEquals("abc", array.get(0).testString.toString());
-    Assert.assertEquals("abc", array.get(1).testString.toString());
+    Assert.assertEquals("abc", getField(array.get(0), "testString").toString());
+    Assert.assertEquals("abc", getField(array.get(1), "testString").toString());
 
     // given
     testRecord = emptyTestRecord();
-    testRecord.testString = "abc";
+    setField(testRecord, "testString", "abc");
 
     arrayRecordSchema = Schema.createArray(createUnionSchema(TestRecord.SCHEMA$));
 
@@ -312,8 +311,8 @@ public class FastSpecificSerializerGeneratorTest {
 
     // then
     Assert.assertEquals(2, array.size());
-    Assert.assertEquals("abc", array.get(0).testString.toString());
-    Assert.assertEquals("abc", array.get(1).testString.toString());
+    Assert.assertEquals("abc", getField(array.get(0), "testString").toString());
+    Assert.assertEquals("abc", getField(array.get(1), "testString").toString());
   }
 
   @Test(groups = {"serializationTest"})
@@ -322,7 +321,7 @@ public class FastSpecificSerializerGeneratorTest {
     Schema mapRecordSchema = Schema.createMap(TestRecord.SCHEMA$);
 
     TestRecord testRecord = emptyTestRecord();
-    testRecord.testString = "abc";
+    setField(testRecord, "testString", "abc");
 
     Map<String, TestRecord> recordsMap = new HashMap<>();
     recordsMap.put("1", testRecord);
@@ -333,14 +332,14 @@ public class FastSpecificSerializerGeneratorTest {
 
     // then
     Assert.assertEquals(2, map.size());
-    Assert.assertEquals("abc", map.get(new Utf8("1")).testString.toString());
-    Assert.assertEquals("abc", map.get(new Utf8("2")).testString.toString());
+    Assert.assertEquals("abc", getField(map.get(new Utf8("1")), "testString").toString());
+    Assert.assertEquals("abc", getField(map.get(new Utf8("2")), "testString").toString());
 
     // given
     mapRecordSchema = Schema.createMap(createUnionSchema(TestRecord.SCHEMA$));
 
     testRecord = emptyTestRecord();
-    testRecord.testString = "abc";
+    setField(testRecord, "testString", "abc");
 
     recordsMap = new HashMap<>();
     recordsMap.put("1", testRecord);
@@ -351,8 +350,8 @@ public class FastSpecificSerializerGeneratorTest {
 
     // then
     Assert.assertEquals(2, map.size());
-    Assert.assertEquals("abc", map.get(new Utf8("1")).testString.toString());
-    Assert.assertEquals("abc", map.get(new Utf8("2")).testString.toString());
+    Assert.assertEquals("abc", getField(map.get(new Utf8("1")), "testString").toString());
+    Assert.assertEquals("abc", getField(map.get(new Utf8("2")), "testString").toString());
   }
 
   public <T extends GenericContainer> Decoder dataAsDecoder(T data) {

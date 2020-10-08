@@ -31,7 +31,7 @@ public class FastDatumReaderTest {
         new FastSpecificDatumReader<>(TestRecord.SCHEMA$, cache);
 
     TestRecord testRecord = FastSpecificDeserializerGeneratorTest.emptyTestRecord();
-    testRecord.testEnum = TestEnum.A;
+    setField(testRecord, "testEnum", TestEnum.A);
 
     // when
     fastSpecificDatumReader.read(null, specificDataAsDecoder(testRecord));
@@ -45,7 +45,7 @@ public class FastDatumReaderTest {
 
     Assert.assertNotNull(fastSpecificDeserializer);
     Assert.assertNotEquals(2, fastSpecificDeserializer.getClass().getDeclaredMethods().length);
-    Assert.assertEquals(TestEnum.A, fastSpecificDatumReader.read(null, specificDataAsDecoder(testRecord)).testEnum);
+    Assert.assertEquals(TestEnum.A, getField(fastSpecificDatumReader.read(null, specificDataAsDecoder(testRecord)), "testEnum"));
   }
 
   @Test(groups = {"deserializationTest"})
@@ -57,7 +57,7 @@ public class FastDatumReaderTest {
         new FastSpecificDatumReader<>(TestRecord.SCHEMA$, faultySchema, cache);
 
     TestRecord testRecord = FastSpecificDeserializerGeneratorTest.emptyTestRecord();
-    testRecord.testEnum = TestEnum.A;
+    setField(testRecord, "testEnum", TestEnum.A);
 
     // when
     fastSpecificDatumReader.read(null, FastSerdeTestsSupport.specificDataAsDecoder(testRecord));
