@@ -218,6 +218,11 @@ public class Avro19Adapter implements AvroAdapter {
   }
 
   @Override
+  public boolean fieldHasDefault(Schema.Field field) {
+    return field.hasDefaultValue();
+  }
+
+  @Override
   public Collection<AvroGeneratedSourceCode> compile(
       Collection<Schema> toCompile,
       AvroVersion minSupportedVersion,
