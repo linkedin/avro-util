@@ -19,14 +19,15 @@ import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.io.Decoder;
+import org.apache.avro.util.Utf8;
 
-public class StringableRecord_SpecificDeserializer_6174384286732341990_6174384286732341990
+public class StringableRecord_SpecificDeserializer_6010214235595501953_6010214235595501953
     implements FastDeserializer<com.linkedin.avro.fastserde.generated.avro.StringableRecord>
 {
 
     private final Schema readerSchema;
 
-    public StringableRecord_SpecificDeserializer_6174384286732341990_6174384286732341990(Schema readerSchema) {
+    public StringableRecord_SpecificDeserializer_6010214235595501953_6010214235595501953(Schema readerSchema) {
         this.readerSchema = readerSchema;
     }
 
@@ -105,8 +106,8 @@ public class StringableRecord_SpecificDeserializer_6174384286732341990_617438428
         StringableRecord.put(6, urlMap0);
         StringableRecord.put(7, deserializeStringableSubRecord0(StringableRecord.get(7), (decoder)));
         StringableRecord.put(8, deserializeAnotherSubRecord0(StringableRecord.get(8), (decoder)));
-        int unionIndex0 = (decoder.readIndex());
-        switch (unionIndex0) {
+        int unionIndex1 = (decoder.readIndex());
+        switch (unionIndex1) {
             case  0 :
                 decoder.readNull();
                 break;
@@ -114,7 +115,7 @@ public class StringableRecord_SpecificDeserializer_6174384286732341990_617438428
                 StringableRecord.put(9, (decoder).readString());
                 break;
             default:
-                throw new RuntimeException(("Illegal union index for 'stringUnion': "+ unionIndex0));
+                throw new RuntimeException(("Illegal union index for 'stringUnion': "+ unionIndex1));
         }
         return StringableRecord;
     }
@@ -129,6 +130,27 @@ public class StringableRecord_SpecificDeserializer_6174384286732341990_617438428
             StringableSubRecord = new com.linkedin.avro.fastserde.generated.avro.StringableSubRecord();
         }
         StringableSubRecord.put(0, new URI((decoder.readString())));
+        int unionIndex0 = (decoder.readIndex());
+        switch (unionIndex0) {
+            case  0 :
+                decoder.readNull();
+                break;
+            case  1 :
+            {
+                Object oldString0 = StringableSubRecord.get(1);
+                if (oldString0 instanceof Utf8) {
+                    StringableSubRecord.put(1, (decoder).readString(((Utf8) oldString0)));
+                } else {
+                    StringableSubRecord.put(1, (decoder).readString(null));
+                }
+                break;
+            }
+            case  2 :
+                StringableSubRecord.put(1, (decoder.readInt()));
+                break;
+            default:
+                throw new RuntimeException(("Illegal union index for 'nullStringIntUnion': "+ unionIndex0));
+        }
         return StringableSubRecord;
     }
 
