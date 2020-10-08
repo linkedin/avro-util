@@ -11,7 +11,7 @@ import com.linkedin.avro.fastserde.generated.avro.StringableSubRecord;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.util.Utf8;
 
-public class StringableRecord_SpecificSerializer_6174384286732341990
+public class StringableRecord_SpecificSerializer_6010214235595501953
     implements FastSerializer<StringableRecord>
 {
 
@@ -110,6 +110,25 @@ public class StringableRecord_SpecificSerializer_6174384286732341990
             (encoder).writeString(((Utf8) data.get(0)));
         } else {
             (encoder).writeString(data.get(0).toString());
+        }
+        Object nullStringIntUnion0 = ((Object) data.get(1));
+        if (nullStringIntUnion0 == null) {
+            (encoder).writeIndex(0);
+            (encoder).writeNull();
+        } else {
+            if (nullStringIntUnion0 instanceof CharSequence) {
+                (encoder).writeIndex(1);
+                if (nullStringIntUnion0 instanceof Utf8) {
+                    (encoder).writeString(((Utf8) nullStringIntUnion0));
+                } else {
+                    (encoder).writeString(nullStringIntUnion0 .toString());
+                }
+            } else {
+                if (nullStringIntUnion0 instanceof Integer) {
+                    (encoder).writeIndex(2);
+                    (encoder).writeInt(((Integer) nullStringIntUnion0));
+                }
+            }
         }
     }
 

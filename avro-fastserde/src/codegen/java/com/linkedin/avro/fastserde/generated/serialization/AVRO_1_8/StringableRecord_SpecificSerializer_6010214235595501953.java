@@ -1,5 +1,5 @@
 
-package com.linkedin.avro.fastserde.generated.serialization.AVRO_1_7;
+package com.linkedin.avro.fastserde.generated.serialization.AVRO_1_8;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -11,8 +11,9 @@ import com.linkedin.avro.fastserde.generated.avro.AnotherSubRecord;
 import com.linkedin.avro.fastserde.generated.avro.StringableRecord;
 import com.linkedin.avro.fastserde.generated.avro.StringableSubRecord;
 import org.apache.avro.io.Encoder;
+import org.apache.avro.util.Utf8;
 
-public class StringableRecord_SpecificSerializer_6174384286732341990
+public class StringableRecord_SpecificSerializer_6010214235595501953
     implements FastSerializer<StringableRecord>
 {
 
@@ -77,6 +78,25 @@ public class StringableRecord_SpecificSerializer_6174384286732341990
         throws IOException
     {
         (encoder).writeString(data.get(0).toString());
+        Object nullStringIntUnion0 = ((Object) data.get(1));
+        if (nullStringIntUnion0 == null) {
+            (encoder).writeIndex(0);
+            (encoder).writeNull();
+        } else {
+            if (nullStringIntUnion0 instanceof CharSequence) {
+                (encoder).writeIndex(1);
+                if (nullStringIntUnion0 instanceof Utf8) {
+                    (encoder).writeString(((Utf8) nullStringIntUnion0));
+                } else {
+                    (encoder).writeString(nullStringIntUnion0 .toString());
+                }
+            } else {
+                if (nullStringIntUnion0 instanceof Integer) {
+                    (encoder).writeIndex(2);
+                    (encoder).writeInt(((Integer) nullStringIntUnion0));
+                }
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
