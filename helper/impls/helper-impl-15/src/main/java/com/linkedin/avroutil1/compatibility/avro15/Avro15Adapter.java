@@ -217,6 +217,11 @@ public class Avro15Adapter implements AvroAdapter {
   }
 
   @Override
+  public boolean fieldHasDefault(Schema.Field field) {
+    return null != field.defaultValue();
+  }
+
+  @Override
   public Collection<AvroGeneratedSourceCode> compile(
       Collection<Schema> toCompile,
       AvroVersion minSupportedVersion,

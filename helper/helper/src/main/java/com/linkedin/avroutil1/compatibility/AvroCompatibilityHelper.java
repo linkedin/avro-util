@@ -415,6 +415,11 @@ public class AvroCompatibilityHelper {
     return ADAPTER.newFixedField(fixedSchema, contents);
   }
 
+  public static boolean fieldHasDefault(Schema.Field field) {
+    assertAvroAvailable();
+    return ADAPTER.fieldHasDefault(field);
+  }
+
   /**
    * returns the default value for a schema field, as a generic record class
    * (if the default value is complex enough - say records, enums, fixed fields etc)
@@ -543,8 +548,7 @@ public class AvroCompatibilityHelper {
     try {
       return schema.getFullName();
     } catch (RuntimeException e) {
-      return schema.getType().name();
+      return schema.getName();
     }
   }
-
 }

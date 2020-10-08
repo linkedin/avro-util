@@ -76,6 +76,8 @@ public interface AvroAdapter {
 
   Object getGenericDefaultValue(Schema.Field field);
 
+  boolean fieldHasDefault(Schema.Field field);
+
   //code generation
 
   Collection<AvroGeneratedSourceCode> compile(
