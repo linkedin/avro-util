@@ -10,6 +10,7 @@ import com.linkedin.avro.fastserde.primitive.PrimitiveDoubleArrayList;
 import com.linkedin.avro.fastserde.primitive.PrimitiveFloatArrayList;
 import com.linkedin.avro.fastserde.primitive.PrimitiveIntArrayList;
 import com.linkedin.avro.fastserde.primitive.PrimitiveLongArrayList;
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
@@ -38,7 +39,7 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericContainer;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
-
+import org.apache.avro.util.Utf8;
 
 
 public class SchemaAssistant {
@@ -130,12 +131,7 @@ public class SchemaAssistant {
   }
 
   public static String getSchemaFullName(Schema schema) {
-    Schema.Type type = schema.getType();
-    boolean isNamedType = type.equals(Schema.Type.ENUM) || type.equals(Schema.Type.FIXED) || type.equals(Schema.Type.RECORD);
-    /**
-     * Avro-1.4 doesn't support {@link Schema#getFullName()} if the Schema is not a NamedSchema.
-     */
-    return isNamedType ? schema.getFullName() : type.name();
+    return AvroCompatibilityHelper.getSchemaFullName(schema);
   }
 
   /**
@@ -175,10 +171,10 @@ public class SchemaAssistant {
       throw new SchemaAssistantException("String schema expected!");
     }
 
-    if (Utils.isAvro14()) {
-      return false;
-    } else {
+    if (Utils.isAbleToSupportJavaStrings()) {
       return schema.getProp(CLASS_PROP) != null || schema.getProp(STRING_PROP) != null;
+    } else {
+      return false;
     }
   }
 
@@ -187,10 +183,10 @@ public class SchemaAssistant {
       throw new SchemaAssistantException("Map schema expected!");
     }
 
-    if (Utils.isAvro14()) {
-      return false;
-    } else {
+    if (Utils.isAbleToSupportJavaStrings()) {
       return schema.getProp(KEY_CLASS_PROP) != null;
+    } else {
+      return false;
     }
   }
 
@@ -292,7 +288,7 @@ public class SchemaAssistant {
             outputClass = codeModel.ref(GenericData.Record.class);
           }
         } else {
-          outputClass = codeModel.ref(schema.getFullName());
+          outputClass = codeModel.ref(AvroCompatibilityHelper.getSchemaFullName(schema));
         }
         break;
 
@@ -342,10 +338,10 @@ public class SchemaAssistant {
         break;
       case ENUM:
         outputClass =
-            useGenericTypes ? codeModel.ref(GenericData.EnumSymbol.class) : codeModel.ref(schema.getFullName());
+            useGenericTypes ? codeModel.ref(GenericData.EnumSymbol.class) : codeModel.ref(AvroCompatibilityHelper.getSchemaFullName(schema));
         break;
       case FIXED:
-        outputClass = useGenericTypes ? codeModel.ref(GenericData.Fixed.class) : codeModel.ref(schema.getFullName());
+        outputClass = useGenericTypes ? codeModel.ref(GenericData.Fixed.class) : codeModel.ref(AvroCompatibilityHelper.getSchemaFullName(schema));
         break;
       case BOOLEAN:
         outputClass = codeModel.ref(Boolean.class);
@@ -409,7 +405,7 @@ public class SchemaAssistant {
     if (useGenericTypes && isForSerializer) {
       return outputClass;
     }
-    if (!Utils.isAvro14()) {
+    if (Utils.isAbleToSupportJavaStrings()) {
       String stringClassProp;
       if (schemaType.equals(Schema.Type.STRING)) {
         stringClassProp = schema.getProp(CLASS_PROP);
@@ -417,13 +413,20 @@ public class SchemaAssistant {
         stringClassProp = schema.getProp(KEY_CLASS_PROP);
       }
       if (!useGenericTypes && null != stringClassProp) {
-          outputClass = codeModel.ref(stringClassProp);
-          extendExceptionsFromStringable(schema.getProp(CLASS_PROP));
+        outputClass = codeModel.ref(stringClassProp);
+        extendExceptionsFromStringable(schema.getProp(CLASS_PROP));
       } else {
         String stringProp = schema.getProp(STRING_PROP);
         if (null != stringProp && stringProp.equals(STRING_TYPE_STRING)) {
           outputClass = codeModel.ref(String.class);
         }
+      }
+      if (!Utils.isAbleToSupportStringableProps() &&
+          !outputClass.equals(codeModel.ref(String.class)) &&
+          !outputClass.equals(codeModel.ref(Utf8.class))) {
+        // This case could happen in Avro 1.6 when using a non-Utf8 and non-String class (e.g. URI, etc.), in which
+        // case  Avro 1.6 ignores the unsupported class, and fast-avro should be compatible with that behavior.
+        outputClass = defaultStringType();
       }
     }
     return outputClass;
@@ -441,7 +444,7 @@ public class SchemaAssistant {
         return JExpr._new(codeModel.ref(GenericData.EnumSymbol.class)).arg(getSchemaExpr).arg(nameExpr);
       }
     } else {
-      return codeModel.ref(enumSchema.getFullName()).staticInvoke("valueOf").arg(nameExpr);
+      return codeModel.ref(AvroCompatibilityHelper.getSchemaFullName(enumSchema)).staticInvoke("valueOf").arg(nameExpr);
     }
   }
 
@@ -460,13 +463,13 @@ public class SchemaAssistant {
             .arg(getSchemaExpr.invoke("getEnumSymbols").invoke("get").arg(indexExpr));
       }
     } else {
-      return codeModel.ref(enumSchema.getFullName()).staticInvoke("values").component(indexExpr);
+      return codeModel.ref(AvroCompatibilityHelper.getSchemaFullName(enumSchema)).staticInvoke("values").component(indexExpr);
     }
   }
 
   public JExpression getFixedValue(Schema schema, JExpression fixedBytesExpr, JInvocation getSchemaExpr) {
     if (!useGenericTypes) {
-      return JExpr._new(codeModel.ref(schema.getFullName())).arg(fixedBytesExpr);
+      return JExpr._new(codeModel.ref(AvroCompatibilityHelper.getSchemaFullName(schema))).arg(fixedBytesExpr);
     } else {
       return JExpr._new(codeModel.ref(GenericData.Fixed.class)).arg(getSchemaExpr).arg(fixedBytesExpr);
     }

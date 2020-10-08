@@ -1,5 +1,6 @@
 package com.linkedin.avro.fastserde;
 
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -304,7 +305,8 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
        * by checking the associated 'Schema' in generic mode.
        */
       if (useGenericTypes && SchemaAssistant.isNamedTypeWithSchema(schemaOption)) {
-        condition = unionExpr._instanceof(rawOptionClass).cand(JExpr.invoke(JExpr.lit(schemaOption.getFullName()), "equals")
+        condition = unionExpr._instanceof(rawOptionClass).cand(JExpr.invoke(JExpr.lit(AvroCompatibilityHelper.getSchemaFullName(schemaOption)), "equals")
+            /* TODO: Replace by {@link AvroCompatibilityHelper#getSchemaFullName} */
             .arg(JExpr.invoke(JExpr.cast(optionClass, unionExpr), "getSchema").invoke("getFullName")));
       } else {
         if (unionExpr instanceof JVar && ((JVar)unionExpr).type().equals(rawOptionClass)) {
@@ -428,15 +430,15 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
   }
 
   private boolean methodAlreadyDefined(final Schema schema) {
-    return !Schema.Type.RECORD.equals(schema.getType()) || serializeMethodMap.containsKey(schema.getFullName());
+    return !Schema.Type.RECORD.equals(schema.getType()) || serializeMethodMap.containsKey(AvroCompatibilityHelper.getSchemaFullName(schema));
   }
 
   private JMethod getMethod(final Schema schema) {
     if (Schema.Type.RECORD.equals(schema.getType())) {
       if (methodAlreadyDefined(schema)) {
-        return serializeMethodMap.get(schema.getFullName());
+        return serializeMethodMap.get(AvroCompatibilityHelper.getSchemaFullName(schema));
       }
-      throw new FastSerdeGeneratorException("No method for schema: " + schema.getFullName());
+      throw new FastSerdeGeneratorException("No method for schema: " + AvroCompatibilityHelper.getSchemaFullName(schema));
     }
     throw new FastSerdeGeneratorException("No method for schema type: " + schema.getType());
   }
@@ -453,11 +455,11 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
         method.param(Encoder.class, ENCODER);
 
         method.annotate(SuppressWarnings.class).param("value", "unchecked");
-        serializeMethodMap.put(schema.getFullName(), method);
+        serializeMethodMap.put(AvroCompatibilityHelper.getSchemaFullName(schema), method);
 
         return method;
       } else {
-        throw new FastSerdeGeneratorException("Method already exists for: " + schema.getFullName());
+        throw new FastSerdeGeneratorException("Method already exists for: " + AvroCompatibilityHelper.getSchemaFullName(schema));
       }
     }
     throw new FastSerdeGeneratorException("No method for schema type: " + schema.getType());

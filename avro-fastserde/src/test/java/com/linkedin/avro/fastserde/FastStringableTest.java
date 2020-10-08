@@ -65,7 +65,7 @@ public class FastStringableTest {
       BigInteger exampleBigInteger, String exampleString) {
 
     StringableSubRecord subRecord = new StringableSubRecord();
-    if (Utils.isAbleToSupportAlternativeStrings()) {
+    if (Utils.isAbleToSupportStringableProps()) {
       subRecord.put(0, exampleURI);
     } else {
       subRecord.put(0, exampleURI.toString());
@@ -74,7 +74,7 @@ public class FastStringableTest {
     anotherSubRecord.put(0, subRecord);
 
     StringableRecord record = new StringableRecord();
-    if (Utils.isAbleToSupportAlternativeStrings()) {
+    if (Utils.isAbleToSupportStringableProps()) {
       record.put(0, exampleBigInteger);
       record.put(1, exampleBigDecimal);
       record.put(2, exampleURI);
@@ -120,7 +120,18 @@ public class FastStringableTest {
           specificDataFromDecoder(StringableRecord.SCHEMA$, writeWithFastAvro(record, StringableRecord.SCHEMA$, true));
 
       // then
-      if (Utils.isAvro14()) {
+      if (Utils.isAbleToSupportStringableProps()) {
+        Assert.assertEquals(exampleBigDecimal, getField(afterDecoding, "bigdecimal"));
+        Assert.assertEquals(exampleBigInteger, getField(afterDecoding, "biginteger"));
+        Assert.assertEquals(exampleFile, getField(afterDecoding, "file"));
+        Assert.assertEquals(Collections.singletonList(exampleURL), getField(afterDecoding, "urlArray"));
+        Assert.assertEquals(Collections.singletonMap(exampleURL, exampleBigInteger), getField(afterDecoding, "urlMap"));
+        Assert.assertNotNull(getField(afterDecoding, "subRecord"));
+        Assert.assertEquals(exampleURI, getField((StringableSubRecord) getField(afterDecoding, "subRecord"), "uriField"));
+        Assert.assertNotNull(getField(afterDecoding, "subRecordWithSubRecord"));
+        Assert.assertNotNull(getField((AnotherSubRecord) getField(afterDecoding, "subRecordWithSubRecord"), "subRecord"));
+        Assert.assertEquals(exampleURI, getField((StringableSubRecord) getField((AnotherSubRecord) getField(afterDecoding, "subRecordWithSubRecord"), "subRecord"), "uriField"));
+      } else {
         Assert.assertEquals(exampleBigDecimal.toString(), getField(afterDecoding, "bigdecimal").toString());
         Assert.assertEquals(exampleBigInteger.toString(), getField(afterDecoding, "biginteger").toString());
         Assert.assertEquals(exampleFile.toString(), getField(afterDecoding, "file").toString());
@@ -133,17 +144,6 @@ public class FastStringableTest {
         Assert.assertNotNull(getField(afterDecoding, "subRecordWithSubRecord"));
         Assert.assertNotNull(getField((AnotherSubRecord) getField(afterDecoding, "subRecordWithSubRecord"), "subRecord"));
         Assert.assertEquals(exampleURI.toString(), getField((StringableSubRecord) getField((AnotherSubRecord) getField(afterDecoding, "subRecordWithSubRecord"),"subRecord"), "uriField").toString());
-      } else {
-        Assert.assertEquals(exampleBigDecimal, getField(afterDecoding, "bigdecimal"));
-        Assert.assertEquals(exampleBigInteger, getField(afterDecoding, "biginteger"));
-        Assert.assertEquals(exampleFile, getField(afterDecoding, "file"));
-        Assert.assertEquals(Collections.singletonList(exampleURL), getField(afterDecoding, "urlArray"));
-        Assert.assertEquals(Collections.singletonMap(exampleURL, exampleBigInteger), getField(afterDecoding, "urlMap"));
-        Assert.assertNotNull(getField(afterDecoding, "subRecord"));
-        Assert.assertEquals(exampleURI, getField((StringableSubRecord) getField(afterDecoding, "subRecord"), "uriField"));
-        Assert.assertNotNull(getField(afterDecoding, "subRecordWithSubRecord"));
-        Assert.assertNotNull(getField((AnotherSubRecord) getField(afterDecoding, "subRecordWithSubRecord"), "subRecord"));
-        Assert.assertEquals(exampleURI, getField((StringableSubRecord) getField((AnotherSubRecord) getField(afterDecoding, "subRecordWithSubRecord"), "subRecord"), "uriField"));
       }
     }
   }
@@ -279,7 +279,7 @@ public class FastStringableTest {
     }
 
     // then
-    if (Utils.isAbleToSupportAlternativeStrings()) {
+    if (Utils.isAbleToSupportStringableProps()) {
       Assert.assertEquals(exampleBigDecimal, getField(afterDecoding, "bigdecimal"));
       Assert.assertEquals(exampleBigInteger, getField(afterDecoding, "biginteger"));
       Assert.assertEquals(exampleFile, getField(afterDecoding, "file"));
