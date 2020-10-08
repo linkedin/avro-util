@@ -1,13 +1,13 @@
 package com.linkedin.avro.fastserde;
 
-import com.google.common.collect.Lists;
 import com.sun.codemodel.JBlock;
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.ListIterator;
 import org.apache.avro.Schema;
-import org.apache.avro.io.parsing.Symbol;
+import com.linkedin.avro.fastserde.backport.Symbol;
 import org.apache.avro.util.Utf8;
 
 
@@ -77,7 +77,7 @@ public abstract class FastDeserializerGeneratorBase<T> extends FastSerdeBase {
     if (action.getSymbolIterator() != null) {
       actionIterator = action.getSymbolIterator();
     } else if (action.getSymbol().production != null) {
-      actionIterator = Lists.newArrayList(reverseSymbolArray(action.getSymbol().production)).listIterator();
+      actionIterator = Arrays.asList(reverseSymbolArray(action.getSymbol().production)).listIterator();
     } else {
       actionIterator = Collections.emptyListIterator();
     }

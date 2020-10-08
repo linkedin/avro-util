@@ -23,6 +23,18 @@ public class Utils {
   private static final List<AvroVersion> AVRO_VERSIONS_SUPPORTED_FOR_DESERIALIZER = new ArrayList<>();
   private static final List<AvroVersion> AVRO_VERSIONS_SUPPORTED_FOR_SERIALIZER = new ArrayList<>();
 
+  static {
+    AVRO_VERSIONS_SUPPORTED_FOR_DESERIALIZER.add(AvroVersion.AVRO_1_4);
+    AVRO_VERSIONS_SUPPORTED_FOR_DESERIALIZER.add(AvroVersion.AVRO_1_5);
+    AVRO_VERSIONS_SUPPORTED_FOR_DESERIALIZER.add(AvroVersion.AVRO_1_6);
+    AVRO_VERSIONS_SUPPORTED_FOR_DESERIALIZER.add(AvroVersion.AVRO_1_7);
+    AVRO_VERSIONS_SUPPORTED_FOR_DESERIALIZER.add(AvroVersion.AVRO_1_8);
+    AVRO_VERSIONS_SUPPORTED_FOR_DESERIALIZER.add(AvroVersion.AVRO_1_9);
+    AVRO_VERSIONS_SUPPORTED_FOR_DESERIALIZER.add(AvroVersion.AVRO_1_10);
+
+    AVRO_VERSIONS_SUPPORTED_FOR_SERIALIZER.addAll(AVRO_VERSIONS_SUPPORTED_FOR_DESERIALIZER);
+  }
+
   // Cache the mapping between Schema and the corresponding fingerprint
   private static final Map<Schema, Long> SCHEMA_IDS_CACHE = new ConcurrentHashMap<>();
 
@@ -33,7 +45,7 @@ public class Utils {
     return AvroCompatibilityHelper.getRuntimeAvroVersion().equals(AvroVersion.AVRO_1_4);
   }
 
-  public static boolean isAbleToSupportAlternativeStrings() {
+  public static boolean isAbleToSupportStringableProps() {
     return AvroCompatibilityHelper.getRuntimeAvroVersion().laterThan(AvroVersion.AVRO_1_6);
   }
 
@@ -82,17 +94,6 @@ public class Utils {
 
     return schemaId;
   }
-
-  static {
-    AVRO_VERSIONS_SUPPORTED_FOR_DESERIALIZER.add(AvroVersion.AVRO_1_4);
-    AVRO_VERSIONS_SUPPORTED_FOR_DESERIALIZER.add(AvroVersion.AVRO_1_7);
-    AVRO_VERSIONS_SUPPORTED_FOR_DESERIALIZER.add(AvroVersion.AVRO_1_8);
-
-    AVRO_VERSIONS_SUPPORTED_FOR_SERIALIZER.add(AvroVersion.AVRO_1_4);
-    AVRO_VERSIONS_SUPPORTED_FOR_SERIALIZER.add(AvroVersion.AVRO_1_7);
-    AVRO_VERSIONS_SUPPORTED_FOR_SERIALIZER.add(AvroVersion.AVRO_1_8);
-  }
-
 
   private static String replaceLast(String str, char target, char replacement) {
     if (str.indexOf(target) < 0) {

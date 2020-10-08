@@ -214,7 +214,7 @@ public class FastDeserializerDefaultsTest {
     Assert.assertEquals(ByteBuffer.wrap("1234".getBytes()), getField(testRecord, "testBytes"));
     Assert.assertNull(getField(testRecord, "testBytesUnion"));
     Assert.assertEquals(new Utf8("testStringValue"), getField(testRecord, "testString"));
-    if (Utils.isAbleToSupportAlternativeStrings()) {
+    if (Utils.isAbleToSupportStringableProps()) {
       Assert.assertEquals(new URL("http://www.example.com"), getField(testRecord, "testStringable"));
     } else {
       Assert.assertEquals(new Utf8("http://www.example.com"), getField(testRecord, "testStringable"));
@@ -249,7 +249,7 @@ public class FastDeserializerDefaultsTest {
     Assert.assertEquals(listWithNull, (List) getField(testRecord, "recordUnionArray"));
 
     Map stringableMap = new HashMap();
-    if (Utils.isAbleToSupportAlternativeStrings()) {
+    if (Utils.isAbleToSupportStringableProps()) {
       stringableMap.put(new URL("http://www.example2.com"), new BigInteger("123"));
     } else {
       stringableMap.put(new Utf8("http://www.example2.com"), new Utf8("123"));
@@ -374,7 +374,7 @@ public class FastDeserializerDefaultsTest {
         decodeSpecificFast(DefaultsTestRecord.SCHEMA$, oldRecordSchema, genericDataAsDecoder(oldRecord));
 
     // then
-    if (Utils.isAbleToSupportAlternativeStrings()) {
+    if (Utils.isAbleToSupportStringableProps()) {
       Assert.assertEquals(testRecordSlow, testRecordFast);
     } else {
       Assert.assertEquals(testRecordFast.toString(), testRecordSlow.toString());
