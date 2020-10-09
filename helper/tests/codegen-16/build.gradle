@@ -14,6 +14,9 @@ configurations {
   codegen {
     extendsFrom implementation
   }
+  resourcegen {
+    extendsFrom runtimeClasspath
+  }
 }
 
 sourceSets {
@@ -24,14 +27,13 @@ sourceSets {
       srcDir "$buildDir/generated/sources/compat-avro/java/main"
     }
     resources {
-      srcDirs = ["src/main/raw-avro", "src/main/compat-avro"]
+      srcDirs = ["src/main/raw-avro", "src/main/compat-avro", "$buildDir/generated/resources"]
     }
   }
 }
 
 task runVanillaAvroCodegen {
   description = 'generate specific classes using vanilla avro'
-
   fileTree(dir: 'src/main/raw-avro', include:'**/*.avsc').each { file ->
     doLast {
       javaexec {
@@ -63,10 +65,26 @@ task copyCompatAvroCodeToResources(type: Copy) {
   into "$buildDir/resources/main"
 }
 
-copyCompatAvroCodeToResources.dependsOn runCompatAvroCodegen
-compileJava.dependsOn runVanillaAvroCodegen, runCompatAvroCodegen
+task runResourceGeneration(type: JavaExec) {
+  classpath configurations.resourcegen + sourceSets.main.output
+  main = "com.linkedin.avroutil1.compatibility.avro16.Generate16TestResources"
+  args "$buildDir/generated/resources"
+  debug false
+}
+
+jar {
+  //normal contents
+  from sourceSets.main.output
+  //resource generation output. has to be explicitly included in the jar because
+  //"processResources" ran before this was generated
+  from "$buildDir/generated/resources"
+}
+
 //TODO - figure out why this must be done manually
 runCompatAvroCodegen.dependsOn ":helper:tests:helper-tests-common:jar"
+copyCompatAvroCodeToResources.dependsOn runCompatAvroCodegen
+compileJava.dependsOn runVanillaAvroCodegen, runCompatAvroCodegen
+jar.dependsOn runResourceGeneration
 
 dependencies {
   codegen "org.apache.avro:avro-tools:1.6.3"
@@ -77,4 +95,11 @@ dependencies {
   //required because generated code depends on the helper
   implementation project(":helper:helper")
   implementation "org.apache.avro:avro:1.6.3"
+
+  //this block required for resource generation code
+  implementation project(":helper:tests:helper-tests-common")
+  //redirect logging to log4j2 for resource generation
+  resourcegen "org.apache.logging.log4j:log4j-core:2.11.2"
+  resourcegen "org.apache.logging.log4j:log4j-slf4j-impl:2.11.2"
+  resourcegen files('../codegenClasspath')
 }

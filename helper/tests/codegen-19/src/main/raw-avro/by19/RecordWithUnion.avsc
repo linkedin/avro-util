@@ -1,0 +1,21 @@
+{
+  "type": "record",
+  "namespace": "by19",
+  "name": "RecordWithUnion",
+  "fields": [
+    {
+      "name": "f",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "InnerUnionRecord",
+          "fields" : [
+            {"name": "f", "type": "int"}
+          ]
+        }
+      ],
+      "default": null
+    }
+  ]
+}
