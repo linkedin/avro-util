@@ -17,6 +17,7 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.Decoder;
+import org.apache.avro.io.Encoder;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
 
@@ -42,6 +43,8 @@ public interface AvroAdapter {
       int length, BinaryDecoder reuse);
 
   JsonEncoder newJsonEncoder(Schema schema, OutputStream out, boolean pretty) throws IOException;
+
+  Encoder newJsonEncoder(Schema schema, OutputStream out, boolean pretty, AvroVersion jsonFormat) throws IOException;
 
   JsonDecoder newJsonDecoder(Schema schema, InputStream in) throws IOException;
 

@@ -65,9 +65,9 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
    * @return The start symbol for the resolving grammar
    * @throws IOException
    */
-  public final Symbol generate(Schema writer, Schema reader) throws IOException {
+  public final Symbol generate(Schema writer, Schema reader, boolean useFqcns) throws IOException {
     Resolver.Action r = Resolver.resolve(writer, reader);
-    return Symbol.root(generate(r, new HashMap<>()));
+    return Symbol.root(generate(r, new HashMap<>(), useFqcns));
   }
 
   /**
@@ -83,35 +83,35 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
    * @return The start symbol for the resolving grammar
    * @throws IOException
    */
-  private Symbol generate(Resolver.Action action, Map<Object, Symbol> seen) throws IOException {
+  private Symbol generate(Resolver.Action action, Map<Object, Symbol> seen, boolean useFqcns) throws IOException {
     if (action instanceof Resolver.DoNothing) {
-      return simpleGen(action.writer, seen);
+      return simpleGen(action.writer, seen, useFqcns);
 
     } else if (action instanceof Resolver.ErrorAction) {
       return Symbol.error(action.toString());
 
     } else if (action instanceof Resolver.Skip) {
-      return Symbol.skipAction(simpleGen(action.writer, seen));
+      return Symbol.skipAction(simpleGen(action.writer, seen, useFqcns));
 
     } else if (action instanceof Resolver.Promote) {
-      return Symbol.resolve(simpleGen(action.writer, seen), simpleGen(action.reader, seen));
+      return Symbol.resolve(simpleGen(action.writer, seen, useFqcns), simpleGen(action.reader, seen, useFqcns));
 
     } else if (action instanceof Resolver.ReaderUnion) {
       Resolver.ReaderUnion ru = (Resolver.ReaderUnion) action;
-      Symbol s = generate(ru.actualAction, seen);
+      Symbol s = generate(ru.actualAction, seen, useFqcns);
       return Symbol.seq(Symbol.unionAdjustAction(ru.firstMatch, s), Symbol.UNION);
 
     } else if (action.writer.getType() == Schema.Type.ARRAY) {
-      Symbol es = generate(((Resolver.Container) action).elementAction, seen);
+      Symbol es = generate(((Resolver.Container) action).elementAction, seen, useFqcns);
       return Symbol.seq(Symbol.repeat(Symbol.ARRAY_END, es), Symbol.ARRAY_START);
 
     } else if (action.writer.getType() == Schema.Type.MAP) {
-      Symbol es = generate(((Resolver.Container) action).elementAction, seen);
+      Symbol es = generate(((Resolver.Container) action).elementAction, seen, useFqcns);
       return Symbol.seq(Symbol.repeat(Symbol.MAP_END, es, Symbol.STRING), Symbol.MAP_START);
 
     } else if (action.writer.getType() == Schema.Type.UNION) {
       if (((Resolver.WriterUnion) action).unionEquiv) {
-        return simpleGen(action.writer, seen);
+        return simpleGen(action.writer, seen, useFqcns);
       }
       Resolver.Action[] branches = ((Resolver.WriterUnion) action).actions;
       Symbol[] symbols = new Symbol[branches.length];
@@ -119,13 +119,13 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
       String[] newLabels = new String[branches.length];
       int i = 0;
       for (Resolver.Action branch : branches) {
-        symbols[i] = generate(branch, seen);
+        symbols[i] = generate(branch, seen, useFqcns);
         Schema schema = action.writer.getTypes().get(i);
         oldLabels[i] = schema.getName();
         newLabels[i] = schema.getFullName();
         i++;
       }
-      return Symbol.seq(Symbol.alt(symbols, oldLabels, newLabels), Symbol.WRITER_UNION_ACTION);
+      return Symbol.seq(Symbol.alt(symbols, oldLabels, newLabels, useFqcns), Symbol.WRITER_UNION_ACTION);
     } else if (action instanceof Resolver.EnumAdjust) {
       Resolver.EnumAdjust e = (Resolver.EnumAdjust) action;
       Object[] adjs = new Object[e.adjustments.length];
@@ -148,13 +148,13 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
 
         final Resolver.Action[] actions = ra.fieldActions;
         for (Resolver.Action wfa : actions) {
-          production[--count] = generate(wfa, seen);
+          production[--count] = generate(wfa, seen, useFqcns);
         }
         for (int i = ra.firstDefault; i < ra.readerOrder.length; i++) {
           final Field rf = ra.readerOrder[i];
           byte[] bb = getBinary(rf.schema(), Accessor.defaultValue(rf));
           production[--count] = Symbol.defaultStartAction(bb);
-          production[--count] = simpleGen(rf.schema(), seen);
+          production[--count] = simpleGen(rf.schema(), seen, useFqcns);
           production[--count] = Symbol.DEFAULT_END_ACTION;
         }
       }
@@ -164,7 +164,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
     throw new IllegalArgumentException("Unrecognized Resolver.Action: " + action);
   }
 
-  private Symbol simpleGen(Schema s, Map<Object, Symbol> seen) {
+  private Symbol simpleGen(Schema s, Map<Object, Symbol> seen, boolean useFqcns) {
     switch (s.getType()) {
     case NULL:
       return Symbol.NULL;
@@ -190,10 +190,10 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
       return Symbol.seq(Symbol.enumAdjustAction(s.getEnumSymbols().size(), null), Symbol.ENUM);
 
     case ARRAY:
-      return Symbol.seq(Symbol.repeat(Symbol.ARRAY_END, simpleGen(s.getElementType(), seen)), Symbol.ARRAY_START);
+      return Symbol.seq(Symbol.repeat(Symbol.ARRAY_END, simpleGen(s.getElementType(), seen, useFqcns)), Symbol.ARRAY_START);
 
     case MAP:
-      return Symbol.seq(Symbol.repeat(Symbol.MAP_END, simpleGen(s.getValueType(), seen), Symbol.STRING),
+      return Symbol.seq(Symbol.repeat(Symbol.MAP_END, simpleGen(s.getValueType(), seen, useFqcns), Symbol.STRING),
           Symbol.MAP_START);
 
     case UNION: {
@@ -203,12 +203,12 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
       final String[] newLabels = new String[subs.size()];
       int i = 0;
       for (Schema b : s.getTypes()) {
-        symbols[i] = simpleGen(b, seen);
+        symbols[i] = simpleGen(b, seen, useFqcns);
         oldLabels[i] = b.getName();
         newLabels[i] = b.getFullName();
         i++;
       }
-      return Symbol.seq(Symbol.alt(symbols, oldLabels, newLabels), Symbol.UNION);
+      return Symbol.seq(Symbol.alt(symbols, oldLabels, newLabels, useFqcns), Symbol.UNION);
     }
 
     case RECORD: {
@@ -220,7 +220,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
         int i = production.length;
         production[--i] = Symbol.fieldOrderAction(s.getFields().toArray(new Field[0]));
         for (Field f : s.getFields()) {
-          production[--i] = simpleGen(f.schema(), seen);
+          production[--i] = simpleGen(f.schema(), seen, useFqcns);
         }
         // FieldOrderAction is needed even though the field-order hasn't changed,
         // because the _reader_ doesn't know the field order hasn't changed, and

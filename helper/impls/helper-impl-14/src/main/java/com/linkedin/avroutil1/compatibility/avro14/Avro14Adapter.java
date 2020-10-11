@@ -18,6 +18,7 @@ import com.linkedin.avroutil1.compatibility.avro14.backports.Avro14DefaultValues
 import com.linkedin.avroutil1.compatibility.avro14.backports.Avro18BufferedBinaryEncoder;
 import com.linkedin.avroutil1.compatibility.SchemaNormalization;
 import com.linkedin.avroutil1.compatibility.avro14.codec.CompatibleJsonDecoder;
+import com.linkedin.avroutil1.compatibility.avro14.codec.CompatibleJsonEncoder;
 import com.linkedin.avroutil1.compatibility.backports.ObjectInputToInputStreamAdapter;
 import com.linkedin.avroutil1.compatibility.backports.ObjectOutputToOutputStreamAdapter;
 import java.io.IOException;
@@ -42,6 +43,7 @@ import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
+import org.apache.avro.io.Encoder;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificCompiler;
@@ -117,6 +119,11 @@ public class Avro14Adapter implements AvroAdapter {
   @Override
   public JsonEncoder newJsonEncoder(Schema schema, OutputStream out, boolean pretty) throws IOException {
     return new JsonEncoder(schema, out);
+  }
+
+  @Override
+  public Encoder newJsonEncoder(Schema schema, OutputStream out, boolean pretty, AvroVersion jsonFormat) throws IOException {
+    return new CompatibleJsonEncoder(schema, out, jsonFormat != null && jsonFormat.laterThan(AvroVersion.AVRO_1_4));
   }
 
   @Override

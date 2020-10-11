@@ -51,9 +51,9 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
    * @return          The start symbol for the resolving grammar
    * @throws IOException
    */
-  public final Symbol generate(Schema writer, Schema reader)
+  public final Symbol generate(Schema writer, Schema reader, boolean useFqcns)
     throws IOException {
-    return Symbol.root(generate(writer, reader, new HashMap<LitS, Symbol>()));
+    return Symbol.root(generate(writer, reader, new HashMap<LitS, Symbol>(), useFqcns));
   }
 
   /**
@@ -69,8 +69,12 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
    * @return          The start symbol for the resolving grammar
    * @throws IOException
    */
-  public Symbol generate(Schema writer, Schema reader,
-                         Map<LitS, Symbol> seen) throws IOException
+  public Symbol generate(
+          Schema writer,
+          Schema reader,
+          Map<LitS, Symbol> seen,
+          boolean useFqcns
+  ) throws IOException
   {
     final Schema.Type writerType = writer.getType();
     final Schema.Type readerType = reader.getType();
@@ -112,31 +116,31 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
       case ARRAY:
         return Symbol.seq(Symbol.repeat(Symbol.ARRAY_END,
                 generate(writer.getElementType(),
-                reader.getElementType(), seen)),
+                reader.getElementType(), seen, useFqcns)),
             Symbol.ARRAY_START);
 
       case MAP:
         return Symbol.seq(Symbol.repeat(Symbol.MAP_END,
                 generate(writer.getValueType(),
-                reader.getValueType(), seen), Symbol.STRING),
+                reader.getValueType(), seen, useFqcns), Symbol.STRING),
             Symbol.MAP_START);
       case RECORD:
-        return resolveRecords(writer, reader, seen);
+        return resolveRecords(writer, reader, seen, useFqcns);
       case UNION:
-        return resolveUnion(writer, reader, seen);
+        return resolveUnion(writer, reader, seen, useFqcns);
       default:
         throw new AvroTypeException("Unkown type for schema: " + writerType);
       }
     } else {  // writer and reader are of different types
       if (writerType == Schema.Type.UNION) {
-        return resolveUnion(writer, reader, seen);
+        return resolveUnion(writer, reader, seen, useFqcns);
       }
 
       switch (readerType) {
       case LONG:
         switch (writerType) {
         case INT:
-          return Symbol.resolve(super.generate(writer, seen), Symbol.LONG);
+          return Symbol.resolve(super.generate(writer, seen, useFqcns), Symbol.LONG);
         }
         break;
 
@@ -144,7 +148,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
         switch (writerType) {
         case INT:
         case LONG:
-          return Symbol.resolve(super.generate(writer, seen), Symbol.FLOAT);
+          return Symbol.resolve(super.generate(writer, seen, useFqcns), Symbol.FLOAT);
         }
         break;
 
@@ -153,28 +157,28 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
         case INT:
         case LONG:
         case FLOAT:
-          return Symbol.resolve(super.generate(writer, seen), Symbol.DOUBLE);
+          return Symbol.resolve(super.generate(writer, seen, useFqcns), Symbol.DOUBLE);
         }
         break;
 
       case BYTES:
         switch (writerType) {
         case STRING:
-          return Symbol.resolve(super.generate(writer, seen), Symbol.BYTES);
+          return Symbol.resolve(super.generate(writer, seen, useFqcns), Symbol.BYTES);
         }
         break;
 
       case STRING:
         switch (writerType) {
         case BYTES:
-          return Symbol.resolve(super.generate(writer, seen), Symbol.STRING);
+          return Symbol.resolve(super.generate(writer, seen, useFqcns), Symbol.STRING);
         }
         break;
 
       case UNION:
-        int j = bestBranch(reader, writer, seen);
+        int j = bestBranch(reader, writer, seen, useFqcns);
         if (j >= 0) {
-          Symbol s = generate(writer, reader.getTypes().get(j), seen);
+          Symbol s = generate(writer, reader.getTypes().get(j), seen, useFqcns);
           return Symbol.seq(Symbol.unionAdjustAction(j, s), Symbol.UNION);
         }
         break;
@@ -195,8 +199,12 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
                         + ", expecting " + reader.getFullName());
   }
 
-  private Symbol resolveUnion(Schema writer, Schema reader,
-                              Map<LitS, Symbol> seen) throws IOException {
+  private Symbol resolveUnion(
+          Schema writer,
+          Schema reader,
+          Map<LitS, Symbol> seen,
+          boolean useFqcns
+  ) throws IOException {
     List<Schema> alts = writer.getTypes();
     final int size = alts.size();
     Symbol[] symbols = new Symbol[size];
@@ -209,17 +217,21 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
      */
     int i = 0;
     for (Schema w : alts) {
-      symbols[i] = generate(w, reader, seen);
+      symbols[i] = generate(w, reader, seen, useFqcns);
       oldLabels[i] = w.getName();
       newLabels[i] = w.getFullName();
       i++;
     }
-    return Symbol.seq(Symbol.alt(symbols, oldLabels, newLabels),
+    return Symbol.seq(Symbol.alt(symbols, oldLabels, newLabels, useFqcns),
                       Symbol.writerUnionAction());
   }
 
-  private Symbol resolveRecords(Schema writer, Schema reader,
-                                Map<LitS, Symbol> seen) throws IOException {
+  private Symbol resolveRecords(
+          Schema writer,
+          Schema reader,
+          Map<LitS, Symbol> seen,
+          boolean useFqcns
+  ) throws IOException {
     LitS wsc = new LitS2(writer, reader);
     Symbol result = seen.get(wsc);
     if (result == null) {
@@ -278,10 +290,10 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
         Field rf = reader.getField(fname);
         if (rf == null) {
           production[--count] =
-            Symbol.skipAction(generate(wf.schema(), wf.schema(), seen));
+            Symbol.skipAction(generate(wf.schema(), wf.schema(), seen, useFqcns));
         } else {
           production[--count] =
-            generate(wf.schema(), rf.schema(), seen);
+            generate(wf.schema(), rf.schema(), seen, useFqcns);
         }
       }
 
@@ -292,7 +304,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
         if (wf == null) {
           byte[] bb = getBinary(rf.schema(), rf.defaultValue());
           production[--count] = Symbol.defaultStartAction(bb);
-          production[--count] = generate(rf.schema(), rf.schema(), seen);
+          production[--count] = generate(rf.schema(), rf.schema(), seen, useFqcns);
           production[--count] = Symbol.DEFAULT_END_ACTION;
         }
       }
@@ -459,7 +471,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
     return false;
   }
 
-  private int bestBranch(Schema r, Schema w, Map<LitS, Symbol> seen) throws IOException {
+  private int bestBranch(Schema r, Schema w, Map<LitS, Symbol> seen, boolean useFqcns) throws IOException {
     Schema.Type vt = w.getType();
       // first scan for exact match
       int j = 0;
@@ -475,7 +487,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
               return j;
 
             if (vt == Schema.Type.RECORD &&
-                !hasMatchError(resolveRecords(w, b, seen))) {
+                !hasMatchError(resolveRecords(w, b, seen, useFqcns))) {
               String vShortName = w.getName();
               String bShortName = b.getName();
               // use the first structure match or one where the name matches

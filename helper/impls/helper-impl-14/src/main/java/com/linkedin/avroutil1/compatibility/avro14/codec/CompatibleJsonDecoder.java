@@ -59,12 +59,12 @@ public class CompatibleJsonDecoder extends ParsingDecoder
 
   /** Creates a new JsonDecoder based on an InputStream. */
   public CompatibleJsonDecoder(Schema schema, InputStream in) throws IOException {
-    this(new JsonGrammarGenerator().generate(schema), in);
+    this(new JsonGrammarGenerator().generate(schema, false), in);
   }
   
   /** Creates a new JsonDecoder based on a String input. */
   public CompatibleJsonDecoder(Schema schema, String in) throws IOException {
-    this(new JsonGrammarGenerator().generate(schema), in);
+    this(new JsonGrammarGenerator().generate(schema, false), in);
   }
 
   private void advance(Symbol symbol) throws IOException {

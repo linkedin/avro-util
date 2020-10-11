@@ -38,8 +38,8 @@ public class ValidatingGrammarGenerator {
    * Returns the non-terminal that is the start symbol
    * for the grammar for the given schema {@code sc}.
    */
-  public Symbol generate(Schema schema) {
-    return Symbol.root(generate(schema, new HashMap<LitS, Symbol>()));
+  public Symbol generate(Schema schema, boolean useFqcns) {
+    return Symbol.root(generate(schema, new HashMap<LitS, Symbol>(), useFqcns));
   }
 
   /**
@@ -52,7 +52,7 @@ public class ValidatingGrammarGenerator {
    * @param seen  A map of schema to symbol mapping done so far.
    * @return      The start symbol for the schema
    */
-  public Symbol generate(Schema sc, Map<LitS, Symbol> seen) {
+  public Symbol generate(Schema sc, Map<LitS, Symbol> seen, boolean useFqcns) {
     switch (sc.getType()) {
     case NULL:
       return Symbol.NULL;
@@ -77,11 +77,11 @@ public class ValidatingGrammarGenerator {
       return Symbol.seq(Symbol.intCheckAction(sc.getEnumSymbols().size()),
           Symbol.ENUM);
     case ARRAY:
-      return Symbol.seq(Symbol.repeat(Symbol.ARRAY_END, generate(sc.getElementType(), seen)),
+      return Symbol.seq(Symbol.repeat(Symbol.ARRAY_END, generate(sc.getElementType(), seen, useFqcns)),
           Symbol.ARRAY_START);
     case MAP:
       return Symbol.seq(Symbol.repeat(Symbol.MAP_END,
-              generate(sc.getValueType(), seen), Symbol.STRING),
+              generate(sc.getValueType(), seen, useFqcns), Symbol.STRING),
           Symbol.MAP_START);
     case RECORD: {
       LitS wsc = new LitS(sc);
@@ -98,7 +98,7 @@ public class ValidatingGrammarGenerator {
 
         int i = production.length;
         for (Field f : sc.getFields()) {
-          production[--i] = generate(f.schema(), seen);
+          production[--i] = generate(f.schema(), seen, useFqcns);
         }
       }
       return rresult;
@@ -111,12 +111,12 @@ public class ValidatingGrammarGenerator {
 
       int i = 0;
       for (Schema b : sc.getTypes()) {
-        symbols[i] = generate(b, seen);
+        symbols[i] = generate(b, seen, useFqcns);
         oldLabels[i] = b.getName();
         newLabels[i] = b.getFullName();
         i++;
       }
-      return Symbol.seq(Symbol.alt(symbols, oldLabels, newLabels), Symbol.UNION);
+      return Symbol.seq(Symbol.alt(symbols, oldLabels, newLabels, useFqcns), Symbol.UNION);
 
     default:
       throw new RuntimeException("Unexpected schema type");

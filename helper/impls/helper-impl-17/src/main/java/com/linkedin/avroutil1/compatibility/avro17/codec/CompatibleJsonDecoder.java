@@ -93,7 +93,7 @@ public class CompatibleJsonDecoder extends ParsingDecoder
     if (null == schema) {
       throw new NullPointerException("Schema cannot be null!");
     }
-    return new JsonGrammarGenerator().generate(schema);
+    return new JsonGrammarGenerator().generate(schema, true);
   }
 
   /**

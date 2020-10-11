@@ -51,9 +51,9 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
    * @return          The start symbol for the resolving grammar
    * @throws IOException 
    */
-  public final Symbol generate(Schema writer, Schema reader)
+  public final Symbol generate(Schema writer, Schema reader, boolean useFqcns)
     throws IOException {
-    return Symbol.root(generate(writer, reader, new HashMap<LitS, Symbol>()));
+    return Symbol.root(generate(writer, reader, new HashMap<LitS, Symbol>(), useFqcns));
   }
   
   /**
@@ -69,8 +69,12 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
    * @return          The start symbol for the resolving grammar
    * @throws IOException 
    */
-  public Symbol generate(Schema writer, Schema reader,
-                         Map<LitS, Symbol> seen) throws IOException
+  public Symbol generate(
+          Schema writer,
+          Schema reader,
+          Map<LitS, Symbol> seen,
+          boolean useFqcns
+  ) throws IOException
   {
     final Schema.Type writerType = writer.getType();
     final Schema.Type readerType = reader.getType();
@@ -112,31 +116,31 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
       case ARRAY:
         return Symbol.seq(Symbol.repeat(Symbol.ARRAY_END,
                 generate(writer.getElementType(),
-                reader.getElementType(), seen)),
+                reader.getElementType(), seen, useFqcns)),
             Symbol.ARRAY_START);
       
       case MAP:
         return Symbol.seq(Symbol.repeat(Symbol.MAP_END,
                 generate(writer.getValueType(),
-                reader.getValueType(), seen), Symbol.STRING),
+                reader.getValueType(), seen, useFqcns), Symbol.STRING),
             Symbol.MAP_START);
       case RECORD:
-        return resolveRecords(writer, reader, seen);
+        return resolveRecords(writer, reader, seen, useFqcns);
       case UNION:
-        return resolveUnion(writer, reader, seen);
+        return resolveUnion(writer, reader, seen, useFqcns);
       default:
         throw new AvroTypeException("Unkown type for schema: " + writerType);
       }
     } else {  // writer and reader are of different types
       if (writerType == Schema.Type.UNION) {
-        return resolveUnion(writer, reader, seen);
+        return resolveUnion(writer, reader, seen, useFqcns);
       }
   
       switch (readerType) {
       case LONG:
         switch (writerType) {
         case INT:
-          return Symbol.resolve(super.generate(writer, seen), Symbol.LONG);
+          return Symbol.resolve(super.generate(writer, seen, useFqcns), Symbol.LONG);
         }
         break;
   
@@ -144,7 +148,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
         switch (writerType) {
         case INT:
         case LONG:
-          return Symbol.resolve(super.generate(writer, seen), Symbol.FLOAT);
+          return Symbol.resolve(super.generate(writer, seen, useFqcns), Symbol.FLOAT);
         }
         break;
   
@@ -153,14 +157,14 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
         case INT:
         case LONG:
         case FLOAT:
-          return Symbol.resolve(super.generate(writer, seen), Symbol.DOUBLE);
+          return Symbol.resolve(super.generate(writer, seen, useFqcns), Symbol.DOUBLE);
         }
         break;
   
       case UNION:
         int j = bestBranch(reader, writer);
         if (j >= 0) {
-          Symbol s = generate(writer, reader.getTypes().get(j), seen);
+          Symbol s = generate(writer, reader.getTypes().get(j), seen, useFqcns);
           return Symbol.seq(new Symbol.UnionAdjustAction(j, s), Symbol.UNION);
         }
         break;
@@ -182,8 +186,12 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
                         + ", expecting " + reader.toString(true));
   }
 
-  private Symbol resolveUnion(Schema writer, Schema reader,
-                              Map<LitS, Symbol> seen) throws IOException {
+  private Symbol resolveUnion(
+          Schema writer,
+          Schema reader,
+          Map<LitS, Symbol> seen,
+          boolean useFqcns
+  ) throws IOException {
     List<Schema> alts = writer.getTypes();
     final int size = alts.size();
     Symbol[] symbols = new Symbol[size];
@@ -196,17 +204,21 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
      */
     int i = 0;
     for (Schema w : alts) {
-      symbols[i] = generate(w, reader, seen);
+      symbols[i] = generate(w, reader, seen, useFqcns);
       oldLabels[i] = w.getName();
       newLabels[i] = w.getFullName(); //always safe in avro 1.6
       i++;
     }
-    return Symbol.seq(Symbol.alt(symbols, oldLabels, newLabels),
+    return Symbol.seq(Symbol.alt(symbols, oldLabels, newLabels, useFqcns),
         new Symbol.WriterUnionAction());
   }
 
-  private Symbol resolveRecords(Schema writer, Schema reader,
-                                Map<LitS, Symbol> seen) throws IOException {
+  private Symbol resolveRecords(
+          Schema writer,
+          Schema reader,
+          Map<LitS, Symbol> seen,
+          boolean useFqcns
+  ) throws IOException {
     LitS wsc = new LitS2(writer, reader);
     Symbol result = seen.get(wsc);
     if (result == null) {
@@ -264,10 +276,10 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
         Field rf = reader.getField(fname);
         if (rf == null) {
           production[--count] =
-            new Symbol.SkipAction(generate(wf.schema(), wf.schema(), seen));
+            new Symbol.SkipAction(generate(wf.schema(), wf.schema(), seen, useFqcns));
         } else {
           production[--count] =
-            generate(wf.schema(), rf.schema(), seen);
+            generate(wf.schema(), rf.schema(), seen, useFqcns);
         }
       }
 
@@ -278,7 +290,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
         if (wf == null) {
           byte[] bb = getBinary(rf.schema(), rf.defaultValue());
           production[--count] = new Symbol.DefaultStartAction(bb);
-          production[--count] = generate(rf.schema(), rf.schema(), seen);
+          production[--count] = generate(rf.schema(), rf.schema(), seen, useFqcns);
           production[--count] = Symbol.DEFAULT_END_ACTION;
         }
       }

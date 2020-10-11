@@ -115,8 +115,8 @@ public abstract class Symbol {
   /**
    *  A convenience method to construct a union.
    */
-  static Symbol alt(Symbol[] symbols, String[] oldLabels, String[] newLabels) {
-    return new Alternative(symbols, oldLabels, newLabels);
+  static Symbol alt(Symbol[] symbols, String[] oldLabels, String[] newLabels, boolean useFqcns) {
+    return new Alternative(symbols, oldLabels, newLabels, useFqcns);
   }
 
   /**
@@ -400,12 +400,14 @@ public abstract class Symbol {
 
     public final String[] oldLabels; //labels used in avro <= 1.4
     public final String[] newLabels; //labels used in more modern avro
+    public final boolean useFqcns;
 
-    private Alternative(Symbol[] symbols, String[] oldLabels, String[] newLabels) {
+    private Alternative(Symbol[] symbols, String[] oldLabels, String[] newLabels, boolean useFqcns) {
       super(Kind.ALTERNATIVE);
       this.symbols = symbols;
       this.oldLabels = oldLabels;
       this.newLabels = newLabels;
+      this.useFqcns = useFqcns;
     }
     
     public Symbol getSymbol(int index) {
@@ -413,7 +415,7 @@ public abstract class Symbol {
     }
     
     public String getLabel(int index) {
-      throw new UnsupportedOperationException("not implemented (yet?)");
+      return useFqcns ? newLabels[index] : oldLabels[index];
     }
     
     public int size() {
@@ -446,7 +448,7 @@ public abstract class Symbol {
       for (int i = 0; i < ss.length; i++) {
         ss[i] = symbols[i].flatten(map, map2);
       }
-      return new Alternative(ss, oldLabels, newLabels);
+      return new Alternative(ss, oldLabels, newLabels, useFqcns);
     }
   }
 

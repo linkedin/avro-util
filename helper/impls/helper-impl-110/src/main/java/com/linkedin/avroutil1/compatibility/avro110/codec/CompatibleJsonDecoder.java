@@ -84,7 +84,7 @@ public class CompatibleJsonDecoder extends ParsingDecoder implements Parser.Acti
 
   private static Symbol getSymbol(Schema schema) {
     Objects.requireNonNull(schema, "Schema cannot be null");
-    return new JsonGrammarGenerator().generate(schema);
+    return new JsonGrammarGenerator().generate(schema, true);
   }
 
   /**
