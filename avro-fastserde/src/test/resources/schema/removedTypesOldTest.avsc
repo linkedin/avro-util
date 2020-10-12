@@ -1,0 +1,197 @@
+{
+  "type": "record",
+  "name": "RemovedTypesTestRecord",
+  "namespace": "com.linkedin.avro.fastserde.generated.avro",
+  "doc": null,
+  "fields": [
+    {
+      "name": "field",
+      "type": "string"
+    },
+	{
+      "name": "removedBytes",
+      "type": "bytes"
+    },
+    {
+      "name": "removedBytesArray",
+      "type": {
+        "type": "array",
+        "items": "bytes"
+      }
+    },
+    {
+      "name": "removedBytesUnion",
+      "type": [
+        "null",
+        "bytes"
+      ],
+      "default": null
+    },
+    {
+      "name": "removedBytesMap",
+      "type": {
+        "type": "map",
+        "values": "bytes"
+      }
+    },
+    {
+      "name": "removedBytesUnionArray",
+      "type": {
+        "type": "array",
+        "items": ["null", "bytes"]
+      }
+    },
+    {
+      "name": "removedBytesUnionMap",
+      "type": {
+        "type": "map",
+        "values": ["null", "bytes"]
+      }
+    },
+    {
+      "name": "removedFixed",
+      "type": {
+        "type": "fixed",
+        "name": "RemovedFixed",
+        "size": 1
+      }
+    },
+    {
+      "name": "removedFixedUnion",
+      "type": [
+        "null",
+        "RemovedFixed"
+      ],
+      "default": null
+    },
+    {
+      "name": "removedFixedArray",
+      "type": {
+        "type": "array",
+        "items": "RemovedFixed"
+      }
+    },
+    {
+      "name": "removedFixedMap",
+      "type": {
+        "type": "map",
+        "values": "RemovedFixed"
+      }
+    },
+    {
+      "name": "removedFixedUnionArray",
+      "type": {
+        "type": "array",
+        "items": ["null", "RemovedFixed"]
+      }
+    },
+    {
+      "name": "removedFixedUnionMap",
+      "type": {
+        "type": "map",
+        "values": ["null", "RemovedFixed"]
+      }
+    },
+    {
+      "name": "removedEnum",
+      "type": {
+        "type": "enum",
+        "name": "RemovedEnum",
+        "doc": null,
+        "symbols": [
+          "E",
+          "D",
+          "B",
+          "C",
+          "A"
+        ]
+      }
+    },
+    {
+      "name": "removedEnumUnion",
+      "type": [
+        "null",
+        "RemovedEnum"
+      ],
+      "default": null
+    },
+    {
+      "name": "removedEnumArray",
+      "type": {
+        "type": "array",
+        "items": "RemovedEnum"
+      }
+    },
+    {
+      "name": "removedEnumMap",
+      "type": {
+        "type": "map",
+        "values": "RemovedEnum"
+      }
+    },
+    {
+      "name": "removedEnumUnionArray",
+      "type": {
+        "type": "array",
+        "items": ["null", "RemovedEnum"]
+      }
+    },
+    {
+      "name": "removedEnumUnionMap",
+      "type": {
+        "type": "map",
+        "values": ["null", "RemovedEnum"]
+      }
+    },
+    {
+      "name": "removedSubRecord",
+      "type": {
+          "type": "record",
+          "name": "RemovedSubRecord",
+          "doc": null,
+          "fields": [
+            {
+              "name": "subField",
+              "type": "string"
+            }
+          ]
+       }
+    },
+    {
+      "name": "removedSubRecordUnion",
+      "type": [
+        "null",
+        "RemovedSubRecord"
+      ],
+      "default": null
+    },
+    {
+      "name": "removedSubRecordArray",
+      "type": {
+        "type": "array",
+        "items": "RemovedSubRecord"
+      }
+    },
+    {
+      "name": "removedSubRecordUnionArray",
+      "type": {
+        "type": "array",
+        "items": ["null", "RemovedSubRecord"]
+      }
+    },
+    {
+      "name": "removedSubRecordMap",
+      "type": {
+        "type": "map",
+        "values": "RemovedSubRecord"
+      }
+    },
+    {
+      "name": "removedSubRecordUnionMap",
+      "type": {
+        "type": "map",
+        "values": ["null", "RemovedSubRecord"]
+      }
+    }
+  ]
+}

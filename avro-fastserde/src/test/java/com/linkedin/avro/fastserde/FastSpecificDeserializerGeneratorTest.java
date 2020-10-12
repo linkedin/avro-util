@@ -1,6 +1,6 @@
 package com.linkedin.avro.fastserde;
 
-import com.linkedin.avro.fastserde.generated.avro.ClasspathTestRecord;
+import com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord;
 import com.linkedin.avro.fastserde.generated.avro.SubRecord;
 import com.linkedin.avro.fastserde.generated.avro.TestEnum;
 import com.linkedin.avro.fastserde.generated.avro.TestFixed;
@@ -621,54 +621,60 @@ public class FastSpecificDeserializerGeneratorTest {
 
   @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
   public void shouldReadWithTypesDeletedFromReaderSchema(Boolean whetherUseFastDeserializer) throws IOException {
-    // the purpose of this scenario is to test whether types removed in reader schema
-    // will not be considered a part of inferred classpath and will not cause the ClassNotFoundException.
-
     // given
-    Schema classpathOldRecordSchema = Schema.parse(this.getClass().getResourceAsStream("/schema/classpathOldTest.avsc"));
-    Schema classpathFixedSchema = classpathOldRecordSchema.getField("classpathFixed").schema();
-    Schema classpathEnumSchema = classpathOldRecordSchema.getField("classpathEnum").schema();
-    Schema classpathSubRecordSchema = classpathOldRecordSchema.getField("classpathSubRecord").schema();
-    GenericData.Record classpathOldRecord = new GenericData.Record(classpathOldRecordSchema);
-    classpathOldRecord.put("field", "abc");
+    Schema removedTypesOldRecordSchema = Schema.parse(this.getClass().getResourceAsStream("/schema/removedTypesOldTest.avsc"));
+    Schema removedFixedSchema = removedTypesOldRecordSchema.getField("removedFixed").schema();
+    Schema removedEnumSchema = removedTypesOldRecordSchema.getField("removedEnum").schema();
+    Schema removedSubRecordSchema = removedTypesOldRecordSchema.getField("removedSubRecord").schema();
+    GenericData.Record removedOldRecord = new GenericData.Record(removedTypesOldRecordSchema);
+    removedOldRecord.put("field", "abc");
 
-    GenericData.Fixed classpathFixed = newFixed(classpathFixedSchema, new byte[]{0x01});
-    Map<String, GenericData.Fixed> classpathFixedMap = new HashMap<>();
-    classpathFixedMap.put("key", classpathFixed);
-    classpathOldRecord.put("classpathFixed", classpathFixed);
-    classpathOldRecord.put("classpathFixedUnion", classpathFixed);
-    classpathOldRecord.put("classpathFixedArray", Arrays.asList(classpathFixed));
-    classpathOldRecord.put("classpathFixedUnionArray", Arrays.asList(classpathFixed));
-    classpathOldRecord.put("classpathFixedMap", classpathFixedMap);
-    classpathOldRecord.put("classpathFixedUnionMap", classpathFixedMap);
+    ByteBuffer removedBytes = ByteBuffer.wrap(new byte[]{0x01});
+    Map<String, ByteBuffer> removedBytesMap = new HashMap<>();
+    removedOldRecord.put("removedBytes", removedBytes);
+    removedOldRecord.put("removedBytesUnion", removedBytes);
+    removedOldRecord.put("removedBytesArray", Arrays.asList(removedBytes));
+    removedOldRecord.put("removedBytesMap", removedBytesMap);
+    removedOldRecord.put("removedBytesUnionArray", Arrays.asList(removedBytes));
+    removedOldRecord.put("removedBytesUnionMap", removedBytesMap);
 
-    GenericData.EnumSymbol classpathEnum = AvroCompatibilityHelper.newEnumSymbol(classpathEnumSchema, "A");
-    Map<String, GenericData.EnumSymbol> classpathEnumMap = new HashMap<>();
-    classpathEnumMap.put("key", classpathEnum);
-    classpathOldRecord.put("classpathEnum", classpathEnum);
-    classpathOldRecord.put("classpathEnumUnion", classpathEnum);
-    classpathOldRecord.put("classpathEnumArray", Arrays.asList(classpathEnum));
-    classpathOldRecord.put("classpathEnumUnionArray", Arrays.asList(classpathEnum));
-    classpathOldRecord.put("classpathEnumMap", classpathEnumMap);
-    classpathOldRecord.put("classpathEnumUnionMap", classpathEnumMap);
+    GenericData.Fixed removedFixed = newFixed(removedFixedSchema, new byte[]{0x01});
+    Map<String, GenericData.Fixed> removedFixedMap = new HashMap<>();
+    removedFixedMap.put("key", removedFixed);
+    removedOldRecord.put("removedFixed", removedFixed);
+    removedOldRecord.put("removedFixedUnion", removedFixed);
+    removedOldRecord.put("removedFixedArray", Arrays.asList(removedFixed));
+    removedOldRecord.put("removedFixedUnionArray", Arrays.asList(removedFixed));
+    removedOldRecord.put("removedFixedMap", removedFixedMap);
+    removedOldRecord.put("removedFixedUnionMap", removedFixedMap);
 
-    GenericData.Record classpathSubRecord = new GenericData.Record(classpathSubRecordSchema);
-    Map<String, GenericData.Record> classpathSubRecordMap = new HashMap<>();
-    classpathSubRecordMap.put("key", classpathSubRecord);
-    classpathSubRecord.put("subField", "abc");
-    classpathOldRecord.put("classpathSubRecord", classpathSubRecord);
-    classpathOldRecord.put("classpathSubRecordUnion", classpathSubRecord);
-    classpathOldRecord.put("classpathSubRecordArray", Arrays.asList(classpathSubRecord));
-    classpathOldRecord.put("classpathSubRecordUnionArray", Arrays.asList(classpathSubRecord));
-    classpathOldRecord.put("classpathSubRecordMap", classpathSubRecordMap);
-    classpathOldRecord.put("classpathSubRecordUnionMap", classpathSubRecordMap);
+    GenericData.EnumSymbol removedEnum = AvroCompatibilityHelper.newEnumSymbol(removedEnumSchema, "A");
+    Map<String, GenericData.EnumSymbol> removedEnumMap = new HashMap<>();
+    removedEnumMap.put("key", removedEnum);
+    removedOldRecord.put("removedEnum", removedEnum);
+    removedOldRecord.put("removedEnumUnion", removedEnum);
+    removedOldRecord.put("removedEnumArray", Arrays.asList(removedEnum));
+    removedOldRecord.put("removedEnumUnionArray", Arrays.asList(removedEnum));
+    removedOldRecord.put("removedEnumMap", removedEnumMap);
+    removedOldRecord.put("removedEnumUnionMap", removedEnumMap);
+
+    GenericData.Record removedSubRecord = new GenericData.Record(removedSubRecordSchema);
+    Map<String, GenericData.Record> removedSubRecordMap = new HashMap<>();
+    removedSubRecordMap.put("key", removedSubRecord);
+    removedSubRecord.put("subField", "abc");
+    removedOldRecord.put("removedSubRecord", removedSubRecord);
+    removedOldRecord.put("removedSubRecordUnion", removedSubRecord);
+    removedOldRecord.put("removedSubRecordArray", Arrays.asList(removedSubRecord));
+    removedOldRecord.put("removedSubRecordUnionArray", Arrays.asList(removedSubRecord));
+    removedOldRecord.put("removedSubRecordMap", removedSubRecordMap);
+    removedOldRecord.put("removedSubRecordUnionMap", removedSubRecordMap);
 
     // when
-    ClasspathTestRecord record = null;
+    RemovedTypesTestRecord record = null;
     if (whetherUseFastDeserializer) {
-      record = decodeRecordFast(ClasspathTestRecord.SCHEMA$, classpathOldRecordSchema, genericDataAsDecoder(classpathOldRecord));
+      record = decodeRecordFast(RemovedTypesTestRecord.SCHEMA$, removedTypesOldRecordSchema, genericDataAsDecoder(removedOldRecord));
     } else {
-      record = decodeRecordSlow(ClasspathTestRecord.SCHEMA$, classpathOldRecordSchema, genericDataAsDecoder(classpathOldRecord));
+      record = decodeRecordSlow(RemovedTypesTestRecord.SCHEMA$, removedTypesOldRecordSchema, genericDataAsDecoder(removedOldRecord));
     }
 
     // then

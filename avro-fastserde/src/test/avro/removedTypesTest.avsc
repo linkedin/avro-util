@@ -1,6 +1,6 @@
 {
   "type": "record",
-  "name": "ClasspathTestRecord",
+  "name": "RemovedTypesTestRecord",
   "namespace": "com.linkedin.avro.fastserde.generated.avro",
   "doc": null,
   "fields": [
