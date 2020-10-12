@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "namespace": "by16",
+  "name": "RecordWithCodeDoc",
+  "fields": [
+    {
+      "name": "docHasSemicolon",
+      "type": "string",
+      "doc": "fake method); more"
+    }
+  ]
+}

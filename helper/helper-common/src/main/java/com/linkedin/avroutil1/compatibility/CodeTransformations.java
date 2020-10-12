@@ -31,7 +31,7 @@ public class CodeTransformations {
           + "(" + Pattern.quote("new org.apache.avro.Schema.Parser().parse(") + ")" + "|"
           + "(" + Pattern.quote(HelperConsts.HELPER_FQCN + ".parse(") + ")"
   );
-  private static final Pattern PARSE_INVOCATION_END_PATTERN = Pattern.compile("\\);\\s+");
+  private static final Pattern PARSE_INVOCATION_END_PATTERN = Pattern.compile("\"\\);\\s*[\\r\\n]+");
   private static final Pattern PARSE_VARARG_PATTERN = Pattern.compile("[^\\\\]\",\""); // a non-escaped "," sequence
   private static final String  QUOTE = "\"";
   private static final String  ESCAPED_QUOTE = "\\\"";
@@ -286,7 +286,7 @@ public class CodeTransformations {
     }
 
     //does not include the enclosing double quotes
-    String stringLiteral = code.substring(startMatcher.end() + 1, endMatcher.start() - 1);
+    String stringLiteral = code.substring(startMatcher.end() + 1, endMatcher.start());
     boolean largeString = stringLiteral.length() >= MAX_STRING_LITERAL_SIZE;
     //either we've already been here, or modern avro was used that already emits vararg
     boolean ourVararg = stringLiteral.contains("new StringBuilder().append(");
@@ -318,7 +318,7 @@ public class CodeTransformations {
 
     String prefix = code.substring(0, startMatcher.start());
     String newParseCall = HelperConsts.HELPER_FQCN + ".parse(" + argToParseCall + ");";
-    String restOfCode = code.substring(endMatcher.start() + 2);
+    String restOfCode = code.substring(endMatcher.start() + 3);
     return prefix + newParseCall + restOfCode;
   }
 
