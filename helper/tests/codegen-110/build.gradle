@@ -54,6 +54,7 @@ task runCompatAvroCodegen {
         classpath configurations.codegen
         main = 'com.linkedin.avroutil1.TestTool'
         args = ["compile", file.getAbsolutePath(), "$buildDir/generated/sources/compat-avro/java/main"]
+        debug = false
       }
     }
   }
