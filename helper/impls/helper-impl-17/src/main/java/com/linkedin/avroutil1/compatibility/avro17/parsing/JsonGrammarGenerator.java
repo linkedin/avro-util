@@ -39,8 +39,8 @@ public class JsonGrammarGenerator extends ValidatingGrammarGenerator {
    * Returns the non-terminal that is the start symbol
    * for the grammar for the grammar for the given schema {@code sc}.
    */
-  public Symbol generate(Schema schema) {
-    return Symbol.root(generate(schema, new HashMap<LitS, Symbol>()));
+  public Symbol generate(Schema schema, boolean useFqcns) {
+    return Symbol.root(generate(schema, new HashMap<LitS, Symbol>(), useFqcns));
   }
 
   /**
@@ -53,7 +53,7 @@ public class JsonGrammarGenerator extends ValidatingGrammarGenerator {
    * @param seen  A map of schema to symbol mapping done so far.
    * @return      The start symbol for the schema
    */
-  public Symbol generate(Schema sc, Map<LitS, Symbol> seen) {
+  public Symbol generate(Schema sc, Map<LitS, Symbol> seen, boolean useFqcns) {
     switch (sc.getType()) {
     case NULL:
     case BOOLEAN:
@@ -65,17 +65,17 @@ public class JsonGrammarGenerator extends ValidatingGrammarGenerator {
     case BYTES:
     case FIXED:
     case UNION:
-      return super.generate(sc, seen);
+      return super.generate(sc, seen, useFqcns);
     case ENUM:
       return Symbol.seq(Symbol.enumLabelsAction(sc.getEnumSymbols()),
           Symbol.ENUM);
     case ARRAY:
       return Symbol.seq(Symbol.repeat(Symbol.ARRAY_END,
-              Symbol.ITEM_END, generate(sc.getElementType(), seen)),
+              Symbol.ITEM_END, generate(sc.getElementType(), seen, useFqcns)),
           Symbol.ARRAY_START);
     case MAP:
       return Symbol.seq(Symbol.repeat(Symbol.MAP_END,
-              Symbol.ITEM_END, generate(sc.getValueType(), seen),
+              Symbol.ITEM_END, generate(sc.getValueType(), seen, useFqcns),
               Symbol.MAP_KEY_MARKER, Symbol.STRING),
           Symbol.MAP_START);
     case RECORD: {
@@ -91,7 +91,7 @@ public class JsonGrammarGenerator extends ValidatingGrammarGenerator {
         production[--i] = Symbol.RECORD_START;
         for (Field f : sc.getFields()) {
           production[--i] = Symbol.fieldAdjustAction(n, f.name());
-          production[--i] = generate(f.schema(), seen);
+          production[--i] = generate(f.schema(), seen, useFqcns);
           production[--i] = Symbol.FIELD_END;
           n++;
         }

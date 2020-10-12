@@ -22,6 +22,7 @@ import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.Decoder;
+import org.apache.avro.io.Encoder;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificRecord;
@@ -201,6 +202,25 @@ public class AvroCompatibilityHelper {
   }
 
   /**
+   * constructs a json {@link Encoder} on top of the given {@link OutputStream} for the given {@link Schema}
+   * @param schema a schema
+   * @param out an output stream
+   * @param pretty true to pretty-print the json (if supported by runtime avro version)
+   * @param jsonFormat which major version of avro to match for json wire format. null means the runtime version
+   * @return an encoder
+   * @throws IOException in io errors
+   */
+  public static Encoder newJsonEncoder(Schema schema, OutputStream out, boolean pretty, AvroVersion jsonFormat) throws IOException {
+    assertAvroAvailable();
+    //for some reason uncommenting this check causes classloading to fail if no avro
+    //(see AvroCompatibilityHelperNoAvroTest).
+    //if (jsonFormat == null) {
+    //  return ADAPTER.newJsonEncoder(schema, out, pretty);
+    //}
+    return ADAPTER.newJsonEncoder(schema, out, pretty, jsonFormat);
+  }
+
+  /**
    * constructs a {@link JsonDecoder} on top of the given {@link InputStream} for the given {@link Schema}
    * @param schema a schema
    * @param in an input stream
@@ -224,11 +244,27 @@ public class AvroCompatibilityHelper {
     return ADAPTER.newJsonDecoder(schema, in);
   }
 
+  /**
+   * constructs a {@link JsonDecoder} on top of the given {@link InputStream} for the given {@link Schema}
+   * that can decode json in either "modern" or old (avro &lt;= 1.4) formats
+   * @param schema a schema
+   * @param in an input stream containing a json-serialized avro payload
+   * @return a decoder
+   * @throws IOException on io errors
+   */
   public static Decoder newCompatibleJsonDecoder(Schema schema, InputStream in) throws IOException {
     assertAvroAvailable();
     return ADAPTER.newCompatibleJsonDecoder(schema, in);
   }
 
+  /**
+   * constructs a {@link JsonDecoder} on top of the given {@link String} for the given {@link Schema}
+   * that can decode json in either "modern" or old (avro &lt;= 1.4) formats
+   * @param schema a schema
+   * @param in a String containing a json-serialized avro payload
+   * @return a decoder
+   * @throws IOException on io errors
+   */
   public static Decoder newCompatibleJsonDecoder(Schema schema, String in) throws IOException {
     assertAvroAvailable();
     return ADAPTER.newCompatibleJsonDecoder(schema, in);
