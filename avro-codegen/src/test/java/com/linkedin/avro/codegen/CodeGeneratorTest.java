@@ -7,7 +7,7 @@
 package com.linkedin.avro.codegen;
 
 import com.linkedin.avro.codegen.testutil.CompilerHelper;
-import com.linkedin.avro.compatibility.AvroGeneratedSourceCode;
+import com.linkedin.avroutil1.compatibility.AvroGeneratedSourceCode;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.nio.file.Files;

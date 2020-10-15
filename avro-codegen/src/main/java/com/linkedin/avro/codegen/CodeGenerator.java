@@ -6,11 +6,12 @@
 
 package com.linkedin.avro.codegen;
 
-import com.linkedin.avro.compatibility.AvroCompatibilityHelper;
-import com.linkedin.avro.compatibility.AvroGeneratedSourceCode;
-import com.linkedin.avro.compatibility.AvroVersion;
-import com.linkedin.avro.compatibility.SchemaParseResult;
-import com.linkedin.avro.util.TemplateUtil;
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
+import com.linkedin.avroutil1.compatibility.AvroGeneratedSourceCode;
+import com.linkedin.avroutil1.compatibility.AvroVersion;
+import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
+import com.linkedin.avroutil1.compatibility.SchemaParseResult;
+import com.linkedin.avroutil1.compatibility.TemplateUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -149,7 +150,11 @@ public class CodeGenerator {
         List<Schema> allSchemas = new ArrayList<>();
         sharedParsed.values().forEach(schemaDetails -> allSchemas.add(schemaDetails.getSchema()));
         nonSharedParsed.values().forEach(schemaDetails -> allSchemas.add(schemaDetails.getSchema()));
-        Collection<AvroGeneratedSourceCode> javaClassFiles = AvroCompatibilityHelper.compile(allSchemas, minTargetAvroVersion);
+        Collection<AvroGeneratedSourceCode> javaClassFiles = AvroCompatibilityHelper.compile(
+                allSchemas,
+                minTargetAvroVersion,
+                AvroVersion.latest()
+        );
         Collection<AvroGeneratedSourceCode> nonExternal;
 
         //filter out java code generated for external schemas
@@ -270,7 +275,7 @@ public class CodeGenerator {
                     List<Schema> allKnownSchemas = buildUpKnownSchemaLists(successfullyParsed, importableSchemas, externalSchemas);
 
                     //call avro to parse our file given all the known schemas we've built up above
-                    result = AvroCompatibilityHelper.parse(fileContents, allKnownSchemas);
+                    result = AvroCompatibilityHelper.parse(fileContents, SchemaParseConfiguration.STRICT, allKnownSchemas);
 
                     madeProgress = true;
                 } catch (SchemaParseException parseException) {
