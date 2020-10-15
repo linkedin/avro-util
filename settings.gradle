@@ -20,7 +20,6 @@ apply plugin: 'net.vivin.gradle-semantic-build-versioning'
 //otherwise it defaults to the folder name
 rootProject.name = 'avro-util'
 
-include 'avro-migration-helper'
 include 'avro-codegen'
 include 'avro-fastserde'
 

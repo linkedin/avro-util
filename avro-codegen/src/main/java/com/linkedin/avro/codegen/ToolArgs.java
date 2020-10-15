@@ -7,7 +7,7 @@
 package com.linkedin.avro.codegen;
 
 import com.beust.jcommander.Parameter;
-import com.linkedin.avro.compatibility.AvroVersion;
+import com.linkedin.avroutil1.compatibility.AvroVersion;
 import java.io.File;
 import java.util.Collections;
 import java.util.HashSet;
