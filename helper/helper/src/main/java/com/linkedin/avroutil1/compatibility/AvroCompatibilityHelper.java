@@ -330,7 +330,7 @@ public class AvroCompatibilityHelper {
    * @param indexedRecord the record in question
    * @return true if argument is a specific record
    */
-  static boolean isSpecificRecord(IndexedRecord indexedRecord) {
+  public static boolean isSpecificRecord(IndexedRecord indexedRecord) {
     return indexedRecord instanceof SpecificRecord;
   }
 
