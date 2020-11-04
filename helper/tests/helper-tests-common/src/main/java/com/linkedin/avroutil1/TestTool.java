@@ -13,13 +13,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
 import org.apache.avro.Schema;
 import org.apache.commons.io.IOUtils;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Option;
 
 
 /**
@@ -28,34 +27,41 @@ import org.apache.commons.io.IOUtils;
  */
 public class TestTool {
 
+  static class Arguments {
+    @Option(name  = "-op", required = true)
+    private String operation;
+    @Option(name = "-min")
+    private AvroVersion minVer = AvroVersion.AVRO_1_4;
+    @Option(name = "-in", required = true)
+    private File input;
+    @Option(name = "-out", required = true)
+    private File output;
+  }
+
   public static void main(String[] args) throws Exception {
-    if (args == null || args.length == 0) {
-      System.err.println("at least one argument required");
-      System.exit(1);
-    }
-    String command = args[0].toLowerCase(Locale.ROOT).trim();
-    List<String> rest = Arrays.asList(args).subList(1, args.length);
-    switch (command) {
+    Arguments arguments =  parse(args);
+    switch (arguments.operation) {
       case "compile":
-        generateSpecificClasses(rest);
+        generateSpecificClasses(arguments.input, arguments.output, arguments.minVer);
         break;
       default:
-        System.err.println("unrecognized command " + command + ": known commands are \"compile\"");
+        System.err.println("unrecognized operation " + arguments.operation + ": known operations are \"compile\"");
         System.exit(1);
     }
   }
 
-  public static void generateSpecificClasses(List<String> args) throws IOException {
-    if (args.size() != 2) {
-      System.err.println("compile expects 2 arguments - source file and destination root folder");
-      System.exit(1);
-    }
-    File input = new File(args.get(0));
+  private static Arguments parse(String[] args) throws Exception {
+    Arguments arguments = new Arguments();
+    CmdLineParser parser = new CmdLineParser(arguments);
+    parser.parseArgument(args);
+    return arguments;
+  }
+
+  public static void generateSpecificClasses(File input, File output, AvroVersion minVer) throws IOException {
     if (!input.exists() || !input.isFile() || !input.canRead()) {
       System.err.println("input file " + input.getAbsolutePath() + " does not exist or is not readable");
       System.exit(1);
     }
-    File output = new File(args.get(1));
     if (output.exists()) {
       if (!output.isDirectory() || !output.canWrite()) {
         System.err.println("output root " + output.getAbsolutePath() + " is not a folder or is not writeable");
@@ -75,7 +81,8 @@ public class TestTool {
     Schema schema = AvroCompatibilityHelper.parse(avsc);
     Collection<AvroGeneratedSourceCode> compilationResults = AvroCompatibilityHelper.compile(
         Collections.singletonList(schema),
-        AvroVersion.earliest(), AvroVersion.latest()
+        minVer,
+        AvroVersion.latest()
     );
     for (AvroGeneratedSourceCode sourceFile : compilationResults) {
       File fileOnDisk = sourceFile.writeToDestination(output);
