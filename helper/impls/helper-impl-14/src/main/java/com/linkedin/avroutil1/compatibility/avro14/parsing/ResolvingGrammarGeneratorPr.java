@@ -1,3 +1,26 @@
+/*
+ * Copyright 2020 LinkedIn Corp.
+ * Licensed under the BSD 2-Clause License (the "License").
+ * See License in the project root for license information.
+ */
+
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.linkedin.avroutil1.compatibility.avro14.parsing;
 
 import java.io.ByteArrayOutputStream;
@@ -21,8 +44,8 @@ import org.codehaus.jackson.JsonNode;
  */
 public class ResolvingGrammarGeneratorPr extends ValidatingGrammarGenerator {
   /**
-   * Resolves the writer schema <tt>writer</tt> and the reader schema
-   * <tt>reader</tt> and returns the start symbol for the grammar generated.
+   * Resolves the writer schema and the reader schema
+   * and returns the start symbol for the grammar generated.
    * @param writer    The schema used by the writer
    * @param reader    The schema used by the reader
    * @return          The start symbol for the resolving grammar
@@ -34,15 +57,14 @@ public class ResolvingGrammarGeneratorPr extends ValidatingGrammarGenerator {
   }
 
   /**
-   * Resolves the writer schema <tt>writer</tt> and the reader schema
-   * <tt>reader</tt> and returns the start symbol for the grammar generated.
-   * If there is already a symbol in the map <tt>seen</tt> for resolving the
+   * Resolves the writer schema  and the reader schema and returns the start
+   * symbol for the grammar generated.
+   * If there is already a symbol in the map seen for resolving the
    * two schemas, then that symbol is returned. Otherwise a new symbol is
    * generated and returnd.
    * @param writer    The schema used by the writer
    * @param reader    The schema used by the reader
-   * @param seen      The &lt;reader-schema, writer-schema&gt; to symbol
-   * map of start symbols of resolving grammars so far.
+   * @param seen      A map of schema to symbol mapping done so far.
    * @return          The start symbol for the resolving grammar
    * @throws IOException
    */
@@ -250,11 +272,11 @@ public class ResolvingGrammarGeneratorPr extends ValidatingGrammarGenerator {
   }
 
   /**
-   * Returns the Avro binary encoded version of <tt>n</tt> according to
-   * the schema <tt>s</tt>.
+   * Returns the Avro binary encoded version of JsonNode according to
+   * the schema.
    * @param s The schema for encoding
    * @param n The Json node that has the value to be encoded.
-   * @return  The binary encoded version of <tt>n</tt>.
+   * @return  The binary encoded version of JsonNode.
    * @throws IOException
    */
   protected static byte[] getBinary(Schema s, JsonNode n) throws IOException {
@@ -265,8 +287,8 @@ public class ResolvingGrammarGeneratorPr extends ValidatingGrammarGenerator {
   }
 
   /**
-   * Encodes the given Json node <tt>n</tt> on to the encoder <tt>e</tt>
-   * according to the schema <tt>s</tt>.
+   * Encodes the given Json node on to the encoder
+   * according to the schema.
    * @param e The encoder to encode into.
    * @param s The schema for the object being encoded.
    * @param n The Json node to encode.

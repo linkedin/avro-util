@@ -158,6 +158,11 @@ public class Avro18Adapter implements AvroAdapter {
   }
 
   @Override
+  public Decoder newCachedResolvingDecoder(Schema writer, Schema reader, Decoder in) throws IOException {
+    throw new UnsupportedOperationException("Method has not been implemented yet.");
+  }
+
+  @Override
   public SchemaParseResult parse(String schemaJson, SchemaParseConfiguration desiredConf, Collection<Schema> known) {
     Schema.Parser parser = new Schema.Parser();
     boolean validateNames = true;

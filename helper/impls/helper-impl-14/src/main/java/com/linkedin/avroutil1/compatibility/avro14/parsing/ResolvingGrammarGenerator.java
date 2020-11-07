@@ -49,25 +49,24 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
    * @param writer    The schema used by the writer
    * @param reader    The schema used by the reader
    * @return          The start symbol for the resolving grammar
-   * @throws IOException 
+   * @throws IOException
    */
   public final Symbol generate(Schema writer, Schema reader, boolean useFqcns)
     throws IOException {
     return Symbol.root(generate(writer, reader, new HashMap<LitS, Symbol>(), useFqcns));
   }
-  
+
   /**
    * Resolves the writer schema {@code writer} and the reader schema
    * {@code reader} and returns the start symbol for the grammar generated.
    * If there is already a symbol in the map {@code seen} for resolving the
    * two schemas, then that symbol is returned. Otherwise a new symbol is
-   * generated and returnd. 
+   * generated and returnd.
    * @param writer    The schema used by the writer
    * @param reader    The schema used by the reader
-   * @param seen      The &lt;reader-schema, writer-schema&gt; to symbol
-   * map of start symbols of resolving grammars so far.
+   * @param seen      A map of schema to symbol mapping done so far.
    * @return          The start symbol for the resolving grammar
-   * @throws IOException 
+   * @throws IOException
    */
   public Symbol generate(
           Schema writer, Schema reader,
@@ -117,7 +116,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
                 generate(writer.getElementType(),
                 reader.getElementType(), seen, useFqcns)),
             Symbol.ARRAY_START);
-      
+
       case MAP:
         return Symbol.seq(Symbol.repeat(Symbol.MAP_END,
                 generate(writer.getValueType(),
@@ -134,7 +133,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
       if (writerType == Schema.Type.UNION) {
         return resolveUnion(writer, reader, seen, useFqcns);
       }
-  
+
       switch (readerType) {
       case LONG:
         switch (writerType) {
@@ -144,7 +143,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
           return Symbol.resolve(super.generate(writer, seen, useFqcns), Symbol.LONG);
         }
         break;
-  
+
       case DOUBLE:
         switch (writerType) {
         case INT:
@@ -153,7 +152,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
           return Symbol.resolve(super.generate(writer, seen, useFqcns), Symbol.DOUBLE);
         }
         break;
-  
+
       case UNION:
         int j = bestBranch(reader, writer);
         if (j >= 0) {
@@ -304,7 +303,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
     encode(e, s, n);
     return out.toByteArray();
   }
-  
+
   /**
    * Encodes the given Json node {@code n} on to the encoder {@code e}
    * according to the schema {@code s}.
@@ -313,7 +312,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
    * @param n The Json node to encode.
    * @throws IOException
    */
-  
+
   static void encode(Encoder e, Schema s, JsonNode n)
     throws IOException {
     switch (s.getType()) {
@@ -462,7 +461,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
 
   /**
    * Clever trick which differentiates items put into
-   * <code>seen</code> by {@link ValidatingGrammarGenerator}
+   * seen by {@link ValidatingGrammarGenerator}
    * from those put in by {@link ValidatingGrammarGenerator}.
    */
    static class LitS2 extends LitS {
