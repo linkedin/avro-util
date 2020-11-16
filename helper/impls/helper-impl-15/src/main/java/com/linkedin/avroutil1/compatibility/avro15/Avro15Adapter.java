@@ -90,6 +90,11 @@ public class Avro15Adapter implements AvroAdapter {
   }
 
   @Override
+  public AvroVersion supporttedMajorVersion() {
+    return AvroVersion.AVRO_1_5;
+  }
+
+  @Override
   public BinaryEncoder newBinaryEncoder(OutputStream out, boolean buffered, BinaryEncoder reuse) {
     if (buffered) {
       return EncoderFactory.get().binaryEncoder(out, reuse);
@@ -261,18 +266,8 @@ public class Avro15Adapter implements AvroAdapter {
 
   private Collection<AvroGeneratedSourceCode> transform(List<AvroGeneratedSourceCode> avroGenerated, AvroVersion minAvro, AvroVersion maxAvro) {
     List<AvroGeneratedSourceCode> transformed = new ArrayList<>(avroGenerated.size());
-    String fixed;
     for (AvroGeneratedSourceCode generated : avroGenerated) {
-      fixed = generated.getContents();
-      fixed = CodeTransformations.transformFixedClass(fixed, minAvro, maxAvro);
-      fixed = CodeTransformations.transformEnumClass(fixed, minAvro, maxAvro);
-      fixed = CodeTransformations.transformParseCalls(fixed, AvroVersion.AVRO_1_5, minAvro, maxAvro);
-      fixed = CodeTransformations.addGetClassSchemaMethod(fixed, AvroVersion.AVRO_1_5, minAvro, maxAvro);
-      fixed = CodeTransformations.removeBuilderSupport(fixed, minAvro, maxAvro);
-      fixed = CodeTransformations.removeBinaryMessageCodecSupport(fixed, minAvro, maxAvro);
-      fixed = CodeTransformations.removeAvroGeneratedAnnotation(fixed, minAvro, maxAvro);
-      fixed = CodeTransformations.transformExternalizableSupport(fixed, minAvro, maxAvro);
-      fixed = CodeTransformations.transformCustomCodersSupport(fixed, minAvro, maxAvro);
+      String fixed = CodeTransformations.applyAll(generated.getContents(), supporttedMajorVersion(), minAvro, maxAvro);
       transformed.add(new AvroGeneratedSourceCode(generated.getPath(), fixed));
     }
     return transformed;
