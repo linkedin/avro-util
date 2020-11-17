@@ -25,9 +25,10 @@ sourceSets {
       srcDir 'src/main/java'
       srcDir "$buildDir/generated/sources/raw-avro/java/main"
       srcDir "$buildDir/generated/sources/compat-avro/java/main"
+      srcDir "$buildDir/generated/sources/compat-avro-target17/java/main"
     }
     resources {
-      srcDirs = ["src/main/raw-avro", "src/main/compat-avro", "$buildDir/generated/resources"]
+      srcDirs = ["src/main/raw-avro", "src/main/compat-avro", "src/main/compat-avro-target17", "$buildDir/generated/resources"]
     }
   }
 }
@@ -53,15 +54,41 @@ task runCompatAvroCodegen {
       javaexec {
         classpath configurations.codegen
         main = 'com.linkedin.avroutil1.TestTool'
-        args = ["compile", file.getAbsolutePath(), "$buildDir/generated/sources/compat-avro/java/main"]
+        args = [
+            "-op", "compile",
+            "-in", file.getAbsolutePath(),
+            "-out", "$buildDir/generated/sources/compat-avro/java/main",
+            "-min", "AVRO_1_4"
+        ]
       }
     }
   }
 }
 
+task runCompatAvroCodegenTarget17 {
+  description = 'generate specific classes using compatibility helper with a minimum target of avro 1.7'
+  outputs.dir("$buildDir/generated/sources/compat-avro-target17/java/main").withPropertyName('outputDir')
+  fileTree(dir: 'src/main/compat-avro-target17', include:'**/*.avsc').each { file ->
+    doLast {
+      javaexec {
+        classpath configurations.codegen
+        main = 'com.linkedin.avroutil1.TestTool'
+        args = [
+            "-op", "compile",
+            "-in", file.getAbsolutePath(),
+            "-out", "$buildDir/generated/sources/compat-avro-target17/java/main",
+            "-min", "AVRO_1_7"
+        ]
+      }
+    }
+  }
+}
+
+
 //copy output generated compatible code into resources so downstream modules can use it
 task copyCompatAvroCodeToResources(type: Copy) {
   from "$buildDir/generated/sources/compat-avro/java/main"
+  from "$buildDir/generated/sources/compat-avro-target17/java/main"
   into "$buildDir/resources/main"
 }
 
@@ -80,10 +107,12 @@ jar {
   from "$buildDir/generated/resources"
 }
 
-//TODO - figure out why this must be done manually
+//TODO - figure out why these must be done manually
 runCompatAvroCodegen.dependsOn ":helper:tests:helper-tests-common:jar"
-copyCompatAvroCodeToResources.dependsOn runCompatAvroCodegen
-compileJava.dependsOn runVanillaAvroCodegen, runCompatAvroCodegen
+runCompatAvroCodegenTarget17.dependsOn ":helper:tests:helper-tests-common:jar"
+
+copyCompatAvroCodeToResources.dependsOn runCompatAvroCodegen, runCompatAvroCodegenTarget17
+compileJava.dependsOn runVanillaAvroCodegen, runCompatAvroCodegen, runCompatAvroCodegenTarget17
 jar.dependsOn runResourceGeneration
 
 dependencies {

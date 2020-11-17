@@ -29,6 +29,10 @@ import org.apache.avro.io.JsonEncoder;
  */
 public interface AvroAdapter {
 
+  //metadata
+
+  AvroVersion supporttedMajorVersion();
+
   //codecs
 
   BinaryEncoder newBinaryEncoder(OutputStream out, boolean buffered, BinaryEncoder reuse);
