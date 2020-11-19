@@ -55,7 +55,7 @@ public class ResolvingDecoder extends ValidatingDecoder {
   }
 
   /**
-   * Constructs a <tt>ResolvingDecoder</tt> using the given resolver.
+   * Constructs a ResolvingDecoder using the given resolver.
    * The resolver must have been returned by a previous call to
    * {@link #resolve(Schema, Schema)}.
    * @param resolver  The resolver to use.
