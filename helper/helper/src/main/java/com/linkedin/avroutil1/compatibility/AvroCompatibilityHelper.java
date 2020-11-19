@@ -270,6 +270,19 @@ public class AvroCompatibilityHelper {
     return ADAPTER.newCompatibleJsonDecoder(schema, in);
   }
 
+  /**
+   * {@link Decoder} that performs type-resolution between the reader's and writer's schemas.
+   * @param writer writer schema
+   * @param reader reader schema
+   * @param in a String containing a json-serialized avro payload
+   * @return a decoder
+   * @throws IOException on io errors
+   */
+  public static Decoder newCachedResolvingDecoder(Schema writer, Schema reader, Decoder in) throws IOException {
+    assertAvroAvailable();
+    return ADAPTER.newCachedResolvingDecoder(writer, reader, in);
+  }
+
   // schema parsing, and other Schema-related operations
 
   /**
