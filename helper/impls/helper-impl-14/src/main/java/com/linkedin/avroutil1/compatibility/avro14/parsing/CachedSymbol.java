@@ -9,6 +9,7 @@ package com.linkedin.avroutil1.compatibility.avro14.parsing;
 import java.lang.reflect.Field;
 import java.util.Map;
 
+
 /**
  * A version of Symbol that has a fixed version of Field: TRAILING_FIELD
  * and a fixed version of the SkipAction: CachedSkipAction to work with TRAILING_FIELD to skip Symbol
@@ -26,10 +27,10 @@ public class CachedSymbol extends Symbol {
   static {
     try {
       TRAILING_FIELD = ImplicitAction.class.getDeclaredField("isTrailing");
-    } catch (Throwable ex) {
-      throw new Error(ex);
+      TRAILING_FIELD.setAccessible(true);
+    } catch (Exception ex) {
+      throw new IllegalStateException("Expecting class ImplicitAction to have field isTrailing. " + ex);
     }
-    TRAILING_FIELD.setAccessible(true);
   }
 
   public static class CachedSkipAction extends SkipAction {

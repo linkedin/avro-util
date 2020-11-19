@@ -91,8 +91,8 @@ public class CachedResolvingDecoder extends ResolvingDecoder {
    * Internal class to create a schemaTuple as key in the SYMBOL_CACHE
    * **/
   private static class SchemaTuple {
-    private Schema writer;
-    private Schema reader;
+    private final Schema writer;
+    private final Schema reader;
     public SchemaTuple(Schema writer, Schema reader) {
       this.writer = writer;
       this.reader = reader;
