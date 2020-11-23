@@ -1,6 +1,8 @@
 package com.linkedin.avro.fastserde;
 
 import com.linkedin.avro.api.PrimitiveFloatList;
+import com.linkedin.avro.fastserde.backport.ResolvingGrammarGenerator;
+import com.linkedin.avro.fastserde.backport.Symbol;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.sun.codemodel.JArray;
 import com.sun.codemodel.JBlock;
@@ -43,8 +45,6 @@ import org.apache.avro.generic.GenericFixed;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
-import com.linkedin.avro.fastserde.backport.ResolvingGrammarGenerator;
-import com.linkedin.avro.fastserde.backport.Symbol;
 import org.apache.avro.util.Utf8;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -1040,7 +1040,12 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     if (!useGenericTypes) {
       return null;
     }
-    if (SchemaAssistant.isComplexType(valueSchema) || Schema.Type.ENUM.equals(valueSchema.getType())) {
+    /**
+     * TODO: In theory, we should only need Record, Enum and Fixed here since only these types require
+     * schema for the corresponding object initialization in Generic mode.
+     */
+    if (SchemaAssistant.isComplexType(valueSchema) || Schema.Type.ENUM.equals(valueSchema.getType())
+        || Schema.Type.FIXED.equals(valueSchema.getType())) {
       long schemaId = Utils.getSchemaFingerprint(valueSchema);
       if (schemaVarMap.get(schemaId) != null) {
         return schemaVarMap.get(schemaId);
@@ -1063,7 +1068,9 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
 
   private void registerSchema(final Schema writerSchema, long schemaId, JVar schemaVar) {
     if ((Schema.Type.RECORD.equals(writerSchema.getType()) || Schema.Type.ENUM.equals(writerSchema.getType())
-        || Schema.Type.ARRAY.equals(writerSchema.getType())) && schemaNotRegistered(writerSchema)) {
+        // TODO: Do we need `ARRAY` type here?
+        || Schema.Type.FIXED.equals(writerSchema.getType()) || Schema.Type.ARRAY.equals(writerSchema.getType()))
+        && schemaNotRegistered(writerSchema)) {
       schemaMap.put(schemaId, writerSchema);
       schemaVarMap.put(schemaId, schemaVar);
     }
