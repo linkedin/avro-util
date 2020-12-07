@@ -246,7 +246,12 @@ public class AvroCompatibilityHelper {
 
   /**
    * constructs a {@link JsonDecoder} on top of the given {@link InputStream} for the given {@link Schema}
-   * that can decode json in either "modern" or old (avro &lt;= 1.4) formats
+   * that is more widely compatible than the "native" avro decoder:
+   * <ul>
+   *     <li>avro json format has changed between 1.4 and 1.5 around encoding of union branches - simple name vs full names for named types</li>
+   *     <li>avro json decoders are not tolerant of int literals in json for float fields and vice versa under avro &lt; 1.7</li>
+   * </ul>
+   * the decoder returned by this method is expected to handle these cases with no errors
    * @param schema a schema
    * @param in an input stream containing a json-serialized avro payload
    * @return a decoder
