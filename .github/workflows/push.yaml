@@ -1,8 +1,12 @@
 name: push flow
-on: push
+
+on:
+  push:
+    branches: [ master ]
+
 jobs:
   gradle-java8:
-    name: Gradle-Java8
+    name: Java 8 build
     runs-on: ubuntu-latest
     steps:
       - name: checkout code
@@ -39,8 +43,10 @@ jobs:
           CI_NAME: github-actions
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         run: ./gradlew coveralls --no-daemon
-      - name: Run SonarCloud analysis
-        env:
-          sonar.login: ${{ secrets.SONARCLOUD_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew sonarqube --no-daemon
+#  sonarcloud dropped support for java 8. see https://sonarcloud.io/documentation/appendices/end-of-support/
+#
+#      - name: Run SonarCloud analysis
+#        env:
+#          sonar.login: ${{ secrets.SONARCLOUD_TOKEN }}
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        run: ./gradlew sonarqube --no-daemon
