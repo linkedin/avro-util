@@ -84,6 +84,8 @@ public interface AvroAdapter {
 
   boolean fieldHasDefault(Schema.Field field);
 
+  FieldBuilder cloneSchemaField(Schema.Field field);
+
   //code generation
 
   Collection<AvroGeneratedSourceCode> compile(

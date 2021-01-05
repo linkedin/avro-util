@@ -7,19 +7,12 @@
 package com.linkedin.avroutil1.compatibility;
 
 import com.linkedin.avroutil1.compatibility.avro110.Avro110Adapter;
-import com.linkedin.avroutil1.compatibility.avro110.FieldBuilder110;
 import com.linkedin.avroutil1.compatibility.avro14.Avro14Adapter;
-import com.linkedin.avroutil1.compatibility.avro14.FieldBuilder14;
 import com.linkedin.avroutil1.compatibility.avro15.Avro15Adapter;
-import com.linkedin.avroutil1.compatibility.avro15.FieldBuilder15;
 import com.linkedin.avroutil1.compatibility.avro16.Avro16Adapter;
-import com.linkedin.avroutil1.compatibility.avro16.FieldBuilder16;
 import com.linkedin.avroutil1.compatibility.avro17.Avro17Adapter;
-import com.linkedin.avroutil1.compatibility.avro17.FieldBuilder17;
 import com.linkedin.avroutil1.compatibility.avro18.Avro18Adapter;
-import com.linkedin.avroutil1.compatibility.avro18.FieldBuilder18;
 import com.linkedin.avroutil1.compatibility.avro19.Avro19Adapter;
-import com.linkedin.avroutil1.compatibility.avro19.FieldBuilder19;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,7 +39,6 @@ import org.apache.avro.specific.SpecificRecord;
 public class AvroCompatibilityHelper {
   private static final AvroVersion DETECTED_VERSION;
   private static final AvroAdapter ADAPTER;
-  private static final FieldBuilder FIELD_BUILDER;
 
   static {
     if (!AvroCompatibilityHelper.class.getCanonicalName().equals(HelperConsts.HELPER_FQCN)) {
@@ -57,37 +49,29 @@ public class AvroCompatibilityHelper {
     DETECTED_VERSION = detectAvroVersion();
     if (DETECTED_VERSION == null) {
       ADAPTER = null;
-      FIELD_BUILDER = null;
     } else {
       try {
         switch (DETECTED_VERSION) {
           case AVRO_1_4:
             ADAPTER = new Avro14Adapter();
-            FIELD_BUILDER = new FieldBuilder14();
             break;
           case AVRO_1_5:
             ADAPTER = new Avro15Adapter();
-            FIELD_BUILDER = new FieldBuilder15();
             break;
           case AVRO_1_6:
             ADAPTER = new Avro16Adapter();
-            FIELD_BUILDER = new FieldBuilder16();
             break;
           case AVRO_1_7:
             ADAPTER = new Avro17Adapter();
-            FIELD_BUILDER = new FieldBuilder17();
             break;
           case AVRO_1_8:
             ADAPTER = new Avro18Adapter();
-            FIELD_BUILDER = new FieldBuilder18();
             break;
           case AVRO_1_9:
             ADAPTER = new Avro19Adapter();
-            FIELD_BUILDER = new FieldBuilder19();
             break;
           case AVRO_1_10:
             ADAPTER = new Avro110Adapter();
-            FIELD_BUILDER = new FieldBuilder110();
             break;
           default:
             throw new IllegalStateException("unhandled avro version " + DETECTED_VERSION);
@@ -260,7 +244,12 @@ public class AvroCompatibilityHelper {
 
   /**
    * constructs a {@link JsonDecoder} on top of the given {@link InputStream} for the given {@link Schema}
-   * that can decode json in either "modern" or old (avro &lt;= 1.4) formats
+   * that is more widely compatible than the "native" avro decoder:
+   * <ul>
+   *     <li>avro json format has changed between 1.4 and 1.5 around encoding of union branches - simple name vs full names for named types</li>
+   *     <li>avro json decoders are not tolerant of int literals in json for float fields and vice versa under avro &lt; 1.7</li>
+   * </ul>
+   * the decoder returned by this method is expected to handle these cases with no errors
    * @param schema a schema
    * @param in an input stream containing a json-serialized avro payload
    * @return a decoder
@@ -463,15 +452,14 @@ public class AvroCompatibilityHelper {
   }
 
   /**
-   * returns a new schema field, cloned from an existing schema field and a given schema.
+   * returns a FieldBuilder, containing an existing schema field.
    * @param field a schema field
-   * @param schema a schema
-   * @return a new field that cloned from the given field and schema
+   * @return a new FieldBuilder
    * @throws org.apache.avro.AvroRuntimeException if the field in question has no default.
    */
-  public static Schema.Field cloneSchemaField(Schema.Field field, Schema schema) {
+  public static FieldBuilder cloneSchemaField(Schema.Field field) {
     assertAvroAvailable();
-    return FIELD_BUILDER.copyFromField(field).setSchema(schema).build();
+    return ADAPTER.cloneSchemaField(field);
   }
 
   // code generation

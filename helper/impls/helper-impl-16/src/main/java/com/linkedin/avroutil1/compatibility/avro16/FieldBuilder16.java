@@ -13,16 +13,14 @@ import org.codehaus.jackson.JsonNode;
 
 
 public class FieldBuilder16 implements FieldBuilder {
-  private static Schema.Field _field;
+  private final Schema.Field _field;
   private Schema _schema;
   private String _doc;
   private JsonNode _defaultVal;
   private Order _order;
 
-  @Override
-  public FieldBuilder setField(Schema.Field field) {
+  public FieldBuilder16(Schema.Field field) {
     _field = field;
-    return this;
   }
 
   @Override
@@ -49,11 +47,13 @@ public class FieldBuilder16 implements FieldBuilder {
   }
 
   @Override
-  public FieldBuilder copyFromField(Schema.Field field) {
-    _field = field;
-    _doc = field.doc();
-    _defaultVal = field.defaultValue();
-    _order = field.order();
+  public FieldBuilder copyFromField() {
+    if (_field == null) {
+      throw new NullPointerException("Field in FieldBuilder can not be empty!");
+    }
+    _doc = _field.doc();
+    _defaultVal = _field.defaultValue();
+    _order = _field.order();
     return this;
   }
 

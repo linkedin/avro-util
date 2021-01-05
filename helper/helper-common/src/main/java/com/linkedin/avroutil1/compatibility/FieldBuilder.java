@@ -17,15 +17,13 @@ import org.apache.avro.Schema.Field.Order;
  */
 public interface FieldBuilder {
 
-  FieldBuilder setField(Schema.Field field);
-
   FieldBuilder setSchema(Schema schema);
 
   FieldBuilder setDoc(String doc);
 
   FieldBuilder setOrder(Order order);
 
-  FieldBuilder copyFromField(Schema.Field field);
+  FieldBuilder copyFromField();
 
   Schema.Field build();
 }

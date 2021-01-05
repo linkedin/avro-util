@@ -12,16 +12,14 @@ import org.apache.avro.Schema.Field.Order;
 
 
 public class FieldBuilder19 implements FieldBuilder {
-  private static Schema.Field _field;
+  private final Schema.Field _field;
   private Schema _schema;
   private String _doc;
   private Object _defaultVal;
   private Order _order;
 
-  @Override
-  public FieldBuilder setField(Schema.Field field) {
+  public FieldBuilder19(Schema.Field field) {
     _field = field;
-    return this;
   }
 
   @Override
@@ -48,11 +46,13 @@ public class FieldBuilder19 implements FieldBuilder {
   }
 
   @Override
-  public FieldBuilder copyFromField(Schema.Field field) {
-    _field = field;
-    _doc = field.doc();
-    _defaultVal = field.defaultVal();
-    _order = field.order();
+  public FieldBuilder copyFromField() {
+    if (_field == null) {
+      throw new NullPointerException("Field in FieldBuilder can not be empty!");
+    }
+    _doc = _field.doc();
+    _defaultVal = _field.defaultVal();
+    _order = _field.order();
     return this;
   }
 
