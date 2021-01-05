@@ -233,7 +233,6 @@ public class Avro17Adapter implements AvroAdapter {
         knownByFullName.put(s.getFullName(), s);
       }
       parser.addTypes(knownByFullName);
-      parser.addTypes(knownByFullName);
     }
     Schema mainSchema = parser.parse(schemaJson);
 

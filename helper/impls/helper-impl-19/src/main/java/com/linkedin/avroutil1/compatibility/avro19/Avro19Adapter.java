@@ -185,7 +185,6 @@ public class Avro19Adapter implements AvroAdapter {
         knownByFullName.put(s.getFullName(), s);
       }
       parser.addTypes(knownByFullName);
-      parser.addTypes(knownByFullName);
     }
     Schema mainSchema = parser.parse(schemaJson);
     Map<String, Schema> knownByFullName = parser.getTypes();
