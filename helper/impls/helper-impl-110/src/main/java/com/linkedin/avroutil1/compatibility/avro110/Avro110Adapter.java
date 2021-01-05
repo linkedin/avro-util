@@ -10,6 +10,7 @@ import com.linkedin.avroutil1.compatibility.AvroAdapter;
 import com.linkedin.avroutil1.compatibility.AvroGeneratedSourceCode;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
 import com.linkedin.avroutil1.compatibility.CodeTransformations;
+import com.linkedin.avroutil1.compatibility.FieldBuilder;
 import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
 import com.linkedin.avroutil1.compatibility.SchemaParseResult;
 import com.linkedin.avroutil1.compatibility.avro110.codec.CompatibleJsonDecoder;
@@ -227,6 +228,11 @@ public class Avro110Adapter implements AvroAdapter {
     @Override
     public boolean fieldHasDefault(Schema.Field field) {
         return field.hasDefaultValue();
+    }
+
+    @Override
+    public FieldBuilder cloneSchemaField(Schema.Field field) {
+        return new FieldBuilder110(field);
     }
 
     @Override

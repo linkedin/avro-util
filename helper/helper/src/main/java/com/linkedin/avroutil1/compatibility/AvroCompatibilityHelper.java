@@ -6,6 +6,13 @@
 
 package com.linkedin.avroutil1.compatibility;
 
+import com.linkedin.avroutil1.compatibility.avro110.Avro110Adapter;
+import com.linkedin.avroutil1.compatibility.avro14.Avro14Adapter;
+import com.linkedin.avroutil1.compatibility.avro15.Avro15Adapter;
+import com.linkedin.avroutil1.compatibility.avro16.Avro16Adapter;
+import com.linkedin.avroutil1.compatibility.avro17.Avro17Adapter;
+import com.linkedin.avroutil1.compatibility.avro18.Avro18Adapter;
+import com.linkedin.avroutil1.compatibility.avro19.Avro19Adapter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,8 +21,6 @@ import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
-
-import com.linkedin.avroutil1.compatibility.avro110.Avro110Adapter;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
@@ -26,13 +31,6 @@ import org.apache.avro.io.Encoder;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificRecord;
-
-import com.linkedin.avroutil1.compatibility.avro14.Avro14Adapter;
-import com.linkedin.avroutil1.compatibility.avro15.Avro15Adapter;
-import com.linkedin.avroutil1.compatibility.avro16.Avro16Adapter;
-import com.linkedin.avroutil1.compatibility.avro17.Avro17Adapter;
-import com.linkedin.avroutil1.compatibility.avro18.Avro18Adapter;
-import com.linkedin.avroutil1.compatibility.avro19.Avro19Adapter;
 
 
 /**
@@ -451,6 +449,17 @@ public class AvroCompatibilityHelper {
   public static Object getGenericDefaultValue(Schema.Field field) {
     assertAvroAvailable();
     return ADAPTER.getGenericDefaultValue(field);
+  }
+
+  /**
+   * returns a FieldBuilder, containing an existing schema field.
+   * @param field a schema field
+   * @return a new FieldBuilder
+   * @throws org.apache.avro.AvroRuntimeException if the field in question has no default.
+   */
+  public static FieldBuilder cloneSchemaField(Schema.Field field) {
+    assertAvroAvailable();
+    return ADAPTER.cloneSchemaField(field);
   }
 
   // code generation

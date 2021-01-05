@@ -11,12 +11,13 @@ import com.linkedin.avroutil1.compatibility.AvroGeneratedSourceCode;
 import com.linkedin.avroutil1.compatibility.AvroSchemaUtil;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
 import com.linkedin.avroutil1.compatibility.CodeTransformations;
+import com.linkedin.avroutil1.compatibility.FieldBuilder;
+import com.linkedin.avroutil1.compatibility.SchemaNormalization;
 import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
 import com.linkedin.avroutil1.compatibility.SchemaParseResult;
 import com.linkedin.avroutil1.compatibility.SchemaValidator;
 import com.linkedin.avroutil1.compatibility.avro14.backports.Avro14DefaultValuesCache;
 import com.linkedin.avroutil1.compatibility.avro14.backports.Avro18BufferedBinaryEncoder;
-import com.linkedin.avroutil1.compatibility.SchemaNormalization;
 import com.linkedin.avroutil1.compatibility.avro14.codec.CachedResolvingDecoder;
 import com.linkedin.avroutil1.compatibility.avro14.codec.CompatibleJsonDecoder;
 import com.linkedin.avroutil1.compatibility.avro14.codec.CompatibleJsonEncoder;
@@ -211,6 +212,11 @@ public class Avro14Adapter implements AvroAdapter {
   @Override
   public boolean fieldHasDefault(Schema.Field field) {
     return null != field.defaultValue();
+  }
+
+  @Override
+  public FieldBuilder cloneSchemaField(Schema.Field field) {
+    return new FieldBuilder14(field);
   }
 
   @Override
