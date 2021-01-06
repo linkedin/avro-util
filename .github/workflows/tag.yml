@@ -32,6 +32,4 @@ jobs:
         BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
         # retain compatibility with the travis build (for now?)
         TRAVIS_TAG: ${{ steps.branch_tag.outputs.RELEASE_TAG }}
-      run: |
-       chmod +x ./scripts/publishToBintray.sh
-       ./scripts/publishToBintray.sh
+      run: ./scripts/publishToBintray.sh
