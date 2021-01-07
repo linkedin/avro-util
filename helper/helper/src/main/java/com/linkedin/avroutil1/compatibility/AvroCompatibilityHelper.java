@@ -76,8 +76,8 @@ public class AvroCompatibilityHelper {
           default:
             throw new IllegalStateException("unhandled avro version " + DETECTED_VERSION);
         }
-      } catch (Exception e) {
-        throw new IllegalStateException("could not initialize avro factory for " + DETECTED_VERSION, e);
+      } catch (Throwable t) {
+        throw new IllegalStateException("could not initialize avro factory for " + DETECTED_VERSION, t);
       }
     }
   }
