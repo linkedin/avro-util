@@ -226,7 +226,7 @@ public class Map_of_TestRecord_SpecificDeserializer_3436583053015536530_34365830
             testFixedArray0 = ((List) oldArray0);
             testFixedArray0 .clear();
         } else {
-            testFixedArray0 = new ArrayList<TestFixed>();
+            testFixedArray0 = new ArrayList<TestFixed>(((int) chunkLen1));
         }
         while (chunkLen1 > 0) {
             for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {
@@ -257,7 +257,7 @@ public class Map_of_TestRecord_SpecificDeserializer_3436583053015536530_34365830
             testFixedUnionArray0 = ((List) oldArray1);
             testFixedUnionArray0 .clear();
         } else {
-            testFixedUnionArray0 = new ArrayList<TestFixed>();
+            testFixedUnionArray0 = new ArrayList<TestFixed>(((int) chunkLen2));
         }
         while (chunkLen2 > 0) {
             for (int counter2 = 0; (counter2 <chunkLen2); counter2 ++) {
@@ -312,7 +312,7 @@ public class Map_of_TestRecord_SpecificDeserializer_3436583053015536530_34365830
             testEnumArray0 = ((List) oldArray2);
             testEnumArray0 .clear();
         } else {
-            testEnumArray0 = new ArrayList<TestEnum>();
+            testEnumArray0 = new ArrayList<TestEnum>(((int) chunkLen3));
         }
         while (chunkLen3 > 0) {
             for (int counter3 = 0; (counter3 <chunkLen3); counter3 ++) {
@@ -328,7 +328,7 @@ public class Map_of_TestRecord_SpecificDeserializer_3436583053015536530_34365830
             testEnumUnionArray0 = ((List) oldArray3);
             testEnumUnionArray0 .clear();
         } else {
-            testEnumUnionArray0 = new ArrayList<TestEnum>();
+            testEnumUnionArray0 = new ArrayList<TestEnum>(((int) chunkLen4));
         }
         while (chunkLen4 > 0) {
             for (int counter4 = 0; (counter4 <chunkLen4); counter4 ++) {
@@ -370,7 +370,7 @@ public class Map_of_TestRecord_SpecificDeserializer_3436583053015536530_34365830
             recordsArray0 = ((List) oldArray4);
             recordsArray0 .clear();
         } else {
-            recordsArray0 = new ArrayList<com.linkedin.avro.fastserde.generated.avro.SubRecord>();
+            recordsArray0 = new ArrayList<com.linkedin.avro.fastserde.generated.avro.SubRecord>(((int) chunkLen5));
         }
         while (chunkLen5 > 0) {
             for (int counter5 = 0; (counter5 <chunkLen5); counter5 ++) {
@@ -422,7 +422,7 @@ public class Map_of_TestRecord_SpecificDeserializer_3436583053015536530_34365830
                     recordsArrayUnionOption0 = ((List) oldArray5);
                     recordsArrayUnionOption0 .clear();
                 } else {
-                    recordsArrayUnionOption0 = new ArrayList<com.linkedin.avro.fastserde.generated.avro.SubRecord>();
+                    recordsArrayUnionOption0 = new ArrayList<com.linkedin.avro.fastserde.generated.avro.SubRecord>(((int) chunkLen7));
                 }
                 while (chunkLen7 > 0) {
                     for (int counter7 = 0; (counter7 <chunkLen7); counter7 ++) {
@@ -504,7 +504,7 @@ public class Map_of_TestRecord_SpecificDeserializer_3436583053015536530_34365830
             recordsArrayMap0 = ((List) oldArray6);
             recordsArrayMap0 .clear();
         } else {
-            recordsArrayMap0 = new ArrayList<Map<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>>();
+            recordsArrayMap0 = new ArrayList<Map<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>>(((int) chunkLen9));
         }
         while (chunkLen9 > 0) {
             for (int counter9 = 0; (counter9 <chunkLen9); counter9 ++) {
@@ -573,7 +573,7 @@ public class Map_of_TestRecord_SpecificDeserializer_3436583053015536530_34365830
                         recordsMapArrayValue0 = ((List) null);
                         recordsMapArrayValue0 .clear();
                     } else {
-                        recordsMapArrayValue0 = new ArrayList<com.linkedin.avro.fastserde.generated.avro.SubRecord>();
+                        recordsMapArrayValue0 = new ArrayList<com.linkedin.avro.fastserde.generated.avro.SubRecord>(((int) chunkLen12));
                     }
                     while (chunkLen12 > 0) {
                         for (int counter12 = 0; (counter12 <chunkLen12); counter12 ++) {
@@ -617,7 +617,7 @@ public class Map_of_TestRecord_SpecificDeserializer_3436583053015536530_34365830
                     recordsArrayMapUnionOption0 = ((List) oldArray7);
                     recordsArrayMapUnionOption0 .clear();
                 } else {
-                    recordsArrayMapUnionOption0 = new ArrayList<Map<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>>();
+                    recordsArrayMapUnionOption0 = new ArrayList<Map<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>>(((int) chunkLen13));
                 }
                 while (chunkLen13 > 0) {
                     for (int counter13 = 0; (counter13 <chunkLen13); counter13 ++) {
@@ -698,7 +698,7 @@ public class Map_of_TestRecord_SpecificDeserializer_3436583053015536530_34365830
                                 recordsMapArrayUnionOptionValue0 = ((List) null);
                                 recordsMapArrayUnionOptionValue0 .clear();
                             } else {
-                                recordsMapArrayUnionOptionValue0 = new ArrayList<com.linkedin.avro.fastserde.generated.avro.SubRecord>();
+                                recordsMapArrayUnionOptionValue0 = new ArrayList<com.linkedin.avro.fastserde.generated.avro.SubRecord>(((int) chunkLen16));
                             }
                             while (chunkLen16 > 0) {
                                 for (int counter16 = 0; (counter16 <chunkLen16); counter16 ++) {
@@ -764,7 +764,7 @@ public class Map_of_TestRecord_SpecificDeserializer_3436583053015536530_34365830
             booleanArray0 = ((PrimitiveBooleanList) oldArray8);
             booleanArray0 .clear();
         } else {
-            booleanArray0 = new PrimitiveBooleanArrayList();
+            booleanArray0 = new PrimitiveBooleanArrayList(((int) chunkLen17));
         }
         while (chunkLen17 > 0) {
             for (int counter17 = 0; (counter17 <chunkLen17); counter17 ++) {
@@ -780,7 +780,7 @@ public class Map_of_TestRecord_SpecificDeserializer_3436583053015536530_34365830
             doubleArray0 = ((PrimitiveDoubleList) oldArray9);
             doubleArray0 .clear();
         } else {
-            doubleArray0 = new PrimitiveDoubleArrayList();
+            doubleArray0 = new PrimitiveDoubleArrayList(((int) chunkLen18));
         }
         while (chunkLen18 > 0) {
             for (int counter18 = 0; (counter18 <chunkLen18); counter18 ++) {
@@ -799,7 +799,7 @@ public class Map_of_TestRecord_SpecificDeserializer_3436583053015536530_34365830
             intArray0 = ((PrimitiveIntList) oldArray10);
             intArray0 .clear();
         } else {
-            intArray0 = new PrimitiveIntArrayList();
+            intArray0 = new PrimitiveIntArrayList(((int) chunkLen19));
         }
         while (chunkLen19 > 0) {
             for (int counter19 = 0; (counter19 <chunkLen19); counter19 ++) {
@@ -815,7 +815,7 @@ public class Map_of_TestRecord_SpecificDeserializer_3436583053015536530_34365830
             longArray0 = ((PrimitiveLongList) oldArray11);
             longArray0 .clear();
         } else {
-            longArray0 = new PrimitiveLongArrayList();
+            longArray0 = new PrimitiveLongArrayList(((int) chunkLen20));
         }
         while (chunkLen20 > 0) {
             for (int counter20 = 0; (counter20 <chunkLen20); counter20 ++) {
@@ -831,7 +831,7 @@ public class Map_of_TestRecord_SpecificDeserializer_3436583053015536530_34365830
             stringArray0 = ((List) oldArray12);
             stringArray0 .clear();
         } else {
-            stringArray0 = new ArrayList<Utf8>();
+            stringArray0 = new ArrayList<Utf8>(((int) chunkLen21));
         }
         while (chunkLen21 > 0) {
             for (int counter21 = 0; (counter21 <chunkLen21); counter21 ++) {

@@ -66,7 +66,7 @@ public class StringableRecord_SpecificDeserializer_6010214235595501953_601021423
             urlArray0 = ((List) oldArray0);
             urlArray0 .clear();
         } else {
-            urlArray0 = new ArrayList<URL>();
+            urlArray0 = new ArrayList<URL>(((int) chunkLen0));
         }
         while (chunkLen0 > 0) {
             for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
