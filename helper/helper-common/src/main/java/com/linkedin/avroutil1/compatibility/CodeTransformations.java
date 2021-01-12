@@ -63,7 +63,7 @@ public class CodeTransformations {
   private static final Pattern CREATE_DECODER_INVOCATION_SHORT = Pattern.compile(Pattern.quote("SpecificData.getDecoder(in)"));
   private static final String  CREATE_DECODER_VIA_HELPER = Matcher.quoteReplacement(HelperConsts.HELPER_FQCN + ".newBinaryDecoder(in)");
   private static final Pattern HAS_CUSTOM_CODERS_SIGNATURE_SIGNATURE = Pattern.compile(Pattern.quote("@Override protected boolean hasCustomCoders"));
-  private static final Pattern END_CUSTOM_DECODE_PATTERN = Pattern.compile("}\\s+}\\s+}\\s+}");
+  private static final Pattern END_CUSTOM_DECODE_PATTERN = Pattern.compile("}\\s+}\\s+}\\s+}\\s*[\\r\\n]+");
 
   private static final String FIXED_CLASS_BODY_TEMPLATE = TemplateUtil.loadTemplate("avroutil1/templates/SpecificFixedBody.template");
   private static final String FIXED_CLASS_NO_NAMESPACE_BODY_TEMPLATE = TemplateUtil.loadTemplate("avroutil1/templates/SpecificFixedBodyNoNamespace.template");
@@ -642,7 +642,7 @@ public class CodeTransformations {
     }
 
     @SuppressWarnings("UnnecessaryLocalVariable")
-    String codeWithout = code.substring(0, startMatcher.start()) + code.substring(endMatcher.end());
+    String codeWithout = code.substring(0, startMatcher.start()) + "\n" + code.substring(endMatcher.end());
     return codeWithout;
   }
 
