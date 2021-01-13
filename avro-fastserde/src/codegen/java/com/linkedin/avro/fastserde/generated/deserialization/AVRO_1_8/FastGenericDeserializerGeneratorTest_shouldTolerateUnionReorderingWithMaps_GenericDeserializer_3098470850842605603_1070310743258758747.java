@@ -59,7 +59,7 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingW
                         testOptionReuse0 .clear();
                         testOption0 = testOptionReuse0;
                     } else {
-                        testOption0 = new HashMap<Utf8, Integer>();
+                        testOption0 = new HashMap<Utf8, Integer>(((int)(((chunkLen0 * 4)+ 2)/ 3)));
                     }
                     do {
                         for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {

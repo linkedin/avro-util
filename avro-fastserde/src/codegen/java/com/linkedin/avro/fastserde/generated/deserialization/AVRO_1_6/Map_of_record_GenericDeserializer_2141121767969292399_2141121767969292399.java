@@ -39,7 +39,7 @@ public class Map_of_record_GenericDeserializer_2141121767969292399_2141121767969
                 mapReuse0 .clear();
                 map0 = mapReuse0;
             } else {
-                map0 = new HashMap<Utf8, IndexedRecord>();
+                map0 = new HashMap<Utf8, IndexedRecord>(((int)(((chunkLen0 * 4)+ 2)/ 3)));
             }
             do {
                 for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
