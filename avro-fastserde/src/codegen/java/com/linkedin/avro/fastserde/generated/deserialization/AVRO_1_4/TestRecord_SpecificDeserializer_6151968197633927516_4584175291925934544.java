@@ -454,7 +454,7 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
                 recordsMapReuse0 .clear();
                 recordsMap0 = recordsMapReuse0;
             } else {
-                recordsMap0 = new HashMap<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>();
+                recordsMap0 = new HashMap<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>(((int)(((chunkLen5 * 4)+ 2)/ 3)));
             }
             do {
                 for (int counter5 = 0; (counter5 <chunkLen5); counter5 ++) {
@@ -528,7 +528,7 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
                         recordsMapUnionOptionReuse0 .clear();
                         recordsMapUnionOption0 = recordsMapUnionOptionReuse0;
                     } else {
-                        recordsMapUnionOption0 = new HashMap<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>();
+                        recordsMapUnionOption0 = new HashMap<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>(((int)(((chunkLen7 * 4)+ 2)/ 3)));
                     }
                     do {
                         for (int counter7 = 0; (counter7 <chunkLen7); counter7 ++) {
@@ -582,7 +582,7 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
                         recordsArrayMapElemReuse0 .clear();
                         recordsArrayMapElem0 = recordsArrayMapElemReuse0;
                     } else {
-                        recordsArrayMapElem0 = new HashMap<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>();
+                        recordsArrayMapElem0 = new HashMap<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>(((int)(((chunkLen9 * 4)+ 2)/ 3)));
                     }
                     do {
                         for (int counter9 = 0; (counter9 <chunkLen9); counter9 ++) {
@@ -621,7 +621,7 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
                 recordsMapArrayReuse0 .clear();
                 recordsMapArray0 = recordsMapArrayReuse0;
             } else {
-                recordsMapArray0 = new HashMap<Utf8, List<com.linkedin.avro.fastserde.generated.avro.SubRecord>>();
+                recordsMapArray0 = new HashMap<Utf8, List<com.linkedin.avro.fastserde.generated.avro.SubRecord>>(((int)(((chunkLen10 * 4)+ 2)/ 3)));
             }
             do {
                 for (int counter10 = 0; (counter10 <chunkLen10); counter10 ++) {
@@ -695,7 +695,7 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
                                 recordsArrayMapUnionOptionElemReuse0 .clear();
                                 recordsArrayMapUnionOptionElem0 = recordsArrayMapUnionOptionElemReuse0;
                             } else {
-                                recordsArrayMapUnionOptionElem0 = new HashMap<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>();
+                                recordsArrayMapUnionOptionElem0 = new HashMap<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>(((int)(((chunkLen13 * 4)+ 2)/ 3)));
                             }
                             do {
                                 for (int counter13 = 0; (counter13 <chunkLen13); counter13 ++) {
@@ -746,7 +746,7 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
                         recordsMapArrayUnionOptionReuse0 .clear();
                         recordsMapArrayUnionOption0 = recordsMapArrayUnionOptionReuse0;
                     } else {
-                        recordsMapArrayUnionOption0 = new HashMap<Utf8, List<com.linkedin.avro.fastserde.generated.avro.SubRecord>>();
+                        recordsMapArrayUnionOption0 = new HashMap<Utf8, List<com.linkedin.avro.fastserde.generated.avro.SubRecord>>(((int)(((chunkLen14 * 4)+ 2)/ 3)));
                     }
                     do {
                         for (int counter14 = 0; (counter14 <chunkLen14); counter14 ++) {

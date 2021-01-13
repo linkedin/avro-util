@@ -90,7 +90,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
                 recordsMapReuse0 .clear();
                 recordsMap1 = recordsMapReuse0;
             } else {
-                recordsMap1 = new HashMap<Utf8, IndexedRecord>();
+                recordsMap1 = new HashMap<Utf8, IndexedRecord>(((int)(((chunkLen1 * 4)+ 2)/ 3)));
             }
             do {
                 for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {
@@ -164,7 +164,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
                         recordsMapUnionOptionReuse0 .clear();
                         recordsMapUnionOption0 = recordsMapUnionOptionReuse0;
                     } else {
-                        recordsMapUnionOption0 = new HashMap<Utf8, IndexedRecord>();
+                        recordsMapUnionOption0 = new HashMap<Utf8, IndexedRecord>(((int)(((chunkLen3 * 4)+ 2)/ 3)));
                     }
                     do {
                         for (int counter3 = 0; (counter3 <chunkLen3); counter3 ++) {

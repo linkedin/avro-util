@@ -115,7 +115,7 @@ public class StringableRecord_SpecificDeserializer_6010214235595501953_601021423
                 urlMapReuse0 .clear();
                 urlMap0 = urlMapReuse0;
             } else {
-                urlMap0 = new HashMap<Utf8, Utf8>();
+                urlMap0 = new HashMap<Utf8, Utf8>(((int)(((chunkLen1 * 4)+ 2)/ 3)));
             }
             do {
                 for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {

@@ -87,7 +87,7 @@ public class FastStringableTest_javaStringPropertyTest_GenericDeserializer_34111
                 testStringMapReuse0 .clear();
                 testStringMap1 = testStringMapReuse0;
             } else {
-                testStringMap1 = new HashMap<String, String>();
+                testStringMap1 = new HashMap<String, String>(((int)(((chunkLen1 * 4)+ 2)/ 3)));
             }
             do {
                 for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {

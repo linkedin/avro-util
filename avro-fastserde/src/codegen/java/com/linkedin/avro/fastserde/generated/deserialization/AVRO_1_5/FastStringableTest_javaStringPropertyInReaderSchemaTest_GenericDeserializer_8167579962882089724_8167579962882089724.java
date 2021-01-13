@@ -104,7 +104,7 @@ public class FastStringableTest_javaStringPropertyInReaderSchemaTest_GenericDese
                 testStringMapReuse0 .clear();
                 testStringMap1 = testStringMapReuse0;
             } else {
-                testStringMap1 = new HashMap<Utf8, Utf8>();
+                testStringMap1 = new HashMap<Utf8, Utf8>(((int)(((chunkLen1 * 4)+ 2)/ 3)));
             }
             do {
                 for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {

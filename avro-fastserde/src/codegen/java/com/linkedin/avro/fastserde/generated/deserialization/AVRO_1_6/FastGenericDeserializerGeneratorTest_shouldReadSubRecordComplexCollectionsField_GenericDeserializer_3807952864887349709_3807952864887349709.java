@@ -92,7 +92,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexColl
                         recordsArrayMapElemReuse0 .clear();
                         recordsArrayMapElem0 = recordsArrayMapElemReuse0;
                     } else {
-                        recordsArrayMapElem0 = new HashMap<Utf8, IndexedRecord>();
+                        recordsArrayMapElem0 = new HashMap<Utf8, IndexedRecord>(((int)(((chunkLen1 * 4)+ 2)/ 3)));
                     }
                     do {
                         for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {
@@ -131,7 +131,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexColl
                 recordsMapArrayReuse0 .clear();
                 recordsMapArray1 = recordsMapArrayReuse0;
             } else {
-                recordsMapArray1 = new HashMap<Utf8, List<IndexedRecord>>();
+                recordsMapArray1 = new HashMap<Utf8, List<IndexedRecord>>(((int)(((chunkLen2 * 4)+ 2)/ 3)));
             }
             do {
                 for (int counter2 = 0; (counter2 <chunkLen2); counter2 ++) {
@@ -205,7 +205,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexColl
                                 recordsArrayMapUnionOptionElemReuse0 .clear();
                                 recordsArrayMapUnionOptionElem0 = recordsArrayMapUnionOptionElemReuse0;
                             } else {
-                                recordsArrayMapUnionOptionElem0 = new HashMap<Utf8, IndexedRecord>();
+                                recordsArrayMapUnionOptionElem0 = new HashMap<Utf8, IndexedRecord>(((int)(((chunkLen5 * 4)+ 2)/ 3)));
                             }
                             do {
                                 for (int counter5 = 0; (counter5 <chunkLen5); counter5 ++) {
@@ -256,7 +256,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexColl
                         recordsMapArrayUnionOptionReuse0 .clear();
                         recordsMapArrayUnionOption0 = recordsMapArrayUnionOptionReuse0;
                     } else {
-                        recordsMapArrayUnionOption0 = new HashMap<Utf8, List<IndexedRecord>>();
+                        recordsMapArrayUnionOption0 = new HashMap<Utf8, List<IndexedRecord>>(((int)(((chunkLen6 * 4)+ 2)/ 3)));
                     }
                     do {
                         for (int counter6 = 0; (counter6 <chunkLen6); counter6 ++) {
