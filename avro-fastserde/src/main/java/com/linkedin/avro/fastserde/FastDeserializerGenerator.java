@@ -799,7 +799,10 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
             thenBlock.invoke(reuse, "clear");
             thenBlock.assign(mapVar, reuse);
           },
-          elseBlock -> elseBlock.assign(mapVar, JExpr._new(schemaAssistant.classFromSchema(readerMapSchema, false)))
+          // Pure integer arithmetic equivalent of (int) Math.ceil(expectedSize / 0.75).
+          // The default load factor of HashMap is 0.75 and HashMap internally ensures size is always a power of two.
+          elseBlock -> elseBlock.assign(mapVar, JExpr._new(schemaAssistant.classFromSchema(readerMapSchema, false))
+              .arg(JExpr.cast(codeModel.INT, chunkLen.mul(JExpr.lit(4)).plus(JExpr.lit(2)).div(JExpr.lit(3)))))
       );
 
       JBlock elseBlock = conditional._else();
