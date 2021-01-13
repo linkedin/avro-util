@@ -649,16 +649,13 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       JClass arrayClass = schemaAssistant.classFromSchema(readerArraySchema, false, false, true);
       JClass abstractErasedArrayClass = schemaAssistant.classFromSchema(readerArraySchema, true, false, true).erasure();
 
-      JInvocation newArrayExp = JExpr._new(arrayClass);
-      if (useGenericTypes) {
-        newArrayExp = newArrayExp.arg(JExpr.cast(codeModel.INT, chunkLen));
-        if (!SchemaAssistant.isPrimitive(arraySchema.getElementType())) {
-          /**
-           * N.B.: The ColdPrimitiveXList implementations do not take the schema as a constructor param,
-           * but the {@link org.apache.avro.generic.GenericData.Array} does.
-           */
-          newArrayExp = newArrayExp.arg(getSchemaExpr(arraySchema));
-        }
+      JInvocation newArrayExp = JExpr._new(arrayClass).arg(JExpr.cast(codeModel.INT, chunkLen));
+      if (useGenericTypes && !SchemaAssistant.isPrimitive(arraySchema.getElementType())) {
+        /**
+         * N.B.: The ColdPrimitiveXList implementations do not take the schema as a constructor param,
+         * but the {@link org.apache.avro.generic.GenericData.Array} does.
+         */
+        newArrayExp = newArrayExp.arg(getSchemaExpr(arraySchema));
       }
       JInvocation finalNewArrayExp = newArrayExp;
 
