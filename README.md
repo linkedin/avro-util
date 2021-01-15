@@ -1,7 +1,8 @@
 Avro-Util
 =========
-[![Build Status](https://travis-ci.org/linkedin/avro-util.svg?branch=master)](https://travis-ci.org/linkedin/avro-util)
-[![Download](https://api.bintray.com/packages/linkedin/maven/avro-util/images/download.svg)](https://bintray.com/linkedin/maven/avro-util/_latestVersion)
+![Github Build Status](https://github.com/linkedin/avro-util/workflows/push%20flow/badge.svg)
+[![Travis Build Status](https://travis-ci.org/linkedin/avro-util.svg?branch=master)](https://travis-ci.org/linkedin/avro-util)
+[![Latest Release](https://api.bintray.com/packages/linkedin/maven/avro-util/images/download.svg)](https://bintray.com/linkedin/maven/avro-util/_latestVersion)
 
 A collection of utilities and libraries to allow java projects to better work with avro.
 
@@ -19,7 +20,7 @@ repositories {
 }
 ...
 dependencies {
-   compile "com.linkedin.avroutil1:helper-all:0.1.8"
+   compile "com.linkedin.avroutil1:helper-all:<latest version>"
 }
 ```
 

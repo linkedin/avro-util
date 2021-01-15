@@ -1,6 +1,6 @@
 package com.linkedin.avro.fastserde;
 
-import com.linkedin.avro.fastserde.generated.avro.ClasspathTestRecord;
+import com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord;
 import com.linkedin.avro.fastserde.generated.avro.SubRecord;
 import com.linkedin.avro.fastserde.generated.avro.TestEnum;
 import com.linkedin.avro.fastserde.generated.avro.TestFixed;
@@ -35,6 +35,8 @@ public class FastSpecificDeserializerGeneratorTest {
   private File tempDir;
   private ClassLoader classLoader;
 
+  private static final List<TestFixed> EMPTY_TEST_FIXED_LIST = new ArrayList<>();
+
   @DataProvider(name = "SlowFastDeserializer")
   public static Object[][] deserializers() {
     return new Object[][]{{true}, {false}};
@@ -45,35 +47,35 @@ public class FastSpecificDeserializerGeneratorTest {
 
     TestFixed testFixed1 = new TestFixed();
     testFixed1.bytes(new byte[]{0x01});
-    record.testFixed = testFixed1;
-    record.testFixedArray = Collections.emptyList();
+    setField(record, "testFixed", testFixed1);
+    setField(record, "testFixedArray", EMPTY_TEST_FIXED_LIST);
     TestFixed testFixed2 = new TestFixed();
     testFixed2.bytes(new byte[]{0x01});
-    record.testFixedUnionArray = Arrays.asList(testFixed2);
+    setField(record, "testFixedUnionArray", Arrays.asList(testFixed2));
 
-    record.testEnum = TestEnum.A;
-    record.testEnumArray = Collections.emptyList();
-    record.testEnumUnionArray = Arrays.asList(TestEnum.A);
-    record.booleanArray = Collections.emptyList();
-    record.doubleArray = Collections.emptyList();
-    record.floatArray = Collections.emptyList();
-    record.intArray = Collections.emptyList();
-    record.longArray = Collections.emptyList();
-    record.stringArray = Collections.emptyList();
-    record.subRecord = new SubRecord();
+    setField(record, "testEnum", TestEnum.A);
+    setField(record, "testEnumArray", Collections.emptyList());
+    setField(record, "testEnumUnionArray", Arrays.asList(TestEnum.A));
+    setField(record, "booleanArray", Collections.emptyList());
+    setField(record, "doubleArray", Collections.emptyList());
+    setField(record, "floatArray", Collections.emptyList());
+    setField(record, "intArray", Collections.emptyList());
+    setField(record, "longArray", Collections.emptyList());
+    setField(record, "stringArray", Collections.emptyList());
+    setField(record, "subRecord", new SubRecord());
 
-    record.recordsArray = Collections.emptyList();
-    record.recordsArrayMap = Collections.emptyList();
-    record.recordsMap = Collections.emptyMap();
-    record.recordsMapArray = Collections.emptyMap();
+    setField(record, "recordsArray", Collections.emptyList());
+    setField(record, "recordsArrayMap", Collections.emptyList());
+    setField(record, "recordsMap", Collections.emptyMap());
+    setField(record, "recordsMapArray", Collections.emptyMap());
 
-    record.testInt = 1;
-    record.testLong = 1l;
-    record.testDouble = 1.0;
-    record.testFloat = 1.0f;
-    record.testBoolean = true;
-    record.testString = "aaa";
-    record.testBytes = ByteBuffer.wrap(new byte[]{0x01, 0x02});
+    setField(record, "testInt", 1);
+    setField(record, "testLong", 1l);
+    setField(record, "testDouble", 1.0);
+    setField(record, "testFloat", 1.0f);
+    setField(record, "testBoolean", true);
+    setField(record, "testString", "aaa");
+    setField(record, "testBytes", ByteBuffer.wrap(new byte[]{0x01, 0x02}));
 
     return record;
   }
@@ -89,20 +91,20 @@ public class FastSpecificDeserializerGeneratorTest {
   @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
   public void shouldReadPrimitives(Boolean whetherUseFastDeserializer) {
     TestRecord record = emptyTestRecord();
-    record.testInt = 1;
-    record.testIntUnion = 1;
-    record.testString = "aaa";
-    record.testStringUnion = "aaa";
-    record.testLong = 1l;
-    record.testLongUnion = 1l;
-    record.testDouble = 1.0;
-    record.testDoubleUnion = 1.0;
-    record.testFloat = 1.0f;
-    record.testFloatUnion = 1.0f;
-    record.testBoolean = true;
-    record.testBooleanUnion = true;
-    record.testBytes = ByteBuffer.wrap(new byte[]{0x01, 0x02});
-    record.testBytesUnion = ByteBuffer.wrap(new byte[]{0x01, 0x02});
+    setField(record, "testInt", 1);
+    setField(record, "testIntUnion", 1);
+    setField(record, "testString", "aaa");
+    setField(record, "testStringUnion", "aaa");
+    setField(record, "testLong", 1l);
+    setField(record, "testLongUnion", 1l);
+    setField(record, "testDouble", 1.0);
+    setField(record, "testDoubleUnion", 1.0);
+    setField(record, "testFloat", 1.0f);
+    setField(record, "testFloatUnion", 1.0f);
+    setField(record, "testBoolean", true);
+    setField(record, "testBooleanUnion", true);
+    setField(record, "testBytes", ByteBuffer.wrap(new byte[]{0x01, 0x02}));
+    setField(record, "testBytesUnion", ByteBuffer.wrap(new byte[]{0x01, 0x02}));
 
     // when
     if (whetherUseFastDeserializer) {
@@ -112,20 +114,20 @@ public class FastSpecificDeserializerGeneratorTest {
     }
 
     // then
-    Assert.assertEquals(1, record.testInt);
-    Assert.assertEquals(new Integer(1), record.testIntUnion);
-    Assert.assertEquals(new Utf8("aaa"), record.testString);
-    Assert.assertEquals(new Utf8("aaa"), record.testStringUnion);
-    Assert.assertEquals(1l, record.testLong);
-    Assert.assertEquals(new Long(1), record.testLongUnion);
-    Assert.assertEquals(1.0, record.testDouble, 0);
-    Assert.assertEquals(new Double(1.0), record.testDoubleUnion);
-    Assert.assertEquals(1.0f, record.testFloat, 0);
-    Assert.assertEquals(new Float(1.0f), record.testFloatUnion);
-    Assert.assertEquals(true, record.testBoolean);
-    Assert.assertEquals(new Boolean(true), record.testBooleanUnion);
-    Assert.assertEquals(ByteBuffer.wrap(new byte[]{0x01, 0x02}), record.testBytes);
-    Assert.assertEquals(ByteBuffer.wrap(new byte[]{0x01, 0x02}), record.testBytesUnion);
+    Assert.assertEquals(1, getField(record, "testInt"));
+    Assert.assertEquals(new Integer(1), getField(record, "testIntUnion"));
+    Assert.assertEquals(new Utf8("aaa"), getField(record, "testString"));
+    Assert.assertEquals(new Utf8("aaa"), getField(record, "testStringUnion"));
+    Assert.assertEquals(1l, getField(record, "testLong"));
+    Assert.assertEquals(new Long(1), getField(record, "testLongUnion"));
+    Assert.assertEquals(1.0, (Double) getField(record, "testDouble"), 0);
+    Assert.assertEquals(new Double(1.0), getField(record, "testDoubleUnion"));
+    Assert.assertEquals(1.0f, (Float) getField(record, "testFloat"), 0);
+    Assert.assertEquals(new Float(1.0f), getField(record, "testFloatUnion"));
+    Assert.assertEquals(true, getField(record, "testBoolean"));
+    Assert.assertEquals(new Boolean(true), getField(record, "testBooleanUnion"));
+    Assert.assertEquals(ByteBuffer.wrap(new byte[]{0x01, 0x02}), getField(record, "testBytes"));
+    Assert.assertEquals(ByteBuffer.wrap(new byte[]{0x01, 0x02}), getField(record, "testBytesUnion"));
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
@@ -135,16 +137,16 @@ public class FastSpecificDeserializerGeneratorTest {
 
     TestFixed testFixed1 = new TestFixed();
     testFixed1.bytes(new byte[]{0x01});
-    record.testFixed = testFixed1;
+    setField(record, "testFixed", testFixed1);
     TestFixed testFixed2 = new TestFixed();
     testFixed2.bytes(new byte[]{0x02});
-    record.testFixedUnion = testFixed2;
+    setField(record, "testFixedUnion", testFixed2);
     TestFixed testFixed3 = new TestFixed();
     testFixed3.bytes(new byte[]{0x03});
     TestFixed testFixed4 = new TestFixed();
     testFixed4.bytes(new byte[]{0x04});
-    record.testFixedArray = Arrays.asList(testFixed3);
-    record.testFixedUnionArray = Arrays.asList(testFixed4);
+    setField(record, "testFixedArray", Arrays.asList(testFixed3));
+    setField(record, "testFixedUnionArray", Arrays.asList(testFixed4));
 
     // when
     if (whetherUseFastDeserializer) {
@@ -154,10 +156,10 @@ public class FastSpecificDeserializerGeneratorTest {
     }
 
     // then
-    Assert.assertEquals(new byte[]{0x01}, record.testFixed.bytes());
-    Assert.assertEquals(new byte[]{0x02}, record.testFixedUnion.bytes());
-    Assert.assertEquals(new byte[]{0x03}, record.testFixedArray.get(0).bytes());
-    Assert.assertEquals(new byte[]{0x04}, record.testFixedUnionArray.get(0).bytes());
+    Assert.assertEquals(new byte[]{0x01}, ((TestFixed) getField(record, "testFixed")).bytes());
+    Assert.assertEquals(new byte[]{0x02}, ((TestFixed) getField(record, "testFixedUnion")).bytes());
+    Assert.assertEquals(new byte[]{0x03}, ((List<TestFixed>) getField(record, "testFixedArray")).get(0).bytes());
+    Assert.assertEquals(new byte[]{0x04}, ((List<TestFixed>) getField(record, "testFixedUnionArray")).get(0).bytes());
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
@@ -165,10 +167,10 @@ public class FastSpecificDeserializerGeneratorTest {
     // given
     TestRecord record = emptyTestRecord();
 
-    record.testEnum = TestEnum.A;
-    record.testEnumUnion = TestEnum.A;
-    record.testEnumArray = Arrays.asList(TestEnum.A);
-    record.testEnumUnionArray = Arrays.asList(TestEnum.A);
+    setField(record, "testEnum", TestEnum.A);
+    setField(record, "testEnumUnion", TestEnum.A);
+    setField(record, "testEnumArray", Arrays.asList(TestEnum.A));
+    setField(record, "testEnumUnionArray", Arrays.asList(TestEnum.A));
 
     // when
     if (whetherUseFastDeserializer) {
@@ -178,10 +180,10 @@ public class FastSpecificDeserializerGeneratorTest {
     }
 
     // then
-    Assert.assertEquals(TestEnum.A, record.testEnum);
-    Assert.assertEquals(TestEnum.A, record.testEnumUnion);
-    Assert.assertEquals(TestEnum.A, record.testEnumArray.get(0));
-    Assert.assertEquals(TestEnum.A, record.testEnumUnionArray.get(0));
+    Assert.assertEquals(TestEnum.A, getField(record, "testEnum"));
+    Assert.assertEquals(TestEnum.A, getField(record, "testEnumUnion"));
+    Assert.assertEquals(TestEnum.A, ((List<TestEnum>) getField(record, "testEnumArray")).get(0));
+    Assert.assertEquals(TestEnum.A, ((List<TestEnum>) getField(record, "testEnumUnionArray")).get(0));
   }
 
   public GenericData.Fixed newFixed(Schema fixedSchema, byte[] bytes) {
@@ -235,10 +237,10 @@ public class FastSpecificDeserializerGeneratorTest {
     }
 
     // then
-    Assert.assertEquals(TestEnum.A, record.testEnum);
-    Assert.assertEquals(TestEnum.B, record.testEnumUnion);
-    Assert.assertEquals(TestEnum.C, record.testEnumArray.get(0));
-    Assert.assertEquals(TestEnum.D, record.testEnumUnionArray.get(0));
+    Assert.assertEquals(TestEnum.A, getField(record, "testEnum"));
+    Assert.assertEquals(TestEnum.B, getField(record, "testEnumUnion"));
+    Assert.assertEquals(TestEnum.C, ((List<TestEnum>) getField(record, "testEnumArray")).get(0));
+    Assert.assertEquals(TestEnum.D, ((List<TestEnum>) getField(record, "testEnumUnionArray")).get(0));
   }
 
   @Test(expectedExceptions = FastDeserializerGeneratorException.class, groups = {"deserializationTest"})
@@ -284,10 +286,10 @@ public class FastSpecificDeserializerGeneratorTest {
     // given
     TestRecord record = emptyTestRecord();
     SubRecord subRecord = new SubRecord();
-    subRecord.subField = "abc";
+    setField(subRecord, "subField", "abc");
 
-    record.subRecordUnion = subRecord;
-    record.subRecord = subRecord;
+    setField(record, "subRecordUnion", subRecord);
+    setField(record, "subRecord", subRecord);
 
     // when
     if (whetherUseFastDeserializer) {
@@ -297,8 +299,8 @@ public class FastSpecificDeserializerGeneratorTest {
     }
 
     // then
-    Assert.assertEquals(new Utf8("abc"), record.subRecordUnion.subField);
-    Assert.assertEquals(new Utf8("abc"), record.subRecord.subField);
+    Assert.assertEquals(new Utf8("abc"), getField((SubRecord) getField(record, "subRecordUnion"), "subField"));
+    Assert.assertEquals(new Utf8("abc"), getField((SubRecord) getField(record, "subRecord"), "subField"));
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
@@ -307,16 +309,16 @@ public class FastSpecificDeserializerGeneratorTest {
     // given
     TestRecord record = emptyTestRecord();
     SubRecord subRecord = new SubRecord();
-    subRecord.subField = "abc";
+    setField(subRecord, "subField", "abc");
 
     List<SubRecord> recordsArray = new ArrayList<>();
     recordsArray.add(subRecord);
-    record.recordsArray = recordsArray;
-    record.recordsArrayUnion = recordsArray;
+    setField(record, "recordsArray", recordsArray);
+    setField(record, "recordsArrayUnion", recordsArray);
     Map<CharSequence, SubRecord> recordsMap = new HashMap<>();
     recordsMap.put("1", subRecord);
-    record.recordsMap = recordsMap;
-    record.recordsMapUnion = recordsMap;
+    setField(record, "recordsMap", recordsMap);
+    setField(record, "recordsMapUnion", recordsMap);
 
     // when
     if (whetherUseFastDeserializer) {
@@ -326,10 +328,10 @@ public class FastSpecificDeserializerGeneratorTest {
     }
 
     // then
-    Assert.assertEquals(new Utf8("abc"), record.recordsArray.get(0).subField);
-    Assert.assertEquals(new Utf8("abc"), record.recordsArrayUnion.get(0).subField);
-    Assert.assertEquals(new Utf8("abc"), record.recordsMap.get(new Utf8("1")).subField);
-    Assert.assertEquals(new Utf8("abc"), record.recordsMapUnion.get(new Utf8("1")).subField);
+    Assert.assertEquals(new Utf8("abc"), getField(((List<SubRecord>) getField(record, "recordsArray")).get(0), "subField"));
+    Assert.assertEquals(new Utf8("abc"), getField(((List<SubRecord>) getField(record, "recordsArrayUnion")).get(0), "subField"));
+    Assert.assertEquals(new Utf8("abc"), getField(((Map<CharSequence, SubRecord>) getField(record, "recordsMap")).get(new Utf8("1")), "subField"));
+    Assert.assertEquals(new Utf8("abc"), getField(((Map<CharSequence, SubRecord>) getField(record, "recordsMapUnion")).get(new Utf8("1")), "subField"));
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
@@ -337,23 +339,23 @@ public class FastSpecificDeserializerGeneratorTest {
     // given
     TestRecord record = emptyTestRecord();
     SubRecord subRecord = new SubRecord();
-    subRecord.subField = "abc";
+    setField(subRecord, "subField", "abc");
 
     List<Map<CharSequence, SubRecord>> recordsArrayMap = new ArrayList<>();
     Map<CharSequence, SubRecord> recordMap = new HashMap<>();
     recordMap.put("1", subRecord);
     recordsArrayMap.add(recordMap);
 
-    record.recordsArrayMap = recordsArrayMap;
-    record.recordsArrayMapUnion = recordsArrayMap;
+    setField(record, "recordsArrayMap", recordsArrayMap);
+    setField(record, "recordsArrayMapUnion", recordsArrayMap);
 
     Map<CharSequence, List<SubRecord>> recordsMapArray = new HashMap<>();
     List<SubRecord> recordList = new ArrayList<>();
     recordList.add(subRecord);
     recordsMapArray.put("1", recordList);
 
-    record.recordsMapArray = recordsMapArray;
-    record.recordsMapArrayUnion = recordsMapArray;
+    setField(record, "recordsMapArray", recordsMapArray);
+    setField(record, "recordsMapArrayUnion", recordsMapArray);
 
     // when
     if (whetherUseFastDeserializer) {
@@ -363,10 +365,10 @@ public class FastSpecificDeserializerGeneratorTest {
     }
 
     // then
-    Assert.assertEquals(new Utf8("abc"), record.recordsArrayMap.get(0).get(new Utf8("1")).subField);
-    Assert.assertEquals(new Utf8("abc"), record.recordsMapArray.get(new Utf8("1")).get(0).subField);
-    Assert.assertEquals(new Utf8("abc"), record.recordsArrayMapUnion.get(0).get(new Utf8("1")).subField);
-    Assert.assertEquals(new Utf8("abc"), record.recordsMapArrayUnion.get(new Utf8("1")).get(0).subField);
+    Assert.assertEquals(new Utf8("abc"), getField(((List<Map<CharSequence, SubRecord>>) getField(record, "recordsArrayMap")).get(0).get(new Utf8("1")), "subField"));
+    Assert.assertEquals(new Utf8("abc"), getField(((Map<CharSequence, List<SubRecord>>) getField(record, "recordsMapArray")).get(new Utf8("1")).get(0), "subField"));
+    Assert.assertEquals(new Utf8("abc"), getField(((List<Map<CharSequence, SubRecord>>) getField(record, "recordsArrayMapUnion")).get(0).get(new Utf8("1")), "subField"));
+    Assert.assertEquals(new Utf8("abc"), getField(((Map<CharSequence, List<SubRecord>>) getField(record, "recordsMapArrayUnion")).get(new Utf8("1")).get(0), "subField"));
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
@@ -417,7 +419,7 @@ public class FastSpecificDeserializerGeneratorTest {
     // then
     // alias is not well supported in avro-1.4
     if (!Utils.isAvro14()) {
-      Assert.assertEquals(new Utf8("abc"), record.testStringUnion);
+      Assert.assertEquals(new Utf8("abc"), getField(record, "testStringUnion"));
     }
   }
 
@@ -473,12 +475,12 @@ public class FastSpecificDeserializerGeneratorTest {
     // then
     // alias is not well supported in avro-1.4
     if (!Utils.isAvro14()) {
-      Assert.assertEquals(new Utf8("abc"), record.testStringUnion);
+      Assert.assertEquals(new Utf8("abc"), getField(record, "testStringUnion"));
     }
-    Assert.assertEquals(TestEnum.A, record.testEnum);
-    Assert.assertEquals(new Utf8("ghi"), record.subRecordUnion.anotherField);
-    Assert.assertEquals(new Utf8("ghi"), record.recordsArray.get(0).anotherField);
-    Assert.assertEquals(new Utf8("ghi"), record.recordsMap.get(new Utf8("1")).anotherField);
+    Assert.assertEquals(TestEnum.A, getField(record, "testEnum"));
+    Assert.assertEquals(new Utf8("ghi"), getField((SubRecord) getField(record, "subRecordUnion"), "anotherField"));
+    Assert.assertEquals(new Utf8("ghi"), getField(((List<SubRecord>) getField(record, "recordsArray")).get(0), "anotherField"));
+    Assert.assertEquals(new Utf8("ghi"), getField(((Map<CharSequence, SubRecord>) getField(record, "recordsMap")).get(new Utf8("1")), "anotherField"));
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
@@ -486,17 +488,17 @@ public class FastSpecificDeserializerGeneratorTest {
     // given
     TestRecord record = emptyTestRecord();
     SubRecord subRecord = new SubRecord();
-    subRecord.subField = "abc";
-    record.union = subRecord;
+    setField(subRecord, "subField", "abc");
+    setField(record, "union", subRecord);
 
     // when
     record = decodeRecordFast(TestRecord.SCHEMA$, TestRecord.SCHEMA$, specificDataAsDecoder(record));
 
     // then
-    Assert.assertEquals(new Utf8("abc"), ((SubRecord) record.union).subField);
+    Assert.assertEquals(new Utf8("abc"), getField((SubRecord) getField(record, "union"), "subField"));
 
     // given
-    record.union = "abc";
+    setField(record, "union", "abc");
 
     // when
     if (whetherUseFastDeserializer) {
@@ -506,10 +508,10 @@ public class FastSpecificDeserializerGeneratorTest {
     }
 
     // then
-    Assert.assertEquals(new Utf8("abc"), record.union);
+    Assert.assertEquals(new Utf8("abc"), getField(record, "union"));
 
     // given
-    record.union = 1;
+    setField(record, "union", 1);
 
     // when
     if (whetherUseFastDeserializer) {
@@ -518,7 +520,7 @@ public class FastSpecificDeserializerGeneratorTest {
       record = decodeRecordSlow(TestRecord.SCHEMA$, TestRecord.SCHEMA$, specificDataAsDecoder(record));
     }
     // then
-    Assert.assertEquals(1, record.union);
+    Assert.assertEquals(1, getField(record, "union"));
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
@@ -527,7 +529,7 @@ public class FastSpecificDeserializerGeneratorTest {
     Schema arrayRecordSchema = Schema.createArray(TestRecord.SCHEMA$);
 
     TestRecord testRecord = emptyTestRecord();
-    testRecord.testStringUnion = "abc";
+    setField(testRecord, "testStringUnion", "abc");
 
     List<TestRecord> recordsArray = new ArrayList<>();
     recordsArray.add(testRecord);
@@ -545,12 +547,12 @@ public class FastSpecificDeserializerGeneratorTest {
 
     // then
     Assert.assertEquals(2, array.size());
-    Assert.assertEquals(new Utf8("abc"), array.get(0).testStringUnion);
-    Assert.assertEquals(new Utf8("abc"), array.get(1).testStringUnion);
+    Assert.assertEquals(new Utf8("abc"), getField(array.get(0), "testStringUnion"));
+    Assert.assertEquals(new Utf8("abc"), getField(array.get(1), "testStringUnion"));
 
     // given
     testRecord = emptyTestRecord();
-    testRecord.testStringUnion = "abc";
+    setField(testRecord, "testStringUnion", "abc");
 
     arrayRecordSchema = Schema.createArray(createUnionSchema(TestRecord.SCHEMA$));
 
@@ -568,8 +570,8 @@ public class FastSpecificDeserializerGeneratorTest {
     }
     // then
     Assert.assertEquals(2, array.size());
-    Assert.assertEquals(new Utf8("abc"), array.get(0).testStringUnion);
-    Assert.assertEquals(new Utf8("abc"), array.get(1).testStringUnion);
+    Assert.assertEquals(new Utf8("abc"), getField(array.get(0), "testStringUnion"));
+    Assert.assertEquals(new Utf8("abc"), getField(array.get(1), "testStringUnion"));
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
@@ -578,7 +580,7 @@ public class FastSpecificDeserializerGeneratorTest {
     Schema mapRecordSchema = Schema.createMap(TestRecord.SCHEMA$);
 
     TestRecord testRecord = emptyTestRecord();
-    testRecord.testStringUnion = "abc";
+    setField(testRecord, "testStringUnion", "abc");
 
     Map<String, TestRecord> recordsMap = new HashMap<>();
     recordsMap.put("1", testRecord);
@@ -594,14 +596,14 @@ public class FastSpecificDeserializerGeneratorTest {
 
     // then
     Assert.assertEquals(2, map.size());
-    Assert.assertEquals(new Utf8("abc"), map.get(new Utf8("1")).testStringUnion);
-    Assert.assertEquals(new Utf8("abc"), map.get(new Utf8("2")).testStringUnion);
+    Assert.assertEquals(new Utf8("abc"), getField(map.get(new Utf8("1")), "testStringUnion"));
+    Assert.assertEquals(new Utf8("abc"), getField(map.get(new Utf8("2")), "testStringUnion"));
 
     // given
     mapRecordSchema = Schema.createMap(FastSerdeTestsSupport.createUnionSchema(TestRecord.SCHEMA$));
 
     testRecord = emptyTestRecord();
-    testRecord.testStringUnion = "abc";
+    setField(testRecord, "testStringUnion", "abc");
 
     recordsMap = new HashMap<>();
     recordsMap.put("1", testRecord);
@@ -615,64 +617,70 @@ public class FastSpecificDeserializerGeneratorTest {
     }
     // then
     Assert.assertEquals(2, map.size());
-    Assert.assertEquals(new Utf8("abc"), map.get(new Utf8("1")).testStringUnion);
-    Assert.assertEquals(new Utf8("abc"), map.get(new Utf8("2")).testStringUnion);
+    Assert.assertEquals(new Utf8("abc"), getField(map.get(new Utf8("1")), "testStringUnion"));
+    Assert.assertEquals(new Utf8("abc"), getField(map.get(new Utf8("2")), "testStringUnion"));
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
   public void shouldReadWithTypesDeletedFromReaderSchema(Boolean whetherUseFastDeserializer) throws IOException {
-    // the purpose of this scenario is to test whether types removed in reader schema
-    // will not be considered a part of inferred classpath and will not cause the ClassNotFoundException.
-
     // given
-    Schema classpathOldRecordSchema = Schema.parse(this.getClass().getResourceAsStream("/schema/classpathOldTest.avsc"));
-    Schema classpathFixedSchema = classpathOldRecordSchema.getField("classpathFixed").schema();
-    Schema classpathEnumSchema = classpathOldRecordSchema.getField("classpathEnum").schema();
-    Schema classpathSubRecordSchema = classpathOldRecordSchema.getField("classpathSubRecord").schema();
-    GenericData.Record classpathOldRecord = new GenericData.Record(classpathOldRecordSchema);
-    classpathOldRecord.put("field", "abc");
+    Schema removedTypesOldRecordSchema = Schema.parse(this.getClass().getResourceAsStream("/schema/removedTypesOldTest.avsc"));
+    Schema removedFixedSchema = removedTypesOldRecordSchema.getField("removedFixed").schema();
+    Schema removedEnumSchema = removedTypesOldRecordSchema.getField("removedEnum").schema();
+    Schema removedSubRecordSchema = removedTypesOldRecordSchema.getField("removedSubRecord").schema();
+    GenericData.Record removedOldRecord = new GenericData.Record(removedTypesOldRecordSchema);
+    removedOldRecord.put("field", "abc");
 
-    GenericData.Fixed classpathFixed = newFixed(classpathFixedSchema, new byte[]{0x01});
-    Map<String, GenericData.Fixed> classpathFixedMap = new HashMap<>();
-    classpathFixedMap.put("key", classpathFixed);
-    classpathOldRecord.put("classpathFixed", classpathFixed);
-    classpathOldRecord.put("classpathFixedUnion", classpathFixed);
-    classpathOldRecord.put("classpathFixedArray", Arrays.asList(classpathFixed));
-    classpathOldRecord.put("classpathFixedUnionArray", Arrays.asList(classpathFixed));
-    classpathOldRecord.put("classpathFixedMap", classpathFixedMap);
-    classpathOldRecord.put("classpathFixedUnionMap", classpathFixedMap);
+    ByteBuffer removedBytes = ByteBuffer.wrap(new byte[]{0x01});
+    Map<String, ByteBuffer> removedBytesMap = new HashMap<>();
+    removedOldRecord.put("removedBytes", removedBytes);
+    removedOldRecord.put("removedBytesUnion", removedBytes);
+    removedOldRecord.put("removedBytesArray", Arrays.asList(removedBytes));
+    removedOldRecord.put("removedBytesMap", removedBytesMap);
+    removedOldRecord.put("removedBytesUnionArray", Arrays.asList(removedBytes));
+    removedOldRecord.put("removedBytesUnionMap", removedBytesMap);
 
-    GenericData.EnumSymbol classpathEnum = AvroCompatibilityHelper.newEnumSymbol(classpathEnumSchema, "A");
-    Map<String, GenericData.EnumSymbol> classpathEnumMap = new HashMap<>();
-    classpathEnumMap.put("key", classpathEnum);
-    classpathOldRecord.put("classpathEnum", classpathEnum);
-    classpathOldRecord.put("classpathEnumUnion", classpathEnum);
-    classpathOldRecord.put("classpathEnumArray", Arrays.asList(classpathEnum));
-    classpathOldRecord.put("classpathEnumUnionArray", Arrays.asList(classpathEnum));
-    classpathOldRecord.put("classpathEnumMap", classpathEnumMap);
-    classpathOldRecord.put("classpathEnumUnionMap", classpathEnumMap);
+    GenericData.Fixed removedFixed = newFixed(removedFixedSchema, new byte[]{0x01});
+    Map<String, GenericData.Fixed> removedFixedMap = new HashMap<>();
+    removedFixedMap.put("key", removedFixed);
+    removedOldRecord.put("removedFixed", removedFixed);
+    removedOldRecord.put("removedFixedUnion", removedFixed);
+    removedOldRecord.put("removedFixedArray", Arrays.asList(removedFixed));
+    removedOldRecord.put("removedFixedUnionArray", Arrays.asList(removedFixed));
+    removedOldRecord.put("removedFixedMap", removedFixedMap);
+    removedOldRecord.put("removedFixedUnionMap", removedFixedMap);
 
-    GenericData.Record classpathSubRecord = new GenericData.Record(classpathSubRecordSchema);
-    Map<String, GenericData.Record> classpathSubRecordMap = new HashMap<>();
-    classpathSubRecordMap.put("key", classpathSubRecord);
-    classpathSubRecord.put("subField", "abc");
-    classpathOldRecord.put("classpathSubRecord", classpathSubRecord);
-    classpathOldRecord.put("classpathSubRecordUnion", classpathSubRecord);
-    classpathOldRecord.put("classpathSubRecordArray", Arrays.asList(classpathSubRecord));
-    classpathOldRecord.put("classpathSubRecordUnionArray", Arrays.asList(classpathSubRecord));
-    classpathOldRecord.put("classpathSubRecordMap", classpathSubRecordMap);
-    classpathOldRecord.put("classpathSubRecordUnionMap", classpathSubRecordMap);
+    GenericData.EnumSymbol removedEnum = AvroCompatibilityHelper.newEnumSymbol(removedEnumSchema, "A");
+    Map<String, GenericData.EnumSymbol> removedEnumMap = new HashMap<>();
+    removedEnumMap.put("key", removedEnum);
+    removedOldRecord.put("removedEnum", removedEnum);
+    removedOldRecord.put("removedEnumUnion", removedEnum);
+    removedOldRecord.put("removedEnumArray", Arrays.asList(removedEnum));
+    removedOldRecord.put("removedEnumUnionArray", Arrays.asList(removedEnum));
+    removedOldRecord.put("removedEnumMap", removedEnumMap);
+    removedOldRecord.put("removedEnumUnionMap", removedEnumMap);
+
+    GenericData.Record removedSubRecord = new GenericData.Record(removedSubRecordSchema);
+    Map<String, GenericData.Record> removedSubRecordMap = new HashMap<>();
+    removedSubRecordMap.put("key", removedSubRecord);
+    removedSubRecord.put("subField", "abc");
+    removedOldRecord.put("removedSubRecord", removedSubRecord);
+    removedOldRecord.put("removedSubRecordUnion", removedSubRecord);
+    removedOldRecord.put("removedSubRecordArray", Arrays.asList(removedSubRecord));
+    removedOldRecord.put("removedSubRecordUnionArray", Arrays.asList(removedSubRecord));
+    removedOldRecord.put("removedSubRecordMap", removedSubRecordMap);
+    removedOldRecord.put("removedSubRecordUnionMap", removedSubRecordMap);
 
     // when
-    ClasspathTestRecord record = null;
+    RemovedTypesTestRecord record = null;
     if (whetherUseFastDeserializer) {
-      record = decodeRecordFast(ClasspathTestRecord.SCHEMA$, classpathOldRecordSchema, genericDataAsDecoder(classpathOldRecord));
+      record = decodeRecordFast(RemovedTypesTestRecord.SCHEMA$, removedTypesOldRecordSchema, genericDataAsDecoder(removedOldRecord));
     } else {
-      record = decodeRecordSlow(ClasspathTestRecord.SCHEMA$, classpathOldRecordSchema, genericDataAsDecoder(classpathOldRecord));
+      record = decodeRecordSlow(RemovedTypesTestRecord.SCHEMA$, removedTypesOldRecordSchema, genericDataAsDecoder(removedOldRecord));
     }
 
     // then
-    Assert.assertEquals(new Utf8("abc"), record.field);
+    Assert.assertEquals(new Utf8("abc"), getField(record, "field"));
   }
 
   @SuppressWarnings("unchecked")

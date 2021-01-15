@@ -11,12 +11,16 @@ import com.linkedin.avroutil1.compatibility.AvroGeneratedSourceCode;
 import com.linkedin.avroutil1.compatibility.AvroSchemaUtil;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
 import com.linkedin.avroutil1.compatibility.CodeTransformations;
+import com.linkedin.avroutil1.compatibility.FieldBuilder;
+import com.linkedin.avroutil1.compatibility.SchemaNormalization;
 import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
 import com.linkedin.avroutil1.compatibility.SchemaParseResult;
 import com.linkedin.avroutil1.compatibility.SchemaValidator;
 import com.linkedin.avroutil1.compatibility.avro14.backports.Avro14DefaultValuesCache;
 import com.linkedin.avroutil1.compatibility.avro14.backports.Avro18BufferedBinaryEncoder;
-import com.linkedin.avroutil1.compatibility.SchemaNormalization;
+import com.linkedin.avroutil1.compatibility.avro14.codec.CachedResolvingDecoder;
+import com.linkedin.avroutil1.compatibility.avro14.codec.CompatibleJsonDecoder;
+import com.linkedin.avroutil1.compatibility.avro14.codec.CompatibleJsonEncoder;
 import com.linkedin.avroutil1.compatibility.backports.ObjectInputToInputStreamAdapter;
 import com.linkedin.avroutil1.compatibility.backports.ObjectOutputToOutputStreamAdapter;
 import java.io.IOException;
@@ -39,7 +43,9 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.io.Avro14BinaryDecoderAccessUtil;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
+import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
+import org.apache.avro.io.Encoder;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificCompiler;
@@ -72,6 +78,11 @@ public class Avro14Adapter implements AvroAdapter {
       //avro 1.4 bundles the compiler into the regular jar, hence this is not expected
       throw new IllegalStateException("error initializing compiler-related fields", e);
     }
+  }
+
+  @Override
+  public AvroVersion supporttedMajorVersion() {
+    return AvroVersion.AVRO_1_4;
   }
 
   @Override
@@ -118,6 +129,11 @@ public class Avro14Adapter implements AvroAdapter {
   }
 
   @Override
+  public Encoder newJsonEncoder(Schema schema, OutputStream out, boolean pretty, AvroVersion jsonFormat) throws IOException {
+    return new CompatibleJsonEncoder(schema, out, jsonFormat != null && jsonFormat.laterThan(AvroVersion.AVRO_1_4));
+  }
+
+  @Override
   public JsonDecoder newJsonDecoder(Schema schema, InputStream in) throws IOException {
     return new JsonDecoder(schema, in);
   }
@@ -125,6 +141,21 @@ public class Avro14Adapter implements AvroAdapter {
   @Override
   public JsonDecoder newJsonDecoder(Schema schema, String in) throws IOException {
     return new JsonDecoder(schema, in);
+  }
+
+  @Override
+  public Decoder newCompatibleJsonDecoder(Schema schema, InputStream in) throws IOException {
+    return new CompatibleJsonDecoder(schema, in);
+  }
+
+  @Override
+  public Decoder newCompatibleJsonDecoder(Schema schema, String in) throws IOException {
+    return new CompatibleJsonDecoder(schema, in);
+  }
+
+  @Override
+  public Decoder newCachedResolvingDecoder(Schema writer, Schema reader, Decoder in) throws IOException {
+    return new CachedResolvingDecoder(writer, reader, in);
   }
 
   @Override
@@ -179,6 +210,16 @@ public class Avro14Adapter implements AvroAdapter {
   }
 
   @Override
+  public boolean fieldHasDefault(Schema.Field field) {
+    return null != field.defaultValue();
+  }
+
+  @Override
+  public FieldBuilder cloneSchemaField(Schema.Field field) {
+    return new FieldBuilder14(field);
+  }
+
+  @Override
   public Collection<AvroGeneratedSourceCode> compile(
       Collection<Schema> toCompile,
       AvroVersion minSupportedVersion,
@@ -212,18 +253,8 @@ public class Avro14Adapter implements AvroAdapter {
 
   private Collection<AvroGeneratedSourceCode> transform(List<AvroGeneratedSourceCode> avroGenerated, AvroVersion minAvro, AvroVersion maxAvro) {
     List<AvroGeneratedSourceCode> transformed = new ArrayList<>(avroGenerated.size());
-    String fixed;
     for (AvroGeneratedSourceCode generated : avroGenerated) {
-      fixed = generated.getContents();
-      fixed = CodeTransformations.transformFixedClass(fixed, minAvro, maxAvro);
-      fixed = CodeTransformations.transformEnumClass(fixed, minAvro, maxAvro);
-      fixed = CodeTransformations.transformParseCalls(fixed, AvroVersion.AVRO_1_4, minAvro, maxAvro);
-      fixed = CodeTransformations.addGetClassSchemaMethod(fixed, AvroVersion.AVRO_1_4, minAvro, maxAvro);
-      fixed = CodeTransformations.removeBuilderSupport(fixed, minAvro, maxAvro);
-      fixed = CodeTransformations.removeBinaryMessageCodecSupport(fixed, minAvro, maxAvro);
-      fixed = CodeTransformations.removeAvroGeneratedAnnotation(fixed, minAvro, maxAvro);
-      fixed = CodeTransformations.transformExternalizableSupport(fixed, minAvro, maxAvro);
-      fixed = CodeTransformations.transformCustomCodersSupport(fixed, minAvro, maxAvro);
+      String fixed = CodeTransformations.applyAll(generated.getContents(), supporttedMajorVersion(), minAvro, maxAvro);
       transformed.add(new AvroGeneratedSourceCode(generated.getPath(), fixed));
     }
     return transformed;

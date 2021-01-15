@@ -1,6 +1,0 @@
-package com.acme.generatedby14;
-
-/** this class demonstrated the output for a fixed-type class generated under vanilla avro 1.4 */
-@SuppressWarnings("all")
-@org.apache.avro.specific.FixedSize(16)
-public class Vanilla14Fixed extends org.apache.avro.specific.SpecificFixed {}

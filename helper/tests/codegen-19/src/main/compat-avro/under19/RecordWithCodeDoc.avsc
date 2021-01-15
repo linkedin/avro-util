@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "namespace": "under19",
+  "name": "RecordWithCodeDoc",
+  "fields": [
+    {
+      "name": "docHasSemicolon",
+      "type": "string",
+      "doc": "fake method); more"
+    }
+  ]
+}

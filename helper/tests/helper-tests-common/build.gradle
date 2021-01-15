@@ -15,6 +15,8 @@ dependencies {
   api "commons-io:commons-io:2.6"
   api "net.openhft:compiler:2.3.6"
 
+  implementation "args4j:args4j:2.33"
+
   compileOnly ('org.apache.avro:avro:1.4.1') {
     exclude group: "org.mortbay.jetty"
     exclude group: "org.apache.velocity"

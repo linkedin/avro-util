@@ -20,7 +20,7 @@ import org.testng.annotations.Test;
 public class Avro15WireFormatCompatibilityTest {
 
   @Test
-  public void demonstrateUnableToReadAvro14Json() throws Exception {
+  public void demonstrateVanillaUnableToReadAvro14Json() throws Exception {
     Schema schema = new Schema.Parser().parse(TestUtil.load("by14/RecordWithUnion.avsc"));
     String serialized = TestUtil.load("by14/RecordWithUnion.json");
     JsonDecoder decoder = DecoderFactory.get().jsonDecoder(schema, serialized);
@@ -31,16 +31,5 @@ public class Avro15WireFormatCompatibilityTest {
     } catch (AvroTypeException expected) {
       Assert.assertEquals(expected.getMessage(), "Unknown union branch InnerUnionRecord");
     }
-  }
-
-  @Test
-  public void demonstrateAbleToReadAvro15Json() throws Exception {
-    Schema schema = new Schema.Parser().parse(TestUtil.load("by15/RecordWithUnion.avsc"));
-    String serialized = TestUtil.load("by15/RecordWithUnion.json");
-    JsonDecoder decoder = DecoderFactory.get().jsonDecoder(schema, serialized);
-    GenericDatumReader<IndexedRecord> reader = new GenericDatumReader<>(schema);
-    IndexedRecord deserialized = reader.read(null, decoder);
-    IndexedRecord inner = (IndexedRecord) deserialized.get(deserialized.getSchema().getField("f").pos());
-    Assert.assertEquals(15, inner.get(inner.getSchema().getField("f").pos()));
   }
 }

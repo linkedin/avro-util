@@ -124,7 +124,7 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
                 subRecordMapReuse0 .clear();
                 subRecordMap1 = subRecordMapReuse0;
             } else {
-                subRecordMap1 = new HashMap<Utf8, IndexedRecord>();
+                subRecordMap1 = new HashMap<Utf8, IndexedRecord>(((int)(((chunkLen0 * 4)+ 2)/ 3)));
             }
             do {
                 for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {

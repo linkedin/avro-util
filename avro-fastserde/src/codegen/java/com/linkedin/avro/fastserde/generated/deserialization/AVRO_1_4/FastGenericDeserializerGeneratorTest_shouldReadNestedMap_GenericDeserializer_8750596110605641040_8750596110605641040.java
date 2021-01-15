@@ -57,7 +57,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadNestedMap_GenericDes
                 mapFieldReuse0 .clear();
                 mapField1 = mapFieldReuse0;
             } else {
-                mapField1 = new HashMap<Utf8, Map<Utf8, List<Integer>>>();
+                mapField1 = new HashMap<Utf8, Map<Utf8, List<Integer>>>(((int)(((chunkLen0 * 4)+ 2)/ 3)));
             }
             do {
                 for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
@@ -73,7 +73,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadNestedMap_GenericDes
                             mapFieldValueReuse0 .clear();
                             mapFieldValue0 = mapFieldValueReuse0;
                         } else {
-                            mapFieldValue0 = new HashMap<Utf8, List<Integer>>();
+                            mapFieldValue0 = new HashMap<Utf8, List<Integer>>(((int)(((chunkLen1 * 4)+ 2)/ 3)));
                         }
                         do {
                             for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {

@@ -1,7 +1,0 @@
-{
-  ${symbols};
-  public static final org.apache.avro.Schema SCHEMA$ = org.apache.avro.Schema.parse("{\"type\":\"enum\",\"name\":\"${name}\",\"namespace\":\"${namespace}\",\"symbols\":[${symbol_string}],\"doc\":\"${doc}\"}");
-  public static org.apache.avro.Schema getClassSchema() {
-    return SCHEMA$;
-  }
-}

@@ -16,6 +16,8 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
+import org.apache.avro.io.Decoder;
+import org.apache.avro.io.Encoder;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
 
@@ -26,6 +28,10 @@ import org.apache.avro.io.JsonEncoder;
  * minor version of a particular major version - so the adapter for 1.7 actually supports 1.7.7).
  */
 public interface AvroAdapter {
+
+  //metadata
+
+  AvroVersion supporttedMajorVersion();
 
   //codecs
 
@@ -42,9 +48,17 @@ public interface AvroAdapter {
 
   JsonEncoder newJsonEncoder(Schema schema, OutputStream out, boolean pretty) throws IOException;
 
+  Encoder newJsonEncoder(Schema schema, OutputStream out, boolean pretty, AvroVersion jsonFormat) throws IOException;
+
   JsonDecoder newJsonDecoder(Schema schema, InputStream in) throws IOException;
 
   JsonDecoder newJsonDecoder(Schema schema, String in) throws IOException;
+
+  Decoder newCompatibleJsonDecoder(Schema schema, InputStream in) throws IOException;
+
+  Decoder newCompatibleJsonDecoder(Schema schema, String in) throws IOException;
+
+  Decoder newCachedResolvingDecoder(Schema writer, Schema reader, Decoder in) throws IOException;
 
   //parsing and Schema-related
 
@@ -67,6 +81,10 @@ public interface AvroAdapter {
   GenericData.Fixed newFixedField(Schema fixedSchema, byte[] contents);
 
   Object getGenericDefaultValue(Schema.Field field);
+
+  boolean fieldHasDefault(Schema.Field field);
+
+  FieldBuilder cloneSchemaField(Schema.Field field);
 
   //code generation
 

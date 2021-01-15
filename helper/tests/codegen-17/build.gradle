@@ -14,6 +14,9 @@ configurations {
   codegen {
     extendsFrom implementation
   }
+  resourcegen {
+    extendsFrom runtimeClasspath
+  }
 }
 
 sourceSets {
@@ -22,16 +25,16 @@ sourceSets {
       srcDir 'src/main/java'
       srcDir "$buildDir/generated/sources/raw-avro/java/main"
       srcDir "$buildDir/generated/sources/compat-avro/java/main"
+      srcDir "$buildDir/generated/sources/compat-avro-target17/java/main"
     }
     resources {
-      srcDirs = ["src/main/raw-avro", "src/main/compat-avro"]
+      srcDirs = ["src/main/raw-avro", "src/main/compat-avro", "src/main/compat-avro-target17", "$buildDir/generated/resources"]
     }
   }
 }
 
 task runVanillaAvroCodegen {
   description = 'generate specific classes using vanilla avro'
-
   fileTree(dir: 'src/main/raw-avro', include:'**/*.avsc').each { file ->
     doLast {
       javaexec {
@@ -51,22 +54,66 @@ task runCompatAvroCodegen {
       javaexec {
         classpath configurations.codegen
         main = 'com.linkedin.avroutil1.TestTool'
-        args = ["compile", file.getAbsolutePath(), "$buildDir/generated/sources/compat-avro/java/main"]
+        args = [
+            "-op", "compile",
+            "-in", file.getAbsolutePath(),
+            "-out", "$buildDir/generated/sources/compat-avro/java/main",
+            "-min", "AVRO_1_4"
+        ]
       }
     }
   }
 }
 
+task runCompatAvroCodegenTarget17 {
+  description = 'generate specific classes using compatibility helper with a minimum target of avro 1.7'
+  outputs.dir("$buildDir/generated/sources/compat-avro-target17/java/main").withPropertyName('outputDir')
+  fileTree(dir: 'src/main/compat-avro-target17', include:'**/*.avsc').each { file ->
+    doLast {
+      javaexec {
+        classpath configurations.codegen
+        main = 'com.linkedin.avroutil1.TestTool'
+        args = [
+            "-op", "compile",
+            "-in", file.getAbsolutePath(),
+            "-out", "$buildDir/generated/sources/compat-avro-target17/java/main",
+            "-min", "AVRO_1_7"
+        ]
+      }
+    }
+  }
+}
+
+
 //copy output generated compatible code into resources so downstream modules can use it
 task copyCompatAvroCodeToResources(type: Copy) {
   from "$buildDir/generated/sources/compat-avro/java/main"
+  from "$buildDir/generated/sources/compat-avro-target17/java/main"
   into "$buildDir/resources/main"
 }
 
-copyCompatAvroCodeToResources.dependsOn runCompatAvroCodegen
-compileJava.dependsOn runVanillaAvroCodegen, runCompatAvroCodegen
-//TODO - figure out why this must be done manually
+task runResourceGeneration(type: JavaExec) {
+  classpath configurations.resourcegen + sourceSets.main.output
+  main = "com.linkedin.avroutil1.compatibility.avro17.Generate17TestResources"
+  args "$buildDir/generated/resources"
+  debug false
+}
+
+jar {
+  //normal contents
+  from sourceSets.main.output
+  //resource generation output. has to be explicitly included in the jar because
+  //"processResources" ran before this was generated
+  from "$buildDir/generated/resources"
+}
+
+//TODO - figure out why these must be done manually
 runCompatAvroCodegen.dependsOn ":helper:tests:helper-tests-common:jar"
+runCompatAvroCodegenTarget17.dependsOn ":helper:tests:helper-tests-common:jar"
+
+copyCompatAvroCodeToResources.dependsOn runCompatAvroCodegen, runCompatAvroCodegenTarget17
+compileJava.dependsOn runVanillaAvroCodegen, runCompatAvroCodegen, runCompatAvroCodegenTarget17
+jar.dependsOn runResourceGeneration
 
 dependencies {
   codegen "org.apache.avro:avro-tools:1.7.7"
@@ -77,4 +124,11 @@ dependencies {
   //required because generated code depends on the helper
   implementation project(":helper:helper")
   implementation "org.apache.avro:avro:1.7.7"
+
+  //this block required for resource generation code
+  implementation project(":helper:tests:helper-tests-common")
+  //redirect logging to log4j2 for resource generation
+  resourcegen "org.apache.logging.log4j:log4j-core:2.11.2"
+  resourcegen "org.apache.logging.log4j:log4j-slf4j-impl:2.11.2"
+  resourcegen files('../codegenClasspath')
 }

@@ -6,6 +6,13 @@
 
 package com.linkedin.avroutil1.compatibility;
 
+import com.linkedin.avroutil1.compatibility.avro110.Avro110Adapter;
+import com.linkedin.avroutil1.compatibility.avro14.Avro14Adapter;
+import com.linkedin.avroutil1.compatibility.avro15.Avro15Adapter;
+import com.linkedin.avroutil1.compatibility.avro16.Avro16Adapter;
+import com.linkedin.avroutil1.compatibility.avro17.Avro17Adapter;
+import com.linkedin.avroutil1.compatibility.avro18.Avro18Adapter;
+import com.linkedin.avroutil1.compatibility.avro19.Avro19Adapter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,23 +21,16 @@ import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
-
-import com.linkedin.avroutil1.compatibility.avro110.Avro110Adapter;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
+import org.apache.avro.io.Decoder;
+import org.apache.avro.io.Encoder;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificRecord;
-
-import com.linkedin.avroutil1.compatibility.avro14.Avro14Adapter;
-import com.linkedin.avroutil1.compatibility.avro15.Avro15Adapter;
-import com.linkedin.avroutil1.compatibility.avro16.Avro16Adapter;
-import com.linkedin.avroutil1.compatibility.avro17.Avro17Adapter;
-import com.linkedin.avroutil1.compatibility.avro18.Avro18Adapter;
-import com.linkedin.avroutil1.compatibility.avro19.Avro19Adapter;
 
 
 /**
@@ -76,8 +76,8 @@ public class AvroCompatibilityHelper {
           default:
             throw new IllegalStateException("unhandled avro version " + DETECTED_VERSION);
         }
-      } catch (Exception e) {
-        throw new IllegalStateException("could not initialize avro factory for " + DETECTED_VERSION, e);
+      } catch (Throwable t) {
+        throw new IllegalStateException("could not initialize avro factory for " + DETECTED_VERSION, t);
       }
     }
   }
@@ -200,6 +200,25 @@ public class AvroCompatibilityHelper {
   }
 
   /**
+   * constructs a json {@link Encoder} on top of the given {@link OutputStream} for the given {@link Schema}
+   * @param schema a schema
+   * @param out an output stream
+   * @param pretty true to pretty-print the json (if supported by runtime avro version)
+   * @param jsonFormat which major version of avro to match for json wire format. null means the runtime version
+   * @return an encoder
+   * @throws IOException in io errors
+   */
+  public static Encoder newJsonEncoder(Schema schema, OutputStream out, boolean pretty, AvroVersion jsonFormat) throws IOException {
+    assertAvroAvailable();
+    //for some reason uncommenting this check causes classloading to fail if no avro
+    //(see AvroCompatibilityHelperNoAvroTest).
+    //if (jsonFormat == null) {
+    //  return ADAPTER.newJsonEncoder(schema, out, pretty);
+    //}
+    return ADAPTER.newJsonEncoder(schema, out, pretty, jsonFormat);
+  }
+
+  /**
    * constructs a {@link JsonDecoder} on top of the given {@link InputStream} for the given {@link Schema}
    * @param schema a schema
    * @param in an input stream
@@ -221,6 +240,50 @@ public class AvroCompatibilityHelper {
   public static JsonDecoder newJsonDecoder(Schema schema, String in) throws IOException {
     assertAvroAvailable();
     return ADAPTER.newJsonDecoder(schema, in);
+  }
+
+  /**
+   * constructs a {@link JsonDecoder} on top of the given {@link InputStream} for the given {@link Schema}
+   * that is more widely compatible than the "native" avro decoder:
+   * <ul>
+   *     <li>avro json format has changed between 1.4 and 1.5 around encoding of union branches - simple name vs full names for named types</li>
+   *     <li>avro json decoders are not tolerant of int literals in json for float fields and vice versa under avro &lt; 1.7</li>
+   * </ul>
+   * the decoder returned by this method is expected to handle these cases with no errors
+   * @param schema a schema
+   * @param in an input stream containing a json-serialized avro payload
+   * @return a decoder
+   * @throws IOException on io errors
+   */
+  public static Decoder newCompatibleJsonDecoder(Schema schema, InputStream in) throws IOException {
+    assertAvroAvailable();
+    return ADAPTER.newCompatibleJsonDecoder(schema, in);
+  }
+
+  /**
+   * constructs a {@link JsonDecoder} on top of the given {@link String} for the given {@link Schema}
+   * that can decode json in either "modern" or old (avro &lt;= 1.4) formats
+   * @param schema a schema
+   * @param in a String containing a json-serialized avro payload
+   * @return a decoder
+   * @throws IOException on io errors
+   */
+  public static Decoder newCompatibleJsonDecoder(Schema schema, String in) throws IOException {
+    assertAvroAvailable();
+    return ADAPTER.newCompatibleJsonDecoder(schema, in);
+  }
+
+  /**
+   * {@link Decoder} that performs type-resolution between the reader's and writer's schemas.
+   * @param writer writer schema
+   * @param reader reader schema
+   * @param in a String containing a json-serialized avro payload
+   * @return a decoder
+   * @throws IOException on io errors
+   */
+  public static Decoder newCachedResolvingDecoder(Schema writer, Schema reader, Decoder in) throws IOException {
+    assertAvroAvailable();
+    return ADAPTER.newCachedResolvingDecoder(writer, reader, in);
   }
 
   // schema parsing, and other Schema-related operations
@@ -283,7 +346,7 @@ public class AvroCompatibilityHelper {
    * @param indexedRecord the record in question
    * @return true if argument is a specific record
    */
-  static boolean isSpecificRecord(IndexedRecord indexedRecord) {
+  public static boolean isSpecificRecord(IndexedRecord indexedRecord) {
     return indexedRecord instanceof SpecificRecord;
   }
 
@@ -368,6 +431,11 @@ public class AvroCompatibilityHelper {
     return ADAPTER.newFixedField(fixedSchema, contents);
   }
 
+  public static boolean fieldHasDefault(Schema.Field field) {
+    assertAvroAvailable();
+    return ADAPTER.fieldHasDefault(field);
+  }
+
   /**
    * returns the default value for a schema field, as a generic record class
    * (if the default value is complex enough - say records, enums, fixed fields etc)
@@ -381,6 +449,17 @@ public class AvroCompatibilityHelper {
   public static Object getGenericDefaultValue(Schema.Field field) {
     assertAvroAvailable();
     return ADAPTER.getGenericDefaultValue(field);
+  }
+
+  /**
+   * returns a FieldBuilder, containing an existing schema field.
+   * @param field a schema field
+   * @return a new FieldBuilder
+   * @throws org.apache.avro.AvroRuntimeException if the field in question has no default.
+   */
+  public static FieldBuilder cloneSchemaField(Schema.Field field) {
+    assertAvroAvailable();
+    return ADAPTER.cloneSchemaField(field);
   }
 
   // code generation
@@ -496,8 +575,7 @@ public class AvroCompatibilityHelper {
     try {
       return schema.getFullName();
     } catch (RuntimeException e) {
-      return schema.getType().name();
+      return schema.getName();
     }
   }
-
 }

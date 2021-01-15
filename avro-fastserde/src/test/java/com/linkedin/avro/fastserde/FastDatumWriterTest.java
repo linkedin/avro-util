@@ -32,7 +32,7 @@ public class FastDatumWriterTest {
         new FastSpecificDatumWriter<>(TestRecord.SCHEMA$, cache);
 
     TestRecord testRecord = FastSpecificDeserializerGeneratorTest.emptyTestRecord();
-    testRecord.testEnum = TestEnum.A;
+    setField(testRecord, "testEnum", TestEnum.A);
 
     // when
     fastSpecificDatumWriter.write(testRecord,

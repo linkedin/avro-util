@@ -1,6 +1,9 @@
 package com.linkedin.avro.fastserde;
 
 import com.linkedin.avro.api.PrimitiveFloatList;
+import com.linkedin.avro.fastserde.backport.ResolvingGrammarGenerator;
+import com.linkedin.avro.fastserde.backport.Symbol;
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.sun.codemodel.JArray;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JCatchBlock;
@@ -26,7 +29,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
@@ -37,15 +40,13 @@ import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericFixed;
+import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
-import org.apache.avro.io.parsing.ResolvingGrammarGenerator;
-import org.apache.avro.io.parsing.Symbol;
 import org.apache.avro.util.Utf8;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -327,7 +328,11 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
           if (useGenericTypes) {
             schemaVar = declareSchemaVariableForRecordField(readerField.name(), readerField.schema(), recordSchemaVar);
           }
-          JExpression value = parseDefaultValue(readerField.schema(), readerField.defaultValue(), methodBody, schemaVar,
+          JExpression value = parseDefaultValue(
+              readerField.schema(),
+              AvroCompatibilityHelper.getGenericDefaultValue(readerField),
+              methodBody,
+              schemaVar,
               readerField.name());
           methodBody.invoke(result, "put").arg(JExpr.lit(readerField.pos())).arg(value);
         }
@@ -352,7 +357,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     }
   }
 
-  private JExpression parseDefaultValue(Schema schema, JsonNode defaultValue, JBlock body, JVar schemaVar,
+  private JExpression parseDefaultValue(Schema schema, Object defaultValue, JBlock body, JVar schemaVar,
       String fieldName) {
     Schema.Type schemaType = schema.getType();
     // The default value of union is of the first defined type
@@ -381,36 +386,39 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
           }
           valueVar =
               body.decl(defaultValueClass, getUniqueName("default" + schema.getName()), valueInitializationExpr);
-          // Avro-1.4 depends on an old jackson-mapper-asl-1.4.2, which requires the following typecast.
-          for (Iterator<Map.Entry<String, JsonNode>> it = ((ObjectNode) defaultValue).getFields(); it.hasNext(); ) {
-            Map.Entry<String, JsonNode> subFieldEntry = it.next();
-            Schema.Field subField = schema.getField(subFieldEntry.getKey());
+
+          GenericRecord defaultValueRecord = (GenericRecord) defaultValue;
+
+          for (Schema.Field subField: schema.getFields()) {
 
             JVar fieldSchemaVar = null;
             if (useGenericTypes) {
               fieldSchemaVar = declareSchemaVariableForRecordField(subField.name(), subField.schema(), schemaVar);
             }
             JExpression fieldValue =
-                parseDefaultValue(subField.schema(), subFieldEntry.getValue(), body, fieldSchemaVar, subField.name());
+                parseDefaultValue(subField.schema(), defaultValueRecord.get(subField.name()), body, fieldSchemaVar, subField.name());
             body.invoke(valueVar, "put").arg(JExpr.lit(subField.pos())).arg(fieldValue);
+
           }
           break;
         case ARRAY:
           JVar elementSchemaVar = null;
+          List<Object> defaultValueList = (List<Object>) defaultValue;
           if (useGenericTypes) {
             valueInitializationExpr =
-                valueInitializationExpr.arg(JExpr.lit(defaultValue.size())).arg(getSchemaExpr(schema));
+                valueInitializationExpr.arg(JExpr.lit(defaultValueList.size())).arg(getSchemaExpr(schema));
             elementSchemaVar =
                 declareSchemaVar(schema.getElementType(), "defaultElementSchema", schemaVar.invoke("getElementType"));
           }
 
           valueVar = body.decl(defaultValueClass, getUniqueName("defaultArray"), valueInitializationExpr);
 
-          for (JsonNode arrayElementValue : defaultValue) {
+          for (Object arrayElementValue: defaultValueList) {
             JExpression arrayElementExpression =
                 parseDefaultValue(schema.getElementType(), arrayElementValue, body, elementSchemaVar, "arrayValue");
             body.invoke(valueVar, "add").arg(arrayElementExpression);
           }
+
           break;
         case MAP:
           JVar mapValueSchemaVar = null;
@@ -421,19 +429,20 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
 
           valueVar = body.decl(defaultValueClass, getUniqueName("defaultMap"), valueInitializationExpr);
 
-          // Avro-1.4 depends on an old jackson-mapper-asl-1.4.2, which requires the following typecast.
-          for (Iterator<Map.Entry<String, JsonNode>> it = ((ObjectNode) defaultValue).getFields(); it.hasNext(); ) {
-            Map.Entry<String, JsonNode> mapEntry = it.next();
+          Map<CharSequence, Object> defaultValueMap = (Map<CharSequence, Object>) defaultValue;
+
+          for (Map.Entry<CharSequence, Object> mapEntry: defaultValueMap.entrySet()) {
             JExpression mapKeyExpr;
             if (SchemaAssistant.hasStringableKey(schema)) {
-              mapKeyExpr = JExpr._new(schemaAssistant.findStringClass(schema)).arg(mapEntry.getKey());
+              mapKeyExpr = JExpr._new(schemaAssistant.findStringClass(schema)).arg(mapEntry.getKey().toString());
             } else {
-              mapKeyExpr = JExpr._new(codeModel.ref(Utf8.class)).arg(mapEntry.getKey());
+              mapKeyExpr = JExpr._new(codeModel.ref(Utf8.class)).arg(mapEntry.getKey().toString());
             }
             JExpression mapEntryValueExpression =
                 parseDefaultValue(schema.getValueType(), mapEntry.getValue(), body, mapValueSchemaVar, "mapElement");
             body.invoke(valueVar, "put").arg(mapKeyExpr).arg(mapEntryValueExpression);
           }
+
           break;
         default:
           throw new FastDeserializerGeneratorException("Incorrect schema type in default value!");
@@ -442,12 +451,14 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     } else {
       switch (schemaType) {
         case ENUM:
-          return schemaAssistant.getEnumValueByName(schema, JExpr.lit(defaultValue.getTextValue()),
+          GenericData.EnumSymbol defaultValueEnum = (GenericData.EnumSymbol) defaultValue;
+          return schemaAssistant.getEnumValueByName(schema, JExpr.lit(defaultValueEnum.toString()),
               getSchemaExpr(schema));
         case FIXED:
+          GenericData.Fixed defaultValueFixedLengthBytes = (GenericData.Fixed) defaultValue;
           JArray fixedBytesArray = JExpr.newArray(codeModel.BYTE);
-          for (char b : defaultValue.getTextValue().toCharArray()) {
-            fixedBytesArray.add(JExpr.lit((byte) b));
+          for (byte b : defaultValueFixedLengthBytes.bytes()) {
+            fixedBytesArray.add(JExpr.lit(b));
           }
           // For specific Fixed type, Avro-1.4 will only generate the class with default constructor without params
           JClass fixedClass = schemaAssistant.classFromSchema(schema);
@@ -467,23 +478,30 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
             return fixed;
           }
         case BYTES:
+          ByteBuffer defaultValueVariableLengthBytes = (ByteBuffer) defaultValue;
           JArray bytesArray = JExpr.newArray(codeModel.BYTE);
-          for (byte b : defaultValue.getTextValue().getBytes()) {
+          for (byte b : defaultValueVariableLengthBytes.array()) {
             bytesArray.add(JExpr.lit(b));
           }
           return codeModel.ref(ByteBuffer.class).staticInvoke("wrap").arg(bytesArray);
         case STRING:
-          return schemaAssistant.getStringableValue(schema, JExpr.lit(defaultValue.getTextValue()));
+          CharSequence defaultValueString = (CharSequence) defaultValue;
+          return schemaAssistant.getStringableValue(schema, JExpr.lit(defaultValueString.toString()));
         case INT:
-          return JExpr.lit(defaultValue.getIntValue());
+          Integer defaultValueInt = (Integer) defaultValue;
+          return JExpr.lit(defaultValueInt);
         case LONG:
-          return JExpr.lit(defaultValue.getLongValue());
+          Long defaultValueLong = (Long) defaultValue;
+          return JExpr.lit(defaultValueLong);
         case FLOAT:
-          return JExpr.lit((float) defaultValue.getDoubleValue());
+          Float defaultValueFloat = (Float) defaultValue;
+          return JExpr.lit(defaultValueFloat);
         case DOUBLE:
-          return JExpr.lit(defaultValue.getDoubleValue());
+          Double defaultValueDouble = (Double) defaultValue;
+          return JExpr.lit(defaultValueDouble);
         case BOOLEAN:
-          return JExpr.lit(defaultValue.getBooleanValue());
+          Boolean defaultValueBoolean = (Boolean) defaultValue;
+          return JExpr.lit(defaultValueBoolean);
         case NULL:
         default:
           throw new FastDeserializerGeneratorException("Incorrect schema type in default value!");
@@ -517,8 +535,8 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
           // thus need to be disambiguated via their full-name (including aliases).
           if (potentialReaderSchema.getType().equals(optionSchema.getType()) &&
               (!schemaAssistant.isNamedType(potentialReaderSchema) ||
-                  potentialReaderSchema.getFullName().equals(optionSchema.getFullName()) ||
-                  potentialReaderSchema.getAliases().contains(optionSchema.getFullName()))) {
+                  AvroCompatibilityHelper.getSchemaFullName(potentialReaderSchema).equals(AvroCompatibilityHelper.getSchemaFullName(optionSchema)) ||
+                  potentialReaderSchema.getAliases().contains(AvroCompatibilityHelper.getSchemaFullName(optionSchema)))) {
             readerOptionSchema = potentialReaderSchema;
             readerOptionUnionBranchIndex = j;
             break;
@@ -631,16 +649,13 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       JClass arrayClass = schemaAssistant.classFromSchema(readerArraySchema, false, false, true);
       JClass abstractErasedArrayClass = schemaAssistant.classFromSchema(readerArraySchema, true, false, true).erasure();
 
-      JInvocation newArrayExp = JExpr._new(arrayClass);
-      if (useGenericTypes) {
-        newArrayExp = newArrayExp.arg(JExpr.cast(codeModel.INT, chunkLen));
-        if (!SchemaAssistant.isPrimitive(arraySchema.getElementType())) {
-          /**
-           * N.B.: The ColdPrimitiveXList implementations do not take the schema as a constructor param,
-           * but the {@link org.apache.avro.generic.GenericData.Array} does.
-           */
-          newArrayExp = newArrayExp.arg(getSchemaExpr(arraySchema));
-        }
+      JInvocation newArrayExp = JExpr._new(arrayClass).arg(JExpr.cast(codeModel.INT, chunkLen));
+      if (useGenericTypes && !SchemaAssistant.isPrimitive(arraySchema.getElementType())) {
+        /**
+         * N.B.: The ColdPrimitiveXList implementations do not take the schema as a constructor param,
+         * but the {@link org.apache.avro.generic.GenericData.Array} does.
+         */
+        newArrayExp = newArrayExp.arg(getSchemaExpr(arraySchema));
       }
       JInvocation finalNewArrayExp = newArrayExp;
 
@@ -712,14 +727,14 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
    */
   private JExpression readStringableExpression(JClass stringbleClass) {
     JExpression stringableArgExpr;
-    if (Utils.isAvro14()) {
-      /**
-       * {@link BinaryDecoder#readString()} is not available in avro-1.4.
-       */
-      stringableArgExpr = JExpr.direct(DECODER + ".readString(null).toString()");
-    } else {
+    if (Utils.isAbleToSupportJavaStrings()) {
       // More GC-efficient
       stringableArgExpr = JExpr.direct(DECODER + ".readString()");
+    } else {
+      /**
+       * {@link BinaryDecoder#readString()} is not available in Avro 1.4 and 1.5.
+       */
+      stringableArgExpr = JExpr.direct(DECODER + ".readString(null).toString()");
     }
     return JExpr._new(stringbleClass).arg(stringableArgExpr);
   }
@@ -781,7 +796,10 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
             thenBlock.invoke(reuse, "clear");
             thenBlock.assign(mapVar, reuse);
           },
-          elseBlock -> elseBlock.assign(mapVar, JExpr._new(schemaAssistant.classFromSchema(readerMapSchema, false)))
+          // Pure integer arithmetic equivalent of (int) Math.ceil(expectedSize / 0.75).
+          // The default load factor of HashMap is 0.75 and HashMap internally ensures size is always a power of two.
+          elseBlock -> elseBlock.assign(mapVar, JExpr._new(schemaAssistant.classFromSchema(readerMapSchema, false))
+              .arg(JExpr.cast(codeModel.INT, chunkLen.mul(JExpr.lit(4)).plus(JExpr.lit(2)).div(JExpr.lit(3)))))
       );
 
       JBlock elseBlock = conditional._else();
@@ -948,7 +966,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
         );
       }
     } else {
-      body.directStatement(DECODER + ".skipBytes()");
+      body.directStatement(DECODER + ".skipBytes();");
     }
   }
 
@@ -1022,7 +1040,12 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     if (!useGenericTypes) {
       return null;
     }
-    if (SchemaAssistant.isComplexType(valueSchema) || Schema.Type.ENUM.equals(valueSchema.getType())) {
+    /**
+     * TODO: In theory, we should only need Record, Enum and Fixed here since only these types require
+     * schema for the corresponding object initialization in Generic mode.
+     */
+    if (SchemaAssistant.isComplexType(valueSchema) || Schema.Type.ENUM.equals(valueSchema.getType())
+        || Schema.Type.FIXED.equals(valueSchema.getType())) {
       long schemaId = Utils.getSchemaFingerprint(valueSchema);
       if (schemaVarMap.get(schemaId) != null) {
         return schemaVarMap.get(schemaId);
@@ -1045,7 +1068,9 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
 
   private void registerSchema(final Schema writerSchema, long schemaId, JVar schemaVar) {
     if ((Schema.Type.RECORD.equals(writerSchema.getType()) || Schema.Type.ENUM.equals(writerSchema.getType())
-        || Schema.Type.ARRAY.equals(writerSchema.getType())) && schemaNotRegistered(writerSchema)) {
+        // TODO: Do we need `ARRAY` type here?
+        || Schema.Type.FIXED.equals(writerSchema.getType()) || Schema.Type.ARRAY.equals(writerSchema.getType()))
+        && schemaNotRegistered(writerSchema)) {
       schemaMap.put(schemaId, writerSchema);
       schemaVarMap.put(schemaId, schemaVar);
     }
@@ -1060,7 +1085,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       throw new FastDeserializerGeneratorException("Methods are defined only for records, not for " + schema.getType());
     }
 
-    return (read ? deserializeMethodMap : skipMethodMap).containsKey(schema.getFullName());
+    return (read ? deserializeMethodMap : skipMethodMap).containsKey(AvroCompatibilityHelper.getSchemaFullName(schema));
   }
 
   private JMethod getMethod(final Schema schema, boolean read) {
@@ -1068,9 +1093,9 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       throw new FastDeserializerGeneratorException("Methods are defined only for records, not for " + schema.getType());
     }
     if (!methodAlreadyDefined(schema, read)) {
-      throw new FastDeserializerGeneratorException("No method for schema: " + schema.getFullName());
+      throw new FastDeserializerGeneratorException("No method for schema: " + AvroCompatibilityHelper.getSchemaFullName(schema));
     }
-    return (read ? deserializeMethodMap : skipMethodMap).get(schema.getFullName());
+    return (read ? deserializeMethodMap : skipMethodMap).get(AvroCompatibilityHelper.getSchemaFullName(schema));
   }
 
   private JMethod createMethod(final Schema schema, boolean read) {
@@ -1078,7 +1103,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       throw new FastDeserializerGeneratorException("Methods are defined only for records, not for " + schema.getType());
     }
     if (methodAlreadyDefined(schema, read)) {
-      throw new FastDeserializerGeneratorException("Method already exists for: " + schema.getFullName());
+      throw new FastDeserializerGeneratorException("Method already exists for: " + AvroCompatibilityHelper.getSchemaFullName(schema));
     }
 
     JType methodType = read ? schemaAssistant.classFromSchema(schema) : codeModel.VOID;
@@ -1089,7 +1114,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     method.param(Object.class, VAR_NAME_FOR_REUSE);
     method.param(Decoder.class, DECODER);
 
-    (read ? deserializeMethodMap : skipMethodMap).put(schema.getFullName(), method);
+    (read ? deserializeMethodMap : skipMethodMap).put(AvroCompatibilityHelper.getSchemaFullName(schema), method);
 
     return method;
   }

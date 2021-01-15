@@ -41,7 +41,7 @@ public class Map_of_UNION_GenericDeserializer_2087096002965517991_20870960029655
                 mapReuse0 .clear();
                 map0 = mapReuse0;
             } else {
-                map0 = new HashMap<Utf8, IndexedRecord>();
+                map0 = new HashMap<Utf8, IndexedRecord>(((int)(((chunkLen0 * 4)+ 2)/ 3)));
             }
             do {
                 for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {

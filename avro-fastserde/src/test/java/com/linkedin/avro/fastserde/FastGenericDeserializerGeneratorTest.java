@@ -6,8 +6,10 @@ import com.linkedin.avro.api.PrimitiveFloatList;
 import com.linkedin.avro.api.PrimitiveIntList;
 import com.linkedin.avro.api.PrimitiveLongList;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
+import com.linkedin.avroutil1.compatibility.AvroVersion;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.function.Supplier;
+import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -168,7 +171,23 @@ public class FastGenericDeserializerGeneratorTest {
     GenericRecord record = implementation.decode(recordSchema, recordSchema, genericDataAsDecoder(originalRecord));
 
     // then
-    Assert.assertEquals(new byte[]{0x01, 0x02}, ((GenericData.Fixed) record.get("testFixed")).bytes());
+    GenericData.Fixed deserializedFixed = ((GenericData.Fixed) record.get("testFixed"));
+    Assert.assertEquals(new byte[]{0x01, 0x02}, deserializedFixed.bytes());
+
+    /** Verify whether the deserialized Fixed type contains the right schema or not **/
+    Method getSchemaMethod = null;
+    try {
+      getSchemaMethod = GenericData.Fixed.class.getMethod("getSchema");
+      Assert.assertEquals(getSchemaMethod.invoke(deserializedFixed, (Object[])null), fixedSchema);
+    } catch (NoSuchMethodException e) {
+      // Expected for avro-1.4
+      if (!Utils.isAvro14()) {
+        Assert.fail("Avro version other than 1.4 shouldn't throw NoSuchMethodException here");
+      }
+    } catch (Exception e) {
+      Assert.fail("'getSchema' invocation shouldn't throw such exception: " + e);
+    }
+
     Assert.assertEquals(new byte[]{0x03, 0x04}, ((GenericData.Fixed) record.get("testFixedUnion")).bytes());
     Assert.assertEquals(new byte[]{0x05, 0x06},
         ((List<GenericData.Fixed>) record.get("testFixedArray")).get(0).bytes());
@@ -468,7 +487,16 @@ public class FastGenericDeserializerGeneratorTest {
 
     // then
     Assert.assertEquals(new Utf8("abc"), record.get("testNotRemoved"));
-    Assert.assertNull(record.get("testRemoved"));
+    if (AvroCompatibilityHelper.getRuntimeAvroVersion().laterThan(AvroVersion.AVRO_1_9)) {
+      try {
+        record.get("testRemoved");
+        Assert.fail("Should throw for missing fields.");
+      } catch (AvroRuntimeException e) {
+        // expected
+      }
+    } else {
+      Assert.assertNull(record.get("testRemoved"));
+    }
     Assert.assertEquals(new Utf8("ghi"), record.get("testNotRemoved2"));
     Assert.assertEquals(new Utf8("ghi"), ((GenericRecord) record.get("subRecord")).get("testNotRemoved2"));
     Assert.assertEquals(new Utf8("ghi"),

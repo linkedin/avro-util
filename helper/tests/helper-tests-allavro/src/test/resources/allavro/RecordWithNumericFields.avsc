@@ -1,0 +1,23 @@
+{
+  "type": "record",
+  "namespace": "allavro",
+  "name": "RecordWithNumericFields",
+  "fields": [
+    {
+      "name": "intField",
+      "type": "int"
+    },
+    {
+      "name": "longField",
+      "type": "long"
+    },
+    {
+      "name": "floatField",
+      "type": "float"
+    },
+    {
+      "name": "doubleField",
+      "type": "double"
+    }
+  ]
+}
