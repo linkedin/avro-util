@@ -88,13 +88,19 @@ public class ByteBufferBackedPrimitiveFloatList extends AbstractList<Float>
       } while (length > 0);
 
       array.byteBuffer.setByteBufferCount(index);
-      setupElements(array, (int)totalLength);
+      array.size = (int) totalLength;
       return array;
     } else {
       return new ByteBufferBackedPrimitiveFloatList(0);
     }
   }
 
+  /**
+   *  The primitive float array `elements` will only be used when the interface user calls a mutating operation.
+   *  eg add/remove else for read-only use case this will not be called.
+   * @param list
+   * @param totalSize
+   */
   private static void setupElements(ByteBufferBackedPrimitiveFloatList list, int totalSize) {
     if (list.elements.length != 0) {
       if (totalSize <= list.getCapacity()) {
@@ -271,6 +277,7 @@ public class ByteBufferBackedPrimitiveFloatList extends AbstractList<Float>
     }
     synchronized (this) {
       if (!isCached) {
+        setupElements(this, this.size);
         byteBuffer.setArray(elements);
         isCached = true;
       }

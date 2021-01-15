@@ -12,7 +12,7 @@ public class CompositeByteBuffer {
   private List<ByteBuffer> byteBuffers;
 
   public CompositeByteBuffer(boolean createEmpty) {
-    byteBuffers = createEmpty ? Collections.emptyList() : new ArrayList<>(2);
+    byteBuffers = createEmpty ? Collections.emptyList() : new ArrayList<>(1);
   }
 
   public ByteBuffer allocate(int index, int size) {
