@@ -35,9 +35,9 @@ import org.apache.avro.io.Encoder;
 import org.apache.avro.util.Utf8;
 
 /** An {@link Decoder} for binary-format data.
- * <p/>
+ *
  * Instances are created using {@link DecoderFactory}.
- * <p/>
+ *
  * This class may read-ahead and buffer bytes from the source beyond what is
  * required to serve its read methods.  See {@link #inputStream} and
  * {@link DecoderFactory#configureDirectDecoder(boolean)}.
@@ -115,7 +115,7 @@ public class BinaryDecoder extends Decoder {
    * it exists) from this Decoder. The old source's state no longer depends on
    * this Decoder and its InputStream interface will continue to drain the
    * remaining buffer and source data.
-   * <p/>
+   *
    * The decoder will read from the new source. The source will generally
    * replace the buffer with its own. If the source allocates a new buffer, it
    * will create it with size bufferSize.
@@ -330,7 +330,7 @@ public class BinaryDecoder extends Decoder {
   }
 
   /**
-   * Reads <tt>length</tt> bytes into <tt>bytes</tt> starting at <tt>start</tt>.
+   * Reads length bytes into bytes starting at start.
    *
    * @throws EOFException
    *           If there are not enough number of bytes in the source.
@@ -430,7 +430,7 @@ public class BinaryDecoder extends Decoder {
    * Returns true if the current BinaryDecoder is at the end of its source data and
    * cannot read any further without throwing an EOFException or other
    * IOException.
-   * <p/>
+   *
    * Not all implementations of BinaryDecoder support isEnd(). Implementations that do
    * not support isEnd() will throw a
    * {@link java.lang.UnsupportedOperationException}.
@@ -459,12 +459,12 @@ public class BinaryDecoder extends Decoder {
    * Ensures that buf[pos + num - 1] is not out of the buffer array bounds.
    * However, buf[pos + num -1] may be >= limit if there is not enough data left
    * in the source to fill the array with num bytes.
-   * <p/>
+   *
    * This method allows readers to read ahead by num bytes safely without
    * checking for EOF at each byte. However, readers must ensure that their
    * reads are valid by checking that their read did not advance past the limit
    * before adjusting pos.
-   * <p/>
+   *
    * num must be less than the buffer size and greater than 0
    */
   private void ensureBounds(int num) throws IOException {
@@ -481,7 +481,7 @@ public class BinaryDecoder extends Decoder {
    * Avro data with other reads must access this InputStream to do so unless
    * the implementation is 'direct' and does not read beyond the minimum bytes
    * necessary from the source.
-   * <p>
+   *
    * See {@link DecoderFactory#configureDirectDecoder(boolean)}
    */
   public InputStream inputStream() {
@@ -573,12 +573,12 @@ public class BinaryDecoder extends Decoder {
    * InputStream's API is a barrier to performance due to several quirks:
    * InputStream does not in general require that as many bytes as possible have
    * been read when filling a buffer.
-   * <p/>
+   *
    * InputStream's terminating conditions for a read are two-fold: EOFException
    * and '-1' on the return from read(). Implementations are supposed to return
    * '-1' on EOF but often do not. The extra terminating conditions cause extra
    * conditionals on both sides of the API, and slow performance significantly.
-   * <p/>
+   *
    * ByteSource implementations provide read() and skip() variants that have
    * stronger guarantees than InputStream, freeing client code to be simplified
    * and faster.
@@ -655,7 +655,7 @@ public class BinaryDecoder extends Decoder {
      * Attempts to copy up to <i>len</i> bytes from the source into data,
      * starting at index <i>off</i>. Returns the actual number of bytes copied
      * which may be between 0 and <i>len</i>.
-     * <p/>
+     *
      * This method must attempt to read as much as possible from the source.
      * Returns 0 when at the end of stream/channel/file/etc.
      *

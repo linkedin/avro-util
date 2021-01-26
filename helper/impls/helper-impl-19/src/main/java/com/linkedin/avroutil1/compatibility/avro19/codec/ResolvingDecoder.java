@@ -44,7 +44,7 @@ public class ResolvingDecoder extends ValidatingDecoder {
   }
 
   /**
-   * Constructs a <tt>ResolvingDecoder</tt> using the given resolver. The resolver
+   * Constructs a ResolvingDecoder using the given resolver.
    * must have been returned by a previous call to
    * {@link #resolve(Schema, Schema)}.
    *
@@ -122,7 +122,7 @@ public class ResolvingDecoder extends ValidatingDecoder {
   }
 
   /**
-   * Same as {@link #readFieldOrder} except that it returns <tt>null</tt> if there
+   * Same as {@link #readFieldOrder} except that it returns null if there
    * was no reordering of fields, i.e., if the correct thing for the reader to do
    * is to read (all) of its fields in the order specified by its own schema
    * (useful for optimizations).

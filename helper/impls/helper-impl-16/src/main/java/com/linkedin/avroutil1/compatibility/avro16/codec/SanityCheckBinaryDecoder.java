@@ -15,12 +15,12 @@ import org.apache.avro.util.Utf8;
  * Fixes a bug in the BinaryDecoder that can cause OutOfMemoryError when deserializing corrupt data or deserializing with the incorrect
  * schema. Because this class uses the superclass constructor taking byte[], which is declared with package visiblilty,
  * it has to be in the package org.apache.avro.io.
- * <P />
+ *
  * The array size bug is triggered if you try to deserialize corrupt data or try to deserialize data with the wrong schema. When
  * this happens it can cause Avro to incorrectly read the array length and try to allocate a huge (basically a random 32 bit length)
  * array, causing major GC issues. This class protects against this behavior by performing a sanity check during array reads, making
  * sure we are not trying to create an array larger than our total input.
- * <P />
+ *
  * Because the byte[] based initialization methods are package private, this class must be in the package "org.apache.avro.io". We could
  * use a properly configured DecoderFactory to create the BinaryDecoder instead of relying on calling init ourselves, but this is not
  * possible since we have to extend BinaryDecoder. Alternatively we could copy the entire source of BinaryDecoder and create our
