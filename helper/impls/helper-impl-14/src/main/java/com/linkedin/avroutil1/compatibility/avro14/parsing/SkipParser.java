@@ -45,12 +45,12 @@ public class SkipParser extends Parser {
      */
     void skipTopSymbol() throws IOException;
   }
-  
+
   private final SkipHandler skipHandler;
 
   public SkipParser(Symbol root, ActionHandler symbolHandler,
-                    SkipHandler skipHandler)
-    throws IOException {
+      SkipHandler skipHandler)
+      throws IOException {
     super(root, symbolHandler);
     this.skipHandler = skipHandler;
   }

@@ -39,7 +39,7 @@ import java.util.Set;
  */
 public class ValidatingGrammarGenerator {
   protected final static Set<Schema.Type> NAMED_TYPES = Collections.unmodifiableSet(new HashSet<>(
-          Arrays.asList(Schema.Type.ENUM, Schema.Type.FIXED, Schema.Type.RECORD)
+      Arrays.asList(Schema.Type.ENUM, Schema.Type.FIXED, Schema.Type.RECORD)
   ));
 
   /**
@@ -62,72 +62,72 @@ public class ValidatingGrammarGenerator {
    */
   public Symbol generate(Schema sc, Map<LitS, Symbol> seen, boolean useFqcns) {
     switch (sc.getType()) {
-    case NULL:
-      return Symbol.NULL;
-    case BOOLEAN:
-      return Symbol.BOOLEAN;
-    case INT:
-      return Symbol.INT;
-    case LONG:
-      return Symbol.LONG;
-    case FLOAT:
-      return Symbol.FLOAT;
-    case DOUBLE:
-      return Symbol.DOUBLE;
-    case STRING:
-      return Symbol.STRING;
-    case BYTES:
-      return Symbol.BYTES;
-    case FIXED:
-      return Symbol.seq(new Symbol.IntCheckAction(sc.getFixedSize()),
-          Symbol.FIXED);
-    case ENUM:
-      return Symbol.seq(new Symbol.IntCheckAction(sc.getEnumSymbols().size()),
-          Symbol.ENUM);
-    case ARRAY:
-      return Symbol.seq(Symbol.repeat(Symbol.ARRAY_END, generate(sc.getElementType(), seen, useFqcns)),
-          Symbol.ARRAY_START);
-    case MAP:
-      return Symbol.seq(Symbol.repeat(Symbol.MAP_END,
-              generate(sc.getValueType(), seen, useFqcns), Symbol.STRING),
-          Symbol.MAP_START);
-    case RECORD: {
-      LitS wsc = new LitS(sc);
-      Symbol rresult = seen.get(wsc);
-      if (rresult == null) {
-        Symbol[] production = new Symbol[sc.getFields().size()];
+      case NULL:
+        return Symbol.NULL;
+      case BOOLEAN:
+        return Symbol.BOOLEAN;
+      case INT:
+        return Symbol.INT;
+      case LONG:
+        return Symbol.LONG;
+      case FLOAT:
+        return Symbol.FLOAT;
+      case DOUBLE:
+        return Symbol.DOUBLE;
+      case STRING:
+        return Symbol.STRING;
+      case BYTES:
+        return Symbol.BYTES;
+      case FIXED:
+        return Symbol.seq(new Symbol.IntCheckAction(sc.getFixedSize()),
+            Symbol.FIXED);
+      case ENUM:
+        return Symbol.seq(new Symbol.IntCheckAction(sc.getEnumSymbols().size()),
+            Symbol.ENUM);
+      case ARRAY:
+        return Symbol.seq(Symbol.repeat(Symbol.ARRAY_END, generate(sc.getElementType(), seen, useFqcns)),
+            Symbol.ARRAY_START);
+      case MAP:
+        return Symbol.seq(Symbol.repeat(Symbol.MAP_END,
+            generate(sc.getValueType(), seen, useFqcns), Symbol.STRING),
+            Symbol.MAP_START);
+      case RECORD: {
+        LitS wsc = new LitS(sc);
+        Symbol rresult = seen.get(wsc);
+        if (rresult == null) {
+          Symbol[] production = new Symbol[sc.getFields().size()];
 
-        /**
-         * We construct a symbol without filling the array. Please see
-         * {@link Symbol#production} for the reason.
-         */
-        rresult = Symbol.seq(production);
-        seen.put(wsc, rresult);
+          /**
+           * We construct a symbol without filling the array. Please see
+           * {@link Symbol#production} for the reason.
+           */
+          rresult = Symbol.seq(production);
+          seen.put(wsc, rresult);
 
-        int i = production.length;
-        for (Field f : sc.getFields()) {
-          production[--i] = generate(f.schema(), seen, useFqcns);
+          int i = production.length;
+          for (Field f : sc.getFields()) {
+            production[--i] = generate(f.schema(), seen, useFqcns);
+          }
         }
+        return rresult;
       }
-      return rresult;
-    }
-    case UNION:
-      List<Schema> subs = sc.getTypes();
-      Symbol[] symbols = new Symbol[subs.size()];
-      String[] oldLabels = new String[subs.size()];
-      String[] newLabels = new String[subs.size()];
+      case UNION:
+        List<Schema> subs = sc.getTypes();
+        Symbol[] symbols = new Symbol[subs.size()];
+        String[] oldLabels = new String[subs.size()];
+        String[] newLabels = new String[subs.size()];
 
-      int i = 0;
-      for (Schema b : sc.getTypes()) {
-        symbols[i] = generate(b, seen, useFqcns);
-        oldLabels[i] = b.getName();
-        newLabels[i] = NAMED_TYPES.contains(b.getType()) ? b.getFullName() : b.getName();
-        i++;
-      }
-      return Symbol.seq(Symbol.alt(symbols, oldLabels, newLabels, useFqcns), Symbol.UNION);
+        int i = 0;
+        for (Schema b : sc.getTypes()) {
+          symbols[i] = generate(b, seen, useFqcns);
+          oldLabels[i] = b.getName();
+          newLabels[i] = NAMED_TYPES.contains(b.getType()) ? b.getFullName() : b.getName();
+          i++;
+        }
+        return Symbol.seq(Symbol.alt(symbols, oldLabels, newLabels, useFqcns), Symbol.UNION);
 
-    default:
-      throw new RuntimeException("Unexpected schema type");
+      default:
+        throw new RuntimeException("Unexpected schema type");
     }
   }
 
@@ -135,7 +135,7 @@ public class ValidatingGrammarGenerator {
   static class LitS {
     public final Schema actual;
     public LitS(Schema actual) { this.actual = actual; }
-    
+
     /**
      * Two LitS are equal if and only if their underlying schema is
      * the same (not merely equal).
@@ -144,7 +144,7 @@ public class ValidatingGrammarGenerator {
       if (! (o instanceof LitS)) return false;
       return actual == ((LitS)o).actual;
     }
-    
+
     public int hashCode() {
       return actual.hashCode();
     }

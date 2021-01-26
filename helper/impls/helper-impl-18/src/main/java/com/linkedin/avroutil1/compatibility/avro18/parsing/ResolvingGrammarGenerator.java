@@ -321,7 +321,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
    * @return  The binary encoded version of {@code n}.
    * @throws IOException
    */
-  private static byte[] getBinary(Schema s, JsonNode n) throws IOException {
+  protected static byte[] getBinary(Schema s, JsonNode n) throws IOException {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     Encoder e = factory.binaryEncoder(out, null);
     encode(e, s, n);

@@ -49,25 +49,25 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
    * @param writer    The schema used by the writer
    * @param reader    The schema used by the reader
    * @return          The start symbol for the resolving grammar
-   * @throws IOException 
+   * @throws IOException
    */
   public final Symbol generate(Schema writer, Schema reader, boolean useFqcns)
     throws IOException {
     return Symbol.root(generate(writer, reader, new HashMap<LitS, Symbol>(), useFqcns));
   }
-  
+
   /**
    * Resolves the writer schema {@code writer} and the reader schema
    * {@code reader} and returns the start symbol for the grammar generated.
    * If there is already a symbol in the map {@code seen} for resolving the
    * two schemas, then that symbol is returned. Otherwise a new symbol is
-   * generated and returnd. 
+   * generated and returnd.
    * @param writer    The schema used by the writer
    * @param reader    The schema used by the reader
    * @param seen      The &lt;reader-schema, writer-schema&gt; to symbol
    * map of start symbols of resolving grammars so far.
    * @return          The start symbol for the resolving grammar
-   * @throws IOException 
+   * @throws IOException
    */
   public Symbol generate(
           Schema writer,
@@ -118,7 +118,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
                 generate(writer.getElementType(),
                 reader.getElementType(), seen, useFqcns)),
             Symbol.ARRAY_START);
-      
+
       case MAP:
         return Symbol.seq(Symbol.repeat(Symbol.MAP_END,
                 generate(writer.getValueType(),
@@ -135,7 +135,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
       if (writerType == Schema.Type.UNION) {
         return resolveUnion(writer, reader, seen, useFqcns);
       }
-  
+
       switch (readerType) {
       case LONG:
         switch (writerType) {
@@ -143,7 +143,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
           return Symbol.resolve(super.generate(writer, seen, useFqcns), Symbol.LONG);
         }
         break;
-  
+
       case FLOAT:
         switch (writerType) {
         case INT:
@@ -151,7 +151,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
           return Symbol.resolve(super.generate(writer, seen, useFqcns), Symbol.FLOAT);
         }
         break;
-  
+
       case DOUBLE:
         switch (writerType) {
         case INT:
@@ -160,21 +160,21 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
           return Symbol.resolve(super.generate(writer, seen, useFqcns), Symbol.DOUBLE);
         }
         break;
-  
+
       case BYTES:
         switch (writerType) {
         case STRING:
           return Symbol.resolve(super.generate(writer, seen, useFqcns), Symbol.BYTES);
         }
         break;
-  
+
       case STRING:
         switch (writerType) {
         case BYTES:
           return Symbol.resolve(super.generate(writer, seen, useFqcns), Symbol.STRING);
         }
         break;
-  
+
       case UNION:
         int j = bestBranch(reader, writer);
         if (j >= 0) {
@@ -321,14 +321,14 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
    * @return  The binary encoded version of {@code n}.
    * @throws IOException
    */
-  private static byte[] getBinary(Schema s, JsonNode n) throws IOException {
+  protected static byte[] getBinary(Schema s, JsonNode n) throws IOException {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     Encoder e = factory.binaryEncoder(out, null);
     encode(e, s, n);
     e.flush();
     return out.toByteArray();
   }
-  
+
   /**
    * Encodes the given Json node {@code n} on to the encoder {@code e}
    * according to the schema {@code s}.
@@ -337,7 +337,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
    * @param n The Json node to encode.
    * @throws IOException
    */
-  
+
   public static void encode(Encoder e, Schema s, JsonNode n)
     throws IOException {
     switch (s.getType()) {
@@ -452,7 +452,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
       int j = 0;
       for (Schema b : r.getTypes()) {
         if (vt == b.getType())
-          if (vt == Schema.Type.RECORD || vt == Schema.Type.ENUM || 
+          if (vt == Schema.Type.RECORD || vt == Schema.Type.ENUM ||
               vt == Schema.Type.FIXED) {
             String vname = w.getFullName();
             String bname = b.getFullName();

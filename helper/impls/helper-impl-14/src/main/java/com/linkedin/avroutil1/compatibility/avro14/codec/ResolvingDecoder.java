@@ -125,6 +125,7 @@ public class ResolvingDecoder extends ValidatingDecoder {
    * @throws AvroTypeException If we're not starting a new record
    *
    */
+  @Override
   public final Schema.Field[] readFieldOrder() throws IOException {
     return ((Symbol.FieldOrderAction) parser.advance(Symbol.FIELD_ACTION)).
         fields;
@@ -145,6 +146,7 @@ public class ResolvingDecoder extends ValidatingDecoder {
    * portions are consumed before the next object is decoded.
    * @throws IOException
    */
+  @Override
   public final void drain() throws IOException {
     parser.processImplicitActions();
   }
