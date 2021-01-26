@@ -13,8 +13,11 @@ import com.linkedin.avroutil1.compatibility.CodeTransformations;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
 import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
 import com.linkedin.avroutil1.compatibility.SchemaParseResult;
+import com.linkedin.avroutil1.compatibility.SkipDecoder;
+import com.linkedin.avroutil1.compatibility.avro110.codec.CachedResolvingDecoder;
 import com.linkedin.avroutil1.compatibility.avro110.codec.CompatibleJsonDecoder;
 import com.linkedin.avroutil1.compatibility.avro110.codec.CompatibleJsonEncoder;
+import com.linkedin.avroutil1.compatibility.avro110.codec.SanityCheckBinaryDecoder;
 import com.linkedin.avroutil1.compatibility.backports.ObjectInputToInputStreamAdapter;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaNormalization;
@@ -161,8 +164,13 @@ public class Avro110Adapter implements AvroAdapter {
     }
 
     @Override
-    public Decoder newCachedResolvingDecoder(Schema writer, Schema reader, Decoder in) throws IOException {
-        throw new UnsupportedOperationException("Method has not been implemented yet.");
+    public SkipDecoder newCachedResolvingDecoder(Schema writer, Schema reader, Decoder in) throws IOException {
+        return new CachedResolvingDecoder(writer, reader, in);
+    }
+
+    @Override
+    public Decoder newSanityCheckBinaryDecoder(InputStream in) throws IOException {
+        return new SanityCheckBinaryDecoder(in);
     }
 
     @Override
@@ -236,9 +244,9 @@ public class Avro110Adapter implements AvroAdapter {
 
     @Override
     public Collection<AvroGeneratedSourceCode> compile(
-            Collection<Schema> toCompile,
-            AvroVersion minSupportedVersion,
-            AvroVersion maxSupportedVersion
+        Collection<Schema> toCompile,
+        AvroVersion minSupportedVersion,
+        AvroVersion maxSupportedVersion
     ) {
         if (!compilerSupported) {
             throw new UnsupportedOperationException("avro compiler jar was not found on classpath. please make sure you have a dependency on org.apache.avro:avro-compiler");
@@ -266,8 +274,8 @@ public class Avro110Adapter implements AvroAdapter {
             Collection<?> outputFiles = (Collection<?>) compilerCompileMethod.invoke(compiler);
 
             List<AvroGeneratedSourceCode> translated = outputFiles.stream()
-                    .map(o -> new AvroGeneratedSourceCode(getPath(o), getContents(o)))
-                    .collect(Collectors.toList());
+                .map(o -> new AvroGeneratedSourceCode(getPath(o), getContents(o)))
+                .collect(Collectors.toList());
 
             return transform(translated, minSupportedVersion, maxSupportedVersion);
         } catch (UnsupportedOperationException e) {
