@@ -4,12 +4,11 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1.compatibility.avro16.codec;
+package com.linkedin.avroutil1.compatibility.avro14.codec;
 
 import java.io.IOException;
 import java.io.InputStream;
 import org.apache.avro.util.Utf8;
-
 
 /**
  * Fixes a bug in the BinaryDecoder that can cause OutOfMemoryError when deserializing corrupt data or deserializing with the incorrect
@@ -29,7 +28,7 @@ import org.apache.avro.util.Utf8;
  * constructor creates large read-ahead buffers which is wasteful when reading from a byte[].
  *
  */
-public class SanityCheckBinaryDecoder extends BinaryDecoder {
+public class BoundedMemoryDecoder extends BinaryDecoder {
   /**
    * Length of the source data currently being decoded. Used to perform a sanity check on array deserialization to ensure
    * we never try to deserialize an array bigger than our input (e.g. by trying to read corrupt data or reading with the wrong
@@ -44,14 +43,14 @@ public class SanityCheckBinaryDecoder extends BinaryDecoder {
    */
   static final int DEFAULT_MAX_ARRAY_LEN = 1000000;
 
-  public SanityCheckBinaryDecoder(byte[] data) {
+  public BoundedMemoryDecoder(byte[] data) {
     // It is important that we reuse a decoder stored in a ThreadLocal. This is because GenericDatumReader will cache the reader
     // in it's own ThreadLocal.
     super(data, 0, data.length);
     _srcLen = data.length;
   }
 
-  public SanityCheckBinaryDecoder(InputStream inputStream) throws IOException {
+  public BoundedMemoryDecoder(InputStream inputStream) throws IOException {
     // Set the default buffer size to a very small value.
     // Since we are only reading from memory, we don't really need a buffer.
     // Having a buffer will only cause more byte copies.
@@ -72,20 +71,24 @@ public class SanityCheckBinaryDecoder extends BinaryDecoder {
     }
   }
 
+
+  @Override
   public void init(InputStream in) {
-    super.configure(in);
+    super.init(in);
     // Can't determine the length of an InputStream, so use the default instead
     _srcLen = DEFAULT_MAX_ARRAY_LEN;
   }
 
+  @Override
   void init(int bufferSize, InputStream in) {
-    super.configure(bufferSize, in);
+    super.init(bufferSize, in);
     // Can't determine the length of an InputStream, so use the default instead
     _srcLen = DEFAULT_MAX_ARRAY_LEN;
   }
 
+  @Override
   void init(byte[] data, int offset, int length) {
-    super.configure(data, offset, length);
+    super.init(data, offset, length);
     _srcLen = length;
   }
 
@@ -127,4 +130,3 @@ public class SanityCheckBinaryDecoder extends BinaryDecoder {
     return result;
   }
 }
-

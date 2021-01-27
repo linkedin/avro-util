@@ -242,4 +242,39 @@ public class ValidatingDecoder extends ParsingDecoder implements Parser.ActionHa
   public Symbol doAction(Symbol input, Symbol top) throws IOException {
     return null;
   }
+
+  @Override
+  public int readStringSize() throws IOException {
+    throw new UnsupportedOperationException("Method is not implemented, do not use!");
+  }
+
+  @Override
+  public int readBytesSize() throws IOException {
+    throw new UnsupportedOperationException("Method is not implemented, do not use!");
+  }
+
+  @Override
+  public void readStringData(byte[] bytes, int start, int len) throws IOException {
+    throw new UnsupportedOperationException("Method is not implemented, do not use!");
+  }
+
+  @Override
+  public void readBytesData(byte[] bytes, int start, int len) throws IOException {
+    throw new UnsupportedOperationException("Method is not implemented, do not use!");
+  }
+
+  @Override
+  public void drain() throws IOException {
+    throw new UnsupportedOperationException("Method is not implemented, do not use!");
+  }
+
+  @Override
+  public boolean isBinaryDecoder() {
+    throw new UnsupportedOperationException("Method is not implemented, do not use!");
+  }
+
+  @Override
+  public Schema.Field[] readFieldOrder() throws IOException {
+    throw new UnsupportedOperationException("Method is not implemented, do not use!");
+  }
 }

@@ -62,20 +62,20 @@ public class CompatibleJsonDecoder extends ParsingDecoder
   private JsonParser in;
   private static JsonFactory jsonFactory = new JsonFactory();
   Stack<ReorderBuffer> reorderBuffers = new Stack<ReorderBuffer>();
-  ReorderBuffer currentReorderBuffer; 
-  
+  ReorderBuffer currentReorderBuffer;
+
   private static class ReorderBuffer {
     public Map<String, List<JsonElement>> savedFields = new HashMap<String, List<JsonElement>>();
-    public JsonParser origParser = null; 
+    public JsonParser origParser = null;
   }
-  
+
   static final String CHARSET = "ISO-8859-1";
 
   private CompatibleJsonDecoder(Symbol root, InputStream in) throws IOException {
     super(root);
     configure(in);
   }
-  
+
   private CompatibleJsonDecoder(Symbol root, String in) throws IOException {
     super(root);
     configure(in);
@@ -84,11 +84,11 @@ public class CompatibleJsonDecoder extends ParsingDecoder
   public CompatibleJsonDecoder(Schema schema, InputStream in) throws IOException {
     this(getSymbol(schema), in);
   }
-  
+
   public CompatibleJsonDecoder(Schema schema, String in) throws IOException {
     this(getSymbol(schema), in);
   }
-  
+
   private static Symbol getSymbol(Schema schema) {
     if (null == schema) {
       throw new NullPointerException("Schema cannot be null!");
@@ -117,7 +117,7 @@ public class CompatibleJsonDecoder extends ParsingDecoder
     this.in.nextToken();
     return this;
   }
-  
+
   /**
    * Reconfigures this JsonDecoder to use the String provided for input.
    * <p>
@@ -160,7 +160,7 @@ public class CompatibleJsonDecoder extends ParsingDecoder
   @Override
   public boolean readBoolean() throws IOException {
     advance(Symbol.BOOLEAN);
-    JsonToken t = in.getCurrentToken(); 
+    JsonToken t = in.getCurrentToken();
     if (t == JsonToken.VALUE_TRUE || t == JsonToken.VALUE_FALSE) {
       in.nextToken();
       return t == JsonToken.VALUE_TRUE;
@@ -180,7 +180,7 @@ public class CompatibleJsonDecoder extends ParsingDecoder
       throw error("int");
     }
   }
-    
+
   @Override
   public long readLong() throws IOException {
     advance(Symbol.LONG);
@@ -216,7 +216,7 @@ public class CompatibleJsonDecoder extends ParsingDecoder
       throw error("double");
     }
   }
-    
+
   @Override
   public Utf8 readString(Utf8 old) throws IOException {
     return new Utf8(readString());
@@ -292,7 +292,7 @@ public class CompatibleJsonDecoder extends ParsingDecoder
         top.size + " but received " + size + " bytes.");
     }
   }
-    
+
   @Override
   public void readFixed(byte[] bytes, int start, int len) throws IOException {
     checkFixed(len);
@@ -385,7 +385,7 @@ public class CompatibleJsonDecoder extends ParsingDecoder
     if (in.getCurrentToken() == JsonToken.START_ARRAY) {
       in.skipChildren();
       in.nextToken();
-      advance(Symbol.ARRAY_END);    
+      advance(Symbol.ARRAY_END);
     } else {
       throw error("array-start");
     }
@@ -425,7 +425,7 @@ public class CompatibleJsonDecoder extends ParsingDecoder
     if (in.getCurrentToken() == JsonToken.START_OBJECT) {
       in.skipChildren();
       in.nextToken();
-      advance(Symbol.MAP_END);    
+      advance(Symbol.MAP_END);
     } else {
       throw error("map-start");
     }
@@ -436,7 +436,7 @@ public class CompatibleJsonDecoder extends ParsingDecoder
   public int readIndex() throws IOException {
     advance(Symbol.UNION);
     Symbol.Alternative a = (Symbol.Alternative) parser.popSymbol();
-    
+
     String label;
     if (in.getCurrentToken() == JsonToken.VALUE_NULL) {
       label = "null";
@@ -522,12 +522,12 @@ public class CompatibleJsonDecoder extends ParsingDecoder
       this.token = t;
       this.value = value;
     }
-    
+
     public JsonElement(JsonToken t) {
       this(t, null);
     }
   }
-  
+
   private static List<JsonElement> getVaueAsTree(JsonParser in) throws IOException {
     int level = 0;
     List<JsonElement> result = new ArrayList<JsonElement>();
@@ -693,7 +693,7 @@ public class CompatibleJsonDecoder extends ParsingDecoder
         throws IOException {
         throw new UnsupportedOperationException();
       }
-      
+
       @Override
       public JsonToken getCurrentToken() {
         return elements.get(pos).token;
@@ -705,6 +705,39 @@ public class CompatibleJsonDecoder extends ParsingDecoder
     return new AvroTypeException("Expected " + type +
         ". Got " + in.getCurrentToken());
   }
+  @Override
+  public int readStringSize() throws IOException {
+    throw new UnsupportedOperationException("Method is not implemented, do not use!");
+  }
 
+  @Override
+  public int readBytesSize() throws IOException {
+    throw new UnsupportedOperationException("Method is not implemented, do not use!");
+  }
+
+  @Override
+  public void readStringData(byte[] bytes, int start, int len) throws IOException {
+    throw new UnsupportedOperationException("Method is not implemented, do not use!");
+  }
+
+  @Override
+  public void readBytesData(byte[] bytes, int start, int len) throws IOException {
+    throw new UnsupportedOperationException("Method is not implemented, do not use!");
+  }
+
+  @Override
+  public void drain() throws IOException {
+    throw new UnsupportedOperationException("Method is not implemented, do not use!");
+  }
+
+  @Override
+  public boolean isBinaryDecoder() {
+    throw new UnsupportedOperationException("Method is not implemented, do not use!");
+  }
+
+  @Override
+  public Schema.Field[] readFieldOrder() throws IOException {
+    throw new UnsupportedOperationException("Method is not implemented, do not use!");
+  }
 }
 

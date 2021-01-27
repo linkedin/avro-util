@@ -17,7 +17,7 @@ import com.linkedin.avroutil1.compatibility.SkipDecoder;
 import com.linkedin.avroutil1.compatibility.avro110.codec.CachedResolvingDecoder;
 import com.linkedin.avroutil1.compatibility.avro110.codec.CompatibleJsonDecoder;
 import com.linkedin.avroutil1.compatibility.avro110.codec.CompatibleJsonEncoder;
-import com.linkedin.avroutil1.compatibility.avro110.codec.SanityCheckBinaryDecoder;
+import com.linkedin.avroutil1.compatibility.avro110.codec.BoundedMemoryDecoder;
 import com.linkedin.avroutil1.compatibility.backports.ObjectInputToInputStreamAdapter;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaNormalization;
@@ -169,8 +169,8 @@ public class Avro110Adapter implements AvroAdapter {
     }
 
     @Override
-    public Decoder newSanityCheckBinaryDecoder(InputStream in) throws IOException {
-        return new SanityCheckBinaryDecoder(in);
+    public Decoder newBoundedMemoryDecoder(InputStream in) throws IOException {
+        return new BoundedMemoryDecoder(in);
     }
 
     @Override

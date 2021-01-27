@@ -60,7 +60,7 @@ public interface AvroAdapter {
 
   SkipDecoder newCachedResolvingDecoder(Schema writer, Schema reader, Decoder in) throws IOException;
 
-  Decoder newSanityCheckBinaryDecoder(InputStream in) throws IOException;
+  Decoder newBoundedMemoryDecoder(InputStream in) throws IOException;
 
   //parsing and Schema-related
 

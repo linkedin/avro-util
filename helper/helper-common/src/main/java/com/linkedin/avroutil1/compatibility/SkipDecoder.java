@@ -11,35 +11,22 @@ import org.apache.avro.Schema;
 import org.apache.avro.io.Decoder;
 
 /**
- * an abstract class that extends from Decoder that helps CachedResolvingDecoder
- * perform various methods like original ResolvingDecoder.
+ * An abstract class that extends from Decoder that supports skipping various
+ * symbol types and get the variable length of the fields.
  */
 public abstract class SkipDecoder extends Decoder {
 
-  public int readStringSize() throws IOException {
-    return 0;
-  }
+  public abstract int readStringSize() throws IOException;
 
-  public int readBytesSize() throws IOException {
-    return 0;
-  }
+  public abstract int readBytesSize() throws IOException;
 
-  public void readStringData(byte[] bytes, int start, int len) throws IOException {
+  public abstract void readStringData(byte[] bytes, int start, int len) throws IOException;
 
-  }
+  public abstract void readBytesData(byte[] bytes, int start, int len) throws IOException;
 
-  public void readBytesData(byte[] bytes, int start, int len) throws IOException {
+  public abstract void drain() throws IOException;
 
-  }
+  public abstract boolean isBinaryDecoder();
 
-  public boolean isBinaryDecoder() {
-    return false;
-  }
-
-  public void drain() throws IOException {}
-
-  public Schema.Field[] readFieldOrder() throws IOException {
-    return null;
-  }
-
+  public abstract Schema.Field[] readFieldOrder() throws IOException;
 }

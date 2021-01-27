@@ -293,9 +293,9 @@ public class AvroCompatibilityHelper {
    * @return a decoder
    * @throws IOException on io errors
    */
-  public static Decoder newSanityCheckBinaryDecoder(InputStream in) throws IOException {
+  public static Decoder newBoundedMemoryDecoder(InputStream in) throws IOException {
     assertAvroAvailable();
-    return ADAPTER.newSanityCheckBinaryDecoder(in);
+    return ADAPTER.newBoundedMemoryDecoder(in);
   }
 
   // schema parsing, and other Schema-related operations
