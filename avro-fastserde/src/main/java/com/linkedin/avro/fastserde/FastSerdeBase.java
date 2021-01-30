@@ -125,15 +125,17 @@ public abstract class FastSerdeBase {
        * Keeping this config also does not bring any downgrade.
        *
        */
-      LOGGER.info("Starting compilation for the generated source file: {} with the inferred compile class path: {}", filePath, compileClassPathForCurrentFile);
+      LOGGER.info("Starting compilation for the generated source file: {} ", filePath);
+      LOGGER.debug("The inferred compile class path for file: {} : {}", filePath, compileClassPathForCurrentFile);
       compileResult = compiler.run(null, null, null, "-cp", compileClassPathForCurrentFile, filePath, "-XDuseUnsharedTable");
-      LOGGER.info("Successfully compiled class {} defined at source file: {}", className, filePath);
     } catch (Exception e) {
       throw new FastSerdeGeneratorException("Unable to compile:" + className + " from source file: " + filePath, e);
     }
 
     if (compileResult != 0) {
       throw new FastSerdeGeneratorException("Unable to compile:" + className + " from source file: " + filePath);
+    } else {
+      LOGGER.info("Successfully compiled class {} defined at source file: {}", className, filePath);
     }
 
     return classLoader.loadClass(generatedPackageName + "." + className);
