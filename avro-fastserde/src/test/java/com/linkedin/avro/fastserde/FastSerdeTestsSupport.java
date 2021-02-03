@@ -17,6 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.linkedin.avroutil1.compatibility.AvroVersion;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericContainer;
 import org.apache.avro.generic.GenericDatumWriter;
@@ -75,7 +77,7 @@ public final class FastSerdeTestsSupport {
     for (int i = 0; i < schemas.length; i++) {
       schemasWithNull[i + 1] = schemas[i];
     }
-    return createUnionField(name, schemasWithNull);
+    return fixNullDefaultForField(createUnionField(name, schemasWithNull));
   }
 
   public static Schema.Field createUnionField(String name, Schema... schemas) {
@@ -96,7 +98,27 @@ public final class FastSerdeTestsSupport {
     typeList.addAll(Arrays.asList(types).stream().map(Schema::create).collect(Collectors.toList()));
 
     Schema unionSchema = Schema.createUnion(typeList);
-    return new Schema.Field(name, unionSchema, null, null, Schema.Field.Order.ASCENDING);
+    return fixNullDefaultForField(new Schema.Field(name, unionSchema, null, null, Schema.Field.Order.ASCENDING));
+  }
+
+  private static Schema.Field fixNullDefaultForField(Schema.Field field) {
+    try {
+      Class<?> nullNodeClass;
+      if (AvroCompatibilityHelper.getRuntimeAvroVersion().earlierThan(AvroVersion.AVRO_1_9)) {
+        nullNodeClass = Class.forName("org.codehaus.jackson.node.NullNode");
+      } else {
+        nullNodeClass = Class.forName("com.fasterxml.jackson.databind.node.NullNode");
+      }
+      Object nullNode = nullNodeClass.getMethod("getInstance").invoke(nullNodeClass);
+      Field defaultValue = field.getClass().getDeclaredField("defaultValue");
+      defaultValue.setAccessible(true);
+      defaultValue.set(field, nullNode);
+      defaultValue.setAccessible(false);
+
+    } catch (ReflectiveOperationException e) {
+      throw new RuntimeException(e);
+    }
+    return field;
   }
 
   public static Schema.Field createArrayFieldSchema(String name, Schema elementType, String... aliases) {
@@ -131,6 +153,14 @@ public final class FastSerdeTestsSupport {
     }
 
     return field;
+  }
+
+  public static Schema addAliases(Schema schema, String... aliases) {
+    if (aliases != null) {
+      Arrays.asList(aliases).forEach(schema::addAlias);
+    }
+
+    return schema;
   }
 
   public static <T extends GenericContainer> Decoder genericDataAsDecoder(T data) {

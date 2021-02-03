@@ -1,6 +1,11 @@
 package com.linkedin.avro.fastserde;
 
+import com.linkedin.avro.fastserde.generated.avro.FullRecord;
+import com.linkedin.avro.fastserde.generated.avro.IntRecord;
 import com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord;
+import com.linkedin.avro.fastserde.generated.avro.SplitRecordTest1;
+import com.linkedin.avro.fastserde.generated.avro.SplitRecordTest2;
+import com.linkedin.avro.fastserde.generated.avro.StringRecord;
 import com.linkedin.avro.fastserde.generated.avro.SubRecord;
 import com.linkedin.avro.fastserde.generated.avro.TestEnum;
 import com.linkedin.avro.fastserde.generated.avro.TestFixed;
@@ -681,6 +686,89 @@ public class FastSpecificDeserializerGeneratorTest {
 
     // then
     Assert.assertEquals(new Utf8("abc"), getField(record, "field"));
+  }
+
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
+  public void shouldReadSplitRecords(Boolean whetherUseFastDeserializer) {
+    // alias is not well supported in avro-1.4
+    if (!Utils.isAvro14()) {
+      // given
+      Schema writerSchema = SplitRecordTest1.SCHEMA$;
+      Schema readerSchema = SplitRecordTest2.SCHEMA$;
+
+      SplitRecordTest1 splitRecordTest1 = new SplitRecordTest1();
+
+      FullRecord fullRecord1 = new FullRecord();
+      setField(fullRecord1, "field1", "test1");
+      setField(fullRecord1, "field2", 1);
+
+      FullRecord fullRecord2 = new FullRecord();
+      setField(fullRecord2, "field1", "test2");
+      setField(fullRecord2, "field2", 2);
+
+      FullRecord fullRecord3 = new FullRecord();
+      setField(fullRecord3, "field1", "test3");
+      setField(fullRecord3, "field2", 3);
+
+      setField(splitRecordTest1, "record1", fullRecord1);
+      setField(splitRecordTest1, "record2", fullRecord2);
+      setField(splitRecordTest1, "record3", Collections.singletonList(fullRecord3));
+
+      // when
+      SplitRecordTest2 splitRecordTest2;
+
+      if (whetherUseFastDeserializer) {
+        splitRecordTest2 = decodeRecordFast(readerSchema, writerSchema, specificDataAsDecoder(splitRecordTest1));
+      } else {
+        splitRecordTest2 = decodeRecordSlow(readerSchema, writerSchema, specificDataAsDecoder(splitRecordTest1));
+      }
+
+      // then
+      Assert.assertEquals(getField((StringRecord) getField(splitRecordTest2, "record1"), "field1"), new Utf8("test1"));
+      Assert.assertEquals(getField((IntRecord) getField(splitRecordTest2, "record2"), "field2"), 2);
+      Assert.assertEquals(getField(((List<FullRecord>) getField(splitRecordTest2, "record3")).get(0), "field1"), new Utf8("test3"));
+      Assert.assertEquals(getField(((List<FullRecord>) getField(splitRecordTest2, "record3")).get(0), "field2"), 3);
+    }
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
+  public void shouldReadMergedRecords(Boolean whetherUseFastDeserializer) {
+    // alias is not well supported in avro-1.4
+    if (!Utils.isAvro14()) {
+      // given
+      Schema writerSchema = SplitRecordTest2.SCHEMA$;
+      Schema readerSchema = SplitRecordTest1.SCHEMA$;
+      SplitRecordTest2 splitRecordTest2 = new SplitRecordTest2();
+
+      StringRecord stringRecord = new StringRecord();
+      setField(stringRecord, "field1", "test1");
+
+      IntRecord intRecord = new IntRecord();
+      setField(intRecord, "field2", 2);
+
+      FullRecord fullRecord = new FullRecord();
+      setField(fullRecord, "field1", "test3");
+      setField(fullRecord, "field2", 3);
+
+      setField(splitRecordTest2, "record1", stringRecord);
+      setField(splitRecordTest2, "record2", intRecord);
+      setField(splitRecordTest2, "record3", Collections.singletonList(fullRecord));
+
+      // when
+      SplitRecordTest1 splitRecordTest1;
+      if (whetherUseFastDeserializer) {
+        splitRecordTest1 = decodeRecordFast(readerSchema, writerSchema, specificDataAsDecoder(splitRecordTest2));
+      } else {
+        splitRecordTest1 = decodeRecordSlow(readerSchema, writerSchema, specificDataAsDecoder(splitRecordTest2));
+      }
+
+      // then
+      Assert.assertEquals(getField((FullRecord) getField(splitRecordTest1, "record1"), "field1"), new Utf8("test1"));
+      Assert.assertEquals(getField((FullRecord) getField(splitRecordTest1, "record2"), "field2"), 2);
+      Assert.assertEquals(getField(((List<FullRecord>) getField(splitRecordTest1, "record3")).get(0), "field1"), new Utf8("test3"));
+      Assert.assertEquals(getField(((List<FullRecord>) getField(splitRecordTest1, "record3")).get(0), "field2"), 3);
+    }
   }
 
   @SuppressWarnings("unchecked")
