@@ -16,9 +16,12 @@ import com.linkedin.avroutil1.compatibility.SchemaNormalization;
 import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
 import com.linkedin.avroutil1.compatibility.SchemaParseResult;
 import com.linkedin.avroutil1.compatibility.SchemaValidator;
+import com.linkedin.avroutil1.compatibility.SkipDecoder;
 import com.linkedin.avroutil1.compatibility.avro16.backports.Avro16DefaultValuesCache;
+import com.linkedin.avroutil1.compatibility.avro16.codec.CachedResolvingDecoder;
 import com.linkedin.avroutil1.compatibility.avro16.codec.CompatibleJsonDecoder;
 import com.linkedin.avroutil1.compatibility.avro16.codec.CompatibleJsonEncoder;
+import com.linkedin.avroutil1.compatibility.avro16.codec.BoundedMemoryDecoder;
 import com.linkedin.avroutil1.compatibility.backports.ObjectInputToInputStreamAdapter;
 import com.linkedin.avroutil1.compatibility.backports.ObjectOutputToOutputStreamAdapter;
 import java.io.IOException;
@@ -162,8 +165,13 @@ public class Avro16Adapter implements AvroAdapter {
   }
 
   @Override
-  public Decoder newCachedResolvingDecoder(Schema writer, Schema reader, Decoder in) throws IOException {
-    throw new UnsupportedOperationException("Method has not been implemented yet.");
+  public SkipDecoder newCachedResolvingDecoder(Schema writer, Schema reader, Decoder in) throws IOException {
+    return new CachedResolvingDecoder(writer, reader, in);
+  }
+
+  @Override
+  public Decoder newBoundedMemoryDecoder(InputStream in) throws IOException {
+    return new BoundedMemoryDecoder(in);
   }
 
   @Override

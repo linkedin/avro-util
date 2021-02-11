@@ -58,7 +58,9 @@ public interface AvroAdapter {
 
   Decoder newCompatibleJsonDecoder(Schema schema, String in) throws IOException;
 
-  Decoder newCachedResolvingDecoder(Schema writer, Schema reader, Decoder in) throws IOException;
+  SkipDecoder newCachedResolvingDecoder(Schema writer, Schema reader, Decoder in) throws IOException;
+
+  Decoder newBoundedMemoryDecoder(InputStream in) throws IOException;
 
   //parsing and Schema-related
 

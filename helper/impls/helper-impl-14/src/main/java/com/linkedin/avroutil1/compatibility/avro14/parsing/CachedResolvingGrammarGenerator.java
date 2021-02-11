@@ -15,9 +15,7 @@ import org.apache.avro.Schema;
  * The class that generates a resolving grammar to resolve between two
  * schemas.
  * A version of ResolvingGrammarGenerator with a resolveRecords that overrides the method in the base class
- * to use a fixed version of the SkipAction called CachedSkipAction  -- this derives from a copy
- * of ResolvingGrammarGeneratorPr that is fixed to have some protected methods instead of private ones
- * copied from Avro 1.4.0 ResolvingGrammarGenerator
+ * to use a fixed version of the SkipAction called CachedSkipAction
  */
 public class CachedResolvingGrammarGenerator extends ResolvingGrammarGenerator {
   /**

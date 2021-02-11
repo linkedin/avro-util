@@ -66,7 +66,7 @@ public abstract class Symbol {
    * the symbols that forms the production for this symbol. The
    * sequence is in the reverse order of production. This is useful
    * for easy copying onto parsing stack.
-   * 
+   *
    * Please note that this is a final. So the production for a symbol
    * should be known before that symbol is constructed. This requirement
    * cannot be met for those symbols which are recursive (e.g. a record that
@@ -83,8 +83,8 @@ public abstract class Symbol {
   protected Symbol(Kind kind) {
     this(kind, null);
   }
-    
-    
+
+
   protected Symbol(Kind kind, Symbol[] production) {
     this.production = production;
     this.kind = kind;
@@ -127,7 +127,7 @@ public abstract class Symbol {
   static Symbol error(String e) {
     return new ErrorAction(e);
   }
-  
+
   /**
    * A convenience method to construct a ResolvingAction.
    * @param w The writer symbol
@@ -136,32 +136,32 @@ public abstract class Symbol {
   static Symbol resolve(Symbol w, Symbol r) {
     return new ResolvingAction(w, r);
   }
-  
+
   private static class Fixup {
     public final Symbol[] symbols;
     public final int pos;
-    
+
     public Fixup(Symbol[] symbols, int pos) {
       this.symbols = symbols;
       this.pos = pos;
     }
   }
-  
+
   public Symbol flatten(Map<Sequence, Sequence> map,
       Map<Sequence, List<Fixup>> map2) {
     return this;
   }
-  
+
   public int flattenedSize() {
     return 1;
   }
-  
+
   /**
    * Flattens the given sub-array of symbols into an sub-array of symbols. Every
    * {@code Sequence} in the input are replaced by its production recursively.
    * Non-{@code Sequence} symbols, they internally have other symbols
    * those internal symbols also get flattened.
-   * 
+   *
    * The algorithm does a few tricks to handle recursive symbol definitions.
    * In order to avoid infinite recursion with recursive symbols, we have a map
    * of Symbol->Symbol. Before fully constructing a flattened symbol for a
@@ -175,7 +175,7 @@ public abstract class Symbol {
    * has not not be fully constructed yet, we copy a bunch of {@code null}s.
    * Fix-up remembers all those {@code null} patches. The fix-ups gets finally
    * filled when we know the symbols to occupy those patches.
-   *  
+   *
    * @param in  The array of input symbols to flatten
    * @param start The position where the input sub-array starts.
    * @param out The output that receives the flattened list of symbols. The
@@ -248,13 +248,13 @@ public abstract class Symbol {
     private ImplicitAction() {
       this(false);
     }
-    
+
     private ImplicitAction(boolean isTrailing) {
       super(Kind.IMPLICIT_ACTION);
       this.isTrailing = isTrailing;
     }
   }
-  
+
   protected static class Root extends Symbol {
     private Root(Symbol... symbols) {
       super(Kind.ROOT, makeProduction(symbols));
@@ -269,7 +269,7 @@ public abstract class Symbol {
       return result;
     }
   }
-  
+
   protected static class Sequence extends Symbol implements Iterable<Symbol> {
     private Sequence(Symbol[] productions) {
       super(Kind.SEQUENCE, productions);
@@ -278,19 +278,19 @@ public abstract class Symbol {
     public Symbol get(int index) {
       return production[index];
     }
-    
+
     public int size() {
       return production.length;
     }
-    
+
     public Iterator<Symbol> iterator() {
       return new Iterator<Symbol>() {
         private int pos = production.length;
-        
+
         public boolean hasNext() {
           return 0 < pos;
         }
-        
+
         public Symbol next() {
           if (0 < pos) {
             return production[--pos];
@@ -298,7 +298,7 @@ public abstract class Symbol {
             throw new NoSuchElementException();
           }
         }
-        
+
         public void remove() {
           throw new UnsupportedOperationException();
         }
@@ -313,7 +313,7 @@ public abstract class Symbol {
         map.put(this, result);
         List<Fixup> l = new ArrayList<Fixup>();
         map2.put(result, l);
-        
+
         flatten(production, 0,
             result.production, 0, map, map2);
         for (Fixup f : l) {
@@ -333,30 +333,30 @@ public abstract class Symbol {
 
   public static class Repeater extends Symbol {
     public final Symbol end;
-   
+
     private Repeater(Symbol end, Symbol... sequenceToRepeat) {
       super(Kind.REPEATER, makeProduction(sequenceToRepeat));
       this.end = end;
       production[0] = this;
     }
-    
+
     private static Symbol[] makeProduction(Symbol[] p) {
       Symbol[] result = new Symbol[p.length + 1];
       System.arraycopy(p, 0, result, 1, p.length);
       return result;
     }
-    
+
     @Override
     public Repeater flatten(Map<Sequence, Sequence> map,
         Map<Sequence, List<Fixup>> map2) {
       Repeater result =
-        new Repeater(end, new Symbol[flattenedSize(production, 1)]);
+          new Repeater(end, new Symbol[flattenedSize(production, 1)]);
       flatten(production, 1, result.production, 1, map, map2);
       return result;
     }
 
   }
-    
+
   public static class Alternative extends Symbol {
     public final Symbol[] symbols;
 
@@ -371,15 +371,15 @@ public abstract class Symbol {
       this.newLabels = newLabels;
       this.useFqcns = useFqcns;
     }
-    
+
     public Symbol getSymbol(int index) {
       return symbols[index];
     }
-    
+
     public String getLabel(int index) {
       return useFqcns ? newLabels[index] : oldLabels[index];
     }
-    
+
     public int size() {
       return symbols.length;
     }
@@ -447,7 +447,7 @@ public abstract class Symbol {
       this.writer = writer;
       this.reader = reader;
     }
-    
+
     @Override
     public ResolvingAction flatten(Map<Sequence, Sequence> map,
         Map<Sequence, List<Fixup>> map2) {
@@ -456,13 +456,13 @@ public abstract class Symbol {
     }
 
   }
-  
+
   public static class SkipAction extends ImplicitAction {
     public final Symbol symToSkip;
     public SkipAction(Symbol symToSkip) {
       this.symToSkip = symToSkip;
     }
-    
+
     @Override
     public SkipAction flatten(Map<Sequence, Sequence> map,
         Map<Sequence, List<Fixup>> map2) {
@@ -479,7 +479,7 @@ public abstract class Symbol {
       this.fname = fname;
     }
   }
-  
+
   public static final class FieldOrderAction extends ImplicitAction {
     public final Schema.Field[] fields;
     public FieldOrderAction(Schema.Field[] fields) {
@@ -501,13 +501,13 @@ public abstract class Symbol {
       this.rindex = rindex;
       this.symToParse = symToParse;
     }
-    
+
     @Override
     public UnionAdjustAction flatten(Map<Sequence, Sequence> map,
         Map<Sequence, List<Fixup>> map2) {
       return new UnionAdjustAction(rindex, symToParse.flatten(map, map2));
     }
-    
+
   }
 
   /** For JSON. */
@@ -517,11 +517,11 @@ public abstract class Symbol {
       super(symbols.size());
       this.symbols = symbols;
     }
-    
+
     public String getLabel(int n) {
       return symbols.get(n);
     }
-    
+
     public int findLabel(String l) {
       if (l != null) {
         for (int i = 0; i < symbols.size(); i++) {
@@ -557,14 +557,14 @@ public abstract class Symbol {
 
   /* a pseudo terminal used by parsers */
   public static final Symbol FIELD_ACTION =
-    new Terminal("field-action");
+      new Terminal("field-action");
 
   public static final Symbol RECORD_START = new ImplicitAction(false);
   public static final Symbol RECORD_END = new ImplicitAction(true);
   public static final Symbol UNION_END = new ImplicitAction(true);
-  
+
   public static final Symbol DEFAULT_END_ACTION = new ImplicitAction(true);
   public static final Symbol MAP_KEY_MARKER =
-    new Terminal("map-key-marker");
+      new Terminal("map-key-marker");
 }
 

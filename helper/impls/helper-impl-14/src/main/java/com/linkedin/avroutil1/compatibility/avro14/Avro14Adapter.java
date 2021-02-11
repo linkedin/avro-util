@@ -16,8 +16,10 @@ import com.linkedin.avroutil1.compatibility.SchemaNormalization;
 import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
 import com.linkedin.avroutil1.compatibility.SchemaParseResult;
 import com.linkedin.avroutil1.compatibility.SchemaValidator;
+import com.linkedin.avroutil1.compatibility.SkipDecoder;
 import com.linkedin.avroutil1.compatibility.avro14.backports.Avro14DefaultValuesCache;
 import com.linkedin.avroutil1.compatibility.avro14.backports.Avro18BufferedBinaryEncoder;
+import com.linkedin.avroutil1.compatibility.avro14.codec.BoundedMemoryDecoder;
 import com.linkedin.avroutil1.compatibility.avro14.codec.CachedResolvingDecoder;
 import com.linkedin.avroutil1.compatibility.avro14.codec.CompatibleJsonDecoder;
 import com.linkedin.avroutil1.compatibility.avro14.codec.CompatibleJsonEncoder;
@@ -154,8 +156,13 @@ public class Avro14Adapter implements AvroAdapter {
   }
 
   @Override
-  public Decoder newCachedResolvingDecoder(Schema writer, Schema reader, Decoder in) throws IOException {
+  public SkipDecoder newCachedResolvingDecoder(Schema writer, Schema reader, Decoder in) throws IOException {
     return new CachedResolvingDecoder(writer, reader, in);
+  }
+
+  @Override
+  public Decoder newBoundedMemoryDecoder(InputStream in) throws IOException {
+    return new BoundedMemoryDecoder(in);
   }
 
   @Override

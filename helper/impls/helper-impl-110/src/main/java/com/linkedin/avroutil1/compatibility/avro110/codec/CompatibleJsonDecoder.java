@@ -94,7 +94,7 @@ public class CompatibleJsonDecoder extends ParsingDecoder implements Parser.Acti
    * <p>
    * Otherwise, this JsonDecoder will reset its state and then reconfigure its
    * input.
-   * 
+   *
    * @param in The InputStream to read from. Cannot be null.
    * @throws IOException
    * @throws NullPointerException if {@code in} is {@code null}
@@ -117,7 +117,7 @@ public class CompatibleJsonDecoder extends ParsingDecoder implements Parser.Acti
    * <p>
    * Otherwise, this JsonDecoder will reset its state and then reconfigure its
    * input.
-   * 
+   *
    * @param in The String to read from. Cannot be null.
    * @throws IOException
    * @throws NullPointerException if {@code in} is {@code null}
@@ -517,6 +517,41 @@ public class CompatibleJsonDecoder extends ParsingDecoder implements Parser.Acti
 
   private AvroTypeException error(String type) {
     return new AvroTypeException("Expected " + type + ". Got " + in.getCurrentToken());
+  }
+
+  @Override
+  public int readStringSize() throws IOException {
+    throw new UnsupportedOperationException("Method is not implemented, do not use!");
+  }
+
+  @Override
+  public int readBytesSize() throws IOException {
+    throw new UnsupportedOperationException("Method is not implemented, do not use!");
+  }
+
+  @Override
+  public void readStringData(byte[] bytes, int start, int len) throws IOException {
+    throw new UnsupportedOperationException("Method is not implemented, do not use!");
+  }
+
+  @Override
+  public void readBytesData(byte[] bytes, int start, int len) throws IOException {
+    throw new UnsupportedOperationException("Method is not implemented, do not use!");
+  }
+
+  @Override
+  public void drain() throws IOException {
+    throw new UnsupportedOperationException("Method is not implemented, do not use!");
+  }
+
+  @Override
+  public boolean isBinaryDecoder() {
+    throw new UnsupportedOperationException("Method is not implemented, do not use!");
+  }
+
+  @Override
+  public Schema.Field[] readFieldOrder() throws IOException {
+    throw new UnsupportedOperationException("Method is not implemented, do not use!");
   }
 
 }
