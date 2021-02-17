@@ -51,6 +51,8 @@ fi
 
 # schema path to compile
 AVRO_SCHEMAS_PATH=(
+  "src/test/avro/splitRecordTest1.avsc"
+  "src/test/avro/splitRecordTest2.avsc"
   "src/test/avro/fastserdetest.avsc"
   "src/test/avro/defaultsTest.avsc"
   "src/test/avro/stringableTest.avsc"
@@ -64,6 +66,8 @@ CODE_GEN_PATH="src/test/java"
 # full path to store the compiled classes, and the dimension of this array
 # should be same as ${#AVRO_SCHEMAS_PATH[@]}
 FULL_CODE_GEN_PATH=(
+  "${CODE_GEN_PATH}/com/linkedin/avro/fastserde/generated/avro/*.java"
+  "${CODE_GEN_PATH}/com/linkedin/avro/fastserde/generated/avro/*.java"
   "${CODE_GEN_PATH}/com/linkedin/avro/fastserde/generated/avro/*.java"
   "${CODE_GEN_PATH}/com/linkedin/avro/fastserde/generated/avro/*.java"
   "${CODE_GEN_PATH}/com/linkedin/avro/fastserde/generated/avro/*.java"

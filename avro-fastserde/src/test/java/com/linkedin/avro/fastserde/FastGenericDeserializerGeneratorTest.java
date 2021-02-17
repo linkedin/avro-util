@@ -16,6 +16,7 @@ import java.net.URLClassLoader;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,7 @@ import org.testng.annotations.Test;
 import static com.linkedin.avro.fastserde.FastSerdeTestsSupport.*;
 
 
+
 public class FastGenericDeserializerGeneratorTest {
 
   private static File tempDir;
@@ -50,6 +52,7 @@ public class FastGenericDeserializerGeneratorTest {
 
     boolean isFast;
     DecodeFunction decodeFunction;
+
     Implementation(boolean isFast, DecodeFunction decodeFunction) {
       this.isFast = isFast;
       this.decodeFunction = decodeFunction;
@@ -178,7 +181,7 @@ public class FastGenericDeserializerGeneratorTest {
     Method getSchemaMethod = null;
     try {
       getSchemaMethod = GenericData.Fixed.class.getMethod("getSchema");
-      Assert.assertEquals(getSchemaMethod.invoke(deserializedFixed, (Object[])null), fixedSchema);
+      Assert.assertEquals(getSchemaMethod.invoke(deserializedFixed, (Object[]) null), fixedSchema);
     } catch (NoSuchMethodException e) {
       // Expected for avro-1.4
       if (!Utils.isAvro14()) {
@@ -307,6 +310,7 @@ public class FastGenericDeserializerGeneratorTest {
     Assert.assertEquals(subRecordSchema.hashCode(), ((GenericRecord) record.get("record1")).getSchema().hashCode());
     Assert.assertEquals(new Utf8("abc"), record.get("field"));
   }
+
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
   public void shouldReadSubRecordCollectionsField(Implementation implementation) {
@@ -1138,6 +1142,63 @@ public class FastGenericDeserializerGeneratorTest {
     Object decodedUnionField = decodedRecord.get("unionField");
     Assert.assertTrue(decodedUnionField instanceof GenericData.Record);
     Assert.assertEquals(new Utf8("bar"), ((GenericData.Record) decodedUnionField).get("strField"));
+  }
+
+  // The test case in which one record is split into many with the usage of aliases. Example: record A with aliases B and C in the next version is changed into records B and C, both of them have an alias to A.
+  // This test contains such a migration in both ways.
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadSplittedAndAliasedSubRecordFields(Implementation implementation) {
+    // given
+    Schema subRecordSchema = createRecord("subRecord", createPrimitiveUnionFieldSchema("intField", Schema.Type.INT), createPrimitiveUnionFieldSchema("subField", Schema.Type.STRING));
+    subRecordSchema = FastSerdeTestsSupport.addAliases(subRecordSchema, "com.adpilot.utils.generated.avro.aliasedSubRecord");
+
+    Schema recordSchema = createRecord(
+        createField("record1", subRecordSchema),
+        createField("record2", subRecordSchema),
+        createArrayFieldSchema("recordArray", subRecordSchema));
+
+    Schema aliasedSubRecordSchema = createRecord("aliasedSubRecord", createPrimitiveUnionFieldSchema("subField", Schema.Type.STRING));
+    aliasedSubRecordSchema = FastSerdeTestsSupport.addAliases(aliasedSubRecordSchema, "com.adpilot.utils.generated.avro.subRecord");
+
+    Schema splittedAndAliasedRecordSchema = createRecord(
+        createField("record1", aliasedSubRecordSchema),
+        createField("record2", subRecordSchema),
+        createArrayFieldSchema("recordArray", aliasedSubRecordSchema));
+
+    GenericRecord subRecordBuilder = new GenericData.Record(subRecordSchema);
+    subRecordBuilder.put("intField", 1);
+    subRecordBuilder.put("subField", "abc");
+
+    GenericRecord aliasedSubRecordBuilder = new GenericData.Record(aliasedSubRecordSchema);
+    aliasedSubRecordBuilder.put("subField", "abc");
+
+    GenericRecord forwardRecordBuilder = new GenericData.Record(splittedAndAliasedRecordSchema);
+    forwardRecordBuilder.put("record1", aliasedSubRecordBuilder);
+    forwardRecordBuilder.put("record2", subRecordBuilder);
+    forwardRecordBuilder.put("recordArray", Collections.singletonList(aliasedSubRecordBuilder));
+
+    // when
+    GenericRecord forwardRecord = implementation.decode(splittedAndAliasedRecordSchema, recordSchema, genericDataAsDecoder(forwardRecordBuilder));
+
+    // then
+    Assert.assertEquals(new Utf8("abc"), ((GenericRecord) forwardRecord.get("record1")).get("subField"));
+    Assert.assertEquals(subRecordSchema.hashCode(), ((GenericRecord) forwardRecord.get("record1")).getSchema().hashCode());
+    Assert.assertEquals(new Utf8("abc"), ((GenericRecord) forwardRecord.get("record2")).get("subField"));
+    Assert.assertEquals(subRecordSchema.hashCode(), ((GenericRecord) forwardRecord.get("record2")).getSchema().hashCode());
+
+    GenericRecord backwardRecordBuilder = new GenericData.Record(recordSchema);
+    backwardRecordBuilder.put("record1", subRecordBuilder);
+    backwardRecordBuilder.put("record2", subRecordBuilder);
+    backwardRecordBuilder.put("recordArray", Collections.singletonList(subRecordBuilder));
+
+    // when
+    GenericRecord backwardRecord = implementation.decode(recordSchema, splittedAndAliasedRecordSchema, genericDataAsDecoder(backwardRecordBuilder));
+
+    // then
+    Assert.assertEquals(new Utf8("abc"), ((GenericRecord) backwardRecord.get("record1")).get("subField"));
+    Assert.assertEquals(aliasedSubRecordSchema.hashCode(), ((GenericRecord) backwardRecord.get("record1")).getSchema().hashCode());
+    Assert.assertEquals(new Utf8("abc"), ((GenericRecord) backwardRecord.get("record2")).get("subField"));
+    Assert.assertEquals(subRecordSchema.hashCode(), ((GenericRecord) backwardRecord.get("record2")).getSchema().hashCode());
   }
 
   private static <T> T decodeRecordColdFast(Schema writerSchema, Schema readerSchema, Decoder decoder) {
