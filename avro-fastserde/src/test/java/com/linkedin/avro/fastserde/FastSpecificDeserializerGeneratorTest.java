@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.util.Utf8;
@@ -686,6 +687,25 @@ public class FastSpecificDeserializerGeneratorTest {
 
     // then
     Assert.assertEquals(new Utf8("abc"), getField(record, "field"));
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
+  public void testDeserializerWithDifferentNamespace(Boolean whetherUseFastDeserializer) throws IOException {
+    Schema writerSchema = Schema.parse(this.getClass().getResourceAsStream(
+        "/schema/removedTypesTestWithADifferentNamespace.avsc"));
+
+    Assert.assertNotEquals(writerSchema.getNamespace(), RemovedTypesTestRecord.SCHEMA$.getNamespace(),
+        "Namespace should be different between writer schema and reader schema");
+    GenericRecord object = new GenericData.Record(writerSchema);
+    object.put("field", "abc");
+
+    RemovedTypesTestRecord record = null;
+    if (whetherUseFastDeserializer) {
+      record = decodeRecordFast(RemovedTypesTestRecord.SCHEMA$, writerSchema, genericDataAsDecoder(object));
+    } else {
+      record = decodeRecordSlow(RemovedTypesTestRecord.SCHEMA$, writerSchema, genericDataAsDecoder(object));
+    }
+    Assert.assertEquals(getField(record, "field").toString(), "abc");
   }
 
 
