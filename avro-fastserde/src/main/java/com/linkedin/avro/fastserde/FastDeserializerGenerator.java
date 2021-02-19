@@ -103,9 +103,11 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       }
 
       JClass readerSchemaClass = schemaAssistant.classFromSchema(reader);
-      JClass writerSchemaClass = schemaAssistant.classFromSchema(aliasedWriterSchema);
-
-      generatedClass._implements(codeModel.ref(FastDeserializer.class).narrow(writerSchemaClass));
+      /**
+       * Writer schema could be using a different namespace from the reader schema, so we should always
+       * use the reader schema class for generic type.
+       */
+      generatedClass._implements(codeModel.ref(FastDeserializer.class).narrow(readerSchemaClass));
       JMethod deserializeMethod = generatedClass.method(JMod.PUBLIC, readerSchemaClass, "deserialize");
 
       JBlock topLevelDeserializeBlock = new JBlock();
