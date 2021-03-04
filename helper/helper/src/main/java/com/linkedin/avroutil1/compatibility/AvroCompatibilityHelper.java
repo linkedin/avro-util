@@ -298,6 +298,18 @@ public class AvroCompatibilityHelper {
     return ADAPTER.newBoundedMemoryDecoder(in);
   }
 
+  /**
+   * {@link Decoder} that fixes a bug in the BinaryDecoder that can cause OutOfMemoryError
+   * when deserializing corrupt data or deserializing with the incorrect schema.
+   * @param data byteArray
+   * @return a decoder
+   * @throws IOException on io errors
+   */
+  public static Decoder newBoundedMemoryDecoder(byte[] data) throws IOException {
+    assertAvroAvailable();
+    return ADAPTER.newBoundedMemoryDecoder(data);
+  }
+
   // schema parsing, and other Schema-related operations
 
   /**
