@@ -166,6 +166,11 @@ public class Avro14Adapter implements AvroAdapter {
   }
 
   @Override
+  public Decoder newBoundedMemoryDecoder(byte[] data) throws IOException {
+    return new BoundedMemoryDecoder(data);
+  }
+
+  @Override
   public SchemaParseResult parse(String schemaJson, SchemaParseConfiguration desiredConf, Collection<Schema> known) {
     SchemaParseResult result = Avro14SchemaAccessUtil.parse(schemaJson, known);
     if (desiredConf != null && !desiredConf.equals(result.getConfigUsed())) {

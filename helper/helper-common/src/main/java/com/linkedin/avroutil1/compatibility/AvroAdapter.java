@@ -62,6 +62,8 @@ public interface AvroAdapter {
 
   Decoder newBoundedMemoryDecoder(InputStream in) throws IOException;
 
+  Decoder newBoundedMemoryDecoder(byte[] data) throws IOException;
+
   //parsing and Schema-related
 
   SchemaParseResult parse(String schemaJson, SchemaParseConfiguration desiredConf, Collection<Schema> known);
