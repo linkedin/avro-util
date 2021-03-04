@@ -169,6 +169,11 @@ public class Avro15Adapter implements AvroAdapter {
   }
 
   @Override
+  public Decoder newBoundedMemoryDecoder(byte[] data) throws IOException {
+    return new BoundedMemoryDecoder(data);
+  }
+
+  @Override
   public SchemaParseResult parse(String schemaJson, SchemaParseConfiguration desiredConf, Collection<Schema> known) {
     Schema.Parser parser = new Schema.Parser();
     boolean validateNames = true;
