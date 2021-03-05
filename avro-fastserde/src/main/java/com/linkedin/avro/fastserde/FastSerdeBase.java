@@ -109,6 +109,13 @@ public abstract class FastSerdeBase {
 
     JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
     String compileClassPathForCurrentFile = Utils.inferCompileDependencies(compileClassPath, filePath, knownUsedFullyQualifiedClassNameSet);
+    if (null == compiler) {
+      /**
+       * If the above function returns null, it is very likely that the env setting: "JAVA_HOME" is not being setup properly.
+       */
+      throw new FastSerdeGeneratorException("Couldn't locate java compiler at runtime, please double check your env "
+          + "setting for 'JAVA_HOME', and here is the value for 'System.getProperty(\"java.home\")': " + System.getProperty("java.home"));
+    }
     int compileResult;
     try {
       /*
