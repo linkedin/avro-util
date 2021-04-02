@@ -86,6 +86,17 @@ public class CodeTransformationsAvro110Test {
     Assert.assertNotNull(transformedClass);
   }
 
+  @Test
+  public void testPacifyModel$Declaration() throws Exception {
+    String avsc = TestUtil.load("PerfectlyNormalRecord.avsc");
+    Schema schema = AvroCompatibilityHelper.parse(avsc);
+    String originalCode = runNativeCodegen(schema);
+
+    String transformedCode = CodeTransformations.pacifyModel$Delcaration(originalCode, AvroVersion.earliest(), AvroVersion.latest());
+    Class<?> transformedClass = CompilerUtils.CACHED_COMPILER.loadFromJava(schema.getFullName(), transformedCode);
+    Assert.assertNotNull(transformedClass);
+  }
+
   private String runNativeCodegen(Schema schema) throws Exception {
     File outputRoot = Files.createTempDirectory(null).toFile();
     SpecificCompiler compiler = new SpecificCompiler(schema);
