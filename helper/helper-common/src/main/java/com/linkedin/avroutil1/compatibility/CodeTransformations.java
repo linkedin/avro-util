@@ -565,24 +565,26 @@ public class CodeTransformations {
    * @param maxSupportedVersion highest avro version under which the generated code should work
    * @return code where MODEL$ exists for avro versions expecting it at runtime (>= 1.9)
    */
-  public static String pacifyModel$Delcaration(String code, AvroVersion minSupportedVersion, AvroVersion maxSupportedVersion) {
+  public static String pacifyModel$Delcaration(String code, AvroVersion minSupportedVersion,
+      AvroVersion maxSupportedVersion) {
     if (minSupportedVersion.laterThan(AvroVersion.AVRO_1_7)) { // min >= 1.8
       return code;
     }
     if (maxSupportedVersion.earlierThan(AvroVersion.AVRO_1_8)) { // max < 1.8
       // remove any model annotation as it will not be used
       return MODEL_DECL_PATTERN.matcher(code).replaceAll("");
-    } else {
-      // If MODEL$ is already present in the code, replace it with SpecificData#get() instead of SpecificData ctor, which was
-      // made public only from avro 1.7
-      if (MODEL_DECL_PATTERN.matcher(code).find()) {
-        return MODEL_DECL_PATTERN.matcher(code).replaceAll(Matcher.quoteReplacement(MODEL_DECL_REPLACEMENT));
-      } else {
-        // add it to the end of generated code to avoid breaking
-        int schema$EndPosition = findEndOfSchemaDeclaration(code);
-        return code.substring(0, schema$EndPosition) + "\n " + MODEL_DECL_REPLACEMENT + "\n " + code.substring(schema$EndPosition);
-      }
     }
+    // If MODEL$ is already present in the code, replace it with SpecificData#get() instead of SpecificData ctor, which was
+    // made public only from avro 1.7
+    if (MODEL_DECL_PATTERN.matcher(code).find()) {
+      return MODEL_DECL_PATTERN.matcher(code).replaceAll(Matcher.quoteReplacement(MODEL_DECL_REPLACEMENT));
+    }
+    // add it to the end of generated code to avoid breaking
+    int schema$EndPosition = findEndOfSchemaDeclaration(code);
+    return code.substring(0, schema$EndPosition) + "\n " + MODEL_DECL_REPLACEMENT + "\n " + code.substring(
+        schema$EndPosition);
+
+
   }
 
   /**

@@ -43,4 +43,5 @@ public class AvroCompatibilityHelperCodegenTest {
   public void testRecordWithMultilineDocsUnder19Usable() {
     new under19.RecordWithMultilineDoc();
   }
+  
 }

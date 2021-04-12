@@ -34,4 +34,39 @@ public class AvroCompatibilityHelperGeneratedRecordClassesTest {
   public void testRecordGeneratedUnderAvro17HasGetClassSchema() throws Exception {
     Assert.assertEquals(under17.SimpleRecord.getClassSchema(), under17.SimpleRecord.SCHEMA$);
   }
+
+  @Test
+  public void testRecordGeneratedUnderAvro14HasModel$Declaration() throws NoSuchFieldException {
+    Assert.assertNotNull(under14.SimpleRecord.class.getDeclaredField("MODEL$"));
+  }
+
+  @Test
+  public void testRecordGeneratedUnderAvro15HasModel$Declaration() throws NoSuchFieldException {
+    Assert.assertNotNull(under15.SimpleRecord.class.getDeclaredField("MODEL$"));
+  }
+
+  @Test
+  public void testRecordGeneratedUnderAvro16HasModel$Declaration() throws NoSuchFieldException {
+    Assert.assertNotNull(under16.SimpleRecord.class.getDeclaredField("MODEL$"));
+  }
+
+  @Test
+  public void testRecordGeneratedUnderAvro17HasModel$Declaration() throws NoSuchFieldException {
+    Assert.assertNotNull(under17.SimpleRecord.class.getDeclaredField("MODEL$"));
+  }
+
+  @Test
+  public void testRecordGeneratedUnderAvro18HasModel$Declaration() throws NoSuchFieldException {
+    Assert.assertNotNull(under18.SimpleRecord.class.getDeclaredField("MODEL$"));
+  }
+
+  @Test
+  public void testRecordGeneratedByAvro19HasModel$Declaration() throws NoSuchFieldException {
+    Assert.assertNotNull(under19.SimpleRecord.class.getDeclaredField("MODEL$"));
+  }
+
+  @Test
+  public void testRecordGeneratedByAvro110HasModel$Declaration() throws NoSuchFieldException {
+    Assert.assertNotNull(under110.SimpleRecord.class.getDeclaredField("MODEL$"));
+  }
 }
