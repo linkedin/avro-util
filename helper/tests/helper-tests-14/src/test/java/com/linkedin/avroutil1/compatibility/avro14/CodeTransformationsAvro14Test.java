@@ -64,7 +64,7 @@ public class CodeTransformationsAvro14Test {
 
   @Test
   public void testPacifyModel$Declaration() throws Exception {
-    String avsc = TestUtil.load("PerfectlyNormalRecord.avsc");
+    String avsc = TestUtil.load("RecordWithLogicalTypes.avsc");
     Schema schema = AvroCompatibilityHelper.parse(avsc);
     String originalCode = runNativeCodegen(schema);
 

@@ -47,6 +47,7 @@ public class CodeTransformations {
   private static final Pattern IMPORT_CODECS_PATTERN = Pattern.compile("import org\\.apache\\.avro\\.message\\.([\\w.]+);");
   private static final Pattern AVROGENERATED_ANNOTATION_PATTERN = Pattern.compile(Pattern.quote("@org.apache.avro.specific.AvroGenerated"));
   private static final Pattern MODEL_DECL_PATTERN = Pattern.compile(Pattern.quote("private static SpecificData MODEL$ = new SpecificData();"));
+  private static final Pattern MODEL_ADD_TYPE_CONVERSION_PATTERN = Pattern.compile("MODEL\\$\\.addLogicalTypeConversion\\(.*\\);");
   private static final String MODEL_DECL_REPLACEMENT = "private static org.apache.avro.specific.SpecificData MODEL$ = org.apache.avro.specific.SpecificData.get();";
   private static final Pattern GET_SPECIFICDATA_METHOD_PATTERN = Pattern.compile("public\\s*org\\.apache\\.avro\\.specific\\.SpecificData\\s*getSpecificData\\s*\\(\\s*\\)\\s*\\{\\s*return\\s*MODEL\\$\\s*;\\s*}");
   private static final Pattern WRITER_DOLLAR_DECL = Pattern.compile("WRITER\\$\\s*=\\s*([^;]+);");
@@ -555,9 +556,20 @@ public class CodeTransformations {
 
   /**
    * MODEL$ was introduced as a static field in the generated class, starting 1.8, which indicates the conversions
-   * applicable for a specific record. However, starting 1.9, avro uses reflection to look up this field, which will throw
-   * a {@link ReflectiveOperationException} exception for records generated from older version. This results in  performance
-   * degradation.
+   * applicable for logical types in a specific record. An example of generated code looks like:
+   * <pre>
+   * {@code
+   *   private static SpecificData MODEL$ = new SpecificData();
+   * static {
+   *     MODEL$.addLogicalTypeConversion(new org.apache.avro.data.TimeConversions.TimestampMillisConversion());
+   *   }
+   * }
+   * </pre>
+   * However, starting 1.9, avro uses reflection to look up this
+   * field, which will throw a {@link ReflectiveOperationException} exception for records generated from older version.
+   * This results in  performance degradation.
+   * Moreover, older avro runtime will not have classes used in these conversions.
+   *
    * This methods avoids the exception by introducing this field in older versions of the generated record.
    *
    * @param code avro generated code that may or may not have the MODEL$ declaration
@@ -567,24 +579,23 @@ public class CodeTransformations {
    */
   public static String pacifyModel$Delcaration(String code, AvroVersion minSupportedVersion,
       AvroVersion maxSupportedVersion) {
-    if (minSupportedVersion.laterThan(AvroVersion.AVRO_1_7)) { // min >= 1.8
+    if (MODEL_DECL_PATTERN.matcher(code).find()) {
+      if (minSupportedVersion.earlierThan(AvroVersion.AVRO_1_8)) {  // minAvro < 1.8
+        // replace MODEL$ with specificdata.get and remove any static block after that contains any
+        code = MODEL_DECL_PATTERN.matcher(code).replaceAll(Matcher.quoteReplacement(MODEL_DECL_REPLACEMENT));
+        return MODEL_ADD_TYPE_CONVERSION_PATTERN.matcher(code).replaceAll("");
+      }
+      return code;
+    } else {
+      if (maxSupportedVersion.equals(AvroVersion.AVRO_1_9) || maxSupportedVersion.laterThan(AvroVersion.AVRO_1_9)) {  // maxAvro >= 1.9
+        // add no-op MODEL$ to the end of the generate schema$ string
+        int schema$EndPosition = findEndOfSchemaDeclaration(code);
+        return code.substring(0, schema$EndPosition) + "\n " + MODEL_DECL_REPLACEMENT + "\n " + code.substring(
+            schema$EndPosition);
+      }
+      // do nothing - not intended for use under avro that cares about MODEL$
       return code;
     }
-    if (maxSupportedVersion.earlierThan(AvroVersion.AVRO_1_8)) { // max < 1.8
-      // remove any model annotation as it will not be used
-      return MODEL_DECL_PATTERN.matcher(code).replaceAll("");
-    }
-    // If MODEL$ is already present in the code, replace it with SpecificData#get() instead of SpecificData ctor, which was
-    // made public only from avro 1.7
-    if (MODEL_DECL_PATTERN.matcher(code).find()) {
-      return MODEL_DECL_PATTERN.matcher(code).replaceAll(Matcher.quoteReplacement(MODEL_DECL_REPLACEMENT));
-    }
-    // add it to the end of generated code to avoid breaking
-    int schema$EndPosition = findEndOfSchemaDeclaration(code);
-    return code.substring(0, schema$EndPosition) + "\n " + MODEL_DECL_REPLACEMENT + "\n " + code.substring(
-        schema$EndPosition);
-
-
   }
 
   /**
