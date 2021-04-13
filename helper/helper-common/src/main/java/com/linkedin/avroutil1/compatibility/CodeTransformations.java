@@ -556,14 +556,14 @@ public class CodeTransformations {
   /**
    * MODEL$ was introduced as a static field in the generated class, starting 1.8, which indicates the conversions
    * applicable for a specific record. However, starting 1.9, avro uses reflection to look up this field, which will throw
-   * a {@link ReflectiveOperationException exception for records generated from older version. This results in  performance
+   * a {@link ReflectiveOperationException} exception for records generated from older version. This results in  performance
    * degradation.
    * This methods avoids the exception by introducing this field in older versions of the generated record.
    *
    * @param code avro generated code that may or may not have the MODEL$ declaration
    * @param minSupportedVersion lowest avro version under which the generated code should work
    * @param maxSupportedVersion highest avro version under which the generated code should work
-   * @return code where MODEL$ exists for avro versions expecting it at runtime (>= 1.9)
+   * @return code where MODEL$ exists for avro versions expecting it at runtime (&gt;= 1.9)
    */
   public static String pacifyModel$Delcaration(String code, AvroVersion minSupportedVersion,
       AvroVersion maxSupportedVersion) {
