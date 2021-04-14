@@ -579,10 +579,11 @@ public class CodeTransformations {
    */
   public static String pacifyModel$Delcaration(String code, AvroVersion minSupportedVersion,
       AvroVersion maxSupportedVersion) {
-    if (MODEL_DECL_PATTERN.matcher(code).find()) {
+    Matcher match = MODEL_DECL_PATTERN.matcher(code);
+    if (match.find()) {
       if (minSupportedVersion.earlierThan(AvroVersion.AVRO_1_8)) {  // minAvro < 1.8
         // replace MODEL$ with specificdata.get and remove any static block after that contains any
-        code = MODEL_DECL_PATTERN.matcher(code).replaceAll(Matcher.quoteReplacement(MODEL_DECL_REPLACEMENT));
+        code = match.replaceAll(Matcher.quoteReplacement(MODEL_DECL_REPLACEMENT));
         return MODEL_ADD_TYPE_CONVERSION_PATTERN.matcher(code).replaceAll("");
       }
       return code;
