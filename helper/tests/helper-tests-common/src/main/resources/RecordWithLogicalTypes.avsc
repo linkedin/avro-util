@@ -1,0 +1,21 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "RecordWithLogicalTypes",
+  "fields": [
+    {
+      "name": "uuidFiled",
+      "type": {
+        "type": "string",
+        "logicalType": "uuid"
+      }
+    },
+    {
+      "name": "timestampField",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }
+    }
+  ]
+}
