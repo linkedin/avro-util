@@ -21,6 +21,8 @@ public interface FieldBuilder {
 
   FieldBuilder setDoc(String doc);
 
+  FieldBuilder setDefault(Object defaultValue);
+
   FieldBuilder setOrder(Order order);
 
   FieldBuilder copyFromField();

@@ -7,20 +7,27 @@
 package com.linkedin.avroutil1.compatibility.avro15;
 
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
+import com.linkedin.avroutil1.compatibility.Jackson1Utils;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field.Order;
 import org.codehaus.jackson.JsonNode;
 
 
 public class FieldBuilder15 implements FieldBuilder {
-  private final Schema.Field _field;
+  private final String _name;
+  private Schema.Field _field;
   private Schema _schema;
   private String _doc;
   private JsonNode _defaultVal;
   private Order _order;
 
   public FieldBuilder15(Schema.Field field) {
+    this(field.name());
     _field = field;
+  }
+
+  public FieldBuilder15(String name) {
+    _name = name;
   }
 
   @Override
@@ -33,6 +40,11 @@ public class FieldBuilder15 implements FieldBuilder {
   public FieldBuilder setDoc(String doc) {
     _doc = doc;
     return this;
+  }
+
+  @Override
+  public FieldBuilder setDefault(Object defaultValue) {
+    return setDefault(Jackson1Utils.toJsonNode(defaultValue));
   }
 
   public FieldBuilder setDefault(JsonNode defaultValue) {
@@ -59,6 +71,6 @@ public class FieldBuilder15 implements FieldBuilder {
 
   @Override
   public Schema.Field build() {
-    return new Schema.Field(_field.name(), _schema, _doc, _defaultVal, _order);
+    return new Schema.Field(_name, _schema, _doc, _defaultVal, _order);
   }
 }

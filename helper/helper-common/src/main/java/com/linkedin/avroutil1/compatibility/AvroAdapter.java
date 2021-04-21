@@ -90,6 +90,8 @@ public interface AvroAdapter {
 
   FieldBuilder cloneSchemaField(Schema.Field field);
 
+  FieldBuilder newFieldBuilder(String name);
+
   //code generation
 
   Collection<AvroGeneratedSourceCode> compile(

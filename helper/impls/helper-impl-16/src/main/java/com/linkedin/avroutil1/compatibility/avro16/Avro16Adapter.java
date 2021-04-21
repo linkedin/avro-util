@@ -256,6 +256,11 @@ public class Avro16Adapter implements AvroAdapter {
   }
 
   @Override
+  public FieldBuilder newFieldBuilder(String name) {
+    return new FieldBuilder16(name);
+  }
+
+  @Override
   public Collection<AvroGeneratedSourceCode> compile(
       Collection<Schema> toCompile,
       AvroVersion minSupportedVersion,

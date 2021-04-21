@@ -251,6 +251,11 @@ public class Avro19Adapter implements AvroAdapter {
   }
 
   @Override
+  public FieldBuilder newFieldBuilder(String name) {
+    return new FieldBuilder19(name);
+  }
+
+  @Override
   public Collection<AvroGeneratedSourceCode> compile(
       Collection<Schema> toCompile,
       AvroVersion minSupportedVersion,

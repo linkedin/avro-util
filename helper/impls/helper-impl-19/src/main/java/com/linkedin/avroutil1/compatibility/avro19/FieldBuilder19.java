@@ -12,14 +12,20 @@ import org.apache.avro.Schema.Field.Order;
 
 
 public class FieldBuilder19 implements FieldBuilder {
-  private final Schema.Field _field;
+  private final String _name;
+  private Schema.Field _field;
   private Schema _schema;
   private String _doc;
   private Object _defaultVal;
   private Order _order;
 
   public FieldBuilder19(Schema.Field field) {
+    this(field.name());
     _field = field;
+  }
+
+  public FieldBuilder19(String name) {
+    _name = name;
   }
 
   @Override
@@ -34,6 +40,7 @@ public class FieldBuilder19 implements FieldBuilder {
     return this;
   }
 
+  @Override
   public FieldBuilder setDefault(Object defaultValue) {
     _defaultVal = defaultValue;
     return this;
@@ -58,6 +65,6 @@ public class FieldBuilder19 implements FieldBuilder {
 
   @Override
   public Schema.Field build() {
-    return new Schema.Field(_field.name(), _schema, _doc, _defaultVal, _order);
+    return new Schema.Field(_name, _schema, _doc, _defaultVal, _order);
   }
 }
