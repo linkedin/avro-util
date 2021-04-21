@@ -602,4 +602,28 @@ public class AvroCompatibilityHelper {
       return schema.getName();
     }
   }
+
+  /**
+   * Create a new schema field with provided arguments. This adds compatibility layer for {@link Schema.Field} before
+   * avro 1.9, which takes JsonNode as default value in constructor instead of Object.
+   * @param name the name of the field
+   * @param schema the schema of the field
+   * @param doc the doc of the field
+   * @param defaultValue the default value of the field. For avro 1.4-1.8, user should pass in a JsonNode. For avro 1.9
+   * and newer, user should pass in the default value object directly.
+   * @param order the order of the field.
+   * @return fully constructed Field instance
+   */
+  public static Schema.Field createSchemaField(String name, Schema schema, String doc, Object defaultValue, Schema.Field.Order order) {
+    FieldBuilder fieldBuilder = ADAPTER.newFieldBuilder(name);
+    fieldBuilder.setSchema(schema);
+    fieldBuilder.setDoc(doc);
+    fieldBuilder.setDefault(defaultValue);
+    fieldBuilder.setOrder(order);
+    return fieldBuilder.build();
+  }
+
+  public static Schema.Field createSchemaField(String name, Schema schema, String doc, Object defaultValue) {
+    return createSchemaField(name, schema, doc, defaultValue, Schema.Field.Order.ASCENDING);
+  }
 }

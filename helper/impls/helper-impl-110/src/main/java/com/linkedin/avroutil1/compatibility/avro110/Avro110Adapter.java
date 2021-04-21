@@ -248,6 +248,11 @@ public class Avro110Adapter implements AvroAdapter {
     }
 
     @Override
+    public FieldBuilder newFieldBuilder(String name) {
+        return new FieldBuilder110(name);
+    }
+
+    @Override
     public Collection<AvroGeneratedSourceCode> compile(
         Collection<Schema> toCompile,
         AvroVersion minSupportedVersion,

@@ -1,0 +1,43 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "HasDefaults",
+  "fields": [
+    {
+      "name": "doubleFieldWithDefault",
+      "type": "double",
+      "default": 1.0
+    },
+    {
+      "name": "unionWithNullDefault",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "mapOfArrayWithDefault",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "array",
+          "items": "string"
+        }
+      },
+      "default": {
+        "dummyKey": ["dummyValue"]
+      }
+    },
+    {
+      "name": "arrayOfArrayWithDefault",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "array",
+          "items": "string"
+        }
+      },
+      "default": [
+        ["dummyElement"]
+      ]
+    }
+  ]
+}
