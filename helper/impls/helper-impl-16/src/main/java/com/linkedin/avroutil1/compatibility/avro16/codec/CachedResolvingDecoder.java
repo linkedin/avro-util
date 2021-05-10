@@ -6,7 +6,7 @@
 
 package com.linkedin.avroutil1.compatibility.avro16.codec;
 
-import com.linkedin.avroutil1.compatibility.avro16.parsing.CachedResolvingGrammarGenerator;
+import com.linkedin.avroutil1.compatibility.avro16.parsing.ResolvingGrammarGenerator;
 import com.linkedin.avroutil1.compatibility.avro16.parsing.Symbol;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
@@ -87,7 +87,7 @@ public class CachedResolvingDecoder extends ResolvingDecoder {
     ConcurrentHashMap<Schema,Symbol> cache = SYMBOL_CACHE.computeIfAbsent(writer, k -> new ConcurrentHashMap<>());
     Symbol resolver = cache.get(reader);
     if (resolver == null) {
-      resolver =  new CachedResolvingGrammarGenerator().generate(writer, reader, true);
+      resolver =  new ResolvingGrammarGenerator().generate(writer, reader, true);
       cache.put(reader, resolver);
     }
     return resolver;
