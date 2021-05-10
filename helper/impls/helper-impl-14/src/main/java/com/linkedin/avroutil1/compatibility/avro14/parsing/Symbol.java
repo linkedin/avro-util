@@ -459,7 +459,9 @@ public abstract class Symbol {
 
   public static class SkipAction extends ImplicitAction {
     public final Symbol symToSkip;
-    public SkipAction(Symbol symToSkip) {
+    public SkipAction(Symbol symToSkip)
+    {
+      super(true);
       this.symToSkip = symToSkip;
     }
 
