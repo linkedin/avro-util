@@ -494,17 +494,25 @@ public class AvroCompatibilityHelper {
    * @param toCompile set of schema objects
    * @param minSupportedVersion lowest avro version under which the generated code should work
    * @param maxSupportedVersion highest avro version under which the generated code should work
+   * @param config configuration for controlling aspects of the generated code
    * @return a collection of generated java file descriptors, each with a relative path and proposed contents
-   * @deprecated code-gen functionality will be moved to a separate class soon
    */
-  @Deprecated
   public static Collection<AvroGeneratedSourceCode> compile(
       Collection<Schema> toCompile,
       AvroVersion minSupportedVersion,
-      AvroVersion maxSupportedVersion
+      AvroVersion maxSupportedVersion,
+      CodeGenerationConfig config
   ) {
     assertAvroAvailable(); //in this case it still doesnt guarantee the (separate) compiler jar is present for avro 1.5+
-    return ADAPTER.compile(toCompile, minSupportedVersion, maxSupportedVersion);
+    return ADAPTER.compile(toCompile, minSupportedVersion, maxSupportedVersion, config);
+  }
+
+  public static Collection<AvroGeneratedSourceCode> compile(
+          Collection<Schema> toCompile,
+          AvroVersion minSupportedVersion,
+          AvroVersion maxSupportedVersion
+  ) {
+    return compile(toCompile, minSupportedVersion, maxSupportedVersion, CodeGenerationConfig.COMPATIBLE_DEFAULTS);
   }
 
   private AvroCompatibilityHelper() {

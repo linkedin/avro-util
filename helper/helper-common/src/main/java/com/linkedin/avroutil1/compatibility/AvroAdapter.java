@@ -31,7 +31,7 @@ public interface AvroAdapter {
 
   //metadata
 
-  AvroVersion supporttedMajorVersion();
+  AvroVersion supportedMajorVersion();
 
   //codecs
 
@@ -97,6 +97,7 @@ public interface AvroAdapter {
   Collection<AvroGeneratedSourceCode> compile(
       Collection<Schema> toCompile,
       AvroVersion minSupportedVersion,
-      AvroVersion maxSupportedVersion
+      AvroVersion maxSupportedVersion,
+      CodeGenerationConfig config
   );
 }
