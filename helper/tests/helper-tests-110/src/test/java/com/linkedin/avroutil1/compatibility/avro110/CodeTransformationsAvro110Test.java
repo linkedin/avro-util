@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.regex.Matcher;
 
 
 public class CodeTransformationsAvro110Test {
@@ -102,7 +103,7 @@ public class CodeTransformationsAvro110Test {
     File outputRoot = Files.createTempDirectory(null).toFile();
     SpecificCompiler compiler = new SpecificCompiler(schema);
     compiler.compileToDestination(null, outputRoot);
-    File javaFile = new File(outputRoot, schema.getNamespace().replaceAll("\\.",File.separator) + File.separator + schema.getName() + ".java");
+    File javaFile = new File(outputRoot, schema.getNamespace().replaceAll("\\.", Matcher.quoteReplacement(File.separator)) + File.separator + schema.getName() + ".java");
     Assert.assertTrue(javaFile.exists());
 
     String sourceCode;

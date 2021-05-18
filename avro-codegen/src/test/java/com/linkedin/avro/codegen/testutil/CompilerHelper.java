@@ -7,7 +7,6 @@
 package com.linkedin.avro.codegen.testutil;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
@@ -134,7 +133,7 @@ public class CompilerHelper {
         private volatile ByteArrayOutputStream outputStream;
 
         public JavaClassObject(JavaSourceFile sourceFile, String fqcn) {
-            super(URI.create("mem:///" + fqcn.replace('.', File.separatorChar)), Kind.CLASS);
+            super(URI.create("mem:///" + fqcn.replace('.', '/')), Kind.CLASS);
             this.sourceFile = sourceFile;
             this.fqcn = fqcn;
         }
