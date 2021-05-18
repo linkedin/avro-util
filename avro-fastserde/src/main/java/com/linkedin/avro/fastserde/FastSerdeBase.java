@@ -119,7 +119,7 @@ public abstract class FastSerdeBase {
        * severe Memory and GC issue. When fast-avro needed to process a large number of different
        * schemas, SharedNameTable objects will consume huge memory and cannot be freed.
        *
-       * SharedNameTable should be disabled for runtime compilation by “-XDuseUnsharedTable” config.
+       * SharedNameTable should be disabled for runtime compilation by "-XDuseUnsharedTable" config.
        * The memory issue by SharedNameTable does not exist in Java 11 (tested JDK-11_0_5-zulu
        * and JDK-11_0_5-zing_19_12_100_0_1), thus the change can be reverted in java 11.
        * Keeping this config also does not bring any downgrade.

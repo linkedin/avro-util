@@ -15,6 +15,8 @@ import java.io.FileInputStream;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.regex.Matcher;
+
 import net.openhft.compiler.CompilerUtils;
 import org.apache.avro.Schema;
 import org.apache.avro.specific.SpecificCompiler;
@@ -81,7 +83,7 @@ public class CodeTransformationsAvro14Test {
     File outputRoot = Files.createTempDirectory(null).toFile();
     SpecificCompiler compiler = new SpecificCompiler(schema);
     compilerCompileToDestinationMethod.invoke(compiler, null, outputRoot);
-    File javaFile = new File(outputRoot, schema.getNamespace().replaceAll("\\.",File.separator) + File.separator + schema.getName() + ".java");
+    File javaFile = new File(outputRoot, schema.getNamespace().replaceAll("\\.", Matcher.quoteReplacement(File.separator)) + File.separator + schema.getName() + ".java");
     Assert.assertTrue(javaFile.exists());
 
     String sourceCode;
