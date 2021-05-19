@@ -7,9 +7,13 @@
 package com.linkedin.avroutil1.compatibility;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,7 +52,8 @@ public class CodeTransformations {
   private static final Pattern AVROGENERATED_ANNOTATION_PATTERN = Pattern.compile(Pattern.quote("@org.apache.avro.specific.AvroGenerated"));
   private static final Pattern MODEL_DECL_PATTERN = Pattern.compile(Pattern.quote("private static SpecificData MODEL$ = new SpecificData();"));
   private static final Pattern MODEL_ADD_TYPE_CONVERSION_PATTERN = Pattern.compile("MODEL\\$\\.addLogicalTypeConversion\\(.*\\);");
-  private static final String MODEL_DECL_REPLACEMENT = "private static org.apache.avro.specific.SpecificData MODEL$ = org.apache.avro.specific.SpecificData.get();";
+  private static final String  MODEL_DECL_REPLACEMENT = "private static org.apache.avro.specific.SpecificData MODEL$ = SpecificData.get();";
+  private static final String  IMPORT_SPECIFICDATA = "import org.apache.avro.specific.SpecificData;";
   private static final Pattern GET_SPECIFICDATA_METHOD_PATTERN = Pattern.compile("public\\s*org\\.apache\\.avro\\.specific\\.SpecificData\\s*getSpecificData\\s*\\(\\s*\\)\\s*\\{\\s*return\\s*MODEL\\$\\s*;\\s*}");
   private static final Pattern WRITER_DOLLAR_DECL = Pattern.compile("WRITER\\$\\s*=\\s*([^;]+);");
   private static final String  WRITER_DOLLAR_DECL_REPLACEMENT = Matcher.quoteReplacement("WRITER$ = new org.apache.avro.specific.SpecificDatumWriter<>(SCHEMA$);");
@@ -60,12 +65,16 @@ public class CodeTransformations {
   private static final String  READ_EXTERNAL_WITHOUT_OVERRIDE = Matcher.quoteReplacement("public void readExternal(java.io.ObjectInput in)");
   private static final Pattern CREATE_ENCODER_INVOCATION_FULLY_QUALIFIED = Pattern.compile(Pattern.quote("org.apache.avro.specific.SpecificData.getEncoder(out)"));
   private static final Pattern CREATE_ENCODER_INVOCATION_SHORT = Pattern.compile(Pattern.quote("SpecificData.getEncoder(out)"));
-  private static final String  CREATE_ENCODER_VIA_HELPER = Matcher.quoteReplacement(HelperConsts.HELPER_FQCN + ".newBinaryEncoder(out)");
+  private static final String  CREATE_ENCODER_VIA_HELPER = Matcher.quoteReplacement(HelperConsts.HELPER_SIMPLE_NAME + ".newBinaryEncoder(out)");
   private static final Pattern CREATE_DECODER_INVOCATION_FULLY_QUALIFIED = Pattern.compile(Pattern.quote("org.apache.avro.specific.SpecificData.getDecoder(in)"));
   private static final Pattern CREATE_DECODER_INVOCATION_SHORT = Pattern.compile(Pattern.quote("SpecificData.getDecoder(in)"));
-  private static final String  CREATE_DECODER_VIA_HELPER = Matcher.quoteReplacement(HelperConsts.HELPER_FQCN + ".newBinaryDecoder(in)");
+  private static final String  CREATE_DECODER_VIA_HELPER = Matcher.quoteReplacement(HelperConsts.HELPER_SIMPLE_NAME + ".newBinaryDecoder(in)");
   private static final Pattern HAS_CUSTOM_CODERS_SIGNATURE_SIGNATURE = Pattern.compile(Pattern.quote("@Override protected boolean hasCustomCoders"));
   private static final Pattern END_CUSTOM_DECODE_PATTERN = Pattern.compile("}\\s+}\\s+}\\s+}\\s*[\\r\\n]+");
+  private static final Pattern IMPORT_PATTERN = Pattern.compile("import\\s+(.*);");
+  private static final Pattern ENUM_PATTERN = Pattern.compile("public enum (\\w+)");
+  private static final Pattern ANNOTATION_PATTERN = Pattern.compile("\\s*@.*");
+  private static final String  IMPORT_HELPER = "import " + HelperConsts.HELPER_FQCN + ";";
 
   private static final String FIXED_CLASS_BODY_TEMPLATE = TemplateUtil.loadTemplate("avroutil1/templates/SpecificFixedBody.template");
   private static final String FIXED_CLASS_NO_NAMESPACE_BODY_TEMPLATE = TemplateUtil.loadTemplate("avroutil1/templates/SpecificFixedBodyNoNamespace.template");
@@ -92,11 +101,12 @@ public class CodeTransformations {
    */
   public static String applyAll(String code, AvroVersion generatedBy, AvroVersion minSupportedVersion, AvroVersion maxSupportedVersion) {
     String fixed = code;
+    Set<String> importStatements = new HashSet<>(1);
 
     //general fix-ups that are considered safe regardless of min or max avro version
     fixed = CodeTransformations.transformFixedClass(fixed, minSupportedVersion, maxSupportedVersion);
     fixed = CodeTransformations.transformEnumClass(fixed, minSupportedVersion, maxSupportedVersion);
-    fixed = CodeTransformations.transformParseCalls(fixed, generatedBy, minSupportedVersion, maxSupportedVersion);
+    fixed = CodeTransformations.transformParseCalls(fixed, generatedBy, minSupportedVersion, maxSupportedVersion, importStatements);
     fixed = CodeTransformations.addGetClassSchemaMethod(fixed, generatedBy, minSupportedVersion, maxSupportedVersion);
 
     //1.6+ features
@@ -111,10 +121,13 @@ public class CodeTransformations {
 
     //1.8+ features
     fixed = CodeTransformations.removeBinaryMessageCodecSupport(fixed, minSupportedVersion, maxSupportedVersion);
-    fixed = CodeTransformations.transformExternalizableSupport(fixed, minSupportedVersion, maxSupportedVersion);
+    fixed = CodeTransformations.transformExternalizableSupport(fixed, minSupportedVersion, maxSupportedVersion, importStatements);
 
     //1.9+ features
     fixed = CodeTransformations.transformCustomCodersSupport(fixed, minSupportedVersion, maxSupportedVersion);
+
+    //add any required imports
+    fixed = CodeTransformations.addImports(fixed, importStatements);
 
     return fixed;
   }
@@ -317,7 +330,8 @@ public class CodeTransformations {
       String code,
       AvroVersion generatedWith,
       AvroVersion minSupportedVersion,
-      AvroVersion maxSupportedVersion
+      AvroVersion maxSupportedVersion,
+      Collection<String> importStatements
   ) {
     Matcher startMatcher = PARSE_INVOCATION_START_PATTERN.matcher(code); //group 1 would be the args to parse()
     if (!startMatcher.find()) {
@@ -360,9 +374,21 @@ public class CodeTransformations {
     }
 
     String prefix = code.substring(0, startMatcher.start());
-    String newParseCall = HelperConsts.HELPER_FQCN + ".parse(" + argToParseCall + ");";
+    importStatements.add(IMPORT_HELPER);
+    String newParseCall = HelperConsts.HELPER_SIMPLE_NAME + ".parse(" + argToParseCall + ");";
     String restOfCode = code.substring(endMatcher.start() + 3);
     return prefix + newParseCall + restOfCode;
+  }
+
+  public static String transformParseCalls(
+          String code,
+          AvroVersion generatedWith,
+          AvroVersion minSupportedVersion,
+          AvroVersion maxSupportedVersion
+  ) {
+    Set<String> importStatements = new HashSet<>(1);
+    String processed = transformParseCalls(code, generatedWith, minSupportedVersion, maxSupportedVersion, importStatements);
+    return CodeTransformations.addImports(processed, importStatements);
   }
 
   /**
@@ -575,21 +601,31 @@ public class CodeTransformations {
    * @param code avro generated code that may or may not have the MODEL$ declaration
    * @param minSupportedVersion lowest avro version under which the generated code should work
    * @param maxSupportedVersion highest avro version under which the generated code should work
+   * @param importStatements collection of java import statements that would need to be added to the resulting code
    * @return code where MODEL$ exists for avro versions expecting it at runtime (&gt;= 1.9)
    */
-  public static String pacifyModel$Delcaration(String code, AvroVersion minSupportedVersion,
-      AvroVersion maxSupportedVersion) {
+  public static String pacifyModel$Declaration(
+          String code,
+          AvroVersion minSupportedVersion,
+          AvroVersion maxSupportedVersion,
+          Collection<String> importStatements
+  ) {
     Matcher match = MODEL_DECL_PATTERN.matcher(code);
     if (match.find()) {
       if (minSupportedVersion.earlierThan(AvroVersion.AVRO_1_8)) {  // minAvro < 1.8
-        // replace MODEL$ with specificdata.get and remove any static block after that contains any
+        // replace MODEL$ with SpecificData.get and remove any static block after that contains any
+        // record-specific type conversions
+        // we dont need to add an import statement for SpecificData because the input
+        // would already have one if we found the vanilla declaration
         code = match.replaceAll(Matcher.quoteReplacement(MODEL_DECL_REPLACEMENT));
         return MODEL_ADD_TYPE_CONVERSION_PATTERN.matcher(code).replaceAll("");
       }
       return code;
     } else {
-      if (maxSupportedVersion.equals(AvroVersion.AVRO_1_9) || maxSupportedVersion.laterThan(AvroVersion.AVRO_1_9)) {  // maxAvro >= 1.9
+      if (maxSupportedVersion.laterThan(AvroVersion.AVRO_1_8)) {  // maxAvro >= 1.9
         // add no-op MODEL$ to the end of the generate schema$ string
+        // we also need an import statement for this
+        importStatements.add(IMPORT_SPECIFICDATA);
         int schema$EndPosition = findEndOfSchemaDeclaration(code);
         return code.substring(0, schema$EndPosition) + "\n " + MODEL_DECL_REPLACEMENT + "\n " + code.substring(
             schema$EndPosition);
@@ -597,6 +633,16 @@ public class CodeTransformations {
       // do nothing - not intended for use under avro that cares about MODEL$
       return code;
     }
+  }
+
+  public static String pacifyModel$Declaration(
+          String code,
+          AvroVersion minSupportedVersion,
+          AvroVersion maxSupportedVersion
+  ) {
+    Set<String> importStatements = new HashSet<>(1);
+    String processed = pacifyModel$Declaration(code, minSupportedVersion, maxSupportedVersion, importStatements);
+    return CodeTransformations.addImports(processed, importStatements);
   }
 
   /**
@@ -639,11 +685,17 @@ public class CodeTransformations {
    * @param code avro generated code that may have externalizable support
    * @param minSupportedVersion lowest avro version under which the generated code should work
    * @param maxSupportedVersion highest avro version under which the generated code should work
+   * @param importStatements collection of java import statements that would need to be added to the resulting code
    * @return code where the externalizable support still exists but is compatible with earlier avro at runtime
    */
-  public static String transformExternalizableSupport(String code, AvroVersion minSupportedVersion, AvroVersion maxSupportedVersion) {
+  public static String transformExternalizableSupport(
+          String code,
+          AvroVersion minSupportedVersion,
+          AvroVersion maxSupportedVersion,
+          Collection<String> importStatements
+  ) {
     //handle MODEL$ based on supported versions
-    String codeWithoutModel = pacifyModel$Delcaration(code, minSupportedVersion, maxSupportedVersion);
+    String codeWithoutModel = pacifyModel$Declaration(code, minSupportedVersion, maxSupportedVersion, importStatements);
     //then strip out the getSpecificData() method that returns MODEL$ under avro 1.9+
     String codeWithoutGetSpecificData = GET_SPECIFICDATA_METHOD_PATTERN.matcher(codeWithoutModel).replaceAll("");
 
@@ -662,8 +714,21 @@ public class CodeTransformations {
     withHelperCall = CREATE_ENCODER_INVOCATION_SHORT.matcher(withHelperCall).replaceAll(CREATE_ENCODER_VIA_HELPER);
     withHelperCall = CREATE_DECODER_INVOCATION_FULLY_QUALIFIED.matcher(withHelperCall).replaceAll(CREATE_DECODER_VIA_HELPER);
     withHelperCall = CREATE_DECODER_INVOCATION_SHORT.matcher(withHelperCall).replaceAll(CREATE_DECODER_VIA_HELPER);
+    if (!withHelperCall.equals(withoutAnnotations)) {
+      importStatements.add(IMPORT_HELPER);
+    }
 
     return withHelperCall;
+  }
+
+  public static String transformExternalizableSupport(
+          String code,
+          AvroVersion minSupportedVersion,
+          AvroVersion maxSupportedVersion
+  ) {
+    Set<String> importStatements = new HashSet<>(1);
+    String processed = transformExternalizableSupport(code, minSupportedVersion, maxSupportedVersion, importStatements);
+    return CodeTransformations.addImports(processed, importStatements);
   }
 
   /**
@@ -695,6 +760,78 @@ public class CodeTransformations {
     @SuppressWarnings("UnnecessaryLocalVariable")
     String codeWithout = code.substring(0, startMatcher.start()) + "\n" + code.substring(endMatcher.end());
     return codeWithout;
+  }
+
+  private static String addImports(String code, Collection<String> importStatements) {
+    if (importStatements == null || importStatements.isEmpty()) {
+      return code;
+    }
+
+    ArrayList<String> sortedImports = new ArrayList<>(importStatements);
+    Collections.sort(sortedImports);
+
+    //find where to put the imports:
+    //after package (if there is a package)
+    //before class-level annotations (if any)
+    //before class-level comment (if there is one)
+    //before the class/enum declaration (this must exist)
+
+    int lowerBound = 0;
+    int upperBound;
+
+    Matcher classMatcher = CLASS_PATTERN.matcher(code);
+    if (!classMatcher.find()) {
+      //this isnt a record class. must be an enum
+      classMatcher = ENUM_PATTERN.matcher(code);
+      if (!classMatcher.find()) {
+        throw new IllegalStateException("unable to find class or enum declaration in " + code);
+      }
+    }
+    upperBound = classMatcher.start();
+
+    Matcher packageMatcher = PACKAGE_PATTERN.matcher(code);
+    if (packageMatcher.find() && packageMatcher.start() < classMatcher.start()) {
+      //found package declaration. adjust lowerBound
+      lowerBound = Math.max(lowerBound, packageMatcher.end());
+    }
+
+    Matcher commentMatcher = COMMENT_PATTERN.matcher(code);
+    if (commentMatcher.find() && commentMatcher.start() < classMatcher.start() && commentMatcher.start() >= lowerBound) {
+      //found a class-level comment (that hopefully isnt a license header ...). adjust upperBound
+      upperBound = Math.min(upperBound, commentMatcher.start());
+    }
+
+    Matcher annotationMatcher = ANNOTATION_PATTERN.matcher(code);
+    if (annotationMatcher.find() && annotationMatcher.start() < classMatcher.start()) {
+      //found class-level annotation. adjust upper bound
+      upperBound = Math.min(upperBound, annotationMatcher.start());
+    }
+
+    //find any existing imports between the bounds
+    //also keep track of end of imports block to add ours after
+    Matcher importMatcher = IMPORT_PATTERN.matcher(code);
+    int endOfImports = lowerBound;
+    int prevHit = lowerBound - 1;
+    while (importMatcher.find(prevHit + 1)) {
+      if (importMatcher.start() >= upperBound) {
+        break;
+      }
+      String existingImport = importMatcher.group();
+      sortedImports.remove(existingImport);
+      endOfImports = importMatcher.end();
+      prevHit = endOfImports - 1;
+    }
+
+    if (sortedImports.isEmpty()) {
+      return code;
+    }
+
+    StringJoiner joiner = new StringJoiner("\n");
+    for (String importStatement : sortedImports) {
+      joiner.add(importStatement);
+    }
+    String newImports = joiner.toString();
+    return code.substring(0, endOfImports) + "\n" + newImports + "\n" + code.substring(endOfImports);
   }
 
   /**

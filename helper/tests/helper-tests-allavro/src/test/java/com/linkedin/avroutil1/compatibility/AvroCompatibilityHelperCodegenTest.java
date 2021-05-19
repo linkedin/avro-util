@@ -43,4 +43,39 @@ public class AvroCompatibilityHelperCodegenTest {
   public void testRecordWithMultilineDocsUnder19Usable() {
     new under19.RecordWithMultilineDoc();
   }
+
+  @Test
+  public void testRecordWithComOrgFieldsUnder14Usable() {
+    new under14.RecordWithComOrgFields();
+  }
+
+  @Test
+  public void testRecordWithComOrgFieldsUnder15Usable() {
+    new under15.RecordWithComOrgFields();
+  }
+
+  @Test
+  public void testRecordWithComOrgFieldsUnder16Usable() {
+    new under16.RecordWithComOrgFields();
+  }
+
+  @Test
+  public void testRecordWithComOrgFieldsUnder17Usable() {
+    new under17.RecordWithComOrgFields();
+  }
+
+  @Test
+  public void testRecordWithComOrgFieldsUnder18Usable() {
+    new under18.RecordWithComOrgFields();
+  }
+
+  @Test
+  public void testRecordWithComOrgFieldsUnder19Usable() {
+    new under19.RecordWithComOrgFields();
+  }
+
+  @Test
+  public void testRecordWithComOrgFieldsUnder110Usable() {
+    new under110.RecordWithComOrgFields();
+  }
 }
