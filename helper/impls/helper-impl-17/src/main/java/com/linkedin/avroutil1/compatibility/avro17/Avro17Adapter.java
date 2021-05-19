@@ -10,12 +10,14 @@ import com.linkedin.avroutil1.compatibility.AvroAdapter;
 import com.linkedin.avroutil1.compatibility.AvroGeneratedSourceCode;
 import com.linkedin.avroutil1.compatibility.AvroSchemaUtil;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
+import com.linkedin.avroutil1.compatibility.CodeGenerationConfig;
 import com.linkedin.avroutil1.compatibility.CodeTransformations;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
 import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
 import com.linkedin.avroutil1.compatibility.SchemaParseResult;
 import com.linkedin.avroutil1.compatibility.SchemaValidator;
 import com.linkedin.avroutil1.compatibility.SkipDecoder;
+import com.linkedin.avroutil1.compatibility.StringRepresentation;
 import com.linkedin.avroutil1.compatibility.avro17.backports.Avro17DefaultValuesCache;
 import com.linkedin.avroutil1.compatibility.avro17.codec.CachedResolvingDecoder;
 import com.linkedin.avroutil1.compatibility.avro17.codec.CompatibleJsonDecoder;
@@ -70,6 +72,8 @@ public class Avro17Adapter implements AvroAdapter {
   private Object publicFieldVisibilityEnumInstance;
   private Method setFieldVisibilityMethod;
   private Object charSequenceStringTypeEnumInstance;
+  private Object javaLangStringTypeEnumInstance;
+  private Object utf8TypeEnumInstance;
   private Method setStringTypeMethod;
 
   //"optional" methods - things added in later 1.7.* versions that may not exist if we're running with earlier 1.7.*
@@ -110,6 +114,10 @@ public class Avro17Adapter implements AvroAdapter {
       Class<?> fieldTypeEnum = Class.forName("org.apache.avro.generic.GenericData$StringType");
       Field charSequenceField = fieldTypeEnum.getDeclaredField("CharSequence");
       charSequenceStringTypeEnumInstance = charSequenceField.get(null);
+      Field javaLangStringField = fieldTypeEnum.getDeclaredField("String");
+      javaLangStringTypeEnumInstance = javaLangStringField.get(null);
+      Field utf8Field = fieldTypeEnum.getDeclaredField("Utf8");
+      utf8TypeEnumInstance = utf8Field.get(null);
       setStringTypeMethod = compilerClass.getDeclaredMethod("setStringType", fieldTypeEnum);
       compilerSupported = true;
     } catch (Exception | LinkageError e) {
@@ -143,7 +151,7 @@ public class Avro17Adapter implements AvroAdapter {
   }
 
   @Override
-  public AvroVersion supporttedMajorVersion() {
+  public AvroVersion supportedMajorVersion() {
     return AvroVersion.AVRO_1_7;
   }
 
@@ -323,10 +331,14 @@ public class Avro17Adapter implements AvroAdapter {
   public Collection<AvroGeneratedSourceCode> compile(
       Collection<Schema> toCompile,
       AvroVersion minSupportedVersion,
-      AvroVersion maxSupportedVersion
+      AvroVersion maxSupportedVersion,
+      CodeGenerationConfig config
   ) {
     if (!compilerSupported) {
       throw new UnsupportedOperationException("avro compiler jar was not found on classpath. please make sure you have a dependency on org.apache.avro:avro-compiler");
+    }
+    if (minSupportedVersion.earlierThan(AvroVersion.AVRO_1_6) && !StringRepresentation.CharSequence.equals(config.getStringRepresentation())) {
+      throw new IllegalArgumentException("StringRepresentation " + config.getStringRepresentation() + " incompatible with minimum supported avro " + minSupportedVersion);
     }
     if (toCompile == null || toCompile.isEmpty()) {
       return Collections.emptyList();
@@ -337,10 +349,23 @@ public class Avro17Adapter implements AvroAdapter {
       //since avro-compiler may not be on the CP, we use pure reflection to deal with the compiler
       Object compiler = specificCompilerCtr.newInstance(first);
 
-      //configure the compiler for broadest compatibility
+      //configure the compiler
 
-      //configure string types to generate as CharSequence (because thats the only way 1.4 does this)
-      setStringTypeMethod.invoke(compiler, charSequenceStringTypeEnumInstance);
+      switch (config.getStringRepresentation()) {
+        case CharSequence:
+          //this is the (only) way avro 1.4/5 generates code
+          setStringTypeMethod.invoke(compiler, charSequenceStringTypeEnumInstance);
+          break;
+        case String:
+          setStringTypeMethod.invoke(compiler, javaLangStringTypeEnumInstance);
+          break;
+        case Utf8:
+          setStringTypeMethod.invoke(compiler, utf8TypeEnumInstance);
+          break;
+        default:
+          throw new IllegalStateException("unhandled StringRepresentation " + config.getStringRepresentation());
+      }
+
       //make fields public (as avro 1.4 and 1.5 do)
       setFieldVisibilityMethod.invoke(compiler, publicFieldVisibilityEnumInstance);
 
@@ -365,7 +390,7 @@ public class Avro17Adapter implements AvroAdapter {
   private Collection<AvroGeneratedSourceCode> transform(List<AvroGeneratedSourceCode> avroGenerated, AvroVersion minAvro, AvroVersion maxAvro) {
     List<AvroGeneratedSourceCode> transformed = new ArrayList<>(avroGenerated.size());
     for (AvroGeneratedSourceCode generated : avroGenerated) {
-      String fixed = CodeTransformations.applyAll(generated.getContents(), supporttedMajorVersion(), minAvro, maxAvro);
+      String fixed = CodeTransformations.applyAll(generated.getContents(), supportedMajorVersion(), minAvro, maxAvro);
       transformed.add(new AvroGeneratedSourceCode(generated.getPath(), fixed));
     }
     return transformed;

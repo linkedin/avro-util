@@ -11,6 +11,7 @@ import com.linkedin.avroutil1.compatibility.AvroAdapter;
 import com.linkedin.avroutil1.compatibility.AvroGeneratedSourceCode;
 import com.linkedin.avroutil1.compatibility.AvroSchemaUtil;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
+import com.linkedin.avroutil1.compatibility.CodeGenerationConfig;
 import com.linkedin.avroutil1.compatibility.CodeTransformations;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
 import com.linkedin.avroutil1.compatibility.SchemaNormalization;
@@ -18,6 +19,7 @@ import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
 import com.linkedin.avroutil1.compatibility.SchemaParseResult;
 import com.linkedin.avroutil1.compatibility.SchemaValidator;
 import com.linkedin.avroutil1.compatibility.SkipDecoder;
+import com.linkedin.avroutil1.compatibility.StringRepresentation;
 import com.linkedin.avroutil1.compatibility.avro15.backports.Avro15DefaultValuesCache;
 import com.linkedin.avroutil1.compatibility.avro15.codec.CachedResolvingDecoder;
 import com.linkedin.avroutil1.compatibility.avro15.codec.CompatibleJsonDecoder;
@@ -94,7 +96,7 @@ public class Avro15Adapter implements AvroAdapter {
   }
 
   @Override
-  public AvroVersion supporttedMajorVersion() {
+  public AvroVersion supportedMajorVersion() {
     return AvroVersion.AVRO_1_5;
   }
 
@@ -258,10 +260,14 @@ public class Avro15Adapter implements AvroAdapter {
   public Collection<AvroGeneratedSourceCode> compile(
       Collection<Schema> toCompile,
       AvroVersion minSupportedVersion,
-      AvroVersion maxSupportedVersion
+      AvroVersion maxSupportedVersion,
+      CodeGenerationConfig config
   ) {
     if (!compilerSupported) {
       throw new UnsupportedOperationException("avro compiler jar was not found on classpath. please make sure you have a dependency on org.apache.avro:avro-compiler");
+    }
+    if (!StringRepresentation.CharSequence.equals(config.getStringRepresentation())) {
+      throw new UnsupportedOperationException("generating String fields as " + config.getStringRepresentation() + " unsupported under avro " + supportedMajorVersion());
     }
     if (toCompile == null || toCompile.isEmpty()) {
       return Collections.emptyList();
@@ -295,7 +301,7 @@ public class Avro15Adapter implements AvroAdapter {
   private Collection<AvroGeneratedSourceCode> transform(List<AvroGeneratedSourceCode> avroGenerated, AvroVersion minAvro, AvroVersion maxAvro) {
     List<AvroGeneratedSourceCode> transformed = new ArrayList<>(avroGenerated.size());
     for (AvroGeneratedSourceCode generated : avroGenerated) {
-      String fixed = CodeTransformations.applyAll(generated.getContents(), supporttedMajorVersion(), minAvro, maxAvro);
+      String fixed = CodeTransformations.applyAll(generated.getContents(), supportedMajorVersion(), minAvro, maxAvro);
       transformed.add(new AvroGeneratedSourceCode(generated.getPath(), fixed));
     }
     return transformed;

@@ -69,13 +69,4 @@ LinkedIn.
 
 ### Supported versions of Avro ###
 
-The helper module supports avro 1.4 - 1.10 inclusive. for fastserde support: 
-
-| Version  | Serialization | Deserialization | Fast Serialization | Fast Deserialization |
-| -------- | ------------- | --------------- | ------------------ | -------------------- |
-| Avro 1.4 |      Yes      |      Yes        |      Yes           |      Yes             |
-| Avro 1.5 |      Yes      |      Yes        |      No            |      No              |
-| Avro 1.6 |      Yes      |      Yes        |      No            |      No              |
-| Avro 1.7 |      Yes      |      Yes        |      Yes           |      Yes             |
-| Avro 1.8 |      Yes      |      Yes        |      Yes           |      Yes             |
-| Avro 1.9 |      Yes      |      Yes        |      ???           |      ???             |
+The helper module supports avro 1.4 - 1.10 inclusive, fastserde included.
