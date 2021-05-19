@@ -70,7 +70,7 @@ public class CodeTransformationsAvro14Test {
     Schema schema = AvroCompatibilityHelper.parse(avsc);
     String originalCode = runNativeCodegen(schema);
 
-    String transformedCode = CodeTransformations.pacifyModel$Delcaration(originalCode, AvroVersion.earliest(), AvroVersion.latest());
+    String transformedCode = CodeTransformations.pacifyModel$Declaration(originalCode, AvroVersion.earliest(), AvroVersion.latest());
     Class<?> transformedClass = CompilerUtils.CACHED_COMPILER.loadFromJava(schema.getFullName(), transformedCode);
     Assert.assertNotNull(transformedClass);
     Assert.assertNotNull(transformedClass.getDeclaredField("MODEL$"));

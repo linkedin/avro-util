@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "namespace": "under15",
+  "name": "RecordWithComOrgFields",
+  "fields": [
+    {
+      "name": "com",
+      "type": "string"
+    },
+    {
+      "name": "org",
+      "type": "string"
+    }
+  ]
+}

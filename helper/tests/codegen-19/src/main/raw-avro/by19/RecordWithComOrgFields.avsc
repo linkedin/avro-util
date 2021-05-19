@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "namespace": "by19",
+  "name": "RecordWithComOrgFields",
+  "fields": [
+    {
+      "name": "com",
+      "type": "string"
+    },
+    {
+      "name": "org",
+      "type": "string"
+    }
+  ]
+}
