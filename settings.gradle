@@ -49,3 +49,7 @@ include 'helper:tests:helper-tests-17'
 include 'helper:tests:helper-tests-18'
 include 'helper:tests:helper-tests-19'
 include 'helper:tests:helper-tests-110'
+
+include 'spotbugs-plugin'
+
+include 'demos:spotbugs-demo'

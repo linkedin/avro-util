@@ -1,0 +1,43 @@
+/*
+ * Copyright 2021 LinkedIn Corp.
+ * Licensed under the BSD 2-Clause License (the "License").
+ * See License in the project root for license information.
+ */
+
+plugins {
+  id "java-library"
+  id "com.github.spotbugs" version "4.7.1"
+}
+
+dependencies {
+  api ('org.apache.avro:avro:1.4.1') {
+    exclude group: "org.mortbay.jetty"
+    exclude group: "org.apache.velocity"
+    exclude group: "commons-lang"
+    exclude group: "org.jboss.netty"
+    exclude group: "com.thoughtworks.paranamer", module: "paranamer-ant"
+  }
+
+  spotbugs 'com.github.spotbugs:spotbugs:4.2.3'
+
+  //register spotbugs plugin(s)
+  spotbugsPlugins project(":spotbugs-plugin")
+}
+
+spotbugs {
+  //see https://spotbugs-gradle-plugin.netlify.app/com/github/spotbugs/snom/spotbugsextension for docs
+  toolVersion = '4.2.3'
+  includeFilter = file("findbugs-include.xml")
+  ignoreFailures = true
+  showProgress = true
+}
+
+spotbugsMain {
+  reports {
+    html {
+      enabled = true
+      destination = file("$buildDir/reports/spotbugs/main/spotbugs.html")
+      stylesheet = 'fancy-hist.xsl'
+    }
+  }
+}
