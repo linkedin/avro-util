@@ -1,0 +1,29 @@
+/*
+ * Copyright 2021 LinkedIn Corp.
+ * Licensed under the BSD 2-Clause License (the "License").
+ * See License in the project root for license information.
+ */
+
+plugins {
+  id "java-library"
+}
+
+dependencies {
+  compileOnly "com.github.spotbugs:spotbugs:4.2.3"
+
+  testImplementation project(":helper:helper")
+  testImplementation "junit:junit:4.13"
+  testImplementation "com.github.spotbugs:test-harness:4.2.3"
+  testImplementation ('org.apache.avro:avro:1.4.1') {
+    exclude group: "org.mortbay.jetty"
+    exclude group: "org.apache.velocity"
+    exclude group: "commons-lang"
+    exclude group: "org.jboss.netty"
+    exclude group: "com.thoughtworks.paranamer", module: "paranamer-ant"
+  }
+}
+
+test {
+  //spotbugs has no testng harness
+  useJUnit()
+}

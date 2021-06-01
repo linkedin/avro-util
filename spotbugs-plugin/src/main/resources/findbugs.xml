@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindbugsPlugin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/spotbugs/spotbugs/master/spotbugs/etc/findbugsplugin.xsd"
+                pluginid="com.linkedin.avroutil1.spotbugs"
+                defaultenabled="true"
+                provider="avro-util"
+                website="http://github.com/linkedin/avro-util">
+
+    <Detector class="com.linkedin.avroutil1.spotbugs.BinaryEncoderUsageDetector" reports="BINARY_ENCODER_INSTANTIATION" speed="fast" />
+
+    <BugPattern type="BINARY_ENCODER_INSTANTIATION" category="AVRO" abbrev="BEI"/>
+
+</FindbugsPlugin>

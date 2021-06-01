@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<MessageCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/spotbugs/spotbugs/master/spotbugs/etc/messagecollection.xsd">
+    <Plugin>
+        <ShortDescription>avro-util apotbugs plugin</ShortDescription>
+        <Details>provides detections related to use of known-problematic avro APIs</Details>
+    </Plugin>
+
+    <Detector class="com.linkedin.avroutil1.spotbugs.BinaryEncoderUsageDetector">
+        <Details>
+            detects direct instantiations of org.apache.avro.io.BinaryEncoder
+        </Details>
+    </Detector>
+
+    <BugPattern type="BINARY_ENCODER_INSTANTIATION">
+        <ShortDescription>direct BinaryEncoder instantiation</ShortDescription>
+        <LongDescription>
+            direct instantiations of org.apache.avro.io.BinaryEncoder, which is abstract in modern avro
+        </LongDescription>
+        <Details>
+            <![CDATA[
+   <p>
+      org.apache.avro.io.BinaryEncoder was made abstract in modern avro, while
+      org.apache.avro.io.EncoderFactory only exists in avro 1.5+. for broadest compatibility
+      use com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.newBinaryEncoder()
+   </p>
+]]>
+        </Details>
+    </BugPattern>
+
+    <BugCode abbrev="BEI">BinaryEncoder instantiation</BugCode>
+</MessageCollection>
