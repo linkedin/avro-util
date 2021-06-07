@@ -25,6 +25,7 @@ sourceSets {
       srcDir 'src/main/java'
       srcDir "$buildDir/generated/sources/raw-avro/java/main"
       srcDir "$buildDir/generated/sources/compat-avro/java/main"
+      srcDir "$buildDir/generated/sources/compat-avro-w-builders/java/main"
     }
     resources {
       srcDirs = ["src/main/raw-avro", "src/main/compat-avro", "$buildDir/generated/resources"]
@@ -64,6 +65,25 @@ task runCompatAvroCodegen {
   }
 }
 
+task runCompatAvroCodegenWithBuilders {
+  description = 'generate specific classes using compatibility helper with minimum avro 1.6 target'
+  outputs.dir("$buildDir/generated/sources/compat-avro-w-builders/java/main").withPropertyName('outputDir')
+  fileTree(dir: 'src/main/compat-avro-w-builders', include:'**/*.avsc').each { file ->
+    doLast {
+      javaexec {
+        classpath configurations.codegen
+        main = 'com.linkedin.avroutil1.TestTool'
+        args = [
+                "-op", "compile",
+                "-in", file.getAbsolutePath(),
+                "-out", "$buildDir/generated/sources/compat-avro-w-builders/java/main",
+                "-min", "AVRO_1_6"
+        ]
+      }
+    }
+  }
+}
+
 //copy output generated compatible code into resources so downstream modules can use it
 task copyCompatAvroCodeToResources(type: Copy) {
   from "$buildDir/generated/sources/compat-avro/java/main"
@@ -87,8 +107,9 @@ jar {
 
 //TODO - figure out why this must be done manually
 runCompatAvroCodegen.dependsOn ":helper:tests:helper-tests-common:jar"
+runCompatAvroCodegenWithBuilders.dependsOn ":helper:tests:helper-tests-common:jar"
 copyCompatAvroCodeToResources.dependsOn runCompatAvroCodegen
-compileJava.dependsOn runVanillaAvroCodegen, runCompatAvroCodegen, copyCompatAvroCodeToResources
+compileJava.dependsOn runVanillaAvroCodegen, runCompatAvroCodegen, runCompatAvroCodegenWithBuilders, copyCompatAvroCodeToResources
 jar.dependsOn runResourceGeneration
 
 dependencies {

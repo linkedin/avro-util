@@ -74,6 +74,11 @@ public class CodeTransformations {
   private static final Pattern IMPORT_PATTERN = Pattern.compile("import\\s+(.*);");
   private static final Pattern ENUM_PATTERN = Pattern.compile("public enum (\\w+)");
   private static final Pattern ANNOTATION_PATTERN = Pattern.compile("\\s*@.*");
+  private static final Pattern CATCH_FIELD_EXCEPTION_START_PATTERN = Pattern.compile("catch \\(org.apache.avro.AvroMissingFieldException e\\) \\{");
+  private static final Pattern CATCH_FIELD_EXCEPTION_END_PATTERN = Pattern.compile("throw new org.apache.avro.AvroRuntimeException\\(e\\);\\s*}");
+  private static final String  COMPATIBLE_CATCH_REPLACEMENT = Matcher.quoteReplacement("catch (java.lang.Exception e) {\n" +
+          "        throw e instanceof org.apache.avro.AvroRuntimeException ? (org.apache.avro.AvroRuntimeException) e : new org.apache.avro.AvroRuntimeException(e);\n" +
+          "      }");
   private static final String  IMPORT_HELPER = "import " + HelperConsts.HELPER_FQCN + ";";
 
   private static final String FIXED_CLASS_BODY_TEMPLATE = TemplateUtil.loadTemplate("avroutil1/templates/SpecificFixedBody.template");
@@ -113,6 +118,10 @@ public class CodeTransformations {
     if (minSupportedVersion.earlierThan(AvroVersion.AVRO_1_6)) {
       //optionally strip out builders
       fixed = CodeTransformations.removeBuilderSupport(fixed, minSupportedVersion, maxSupportedVersion);
+    } else {
+      //if we keep the builders we might have to strip out some references in generated code to
+      //classes that only exist in more "modern" avro
+      fixed = CodeTransformations.removeReferencesToNewClassesFromBuilders(fixed, generatedBy, minSupportedVersion, maxSupportedVersion);
     }
 
     //1.7+ features
@@ -534,6 +543,47 @@ public class CodeTransformations {
     @SuppressWarnings("UnnecessaryLocalVariable")
     String codeWithoutBuilder = code.substring(0, methodStart) + code.substring(endBuilderMatcher.end());
     return codeWithoutBuilder;
+  }
+
+  /**
+   * avro 1.9+ builders directly reference some classes that only exist in avro 1.9+.
+   * a concrete example of this is they have a catch clause for org.apache.avro.AvroMissingFieldException,
+   * which does not exist prior to 1.9.
+   *
+   * @param code
+   * @param generatedBy
+   * @param minSupportedVersion
+   * @param maxSupportedVersion
+   * @return
+   */
+  public static String removeReferencesToNewClassesFromBuilders(
+          String code,
+          AvroVersion generatedBy,
+          AvroVersion minSupportedVersion,
+          AvroVersion maxSupportedVersion
+  ) {
+    if (generatedBy.earlierThan(AvroVersion.AVRO_1_9)) {
+      return code; //nothing to strip out
+    }
+    if (minSupportedVersion.laterThan(AvroVersion.AVRO_1_8)) {
+      return code; //everything mentioned in the builders should exist at runtime
+    }
+
+    String fixed = code;
+
+    Matcher startMatcher = CATCH_FIELD_EXCEPTION_START_PATTERN.matcher(fixed);
+    while (startMatcher.find()) {
+      int start = startMatcher.start();
+      Matcher endMatcher = CATCH_FIELD_EXCEPTION_END_PATTERN.matcher(fixed);
+      if (!endMatcher.find(start)) {
+        throw new IllegalStateException("unable to find end of catch clause around " + fixed.substring(start, Math.min(fixed.length(), start + 300)));
+      }
+      int end = endMatcher.end();
+      fixed = fixed.substring(0, start) + COMPATIBLE_CATCH_REPLACEMENT + fixed.substring(end);
+      startMatcher = CATCH_FIELD_EXCEPTION_START_PATTERN.matcher(fixed);
+    }
+
+    return fixed;
   }
 
   /**
