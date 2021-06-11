@@ -398,4 +398,6 @@ publishing {
     }
     rootProject.bintray.publications = allPublicationNames.toArray()
   }
+
+  //repositories inherited from parent build.gradle
 }
