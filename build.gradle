@@ -12,15 +12,11 @@ buildscript {
     mavenLocal()
     jcenter()
   }
-  dependencies {
-    classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
-  }
 }
 
 plugins {
   id "maven-publish"
   id "jacoco"
-  id "com.jfrog.bintray" version "1.8.4"
   id 'com.github.johnrengelman.shadow' version '5.2.0' apply false
   id 'com.github.kt3k.coveralls' version '2.10.1'
   id "org.sonarqube" version "3.0"
@@ -35,7 +31,8 @@ repositories {
 
 //does not include "helper" as that module has its own publishing section (because fat jar)
 //does not include "avro-fastserde" as that module has its own publishing section (because we want it to depend on the fat jar)
-Set<String> projectsToPublish = new HashSet<>(Arrays.asList("avro-migration-helper", "avro-codegen"))
+//does not include "avro-codegen" as that module has its own publishing section (because we want it to depend on the fat jar)
+Set<String> projectsToPublish = new HashSet<>(Arrays.asList("spotbugs-plugin"))
 Set<String> projectsToRecordGitInfoFor = new HashSet<>(projectsToPublish)
 projectsToRecordGitInfoFor.add("helper")
 
@@ -134,23 +131,22 @@ subprojects {
       }
     }
 
+    task sourceJar(type: Jar) {
+      from sourceSets.main.allJava
+      classifier "sources"
+    }
+
+    task javadocJar(type: Jar) {
+      from javadoc
+      classifier = 'javadoc'
+    }
+
+    task testJar(type: Jar) {
+      from sourceSets.test.allJava
+      classifier = 'tests'
+    }
+
     if (projectsToPublish.contains(project.name)) {
-
-      task sourceJar(type: Jar) {
-        from sourceSets.main.allJava
-        classifier "sources"
-      }
-
-      task javadocJar(type: Jar) {
-        from javadoc
-        classifier = 'javadoc'
-      }
-
-      task testJar(type: Jar) {
-        from sourceSets.test.allJava
-        classifier = 'tests'
-      }
-
       publishing {
         publications {
           "$project.name"(MavenPublication) {
@@ -211,17 +207,6 @@ subprojects {
               }
             }
           }
-
-          //record all of this module's publications in the bintray publications list
-          //for the root project
-          List<String> allPublicationNames = new ArrayList<>(Arrays.asList(rootProject.bintray.publications))
-          List<String> projectAndDepPublicationNames = new ArrayList<>(project.publishing.publications.names)
-          for (String projectPubName : projectAndDepPublicationNames) {
-            if (!allPublicationNames.contains(projectPubName)) {
-              allPublicationNames.add(projectPubName)
-            }
-          }
-          rootProject.bintray.publications = allPublicationNames.toArray()
         }
 
         repositories {
@@ -291,36 +276,10 @@ coveralls {
   jacocoReportPath "${buildDir}/reports/jacoco/report.xml"
 }
 
-sonarqube {
-  properties {
-    property "sonar.organization", "linkedin"
-    property "sonar.host.url", "https://sonarcloud.io"
-  }
-}
-
 //the root project doesnt have a clean task applied (?!), so we add one ourselves.
 task clean {
   doLast {
     delete "${buildDir}"
-  }
-}
-
-bintray {
-  user = System.getenv('BINTRAY_USER')
-  key = System.getenv('BINTRAY_KEY')
-
-  publications = [] //filled by child closure above
-
-  pkg {
-    repo = 'maven'
-    name = 'avro-util'
-    userOrg = 'linkedin'
-    licenses = ['BSD 2-Clause']
-    vcsUrl = 'https://github.com/linkedin/avro-util.git'
-    version {
-      name = project.version
-    }
-    publish = true
   }
 }
 

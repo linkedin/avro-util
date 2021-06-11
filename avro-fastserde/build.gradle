@@ -286,23 +286,7 @@ testAvro1_8.dependsOn cleanupAndRebuildTestsForAvro1_8
 testAvro1_9.dependsOn cleanupAndRebuildTestsForAvro1_9
 testAvro1_10.dependsOn cleanupAndRebuildTestsForAvro1_10
 
-//custom publishing code to export a depndency on "helper-all":
-
-task sourceJar(type: Jar) {
-  from sourceSets.main.allJava
-  classifier "sources"
-}
-
-task javadocJar(type: Jar) {
-  from javadoc
-  classifier = 'javadoc'
-}
-
-task testJar(type: Jar) {
-  from sourceSets.test.allJava
-  classifier = 'tests'
-}
-
+//custom publishing code to export a dependency on "helper-all":
 publishing {
   publications {
     "$project.name"(MavenPublication) {
@@ -386,17 +370,6 @@ publishing {
         dependencyNode.appendNode('scope', "compile")
       }
     }
-
-    //record all of this module's publications in the bintray publications list
-    //for the root project
-    List<String> allPublicationNames = new ArrayList<>(Arrays.asList(rootProject.bintray.publications))
-    List<String> projectAndDepPublicationNames = new ArrayList<>(project.publishing.publications.names)
-    for (String projectPubName : projectAndDepPublicationNames) {
-      if (!allPublicationNames.contains(projectPubName)) {
-        allPublicationNames.add(projectPubName)
-      }
-    }
-    rootProject.bintray.publications = allPublicationNames.toArray()
   }
 
   //repositories inherited from parent build.gradle
