@@ -223,6 +223,20 @@ subprojects {
           }
           rootProject.bintray.publications = allPublicationNames.toArray()
         }
+
+        repositories {
+          mavenLocal()
+          maven {
+            name "LinkedInJfrog"
+            url "https://linkedin.jfrog.io/artifactory/avro-util"
+            credentials {
+              if (System.getenv('JFROG_USER') != null && System.getenv('JFROG_KEY') != null) {
+                username System.getenv('JFROG_USER')
+                password System.getenv('JFROG_KEY')
+              }
+            }
+          }
+        }
       }
     }
   }

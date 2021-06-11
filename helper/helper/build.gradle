@@ -127,6 +127,8 @@ publishing {
     //bintray plugin on the root project will look for publications here
     rootProject.bintray.publications = allPublicationNames.toArray()
   }
+
+  //repositories inherited from parent build.gradle
 }
 
 // workaround for missing gradle shadow plugin feature, see https://github.com/johnrengelman/shadow/issues/41

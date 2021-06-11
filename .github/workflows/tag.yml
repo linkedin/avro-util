@@ -26,10 +26,10 @@ jobs:
     - name: Branch tag
       id: branch_tag
       run: echo ::set-output name=RELEASE_TAG::${GITHUB_REF#refs/tags/}
-    - name: Publish to Bintray
+    - name: Publish to Jfrog
       env:
-        BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
-        BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
+        JFROG_USER: ${{ secrets.JFROG_USER }}
+        JFROG_KEY: ${{ secrets.JFROG_KEY }}
         # retain compatibility with the travis build (for now?)
         TRAVIS_TAG: ${{ steps.branch_tag.outputs.RELEASE_TAG }}
-      run: ./scripts/publishToBintray.sh
+      run: ./scripts/publishToJfrog.sh
