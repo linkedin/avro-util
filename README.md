@@ -1,8 +1,7 @@
 Avro-Util
 =========
 ![Github Build Status](https://github.com/linkedin/avro-util/workflows/push%20flow/badge.svg)
-[![Travis Build Status](https://travis-ci.org/linkedin/avro-util.svg?branch=master)](https://travis-ci.org/linkedin/avro-util)
-[![Latest Release](https://api.bintray.com/packages/linkedin/maven/avro-util/images/download.svg)](https://linkedin.jfrog.io/artifactory/api/search/latestVersion?g=com.linkedin.avroutil1&a=helper-all&repos=avro-util)
+![Latest Release](https://img.shields.io/badge/dynamic/json?color=blue&label=latest&query=%24.results%5B0%5D.version&url=https%3A%2F%2Flinkedin.jfrog.io%2Fartifactory%2Fapi%2Fsearch%2Fversions%3Fg%3Dcom.linkedin.avroutil1%26a%3Dhelper-all%26repos%3Davro-util)
 
 A collection of utilities and libraries to allow java projects to better work with avro.
 
