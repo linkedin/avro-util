@@ -40,16 +40,9 @@ shadowJar {
 }
 
 //"fat" sources jar
-task sourcesJar(type: Jar, dependsOn: classes) {
-  group = 'build'
-  classifier = 'sources'
+sourceJar {
   // we return here a closure to do this lazy, after all projects are configured by gradle
   from { collectSourceSetsIncludingSubmodules(project) }
-}
-
-task javadocJar(type: Jar) {
-  from javadoc
-  classifier = 'javadoc'
 }
 
 publishing {
@@ -61,7 +54,7 @@ publishing {
 
       //stripping away the classifier to publish as its own top-level artifact
       artifact source: shadowJar, classifier: ''
-      artifact sourcesJar
+      artifact sourceJar
       artifact javadocJar
 
       //we strive to meet https://central.sonatype.org/pages/requirements.html
@@ -112,20 +105,6 @@ publishing {
         }
       }
     }
-
-    //record all of this module's publications in the bintray publications list
-    //for the root project
-    List<String> allPublicationNames = new ArrayList<>(Arrays.asList(rootProject.bintray.publications))
-    List<String> projectAndDepPublicationNames = new ArrayList<>(project.publishing.publications.names)
-
-    for (String projectPubName : projectAndDepPublicationNames) {
-      if (!allPublicationNames.contains(projectPubName)) {
-        allPublicationNames.add(projectPubName)
-      }
-    }
-
-    //bintray plugin on the root project will look for publications here
-    rootProject.bintray.publications = allPublicationNames.toArray()
   }
 
   //repositories inherited from parent build.gradle
