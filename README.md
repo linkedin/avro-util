@@ -2,20 +2,20 @@ Avro-Util
 =========
 ![Github Build Status](https://github.com/linkedin/avro-util/workflows/push%20flow/badge.svg)
 [![Travis Build Status](https://travis-ci.org/linkedin/avro-util.svg?branch=master)](https://travis-ci.org/linkedin/avro-util)
-[![Latest Release](https://api.bintray.com/packages/linkedin/maven/avro-util/images/download.svg)](https://bintray.com/linkedin/maven/avro-util/_latestVersion)
+[![Latest Release](https://api.bintray.com/packages/linkedin/maven/avro-util/images/download.svg)](https://linkedin.jfrog.io/artifactory/api/search/latestVersion?g=com.linkedin.avroutil1&a=helper-all&repos=avro-util)
 
 A collection of utilities and libraries to allow java projects to better work with avro.
 
 ### How To Use ###
 
-Artifacts are published to [bintray](https://bintray.com/linkedin/maven/avro-util).
-To use them (say in a gradle build) you'd need to add that bintray repository to your build.gradle, 
+Artifacts are published to [artifactory](https://linkedin.jfrog.io/artifactory/avro-util/).
+To use them (say in a gradle build) you'd need to add that repository to your build.gradle, 
 and then add a dependency on the module(s) you wish to use:
 
 ```gradle
 repositories {
    maven {
-      url  "https://dl.bintray.com/linkedin/maven"
+      url  "https://linkedin.jfrog.io/artifactory/avro-util/"
    }
 }
 ...
