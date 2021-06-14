@@ -18,4 +18,5 @@ dependencies {
     exclude group: "org.jboss.netty"
     exclude group: "com.thoughtworks.paranamer", module: "paranamer-ant"
   }
+  testCompile "commons-io:commons-io:2.6"
 }
