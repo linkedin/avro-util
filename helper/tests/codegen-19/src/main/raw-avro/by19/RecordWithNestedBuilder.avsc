@@ -1,0 +1,31 @@
+{
+  "type":"record",
+  "name":"RecordWithNestedBuilder",
+  "namespace":"by19",
+  "fields":[
+    {
+      "name":"f1",
+      "type":"string"
+    },
+    {
+      "name":"inner",
+      "type":[
+        "null",
+        {
+          "type":"record",
+          "name":"InnerRecordWithBuilder",
+          "fields":[
+            {
+              "name":"fInner",
+              "type":"string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name":"f2",
+      "type":"string"
+    }
+  ]
+}

@@ -74,8 +74,13 @@ public class CodeTransformations {
   private static final Pattern IMPORT_PATTERN = Pattern.compile("import\\s+(.*);");
   private static final Pattern ENUM_PATTERN = Pattern.compile("public enum (\\w+)");
   private static final Pattern ANNOTATION_PATTERN = Pattern.compile("\\s*@.*");
-  private static final Pattern CATCH_FIELD_EXCEPTION_START_PATTERN = Pattern.compile("catch \\(org.apache.avro.AvroMissingFieldException e\\) \\{");
-  private static final Pattern CATCH_FIELD_EXCEPTION_END_PATTERN = Pattern.compile("throw new org.apache.avro.AvroRuntimeException\\(e\\);\\s*}");
+  private static final Pattern CATCH_MISSING_FIELD_AND_REGULAR_EXCEPTION_PATTERN = Pattern.compile("catch \\(org\\.apache\\.avro\\.AvroMissingFieldException e\\) \\{\\s*"
+      + "throw e;\\s*"
+      + "} catch \\((java\\.lang\\.)?Exception e\\) \\{\\s*"
+      + "throw new org\\.apache\\.avro\\.AvroRuntimeException\\(e\\);\\s*"
+      + "}");
+  private static final Pattern CATCH_MISSING_FIELD_EXCEPTION_START_PATTERN = Pattern.compile("catch \\(org\\.apache\\.avro\\.AvroMissingFieldException e\\) \\{\\s*");
+  private static final Pattern CATCH_MISSING_FIELD_EXCEPTION_END_PATTERN = Pattern.compile("throw e;\\s*}");
   private static final String  COMPATIBLE_CATCH_REPLACEMENT = Matcher.quoteReplacement("catch (java.lang.Exception e) {\n" +
           "        throw e instanceof org.apache.avro.AvroRuntimeException ? (org.apache.avro.AvroRuntimeException) e : new org.apache.avro.AvroRuntimeException(e);\n" +
           "      }");
@@ -571,16 +576,26 @@ public class CodeTransformations {
 
     String fixed = code;
 
-    Matcher startMatcher = CATCH_FIELD_EXCEPTION_START_PATTERN.matcher(fixed);
+    //replace catch (FieldException) {} + catch (Exception) combos at the end of build()
+    Matcher startMatcher = CATCH_MISSING_FIELD_AND_REGULAR_EXCEPTION_PATTERN.matcher(fixed);
     while (startMatcher.find()) {
       int start = startMatcher.start();
-      Matcher endMatcher = CATCH_FIELD_EXCEPTION_END_PATTERN.matcher(fixed);
+      int end = startMatcher.end();
+      fixed = fixed.substring(0, start) + COMPATIBLE_CATCH_REPLACEMENT + fixed.substring(end);
+      startMatcher = CATCH_MISSING_FIELD_AND_REGULAR_EXCEPTION_PATTERN.matcher(fixed);
+    }
+
+    //replace any remaining stand-alone catch (FieldException) constructs
+    startMatcher = CATCH_MISSING_FIELD_EXCEPTION_START_PATTERN.matcher(fixed);
+    while (startMatcher.find()) {
+      int start = startMatcher.start();
+      Matcher endMatcher = CATCH_MISSING_FIELD_EXCEPTION_END_PATTERN.matcher(fixed);
       if (!endMatcher.find(start)) {
         throw new IllegalStateException("unable to find end of catch clause around " + fixed.substring(start, Math.min(fixed.length(), start + 300)));
       }
       int end = endMatcher.end();
       fixed = fixed.substring(0, start) + COMPATIBLE_CATCH_REPLACEMENT + fixed.substring(end);
-      startMatcher = CATCH_FIELD_EXCEPTION_START_PATTERN.matcher(fixed);
+      startMatcher = CATCH_MISSING_FIELD_EXCEPTION_START_PATTERN.matcher(fixed);
     }
 
     return fixed;
