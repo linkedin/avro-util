@@ -13,7 +13,12 @@ dependencies {
 
   testImplementation project(":helper:helper")
   testImplementation "junit:junit:4.13"
-  testImplementation "com.github.spotbugs:test-harness:4.2.3"
+  testImplementation ("com.github.spotbugs:test-harness:4.2.3") {
+    //we dont want the slf4j 1.8-beta this uses - messes up our test logging
+    exclude group: "org.slf4j"
+  }
+  //bring the older slf4j api after excluding the beta above
+  testImplementation "org.slf4j:slf4j-api:1.7.25"
   testImplementation ('org.apache.avro:avro:1.4.1') {
     exclude group: "org.mortbay.jetty"
     exclude group: "org.apache.velocity"

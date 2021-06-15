@@ -97,8 +97,8 @@ dependencies {
   codegen project(":helper:tests:helper-tests-common")
   codegen project(":helper:helper")
   //redirect logging to log4j2 for code generation
-  codegen "org.apache.logging.log4j:log4j-core:2.11.2"
-  codegen "org.apache.logging.log4j:log4j-slf4j-impl:2.11.2"
+  codegen "org.apache.logging.log4j:log4j-core:2.14.1"
+  codegen "org.apache.logging.log4j:log4j-slf4j-impl:2.14.1"
   codegen files('../codegenClasspath')
 
   //required because generated code depends on the helper
@@ -114,7 +114,7 @@ dependencies {
   //this block required for resource generation code
   implementation project(":helper:tests:helper-tests-common")
   //redirect logging to log4j2 for resource generation
-  resourcegen "org.apache.logging.log4j:log4j-core:2.11.2"
-  resourcegen "org.apache.logging.log4j:log4j-slf4j-impl:2.11.2"
+  resourcegen "org.apache.logging.log4j:log4j-core:2.14.1"
+  resourcegen "org.apache.logging.log4j:log4j-slf4j-impl:2.14.1"
   resourcegen files('../codegenClasspath')
 }
