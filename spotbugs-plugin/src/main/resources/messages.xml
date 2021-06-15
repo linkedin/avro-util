@@ -7,11 +7,20 @@
         <Details>provides detections related to use of known-problematic avro APIs</Details>
     </Plugin>
 
-    <Detector class="com.linkedin.avroutil1.spotbugs.BinaryEncoderUsageDetector">
+    <!-- detector descriptions -->
+
+    <Detector class="com.linkedin.avroutil1.spotbugs.BinaryEncoderInstantiationDetector">
         <Details>
             detects direct instantiations of org.apache.avro.io.BinaryEncoder
         </Details>
     </Detector>
+    <Detector class="com.linkedin.avroutil1.spotbugs.BinaryDecoderInstantiationDetector">
+        <Details>
+            detects direct instantiations of org.apache.avro.io.BinaryDecoder
+        </Details>
+    </Detector>
+
+    <!-- bug pattern descriptions -->
 
     <BugPattern type="BINARY_ENCODER_INSTANTIATION">
         <ShortDescription>direct BinaryEncoder instantiation</ShortDescription>
@@ -28,6 +37,25 @@
 ]]>
         </Details>
     </BugPattern>
+    <BugPattern type="BINARY_DECODER_INSTANTIATION">
+        <ShortDescription>direct BinaryDecoder instantiation</ShortDescription>
+        <LongDescription>
+            direct instantiations of org.apache.avro.io.BinaryDecoder, which is not directly accessible in modern avro
+        </LongDescription>
+        <Details>
+            <![CDATA[
+   <p>
+      org.apache.avro.io.BinaryDecoder's constructor was made package-private in modern avro
+      org.apache.avro.io.DecoderFactory only exists in avro 1.4+, but was not absolutely required under 1.4.
+      for broadest compatibility (and ability to reuse existing custom decoders for new InputStreams) use
+      com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.newBinaryDecoder()
+   </p>
+]]>
+        </Details>
+    </BugPattern>
+
+    <!-- bug codes -->
 
     <BugCode abbrev="BEI">BinaryEncoder instantiation</BugCode>
+    <BugCode abbrev="BDI">BinaryDecoder instantiation</BugCode>
 </MessageCollection>

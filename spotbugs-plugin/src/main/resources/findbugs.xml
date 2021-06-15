@@ -6,8 +6,10 @@
                 provider="avro-util"
                 website="http://github.com/linkedin/avro-util">
 
-    <Detector class="com.linkedin.avroutil1.spotbugs.BinaryEncoderUsageDetector" reports="BINARY_ENCODER_INSTANTIATION" speed="fast" />
+    <Detector class="com.linkedin.avroutil1.spotbugs.BinaryEncoderInstantiationDetector" reports="BINARY_ENCODER_INSTANTIATION" speed="fast" />
+    <Detector class="com.linkedin.avroutil1.spotbugs.BinaryDecoderInstantiationDetector" reports="BINARY_DECODER_INSTANTIATION" speed="fast" />
 
     <BugPattern type="BINARY_ENCODER_INSTANTIATION" category="AVRO" abbrev="BEI"/>
+    <BugPattern type="BINARY_DECODER_INSTANTIATION" category="AVRO" abbrev="BDI"/>
 
 </FindbugsPlugin>

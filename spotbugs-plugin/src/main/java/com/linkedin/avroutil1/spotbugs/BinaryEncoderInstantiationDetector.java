@@ -8,10 +8,10 @@ import org.apache.bcel.Const;
 /**
  * detects direct instantiations of BinaryEncoder
  */
-public class BinaryEncoderUsageDetector extends OpcodeStackDetector {
+public class BinaryEncoderInstantiationDetector extends OpcodeStackDetector {
     private final BugReporter bugReporter;
 
-    public BinaryEncoderUsageDetector(BugReporter bugReporter) {
+    public BinaryEncoderInstantiationDetector(BugReporter bugReporter) {
         this.bugReporter = bugReporter;
     }
 

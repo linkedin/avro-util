@@ -58,8 +58,8 @@ subprojects {
       testImplementation "org.testng:testng:6.14.3"
 
       //redirect logging to log4j2 for tests
-      testRuntimeOnly "org.apache.logging.log4j:log4j-core:2.11.2"
-      testRuntimeOnly "org.apache.logging.log4j:log4j-slf4j-impl:2.11.2"
+      testRuntimeOnly "org.apache.logging.log4j:log4j-core:2.14.1"
+      testRuntimeOnly "org.apache.logging.log4j:log4j-slf4j-impl:2.14.1"
     }
 
     test {
