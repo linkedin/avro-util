@@ -1,0 +1,21 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "RecordWithFieldProps",
+  "doc": "A perfectly normal record with field props",
+  "fields": [
+    {
+      "name": "stringField",
+      "type": "string",
+      "stringProp": "stringValue",
+      "intProp": 42,
+      "floatProp": 42.42,
+      "nullProp": null,
+      "boolProp": true,
+      "objectProp": {
+        "a": "b",
+        "c": "d"
+      }
+    }
+  ]
+}

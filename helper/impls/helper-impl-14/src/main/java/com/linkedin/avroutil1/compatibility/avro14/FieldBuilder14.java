@@ -12,18 +12,37 @@ import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field.Order;
 import org.codehaus.jackson.JsonNode;
 
+import java.lang.reflect.Field;
+import java.util.Map;
+
 
 public class FieldBuilder14 implements FieldBuilder {
+  private final static Field SCHEMA_FIELD_PROPS_FIELD;
+
+  static {
+    try {
+      Class<Schema.Field> fieldClass = Schema.Field.class;
+      SCHEMA_FIELD_PROPS_FIELD = fieldClass.getDeclaredField("props");
+      SCHEMA_FIELD_PROPS_FIELD.setAccessible(true); //muwahahaha
+    } catch (Throwable issue) {
+      throw new IllegalStateException("unable to find/access Schema$Field.props", issue);
+    }
+  }
+
   private final String _name;
-  private Schema.Field _field;
   private Schema _schema;
   private String _doc;
   private JsonNode _defaultVal;
   private Order _order;
+  private Map<String,String> _props;
 
   public FieldBuilder14(Schema.Field field) {
     this(field.name());
-    _field = field;
+    _schema = field.schema();
+    _doc = field.doc();
+    _defaultVal = field.defaultValue();
+    _order = field.order();
+    _props = getProps(field);
   }
 
   public FieldBuilder14(String name) {
@@ -59,18 +78,28 @@ public class FieldBuilder14 implements FieldBuilder {
   }
 
   @Override
+  @Deprecated
   public FieldBuilder copyFromField() {
-    if (_field == null) {
-      throw new NullPointerException("Field in FieldBuilder can not be empty!");
-    }
-    _doc = _field.doc();
-    _defaultVal = _field.defaultValue();
-    _order = _field.order();
     return this;
   }
 
   @Override
   public Schema.Field build() {
-    return new Schema.Field(_name, _schema, _doc, _defaultVal, _order);
+    Schema.Field result = new Schema.Field(_name, _schema, _doc, _defaultVal, _order);
+    if (_props != null && !_props.isEmpty()) {
+      Map<String, String> clonedProps = getProps(result);
+      clonedProps.putAll(_props);
+    }
+    return result;
+  }
+
+  private Map<String,String> getProps(Schema.Field field) {
+    try {
+      @SuppressWarnings("unchecked")
+      Map<String, String> props = (Map<String, String>) SCHEMA_FIELD_PROPS_FIELD.get(field);
+      return props;
+    } catch (Exception e) {
+      throw new IllegalStateException("unable to access props on Schema$Field " + field.name(), e);
+    }
   }
 }

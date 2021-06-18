@@ -12,18 +12,27 @@ import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field.Order;
 import org.codehaus.jackson.JsonNode;
 
+import java.util.Map;
+
 
 public class FieldBuilder18 implements FieldBuilder {
   private final String _name;
-  private Schema.Field _field;
   private Schema _schema;
   private String _doc;
   private JsonNode _defaultVal;
   private Order _order;
+  private Map<String, JsonNode> _props;
 
   public FieldBuilder18(Schema.Field field) {
     this(field.name());
-    _field = field;
+    _schema = field.schema();
+    _doc = field.doc();
+    //noinspection deprecation
+    _defaultVal = field.defaultValue(); //deprecated but faster
+    _order = field.order();
+    //this is actually faster
+    //noinspection deprecation
+    _props = field.getJsonProps();
   }
 
   public FieldBuilder18(String name) {
@@ -59,18 +68,21 @@ public class FieldBuilder18 implements FieldBuilder {
   }
 
   @Override
+  @Deprecated
   public FieldBuilder copyFromField() {
-    if (_field == null) {
-      throw new NullPointerException("Field in FieldBuilder can not be empty!");
-    }
-    _doc = _field.doc();
-    _defaultVal = _field.defaultValue();
-    _order = _field.order();
     return this;
   }
 
   @Override
   public Schema.Field build() {
-    return new Schema.Field(_name, _schema, _doc, _defaultVal, _order);
+    @SuppressWarnings("deprecation") //deprecated but faster
+    Schema.Field result = new Schema.Field(_name, _schema, _doc, _defaultVal, _order);
+    if (_props != null) {
+      for (Map.Entry<String, JsonNode> entry : _props.entrySet()) {
+        //noinspection deprecation
+        result.addProp(entry.getKey(), entry.getValue()); //deprecated but faster
+      }
+    }
+    return result;
   }
 }
