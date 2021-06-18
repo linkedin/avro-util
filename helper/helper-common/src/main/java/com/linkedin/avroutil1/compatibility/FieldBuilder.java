@@ -25,6 +25,7 @@ public interface FieldBuilder {
 
   FieldBuilder setOrder(Order order);
 
+  @Deprecated
   FieldBuilder copyFromField();
 
   Schema.Field build();

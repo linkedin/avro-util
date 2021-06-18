@@ -86,11 +86,15 @@ public interface AvroAdapter {
 
   Object getGenericDefaultValue(Schema.Field field);
 
+  //schema query and manipulation utils
+
   boolean fieldHasDefault(Schema.Field field);
 
   FieldBuilder cloneSchemaField(Schema.Field field);
 
   FieldBuilder newFieldBuilder(String name);
+
+  String getFieldPropAsJsonString(Schema.Field field, String propName);
 
   //code generation
 

@@ -12,18 +12,24 @@ import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field.Order;
 import org.codehaus.jackson.JsonNode;
 
+import java.util.Map;
+
 
 public class FieldBuilder17 implements FieldBuilder {
   private final String _name;
-  private Schema.Field _field;
   private Schema _schema;
   private String _doc;
   private JsonNode _defaultVal;
   private Order _order;
+  private Map<String, JsonNode> _props;
 
   public FieldBuilder17(Schema.Field field) {
     this(field.name());
-    _field = field;
+    _schema = field.schema();
+    _doc = field.doc();
+    _defaultVal = field.defaultValue();
+    _order = field.order();
+    _props = Avro17Utils.getProps(field);
   }
 
   public FieldBuilder17(String name) {
@@ -59,18 +65,17 @@ public class FieldBuilder17 implements FieldBuilder {
   }
 
   @Override
+  @Deprecated
   public FieldBuilder copyFromField() {
-    if (_field == null) {
-      throw new NullPointerException("Field in FieldBuilder can not be empty!");
-    }
-    _doc = _field.doc();
-    _defaultVal = _field.defaultValue();
-    _order = _field.order();
     return this;
   }
 
   @Override
   public Schema.Field build() {
-    return new Schema.Field(_name, _schema, _doc, _defaultVal, _order);
+    Schema.Field result = new Schema.Field(_name, _schema, _doc, _defaultVal, _order);
+    if (_props != null) {
+      Avro17Utils.setProps(result, _props);
+    }
+    return result;
   }
 }

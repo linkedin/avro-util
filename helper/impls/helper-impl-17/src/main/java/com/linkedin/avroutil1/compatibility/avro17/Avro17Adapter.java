@@ -54,12 +54,17 @@ import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificData;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 public class Avro17Adapter implements AvroAdapter {
   private final static Logger LOG = LoggerFactory.getLogger(Avro17Adapter.class);
+
+  //doc says thread safe outside config methods
+  private final static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
   //compiler-related fields and methods (if the compiler jar is on the classpath)
 
@@ -325,6 +330,19 @@ public class Avro17Adapter implements AvroAdapter {
   @Override
   public FieldBuilder newFieldBuilder(String name) {
     return new FieldBuilder17(name);
+  }
+
+  @Override
+  public String getFieldPropAsJsonString(Schema.Field field, String propName) {
+    JsonNode val = Avro17Utils.getJsonProp(field, propName);
+    if (val == null) {
+      return null;
+    }
+    try {
+      return OBJECT_MAPPER.writeValueAsString(val);
+    } catch (Exception issue) {
+      throw new IllegalStateException("while trying to serialize " + val + " (a " + val.getClass().getName() + ")", issue);
+    }
   }
 
   @Override

@@ -634,4 +634,16 @@ public class AvroCompatibilityHelper {
   public static Schema.Field createSchemaField(String name, Schema schema, String doc, Object defaultValue) {
     return createSchemaField(name, schema, doc, defaultValue, Schema.Field.Order.ASCENDING);
   }
+
+  /**
+   * returns the value of the specified field prop as a json literal.
+   * returns null if the field has no such property.
+   * note that string values are returned quoted (as a proper json string literal)
+   * @param field the field who's property value we wish to get
+   * @param propName the name of the property
+   * @return field property value as json literal, or null if no such property
+   */
+  public static String getFieldPropAsJsonString(Schema.Field field, String propName) {
+    return ADAPTER.getFieldPropAsJsonString(field, propName);
+  }
 }

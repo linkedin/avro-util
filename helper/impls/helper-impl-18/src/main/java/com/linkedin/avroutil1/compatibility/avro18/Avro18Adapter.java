@@ -50,12 +50,17 @@ import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificData;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 public class Avro18Adapter implements AvroAdapter {
   private final static Logger LOG = LoggerFactory.getLogger(Avro18Adapter.class);
+
+  //doc says thread safe outside config methods
+  private final static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
   private boolean compilerSupported;
   private Constructor<?> specificCompilerCtr;
@@ -263,6 +268,20 @@ public class Avro18Adapter implements AvroAdapter {
   @Override
   public FieldBuilder newFieldBuilder(String name) {
     return new FieldBuilder18(name);
+  }
+
+  @Override
+  public String getFieldPropAsJsonString(Schema.Field field, String propName) {
+    @SuppressWarnings("deprecation") //this is faster
+    JsonNode val = field.getJsonProp(propName);
+    if (val == null) {
+      return null;
+    }
+    try {
+      return OBJECT_MAPPER.writeValueAsString(val);
+    } catch (Exception issue) {
+      throw new IllegalStateException("while trying to serialize " + val + " (a " + val.getClass().getName() + ")", issue);
+    }
   }
 
   @Override

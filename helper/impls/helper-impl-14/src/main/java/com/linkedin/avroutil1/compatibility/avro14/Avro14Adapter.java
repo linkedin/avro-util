@@ -239,6 +239,12 @@ public class Avro14Adapter implements AvroAdapter {
   }
 
   @Override
+  public String getFieldPropAsJsonString(Schema.Field field, String propName) {
+    String val = field.getProp(propName);
+    return val == null ? null : "\"" + val + "\"";
+  }
+
+  @Override
   public Collection<AvroGeneratedSourceCode> compile(
       Collection<Schema> toCompile,
       AvroVersion minSupportedVersion,

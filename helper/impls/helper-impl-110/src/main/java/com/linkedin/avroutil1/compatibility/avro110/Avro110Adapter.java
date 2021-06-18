@@ -6,6 +6,8 @@
 
 package com.linkedin.avroutil1.compatibility.avro110;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linkedin.avroutil1.compatibility.AvroAdapter;
 import com.linkedin.avroutil1.compatibility.AvroGeneratedSourceCode;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
@@ -34,6 +36,7 @@ import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificData;
+import org.apache.avro.util.internal.JacksonUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,6 +56,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Avro110Adapter implements AvroAdapter {
+
+    //doc says thread safe outside config methods
+    private final static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private boolean compilerSupported;
     private Constructor<?> specificCompilerCtr;
@@ -258,6 +264,21 @@ public class Avro110Adapter implements AvroAdapter {
     @Override
     public FieldBuilder newFieldBuilder(String name) {
         return new FieldBuilder110(name);
+    }
+
+    @Override
+    public String getFieldPropAsJsonString(Schema.Field field, String propName) {
+        Object val = field.getObjectProp(propName);
+        if (val == null) {
+            return null;
+        }
+        //the following is VERY rube-goldberg-ish, but will do until someone complains
+        JsonNode asJsonNode = JacksonUtils.toJsonNode(val);
+        try {
+            return OBJECT_MAPPER.writeValueAsString(asJsonNode);
+        } catch (Exception issue) {
+            throw new IllegalStateException("while trying to serialize " + val + " (a " + val.getClass().getName() + ")", issue);
+        }
     }
 
     @Override

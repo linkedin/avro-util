@@ -10,18 +10,24 @@ import com.linkedin.avroutil1.compatibility.FieldBuilder;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field.Order;
 
+import java.util.Map;
+
 
 public class FieldBuilder19 implements FieldBuilder {
   private final String _name;
-  private Schema.Field _field;
   private Schema _schema;
   private String _doc;
   private Object _defaultVal;
   private Order _order;
+  private Map<String, Object> _props;
 
   public FieldBuilder19(Schema.Field field) {
     this(field.name());
-    _field = field;
+    _schema = field.schema();
+    _doc = field.doc();
+    _defaultVal = field.defaultVal();
+    _order = field.order();
+    _props = field.getObjectProps();
   }
 
   public FieldBuilder19(String name) {
@@ -53,18 +59,19 @@ public class FieldBuilder19 implements FieldBuilder {
   }
 
   @Override
+  @Deprecated
   public FieldBuilder copyFromField() {
-    if (_field == null) {
-      throw new NullPointerException("Field in FieldBuilder can not be empty!");
-    }
-    _doc = _field.doc();
-    _defaultVal = _field.defaultVal();
-    _order = _field.order();
     return this;
   }
 
   @Override
   public Schema.Field build() {
-    return new Schema.Field(_name, _schema, _doc, _defaultVal, _order);
+    Schema.Field result = new Schema.Field(_name, _schema, _doc, _defaultVal, _order);
+    if (_props != null) {
+      for (Map.Entry<String, Object> entry : _props.entrySet()) {
+        result.addProp(entry.getKey(), entry.getValue());
+      }
+    }
+    return result;
   }
 }
