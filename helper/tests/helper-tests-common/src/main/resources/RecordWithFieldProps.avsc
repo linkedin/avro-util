@@ -17,5 +17,14 @@
         "c": "d"
       }
     }
-  ]
+  ],
+  "schemaStringProp": "stringyMcStringface",
+  "schemaIntProp": 24,
+  "schemaFloatProp": 1.2,
+  "schemaNullProp": null,
+  "schemaBoolProp": false,
+  "schemaObjectProp": {
+    "e": "f",
+    "g": "h"
+  }
 }

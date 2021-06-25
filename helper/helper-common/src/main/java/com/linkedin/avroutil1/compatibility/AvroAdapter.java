@@ -94,7 +94,11 @@ public interface AvroAdapter {
 
   FieldBuilder newFieldBuilder(String name);
 
+  SchemaBuilder cloneSchema(Schema schema);
+
   String getFieldPropAsJsonString(Schema.Field field, String propName);
+
+  String getSchemaPropAsJsonString(Schema schema, String propName);
 
   //code generation
 

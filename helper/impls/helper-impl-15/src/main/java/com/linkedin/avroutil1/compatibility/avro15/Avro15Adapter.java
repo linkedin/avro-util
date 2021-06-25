@@ -14,6 +14,7 @@ import com.linkedin.avroutil1.compatibility.AvroVersion;
 import com.linkedin.avroutil1.compatibility.CodeGenerationConfig;
 import com.linkedin.avroutil1.compatibility.CodeTransformations;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
+import com.linkedin.avroutil1.compatibility.SchemaBuilder;
 import com.linkedin.avroutil1.compatibility.SchemaNormalization;
 import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
 import com.linkedin.avroutil1.compatibility.SchemaParseResult;
@@ -257,8 +258,19 @@ public class Avro15Adapter implements AvroAdapter {
   }
 
   @Override
+  public SchemaBuilder cloneSchema(Schema schema) {
+    return new SchemaBuilder15(schema);
+  }
+
+  @Override
   public String getFieldPropAsJsonString(Schema.Field field, String propName) {
     String val = field.getProp(propName);
+    return val == null ? null : "\"" + val + "\"";
+  }
+
+  @Override
+  public String getSchemaPropAsJsonString(Schema schema, String propName) {
+    String val = schema.getProp(propName);
     return val == null ? null : "\"" + val + "\"";
   }
 
