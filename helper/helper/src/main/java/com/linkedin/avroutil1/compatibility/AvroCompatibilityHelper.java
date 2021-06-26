@@ -486,6 +486,11 @@ public class AvroCompatibilityHelper {
     return ADAPTER.cloneSchemaField(field);
   }
 
+  public static SchemaBuilder cloneSchema(Schema schema) {
+    assertAvroAvailable();
+    return ADAPTER.cloneSchema(schema);
+  }
+
   // code generation
 
   /**
@@ -645,5 +650,9 @@ public class AvroCompatibilityHelper {
    */
   public static String getFieldPropAsJsonString(Schema.Field field, String propName) {
     return ADAPTER.getFieldPropAsJsonString(field, propName);
+  }
+
+  public static String getSchemaPropAsJsonString(Schema schema, String propName) {
+    return ADAPTER.getSchemaPropAsJsonString(schema, propName);
   }
 }

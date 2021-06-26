@@ -14,6 +14,7 @@ import com.linkedin.avroutil1.compatibility.AvroVersion;
 import com.linkedin.avroutil1.compatibility.CodeGenerationConfig;
 import com.linkedin.avroutil1.compatibility.CodeTransformations;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
+import com.linkedin.avroutil1.compatibility.SchemaBuilder;
 import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
 import com.linkedin.avroutil1.compatibility.SchemaParseResult;
 import com.linkedin.avroutil1.compatibility.SkipDecoder;
@@ -267,18 +268,20 @@ public class Avro110Adapter implements AvroAdapter {
     }
 
     @Override
+    public SchemaBuilder cloneSchema(Schema schema) {
+        return new SchemaBuilder110(this, schema);
+    }
+
+    @Override
     public String getFieldPropAsJsonString(Schema.Field field, String propName) {
         Object val = field.getObjectProp(propName);
-        if (val == null) {
-            return null;
-        }
-        //the following is VERY rube-goldberg-ish, but will do until someone complains
-        JsonNode asJsonNode = JacksonUtils.toJsonNode(val);
-        try {
-            return OBJECT_MAPPER.writeValueAsString(asJsonNode);
-        } catch (Exception issue) {
-            throw new IllegalStateException("while trying to serialize " + val + " (a " + val.getClass().getName() + ")", issue);
-        }
+        return objectPropToJsonString(val);
+    }
+
+    @Override
+    public String getSchemaPropAsJsonString(Schema schema, String propName) {
+        Object val = schema.getObjectProp(propName);
+        return objectPropToJsonString(val);
     }
 
     @Override
@@ -338,6 +341,19 @@ public class Avro110Adapter implements AvroAdapter {
             throw e; //as-is
         } catch (Exception e) {
             throw new IllegalStateException(e);
+        }
+    }
+
+    private String objectPropToJsonString(Object val) {
+        if (val == null) {
+            return null;
+        }
+        //the following is VERY rube-goldberg-ish, but will do until someone complains
+        JsonNode asJsonNode = JacksonUtils.toJsonNode(val);
+        try {
+            return OBJECT_MAPPER.writeValueAsString(asJsonNode);
+        } catch (Exception issue) {
+            throw new IllegalStateException("while trying to serialize " + val + " (a " + val.getClass().getName() + ")", issue);
         }
     }
 

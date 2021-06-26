@@ -12,6 +12,7 @@ import com.linkedin.avroutil1.compatibility.AvroVersion;
 import com.linkedin.avroutil1.compatibility.CodeGenerationConfig;
 import com.linkedin.avroutil1.compatibility.CodeTransformations;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
+import com.linkedin.avroutil1.compatibility.SchemaBuilder;
 import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
 import com.linkedin.avroutil1.compatibility.SchemaParseResult;
 import com.linkedin.avroutil1.compatibility.SkipDecoder;
@@ -271,17 +272,22 @@ public class Avro18Adapter implements AvroAdapter {
   }
 
   @Override
+  public SchemaBuilder cloneSchema(Schema schema) {
+    return new SchemaBuilder18(this, schema);
+  }
+
+  @Override
   public String getFieldPropAsJsonString(Schema.Field field, String propName) {
     @SuppressWarnings("deprecation") //this is faster
     JsonNode val = field.getJsonProp(propName);
-    if (val == null) {
-      return null;
-    }
-    try {
-      return OBJECT_MAPPER.writeValueAsString(val);
-    } catch (Exception issue) {
-      throw new IllegalStateException("while trying to serialize " + val + " (a " + val.getClass().getName() + ")", issue);
-    }
+    return JsonNodeToJsonString(val);
+  }
+
+  @Override
+  public String getSchemaPropAsJsonString(Schema schema, String propName) {
+    @SuppressWarnings("deprecation") //this is faster
+    JsonNode val = schema.getJsonProp(propName);
+    return JsonNodeToJsonString(val);
   }
 
   @Override
@@ -341,6 +347,17 @@ public class Avro18Adapter implements AvroAdapter {
       throw e; //as-is
     } catch (Exception e) {
       throw new IllegalStateException(e);
+    }
+  }
+
+  private String JsonNodeToJsonString(JsonNode val) {
+    if (val == null) {
+      return null;
+    }
+    try {
+      return OBJECT_MAPPER.writeValueAsString(val);
+    } catch (Exception issue) {
+      throw new IllegalStateException("while trying to serialize " + val + " (a " + val.getClass().getName() + ")", issue);
     }
   }
 
