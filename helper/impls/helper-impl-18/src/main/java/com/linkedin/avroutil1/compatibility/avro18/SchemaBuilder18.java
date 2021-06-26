@@ -6,31 +6,19 @@
 
 package com.linkedin.avroutil1.compatibility.avro18;
 
-import com.linkedin.avroutil1.compatibility.SchemaBuilder;
+import com.linkedin.avroutil1.compatibility.AbstractSchemaBuilder;
+import com.linkedin.avroutil1.compatibility.AvroAdapter;
 import org.apache.avro.Schema;
 import org.codehaus.jackson.JsonNode;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
-public class SchemaBuilder18 implements SchemaBuilder {
+public class SchemaBuilder18 extends AbstractSchemaBuilder {
 
-    private Schema.Type _type;
-    private String _name;
-    private String _namespace;
-    private String _doc;
-    private boolean _isError;
-    private List<Schema.Field> _fields;
     private Map<String, JsonNode> _props;
 
-    public SchemaBuilder18(Schema original) {
-        _type = original.getType();
-        _name = original.getName();
-        _namespace = original.getNamespace();
-        _doc = original.getDoc();
-        _isError = original.isError();
-        _fields = original.getFields();
+    public SchemaBuilder18(AvroAdapter adapter, Schema original) {
+        super(adapter, original);
         //noinspection deprecation
         _props = original.getJsonProps(); //actually faster
     }
@@ -56,21 +44,5 @@ public class SchemaBuilder18 implements SchemaBuilder {
                 throw new UnsupportedOperationException("unhandled type " + _type);
         }
         return result;
-    }
-
-    /**
-     * {@link Schema.Field} has a position ("pos") property that is set when its added to a schema.
-     * this means we need to clone fields to add them to another schema
-     * @param originals list of fields to clone
-     * @return list of cloned fields
-     */
-    private List<Schema.Field> cloneFields(List<Schema.Field> originals) {
-        List<Schema.Field> clones = new ArrayList<>(originals.size());
-        for (Schema.Field original : originals) {
-            FieldBuilder18 fb = new FieldBuilder18(original);
-            Schema.Field clone = fb.build();
-            clones.add(clone);
-        }
-        return clones;
     }
 }

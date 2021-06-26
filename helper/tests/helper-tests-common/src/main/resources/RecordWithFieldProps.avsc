@@ -16,6 +16,10 @@
         "a": "b",
         "c": "d"
       }
+    },
+    {
+      "name": "intField",
+      "type": "int"
     }
   ],
   "schemaStringProp": "stringyMcStringface",

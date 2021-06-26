@@ -18,12 +18,13 @@ public class SchemaBuilderTest {
         AvroVersion runtimeAvroVersion = AvroCompatibilityHelper.getRuntimeAvroVersion();
         String avsc = TestUtil.load("RecordWithFieldProps.avsc");
         Schema originalSchema = Schema.parse(avsc);
+        Assert.assertEquals(originalSchema.getFields().size(), 2); //got 2 fields
 
         SchemaBuilder builder = AvroCompatibilityHelper.cloneSchema(originalSchema);
-        Schema newSchema = builder.build();
+        Schema newSchema = builder.removeField("intField").build();
 
         Assert.assertNotSame(newSchema, originalSchema);
-        Assert.assertEquals(newSchema.getFields().size(), 1); //got fields
+        Assert.assertEquals(newSchema.getFields().size(), 1); //got 1 field
         Assert.assertNull(AvroCompatibilityHelper.getSchemaPropAsJsonString(newSchema, "noSuchSchemaProp"));
         Assert.assertEquals(AvroCompatibilityHelper.getSchemaPropAsJsonString(newSchema, "schemaStringProp"), "\"stringyMcStringface\"");
         if (runtimeAvroVersion.earlierThan(AvroVersion.AVRO_1_7)) {

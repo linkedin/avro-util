@@ -335,7 +335,7 @@ public class Avro17Adapter implements AvroAdapter {
 
   @Override
   public SchemaBuilder cloneSchema(Schema schema) {
-    return new SchemaBuilder17(schema);
+    return new SchemaBuilder17(this, schema);
   }
 
   @Override
