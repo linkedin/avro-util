@@ -19,7 +19,7 @@ import java.nio.file.Paths;
 
 import static edu.umd.cs.findbugs.test.CountMatcher.containsExactly;
 
-public class BinaryDecoderInstantiationDetectorTest {
+public class FieldDefaultValueAccessDetectorTest {
     @Rule
     public SpotBugsRule spotbugs = new SpotBugsRule();
 
@@ -29,8 +29,8 @@ public class BinaryDecoderInstantiationDetectorTest {
         BugCollection bugCollection = spotbugs.performAnalysis(path);
 
         BugInstanceMatcher bugTypeMatcher = new BugInstanceMatcherBuilder()
-                .bugType("BINARY_DECODER_INSTANTIATION")
-                .inMethod("instantiateBinaryDecoder").build();
+                .bugType("FIELD_DEFAULT_VALUE_ACCESS")
+                .inMethod("fieldDefaultValueAccess").build();
         MatcherAssert.assertThat(bugCollection, containsExactly(1, bugTypeMatcher));
     }
 
@@ -40,7 +40,7 @@ public class BinaryDecoderInstantiationDetectorTest {
         BugCollection bugCollection = spotbugs.performAnalysis(path);
 
         BugInstanceMatcher bugTypeMatcher = new BugInstanceMatcherBuilder()
-                .bugType("BINARY_DECODER_INSTANTIATION")
+                .bugType("FIELD_DEFAULT_VALUE_ACCESS")
                 .build();
         MatcherAssert.assertThat(bugCollection, containsExactly(0, bugTypeMatcher));
     }
