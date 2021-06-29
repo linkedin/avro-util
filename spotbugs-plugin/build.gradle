@@ -6,10 +6,14 @@
 
 plugins {
   id "java-library"
+  id "checkstyle"
+  id "jacoco"
 }
 
 dependencies {
   compileOnly "com.github.spotbugs:spotbugs:4.2.3"
+
+  testCompile project(":helper:tests:helper-tests-common")
 
   testImplementation project(":helper:helper")
   testImplementation "junit:junit:4.13"

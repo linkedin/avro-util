@@ -11,6 +11,7 @@ import edu.umd.cs.findbugs.test.SpotBugsRule;
 import edu.umd.cs.findbugs.test.matcher.BugInstanceMatcher;
 import edu.umd.cs.findbugs.test.matcher.BugInstanceMatcherBuilder;
 import org.hamcrest.MatcherAssert;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -19,18 +20,19 @@ import java.nio.file.Paths;
 
 import static edu.umd.cs.findbugs.test.CountMatcher.containsExactly;
 
-public class BinaryDecoderInstantiationDetectorTest {
+public class JsonDecoderViaDecoderFactoryDetectorTest {
     @Rule
     public SpotBugsRule spotbugs = new SpotBugsRule();
 
-    @Test
+    @Ignore //can only be run if test are compiled against avro 1.5+
+    @Test()
     public void testBadCase() {
         Path path = Paths.get("build/classes/java/test", BadClass.class.getName().replace('.', '/') + ".class");
         BugCollection bugCollection = spotbugs.performAnalysis(path);
 
         BugInstanceMatcher bugTypeMatcher = new BugInstanceMatcherBuilder()
-                .bugType("BINARY_DECODER_INSTANTIATION")
-                .inMethod("instantiateBinaryDecoder").build();
+                .bugType("JSON_DECODER_FACTORY_INSTANTIATION")
+                .inMethod("instantiateJsonDecoderViaFactory").build();
         MatcherAssert.assertThat(bugCollection, containsExactly(1, bugTypeMatcher));
     }
 
@@ -40,7 +42,7 @@ public class BinaryDecoderInstantiationDetectorTest {
         BugCollection bugCollection = spotbugs.performAnalysis(path);
 
         BugInstanceMatcher bugTypeMatcher = new BugInstanceMatcherBuilder()
-                .bugType("BINARY_DECODER_INSTANTIATION")
+                .bugType("JSON_DECODER_FACTORY_INSTANTIATION")
                 .build();
         MatcherAssert.assertThat(bugCollection, containsExactly(0, bugTypeMatcher));
     }

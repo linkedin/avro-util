@@ -9,19 +9,55 @@
 
     <!-- detector descriptions -->
 
-    <Detector class="com.linkedin.avroutil1.spotbugs.BinaryEncoderInstantiationDetector">
-        <Details>
-            detects direct instantiations of org.apache.avro.io.BinaryEncoder
-        </Details>
-    </Detector>
     <Detector class="com.linkedin.avroutil1.spotbugs.BinaryDecoderInstantiationDetector">
         <Details>
             detects direct instantiations of org.apache.avro.io.BinaryDecoder
         </Details>
     </Detector>
+    <Detector class="com.linkedin.avroutil1.spotbugs.BinaryEncoderInstantiationDetector">
+        <Details>
+            detects direct instantiations of org.apache.avro.io.BinaryEncoder
+        </Details>
+    </Detector>
+    <Detector class="com.linkedin.avroutil1.spotbugs.FieldDefaultValueAccessDetector">
+        <Details>
+            detects access to Schema.Field default value method(s)
+        </Details>
+    </Detector>
+    <Detector class="com.linkedin.avroutil1.spotbugs.JsonDecoderInstantiationDetector">
+        <Details>
+            detects direct instantiations of org.apache.avro.io.JsonDecoder
+        </Details>
+    </Detector>
+    <Detector class="com.linkedin.avroutil1.spotbugs.JsonDecoderViaDecoderFactoryDetector">
+        <Details>
+            detects direct instantiations of org.apache.avro.io.JsonDecoder via org.apache.avro.io.DecoderFactory
+        </Details>
+    </Detector>
+    <Detector class="com.linkedin.avroutil1.spotbugs.JsonEncoderInstantiationDetector">
+        <Details>
+            detects direct instantiations of org.apache.avro.io.JsonEncoder
+        </Details>
+    </Detector>
 
     <!-- bug pattern descriptions -->
 
+    <BugPattern type="BINARY_DECODER_INSTANTIATION">
+        <ShortDescription>direct BinaryDecoder instantiation</ShortDescription>
+        <LongDescription>
+            direct instantiations of org.apache.avro.io.BinaryDecoder, which is not directly accessible in modern avro
+        </LongDescription>
+        <Details>
+            <![CDATA[
+   <p>
+      org.apache.avro.io.BinaryDecoder's constructor was made package-private in modern avro
+      org.apache.avro.io.DecoderFactory exists in avro 1.4+, but was not absolutely required under 1.4.
+      for broadest compatibility (and ability to reuse existing custom decoders for new InputStreams) use
+      com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.newBinaryDecoder()
+   </p>
+]]>
+        </Details>
+    </BugPattern>
     <BugPattern type="BINARY_ENCODER_INSTANTIATION">
         <ShortDescription>direct BinaryEncoder instantiation</ShortDescription>
         <LongDescription>
@@ -37,18 +73,63 @@
 ]]>
         </Details>
     </BugPattern>
-    <BugPattern type="BINARY_DECODER_INSTANTIATION">
-        <ShortDescription>direct BinaryDecoder instantiation</ShortDescription>
+    <BugPattern type="FIELD_DEFAULT_VALUE_ACCESS">
+        <ShortDescription>field defaultValue access</ShortDescription>
         <LongDescription>
-            direct instantiations of org.apache.avro.io.BinaryDecoder, which is not directly accessible in modern avro
+            access to org.apache.avro.Schema#Field.defaultValue(), which is an API that avro broke
         </LongDescription>
         <Details>
             <![CDATA[
    <p>
-      org.apache.avro.io.BinaryDecoder's constructor was made package-private in modern avro
-      org.apache.avro.io.DecoderFactory only exists in avro 1.4+, but was not absolutely required under 1.4.
-      for broadest compatibility (and ability to reuse existing custom decoders for new InputStreams) use
-      com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.newBinaryDecoder()
+      org.apache.avro.Schema#Field.defaultValue() returns a jackson 1 JsonNode in avro < 1.9.
+      its been deprecated in 1.8 and replaced with defaultVal(), which returns a java wrapper
+      or other object. in 1.9+ its been made package-protected and now returns jackson 2 JsonNodes
+   </p>
+]]>
+        </Details>
+    </BugPattern>
+    <BugPattern type="JSON_DECODER_INSTANTIATION">
+        <ShortDescription>direct JsonDecoder instantiation</ShortDescription>
+        <LongDescription>
+            direct instantiations of org.apache.avro.io.JsonDecoder, which is not directly accessible in modern avro
+        </LongDescription>
+        <Details>
+            <![CDATA[
+   <p>
+      org.apache.avro.io.JsonDecoder's constructors were made package-private in modern avro
+      org.apache.avro.io.DecoderFactory exists in avro 1.4+, but was not absolutely required under 1.4.
+      for broadest compatibility (and ability to parse both older and new json formats) use
+      com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.newCompatibleJsonDecoder()
+   </p>
+]]>
+        </Details>
+    </BugPattern>
+    <BugPattern type="JSON_DECODER_FACTORY_INSTANTIATION">
+        <ShortDescription>JsonDecoder instantiation via DecoderFactory</ShortDescription>
+        <LongDescription>
+            instantiations of org.apache.avro.io.JsonDecoder via DecoderFactory, which may not be compatible with old/new json format
+        </LongDescription>
+        <Details>
+            <![CDATA[
+   <p>
+      JsonDecoders built via org.apache.avro.io.DecoderFactory can only handle the json format used by the runtime avro version.
+      avro has made a breaking change to its json format in 1.5+ and to be able to decode both formats its recommended to
+      use the compatible json decoder available via AvroCompatibilityHelper.newCompatibleJsonDecoder()
+   </p>
+]]>
+        </Details>
+    </BugPattern>
+    <BugPattern type="JSON_ENCODER_INSTANTIATION">
+        <ShortDescription>direct JsonEncoder instantiation</ShortDescription>
+        <LongDescription>
+            direct instantiations of org.apache.avro.io.JsonEncoder, which is not directly accessible in modern avro
+        </LongDescription>
+        <Details>
+            <![CDATA[
+   <p>
+      org.apache.avro.io.JsonEncoder was made accessible only via
+      org.apache.avro.io.EncoderFactory in avro 1.5+. for broadest compatibility
+      use com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.newJsonEncoder()
    </p>
 ]]>
         </Details>
@@ -56,6 +137,9 @@
 
     <!-- bug codes -->
 
-    <BugCode abbrev="BEI">BinaryEncoder instantiation</BugCode>
     <BugCode abbrev="BDI">BinaryDecoder instantiation</BugCode>
+    <BugCode abbrev="BEI">BinaryEncoder instantiation</BugCode>
+    <BugCode abbrev="JDI">JsonDecoder instantiation</BugCode>
+    <BugCode abbrev="JDFI">JsonDecoder factory instantiation</BugCode>
+    <BugCode abbrev="JEI">JsonEncoder instantiation</BugCode>
 </MessageCollection>

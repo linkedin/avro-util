@@ -12,23 +12,26 @@ import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 import org.apache.bcel.Const;
 
 /**
- * detects direct instantiations of BinaryDecoder
+ * detects assess to org.apache.avro.Schema#Field default values
  */
-public class BinaryDecoderInstantiationDetector extends OpcodeStackDetector {
+public class FieldDefaultValueAccessDetector extends OpcodeStackDetector {
     private final BugReporter bugReporter;
 
-    public BinaryDecoderInstantiationDetector(BugReporter bugReporter) {
+    public FieldDefaultValueAccessDetector(BugReporter bugReporter) {
         this.bugReporter = bugReporter;
     }
 
     @Override
     public void sawOpcode(int seen) {
-        if (seen != Const.NEW) {
+        if (seen != Const.INVOKEVIRTUAL) {
             return;
         }
-        if (getClassConstantOperand().equals("org/apache/avro/io/BinaryDecoder")) {
+        if (getClassConstantOperand().equals("org/apache/avro/Schema$Field") &&
+                (getMethodDescriptorOperand().getName().equals("defaultValue")
+                        || getMethodDescriptorOperand().getName().equals("defaultVal"))
+        ) {
             // new BinaryEncoder call
-            BugInstance bug = new BugInstance(this, "BINARY_DECODER_INSTANTIATION", NORMAL_PRIORITY)
+            BugInstance bug = new BugInstance(this, "FIELD_DEFAULT_VALUE_ACCESS", NORMAL_PRIORITY)
                     .addClassAndMethod(this)
                     .addSourceLine(this, getPC());
             bugReporter.reportBug(bug);

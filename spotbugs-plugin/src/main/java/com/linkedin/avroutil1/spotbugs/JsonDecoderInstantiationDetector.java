@@ -11,13 +11,10 @@ import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 import org.apache.bcel.Const;
 
-/**
- * detects direct instantiations of BinaryDecoder
- */
-public class BinaryDecoderInstantiationDetector extends OpcodeStackDetector {
+public class JsonDecoderInstantiationDetector extends OpcodeStackDetector {
     private final BugReporter bugReporter;
 
-    public BinaryDecoderInstantiationDetector(BugReporter bugReporter) {
+    public JsonDecoderInstantiationDetector(BugReporter bugReporter) {
         this.bugReporter = bugReporter;
     }
 
@@ -26,9 +23,9 @@ public class BinaryDecoderInstantiationDetector extends OpcodeStackDetector {
         if (seen != Const.NEW) {
             return;
         }
-        if (getClassConstantOperand().equals("org/apache/avro/io/BinaryDecoder")) {
-            // new BinaryEncoder call
-            BugInstance bug = new BugInstance(this, "BINARY_DECODER_INSTANTIATION", NORMAL_PRIORITY)
+        if (getClassConstantOperand().equals("org/apache/avro/io/JsonDecoder")) {
+            // new JsonDecoder call
+            BugInstance bug = new BugInstance(this, "JSON_DECODER_INSTANTIATION", NORMAL_PRIORITY)
                     .addClassAndMethod(this)
                     .addSourceLine(this, getPC());
             bugReporter.reportBug(bug);

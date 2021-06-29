@@ -19,7 +19,7 @@ import java.nio.file.Paths;
 
 import static edu.umd.cs.findbugs.test.CountMatcher.containsExactly;
 
-public class BinaryDecoderInstantiationDetectorTest {
+public class JsonDecoderInstantiationDetectorTest {
     @Rule
     public SpotBugsRule spotbugs = new SpotBugsRule();
 
@@ -29,9 +29,9 @@ public class BinaryDecoderInstantiationDetectorTest {
         BugCollection bugCollection = spotbugs.performAnalysis(path);
 
         BugInstanceMatcher bugTypeMatcher = new BugInstanceMatcherBuilder()
-                .bugType("BINARY_DECODER_INSTANTIATION")
-                .inMethod("instantiateBinaryDecoder").build();
-        MatcherAssert.assertThat(bugCollection, containsExactly(1, bugTypeMatcher));
+                .bugType("JSON_DECODER_INSTANTIATION")
+                .inMethod("instantiateJsonDecoder").build();
+        MatcherAssert.assertThat(bugCollection, containsExactly(2, bugTypeMatcher));
     }
 
     @Test
@@ -40,7 +40,7 @@ public class BinaryDecoderInstantiationDetectorTest {
         BugCollection bugCollection = spotbugs.performAnalysis(path);
 
         BugInstanceMatcher bugTypeMatcher = new BugInstanceMatcherBuilder()
-                .bugType("BINARY_DECODER_INSTANTIATION")
+                .bugType("JSON_DECODER_INSTANTIATION")
                 .build();
         MatcherAssert.assertThat(bugCollection, containsExactly(0, bugTypeMatcher));
     }
