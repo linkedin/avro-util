@@ -7,7 +7,7 @@
 package com.linkedin.avroutil1.compatibility;
 
 import com.google.common.base.Throwables;
-import com.linkedin.avroutil1.TestUtil;
+import com.linkedin.avroutil1.testcommon.TestUtil;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;

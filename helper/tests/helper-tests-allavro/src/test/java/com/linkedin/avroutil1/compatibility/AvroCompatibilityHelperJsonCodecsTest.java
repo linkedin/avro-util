@@ -6,7 +6,7 @@
 
 package com.linkedin.avroutil1.compatibility;
 
-import com.linkedin.avroutil1.TestUtil;
+import com.linkedin.avroutil1.testcommon.TestUtil;
 import net.javacrumbs.jsonunit.assertj.JsonAssertions;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericDatumReader;

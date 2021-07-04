@@ -6,7 +6,7 @@
 
 package com.linkedin.avroutil1.compatibility;
 
-import com.linkedin.avroutil1.TestUtil;
+import com.linkedin.avroutil1.testcommon.TestUtil;
 import java.util.Arrays;
 import java.util.Map;
 import org.apache.avro.AvroTypeException;
