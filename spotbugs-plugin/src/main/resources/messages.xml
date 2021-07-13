@@ -44,6 +44,16 @@
             detects direct instantiations of org.apache.avro.io.JsonEncoder
         </Details>
     </Detector>
+    <Detector class="com.linkedin.avroutil1.spotbugs.OldSchemaConstructableUsageDetector">
+        <Details>
+            detects usage of org.apache.avro.specific.SpecificDatumReader$SchemaConstructable
+        </Details>
+    </Detector>
+    <Detector class="com.linkedin.avroutil1.spotbugs.SpecificDataNewInstanceUsageDetector">
+        <Details>
+            detects usage of org.apache.avro.specific.SpecificData.newInstance()
+        </Details>
+    </Detector>
 
     <!-- bug pattern descriptions -->
 
@@ -154,6 +164,36 @@
 ]]>
         </Details>
     </BugPattern>
+    <BugPattern type="OLD_SCHEMACONSTRUCTABLE_USAGE">
+        <ShortDescription>usage of org.apache.avro.specific.SpecificDatumReader$SchemaConstructable</ShortDescription>
+        <LongDescription>
+            usage of org.apache.avro.specific.SpecificDatumReader$SchemaConstructable
+        </LongDescription>
+        <Details>
+            <![CDATA[
+   <p>
+      org.apache.avro.specific.SpecificDatumReader$SchemaConstructable was renamed to
+      org.apache.avro.specific.SpecificData$SchemaConstructable in avro >= 1.6 hence
+      should not be directly referenced by portable code.
+      see AvroCompatibilityHelper.newInstance()
+   </p>
+]]>
+        </Details>
+    </BugPattern>
+    <BugPattern type="SPECIFICDATA_NEWINSTANCE_USAGE">
+        <ShortDescription>usage of org.apache.avro.specific.SpecificData.newInstance()</ShortDescription>
+        <LongDescription>
+            usage of org.apache.avro.specific.SpecificData.newInstance()
+        </LongDescription>
+        <Details>
+            <![CDATA[
+   <p>
+      org.apache.avro.specific.SpecificData.newInstance() will not honor "old" SchemaConstructable
+      classes under avro < 1.6. see AvroCompatibilityHelper.newInstance()
+   </p>
+]]>
+        </Details>
+    </BugPattern>
 
     <!-- bug codes -->
 
@@ -163,4 +203,6 @@
     <BugCode abbrev="JDI">JsonDecoder instantiation</BugCode>
     <BugCode abbrev="JDFI">JsonDecoder factory instantiation</BugCode>
     <BugCode abbrev="JEI">JsonEncoder instantiation</BugCode>
+    <BugCode abbrev="OSCI">Old SchemaConstructable usage</BugCode>
+    <BugCode abbrev="SDNI">SecificData.newInstance() usage</BugCode>
 </MessageCollection>
