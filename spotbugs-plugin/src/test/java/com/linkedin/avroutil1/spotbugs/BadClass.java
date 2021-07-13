@@ -8,10 +8,12 @@ package com.linkedin.avroutil1.spotbugs;
 
 import com.linkedin.avroutil1.TestUtil;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
+import org.apache.avro.specific.SpecificRecordBase;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -45,5 +47,13 @@ public class BadClass {
         Schema schema = Schema.parse(avsc);
         Schema.Field field = schema.getField("stringField");
         field.defaultValue();
+    }
+
+    public void instanceOfGenericRecord() throws Exception {
+        SpecificRecordBase someRecord = null;
+        //noinspection ConstantConditions
+        if (someRecord instanceof GenericRecord) {
+            System.err.println("boom");
+        }
     }
 }
