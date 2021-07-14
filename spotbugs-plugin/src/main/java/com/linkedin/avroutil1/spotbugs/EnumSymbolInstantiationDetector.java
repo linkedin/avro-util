@@ -12,26 +12,26 @@ import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 import org.apache.bcel.Const;
 
 /**
- * detects assess to org.apache.avro.Schema#Field default values
+ * detects direct instantiations of GenericData.EnumSymbol, the constructor of which
+ * has changed
  */
-public class FieldDefaultValueAccessDetector extends OpcodeStackDetector {
+public class EnumSymbolInstantiationDetector extends OpcodeStackDetector {
     private final BugReporter bugReporter;
 
-    public FieldDefaultValueAccessDetector(BugReporter bugReporter) {
+    public EnumSymbolInstantiationDetector(BugReporter bugReporter) {
         this.bugReporter = bugReporter;
     }
 
     @Override
     public void sawOpcode(int seen) {
-        if (seen != Const.INVOKEVIRTUAL) {
+        if (seen != Const.INVOKESPECIAL) {
             return;
         }
-        if (getClassConstantOperand().equals("org/apache/avro/Schema$Field") &&
-                (getMethodDescriptorOperand().getName().equals("defaultValue")
-                        || getMethodDescriptorOperand().getName().equals("defaultVal"))
+        if (getClassConstantOperand().equals("org/apache/avro/generic/GenericData$EnumSymbol") &&
+                getMethodDescriptorOperand().getName().equals("<init>")
         ) {
-            // direct access to avro default value getter methods
-            BugInstance bug = new BugInstance(this, "FIELD_DEFAULT_VALUE_ACCESS", NORMAL_PRIORITY)
+            // constructor call for EnumSymbol
+            BugInstance bug = new BugInstance(this, "ENUMSYMBOL_INSTANTIATION", NORMAL_PRIORITY)
                     .addClassAndMethod(this)
                     .addSourceLine(this, getPC());
             bugReporter.reportBug(bug);

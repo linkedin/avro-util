@@ -8,6 +8,7 @@
 
     <Detector class="com.linkedin.avroutil1.spotbugs.BinaryDecoderInstantiationDetector" reports="BINARY_DECODER_INSTANTIATION" speed="fast" />
     <Detector class="com.linkedin.avroutil1.spotbugs.BinaryEncoderInstantiationDetector" reports="BINARY_ENCODER_INSTANTIATION" speed="fast" />
+    <Detector class="com.linkedin.avroutil1.spotbugs.EnumSymbolInstantiationDetector" reports="ENUMSYMBOL_INSTANTIATION" speed="fast" />
     <Detector class="com.linkedin.avroutil1.spotbugs.FieldDefaultValueAccessDetector" reports="FIELD_DEFAULT_VALUE_ACCESS" speed="fast" />
     <Detector class="com.linkedin.avroutil1.spotbugs.InstanceofGenericRecordDetector" reports="INSTANCEOF_GENERICRECORD" speed="fast" />
     <Detector class="com.linkedin.avroutil1.spotbugs.JsonDecoderInstantiationDetector" reports="JSON_DECODER_INSTANTIATION" speed="fast" />
@@ -18,6 +19,7 @@
 
     <BugPattern type="BINARY_DECODER_INSTANTIATION" category="AVRO" abbrev="BDI"/>
     <BugPattern type="BINARY_ENCODER_INSTANTIATION" category="AVRO" abbrev="BEI"/>
+    <BugPattern type="ENUMSYMBOL_INSTANTIATION" category="AVRO" abbrev="ESI"/>
     <BugPattern type="FIELD_DEFAULT_VALUE_ACCESS" category="AVRO" abbrev="FDVA"/>
     <BugPattern type="INSTANCEOF_GENERICRECORD" category="AVRO" abbrev="IOGR"/>
     <BugPattern type="JSON_DECODER_INSTANTIATION" category="AVRO" abbrev="JDI"/>

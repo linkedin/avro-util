@@ -44,4 +44,8 @@ public class GoodClass {
             System.err.println("boom");
         }
     }
+
+    public void instantiateEnumSymbol() {
+        AvroCompatibilityHelper.newEnumSymbol(null, "bob");
+    }
 }

@@ -8,6 +8,7 @@ package com.linkedin.avroutil1.spotbugs;
 
 import com.linkedin.avroutil1.TestUtil;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
@@ -88,4 +89,9 @@ public abstract class BadClass {
 //    public void callSpecificDataNewInstance() {
 //        SpecificData.newInstance(ArrayList.class, null);
 //    }
+
+    //compiles under avro < 1.5
+    public void instantiateEnumSymbol() {
+        new GenericData.EnumSymbol("bob");
+    }
 }
