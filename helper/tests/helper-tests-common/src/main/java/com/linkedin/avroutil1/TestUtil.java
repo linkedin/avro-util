@@ -8,10 +8,20 @@ package com.linkedin.avroutil1;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.Set;
+import java.util.regex.Pattern;
+
 import org.apache.commons.io.IOUtils;
 
 
@@ -80,5 +90,32 @@ public class TestUtil {
     }
     Files.createFile(file);
     return file;
+  }
+
+  /**
+   * finds all class files associated with a given class
+   * (including any class files for inner classes)
+   * @param classesRoot root of compiled code folder
+   * @param clazz class to find files for
+   * @return all class files for the given class and any inner classes
+   */
+  public static List<Path> findClassFiles(String classesRoot, Class<?> clazz) throws IOException {
+    Path folder = Paths.get(classesRoot, clazz.getName().replace('.', '/')).getParent();
+    Set<Path> classesToCheck = new HashSet<>();
+    Pattern pattern = Pattern.compile(clazz.getSimpleName() + "(\\$\\w+)?\\.class");
+    Files.walkFileTree(folder, new SimpleFileVisitor<Path>() {
+      @Override
+      public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+        if (!Files.isRegularFile(file)) {
+          return FileVisitResult.CONTINUE;
+        }
+        String name = file.getName(file.getNameCount() - 1).toString();
+        if (pattern.matcher(name).matches()) {
+          classesToCheck.add(file);
+        }
+        return FileVisitResult.CONTINUE;
+      }
+    });
+    return new ArrayList<>(classesToCheck);
   }
 }
