@@ -31,6 +31,7 @@ import org.apache.avro.io.Encoder;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificRecord;
+import org.apache.commons.text.StringEscapeUtils;
 
 
 /**
@@ -649,10 +650,73 @@ public class AvroCompatibilityHelper {
    * @return field property value as json literal, or null if no such property
    */
   public static String getFieldPropAsJsonString(Schema.Field field, String propName) {
-    return ADAPTER.getFieldPropAsJsonString(field, propName);
+    return getFieldPropAsJsonString(field, propName, true, false);
   }
 
+  /**
+   * returns the value of the specified field prop as a json literal.
+   * returns null if the field has no such property.
+   * optionally returns string literals as "naked" strings. also optionally unescapes any nested json
+   * inside such nested strings
+   * @param field the field who's property value we wish to get
+   * @param propName the name of the property
+   * @param quoteStringValues true to return string literals quoted. false to strip such quotes. false matches avro behaviour
+   * @param unescapeInnerJson true to unescape inner json inside string literals. true matches avro behaviour
+   * @return field property value as json literal, or null if no such property
+   */
+  public static String getFieldPropAsJsonString(Schema.Field field, String propName, boolean quoteStringValues, boolean unescapeInnerJson) {
+    String value = ADAPTER.getFieldPropAsJsonString(field, propName);
+    return unquoteAndEscapeStringProp(value, quoteStringValues, unescapeInnerJson);
+  }
+
+  /**
+   * returns the value of the specified schema prop as a json literal.
+   * returns null if the schema has no such property.
+   * note that string values are returned quoted (as a proper json string literal)
+   * @param schema the schema who's property value we wish to get
+   * @param propName the name of the property
+   * @return schema property value as json literal, or null if no such property
+   */
   public static String getSchemaPropAsJsonString(Schema schema, String propName) {
-    return ADAPTER.getSchemaPropAsJsonString(schema, propName);
+    return getSchemaPropAsJsonString(schema, propName, true, false);
+  }
+
+  /**
+   * returns the value of the specified schema prop as a json literal.
+   * returns null if the schema has no such property.
+   * optionally returns string literals as "naked" strings. also optionally unescapes any nested json
+   * inside such nested strings
+   * @param schema the schema who's property value we wish to get
+   * @param propName the name of the property
+   * @param quoteStringValues true to return string literals quoted. false to strip such quotes. false matches avro behaviour
+   * @param unescapeInnerJson true to unescape inner json inside string literals. true matches avro behaviour
+   * @return schema property value as json literal, or null if no such property
+   */
+  public static String getSchemaPropAsJsonString(Schema schema, String propName, boolean quoteStringValues, boolean unescapeInnerJson) {
+    String value = ADAPTER.getSchemaPropAsJsonString(schema, propName);
+    return unquoteAndEscapeStringProp(value, quoteStringValues, unescapeInnerJson);
+  }
+
+  private static String unquoteAndEscapeStringProp(String maybeAStringProp, boolean quoteStringValues, boolean unescapeInnerJson) {
+    if (maybeAStringProp == null) {
+      //no such prop
+      return null;
+    }
+    if (quoteStringValues && !unescapeInnerJson) {
+      //no changes actually required
+      return maybeAStringProp;
+    }
+    boolean isAStringValue = maybeAStringProp.startsWith("\"") && maybeAStringProp.endsWith("\"");
+    if (!isAStringValue) {
+      return maybeAStringProp;
+    }
+    String processed = maybeAStringProp;
+    if (!quoteStringValues) {
+      processed = processed.substring(1, processed.length() - 1); //remove enclosing quotes
+    }
+    if (unescapeInnerJson) {
+      processed = StringEscapeUtils.unescapeJson(processed);
+    }
+    return processed;
   }
 }

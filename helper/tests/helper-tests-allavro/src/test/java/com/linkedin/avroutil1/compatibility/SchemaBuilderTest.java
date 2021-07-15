@@ -41,5 +41,9 @@ public class SchemaBuilderTest {
         Assert.assertEquals(AvroCompatibilityHelper.getSchemaPropAsJsonString(newSchema, "schemaNullProp"), "null");
         Assert.assertEquals(AvroCompatibilityHelper.getSchemaPropAsJsonString(newSchema, "schemaBoolProp"), "false");
         Assert.assertEquals(AvroCompatibilityHelper.getSchemaPropAsJsonString(newSchema, "schemaObjectProp"), "{\"e\":\"f\",\"g\":\"h\"}");
+
+        Assert.assertEquals(AvroCompatibilityHelper.getSchemaPropAsJsonString(newSchema, "schemaNestedJsonProp"), "\"{\\\"innerKey\\\" : \\\"innerValue\\\"}\"");
+        Assert.assertEquals(AvroCompatibilityHelper.getSchemaPropAsJsonString(newSchema, "schemaNestedJsonProp", false, false), "{\\\"innerKey\\\" : \\\"innerValue\\\"}");
+        Assert.assertEquals(AvroCompatibilityHelper.getSchemaPropAsJsonString(newSchema, "schemaNestedJsonProp", false, true), "{\"innerKey\" : \"innerValue\"}");
     }
 }
