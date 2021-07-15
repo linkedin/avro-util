@@ -39,15 +39,15 @@ public class AvroCompatibilityHelperGenericUtilMethodsTest {
     SchemaParseResult result = AvroCompatibilityHelper.parse(avsc, SchemaParseConfiguration.STRICT, null);
     Schema schema = result.getMainSchema();
 
-    GenericData.Fixed fixed = AvroCompatibilityHelper.newFixedField(schema, new byte[]{1, 2, 3});
+    GenericData.Fixed fixed = AvroCompatibilityHelper.newFixed(schema, new byte[]{1, 2, 3});
     Assert.assertNotNull(fixed);
     Assert.assertEquals(fixed.bytes(), new byte[] {1, 2, 3});
 
-    fixed = AvroCompatibilityHelper.newFixedField(schema, null);
+    fixed = AvroCompatibilityHelper.newFixed(schema, null);
     Assert.assertNotNull(fixed);
     Assert.assertNull(fixed.bytes());
 
-    fixed = AvroCompatibilityHelper.newFixedField(schema);
+    fixed = AvroCompatibilityHelper.newFixed(schema);
     Assert.assertNotNull(fixed);
     Assert.assertEquals(fixed.bytes(), new byte[] {0, 0, 0});
   }

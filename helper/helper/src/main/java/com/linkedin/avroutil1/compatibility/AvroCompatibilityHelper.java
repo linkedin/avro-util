@@ -440,7 +440,7 @@ public class AvroCompatibilityHelper {
    * @param fixedSchema fixed schema
    * @return a new {@link org.apache.avro.generic.GenericData.Fixed} with a value of all zeroes of the correct size
    */
-  public static GenericData.Fixed newFixedField(Schema fixedSchema) {
+  public static GenericData.Fixed newFixed(Schema fixedSchema) {
     assertAvroAvailable();
     return ADAPTER.newFixedField(fixedSchema);
   }
@@ -451,9 +451,32 @@ public class AvroCompatibilityHelper {
    * @param contents initial contents of the instance.
    * @return a new {@link org.apache.avro.generic.GenericData.Fixed}
    */
-  public static GenericData.Fixed newFixedField(Schema fixedSchema, byte[] contents) {
+  public static GenericData.Fixed newFixed(Schema fixedSchema, byte[] contents) {
     assertAvroAvailable();
     return ADAPTER.newFixedField(fixedSchema, contents);
+  }
+
+  /**
+   * creates a new {@link org.apache.avro.generic.GenericData.Fixed} of the given schema with a value of zeroes
+   * @param fixedSchema fixed schema
+   * @return a new {@link org.apache.avro.generic.GenericData.Fixed} with a value of all zeroes of the correct size
+   * @deprecated use {@link #newFixed(Schema)}
+   */
+  @Deprecated
+  public static GenericData.Fixed newFixedField(Schema fixedSchema) {
+    return newFixed(fixedSchema);
+  }
+
+  /**
+   * creates a new {@link org.apache.avro.generic.GenericData.Fixed} of the given schema with the given value
+   * @param fixedSchema fixed schema
+   * @param contents initial contents of the instance.
+   * @return a new {@link org.apache.avro.generic.GenericData.Fixed}
+   * @deprecated use {@link #newFixed(Schema, byte[])}
+   */
+  @Deprecated
+  public static GenericData.Fixed newFixedField(Schema fixedSchema, byte[] contents) {
+    return newFixed(fixedSchema, contents);
   }
 
   public static boolean fieldHasDefault(Schema.Field field) {
