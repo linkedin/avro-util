@@ -15,7 +15,8 @@
       "objectProp": {
         "a": "b",
         "c": "d"
-      }
+      },
+      "nestedJsonProp": "{\"innerKey\" : \"innerValue\"}"
     },
     {
       "name": "intField",
@@ -30,5 +31,6 @@
   "schemaObjectProp": {
     "e": "f",
     "g": "h"
-  }
+  },
+  "schemaNestedJsonProp": "{\"innerKey\" : \"innerValue\"}"
 }

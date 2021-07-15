@@ -27,6 +27,7 @@ dependencies {
   implementation project(":helper:impls:helper-impl-18")
   implementation project(":helper:impls:helper-impl-19")
   implementation project(":helper:impls:helper-impl-110")
+  implementation "org.apache.commons:commons-text:1.9"
 }
 
 shadowJar {
@@ -37,6 +38,9 @@ shadowJar {
     //do not pack slf4j
     exclude(dependency("org.slf4j:slf4j-api:.*"))
   }
+
+  //relocate commons-text to not conflict with anything that might be on a user's classpath
+  relocate 'org.apache.commons', 'com.linkedin.avroutil1.compatibility.shaded.org.apache.commons'
 }
 
 //"fat" sources jar
