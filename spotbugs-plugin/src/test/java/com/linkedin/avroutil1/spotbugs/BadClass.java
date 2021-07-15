@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
+@SuppressWarnings("unused") //not used in code, but the compiled bytecode is used in tests
 public abstract class BadClass {
 
     public void instantiateBinaryDecoder() {
@@ -93,5 +94,11 @@ public abstract class BadClass {
     //compiles under avro < 1.5
     public void instantiateEnumSymbol() {
         new GenericData.EnumSymbol("bob");
+    }
+
+    //compiles under avro < 1.5
+    public void fixedInstantiation() throws Exception {
+        new GenericData.Fixed((Schema) null);
+        new GenericData.Fixed(new byte[] {1, 2, 3});
     }
 }

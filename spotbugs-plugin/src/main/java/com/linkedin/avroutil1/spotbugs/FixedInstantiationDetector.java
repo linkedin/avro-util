@@ -12,13 +12,13 @@ import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 import org.apache.bcel.Const;
 
 /**
- * detects direct instantiations of GenericData.EnumSymbol, the constructor of which
- * has changed in avro 1.5+
+ * detects direct instantiations of GenericData.Fixed, the constructor of which
+ * has changed in 1.5+
  */
-public class EnumSymbolInstantiationDetector extends OpcodeStackDetector {
+public class FixedInstantiationDetector extends OpcodeStackDetector {
     private final BugReporter bugReporter;
 
-    public EnumSymbolInstantiationDetector(BugReporter bugReporter) {
+    public FixedInstantiationDetector(BugReporter bugReporter) {
         this.bugReporter = bugReporter;
     }
 
@@ -27,11 +27,11 @@ public class EnumSymbolInstantiationDetector extends OpcodeStackDetector {
         if (seen != Const.INVOKESPECIAL) {
             return;
         }
-        if (getClassConstantOperand().equals("org/apache/avro/generic/GenericData$EnumSymbol") &&
+        if (getClassConstantOperand().equals("org/apache/avro/generic/GenericData$Fixed") &&
                 getMethodDescriptorOperand().getName().equals("<init>")
         ) {
-            // constructor call for EnumSymbol
-            BugInstance bug = new BugInstance(this, "ENUMSYMBOL_INSTANTIATION", NORMAL_PRIORITY)
+            // constructor call for Fixed
+            BugInstance bug = new BugInstance(this, "FIXED_INSTANTIATION", NORMAL_PRIORITY)
                     .addClassAndMethod(this)
                     .addSourceLine(this, getPC());
             bugReporter.reportBug(bug);

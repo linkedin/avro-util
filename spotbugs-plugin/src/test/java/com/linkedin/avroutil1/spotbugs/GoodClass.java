@@ -18,6 +18,7 @@ import org.apache.avro.specific.SpecificRecordBase;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+@SuppressWarnings("unused") //not used in code, but the compiled bytecode is used in tests
 public class GoodClass {
 
     public void instantiateBinaryDecoder() {
@@ -47,5 +48,9 @@ public class GoodClass {
 
     public void instantiateEnumSymbol() {
         AvroCompatibilityHelper.newEnumSymbol(null, "bob");
+    }
+
+    public void instantiationFixed() throws Exception {
+        AvroCompatibilityHelper.newFixed(null, new byte[] {1, 2, 3});
     }
 }

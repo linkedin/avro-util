@@ -29,6 +29,11 @@
             detects access to Schema.Field default value method(s)
         </Details>
     </Detector>
+    <Detector class="com.linkedin.avroutil1.spotbugs.FixedInstantiationDetector">
+        <Details>
+            detects direct instantiations of org.apache.avro.generic.GenericData$Fixed
+        </Details>
+    </Detector>
     <Detector class="com.linkedin.avroutil1.spotbugs.InstanceofGenericRecordDetector">
         <Details>
             detects "instanceof GenericRecord" tests
@@ -119,6 +124,21 @@
       org.apache.avro.Schema#Field.defaultValue() returns a jackson 1 JsonNode in avro < 1.9.
       its been deprecated in 1.8 and replaced with defaultVal(), which returns a java wrapper
       or other object. in 1.9+ its been made package-protected and now returns jackson 2 JsonNodes
+   </p>
+]]>
+        </Details>
+    </BugPattern>
+    <BugPattern type="FIXED_INSTANTIATION">
+        <ShortDescription>direct Fixed instantiation</ShortDescription>
+        <LongDescription>
+            direct instantiations of org.apache.avro.generic.GenericData$Fixed, which was incompatibly changed in avro 1.5
+        </LongDescription>
+        <Details>
+            <![CDATA[
+   <p>
+      org.apache.avro.generic.GenericData$Fixed is constructed using only the byte[] contents before avro 1.5
+      but requires a Schema argument in 1.5+, as such there's no way to do this across all avro versions.
+      use AvroCompatibilityHelper.newFixed()
    </p>
 ]]>
         </Details>
@@ -220,6 +240,7 @@
     <BugCode abbrev="BDI">BinaryDecoder instantiation</BugCode>
     <BugCode abbrev="BEI">BinaryEncoder instantiation</BugCode>
     <BugCode abbrev="ESI">EnumSymbol instantiation</BugCode>
+    <BugCode abbrev="FI">Fixed instantiation</BugCode>
     <BugCode abbrev="IOGR">instanceof GenericRecord</BugCode>
     <BugCode abbrev="JDI">JsonDecoder instantiation</BugCode>
     <BugCode abbrev="JDFI">JsonDecoder factory instantiation</BugCode>
