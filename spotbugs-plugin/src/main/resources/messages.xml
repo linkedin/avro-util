@@ -59,6 +59,11 @@
             detects usage of org.apache.avro.specific.SpecificDatumReader$SchemaConstructable
         </Details>
     </Detector>
+    <Detector class="com.linkedin.avroutil1.spotbugs.SchemaFieldInstantiationDetector">
+        <Details>
+            detects direct instantiations of org.apache.avro.Schema$Field
+        </Details>
+    </Detector>
     <Detector class="com.linkedin.avroutil1.spotbugs.SpecificDataNewInstanceUsageDetector">
         <Details>
             detects usage of org.apache.avro.specific.SpecificData.newInstance()
@@ -220,6 +225,21 @@
 ]]>
         </Details>
     </BugPattern>
+    <BugPattern type="SCHEMAFIELD_INSTANTIATION">
+        <ShortDescription>direct Schema.Field instantiation</ShortDescription>
+        <LongDescription>
+            direct instantiation of org.apache.avro.Schema$Field, which there is no way of compatibly doing across avro versions
+        </LongDescription>
+        <Details>
+            <![CDATA[
+   <p>
+      org.apache.avro.Schema$Field has switched from using jackson1 to using Object literals for default values
+      (as part of avro moving to jackson2 internally) starting with 1.9. this completely changed all constructor signatures.
+      use AvroCompatibilityHelper.createSchemaField() instead.
+   </p>
+]]>
+        </Details>
+    </BugPattern>
     <BugPattern type="SPECIFICDATA_NEWINSTANCE_USAGE">
         <ShortDescription>usage of org.apache.avro.specific.SpecificData.newInstance()</ShortDescription>
         <LongDescription>
@@ -247,4 +267,5 @@
     <BugCode abbrev="JEI">JsonEncoder instantiation</BugCode>
     <BugCode abbrev="OSCI">Old SchemaConstructable usage</BugCode>
     <BugCode abbrev="SDNI">SecificData.newInstance() usage</BugCode>
+    <BugCode abbrev="SFI">Schema.Field instantiation</BugCode>
 </MessageCollection>

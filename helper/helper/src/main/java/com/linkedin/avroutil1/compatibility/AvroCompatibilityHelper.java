@@ -646,8 +646,8 @@ public class AvroCompatibilityHelper {
    * @param name the name of the field
    * @param schema the schema of the field
    * @param doc the doc of the field
-   * @param defaultValue the default value of the field. For avro 1.4-1.8, user should pass in a JsonNode. For avro 1.9
-   * and newer, user should pass in the default value object directly.
+   * @param defaultValue the default value of the field. For avro 1.4-1.8, user should pass in a jackson1 JsonNode.
+   *                     For avro 1.9 and newer, user should pass in the default value object directly.
    * @param order the order of the field.
    * @return fully constructed Field instance
    */

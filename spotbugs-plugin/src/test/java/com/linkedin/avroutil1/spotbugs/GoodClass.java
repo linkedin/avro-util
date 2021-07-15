@@ -8,6 +8,7 @@ package com.linkedin.avroutil1.spotbugs;
 
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
+import org.apache.avro.Schema;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.Decoder;
@@ -52,5 +53,9 @@ public class GoodClass {
 
     public void instantiationFixed() throws Exception {
         AvroCompatibilityHelper.newFixed(null, new byte[] {1, 2, 3});
+    }
+
+    public void instantiateSchemaField() throws Exception {
+        AvroCompatibilityHelper.createSchemaField("file", null, "doc", null, Schema.Field.Order.ASCENDING);
     }
 }

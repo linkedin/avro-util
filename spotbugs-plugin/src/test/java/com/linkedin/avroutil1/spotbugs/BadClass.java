@@ -101,4 +101,9 @@ public abstract class BadClass {
         new GenericData.Fixed((Schema) null);
         new GenericData.Fixed(new byte[] {1, 2, 3});
     }
+
+    //compiles under avro < 1.9
+    public void schemaFieldInstantiation() throws Exception {
+        new Schema.Field("file", null, "doc", null, Schema.Field.Order.ASCENDING);
+    }
 }
