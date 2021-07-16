@@ -106,4 +106,54 @@ public abstract class BadClass {
     public void schemaFieldInstantiation() throws Exception {
         new Schema.Field("file", null, "doc", null, Schema.Field.Order.ASCENDING);
     }
+
+//    //compiles under avro 1.7
+//    public void propAccessUnder17() throws Exception {
+//        Schema s = Schema.parse("whatever");
+//        Schema.Field f = s.getField("f");
+//        org.apache.avro.JsonProperties p = (org.apache.avro.JsonProperties) Schema.parse("something else");
+//
+//        //12 violations follow
+//
+//        s.getProps();
+//        f.getProps();
+//        p.getProps();
+//
+//        s.addProp("K", (org.codehaus.jackson.JsonNode) null);
+//        f.addProp("K", (org.codehaus.jackson.JsonNode) null);
+//        p.addProp("K", (org.codehaus.jackson.JsonNode) null);
+//
+//        s.getJsonProp("K");
+//        f.getJsonProp("K");
+//        p.getJsonProp("K");
+//
+//        s.getJsonProps();
+//        f.getJsonProps();
+//        p.getJsonProps();
+//    }
+
+//    //compiles under avro 1.9
+//    public void propAccessUnder19() throws Exception {
+//        Schema s = Schema.parse("whatever");
+//        Schema.Field f = s.getField("f");
+//        org.apache.avro.JsonProperties p = (org.apache.avro.JsonProperties) Schema.parse("something else");
+//
+//        //12 violations follow
+//
+//        s.addProp("K", new Object());
+//        f.addProp("K", new Object());
+//        p.addProp("K", new Object());
+//
+//        s.getObjectProp("K");
+//        f.getObjectProp("K");
+//        p.getObjectProp("K");
+//
+//        s.getObjectProps();
+//        f.getObjectProps();
+//        p.getObjectProps();
+//
+//        s.addAllProps(null);
+//        f.addAllProps(null);
+//        p.addAllProps(null);
+//    }
 }

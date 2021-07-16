@@ -58,4 +58,17 @@ public class GoodClass {
     public void instantiateSchemaField() throws Exception {
         AvroCompatibilityHelper.createSchemaField("file", null, "doc", null, Schema.Field.Order.ASCENDING);
     }
+
+    public void stringPropAccess() throws Exception {
+        //these are limited to string props, but work across all avro versions
+        Schema s = Schema.parse("whatever");
+        s.addProp("K", "V");
+        s.getProp("K");
+        Schema.Field f = s.getField("f");
+        f.addProp("K", "V");
+        f.getProp("K");
+
+        AvroCompatibilityHelper.getSchemaPropAsJsonString(s, "K");
+        AvroCompatibilityHelper.getFieldPropAsJsonString(f, "K");
+    }
 }
