@@ -8,6 +8,7 @@ package com.linkedin.avroutil1.spotbugs;
 
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
+import org.apache.avro.Schema;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.Decoder;
@@ -18,6 +19,7 @@ import org.apache.avro.specific.SpecificRecordBase;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+@SuppressWarnings("unused") //not used in code, but the compiled bytecode is used in tests
 public class GoodClass {
 
     public void instantiateBinaryDecoder() {
@@ -47,5 +49,26 @@ public class GoodClass {
 
     public void instantiateEnumSymbol() {
         AvroCompatibilityHelper.newEnumSymbol(null, "bob");
+    }
+
+    public void instantiationFixed() throws Exception {
+        AvroCompatibilityHelper.newFixed(null, new byte[] {1, 2, 3});
+    }
+
+    public void instantiateSchemaField() throws Exception {
+        AvroCompatibilityHelper.createSchemaField("file", null, "doc", null, Schema.Field.Order.ASCENDING);
+    }
+
+    public void stringPropAccess() throws Exception {
+        //these are limited to string props, but work across all avro versions
+        Schema s = Schema.parse("whatever");
+        s.addProp("K", "V");
+        s.getProp("K");
+        Schema.Field f = s.getField("f");
+        f.addProp("K", "V");
+        f.getProp("K");
+
+        AvroCompatibilityHelper.getSchemaPropAsJsonString(s, "K");
+        AvroCompatibilityHelper.getFieldPropAsJsonString(f, "K");
     }
 }

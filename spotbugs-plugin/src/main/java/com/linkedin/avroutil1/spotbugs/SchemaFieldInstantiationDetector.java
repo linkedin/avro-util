@@ -12,13 +12,13 @@ import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 import org.apache.bcel.Const;
 
 /**
- * detects direct instantiations of GenericData.EnumSymbol, the constructor of which
- * has changed in avro 1.5+
+ * detects direct instantiations of Schema.Field, the constructor of which
+ * has changed in avro 1.8 and again incompatibly in avro 1.9+
  */
-public class EnumSymbolInstantiationDetector extends OpcodeStackDetector {
+public class SchemaFieldInstantiationDetector extends OpcodeStackDetector {
     private final BugReporter bugReporter;
 
-    public EnumSymbolInstantiationDetector(BugReporter bugReporter) {
+    public SchemaFieldInstantiationDetector(BugReporter bugReporter) {
         this.bugReporter = bugReporter;
     }
 
@@ -27,11 +27,11 @@ public class EnumSymbolInstantiationDetector extends OpcodeStackDetector {
         if (seen != Const.INVOKESPECIAL) {
             return;
         }
-        if (getClassConstantOperand().equals("org/apache/avro/generic/GenericData$EnumSymbol") &&
+        if (getClassConstantOperand().equals("org/apache/avro/Schema$Field") &&
                 getMethodDescriptorOperand().getName().equals("<init>")
         ) {
-            // constructor call for EnumSymbol
-            BugInstance bug = new BugInstance(this, "ENUMSYMBOL_INSTANTIATION", NORMAL_PRIORITY)
+            // constructor call for Field
+            BugInstance bug = new BugInstance(this, "SCHEMAFIELD_INSTANTIATION", NORMAL_PRIORITY)
                     .addClassAndMethod(this)
                     .addSourceLine(this, getPC());
             bugReporter.reportBug(bug);

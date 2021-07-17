@@ -29,6 +29,11 @@
             detects access to Schema.Field default value method(s)
         </Details>
     </Detector>
+    <Detector class="com.linkedin.avroutil1.spotbugs.FixedInstantiationDetector">
+        <Details>
+            detects direct instantiations of org.apache.avro.generic.GenericData$Fixed
+        </Details>
+    </Detector>
     <Detector class="com.linkedin.avroutil1.spotbugs.InstanceofGenericRecordDetector">
         <Details>
             detects "instanceof GenericRecord" tests
@@ -52,6 +57,16 @@
     <Detector class="com.linkedin.avroutil1.spotbugs.OldSchemaConstructableUsageDetector">
         <Details>
             detects usage of org.apache.avro.specific.SpecificDatumReader$SchemaConstructable
+        </Details>
+    </Detector>
+    <Detector class="com.linkedin.avroutil1.spotbugs.PropAccessDetector">
+        <Details>
+            detects usage of incompatible schema/field props APIs
+        </Details>
+    </Detector>
+    <Detector class="com.linkedin.avroutil1.spotbugs.SchemaFieldInstantiationDetector">
+        <Details>
+            detects direct instantiations of org.apache.avro.Schema$Field
         </Details>
     </Detector>
     <Detector class="com.linkedin.avroutil1.spotbugs.SpecificDataNewInstanceUsageDetector">
@@ -119,6 +134,21 @@
       org.apache.avro.Schema#Field.defaultValue() returns a jackson 1 JsonNode in avro < 1.9.
       its been deprecated in 1.8 and replaced with defaultVal(), which returns a java wrapper
       or other object. in 1.9+ its been made package-protected and now returns jackson 2 JsonNodes
+   </p>
+]]>
+        </Details>
+    </BugPattern>
+    <BugPattern type="FIXED_INSTANTIATION">
+        <ShortDescription>direct Fixed instantiation</ShortDescription>
+        <LongDescription>
+            direct instantiations of org.apache.avro.generic.GenericData$Fixed, which was incompatibly changed in avro 1.5
+        </LongDescription>
+        <Details>
+            <![CDATA[
+   <p>
+      org.apache.avro.generic.GenericData$Fixed is constructed using only the byte[] contents before avro 1.5
+      but requires a Schema argument in 1.5+, as such there's no way to do this across all avro versions.
+      use AvroCompatibilityHelper.newFixed()
    </p>
 ]]>
         </Details>
@@ -200,6 +230,46 @@
 ]]>
         </Details>
     </BugPattern>
+    <BugPattern type="PROP_ACCESS">
+        <ShortDescription>incompatible schema/field props access</ShortDescription>
+        <LongDescription>
+            usage of schema/field props APIs that are not compatible across avro versions
+        </LongDescription>
+        <Details>
+            <![CDATA[
+   <p>
+      detects access to the following methods on Schema, Schema$Field and JsonProperties:
+      <ul>
+         <li>getJsonProp() - returns jackson1 JsonNode in avro 1.7.3, became private in 1.9 (and moved to jackson2)</li>
+         <li>getObjectProp() - in avro 1.8+</li>
+         <li>addProp(JsonNode) - uses jackson1 in avro 1.7.3, became private in 1.9 (and moved to jackson2)</li>
+         <li>addProp(Object) - in avro 1.8+</li>
+         <li>props() - avro 1.6 to 1.8</li>
+         <li>getJsonProps() - uses jackson1 in avro 1.7.3 to 1.8</li>
+         <li>getObjectProps() - in avro 1.8, became private in 1.9</li>
+         <li>addAllProps() - in avro 1.9+</li>
+      </ul>
+      NOTE: the getProp(Str) and addProp(Str) methods exist in all avro versions (hence are compatible),
+      but only operate on string props
+   </p>
+]]>
+        </Details>
+    </BugPattern>
+    <BugPattern type="SCHEMAFIELD_INSTANTIATION">
+        <ShortDescription>direct Schema.Field instantiation</ShortDescription>
+        <LongDescription>
+            direct instantiation of org.apache.avro.Schema$Field, which there is no way of compatibly doing across avro versions
+        </LongDescription>
+        <Details>
+            <![CDATA[
+   <p>
+      org.apache.avro.Schema$Field has switched from using jackson1 to using Object literals for default values
+      (as part of avro moving to jackson2 internally) starting with 1.9. this completely changed all constructor signatures.
+      use AvroCompatibilityHelper.createSchemaField() instead.
+   </p>
+]]>
+        </Details>
+    </BugPattern>
     <BugPattern type="SPECIFICDATA_NEWINSTANCE_USAGE">
         <ShortDescription>usage of org.apache.avro.specific.SpecificData.newInstance()</ShortDescription>
         <LongDescription>
@@ -220,10 +290,13 @@
     <BugCode abbrev="BDI">BinaryDecoder instantiation</BugCode>
     <BugCode abbrev="BEI">BinaryEncoder instantiation</BugCode>
     <BugCode abbrev="ESI">EnumSymbol instantiation</BugCode>
+    <BugCode abbrev="FI">Fixed instantiation</BugCode>
     <BugCode abbrev="IOGR">instanceof GenericRecord</BugCode>
     <BugCode abbrev="JDI">JsonDecoder instantiation</BugCode>
     <BugCode abbrev="JDFI">JsonDecoder factory instantiation</BugCode>
     <BugCode abbrev="JEI">JsonEncoder instantiation</BugCode>
     <BugCode abbrev="OSCI">Old SchemaConstructable usage</BugCode>
+    <BugCode abbrev="PA">incompatible prop access</BugCode>
     <BugCode abbrev="SDNI">SecificData.newInstance() usage</BugCode>
+    <BugCode abbrev="SFI">Schema.Field instantiation</BugCode>
 </MessageCollection>
