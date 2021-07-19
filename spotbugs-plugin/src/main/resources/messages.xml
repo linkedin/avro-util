@@ -290,6 +290,7 @@
     <BugCode abbrev="BDI">BinaryDecoder instantiation</BugCode>
     <BugCode abbrev="BEI">BinaryEncoder instantiation</BugCode>
     <BugCode abbrev="ESI">EnumSymbol instantiation</BugCode>
+    <BugCode abbrev="FDVA">Field default value access</BugCode>
     <BugCode abbrev="FI">Fixed instantiation</BugCode>
     <BugCode abbrev="IOGR">instanceof GenericRecord</BugCode>
     <BugCode abbrev="JDI">JsonDecoder instantiation</BugCode>
