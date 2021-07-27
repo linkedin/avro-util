@@ -98,6 +98,9 @@ public class OldSchemaConstructableUsageDetector extends OpcodeStackDetector {
                 continue; //no variables to look at
             }
             LocalVariableTable localVariableTable = method.getLocalVariableTable(); //includes method args
+            if (localVariableTable == null) {
+                return;
+            }
             for (LocalVariable variable : localVariableTable.getLocalVariableTable()) {
                 if (checkSignature(variable.getSignature())) {
                     //TODO - figure out how to add sour line number?
