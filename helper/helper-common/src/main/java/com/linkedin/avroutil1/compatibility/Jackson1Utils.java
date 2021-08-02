@@ -10,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.Map;
 import org.apache.avro.AvroRuntimeException;
+import org.apache.avro.generic.GenericData;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.JsonNodeFactory;
@@ -50,6 +51,9 @@ public class Jackson1Utils {
     } else if (datum instanceof Collection) {
       ObjectMapper mapper = new ObjectMapper();
       return mapper.convertValue(datum, JsonNode.class);
+    } else if (datum instanceof GenericData.EnumSymbol) {
+      GenericData.EnumSymbol enumSymbol = (GenericData.EnumSymbol) datum;
+      return JsonNodeFactory.instance.textNode(enumSymbol.toString());
     } else {
       throw new AvroRuntimeException("Unknown datum class: " + datum.getClass());
     }

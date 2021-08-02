@@ -73,4 +73,21 @@ public class AvroCompatibilityHelperAvro17Test {
     List<List<String>> actualListValue = mapper.convertValue(actualJsonNode, new TypeReference<List<List<String>>>(){});
     Assert.assertEquals(actualListValue.get(0).get(0), "dummyElement");
   }
+
+  @Test
+  public void testGetGenericDefaultValueCloningForEnums() throws IOException {
+    // Given a schema with a default enum field
+    Schema schema = Schema.parse(TestUtil.load("RecordWithRecursiveTypesAndDefaults.avsc"));
+    Schema.Field field = schema.getField("enumFieldWithDefault");
+
+    // When cloning the field with a field builder and setting the default value as the default value from the schema
+    Schema.Field clone = AvroCompatibilityHelper.cloneSchemaField(field)
+        .setDoc(field.doc())
+        .setSchema(field.schema())
+        .setDefault(AvroCompatibilityHelper.getGenericDefaultValue(field))
+        .build();
+
+    // Then we should expect the clone and original to be equal
+    Assert.assertEquals(field, clone);
+  }
 }
