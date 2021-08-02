@@ -10,6 +10,7 @@ plugins {
 }
 
 dependencies {
+  api project(":test-common")
   api project(":helper:helper")
   //we use this module as an easy way to "export" libraries for use by other test modules
   api "commons-io:commons-io:2.6"

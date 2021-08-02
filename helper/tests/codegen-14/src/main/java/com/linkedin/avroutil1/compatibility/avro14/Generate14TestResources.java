@@ -6,7 +6,7 @@
 
 package com.linkedin.avroutil1.compatibility.avro14;
 
-import com.linkedin.avroutil1.TestUtil;
+import com.linkedin.avroutil1.testcommon.TestUtil;
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificDatumWriter;

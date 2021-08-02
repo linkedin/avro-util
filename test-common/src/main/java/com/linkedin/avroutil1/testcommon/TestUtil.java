@@ -4,7 +4,7 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1;
+package com.linkedin.avroutil1.testcommon;
 
 import java.io.IOException;
 import java.io.InputStream;
