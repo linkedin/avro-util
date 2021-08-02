@@ -6,7 +6,7 @@
 
 package com.linkedin.avroutil1.compatibility.avro15;
 
-import com.linkedin.avroutil1.TestUtil;
+import com.linkedin.avroutil1.testcommon.TestUtil;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaParseException;
 import org.testng.Assert;

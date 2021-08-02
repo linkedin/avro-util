@@ -7,7 +7,7 @@
 package com.linkedin.avroutil1.compatibility.avro14;
 
 import com.linkedin.avroutil1.Pojo;
-import com.linkedin.avroutil1.TestUtil;
+import com.linkedin.avroutil1.testcommon.TestUtil;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
 import java.io.IOException;
