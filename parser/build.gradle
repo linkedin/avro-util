@@ -1,0 +1,19 @@
+/*
+ * Copyright 2018 LinkedIn Corp.
+ * Licensed under the BSD 2-Clause License (the "License").
+ * See License in the project root for license information.
+ */
+
+plugins {
+    id "java-library"
+    id "checkstyle"
+}
+
+dependencies {
+
+    //json-p under its new home @ https://projects.eclipse.org/projects/ee4j.jsonp
+    api "jakarta.json:jakarta.json-api:2.0.1"
+    implementation "org.glassfish:jakarta.json:2.0.1"
+
+    testImplementation project(":test-common")
+}

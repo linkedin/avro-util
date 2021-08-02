@@ -21,6 +21,7 @@ apply plugin: 'net.vivin.gradle-semantic-build-versioning'
 rootProject.name = 'avro-util'
 
 include 'test-common'
+include 'parser'
 include 'avro-codegen'
 include 'avro-fastserde'
 
