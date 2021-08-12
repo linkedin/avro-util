@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "TestRecord",
+  "fields": [
+    {
+      "name": "stringField",
+      "type": "string"
+    }
+  ]
+}
