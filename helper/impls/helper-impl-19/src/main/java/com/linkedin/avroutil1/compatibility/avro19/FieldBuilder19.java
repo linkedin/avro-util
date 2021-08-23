@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.compatibility.avro19;
 
+import com.linkedin.avroutil1.compatibility.AvroSchemaUtil;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field.Order;
@@ -47,7 +48,10 @@ public class FieldBuilder19 implements FieldBuilder {
   }
 
   @Override
-  public FieldBuilder setDefault(Object defaultValue) {
+  public FieldBuilder setDefault(Object defaultValue, Schema schema) {
+    if (defaultValue == null && AvroSchemaUtil.isUnionTypeWithNullAsFirstOption(schema)) {
+      defaultValue = Schema.Field.NULL_DEFAULT_VALUE;
+    }
     _defaultVal = defaultValue;
     return this;
   }

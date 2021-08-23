@@ -21,7 +21,7 @@ public interface FieldBuilder {
 
   FieldBuilder setDoc(String doc);
 
-  FieldBuilder setDefault(Object defaultValue);
+  FieldBuilder setDefault(Object defaultValue, Schema schema);
 
   FieldBuilder setOrder(Order order);
 

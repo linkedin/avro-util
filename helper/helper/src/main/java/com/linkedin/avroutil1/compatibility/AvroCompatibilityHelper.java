@@ -655,7 +655,7 @@ public class AvroCompatibilityHelper {
     FieldBuilder fieldBuilder = ADAPTER.newFieldBuilder(name);
     fieldBuilder.setSchema(schema);
     fieldBuilder.setDoc(doc);
-    fieldBuilder.setDefault(defaultValue);
+    fieldBuilder.setDefault(defaultValue, schema);
     fieldBuilder.setOrder(order);
     return fieldBuilder.build();
   }

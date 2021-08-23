@@ -23,6 +23,22 @@ public class AvroSchemaUtil {
   }
 
   /**
+   * Returns true if the schema is a union of types, where the first
+   * alternative is null. Used to check if null is allowed as the default value
+   * for said schema (since the type of the default value must match the first
+   * alternative in the union).
+   *
+   * A null default value is also allowed if the schema's type is itself null,
+   * but that's not a very interesting case, so we don't bother with it here.
+   */
+  public static boolean isUnionTypeWithNullAsFirstOption(Schema schema) {
+    return schema != null &&
+           schema.getType() == Schema.Type.UNION &&
+           !schema.getTypes().isEmpty() &&
+           schema.getTypes().get(0).getType() == Schema.Type.NULL;
+  }
+
+  /**
    * given a (parent) schema, and a field name, find the schema for that field.
    * if the field is a union, returns the (only) non-null branch of the union
    * @param parent parent schema containing field

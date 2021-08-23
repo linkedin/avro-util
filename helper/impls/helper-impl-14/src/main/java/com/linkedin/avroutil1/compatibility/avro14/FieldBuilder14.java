@@ -6,11 +6,13 @@
 
 package com.linkedin.avroutil1.compatibility.avro14;
 
+import com.linkedin.avroutil1.compatibility.AvroSchemaUtil;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
 import com.linkedin.avroutil1.compatibility.Jackson1Utils;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field.Order;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.NullNode;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -62,7 +64,10 @@ public class FieldBuilder14 implements FieldBuilder {
   }
 
   @Override
-  public FieldBuilder setDefault(Object defaultValue) {
+  public FieldBuilder setDefault(Object defaultValue, Schema schema) {
+    if (defaultValue == null && AvroSchemaUtil.isUnionTypeWithNullAsFirstOption(schema)) {
+      return setDefault(NullNode.getInstance());
+    }
     return setDefault(Jackson1Utils.toJsonNode(defaultValue));
   }
 
