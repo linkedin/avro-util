@@ -1,0 +1,12 @@
+{
+  "type": "notRecord",
+  "namespace": "com.acme",
+  "name": "TestInvalidTypeRecord",
+  "doc": "has an unknown (but string) type",
+  "fields": [
+    {
+      "name": "stringField",
+      "type": "string"
+    }
+  ]
+}

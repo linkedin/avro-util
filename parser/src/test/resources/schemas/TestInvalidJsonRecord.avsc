@@ -1,0 +1,10 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "TestInvalidJsonRecord",
+  "fields": [
+    {
+      "name": "stringField",
+      "type": "string"
+    }
+}
