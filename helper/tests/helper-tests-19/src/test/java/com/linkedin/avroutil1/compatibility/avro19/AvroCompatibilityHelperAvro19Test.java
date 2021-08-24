@@ -13,6 +13,7 @@ import com.linkedin.avroutil1.compatibility.AvroVersion;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import org.apache.avro.JsonProperties;
 import org.apache.avro.Schema;
 import org.mockito.Mockito;
 import org.testng.Assert;
@@ -51,7 +52,7 @@ public class AvroCompatibilityHelperAvro19Test {
     Schema schema = Schema.parse(TestUtil.load("RecordWithRecursiveTypesAndDefaults.avsc"));
     // Test null default value
     Schema.Field field = schema.getField("unionWithNullDefault");
-    Assert.assertNull(AvroCompatibilityHelper.createSchemaField("unionWithNullDefault", field.schema(), "", null).defaultVal());
+    Assert.assertEquals(AvroCompatibilityHelper.createSchemaField("unionWithNullDefault", field.schema(), "", null).defaultVal(), JsonProperties.NULL_VALUE);
     // Test primitive default value
     field = schema.getField("doubleFieldWithDefault");
     Assert.assertEquals(AvroCompatibilityHelper.createSchemaField("doubleFieldWithDefault", field.schema(), "", field.defaultVal()).defaultVal(), 1.0);

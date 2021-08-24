@@ -26,7 +26,9 @@ public class Jackson1Utils {
    */
   public static JsonNode toJsonNode(Object datum) {
     if (datum == null) {
-      return JsonNodeFactory.instance.nullNode();
+      return null;
+    } else if (datum instanceof JsonNode) {
+      return (JsonNode) datum;
     } else if (datum instanceof byte[]) {
       try {
         return JsonNodeFactory.instance.textNode(new String((byte[]) datum, BYTES_CHARSET));
