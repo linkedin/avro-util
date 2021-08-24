@@ -52,7 +52,7 @@ public class AvroCompatibilityHelperAvro19Test {
     Schema schema = Schema.parse(TestUtil.load("RecordWithRecursiveTypesAndDefaults.avsc"));
     // Test null default value
     Schema.Field field = schema.getField("unionWithNullDefault");
-    Assert.assertEquals(JsonProperties.NULL_VALUE, AvroCompatibilityHelper.createSchemaField("unionWithNullDefault", field.schema(), "", null).defaultVal());
+    Assert.assertEquals(AvroCompatibilityHelper.createSchemaField("unionWithNullDefault", field.schema(), "", null).defaultVal(), JsonProperties.NULL_VALUE);
     // Test primitive default value
     field = schema.getField("doubleFieldWithDefault");
     Assert.assertEquals(AvroCompatibilityHelper.createSchemaField("doubleFieldWithDefault", field.schema(), "", field.defaultVal()).defaultVal(), 1.0);

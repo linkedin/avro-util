@@ -85,17 +85,17 @@ public class AvroCompatibilityHelperDefaultsTest {
     }
 
     try {
-      AvroCompatibilityHelper.getGenericDefaultValue(schema.getField("unionWithNoDefault"));
+      AvroCompatibilityHelper.getGenericDefaultValue(schema.getField("unionWithStringNoDefault"));
     } catch (AvroRuntimeException expected) {
       Throwable root = Throwables.getRootCause(expected);
-      Assert.assertTrue(root.getMessage().contains("unionWithNoDefault"));
+      Assert.assertTrue(root.getMessage().contains("unionWithStringNoDefault"));
     }
 
     try {
-      AvroCompatibilityHelper.getSpecificDefaultValue(schema.getField("unionWithNoDefault"));
+      AvroCompatibilityHelper.getSpecificDefaultValue(schema.getField("unionWithStringNoDefault"));
     } catch (AvroRuntimeException expected) {
       Throwable root = Throwables.getRootCause(expected);
-      Assert.assertTrue(root.getMessage().contains("unionWithNoDefault"));
+      Assert.assertTrue(root.getMessage().contains("unionWithStringNoDefault"));
     }
   }
 

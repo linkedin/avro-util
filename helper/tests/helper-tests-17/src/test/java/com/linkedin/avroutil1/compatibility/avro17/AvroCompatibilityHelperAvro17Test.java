@@ -84,7 +84,7 @@ public class AvroCompatibilityHelperAvro17Test {
     Schema.Field clone = AvroCompatibilityHelper.cloneSchemaField(field)
         .setDoc(field.doc())
         .setSchema(field.schema())
-        .setDefault(AvroCompatibilityHelper.getGenericDefaultValue(field), field.schema())
+        .setDefault(AvroCompatibilityHelper.getGenericDefaultValue(field))
         .build();
 
     // Then we should expect the clone and original to be equal

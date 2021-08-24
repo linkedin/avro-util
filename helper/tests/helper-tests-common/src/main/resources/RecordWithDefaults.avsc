@@ -32,12 +32,16 @@
       "default": null
     },
     {
+      "name": "unionWithNullNoDefault",
+      "type": ["null", "string"]
+    },
+    {
       "name": "unionWithStringDefault",
       "type": ["string", "null"],
       "default": "def"
     },
     {
-      "name": "unionWithNoDefault",
+      "name": "unionWithStringNoDefault",
       "type": ["string", "null"]
     }
   ]
