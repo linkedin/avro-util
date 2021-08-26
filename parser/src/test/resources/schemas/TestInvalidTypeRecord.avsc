@@ -1,0 +1,12 @@
+{
+  "type": 42,
+  "namespace": "com.acme",
+  "name": "TestInvalidTypeRecord",
+  "doc": "has a number for a type",
+  "fields": [
+    {
+      "name": "stringField",
+      "type": "string"
+    }
+  ]
+}
