@@ -37,8 +37,8 @@ java -jar spotbugs.jar -pluginList spotbugs-plugin.jar ...
 | BDI  | BinaryDecoder instantiation | ```new BinaryDecoder(...)```  | ```AvroCompatibilityHelper.newBinaryDecoder(...)``` |
 | BEI  | BinaryEncoder instantiation | ```new BinaryEncoder(...)```  | ```AvroCompatibilityHelper.newBinaryEncoder(...)``` |
 | ESI  | EnumSymbol instantiation    | ```new EnumSymbol(...)```     | ```AvroCompatibilityHelper.newEnumSymbol(...)``` |
-| FDVA | Field default value access  | ```field.defaultVelue()```    | ```AvroCompatibilityHelper.get<Generic\|Specific>DefaultValue(...)``` |
-|      |                             | ```field.defaultVel()```      | ```AvroCompatibilityHelper.get<Generic\|Specific>DefaultValue(...)``` |
+| FDVA | Field default value access  | ```field.defaultValue()```    | ```AvroCompatibilityHelper.fieldHasDefault(...)``` and then ```AvroCompatibilityHelper.get<Generic\|Specific>DefaultValue(...)``` |
+|      |                             | ```field.defaultVal()```      | ```AvroCompatibilityHelper.fieldHasDefault(...)``` and then ```AvroCompatibilityHelper.get<Generic\|Specific>DefaultValue(...)``` |
 | FI   | Fixed Instantiation         | ```new Fixed(...)```          | ```AvroCompatibilityHelper.newFixed(...)``` |
 | IOGR | instanceof GenericRecord    | ```x instanceof GenericRecord``` | ```AvroCompatibilityHelper.isGenericRecord(...)``` |
 | JDI  | JsonDecoder instantiation   | ```new JsonDecoder(...)``` | ```AvroCompatibilityHelper.new<Compatible>JsonDecoder(...)``` |
