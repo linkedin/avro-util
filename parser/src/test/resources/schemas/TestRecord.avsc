@@ -2,7 +2,28 @@
   "type": "record",
   "namespace": "com.acme",
   "name": "TestRecord",
+  "doc": "nothing fancy",
   "fields": [
+    {
+      "name": "intField",
+      "type": "int"
+    },
+    {
+      "name": "longField",
+      "type": "long"
+    },
+    {
+      "name": "floatField",
+      "type": "float"
+    },
+    {
+      "name": "doubleField",
+      "type": "double"
+    },
+    {
+      "name": "bytesField",
+      "type": "bytes"
+    },
     {
       "name": "stringField",
       "type": "string"
