@@ -32,6 +32,7 @@ public abstract class BadClass {
         BinaryEncoder bobTheEncoder = new BinaryEncoder(null);
     }
 
+    //only compiles under avro < 1.5
     public void instantiateJsonDecoder() throws Exception {
         JsonDecoder bobTheDecoder = new JsonDecoder(null, "bob");
         JsonDecoder robertTheDecoder = new JsonDecoder(null, (InputStream) null);
@@ -42,6 +43,7 @@ public abstract class BadClass {
 //        JsonDecoder bobTheDecoder = DecoderFactory.get().jsonDecoder(null, "bob");
 //    }
 
+    //only compiles under avro < 1.5
     public void instantiateJsonEncoder() throws Exception {
         JsonEncoder bobTheEncoder = new JsonEncoder(null, (OutputStream) null);
     }
@@ -155,5 +157,18 @@ public abstract class BadClass {
 //        s.addAllProps(null);
 //        f.addAllProps(null);
 //        p.addAllProps(null);
+//    }
+
+//    //compiles under avro 1.6+
+//    public void genericRecordBuilderUsage(GenericRecordBuilder arg) throws Exception {
+//        String avsc = TestUtil.load("PerfectlyNormalRecord.avsc");
+//        Schema schema = Schema.parse(avsc);
+//        Object var = new GenericRecordBuilder(schema);
+//        //noinspection ConstantConditions
+//        if (var instanceof GenericRecordBuilder) {
+//            @SuppressWarnings("CastCanBeRemovedNarrowingVariableType")
+//            GenericRecordBuilder grb = (GenericRecordBuilder) var;
+//            grb.build();
+//        }
 //    }
 }

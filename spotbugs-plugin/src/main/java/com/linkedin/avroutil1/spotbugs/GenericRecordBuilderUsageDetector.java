@@ -11,24 +11,23 @@ import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 import org.apache.bcel.Const;
-import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.classfile.LocalVariable;
 import org.apache.bcel.classfile.LocalVariableTable;
 import org.apache.bcel.classfile.Method;
 import org.apache.bcel.generic.Type;
 
 /**
- * detects usage of org.apache.avro.specific.SpecificDatumReader.SchemaConstructable,
- * which has been moved in avro 1.6+ (to org.apache.avro.specific.SpecificData.SchemaConstructable)
+ * detects usage of org.apache.avro.generic.GenericRecordBuilder,
+ * which only exists in avro 1.6+
  */
-public class OldSchemaConstructableUsageDetector extends OpcodeStackDetector {
-    public static final String OLD_SCHEMACONSTRUCTABLE_FQCN = "org.apache.avro.specific.SpecificDatumReader$SchemaConstructable";
-    public static final String OLD_SCHEMACONSTRUCTABLE_CLASSCONSTANT = OLD_SCHEMACONSTRUCTABLE_FQCN.replace('.', '/');
-    public static final String BUG_TYPE = "OLD_SCHEMACONSTRUCTABLE_USAGE";
+public class GenericRecordBuilderUsageDetector extends OpcodeStackDetector {
+    public static final String GENERICRECORDBUILDER_FQCN = "org.apache.avro.generic.GenericRecordBuilder";
+    public static final String GENERICRECORDBUILDER_CLASSCONSTANT = GENERICRECORDBUILDER_FQCN.replace('.', '/');
+    public static final String BUG_TYPE = "GENERICRECORDBUILDER_USAGE";
 
     private final BugReporter bugReporter;
 
-    public OldSchemaConstructableUsageDetector(BugReporter bugReporter) {
+    public GenericRecordBuilderUsageDetector(BugReporter bugReporter) {
         this.bugReporter = bugReporter;
     }
 
@@ -36,16 +35,31 @@ public class OldSchemaConstructableUsageDetector extends OpcodeStackDetector {
     public void visitClassContext(ClassContext classContext) {
         //1st call super so all the machinery works (including sawOpcode() below)
         super.visitClassContext(classContext);
-        lookForSchemaConstructableImplementations(classContext);
-        lookForSchemaConstructableVariables(classContext);
+        lookGenericRecordBuilderVariables(classContext);
     }
 
     @Override
     public void sawOpcode(int seen) {
-        if (seen != Const.CHECKCAST) {
-            return;
+        switch (seen) {
+            case Const.INVOKESPECIAL:
+                //constructor?
+                break;
+            case Const.NEW:
+                //variable declaration
+                break;
+            case Const.CHECKCAST:
+                //casting
+                break;
+            case Const.INSTANCEOF:
+                //instanceof
+                break;
+            case Const.INVOKEVIRTUAL:
+                //method invocation
+                break;
+            default:
+                return;
         }
-        if (getClassConstantOperand().equals(OLD_SCHEMACONSTRUCTABLE_CLASSCONSTANT)) {
+        if (getClassConstantOperand().equals(GENERICRECORDBUILDER_CLASSCONSTANT)) {
             BugInstance bug = new BugInstance(this, BUG_TYPE, NORMAL_PRIORITY)
                     .addClassAndMethod(this)
                     .addSourceLine(this, getPC());
@@ -53,29 +67,7 @@ public class OldSchemaConstructableUsageDetector extends OpcodeStackDetector {
         }
     }
 
-    /**
-     * check to see if current class implements old SchemaConstructable
-     * @param classContext
-     */
-    protected void lookForSchemaConstructableImplementations(ClassContext classContext) {
-        JavaClass javaClass = classContext.getJavaClass();
-        try {
-            //only look at directly implemented interfaces so we dont error out
-            //for entire class hierarchies over a single bad parent
-            for (String fqcn : javaClass.getInterfaceNames()) {
-                if (OLD_SCHEMACONSTRUCTABLE_FQCN.equals(fqcn)) {
-                    BugInstance bug = new BugInstance(this, BUG_TYPE, NORMAL_PRIORITY)
-                            .addClass(javaClass);
-                    bugReporter.reportBug(bug);
-                    return;
-                }
-            }
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    protected void lookForSchemaConstructableVariables(ClassContext classContext) {
+    protected void lookGenericRecordBuilderVariables(ClassContext classContext) {
         for (Method method : classContext.getMethodsInCallOrder()) {
             Type returnType = method.getReturnType();
             if (checkSignature(returnType.getSignature())) {
@@ -102,7 +94,7 @@ public class OldSchemaConstructableUsageDetector extends OpcodeStackDetector {
             }
             for (LocalVariable variable : localVariableTable.getLocalVariableTable()) {
                 if (checkSignature(variable.getSignature())) {
-                    //TODO - figure out how to add sour line number?
+                    //TODO - figure out how to add source line number?
                     BugInstance bug = new BugInstance(this, BUG_TYPE, NORMAL_PRIORITY)
                             .addClassAndMethod(classContext.getJavaClass(), method);
                     bugReporter.reportBug(bug);
@@ -112,6 +104,6 @@ public class OldSchemaConstructableUsageDetector extends OpcodeStackDetector {
     }
 
     protected boolean checkSignature(String signature) {
-        return signature.contains(OLD_SCHEMACONSTRUCTABLE_CLASSCONSTANT);
+        return signature.contains(GENERICRECORDBUILDER_CLASSCONSTANT);
     }
 }
