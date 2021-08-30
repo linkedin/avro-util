@@ -7,6 +7,9 @@
 package com.linkedin.avroutil1.compatibility;
 
 import com.linkedin.avroutil1.testcommon.TestUtil;
+
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
 import org.apache.avro.AvroTypeException;
@@ -25,6 +28,18 @@ public class AvroCompatibilityHelperParsingTest {
   public void testParseSimpleSchema() throws Exception {
     String avsc = TestUtil.load("PerfectlyNormalRecord.avsc");
     SchemaParseResult result = AvroCompatibilityHelper.parse(avsc, null, null);
+    verifySimpleSchema(result);
+  }
+
+  @Test
+  public void testParseSimpleSchemaAsInputStream() throws Exception {
+    String avsc = TestUtil.load("PerfectlyNormalRecord.avsc");
+    byte[] utf8 = avsc.getBytes(StandardCharsets.UTF_8);
+    SchemaParseResult result = AvroCompatibilityHelper.parse(new ByteArrayInputStream(utf8), null, null);
+    verifySimpleSchema(result);
+  }
+
+  private void verifySimpleSchema(SchemaParseResult result) {
     Assert.assertNotNull(result);
     Schema mainSchema = result.getMainSchema();
     Assert.assertNotNull(mainSchema);
