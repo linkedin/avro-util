@@ -8,6 +8,7 @@ package com.linkedin.avroutil1.parser.jsonpext;
 
 import jakarta.json.Json;
 import jakarta.json.JsonException;
+import jakarta.json.stream.JsonLocation;
 import jakarta.json.stream.JsonParser;
 
 import java.io.Reader;
@@ -84,6 +85,7 @@ public class JsonReaderWithLocations implements JsonReaderExt {
     }
 
     protected JsonValueExt readJsonValueInternal() {
+        JsonLocation endLocation;
         switch (currentEvent) {
             case START_ARRAY:
                 return readJsonArrayInternal();
@@ -91,18 +93,23 @@ public class JsonReaderWithLocations implements JsonReaderExt {
                 return readObjectInternal();
             case KEY_NAME:
                 throw new JsonException("unexpected " + currentEvent + " at " + parser.getLocation());
-            //TODO - better start/end for all "short" values
             case VALUE_STRING:
-                return new JsonStringExtImpl(source, parser.getLocation(), parser.getLocation(), parser.getString());
+                String str = parser.getString();
+                endLocation = parser.getLocation();
+                return new JsonStringExtImpl(source, JsonPUtil.subtract(endLocation, str.length()), endLocation, str);
             case VALUE_NUMBER:
+                //TODO - better start/end for numeric values?
                 //we dont bother optimizing for ints/longs
                 return new JsonNumberExtImpl(source, parser.getLocation(), parser.getLocation(), parser.getBigDecimal());
             case VALUE_TRUE:
-                return new JsonTrueExtImpl(source, parser.getLocation(), parser.getLocation());
+                endLocation = parser.getLocation();
+                return new JsonTrueExtImpl(source, JsonPUtil.subtract(endLocation, 4), endLocation);
             case VALUE_FALSE:
-                return new JsonFalseExtImpl(source, parser.getLocation(), parser.getLocation());
+                endLocation = parser.getLocation();
+                return new JsonFalseExtImpl(source, JsonPUtil.subtract(endLocation, 5), endLocation);
             case VALUE_NULL:
-                return new JsonNullExtImpl(source, parser.getLocation(), parser.getLocation());
+                endLocation = parser.getLocation();
+                return new JsonNullExtImpl(source, JsonPUtil.subtract(endLocation, 4), endLocation);
             case END_ARRAY:
                 throw new JsonException("unexpected " + currentEvent + " at " + parser.getLocation());
             case END_OBJECT:

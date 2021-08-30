@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "TestInvalidDocRecord",
+  "doc": true,
+  "fields": [
+    {
+      "name": "stringField",
+      "type": "string"
+    }
+  ]
+}

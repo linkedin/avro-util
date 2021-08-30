@@ -39,7 +39,7 @@ public class TestJsonParsing {
         JsonValueExt fields = ourObject.get("fields");
         JsonLocation startLocation = fields.getStartLocation();
         JsonLocation endLocation = fields.getEndLocation();
-        Assert.assertEquals(startLocation.getLineNumber(), 5);
-        Assert.assertEquals(endLocation.getLineNumber(), 10);
+        Assert.assertEquals(startLocation.getLineNumber(), 6);
+        Assert.assertEquals(endLocation.getLineNumber(), 31);
     }
 }
