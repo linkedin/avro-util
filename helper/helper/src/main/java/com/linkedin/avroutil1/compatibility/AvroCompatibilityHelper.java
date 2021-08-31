@@ -16,10 +16,12 @@ import com.linkedin.avroutil1.compatibility.avro19.Avro19Adapter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.lang.reflect.Modifier;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -314,7 +316,8 @@ public class AvroCompatibilityHelper {
   // schema parsing, and other Schema-related operations
 
   /**
-   * parses a single avro schema json String (see <a href="http://google.com">spec</a>), which may refer to others.
+   * parses a single avro schema json String (see <a href="https://avro.apache.org/docs/current/spec.html#schemas">spec</a>),
+   * which may refer to others.
    * @param schemaJson schema json to parse
    * @param desiredConf desired parse configuration. null for strictest possible. support may vary by runtime avro version :-(
    * @param known other "known" (already parsed) schemas that the given schema json may refer to - or null if none.
@@ -348,6 +351,28 @@ public class AvroCompatibilityHelper {
       wholeSchema = schemaPieces[0];
     }
     return parse(wholeSchema, SchemaParseConfiguration.LOOSE, null).getMainSchema();
+  }
+
+  /**
+   * parses a single avro schema json InputStream (see <a href="https://avro.apache.org/docs/current/spec.html#schemas">spec</a>),
+   * which may refer to others.
+   * @param schemaJson schema json to parse (as an input stream). encoding assumed to be UTF-8.
+   * @param desiredConf desired parse configuration. null for strictest possible. support may vary by runtime avro version :-(
+   * @param known other "known" (already parsed) schemas that the given schema json may refer to - or null if none.
+   * @return parsing results
+   */
+  public static SchemaParseResult parse(InputStream schemaJson, SchemaParseConfiguration desiredConf, Collection<Schema> known) throws IOException {
+    assertAvroAvailable();
+    StringBuilder sb = new StringBuilder();
+    try (InputStreamReader reader = new InputStreamReader(schemaJson, StandardCharsets.UTF_8)) {
+      char[] buffer = new char[8192];
+      int charsRead = reader.read(buffer);
+      while (charsRead > -1) {
+        sb.append(buffer, 0, charsRead);
+        charsRead = reader.read(buffer);
+      }
+    }
+    return ADAPTER.parse(sb.toString(), desiredConf, known);
   }
 
   /**
