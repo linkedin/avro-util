@@ -34,6 +34,11 @@
             detects direct instantiations of org.apache.avro.generic.GenericData$Fixed
         </Details>
     </Detector>
+    <Detector class="com.linkedin.avroutil1.spotbugs.GenericRecordBuilderUsageDetector">
+        <Details>
+            detects usage of org.apache.avro.generic.GenericRecordBuilder
+        </Details>
+    </Detector>
     <Detector class="com.linkedin.avroutil1.spotbugs.InstanceofGenericRecordDetector">
         <Details>
             detects "instanceof GenericRecord" tests
@@ -149,6 +154,20 @@
       org.apache.avro.generic.GenericData$Fixed is constructed using only the byte[] contents before avro 1.5
       but requires a Schema argument in 1.5+, as such there's no way to do this across all avro versions.
       use AvroCompatibilityHelper.newFixed()
+   </p>
+]]>
+        </Details>
+    </BugPattern>
+    <BugPattern type="GENERICRECORDBUILDER_USAGE">
+        <ShortDescription>use of GenericRecordBuilder</ShortDescription>
+        <LongDescription>
+            usage of org.apache.avro.generic.GenericRecordBuilder, which only exists in avro 1.6+
+        </LongDescription>
+        <Details>
+            <![CDATA[
+   <p>
+      org.apache.avro.generic.GenericRecordBuilder was only added to avro in 1.6. As such using it renders
+      your code incompatible with older avro and it's best avoided
    </p>
 ]]>
         </Details>
@@ -292,6 +311,7 @@
     <BugCode abbrev="ESI">EnumSymbol instantiation</BugCode>
     <BugCode abbrev="FDVA">Field default value access</BugCode>
     <BugCode abbrev="FI">Fixed instantiation</BugCode>
+    <BugCode abbrev="GRB">GenericRecordBuilder usage</BugCode>
     <BugCode abbrev="IOGR">instanceof GenericRecord</BugCode>
     <BugCode abbrev="JDI">JsonDecoder instantiation</BugCode>
     <BugCode abbrev="JDFI">JsonDecoder factory instantiation</BugCode>

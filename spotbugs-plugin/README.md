@@ -40,6 +40,7 @@ java -jar spotbugs.jar -pluginList spotbugs-plugin.jar ...
 | FDVA | Field default value access  | ```field.defaultValue()```    | ```AvroCompatibilityHelper.fieldHasDefault(...)``` and then ```AvroCompatibilityHelper.get<Generic\|Specific>DefaultValue(...)``` |
 |      |                             | ```field.defaultVal()```      | ```AvroCompatibilityHelper.fieldHasDefault(...)``` and then ```AvroCompatibilityHelper.get<Generic\|Specific>DefaultValue(...)``` |
 | FI   | Fixed Instantiation         | ```new Fixed(...)```          | ```AvroCompatibilityHelper.newFixed(...)``` |
+| GRB  | GenericRecordBuilder usage  | ```new GenericRecordBuilder()``` | none (yet?)  |
 | IOGR | instanceof GenericRecord    | ```x instanceof GenericRecord``` | ```AvroCompatibilityHelper.isGenericRecord(...)``` |
 | JDI  | JsonDecoder instantiation   | ```new JsonDecoder(...)``` | ```AvroCompatibilityHelper.new<Compatible>JsonDecoder(...)``` |
 | JDFI |                             | ```DecoderFactory.jsonDecoder(...)``` | ```AvroCompatibilityHelper.new<Compatible>JsonDecoder(...)``` |
