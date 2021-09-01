@@ -3,7 +3,6 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_4;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,7 +113,7 @@ public class StringableRecord_SpecificDeserializer_6010214235595501953_601021423
                 chunkLen1 = (decoder.mapNext());
             } while (chunkLen1 > 0);
         } else {
-            urlMap0 = Collections.emptyMap();
+            urlMap0 = new HashMap<Utf8, Utf8>(0);
         }
         StringableRecord.put(6, urlMap0);
         StringableRecord.put(7, deserializeStringableSubRecord0(StringableRecord.get(7), (decoder)));

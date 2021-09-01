@@ -2,7 +2,6 @@
 package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_8;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -112,7 +111,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexColl
                         chunkLen1 = (decoder.mapNext());
                     } while (chunkLen1 > 0);
                 } else {
-                    recordsArrayMapElem0 = Collections.emptyMap();
+                    recordsArrayMapElem0 = new HashMap<Utf8, IndexedRecord>(0);
                 }
                 recordsArrayMap1 .add(recordsArrayMapElem0);
             }
@@ -169,7 +168,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexColl
                 chunkLen2 = (decoder.mapNext());
             } while (chunkLen2 > 0);
         } else {
-            recordsMapArray1 = Collections.emptyMap();
+            recordsMapArray1 = new HashMap<Utf8, List<IndexedRecord>>(0);
         }
         FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexCollectionsField.put(1, recordsMapArray1);
         int unionIndex3 = (decoder.readIndex());
@@ -225,7 +224,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexColl
                                 chunkLen5 = (decoder.mapNext());
                             } while (chunkLen5 > 0);
                         } else {
-                            recordsArrayMapUnionOptionElem0 = Collections.emptyMap();
+                            recordsArrayMapUnionOptionElem0 = new HashMap<Utf8, IndexedRecord>(0);
                         }
                         recordsArrayMapUnionOption0 .add(recordsArrayMapUnionOptionElem0);
                     }
@@ -294,7 +293,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexColl
                         chunkLen6 = (decoder.mapNext());
                     } while (chunkLen6 > 0);
                 } else {
-                    recordsMapArrayUnionOption0 = Collections.emptyMap();
+                    recordsMapArrayUnionOption0 = new HashMap<Utf8, List<IndexedRecord>>(0);
                 }
                 FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexCollectionsField.put(3, recordsMapArrayUnionOption0);
                 break;

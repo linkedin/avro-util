@@ -2,7 +2,6 @@
 package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_6;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +96,7 @@ public class FastStringableTest_javaStringPropertyTest_GenericDeserializer_91033
                 chunkLen1 = (decoder.mapNext());
             } while (chunkLen1 > 0);
         } else {
-            testStringMap1 = Collections.emptyMap();
+            testStringMap1 = new HashMap<String, String>(0);
         }
         FastStringableTest_javaStringPropertyTest.put(3, testStringMap1);
         return FastStringableTest_javaStringPropertyTest;

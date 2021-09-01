@@ -2,7 +2,6 @@
 package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_6;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import com.linkedin.avro.fastserde.FastDeserializer;
@@ -61,7 +60,7 @@ public class Map_of_UNION_GenericDeserializer_2087096002965517991_20870960029655
                 chunkLen0 = (decoder.mapNext());
             } while (chunkLen0 > 0);
         } else {
-            map0 = Collections.emptyMap();
+            map0 = new HashMap<Utf8, IndexedRecord>(0);
         }
         return map0;
     }

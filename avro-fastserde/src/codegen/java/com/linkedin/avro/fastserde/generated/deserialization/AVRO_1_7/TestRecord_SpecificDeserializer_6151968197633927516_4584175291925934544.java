@@ -4,7 +4,6 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_7;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -471,7 +470,7 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
                 chunkLen5 = (decoder.mapNext());
             } while (chunkLen5 > 0);
         } else {
-            recordsMap0 = Collections.emptyMap();
+            recordsMap0 = new HashMap<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>(0);
         }
         TestRecord.put(25, recordsMap0);
         int unionIndex16 = (decoder.readIndex());
@@ -555,7 +554,7 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
                         chunkLen7 = (decoder.mapNext());
                     } while (chunkLen7 > 0);
                 } else {
-                    recordsMapUnionOption0 = Collections.emptyMap();
+                    recordsMapUnionOption0 = new HashMap<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>(0);
                 }
                 TestRecord.put(27, recordsMapUnionOption0);
                 break;
@@ -609,7 +608,7 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
                         chunkLen9 = (decoder.mapNext());
                     } while (chunkLen9 > 0);
                 } else {
-                    recordsArrayMapElem0 = Collections.emptyMap();
+                    recordsArrayMapElem0 = new HashMap<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>(0);
                 }
                 recordsArrayMap0 .add(recordsArrayMapElem0);
             }
@@ -666,7 +665,7 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
                 chunkLen10 = (decoder.mapNext());
             } while (chunkLen10 > 0);
         } else {
-            recordsMapArray0 = Collections.emptyMap();
+            recordsMapArray0 = new HashMap<Utf8, List<com.linkedin.avro.fastserde.generated.avro.SubRecord>>(0);
         }
         TestRecord.put(29, recordsMapArray0);
         int unionIndex22 = (decoder.readIndex());
@@ -722,7 +721,7 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
                                 chunkLen13 = (decoder.mapNext());
                             } while (chunkLen13 > 0);
                         } else {
-                            recordsArrayMapUnionOptionElem0 = Collections.emptyMap();
+                            recordsArrayMapUnionOptionElem0 = new HashMap<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>(0);
                         }
                         recordsArrayMapUnionOption0 .add(recordsArrayMapUnionOptionElem0);
                     }
@@ -791,7 +790,7 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
                         chunkLen14 = (decoder.mapNext());
                     } while (chunkLen14 > 0);
                 } else {
-                    recordsMapArrayUnionOption0 = Collections.emptyMap();
+                    recordsMapArrayUnionOption0 = new HashMap<Utf8, List<com.linkedin.avro.fastserde.generated.avro.SubRecord>>(0);
                 }
                 TestRecord.put(31, recordsMapArrayUnionOption0);
                 break;

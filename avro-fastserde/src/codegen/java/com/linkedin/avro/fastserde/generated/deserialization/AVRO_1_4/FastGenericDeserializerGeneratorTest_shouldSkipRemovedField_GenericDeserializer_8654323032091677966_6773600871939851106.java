@@ -2,7 +2,6 @@
 package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_4;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -134,7 +133,7 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
                 chunkLen0 = (decoder.mapNext());
             } while (chunkLen0 > 0);
         } else {
-            subRecordMap1 = Collections.emptyMap();
+            subRecordMap1 = new HashMap<Utf8, IndexedRecord>(0);
         }
         FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(3, subRecordMap1);
         List<IndexedRecord> subRecordArray1 = null;

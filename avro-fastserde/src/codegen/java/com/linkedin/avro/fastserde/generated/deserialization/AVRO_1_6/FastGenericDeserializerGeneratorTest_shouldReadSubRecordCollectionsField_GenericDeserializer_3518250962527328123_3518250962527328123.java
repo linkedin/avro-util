@@ -2,7 +2,6 @@
 package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_6;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,7 +99,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
                 chunkLen1 = (decoder.mapNext());
             } while (chunkLen1 > 0);
         } else {
-            recordsMap1 = Collections.emptyMap();
+            recordsMap1 = new HashMap<Utf8, IndexedRecord>(0);
         }
         FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.put(1, recordsMap1);
         int unionIndex1 = (decoder.readIndex());
@@ -184,7 +183,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
                         chunkLen3 = (decoder.mapNext());
                     } while (chunkLen3 > 0);
                 } else {
-                    recordsMapUnionOption0 = Collections.emptyMap();
+                    recordsMapUnionOption0 = new HashMap<Utf8, IndexedRecord>(0);
                 }
                 FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.put(3, recordsMapUnionOption0);
                 break;
