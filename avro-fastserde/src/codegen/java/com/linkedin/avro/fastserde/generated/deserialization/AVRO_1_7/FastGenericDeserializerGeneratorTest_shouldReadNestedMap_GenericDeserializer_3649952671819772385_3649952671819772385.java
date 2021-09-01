@@ -2,7 +2,6 @@
 package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_7;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,14 +96,14 @@ public class FastGenericDeserializerGeneratorTest_shouldReadNestedMap_GenericDes
                             chunkLen1 = (decoder.mapNext());
                         } while (chunkLen1 > 0);
                     } else {
-                        mapFieldValue0 = Collections.emptyMap();
+                        mapFieldValue0 = new HashMap<Utf8, List<Integer>>(0);
                     }
                     mapField1 .put(key0, mapFieldValue0);
                 }
                 chunkLen0 = (decoder.mapNext());
             } while (chunkLen0 > 0);
         } else {
-            mapField1 = Collections.emptyMap();
+            mapField1 = new HashMap<Utf8, Map<Utf8, List<Integer>>>(0);
         }
         FastGenericDeserializerGeneratorTest_shouldReadNestedMap.put(0, mapField1);
         return FastGenericDeserializerGeneratorTest_shouldReadNestedMap;

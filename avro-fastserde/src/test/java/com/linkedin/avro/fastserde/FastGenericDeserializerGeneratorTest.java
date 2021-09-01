@@ -9,7 +9,6 @@ import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -20,7 +19,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.AvroTypeException;
@@ -1142,6 +1140,18 @@ public class FastGenericDeserializerGeneratorTest {
     Object decodedUnionField = decodedRecord.get("unionField");
     Assert.assertTrue(decodedUnionField instanceof GenericData.Record);
     Assert.assertEquals(new Utf8("bar"), ((GenericData.Record) decodedUnionField).get("strField"));
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReturnMutableEmptyMap(Implementation implementation) {
+    Schema recordSchema = createRecord("TestRecord", createMapFieldSchema("map_field", Schema.create(Schema.Type.STRING)));
+    GenericRecord recordBuilder = new GenericData.Record(recordSchema);
+    recordBuilder.put("map_field", Collections.emptyMap());
+
+    GenericRecord decodedRecord = implementation.decode(recordSchema, recordSchema, genericDataAsDecoder(recordBuilder));
+    Object mapField = decodedRecord.get("map_field");
+    Assert.assertTrue(mapField instanceof HashMap && ((HashMap)mapField).isEmpty(),
+        "The decoded empty map should be an instance of HashMap, but got: " + mapField.getClass());
   }
 
   // The test case in which one record is split into many with the usage of aliases. Example: record A with aliases B and C in the next version is changed into records B and C, both of them have an alias to A.

@@ -806,7 +806,8 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       );
 
       JBlock elseBlock = conditional._else();
-      elseBlock.assign(mapVar, codeModel.ref(Collections.class).staticInvoke("emptyMap"));
+      elseBlock.assign(mapVar, JExpr._new(schemaAssistant.classFromSchema(readerMapSchema, false))
+          .arg(JExpr.lit(0)));
     }
 
     JDoLoop doLoop = ifBlockForChunkLenCheck._do(chunkLen.gt(JExpr.lit(0)));
