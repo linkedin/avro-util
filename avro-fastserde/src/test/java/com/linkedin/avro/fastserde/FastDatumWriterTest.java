@@ -8,6 +8,7 @@ import java.io.IOException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.util.Utf8;
 import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -52,13 +53,18 @@ public class FastDatumWriterTest {
   @SuppressWarnings("unchecked")
   public void shouldCreateGenericDatumReader() throws IOException, InterruptedException {
     Schema recordSchema = createRecord("TestSchema", createPrimitiveUnionFieldSchema("test", Schema.Type.STRING));
-    FastGenericDatumWriter<GenericRecord> fastGenericDatumReader = new FastGenericDatumWriter<>(recordSchema, cache);
+    FastGenericDatumWriter<GenericRecord> fastGenericDatumWriter = new FastGenericDatumWriter<>(recordSchema, cache);
+
+    Assert.assertFalse(fastGenericDatumWriter.isFastSerializerUsed(), "FastGenericDatumWriter"
+        + " shouldn't use the fast serializer when firstly created");
 
     GenericRecord record = new GenericData.Record(recordSchema);
     record.put("test", "test");
 
     // when
-    fastGenericDatumReader.write(record, AvroCompatibilityHelper.newBinaryEncoder(new ByteArrayOutputStream(), true, null));
+    fastGenericDatumWriter.write(record, AvroCompatibilityHelper.newBinaryEncoder(new ByteArrayOutputStream(), true, null));
+    Assert.assertFalse(fastGenericDatumWriter.isFastSerializerUsed(), "FastGenericDatumWriter shouldn't"
+        + " use the fast serializer during fast class generation");
 
     // then
     FastSerializer<GenericRecord> fastGenericSerializer =
@@ -68,5 +74,11 @@ public class FastDatumWriterTest {
 
     Assert.assertNotNull(fastGenericSerializer);
     Assert.assertNotEquals(2, fastGenericSerializer.getClass().getDeclaredMethods().length);
+
+    // Block fast class generation
+    cache.buildFastGenericSerializer(recordSchema);
+    fastGenericDatumWriter.write(record, AvroCompatibilityHelper.newBinaryEncoder(new ByteArrayOutputStream(), true, null));
+    Assert.assertTrue(fastGenericDatumWriter.isFastSerializerUsed(), "FastGenericDatumWriter should be using"
+        + " Fast Serializer when the fast deserializer generation is done.");
   }
 }

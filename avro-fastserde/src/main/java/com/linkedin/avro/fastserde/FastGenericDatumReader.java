@@ -75,8 +75,7 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
       fastDeserializer = cachedFastDeserializer;
     } else {
       fastDeserializer = getFastDeserializerFromCache(cache, writerSchema, readerSchema);
-      if (fastDeserializer instanceof FastSerdeCache.FastDeserializerWithAvroSpecificImpl
-          || fastDeserializer instanceof FastSerdeCache.FastDeserializerWithAvroGenericImpl) {
+      if (!isFastDeserializer(fastDeserializer)) {
         // don't cache
       } else {
         cachedFastDeserializer = fastDeserializer;
@@ -97,5 +96,21 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
 
   protected FastDeserializer<T> getRegularAvroImpl(Schema writerSchema, Schema readerSchema) {
     return new FastSerdeCache.FastDeserializerWithAvroGenericImpl<>(writerSchema, readerSchema);
+  }
+
+  private static boolean isFastDeserializer(FastDeserializer deserializer) {
+    return !(deserializer instanceof FastSerdeCache.FastDeserializerWithAvroSpecificImpl
+        || deserializer instanceof FastSerdeCache.FastDeserializerWithAvroGenericImpl);
+  }
+
+  /**
+   * Return a flag to indicate whether fast deserializer is being used or not.
+   * @return
+   */
+  public boolean isFastDeserializerUsed() {
+    if (cachedFastDeserializer == null) {
+      return false;
+    }
+    return isFastDeserializer(cachedFastDeserializer);
   }
 }

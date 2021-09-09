@@ -55,8 +55,7 @@ public class FastGenericDatumWriter<T> implements DatumWriter<T> {
       fastSerializer = cachedFastSerializer;
     } else {
       fastSerializer = getFastSerializerFromCache(cache, writerSchema);
-      if (fastSerializer instanceof FastSerdeCache.FastSerializerWithAvroSpecificImpl
-          || fastSerializer instanceof FastSerdeCache.FastSerializerWithAvroGenericImpl) {
+      if (!isFastSerializer(fastSerializer)) {
         // don't cache
       } else {
         cachedFastSerializer = fastSerializer;
@@ -75,5 +74,21 @@ public class FastGenericDatumWriter<T> implements DatumWriter<T> {
 
   protected FastSerializer<T> getRegularAvroImpl(Schema schema) {
     return new FastSerdeCache.FastSerializerWithAvroGenericImpl<>(schema);
+  }
+
+  private static boolean isFastSerializer(FastSerializer serializer) {
+    return !(serializer instanceof FastSerdeCache.FastSerializerWithAvroSpecificImpl
+        || serializer instanceof FastSerdeCache.FastSerializerWithAvroGenericImpl);
+  }
+
+  /**
+   * Return a flag to indicate whether fast serializer is being used or not.
+   * @return
+   */
+  public boolean isFastSerializerUsed() {
+    if (cachedFastSerializer == null) {
+      return false;
+    }
+    return isFastSerializer(cachedFastSerializer);
   }
 }
