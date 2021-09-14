@@ -44,6 +44,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.io.Avro15BinaryDecoderAccessUtil;
@@ -55,6 +57,7 @@ import org.apache.avro.io.Encoder;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
+import org.codehaus.jackson.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -210,6 +213,15 @@ public class Avro15Adapter implements AvroAdapter {
   @Override
   public String toParsingForm(Schema s) {
     return SchemaNormalization.toParsingForm(s);
+  }
+
+  @Override
+  public String getDefaultValueAsJsonString(Schema.Field field) {
+    JsonNode json = field.defaultValue();
+    if (json == null) {
+      throw new AvroRuntimeException("Field " + field + " has no default value");
+    }
+    return json.toString();
   }
 
   @Override

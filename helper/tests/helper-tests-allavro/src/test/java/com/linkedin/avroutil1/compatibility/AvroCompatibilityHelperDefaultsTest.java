@@ -51,6 +51,21 @@ public class AvroCompatibilityHelperDefaultsTest {
   }
 
   @Test
+  public void testGetFieldDefaultsAsJson() throws Exception {
+    String avsc = TestUtil.load("RecordWithDefaults.avsc");
+    SchemaParseResult result = AvroCompatibilityHelper.parse(avsc, SchemaParseConfiguration.STRICT, null);
+    Schema schema = result.getMainSchema();
+    Assert.assertEquals(AvroCompatibilityHelper.getDefaultValueAsJsonString(schema.getField("nullField")), "null");
+    Assert.assertEquals(AvroCompatibilityHelper.getDefaultValueAsJsonString(schema.getField("boolField")), "true");
+    Assert.assertEquals(AvroCompatibilityHelper.getDefaultValueAsJsonString(schema.getField("strField")), "\"default\"");
+    Assert.assertEquals(AvroCompatibilityHelper.getDefaultValueAsJsonString(schema.getField("unionWithNullDefault")), "null");
+    Assert.assertEquals(AvroCompatibilityHelper.getDefaultValueAsJsonString(schema.getField("unionWithStringDefault")), "\"def\"");
+
+    schema = by14.HasComplexDefaults.SCHEMA$;
+    Assert.assertEquals(AvroCompatibilityHelper.getDefaultValueAsJsonString(schema.getField("fieldWithDefaultRecord")), "{\"intField\":7}");
+  }
+
+  @Test
   public void testGetDefaultsForFieldsWithoutDefaults() throws Exception {
     String avsc = TestUtil.load("RecordWithDefaults.avsc");
     SchemaParseResult result = AvroCompatibilityHelper.parse(avsc, SchemaParseConfiguration.STRICT, null);
@@ -93,6 +108,13 @@ public class AvroCompatibilityHelperDefaultsTest {
 
     try {
       AvroCompatibilityHelper.getSpecificDefaultValue(schema.getField("unionWithStringNoDefault"));
+    } catch (AvroRuntimeException expected) {
+      Throwable root = Throwables.getRootCause(expected);
+      Assert.assertTrue(root.getMessage().contains("unionWithStringNoDefault"));
+    }
+
+    try {
+      AvroCompatibilityHelper.getDefaultValueAsJsonString(schema.getField("unionWithStringNoDefault"));
     } catch (AvroRuntimeException expected) {
       Throwable root = Throwables.getRootCause(expected);
       Assert.assertTrue(root.getMessage().contains("unionWithStringNoDefault"));
