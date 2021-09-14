@@ -38,6 +38,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaNormalization;
 import org.apache.avro.generic.GenericData;
@@ -224,6 +226,15 @@ public class Avro18Adapter implements AvroAdapter {
   @Override
   public String toParsingForm(Schema s) {
     return SchemaNormalization.toParsingForm(s);
+  }
+
+  @Override
+  public String getDefaultValueAsJsonString(Schema.Field field) {
+    JsonNode json = field.defaultValue();
+    if (json == null) {
+      throw new AvroRuntimeException("Field " + field + " has no default value");
+    }
+    return json.toString();
   }
 
   @Override

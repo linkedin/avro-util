@@ -70,6 +70,8 @@ public interface AvroAdapter {
 
   String toParsingForm(Schema s);
 
+  String getDefaultValueAsJsonString(Schema.Field field);
+
   //specific record utils
 
   Object newInstance(Class<?> clazz, Schema schema);

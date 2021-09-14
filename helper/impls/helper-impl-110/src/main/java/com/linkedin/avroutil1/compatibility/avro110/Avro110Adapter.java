@@ -24,6 +24,7 @@ import com.linkedin.avroutil1.compatibility.avro110.codec.CompatibleJsonDecoder;
 import com.linkedin.avroutil1.compatibility.avro110.codec.CompatibleJsonEncoder;
 import com.linkedin.avroutil1.compatibility.avro110.codec.BoundedMemoryDecoder;
 import com.linkedin.avroutil1.compatibility.backports.ObjectInputToInputStreamAdapter;
+import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaNormalization;
 import org.apache.avro.generic.GenericData;
@@ -37,6 +38,7 @@ import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificData;
+import org.apache.avro.util.internal.Accessor;
 import org.apache.avro.util.internal.JacksonUtils;
 
 import java.io.IOException;
@@ -220,6 +222,15 @@ public class Avro110Adapter implements AvroAdapter {
     @Override
     public String toParsingForm(Schema s) {
         return SchemaNormalization.toParsingForm(s);
+    }
+
+    @Override
+    public String getDefaultValueAsJsonString(Schema.Field field) {
+        JsonNode json = Accessor.defaultValue(field);
+        if (json == null) {
+            throw new AvroRuntimeException("Field " + field + " has no default value");
+        }
+        return json.toString();
     }
 
     @Override

@@ -54,6 +54,7 @@ import org.apache.avro.io.Encoder;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificCompiler;
+import org.codehaus.jackson.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -190,6 +191,16 @@ public class Avro14Adapter implements AvroAdapter {
   @Override
   public String toParsingForm(Schema s) {
     return SchemaNormalization.toParsingForm(s);
+  }
+
+  @Override
+  public String getDefaultValueAsJsonString(Schema.Field field) {
+    JsonNode json = field.defaultValue();
+    if (json == null) {
+      String fieldStr = field.name() + " type:" + field.schema().getType() + " pos:" + field.pos();
+      throw new AvroRuntimeException("Field " + fieldStr + " has no default value");
+    }
+    return json.toString();
   }
 
   @Override
