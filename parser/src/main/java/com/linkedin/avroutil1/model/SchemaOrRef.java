@@ -53,8 +53,15 @@ public class SchemaOrRef {
         return ref;
     }
 
+    /**
+     * @return true if this is declared inline or a resolved reference
+     */
+    public boolean isResolved() {
+        return schema != null;
+    }
+
     public AvroSchema getSchema() {
-        if (schema == null) {
+        if (!isResolved()) {
             throw new IllegalStateException("unresolved ref to " + ref);
         }
         return schema;
@@ -67,7 +74,7 @@ public class SchemaOrRef {
         if (ref == null) {
             throw new IllegalStateException("this schema (" + decl + ") is defined inline and is not a reference");
         }
-        if (schema != null) {
+        if (isResolved()) {
             throw new IllegalStateException("reference " + ref + " has already been resolved to " + schema);
         }
         AvroType referencedType = referencedSchema.type();

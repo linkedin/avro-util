@@ -51,8 +51,19 @@ public class AvroSchemaField {
         return position;
     }
 
+    /**
+     * @return the schema for this field (either defined inline or referenced from elsewhere)
+     * @throws IllegalStateException if this field refers to an unresolved schema
+     */
     public AvroSchema getSchema() {
         return schema.getSchema();
+    }
+
+    /**
+     * @return this field's schema (which may be a reference)
+     */
+    public SchemaOrRef getSchemaOrRef() {
+        return schema;
     }
 
     void assignTo(AvroRecordSchema recordSchema, int position) {

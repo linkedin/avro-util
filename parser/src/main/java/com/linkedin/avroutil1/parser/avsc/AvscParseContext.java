@@ -7,7 +7,12 @@
 package com.linkedin.avroutil1.parser.avsc;
 
 import com.linkedin.avroutil1.model.AvroNamedSchema;
+import com.linkedin.avroutil1.model.AvroRecordSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
+import com.linkedin.avroutil1.model.AvroSchemaField;
+import com.linkedin.avroutil1.model.AvroType;
+import com.linkedin.avroutil1.model.AvroUnionSchema;
+import com.linkedin.avroutil1.model.SchemaOrRef;
 import com.linkedin.avroutil1.parser.Located;
 import com.linkedin.avroutil1.parser.exceptions.AvroSyntaxException;
 
@@ -38,7 +43,8 @@ public class AvscParseContext {
     /**
      * all schemas defined (not simply referenced) within the current avsc being parsed.
      * the spec expects all nested schemas to be defined inline, so typical (large)
-     * schemas may have 10s+ of nested record/enum/unions defined therein
+     * schemas may have 10s+ of nested record/enum/unions defined therein.
+     * Schemas are only added to this collection once they are fully parsed.
      */
     protected final List<Located<AvroSchema>> definedSchemas = new ArrayList<>();
     /**
@@ -94,6 +100,11 @@ public class AvscParseContext {
         namespaceStack.pop();
     }
 
+    /**
+     * defines a new (completely parsed) schema
+     * @param schema new schema
+     * @param isTopLevel true if schema is the top-level schema of the avsc being parsed
+     */
     public void defineSchema(Located<AvroSchema> schema, boolean isTopLevel) {
         if (schema == null) {
             throw new IllegalArgumentException("schema cannot be null");
@@ -116,7 +127,75 @@ public class AvscParseContext {
         }
     }
 
+    /**
+     * iterates over all defined schemas and tries to resolve references that could not be resolved during
+     * parsing - for example self-references in schemas
+     */
+    public void resolveReferences() {
+        for (Located<AvroSchema> s : definedSchemas) {
+            AvroSchema schema = s.getValue();
+            resolveReferences(schema);
+        }
+    }
+
+    private void resolveReferences(AvroSchema schema) {
+        AvroType type = schema.type();
+        String ref;
+        Located<AvroSchema> resolved;
+        switch (type) {
+            case RECORD:
+                AvroRecordSchema recordSchema = (AvroRecordSchema) schema;
+                List<AvroSchemaField> fields = recordSchema.getFields();
+                for (AvroSchemaField field : fields) {
+                    SchemaOrRef fieldSchema = field.getSchemaOrRef();
+                    if (fieldSchema.isResolved()) {
+                        if (fieldSchema.getDecl() != null) {
+                            //recurse into inline definitions
+                            resolveReferences(fieldSchema.getDecl());
+                        }
+                        continue;
+                    }
+                    ref = fieldSchema.getRef();
+                    resolved = definedNamedSchemas.get(ref);
+                    if (resolved != null) {
+                        fieldSchema.setResolvedTo(resolved.getValue());
+                    }
+                    //TODO - record unresolved references
+                }
+                break;
+            case UNION:
+                AvroUnionSchema unionSchema = (AvroUnionSchema) schema;
+                List<SchemaOrRef> types = unionSchema.getTypes();
+                for (SchemaOrRef unionType : types) {
+                    if (unionType.isResolved()) {
+                        if (unionType.getDecl() != null) {
+                            //recurse into inline definitions
+                            resolveReferences(unionType.getDecl());
+                        }
+                        continue;
+                    }
+                    ref = unionType.getRef();
+                    resolved = definedNamedSchemas.get(ref);
+                    if (resolved != null) {
+                        unionType.setResolvedTo(resolved.getValue());
+                    }
+                    //TODO - record unresolved references
+                }
+                break;
+            case ARRAY:
+                throw new UnsupportedOperationException(" resolving references in arrays TBD");
+            case MAP:
+                throw new UnsupportedOperationException(" resolving references in maps TBD");
+            default:
+                break;
+        }
+    }
+
     public Located<AvroSchema> getTopLevelSchema() {
         return topLevelSchema;
+    }
+
+    public List<Located<AvroSchema>> getAllDefinedSchemas() {
+        return definedSchemas;
     }
 }

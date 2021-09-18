@@ -10,6 +10,8 @@ import com.linkedin.avroutil1.model.AvroRecordSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
 import com.linkedin.avroutil1.model.AvroSchemaField;
 import com.linkedin.avroutil1.model.AvroType;
+import com.linkedin.avroutil1.model.AvroUnionSchema;
+import com.linkedin.avroutil1.model.SchemaOrRef;
 import com.linkedin.avroutil1.parser.exceptions.AvroSyntaxException;
 import com.linkedin.avroutil1.parser.exceptions.JsonParseException;
 import com.linkedin.avroutil1.testcommon.TestUtil;
@@ -103,5 +105,21 @@ public class AvscParserTest {
         Assert.assertEquals(fields.get(5).getPosition(), 5);
         Assert.assertEquals(fields.get(5).getName(), "stringField");
         Assert.assertEquals(fields.get(5).getSchema().type(), AvroType.STRING);
+    }
+
+    @Test
+    public void testSelfReference() throws Exception {
+        String avsc = TestUtil.load("schemas/LongList.avsc");
+        AvscParser parser = new AvscParser();
+        AvscParseResult result = parser.parse(avsc);
+        Assert.assertNull(result.getParseError());
+        AvroRecordSchema schema = (AvroRecordSchema) result.getTopLevelSchema();
+
+        //schema.next[1] == schema
+
+        AvroSchemaField nextField = schema.getField("next");
+        AvroUnionSchema union = (AvroUnionSchema) nextField.getSchema();
+        SchemaOrRef secondBranch = union.getTypes().get(1);
+        Assert.assertSame(secondBranch.getSchema(), schema);
     }
 }

@@ -6,6 +6,8 @@
 
 package com.linkedin.avroutil1.model;
 
+import java.util.Objects;
+
 /**
  * represents a single location in a body of text
  */
@@ -35,5 +37,18 @@ public class TextLocation {
     @Override
     public String toString() {
         return "(line=" + lineNumber + ", column=" + columnNumber + ", offset=" +  streamOffset + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TextLocation that = (TextLocation) o;
+        return lineNumber == that.lineNumber && columnNumber == that.columnNumber && streamOffset == that.streamOffset;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(lineNumber, columnNumber, streamOffset);
     }
 }

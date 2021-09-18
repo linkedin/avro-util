@@ -11,7 +11,9 @@ import com.linkedin.avroutil1.model.AvroRecordSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
 import com.linkedin.avroutil1.model.AvroSchemaField;
 import com.linkedin.avroutil1.model.AvroType;
+import com.linkedin.avroutil1.model.AvroUnionSchema;
 import com.linkedin.avroutil1.model.SchemaOrRef;
+import com.linkedin.avroutil1.model.TextLocation;
 import com.linkedin.avroutil1.parser.Located;
 import com.linkedin.avroutil1.parser.exceptions.AvroSyntaxException;
 import com.linkedin.avroutil1.parser.exceptions.JsonParseException;
@@ -67,6 +69,7 @@ public class AvscParser {
 
         try {
             parseSchemaDeclOrRef(root, context, true);
+            context.resolveReferences();
             result.recordParseComplete(context);
         } catch (Exception parseIssue) {
             result.recordError(parseIssue);
@@ -92,6 +95,7 @@ public class AvscParser {
         JsonValue.ValueType nodeType = node.getValueType();
         AvroType avroType;
         AvroSchema definedSchema;
+        TextLocation location = Util.convertLocation(node.getStartLocation());
         switch (nodeType) {
             case STRING: //primitive or ref
                 JsonStringExt stringNode = (JsonStringExt) node;
@@ -146,6 +150,8 @@ public class AvscParser {
                                 nameStr.getValue(), // != null
                                 namespace,
                                 doc);
+//                        Located<AvroSchema> schemaInProgress = new Located<>(recordSchema, location);
+//                        context.markSchemaBeingParsed(schemaInProgress);
                         JsonArrayExt fieldsNode = getRequiredArray(objectNode, "fields", () -> "all avro records must have fields");
                         List<AvroSchemaField> fields = new ArrayList<>(fieldsNode.size());
                         for (int fieldNum = 0; fieldNum < fieldsNode.size(); fieldNum++) {
@@ -163,6 +169,7 @@ public class AvscParser {
                             fields.add(field);
                         }
                         recordSchema.setFields(fields);
+//                        context.markSchemaParsingDone(schemaInProgress);
                         definedSchema = recordSchema;
                         break;
                     case ENUM:
@@ -173,13 +180,25 @@ public class AvscParser {
                         throw new IllegalStateException("unhandled: " + avroType);
                 }
                 //TODO - parse json props
-                context.defineSchema(new Located<>(definedSchema, Util.convertLocation(node.getStartLocation())), topLevel);
+
+                context.defineSchema(new Located<>(definedSchema, location), topLevel);
                 if (namespaceChanged) {
                     context.popNamespace();
                 }
                 return new SchemaOrRef(definedSchema);
             case ARRAY:  //union
-                throw new UnsupportedOperationException("TBD");
+                JsonArrayExt arrayNode = (JsonArrayExt) node;
+                List<SchemaOrRef> unionTypes = new ArrayList<>(arrayNode.size());
+                for (int i = 0; i < arrayNode.size(); i++) {
+                    JsonValueExt unionNode = (JsonValueExt) arrayNode.get(i);
+                    SchemaOrRef type = parseSchemaDeclOrRef(unionNode, context, false);
+                    unionTypes.add(type);
+                }
+                AvroUnionSchema unionSchema = new AvroUnionSchema();
+                unionSchema.setTypes(unionTypes);
+                definedSchema = unionSchema;
+                context.defineSchema(new Located<>(definedSchema, location), topLevel);
+                return new SchemaOrRef(definedSchema);
             default:
                 throw new IllegalArgumentException("dont know how to parse a schema out ot " + nodeType + " at " + node.getStartLocation());
         }

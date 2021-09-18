@@ -10,7 +10,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * an avro record schema
+ */
 public class AvroRecordSchema extends AvroNamedSchema {
+    /**
+     * record fields. immutable once set
+     */
     private List<AvroSchemaField> fields;
 
     public AvroRecordSchema(String simpleName, String namespace, String doc) {
@@ -35,7 +41,22 @@ public class AvroRecordSchema extends AvroNamedSchema {
     }
 
     public List<AvroSchemaField> getFields() {
+        if (fields == null) {
+            throw new IllegalStateException("fields for record " + getFullName() + " have never been set");
+        }
         return fields;
+    }
+
+    public AvroSchemaField getField(String byName) {
+        if (fields == null) {
+            throw new IllegalStateException("fields for record " + getFullName() + " have never been set");
+        }
+        for (AvroSchemaField field : fields) {
+            if (field.getName().equals(byName)) {
+                return field;
+            }
+        }
+        return null;
     }
 
     @Override
