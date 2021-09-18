@@ -1,0 +1,9 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "TestInvalidFieldRecord",
+  "doc": "has a null for a field",
+  "fields": [
+    null
+  ]
+}

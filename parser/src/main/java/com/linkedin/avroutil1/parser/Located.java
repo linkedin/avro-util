@@ -8,6 +8,8 @@ package com.linkedin.avroutil1.parser;
 
 import com.linkedin.avroutil1.model.TextLocation;
 
+import java.util.Objects;
+
 /**
  * represents something that has a location in a body of text
  * @param <T> something. usually an avro something.
@@ -36,5 +38,18 @@ public class Located<T> {
     @Override
     public String toString() {
         return value + "@" + location;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Located<?> located = (Located<?>) o;
+        return Objects.equals(value, located.value) && Objects.equals(location, located.location);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value, location);
     }
 }

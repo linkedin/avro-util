@@ -8,6 +8,9 @@ package com.linkedin.avroutil1.model;
 
 import java.util.Locale;
 
+/**
+ * parent class for all avro types
+ */
 public abstract class AvroSchema {
     public abstract AvroType type();
 

@@ -59,4 +59,12 @@ public class AvscParseResult {
             throw new IllegalStateException("parsing not (yet?) marked complete");
         }
     }
+
+    @Override
+    public String toString() {
+        if (parseError != null) {
+            return "failed with " + parseError.getMessage();
+        }
+        return "succeeded with " + context.getAllDefinedSchemas().size() + " schemas parsed";
+    }
 }

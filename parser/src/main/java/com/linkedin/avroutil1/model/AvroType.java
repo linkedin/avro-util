@@ -6,6 +6,9 @@
 
 package com.linkedin.avroutil1.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -28,6 +31,18 @@ public enum AvroType {
     MAP    (false, false),
     UNION  (false, false),
     RECORD (true,  false);
+
+    private static final List<AvroType> PRIMITIVES;
+
+    static {
+        List<AvroType> temp = new ArrayList<>();
+        for (AvroType type : values()) {
+            if (type.isPrimitive()) {
+                temp.add(type);
+            }
+        }
+        PRIMITIVES = Collections.unmodifiableList(temp);
+    }
 
     /**
      * whether this is one of avro's named types
@@ -59,5 +74,9 @@ public enum AvroType {
         } catch (IllegalArgumentException ignored) {
             return null;
         }
+    }
+
+    public static List<AvroType> primitives() {
+        return PRIMITIVES;
     }
 }
