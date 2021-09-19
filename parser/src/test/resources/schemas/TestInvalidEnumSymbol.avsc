@@ -1,0 +1,16 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "TestInvalidEnumSymbol",
+  "doc": "has illegal values for symbols",
+  "fields": [
+    {
+      "name": "enumField",
+      "type": {
+        "type": "enum",
+        "name": "BadEnum",
+        "symbols": ["A", 7, false, null]
+      }
+    }
+  ]
+}

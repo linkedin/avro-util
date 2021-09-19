@@ -27,6 +27,16 @@
     {
       "name": "stringField",
       "type": "string"
+    },
+    {
+      "name": "enumField",
+      "type": {
+        "type": "enum",
+        "name": "SimpleEnum",
+        "namespace": "innerNamespace",
+        "symbols": ["A", "B", "C"],
+        "default": "A"
+      }
     }
   ]
 }

@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.parser.avsc;
 
+import com.linkedin.avroutil1.model.AvroEnumSchema;
 import com.linkedin.avroutil1.model.AvroPrimitiveSchema;
 import com.linkedin.avroutil1.model.AvroRecordSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
@@ -158,14 +159,15 @@ public class AvscParser {
                         List<AvroSchemaField> fields = new ArrayList<>(fieldsNode.size());
                         for (int fieldNum = 0; fieldNum < fieldsNode.size(); fieldNum++) {
                             JsonValueExt fieldDeclNode = (JsonValueExt) fieldsNode.get(fieldNum); //!=null
+                            JsonValue.ValueType fieldNodeType = fieldDeclNode.getValueType();
+                            if (fieldNodeType != JsonValue.ValueType.OBJECT) {
+                                throw new AvroSyntaxException("field " + fieldNum + " for record " + nameStr.getValue() + " at "
+                                        + fieldDeclNode.getStartLocation() + " expected to be an OBJECT, not a "
+                                        + JsonPUtil.describe(fieldNodeType) + " (" + fieldDeclNode + ")");
+                            }
                             TextLocation fieldStartLocation = Util.convertLocation(fieldDeclNode.getStartLocation());
                             TextLocation fieldEndLocation = Util.convertLocation(fieldDeclNode.getEndLocation());
                             CodeLocation fieldCodeLocation = new CodeLocation(context.getUri(), fieldStartLocation, fieldEndLocation);
-                            JsonValue.ValueType fieldNodeType = fieldDeclNode.getValueType();
-                            if (fieldNodeType != JsonValue.ValueType.OBJECT) {
-                                throw new AvroSyntaxException("field " + fieldNodeType + " for record " + nameStr.getValue() + " at "
-                                        + fieldDeclNode.getStartLocation() + " expected to be an OBJECT, not a " + JsonPUtil.describe(fieldNodeType));
-                            }
                             JsonObjectExt fieldDecl = (JsonObjectExt) fieldDeclNode;
                             Located<String> fieldName = getRequiredString(fieldDecl, "name", () -> "all record fields must have a name");
                             JsonValueExt fieldTypeNode = getRequiredNode(fieldDecl, "type", () -> "all record fields must have a type");
@@ -177,7 +179,36 @@ public class AvscParser {
                         definedSchema = recordSchema;
                         break;
                     case ENUM:
-                        throw new UnsupportedOperationException("TBD");
+                        JsonArrayExt symbolsNode = getRequiredArray(objectNode, "symbols", () -> "all avro enums must have symbols");
+                        List<String> symbols = new ArrayList<>(symbolsNode.size());
+                        for (int ordinal = 0; ordinal < symbolsNode.size(); ordinal++) {
+                            JsonValueExt symbolNode = (JsonValueExt) symbolsNode.get(ordinal);
+                            JsonValue.ValueType symbolNodeType = symbolNode.getValueType();
+                            if (symbolNodeType != JsonValue.ValueType.STRING) {
+                                throw new AvroSyntaxException("symbol " + ordinal + " for enum " + nameStr.getValue() + " at "
+                                        + symbolNode.getStartLocation() + " expected to be a STRING, not a "
+                                        + JsonPUtil.describe(symbolNodeType) + " (" + symbolNode + ")");
+                            }
+                            symbols.add(symbolNode.toString());
+                        }
+                        String defaultSymbol = null;
+                        Located<String> defaultStr = getOptionalString(objectNode, "default");
+                        if (defaultStr != null) {
+                            defaultSymbol = defaultStr.getValue();
+                            if (!symbols.contains(defaultSymbol)) {
+                                throw new AvroSyntaxException("enum " + nameStr.getValue() + " has a default value of " + defaultSymbol
+                                + " at " + defaultStr.getLocation() + " which is not in its list of symbols (" + symbols + ")");
+                            }
+                        }
+                        AvroEnumSchema enumSchema = new AvroEnumSchema(
+                                codeLocation,
+                                nameStr.getValue(), // != null
+                                namespace,
+                                doc,
+                                symbols,
+                                defaultSymbol);
+                        definedSchema = enumSchema;
+                        break;
                     case FIXED:
                         throw new UnsupportedOperationException("TBD");
                     default:

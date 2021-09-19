@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.parser.avsc;
 
+import com.linkedin.avroutil1.model.AvroEnumSchema;
 import com.linkedin.avroutil1.model.AvroRecordSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
 import com.linkedin.avroutil1.model.AvroSchemaField;
@@ -18,6 +19,7 @@ import com.linkedin.avroutil1.testcommon.TestUtil;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class AvscParserTest {
@@ -68,6 +70,24 @@ public class AvscParserTest {
     }
 
     @Test
+    public void testParseInvalidEnumSymbol() throws Exception {
+        String avsc = TestUtil.load("schemas/TestInvalidEnumSymbol.avsc");
+        AvscParser parser = new AvscParser();
+        AvscParseResult result = parser.parse(avsc);
+        Assert.assertNotNull(result.getParseError());
+        Assert.assertTrue(result.getParseError() instanceof AvroSyntaxException);
+    }
+
+    @Test
+    public void testParseBadEnumDefault() throws Exception {
+        String avsc = TestUtil.load("schemas/TestBadEnumDefault.avsc");
+        AvscParser parser = new AvscParser();
+        AvscParseResult result = parser.parse(avsc);
+        Assert.assertNotNull(result.getParseError());
+        Assert.assertTrue(result.getParseError() instanceof AvroSyntaxException);
+    }
+
+    @Test
     public void testSimpleParse() throws Exception {
         String avsc = TestUtil.load("schemas/TestRecord.avsc");
         AvscParser parser = new AvscParser();
@@ -80,7 +100,7 @@ public class AvscParserTest {
         Assert.assertEquals(recordSchema.getFullName(), "com.acme.TestRecord");
         List<AvroSchemaField> fields = recordSchema.getFields();
         Assert.assertNotNull(fields);
-        Assert.assertEquals(fields.size(), 6);
+        Assert.assertEquals(fields.size(), 7);
 
         Assert.assertEquals(fields.get(0).getPosition(), 0);
         Assert.assertEquals(fields.get(0).getName(), "intField");
@@ -105,6 +125,12 @@ public class AvscParserTest {
         Assert.assertEquals(fields.get(5).getPosition(), 5);
         Assert.assertEquals(fields.get(5).getName(), "stringField");
         Assert.assertEquals(fields.get(5).getSchema().type(), AvroType.STRING);
+
+        Assert.assertEquals(fields.get(6).getPosition(), 6);
+        Assert.assertEquals(fields.get(6).getName(), "enumField");
+        Assert.assertEquals(fields.get(6).getSchema().type(), AvroType.ENUM);
+        Assert.assertEquals(((AvroEnumSchema)fields.get(6).getSchema()).getFullName(), "innerNamespace.SimpleEnum");
+        Assert.assertEquals(((AvroEnumSchema)fields.get(6).getSchema()).getSymbols(), Arrays.asList("A", "B", "C"));
     }
 
     @Test

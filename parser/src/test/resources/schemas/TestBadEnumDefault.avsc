@@ -1,0 +1,17 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "TestBadEnumDefault",
+  "doc": "has bad default value",
+  "fields": [
+    {
+      "name": "enumField",
+      "type": {
+        "type": "enum",
+        "name": "BadEnum",
+        "symbols": ["A", "B"],
+        "default": "OOPSIE"
+      }
+    }
+  ]
+}
