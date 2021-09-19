@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.parser.avsc;
 
+import com.linkedin.avroutil1.model.AvroArraySchema;
 import com.linkedin.avroutil1.model.AvroEnumSchema;
 import com.linkedin.avroutil1.model.AvroFixedSchema;
 import com.linkedin.avroutil1.model.AvroPrimitiveSchema;
@@ -174,6 +175,8 @@ public class AvscParser {
                             Located<String> fieldName = getRequiredString(fieldDecl, "name", () -> "all record fields must have a name");
                             JsonValueExt fieldTypeNode = getRequiredNode(fieldDecl, "type", () -> "all record fields must have a type");
                             SchemaOrRef fieldSchema = parseSchemaDeclOrRef(fieldTypeNode, context, false);
+                            JsonValueExt fieldDefaultValueNode = fieldDecl.get("default");
+                            //TODO - validate and store default values
                             AvroSchemaField field = new AvroSchemaField(fieldCodeLocation, fieldName.getValue(), null, fieldSchema);
                             fields.add(field);
                         }
@@ -225,6 +228,11 @@ public class AvscParser {
                                 doc,
                                 fixedSize
                         );
+                        break;
+                    case ARRAY:
+                        JsonValueExt arrayItemsNode = getRequiredNode(objectNode, "items", () -> "array declarations must have an items property");
+                        SchemaOrRef arrayItemSchema = parseSchemaDeclOrRef(arrayItemsNode, context, false);
+                        definedSchema = new AvroArraySchema(codeLocation, arrayItemSchema);
                         break;
                     default:
                         throw new IllegalStateException("unhandled: " + avroType + " at " + startLocation);

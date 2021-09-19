@@ -16,4 +16,5 @@ dependencies {
     implementation "org.glassfish:jakarta.json:2.0.1"
 
     testImplementation project(":test-common")
+    testImplementation "org.apache.avro:avro:1.10.0"
 }

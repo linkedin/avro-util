@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.parser.avsc;
 
+import com.linkedin.avroutil1.model.AvroArraySchema;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
 import com.linkedin.avroutil1.model.AvroRecordSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
@@ -157,14 +158,14 @@ public class AvscParseContext {
                             //recurse into inline definitions
                             resolveReferences(fieldSchema.getDecl());
                         }
-                        continue;
+                    } else {
+                        ref = fieldSchema.getRef();
+                        resolved = definedNamedSchemas.get(ref);
+                        if (resolved != null) {
+                            fieldSchema.setResolvedTo(resolved.getValue());
+                        }
+                        //TODO - record unresolved references
                     }
-                    ref = fieldSchema.getRef();
-                    resolved = definedNamedSchemas.get(ref);
-                    if (resolved != null) {
-                        fieldSchema.setResolvedTo(resolved.getValue());
-                    }
-                    //TODO - record unresolved references
                 }
                 break;
             case UNION:
@@ -176,18 +177,33 @@ public class AvscParseContext {
                             //recurse into inline definitions
                             resolveReferences(unionType.getDecl());
                         }
-                        continue;
+                    } else {
+                        ref = unionType.getRef();
+                        resolved = definedNamedSchemas.get(ref);
+                        if (resolved != null) {
+                            unionType.setResolvedTo(resolved.getValue());
+                        }
+                        //TODO - record unresolved references
                     }
-                    ref = unionType.getRef();
+                }
+                break;
+            case ARRAY:
+                AvroArraySchema arraySchema = (AvroArraySchema) schema;
+                SchemaOrRef arrayValuesType = arraySchema.getValueSchemaOrRef();
+                if (arrayValuesType.isResolved()) {
+                    if (arrayValuesType.getDecl() != null) {
+                        //recurse into inline definitions
+                        resolveReferences(arrayValuesType.getDecl());
+                    }
+                } else {
+                    ref = arrayValuesType.getRef();
                     resolved = definedNamedSchemas.get(ref);
                     if (resolved != null) {
-                        unionType.setResolvedTo(resolved.getValue());
+                        arrayValuesType.setResolvedTo(resolved.getValue());
                     }
                     //TODO - record unresolved references
                 }
                 break;
-            case ARRAY:
-                throw new UnsupportedOperationException(" resolving references in arrays TBD");
             case MAP:
                 throw new UnsupportedOperationException(" resolving references in maps TBD");
             default:

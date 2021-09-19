@@ -49,6 +49,15 @@
         "name": "SimpleFixed",
         "size": 7
       }
+    },
+    {
+      "name": "strArrayField",
+      "type": {
+        "type": "array",
+        "items": "null"
+      },
+      "default": [null, null, null],
+      "doc": "this is silly, but legal"
     }
   ]
 }

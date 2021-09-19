@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.parser.avsc;
 
+import com.linkedin.avroutil1.model.AvroArraySchema;
 import com.linkedin.avroutil1.model.AvroEnumSchema;
 import com.linkedin.avroutil1.model.AvroFixedSchema;
 import com.linkedin.avroutil1.model.AvroRecordSchema;
@@ -17,6 +18,7 @@ import com.linkedin.avroutil1.model.SchemaOrRef;
 import com.linkedin.avroutil1.parser.exceptions.AvroSyntaxException;
 import com.linkedin.avroutil1.parser.exceptions.JsonParseException;
 import com.linkedin.avroutil1.testcommon.TestUtil;
+import org.apache.avro.Schema;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -101,7 +103,7 @@ public class AvscParserTest {
         Assert.assertEquals(recordSchema.getFullName(), "com.acme.TestRecord");
         List<AvroSchemaField> fields = recordSchema.getFields();
         Assert.assertNotNull(fields);
-        Assert.assertEquals(fields.size(), 9);
+        Assert.assertEquals(fields.size(), 10);
 
         Assert.assertEquals(fields.get(0).getPosition(), 0);
         Assert.assertEquals(fields.get(0).getName(), "booleanField");
@@ -142,6 +144,11 @@ public class AvscParserTest {
         Assert.assertEquals(fields.get(8).getSchema().type(), AvroType.FIXED);
         Assert.assertEquals(((AvroFixedSchema)fields.get(8).getSchema()).getFullName(), "com.acme.SimpleFixed");
         Assert.assertEquals(((AvroFixedSchema)fields.get(8).getSchema()).getSize(), 7);
+
+        Assert.assertEquals(fields.get(9).getPosition(), 9);
+        Assert.assertEquals(fields.get(9).getName(), "strArrayField");
+        Assert.assertEquals(fields.get(9).getSchema().type(), AvroType.ARRAY);
+        Assert.assertEquals(((AvroArraySchema)fields.get(9).getSchema()).getValueSchema().type(), AvroType.NULL);
     }
 
     @Test
@@ -158,5 +165,16 @@ public class AvscParserTest {
         AvroUnionSchema union = (AvroUnionSchema) nextField.getSchema();
         SchemaOrRef secondBranch = union.getTypes().get(1);
         Assert.assertSame(secondBranch.getSchema(), schema);
+    }
+
+    @Test
+    public void validateTestSchemas() throws Exception {
+        //this test acts as a sanity check of test schemas by parsing them with the latest
+        //version of avro (the reference impl)
+        String avsc = TestUtil.load("schemas/TestRecord.avsc");
+        Schema.Parser vanillaParser = new Schema.Parser();
+        vanillaParser.setValidate(true);
+        vanillaParser.setValidateDefaults(true);
+        Assert.assertNotNull(vanillaParser.parse(avsc));
     }
 }
