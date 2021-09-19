@@ -37,6 +37,14 @@
         "symbols": ["A", "B", "C"],
         "default": "A"
       }
+    },
+    {
+      "name": "fixedField",
+      "type": {
+        "type": "fixed",
+        "name": "SimpleFixed",
+        "size": 7
+      }
     }
   ]
 }

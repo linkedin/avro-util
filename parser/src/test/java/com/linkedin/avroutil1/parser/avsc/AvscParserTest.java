@@ -7,6 +7,7 @@
 package com.linkedin.avroutil1.parser.avsc;
 
 import com.linkedin.avroutil1.model.AvroEnumSchema;
+import com.linkedin.avroutil1.model.AvroFixedSchema;
 import com.linkedin.avroutil1.model.AvroRecordSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
 import com.linkedin.avroutil1.model.AvroSchemaField;
@@ -100,7 +101,7 @@ public class AvscParserTest {
         Assert.assertEquals(recordSchema.getFullName(), "com.acme.TestRecord");
         List<AvroSchemaField> fields = recordSchema.getFields();
         Assert.assertNotNull(fields);
-        Assert.assertEquals(fields.size(), 7);
+        Assert.assertEquals(fields.size(), 8);
 
         Assert.assertEquals(fields.get(0).getPosition(), 0);
         Assert.assertEquals(fields.get(0).getName(), "intField");
@@ -131,6 +132,12 @@ public class AvscParserTest {
         Assert.assertEquals(fields.get(6).getSchema().type(), AvroType.ENUM);
         Assert.assertEquals(((AvroEnumSchema)fields.get(6).getSchema()).getFullName(), "innerNamespace.SimpleEnum");
         Assert.assertEquals(((AvroEnumSchema)fields.get(6).getSchema()).getSymbols(), Arrays.asList("A", "B", "C"));
+
+        Assert.assertEquals(fields.get(7).getPosition(), 7);
+        Assert.assertEquals(fields.get(7).getName(), "fixedField");
+        Assert.assertEquals(fields.get(7).getSchema().type(), AvroType.FIXED);
+        Assert.assertEquals(((AvroFixedSchema)fields.get(7).getSchema()).getFullName(), "com.acme.SimpleFixed");
+        Assert.assertEquals(((AvroFixedSchema)fields.get(7).getSchema()).getSize(), 7);
     }
 
     @Test

@@ -7,6 +7,7 @@
 package com.linkedin.avroutil1.parser.avsc;
 
 import com.linkedin.avroutil1.model.AvroEnumSchema;
+import com.linkedin.avroutil1.model.AvroFixedSchema;
 import com.linkedin.avroutil1.model.AvroPrimitiveSchema;
 import com.linkedin.avroutil1.model.AvroRecordSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
@@ -21,6 +22,7 @@ import com.linkedin.avroutil1.parser.exceptions.AvroSyntaxException;
 import com.linkedin.avroutil1.parser.exceptions.JsonParseException;
 import com.linkedin.avroutil1.parser.exceptions.ParseException;
 import com.linkedin.avroutil1.parser.jsonpext.JsonArrayExt;
+import com.linkedin.avroutil1.parser.jsonpext.JsonNumberExt;
 import com.linkedin.avroutil1.parser.jsonpext.JsonObjectExt;
 import com.linkedin.avroutil1.parser.jsonpext.JsonPUtil;
 import com.linkedin.avroutil1.parser.jsonpext.JsonReaderExt;
@@ -200,19 +202,32 @@ public class AvscParser {
                                 + " at " + defaultStr.getLocation() + " which is not in its list of symbols (" + symbols + ")");
                             }
                         }
-                        AvroEnumSchema enumSchema = new AvroEnumSchema(
+                        definedSchema = new AvroEnumSchema(
                                 codeLocation,
                                 nameStr.getValue(), // != null
                                 namespace,
                                 doc,
                                 symbols,
                                 defaultSymbol);
-                        definedSchema = enumSchema;
                         break;
                     case FIXED:
-                        throw new UnsupportedOperationException("TBD");
+                        JsonValueExt sizeNode = getRequiredNode(objectNode, "size", () -> "fixed types must have a size property");
+                        if (sizeNode.getValueType() != JsonValue.ValueType.NUMBER || !(((JsonNumberExt) sizeNode).isIntegral())) {
+                            throw new AvroSyntaxException("size for fixed " + nameStr.getValue() + " at "
+                                    + sizeNode.getStartLocation() + " expected to be an INTEGER, not a "
+                                    + JsonPUtil.describe(sizeNode.getValueType()) + " (" + sizeNode + ")");
+                        }
+                        int fixedSize = ((JsonNumberExt) sizeNode).intValue();
+                        definedSchema = new AvroFixedSchema(
+                                codeLocation,
+                                nameStr.getValue(), // != null
+                                namespace,
+                                doc,
+                                fixedSize
+                        );
+                        break;
                     default:
-                        throw new IllegalStateException("unhandled: " + avroType);
+                        throw new IllegalStateException("unhandled: " + avroType + " at " + startLocation);
                 }
                 //TODO - parse json props
 
