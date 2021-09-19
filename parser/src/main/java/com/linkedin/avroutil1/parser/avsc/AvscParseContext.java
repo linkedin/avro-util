@@ -79,6 +79,10 @@ public class AvscParseContext {
         namespaceStack.push("");
     }
 
+    public URI getUri() {
+        return uri;
+    }
+
     public String getCurrentNamespace() {
         return namespaceStack.peek();
     }

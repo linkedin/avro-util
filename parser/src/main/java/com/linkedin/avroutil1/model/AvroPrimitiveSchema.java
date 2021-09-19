@@ -12,7 +12,8 @@ package com.linkedin.avroutil1.model;
 public class AvroPrimitiveSchema extends AvroSchema {
     private final AvroType type;
 
-    public AvroPrimitiveSchema(AvroType type) {
+    public AvroPrimitiveSchema(CodeLocation codeLocation, AvroType type) {
+        super(codeLocation);
         if (!type.isPrimitive()) {
             throw new IllegalArgumentException(type + " is not a primitive type");
         }
@@ -24,7 +25,7 @@ public class AvroPrimitiveSchema extends AvroSchema {
         return type;
     }
 
-    public static AvroPrimitiveSchema forType(AvroType type) {
-        return new AvroPrimitiveSchema(type);
+    public static AvroPrimitiveSchema forType(CodeLocation codeLocation, AvroType type) {
+        return new AvroPrimitiveSchema(codeLocation, type);
     }
 }

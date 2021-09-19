@@ -19,8 +19,8 @@ public class AvroRecordSchema extends AvroNamedSchema {
      */
     private List<AvroSchemaField> fields;
 
-    public AvroRecordSchema(String simpleName, String namespace, String doc) {
-        super(simpleName, namespace, doc);
+    public AvroRecordSchema(CodeLocation codeLocation, String simpleName, String namespace, String doc) {
+        super(codeLocation, simpleName, namespace, doc);
     }
 
     public void setFields(List<AvroSchemaField> fields) {

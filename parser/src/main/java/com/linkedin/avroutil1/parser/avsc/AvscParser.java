@@ -12,6 +12,7 @@ import com.linkedin.avroutil1.model.AvroSchema;
 import com.linkedin.avroutil1.model.AvroSchemaField;
 import com.linkedin.avroutil1.model.AvroType;
 import com.linkedin.avroutil1.model.AvroUnionSchema;
+import com.linkedin.avroutil1.model.CodeLocation;
 import com.linkedin.avroutil1.model.SchemaOrRef;
 import com.linkedin.avroutil1.model.TextLocation;
 import com.linkedin.avroutil1.parser.Located;
@@ -95,7 +96,9 @@ public class AvscParser {
         JsonValue.ValueType nodeType = node.getValueType();
         AvroType avroType;
         AvroSchema definedSchema;
-        TextLocation location = Util.convertLocation(node.getStartLocation());
+        TextLocation startLocation = Util.convertLocation(node.getStartLocation());
+        TextLocation endLocation = Util.convertLocation(node.getEndLocation());
+        CodeLocation codeLocation = new CodeLocation(context.getUri(), startLocation, endLocation);
         switch (nodeType) {
             case STRING: //primitive or ref
                 JsonStringExt stringNode = (JsonStringExt) node;
@@ -103,10 +106,10 @@ public class AvscParser {
                 //TODO - screen for reserved words??
                 if (avroType == null) {
                     //assume it's a ref
-                    return new SchemaOrRef(stringNode.getString());
+                    return new SchemaOrRef(codeLocation, stringNode.getString());
                 }
                 if (avroType.isPrimitive()) {
-                    return new SchemaOrRef(AvroPrimitiveSchema.forType(avroType));
+                    return new SchemaOrRef(codeLocation, AvroPrimitiveSchema.forType(codeLocation, avroType));
                 }
                 throw new UnsupportedOperationException("TBD");
             case OBJECT: //record/enum/fixed/error
@@ -147,15 +150,17 @@ public class AvscParser {
                     case RECORD:
                         //noinspection ConstantConditions
                         AvroRecordSchema recordSchema = new AvroRecordSchema(
+                                codeLocation,
                                 nameStr.getValue(), // != null
                                 namespace,
                                 doc);
-//                        Located<AvroSchema> schemaInProgress = new Located<>(recordSchema, location);
-//                        context.markSchemaBeingParsed(schemaInProgress);
                         JsonArrayExt fieldsNode = getRequiredArray(objectNode, "fields", () -> "all avro records must have fields");
                         List<AvroSchemaField> fields = new ArrayList<>(fieldsNode.size());
                         for (int fieldNum = 0; fieldNum < fieldsNode.size(); fieldNum++) {
                             JsonValueExt fieldDeclNode = (JsonValueExt) fieldsNode.get(fieldNum); //!=null
+                            TextLocation fieldStartLocation = Util.convertLocation(fieldDeclNode.getStartLocation());
+                            TextLocation fieldEndLocation = Util.convertLocation(fieldDeclNode.getEndLocation());
+                            CodeLocation fieldCodeLocation = new CodeLocation(context.getUri(), fieldStartLocation, fieldEndLocation);
                             JsonValue.ValueType fieldNodeType = fieldDeclNode.getValueType();
                             if (fieldNodeType != JsonValue.ValueType.OBJECT) {
                                 throw new AvroSyntaxException("field " + fieldNodeType + " for record " + nameStr.getValue() + " at "
@@ -165,11 +170,10 @@ public class AvscParser {
                             Located<String> fieldName = getRequiredString(fieldDecl, "name", () -> "all record fields must have a name");
                             JsonValueExt fieldTypeNode = getRequiredNode(fieldDecl, "type", () -> "all record fields must have a type");
                             SchemaOrRef fieldSchema = parseSchemaDeclOrRef(fieldTypeNode, context, false);
-                            AvroSchemaField field = new AvroSchemaField(fieldName.getValue(), null, fieldSchema);
+                            AvroSchemaField field = new AvroSchemaField(fieldCodeLocation, fieldName.getValue(), null, fieldSchema);
                             fields.add(field);
                         }
                         recordSchema.setFields(fields);
-//                        context.markSchemaParsingDone(schemaInProgress);
                         definedSchema = recordSchema;
                         break;
                     case ENUM:
@@ -181,11 +185,11 @@ public class AvscParser {
                 }
                 //TODO - parse json props
 
-                context.defineSchema(new Located<>(definedSchema, location), topLevel);
+                context.defineSchema(new Located<>(definedSchema, startLocation), topLevel);
                 if (namespaceChanged) {
                     context.popNamespace();
                 }
-                return new SchemaOrRef(definedSchema);
+                return new SchemaOrRef(codeLocation, definedSchema);
             case ARRAY:  //union
                 JsonArrayExt arrayNode = (JsonArrayExt) node;
                 List<SchemaOrRef> unionTypes = new ArrayList<>(arrayNode.size());
@@ -194,11 +198,11 @@ public class AvscParser {
                     SchemaOrRef type = parseSchemaDeclOrRef(unionNode, context, false);
                     unionTypes.add(type);
                 }
-                AvroUnionSchema unionSchema = new AvroUnionSchema();
+                AvroUnionSchema unionSchema = new AvroUnionSchema(codeLocation);
                 unionSchema.setTypes(unionTypes);
                 definedSchema = unionSchema;
-                context.defineSchema(new Located<>(definedSchema, location), topLevel);
-                return new SchemaOrRef(definedSchema);
+                context.defineSchema(new Located<>(definedSchema, startLocation), topLevel);
+                return new SchemaOrRef(codeLocation, definedSchema);
             default:
                 throw new IllegalArgumentException("dont know how to parse a schema out ot " + nodeType + " at " + node.getStartLocation());
         }

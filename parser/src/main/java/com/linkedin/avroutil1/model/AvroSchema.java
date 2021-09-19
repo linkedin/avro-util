@@ -11,8 +11,19 @@ import java.util.Locale;
 /**
  * parent class for all avro types
  */
-public abstract class AvroSchema {
+public abstract class AvroSchema implements LocatedCode {
+    protected final CodeLocation codeLocation;
+
+    public AvroSchema(CodeLocation codeLocation) {
+        this.codeLocation = codeLocation;
+    }
+
     public abstract AvroType type();
+
+    @Override
+    public CodeLocation getCodeLocation() {
+        return codeLocation;
+    }
 
     @Override
     public String toString() {

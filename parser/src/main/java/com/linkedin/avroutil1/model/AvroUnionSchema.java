@@ -20,6 +20,10 @@ public class AvroUnionSchema extends AvroSchema {
      */
     private List<SchemaOrRef> types;
 
+    public AvroUnionSchema(CodeLocation codeLocation) {
+        super(codeLocation);
+    }
+
     @Override
     public AvroType type() {
         return AvroType.UNION;
