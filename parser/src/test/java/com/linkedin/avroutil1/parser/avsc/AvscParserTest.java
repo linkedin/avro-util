@@ -101,43 +101,47 @@ public class AvscParserTest {
         Assert.assertEquals(recordSchema.getFullName(), "com.acme.TestRecord");
         List<AvroSchemaField> fields = recordSchema.getFields();
         Assert.assertNotNull(fields);
-        Assert.assertEquals(fields.size(), 8);
+        Assert.assertEquals(fields.size(), 9);
 
         Assert.assertEquals(fields.get(0).getPosition(), 0);
-        Assert.assertEquals(fields.get(0).getName(), "intField");
-        Assert.assertEquals(fields.get(0).getSchema().type(), AvroType.INT);
+        Assert.assertEquals(fields.get(0).getName(), "booleanField");
+        Assert.assertEquals(fields.get(0).getSchema().type(), AvroType.BOOLEAN);
 
         Assert.assertEquals(fields.get(1).getPosition(), 1);
-        Assert.assertEquals(fields.get(1).getName(), "longField");
-        Assert.assertEquals(fields.get(1).getSchema().type(), AvroType.LONG);
+        Assert.assertEquals(fields.get(1).getName(), "intField");
+        Assert.assertEquals(fields.get(1).getSchema().type(), AvroType.INT);
 
         Assert.assertEquals(fields.get(2).getPosition(), 2);
-        Assert.assertEquals(fields.get(2).getName(), "floatField");
-        Assert.assertEquals(fields.get(2).getSchema().type(), AvroType.FLOAT);
+        Assert.assertEquals(fields.get(2).getName(), "longField");
+        Assert.assertEquals(fields.get(2).getSchema().type(), AvroType.LONG);
 
         Assert.assertEquals(fields.get(3).getPosition(), 3);
-        Assert.assertEquals(fields.get(3).getName(), "doubleField");
-        Assert.assertEquals(fields.get(3).getSchema().type(), AvroType.DOUBLE);
+        Assert.assertEquals(fields.get(3).getName(), "floatField");
+        Assert.assertEquals(fields.get(3).getSchema().type(), AvroType.FLOAT);
 
         Assert.assertEquals(fields.get(4).getPosition(), 4);
-        Assert.assertEquals(fields.get(4).getName(), "bytesField");
-        Assert.assertEquals(fields.get(4).getSchema().type(), AvroType.BYTES);
+        Assert.assertEquals(fields.get(4).getName(), "doubleField");
+        Assert.assertEquals(fields.get(4).getSchema().type(), AvroType.DOUBLE);
 
         Assert.assertEquals(fields.get(5).getPosition(), 5);
-        Assert.assertEquals(fields.get(5).getName(), "stringField");
-        Assert.assertEquals(fields.get(5).getSchema().type(), AvroType.STRING);
+        Assert.assertEquals(fields.get(5).getName(), "bytesField");
+        Assert.assertEquals(fields.get(5).getSchema().type(), AvroType.BYTES);
 
         Assert.assertEquals(fields.get(6).getPosition(), 6);
-        Assert.assertEquals(fields.get(6).getName(), "enumField");
-        Assert.assertEquals(fields.get(6).getSchema().type(), AvroType.ENUM);
-        Assert.assertEquals(((AvroEnumSchema)fields.get(6).getSchema()).getFullName(), "innerNamespace.SimpleEnum");
-        Assert.assertEquals(((AvroEnumSchema)fields.get(6).getSchema()).getSymbols(), Arrays.asList("A", "B", "C"));
+        Assert.assertEquals(fields.get(6).getName(), "stringField");
+        Assert.assertEquals(fields.get(6).getSchema().type(), AvroType.STRING);
 
         Assert.assertEquals(fields.get(7).getPosition(), 7);
-        Assert.assertEquals(fields.get(7).getName(), "fixedField");
-        Assert.assertEquals(fields.get(7).getSchema().type(), AvroType.FIXED);
-        Assert.assertEquals(((AvroFixedSchema)fields.get(7).getSchema()).getFullName(), "com.acme.SimpleFixed");
-        Assert.assertEquals(((AvroFixedSchema)fields.get(7).getSchema()).getSize(), 7);
+        Assert.assertEquals(fields.get(7).getName(), "enumField");
+        Assert.assertEquals(fields.get(7).getSchema().type(), AvroType.ENUM);
+        Assert.assertEquals(((AvroEnumSchema)fields.get(7).getSchema()).getFullName(), "innerNamespace.SimpleEnum");
+        Assert.assertEquals(((AvroEnumSchema)fields.get(7).getSchema()).getSymbols(), Arrays.asList("A", "B", "C"));
+
+        Assert.assertEquals(fields.get(8).getPosition(), 8);
+        Assert.assertEquals(fields.get(8).getName(), "fixedField");
+        Assert.assertEquals(fields.get(8).getSchema().type(), AvroType.FIXED);
+        Assert.assertEquals(((AvroFixedSchema)fields.get(8).getSchema()).getFullName(), "com.acme.SimpleFixed");
+        Assert.assertEquals(((AvroFixedSchema)fields.get(8).getSchema()).getSize(), 7);
     }
 
     @Test

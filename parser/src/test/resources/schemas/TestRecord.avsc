@@ -5,6 +5,10 @@
   "doc": "nothing fancy",
   "fields": [
     {
+      "name": "booleanField",
+      "type": "boolean"
+    },
+    {
       "name": "intField",
       "type": "int"
     },
