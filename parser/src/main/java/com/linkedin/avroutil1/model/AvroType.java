@@ -17,20 +17,20 @@ import java.util.Locale;
  * (like "error")
  */
 public enum AvroType {
-    NULL   (false, true),
-    BOOLEAN(false, true),
-    INT    (false, true),
-    ENUM   (true,  false),
-    FLOAT  (false, true),
-    LONG   (false, true),
-    DOUBLE (false, true),
-    STRING (false, true),
-    BYTES  (false, true),
-    FIXED  (true,  false),
-    ARRAY  (false, false),
-    MAP    (false, false),
-    UNION  (false, false),
-    RECORD (true,  false);
+    NULL   (false, true,  false),
+    BOOLEAN(false, true,  false),
+    INT    (false, true,  false),
+    ENUM   (true,  false, false),
+    FLOAT  (false, true,  false),
+    LONG   (false, true,  false),
+    DOUBLE (false, true,  false),
+    STRING (false, true,  false),
+    BYTES  (false, true,  false),
+    FIXED  (true,  false, false),
+    ARRAY  (false, false, true),
+    MAP    (false, false, true),
+    UNION  (false, false, false),
+    RECORD (true,  false, false);
 
     private static final List<AvroType> PRIMITIVES;
 
@@ -54,9 +54,19 @@ public enum AvroType {
      */
     private final boolean primitive;
 
-    AvroType(boolean named, boolean primitive) {
+    /**
+     * whether this is one of avro's collection types
+     */
+    private final boolean collection;
+
+    AvroType(boolean named, boolean primitive, boolean collection) {
+        if ((named && (primitive || collection)) || (!named && primitive && collection)) {
+            throw new IllegalArgumentException("illegal combination named="
+                    + named + ", primitive=" + primitive + ", collection=" + collection);
+        }
         this.named = named;
         this.primitive = primitive;
+        this.collection = collection;
     }
 
     public boolean isNamed() {
@@ -65,6 +75,10 @@ public enum AvroType {
 
     public boolean isPrimitive() {
         return primitive;
+    }
+
+    public boolean isCollection() {
+        return collection;
     }
 
     public static AvroType fromJson(String jsonTypeStr) {

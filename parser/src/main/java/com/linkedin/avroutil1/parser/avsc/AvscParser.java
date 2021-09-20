@@ -7,9 +7,11 @@
 package com.linkedin.avroutil1.parser.avsc;
 
 import com.linkedin.avroutil1.model.AvroArraySchema;
+import com.linkedin.avroutil1.model.AvroCollectionSchema;
 import com.linkedin.avroutil1.model.AvroEnumSchema;
 import com.linkedin.avroutil1.model.AvroFixedSchema;
 import com.linkedin.avroutil1.model.AvroMapSchema;
+import com.linkedin.avroutil1.model.AvroNamedSchema;
 import com.linkedin.avroutil1.model.AvroPrimitiveSchema;
 import com.linkedin.avroutil1.model.AvroRecordSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
@@ -36,6 +38,7 @@ import jakarta.json.JsonValue;
 import jakarta.json.stream.JsonParsingException;
 
 import java.io.StringReader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -99,176 +102,223 @@ public class AvscParser {
             boolean topLevel
     ) throws ParseException {
         JsonValue.ValueType nodeType = node.getValueType();
-        AvroType avroType;
-        AvroSchema definedSchema;
-        TextLocation startLocation = Util.convertLocation(node.getStartLocation());
-        TextLocation endLocation = Util.convertLocation(node.getEndLocation());
-        CodeLocation codeLocation = new CodeLocation(context.getUri(), startLocation, endLocation);
         switch (nodeType) {
             case STRING: //primitive or ref
-                JsonStringExt stringNode = (JsonStringExt) node;
-                String typeString = stringNode.getString();
-                avroType = AvroType.fromJson(typeString);
-                //TODO - screen for reserved words??
-                if (avroType == null) {
-                    //assume it's a ref
-                    return new SchemaOrRef(codeLocation, typeString);
-                }
-                if (avroType.isPrimitive()) {
-                    return new SchemaOrRef(codeLocation, AvroPrimitiveSchema.forType(codeLocation, avroType));
-                }
-                //if we got here it means we found something like "record" as a type literal. which is not valid syntax
-                throw new AvroSyntaxException("Illegal avro type \"" + typeString + "\" at " + stringNode.getStartLocation()
-                        + ". Expecting a primitive type, an inline type definition or a reference the the fullname of a named type defined elsewhere");
+                return parsePrimitiveOrRef((JsonStringExt) node, context);
             case OBJECT: //record/enum/fixed/array/map/error
-                JsonObjectExt objectNode = (JsonObjectExt) node;
-                Located<String> typeStr = getRequiredString(objectNode, "type", () -> "it is a schema declaration");
-                avroType = AvroType.fromJson(typeStr.getValue());
-                if (avroType == null) {
-                    throw new AvroSyntaxException("unknown avro type \"" + typeStr.getValue() + "\" at " + typeStr.getLocation() + ". expecting \"record\", \"enum\" or \"fixed\"");
-                }
-                Located<String> nameStr = null;
-                Located<String> namespaceStr = null;
-                Located<String> docStr = null;
-                String namespace = context.getCurrentNamespace(); // != null
-                boolean namespaceChanged = false;
-                String doc = null;
-                if (avroType.isNamed()) {
-                    nameStr = getRequiredString(objectNode, "name", () -> avroType + " is a named type");
-
-                    namespaceStr = getOptionalString(objectNode, "namespace");
-                    //check if context namespace changed
-                    if (namespaceStr != null) {
-                        String newNamespace = namespaceStr.getValue();
-                        if (!namespace.equals(newNamespace)) {
-                            context.pushNamespace(newNamespace);
-                            namespaceChanged = true;
-                            namespace = newNamespace;
-                        }
-                    }
-
-                    //technically the avro spec does not allow "doc" on type fixed, but screw that
-                    docStr = getOptionalString(objectNode, "doc");
-                    if (docStr != null) {
-                        doc = docStr.getValue();
-                    }
-                }
-
-                switch (avroType) {
-                    case RECORD:
-                        //noinspection ConstantConditions
-                        AvroRecordSchema recordSchema = new AvroRecordSchema(
-                                codeLocation,
-                                nameStr.getValue(), // != null
-                                namespace,
-                                doc);
-                        JsonArrayExt fieldsNode = getRequiredArray(objectNode, "fields", () -> "all avro records must have fields");
-                        List<AvroSchemaField> fields = new ArrayList<>(fieldsNode.size());
-                        for (int fieldNum = 0; fieldNum < fieldsNode.size(); fieldNum++) {
-                            JsonValueExt fieldDeclNode = (JsonValueExt) fieldsNode.get(fieldNum); //!=null
-                            JsonValue.ValueType fieldNodeType = fieldDeclNode.getValueType();
-                            if (fieldNodeType != JsonValue.ValueType.OBJECT) {
-                                throw new AvroSyntaxException("field " + fieldNum + " for record " + nameStr.getValue() + " at "
-                                        + fieldDeclNode.getStartLocation() + " expected to be an OBJECT, not a "
-                                        + JsonPUtil.describe(fieldNodeType) + " (" + fieldDeclNode + ")");
-                            }
-                            TextLocation fieldStartLocation = Util.convertLocation(fieldDeclNode.getStartLocation());
-                            TextLocation fieldEndLocation = Util.convertLocation(fieldDeclNode.getEndLocation());
-                            CodeLocation fieldCodeLocation = new CodeLocation(context.getUri(), fieldStartLocation, fieldEndLocation);
-                            JsonObjectExt fieldDecl = (JsonObjectExt) fieldDeclNode;
-                            Located<String> fieldName = getRequiredString(fieldDecl, "name", () -> "all record fields must have a name");
-                            JsonValueExt fieldTypeNode = getRequiredNode(fieldDecl, "type", () -> "all record fields must have a type");
-                            SchemaOrRef fieldSchema = parseSchemaDeclOrRef(fieldTypeNode, context, false);
-                            JsonValueExt fieldDefaultValueNode = fieldDecl.get("default");
-                            //TODO - validate and store default values
-                            AvroSchemaField field = new AvroSchemaField(fieldCodeLocation, fieldName.getValue(), null, fieldSchema);
-                            fields.add(field);
-                        }
-                        recordSchema.setFields(fields);
-                        definedSchema = recordSchema;
-                        break;
-                    case ENUM:
-                        JsonArrayExt symbolsNode = getRequiredArray(objectNode, "symbols", () -> "all avro enums must have symbols");
-                        List<String> symbols = new ArrayList<>(symbolsNode.size());
-                        for (int ordinal = 0; ordinal < symbolsNode.size(); ordinal++) {
-                            JsonValueExt symbolNode = (JsonValueExt) symbolsNode.get(ordinal);
-                            JsonValue.ValueType symbolNodeType = symbolNode.getValueType();
-                            if (symbolNodeType != JsonValue.ValueType.STRING) {
-                                throw new AvroSyntaxException("symbol " + ordinal + " for enum " + nameStr.getValue() + " at "
-                                        + symbolNode.getStartLocation() + " expected to be a STRING, not a "
-                                        + JsonPUtil.describe(symbolNodeType) + " (" + symbolNode + ")");
-                            }
-                            symbols.add(symbolNode.toString());
-                        }
-                        String defaultSymbol = null;
-                        Located<String> defaultStr = getOptionalString(objectNode, "default");
-                        if (defaultStr != null) {
-                            defaultSymbol = defaultStr.getValue();
-                            if (!symbols.contains(defaultSymbol)) {
-                                throw new AvroSyntaxException("enum " + nameStr.getValue() + " has a default value of " + defaultSymbol
-                                + " at " + defaultStr.getLocation() + " which is not in its list of symbols (" + symbols + ")");
-                            }
-                        }
-                        definedSchema = new AvroEnumSchema(
-                                codeLocation,
-                                nameStr.getValue(), // != null
-                                namespace,
-                                doc,
-                                symbols,
-                                defaultSymbol);
-                        break;
-                    case FIXED:
-                        JsonValueExt sizeNode = getRequiredNode(objectNode, "size", () -> "fixed types must have a size property");
-                        if (sizeNode.getValueType() != JsonValue.ValueType.NUMBER || !(((JsonNumberExt) sizeNode).isIntegral())) {
-                            throw new AvroSyntaxException("size for fixed " + nameStr.getValue() + " at "
-                                    + sizeNode.getStartLocation() + " expected to be an INTEGER, not a "
-                                    + JsonPUtil.describe(sizeNode.getValueType()) + " (" + sizeNode + ")");
-                        }
-                        int fixedSize = ((JsonNumberExt) sizeNode).intValue();
-                        definedSchema = new AvroFixedSchema(
-                                codeLocation,
-                                nameStr.getValue(), // != null
-                                namespace,
-                                doc,
-                                fixedSize
-                        );
-                        break;
-                    case ARRAY:
-                        JsonValueExt arrayItemsNode = getRequiredNode(objectNode, "items", () -> "array declarations must have an items property");
-                        SchemaOrRef arrayItemSchema = parseSchemaDeclOrRef(arrayItemsNode, context, false);
-                        definedSchema = new AvroArraySchema(codeLocation, arrayItemSchema);
-                        break;
-                    case MAP:
-                        JsonValueExt mapValuesNode = getRequiredNode(objectNode, "values", () -> "map declarations must have a values property");
-                        SchemaOrRef mapValueSchema = parseSchemaDeclOrRef(mapValuesNode, context, false);
-                        definedSchema = new AvroMapSchema(codeLocation, mapValueSchema);
-                        break;
-                    default:
-                        throw new IllegalStateException("unhandled: " + avroType + " at " + startLocation);
-                }
-                //TODO - parse json props
-
-                context.defineSchema(new Located<>(definedSchema, startLocation), topLevel);
-                if (namespaceChanged) {
-                    context.popNamespace();
-                }
-                return new SchemaOrRef(codeLocation, definedSchema);
+                return parseComplexSchema((JsonObjectExt) node, context, topLevel);
             case ARRAY:  //union
-                JsonArrayExt arrayNode = (JsonArrayExt) node;
-                List<SchemaOrRef> unionTypes = new ArrayList<>(arrayNode.size());
-                for (int i = 0; i < arrayNode.size(); i++) {
-                    JsonValueExt unionNode = (JsonValueExt) arrayNode.get(i);
-                    SchemaOrRef type = parseSchemaDeclOrRef(unionNode, context, false);
-                    unionTypes.add(type);
-                }
-                AvroUnionSchema unionSchema = new AvroUnionSchema(codeLocation);
-                unionSchema.setTypes(unionTypes);
-                definedSchema = unionSchema;
-                context.defineSchema(new Located<>(definedSchema, startLocation), topLevel);
-                return new SchemaOrRef(codeLocation, definedSchema);
+                return parseUnionSchema((JsonArrayExt) node, context, topLevel);
             default:
-                throw new IllegalArgumentException("dont know how to parse a schema out ot " + nodeType + " at " + node.getStartLocation());
+                throw new IllegalArgumentException("dont know how to parse a schema out of " + nodeType
+                        + " at " + locationOf(context.getUri(), node));
         }
+    }
+
+    private SchemaOrRef parsePrimitiveOrRef(
+            JsonStringExt stringNode,
+            AvscParseContext context
+    ) {
+        CodeLocation codeLocation = locationOf(context.getUri(), stringNode);
+        String typeString = stringNode.getString();
+        AvroType avroType = AvroType.fromJson(typeString);
+        //TODO - screen for reserved words??
+        if (avroType == null) {
+            //assume it's a ref
+            return new SchemaOrRef(codeLocation, typeString);
+        }
+        if (avroType.isPrimitive()) {
+            return new SchemaOrRef(codeLocation, AvroPrimitiveSchema.forType(codeLocation, avroType));
+        }
+        //if we got here it means we found something like "record" as a type literal. which is not valid syntax
+        throw new AvroSyntaxException("Illegal avro type \"" + typeString + "\" at " + codeLocation.getStart() + ". "
+                + "Expecting a primitive type, an inline type definition or a reference the the fullname of a named type defined elsewhere");
+    }
+
+    private SchemaOrRef parseComplexSchema(
+            JsonObjectExt objectNode,
+            AvscParseContext context,
+            boolean topLevel
+    ) {
+        CodeLocation codeLocation = locationOf(context.getUri(), objectNode);
+        Located<String> typeStr = getRequiredString(objectNode, "type", () -> "it is a schema declaration");
+        AvroType avroType = AvroType.fromJson(typeStr.getValue());
+        if (avroType == null) {
+            throw new AvroSyntaxException("unknown avro type \"" + typeStr.getValue() + "\" at "
+                    + typeStr.getLocation() + ". expecting \"record\", \"enum\" or \"fixed\"");
+        }
+
+        AvroSchema definedSchema;
+        if (avroType.isNamed()) {
+            definedSchema = parseNamedSchema(objectNode, context, avroType, codeLocation);
+        } else if (avroType.isCollection()) {
+            definedSchema = parseCollectionSchema(objectNode, context, avroType, codeLocation);
+        } else {
+            throw new IllegalStateException("unhandled avro type " + avroType + " at " + typeStr.getLocation());
+        }
+
+        //TODO - parse json props
+
+        context.defineSchema(new Located<>(definedSchema, codeLocation.getStart()), topLevel);
+
+        return new SchemaOrRef(codeLocation, definedSchema);
+    }
+
+    private AvroNamedSchema parseNamedSchema(
+            JsonObjectExt objectNode,
+            AvscParseContext context,
+            AvroType avroType,
+            CodeLocation codeLocation
+    ) {
+        Located<String> nameStr = getRequiredString(objectNode, "name", () -> avroType + " is a named type");
+        Located<String> namespaceStr = getOptionalString(objectNode, "namespace");
+        Located<String> docStr = getOptionalString(objectNode, "doc");
+        //technically the avro spec does not allow "doc" on type fixed, but screw that
+        String doc = docStr != null ? docStr.getValue() : null;
+
+        String namespace = context.getCurrentNamespace(); // != null
+        boolean namespaceChanged = false;
+        //check if context namespace changed
+        if (namespaceStr != null) {
+            String newNamespace = namespaceStr.getValue();
+            if (!namespace.equals(newNamespace)) {
+                context.pushNamespace(newNamespace);
+                namespaceChanged = true;
+                namespace = newNamespace;
+            }
+        }
+
+        AvroNamedSchema namedSchema;
+        switch (avroType) {
+            case RECORD:
+                AvroRecordSchema recordSchema = new AvroRecordSchema(
+                        codeLocation,
+                        nameStr.getValue(), // != null
+                        namespace,
+                        doc);
+                JsonArrayExt fieldsNode = getRequiredArray(objectNode, "fields", () -> "all avro records must have fields");
+                List<AvroSchemaField> fields = new ArrayList<>(fieldsNode.size());
+                for (int fieldNum = 0; fieldNum < fieldsNode.size(); fieldNum++) {
+                    JsonValueExt fieldDeclNode = (JsonValueExt) fieldsNode.get(fieldNum); //!=null
+                    JsonValue.ValueType fieldNodeType = fieldDeclNode.getValueType();
+                    if (fieldNodeType != JsonValue.ValueType.OBJECT) {
+                        throw new AvroSyntaxException("field " + fieldNum + " for record " + nameStr.getValue() + " at "
+                                + fieldDeclNode.getStartLocation() + " expected to be an OBJECT, not a "
+                                + JsonPUtil.describe(fieldNodeType) + " (" + fieldDeclNode + ")");
+                    }
+                    TextLocation fieldStartLocation = Util.convertLocation(fieldDeclNode.getStartLocation());
+                    TextLocation fieldEndLocation = Util.convertLocation(fieldDeclNode.getEndLocation());
+                    CodeLocation fieldCodeLocation = new CodeLocation(context.getUri(), fieldStartLocation, fieldEndLocation);
+                    JsonObjectExt fieldDecl = (JsonObjectExt) fieldDeclNode;
+                    Located<String> fieldName = getRequiredString(fieldDecl, "name", () -> "all record fields must have a name");
+                    JsonValueExt fieldTypeNode = getRequiredNode(fieldDecl, "type", () -> "all record fields must have a type");
+                    SchemaOrRef fieldSchema = parseSchemaDeclOrRef(fieldTypeNode, context, false);
+                    JsonValueExt fieldDefaultValueNode = fieldDecl.get("default");
+                    //TODO - validate and store default values
+                    AvroSchemaField field = new AvroSchemaField(fieldCodeLocation, fieldName.getValue(), null, fieldSchema);
+                    fields.add(field);
+                }
+                recordSchema.setFields(fields);
+                namedSchema = recordSchema;
+                break;
+            case ENUM:
+                JsonArrayExt symbolsNode = getRequiredArray(objectNode, "symbols", () -> "all avro enums must have symbols");
+                List<String> symbols = new ArrayList<>(symbolsNode.size());
+                for (int ordinal = 0; ordinal < symbolsNode.size(); ordinal++) {
+                    JsonValueExt symbolNode = (JsonValueExt) symbolsNode.get(ordinal);
+                    JsonValue.ValueType symbolNodeType = symbolNode.getValueType();
+                    if (symbolNodeType != JsonValue.ValueType.STRING) {
+                        throw new AvroSyntaxException("symbol " + ordinal + " for enum " + nameStr.getValue() + " at "
+                                + symbolNode.getStartLocation() + " expected to be a STRING, not a "
+                                + JsonPUtil.describe(symbolNodeType) + " (" + symbolNode + ")");
+                    }
+                    symbols.add(symbolNode.toString());
+                }
+                String defaultSymbol = null;
+                Located<String> defaultStr = getOptionalString(objectNode, "default");
+                if (defaultStr != null) {
+                    defaultSymbol = defaultStr.getValue();
+                    if (!symbols.contains(defaultSymbol)) {
+                        throw new AvroSyntaxException("enum " + nameStr.getValue() + " has a default value of " + defaultSymbol
+                                + " at " + defaultStr.getLocation() + " which is not in its list of symbols (" + symbols + ")");
+                    }
+                }
+                namedSchema = new AvroEnumSchema(
+                        codeLocation,
+                        nameStr.getValue(), // != null
+                        namespace,
+                        doc,
+                        symbols,
+                        defaultSymbol);
+                break;
+            case FIXED:
+                JsonValueExt sizeNode = getRequiredNode(objectNode, "size", () -> "fixed types must have a size property");
+                if (sizeNode.getValueType() != JsonValue.ValueType.NUMBER || !(((JsonNumberExt) sizeNode).isIntegral())) {
+                    throw new AvroSyntaxException("size for fixed " + nameStr.getValue() + " at "
+                            + sizeNode.getStartLocation() + " expected to be an INTEGER, not a "
+                            + JsonPUtil.describe(sizeNode.getValueType()) + " (" + sizeNode + ")");
+                }
+                int fixedSize = ((JsonNumberExt) sizeNode).intValue();
+                namedSchema = new AvroFixedSchema(
+                        codeLocation,
+                        nameStr.getValue(), // != null
+                        namespace,
+                        doc,
+                        fixedSize
+                );
+                break;
+            default:
+                throw new IllegalStateException("unhandled: " + avroType + " for object at " + codeLocation.getStart());
+        }
+
+        if (namespaceChanged) {
+            context.popNamespace();
+        }
+        return namedSchema;
+    }
+
+    private AvroCollectionSchema parseCollectionSchema(
+            JsonObjectExt objectNode,
+            AvscParseContext context,
+            AvroType avroType,
+            CodeLocation codeLocation
+    ) {
+        switch (avroType) {
+            case ARRAY:
+                JsonValueExt arrayItemsNode = getRequiredNode(objectNode, "items", () -> "array declarations must have an items property");
+                SchemaOrRef arrayItemSchema = parseSchemaDeclOrRef(arrayItemsNode, context, false);
+                return new AvroArraySchema(codeLocation, arrayItemSchema);
+            case MAP:
+                JsonValueExt mapValuesNode = getRequiredNode(objectNode, "values", () -> "map declarations must have a values property");
+                SchemaOrRef mapValueSchema = parseSchemaDeclOrRef(mapValuesNode, context, false);
+                return new AvroMapSchema(codeLocation, mapValueSchema);
+            default:
+                throw new IllegalStateException("unhandled: " + avroType + " for object at " + codeLocation.getStart());
+        }
+    }
+
+    private SchemaOrRef parseUnionSchema(
+            JsonArrayExt arrayNode,
+            AvscParseContext context,
+            boolean topLevel
+    ) {
+        CodeLocation codeLocation = locationOf(context.getUri(), arrayNode);
+        List<SchemaOrRef> unionTypes = new ArrayList<>(arrayNode.size());
+        for (JsonValue jsonValue : arrayNode) {
+            JsonValueExt unionNode = (JsonValueExt) jsonValue;
+            SchemaOrRef type = parseSchemaDeclOrRef(unionNode, context, false);
+            unionTypes.add(type);
+        }
+        AvroUnionSchema unionSchema = new AvroUnionSchema(codeLocation);
+        unionSchema.setTypes(unionTypes);
+        context.defineSchema(new Located<>(unionSchema, codeLocation.getStart()), topLevel);
+        return new SchemaOrRef(codeLocation, unionSchema);
+    }
+
+    private CodeLocation locationOf(URI uri, JsonValueExt node) {
+        TextLocation startLocation = Util.convertLocation(node.getStartLocation());
+        TextLocation endLocation = Util.convertLocation(node.getEndLocation());
+        return new CodeLocation(uri, startLocation, endLocation);
     }
 
     private JsonValueExt getRequiredNode(JsonObjectExt node, String prop, Supplier<String> reasonSupplier) {
