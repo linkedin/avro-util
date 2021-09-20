@@ -7,6 +7,7 @@
 package com.linkedin.avroutil1.parser.avsc;
 
 import com.linkedin.avroutil1.model.AvroArraySchema;
+import com.linkedin.avroutil1.model.AvroMapSchema;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
 import com.linkedin.avroutil1.model.AvroRecordSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
@@ -145,69 +146,52 @@ public class AvscParseContext {
 
     private void resolveReferences(AvroSchema schema) {
         AvroType type = schema.type();
-        String ref;
-        Located<AvroSchema> resolved;
         switch (type) {
             case RECORD:
                 AvroRecordSchema recordSchema = (AvroRecordSchema) schema;
                 List<AvroSchemaField> fields = recordSchema.getFields();
                 for (AvroSchemaField field : fields) {
                     SchemaOrRef fieldSchema = field.getSchemaOrRef();
-                    if (fieldSchema.isResolved()) {
-                        if (fieldSchema.getDecl() != null) {
-                            //recurse into inline definitions
-                            resolveReferences(fieldSchema.getDecl());
-                        }
-                    } else {
-                        ref = fieldSchema.getRef();
-                        resolved = definedNamedSchemas.get(ref);
-                        if (resolved != null) {
-                            fieldSchema.setResolvedTo(resolved.getValue());
-                        }
-                        //TODO - record unresolved references
-                    }
+                    resolveReferences(fieldSchema);
                 }
                 break;
             case UNION:
                 AvroUnionSchema unionSchema = (AvroUnionSchema) schema;
                 List<SchemaOrRef> types = unionSchema.getTypes();
                 for (SchemaOrRef unionType : types) {
-                    if (unionType.isResolved()) {
-                        if (unionType.getDecl() != null) {
-                            //recurse into inline definitions
-                            resolveReferences(unionType.getDecl());
-                        }
-                    } else {
-                        ref = unionType.getRef();
-                        resolved = definedNamedSchemas.get(ref);
-                        if (resolved != null) {
-                            unionType.setResolvedTo(resolved.getValue());
-                        }
-                        //TODO - record unresolved references
-                    }
+                    resolveReferences(unionType);
                 }
                 break;
             case ARRAY:
                 AvroArraySchema arraySchema = (AvroArraySchema) schema;
                 SchemaOrRef arrayValuesType = arraySchema.getValueSchemaOrRef();
-                if (arrayValuesType.isResolved()) {
-                    if (arrayValuesType.getDecl() != null) {
-                        //recurse into inline definitions
-                        resolveReferences(arrayValuesType.getDecl());
-                    }
-                } else {
-                    ref = arrayValuesType.getRef();
-                    resolved = definedNamedSchemas.get(ref);
-                    if (resolved != null) {
-                        arrayValuesType.setResolvedTo(resolved.getValue());
-                    }
-                    //TODO - record unresolved references
-                }
+                resolveReferences(arrayValuesType);
                 break;
             case MAP:
-                throw new UnsupportedOperationException(" resolving references in maps TBD");
+                AvroMapSchema mapSchema = (AvroMapSchema) schema;
+                SchemaOrRef mapValuesType = mapSchema.getValueSchemaOrRef();
+                resolveReferences(mapValuesType);
+                break;
             default:
                 break;
+        }
+    }
+
+    private void resolveReferences(SchemaOrRef possiblyRef) {
+        if (possiblyRef.isResolved()) {
+            //either an already- resolved reference or an inline definition
+            if (possiblyRef.getDecl() != null) {
+                //recurse into inline definitions
+                resolveReferences(possiblyRef.getDecl());
+            }
+        } else {
+            //unresolved (and so must be a) reference
+            String fullName = possiblyRef.getRef();
+            Located<AvroSchema> resolved = definedNamedSchemas.get(fullName);
+            if (resolved != null) {
+                possiblyRef.setResolvedTo(resolved.getValue());
+            }
+            //TODO - record unresolved references
         }
     }
 

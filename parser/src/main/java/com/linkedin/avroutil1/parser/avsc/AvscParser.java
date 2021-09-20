@@ -9,6 +9,7 @@ package com.linkedin.avroutil1.parser.avsc;
 import com.linkedin.avroutil1.model.AvroArraySchema;
 import com.linkedin.avroutil1.model.AvroEnumSchema;
 import com.linkedin.avroutil1.model.AvroFixedSchema;
+import com.linkedin.avroutil1.model.AvroMapSchema;
 import com.linkedin.avroutil1.model.AvroPrimitiveSchema;
 import com.linkedin.avroutil1.model.AvroRecordSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
@@ -233,6 +234,11 @@ public class AvscParser {
                         JsonValueExt arrayItemsNode = getRequiredNode(objectNode, "items", () -> "array declarations must have an items property");
                         SchemaOrRef arrayItemSchema = parseSchemaDeclOrRef(arrayItemsNode, context, false);
                         definedSchema = new AvroArraySchema(codeLocation, arrayItemSchema);
+                        break;
+                    case MAP:
+                        JsonValueExt mapValuesNode = getRequiredNode(objectNode, "values", () -> "map declarations must have a values property");
+                        SchemaOrRef mapValueSchema = parseSchemaDeclOrRef(mapValuesNode, context, false);
+                        definedSchema = new AvroMapSchema(codeLocation, mapValueSchema);
                         break;
                     default:
                         throw new IllegalStateException("unhandled: " + avroType + " at " + startLocation);

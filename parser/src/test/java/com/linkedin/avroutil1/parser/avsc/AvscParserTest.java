@@ -9,6 +9,7 @@ package com.linkedin.avroutil1.parser.avsc;
 import com.linkedin.avroutil1.model.AvroArraySchema;
 import com.linkedin.avroutil1.model.AvroEnumSchema;
 import com.linkedin.avroutil1.model.AvroFixedSchema;
+import com.linkedin.avroutil1.model.AvroMapSchema;
 import com.linkedin.avroutil1.model.AvroRecordSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
 import com.linkedin.avroutil1.model.AvroSchemaField;
@@ -103,7 +104,7 @@ public class AvscParserTest {
         Assert.assertEquals(recordSchema.getFullName(), "com.acme.TestRecord");
         List<AvroSchemaField> fields = recordSchema.getFields();
         Assert.assertNotNull(fields);
-        Assert.assertEquals(fields.size(), 10);
+        Assert.assertEquals(fields.size(), 11);
 
         Assert.assertEquals(fields.get(0).getPosition(), 0);
         Assert.assertEquals(fields.get(0).getName(), "booleanField");
@@ -136,8 +137,9 @@ public class AvscParserTest {
         Assert.assertEquals(fields.get(7).getPosition(), 7);
         Assert.assertEquals(fields.get(7).getName(), "enumField");
         Assert.assertEquals(fields.get(7).getSchema().type(), AvroType.ENUM);
-        Assert.assertEquals(((AvroEnumSchema)fields.get(7).getSchema()).getFullName(), "innerNamespace.SimpleEnum");
-        Assert.assertEquals(((AvroEnumSchema)fields.get(7).getSchema()).getSymbols(), Arrays.asList("A", "B", "C"));
+        AvroEnumSchema simpleEnumSchema = (AvroEnumSchema) fields.get(7).getSchema();
+        Assert.assertEquals(simpleEnumSchema.getFullName(), "innerNamespace.SimpleEnum");
+        Assert.assertEquals(simpleEnumSchema.getSymbols(), Arrays.asList("A", "B", "C"));
 
         Assert.assertEquals(fields.get(8).getPosition(), 8);
         Assert.assertEquals(fields.get(8).getName(), "fixedField");
@@ -149,6 +151,12 @@ public class AvscParserTest {
         Assert.assertEquals(fields.get(9).getName(), "strArrayField");
         Assert.assertEquals(fields.get(9).getSchema().type(), AvroType.ARRAY);
         Assert.assertEquals(((AvroArraySchema)fields.get(9).getSchema()).getValueSchema().type(), AvroType.NULL);
+
+        Assert.assertEquals(fields.get(10).getPosition(), 10);
+        Assert.assertEquals(fields.get(10).getName(), "enumMapField");
+        Assert.assertEquals(fields.get(10).getSchema().type(), AvroType.MAP);
+        AvroSchema mapValueSchema = ((AvroMapSchema) fields.get(10).getSchema()).getValueSchema();
+        Assert.assertSame(mapValueSchema, simpleEnumSchema);
     }
 
     @Test
