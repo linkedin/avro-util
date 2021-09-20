@@ -1,0 +1,35 @@
+{
+  "type": "record",
+  "namespace": "this.is.a.lie",
+  "name": "com.acme.TestMisleadingNamespaceRecord",
+  "doc": "has full name and namespace should be ignored",
+  "fields": [
+    {
+      "name": "f1",
+      "type": {
+        "type": "record",
+        "name": "SimpleName",
+        "fields": [
+          {
+            "name": "innerF1",
+            "type": "null"
+          }
+        ]
+      }
+    },
+    {
+      "name": "f2",
+      "type": {
+        "type": "record",
+        "name": "not.so.SimpleName",
+        "namespace": "why is this even a thing?!",
+        "fields": [
+          {
+            "name": "innerF2",
+            "type": "null"
+          }
+        ]
+      }
+    }
+  ]
+}

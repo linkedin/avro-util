@@ -185,6 +185,21 @@ public class AvscParserTest {
     }
 
     @Test
+    public void testMisleadingNamespace() throws Exception {
+        String avsc = TestUtil.load("schemas/TestMisleadingNamespaceRecord.avsc");
+        AvscParser parser = new AvscParser();
+        AvscParseResult result = parser.parse(avsc);
+        Assert.assertNull(result.getParseError());
+        AvroRecordSchema schema = (AvroRecordSchema) result.getTopLevelSchema();
+        Assert.assertEquals(schema.getFullName(), "com.acme.TestMisleadingNamespaceRecord");
+        AvroRecordSchema inner1 = (AvroRecordSchema) schema.getField("f1").getSchema();
+        AvroRecordSchema inner2 = (AvroRecordSchema) schema.getField("f2").getSchema();
+        Assert.assertEquals(inner1.getFullName(), "com.acme.SimpleName");
+        Assert.assertEquals(inner2.getFullName(), "not.so.SimpleName");
+        //TODO - look for warnings about ignored namespaces and use of full names
+    }
+
+    @Test
     public void validateTestSchemas() throws Exception {
         //this test acts as a sanity check of test schemas by parsing them with the latest
         //version of avro (the reference impl)
@@ -193,5 +208,13 @@ public class AvscParserTest {
         vanillaParser.setValidate(true);
         vanillaParser.setValidateDefaults(true);
         Assert.assertNotNull(vanillaParser.parse(avsc));
+
+        avsc = TestUtil.load("schemas/TestMisleadingNamespaceRecord.avsc");
+        Schema parsed = vanillaParser.parse(avsc);
+        Assert.assertEquals(parsed.getFullName(), "com.acme.TestMisleadingNamespaceRecord");
+        Schema inner1 = parsed.getField("f1").schema();
+        Assert.assertEquals(inner1.getFullName(), "com.acme.SimpleName");
+        Schema inner2 = parsed.getField("f2").schema();
+        Assert.assertEquals(inner2.getFullName(), "not.so.SimpleName");
     }
 }
