@@ -92,6 +92,15 @@ public class AvscParserTest {
     }
 
     @Test
+    public void testParseInvalidReference() throws Exception {
+        String avsc = TestUtil.load("schemas/TestInvalidReferenceRecord.avsc");
+        AvscParser parser = new AvscParser();
+        AvscParseResult result = parser.parse(avsc);
+        Assert.assertNotNull(result.getParseError());
+        Assert.assertTrue(result.getParseError() instanceof AvroSyntaxException);
+    }
+
+    @Test
     public void testSimpleParse() throws Exception {
         String avsc = TestUtil.load("schemas/TestRecord.avsc");
         AvscParser parser = new AvscParser();

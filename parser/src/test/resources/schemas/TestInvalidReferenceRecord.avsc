@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "TestInvalidReferenceRecord",
+  "fields": [
+    {
+      "name": "someField",
+      "type": "record",
+      "doc": "this field has an invalid type"
+    }
+  ]
+}

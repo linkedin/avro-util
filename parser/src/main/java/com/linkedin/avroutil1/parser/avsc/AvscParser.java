@@ -107,17 +107,20 @@ public class AvscParser {
         switch (nodeType) {
             case STRING: //primitive or ref
                 JsonStringExt stringNode = (JsonStringExt) node;
-                avroType = AvroType.fromJson(stringNode.getString());
+                String typeString = stringNode.getString();
+                avroType = AvroType.fromJson(typeString);
                 //TODO - screen for reserved words??
                 if (avroType == null) {
                     //assume it's a ref
-                    return new SchemaOrRef(codeLocation, stringNode.getString());
+                    return new SchemaOrRef(codeLocation, typeString);
                 }
                 if (avroType.isPrimitive()) {
                     return new SchemaOrRef(codeLocation, AvroPrimitiveSchema.forType(codeLocation, avroType));
                 }
-                throw new UnsupportedOperationException("TBD");
-            case OBJECT: //record/enum/fixed/error
+                //if we got here it means we found something like "record" as a type literal. which is not valid syntax
+                throw new AvroSyntaxException("Illegal avro type \"" + typeString + "\" at " + stringNode.getStartLocation()
+                        + ". Expecting a primitive type, an inline type definition or a reference the the fullname of a named type defined elsewhere");
+            case OBJECT: //record/enum/fixed/array/map/error
                 JsonObjectExt objectNode = (JsonObjectExt) node;
                 Located<String> typeStr = getRequiredString(objectNode, "type", () -> "it is a schema declaration");
                 avroType = AvroType.fromJson(typeStr.getValue());
