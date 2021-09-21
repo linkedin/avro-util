@@ -49,7 +49,11 @@ public class CompatibleJsonEncoder extends ParsingEncoder implements Parser.Acti
   protected BitSet isEmpty = new BitSet();
 
   public CompatibleJsonEncoder(Schema sc, OutputStream out, boolean useFqcns) throws IOException {
-    this(sc, getJsonGenerator(out), useFqcns);
+    this(sc, getJsonGenerator(out, false), useFqcns);
+  }
+
+  public CompatibleJsonEncoder(Schema sc, OutputStream out, boolean pretty, boolean useFqcns) throws IOException {
+    this(sc, getJsonGenerator(out, pretty), useFqcns);
   }
 
   public CompatibleJsonEncoder(Schema sc, JsonGenerator out, boolean useFqcns) throws IOException {
@@ -69,13 +73,17 @@ public class CompatibleJsonEncoder extends ParsingEncoder implements Parser.Acti
   @Override
   public void init(OutputStream out) throws IOException {
     flush();
-    this.out = getJsonGenerator(out);
+    this.out = getJsonGenerator(out, false);
   }
 
-  private static JsonGenerator getJsonGenerator(OutputStream out)
+  private static JsonGenerator getJsonGenerator(OutputStream out, boolean pretty)
     throws IOException {
-    return out == null ? null :
-      new JsonFactory().createJsonGenerator(out, JsonEncoding.UTF8);
+    if (out == null) return null;
+    JsonGenerator jsonGenerator = new JsonFactory().createJsonGenerator(out, JsonEncoding.UTF8);
+    if (pretty) {
+      jsonGenerator.useDefaultPrettyPrinter();
+    }
+    return jsonGenerator;
   }
 
   @Override
@@ -118,8 +126,8 @@ public class CompatibleJsonEncoder extends ParsingEncoder implements Parser.Acti
   public void writeString(Utf8 utf8) throws IOException {
     writeString(utf8.toString());
   }
-  
-  @Override 
+
+  @Override
   public void writeString(String str) throws IOException {
     parser.advance(Symbol.STRING);
     if (parser.topSymbol() == Symbol.MAP_KEY_MARKER) {

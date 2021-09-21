@@ -58,7 +58,11 @@ public class CompatibleJsonEncoder extends ParsingEncoder implements Parser.Acti
   protected BitSet isEmpty = new BitSet();
 
   public CompatibleJsonEncoder(Schema sc, OutputStream out, boolean useFqcns) throws IOException {
-    this(sc, getJsonGenerator(out), useFqcns);
+    this(sc, getJsonGenerator(out, false), useFqcns);
+  }
+
+  public CompatibleJsonEncoder(Schema sc, OutputStream out, boolean pretty, boolean useFqcns) throws IOException {
+    this(sc, getJsonGenerator(out, pretty), useFqcns);
   }
 
   public CompatibleJsonEncoder(Schema sc, JsonGenerator out, boolean useFqcns) throws IOException {
@@ -75,13 +79,17 @@ public class CompatibleJsonEncoder extends ParsingEncoder implements Parser.Acti
     }
   }
 
-  private static JsonGenerator getJsonGenerator(OutputStream out)
+  private static JsonGenerator getJsonGenerator(OutputStream out, boolean pretty)
       throws IOException {
     if (null == out)
-      throw new NullPointerException("OutputStream cannot be null"); 
-    return new JsonFactory().createJsonGenerator(out, JsonEncoding.UTF8);
+      throw new NullPointerException("OutputStream cannot be null");
+    JsonGenerator jsonGenerator = new JsonFactory().createJsonGenerator(out, JsonEncoding.UTF8);
+    if (pretty) {
+      jsonGenerator.useDefaultPrettyPrinter();
+    }
+    return jsonGenerator;
   }
-  
+
   /**
    * Reconfigures this JsonEncoder to use the output stream provided.
    * <p>
@@ -90,17 +98,17 @@ public class CompatibleJsonEncoder extends ParsingEncoder implements Parser.Acti
    * Otherwise, this JsonEncoder will flush its current output and then
    * reconfigure its output to use a default UTF8 JsonGenerator that writes
    * to the provided OutputStream.
-   * 
+   *
    * @param out
    *          The OutputStream to direct output to. Cannot be null.
    * @throws IOException
    * @return this JsonEncoder
    */
   public CompatibleJsonEncoder configure(OutputStream out) throws IOException {
-    this.configure(getJsonGenerator(out));
+    this.configure(getJsonGenerator(out, false));
     return this;
   }
-  
+
   /**
    * Reconfigures this JsonEncoder to output to the JsonGenerator provided.
    * <p>
@@ -108,7 +116,7 @@ public class CompatibleJsonEncoder extends ParsingEncoder implements Parser.Acti
    * <p>
    * Otherwise, this JsonEncoder will flush its current output and then
    * reconfigure its output to use the provided JsonGenerator.
-   * 
+   *
    * @param generator
    *          The JsonGenerator to direct output to. Cannot be null.
    * @throws IOException
@@ -164,8 +172,8 @@ public class CompatibleJsonEncoder extends ParsingEncoder implements Parser.Acti
   public void writeString(Utf8 utf8) throws IOException {
     writeString(utf8.toString());
   }
-  
-  @Override 
+
+  @Override
   public void writeString(String str) throws IOException {
     parser.advance(Symbol.STRING);
     if (parser.topSymbol() == Symbol.MAP_KEY_MARKER) {

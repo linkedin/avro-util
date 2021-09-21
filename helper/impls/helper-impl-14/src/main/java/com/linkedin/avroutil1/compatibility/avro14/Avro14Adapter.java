@@ -54,6 +54,9 @@ import org.apache.avro.io.Encoder;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificCompiler;
+import org.codehaus.jackson.JsonEncoding;
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,12 +134,16 @@ public class Avro14Adapter implements AvroAdapter {
 
   @Override
   public JsonEncoder newJsonEncoder(Schema schema, OutputStream out, boolean pretty) throws IOException {
-    return new JsonEncoder(schema, out);
+    JsonGenerator jsonGenerator = new JsonFactory().createJsonGenerator(out, JsonEncoding.UTF8);
+    if (pretty) {
+      jsonGenerator.useDefaultPrettyPrinter();
+    }
+    return new JsonEncoder(schema, jsonGenerator);
   }
 
   @Override
   public Encoder newJsonEncoder(Schema schema, OutputStream out, boolean pretty, AvroVersion jsonFormat) throws IOException {
-    return new CompatibleJsonEncoder(schema, out, jsonFormat != null && jsonFormat.laterThan(AvroVersion.AVRO_1_4));
+    return new CompatibleJsonEncoder(schema, out, pretty, jsonFormat != null && jsonFormat.laterThan(AvroVersion.AVRO_1_4));
   }
 
   @Override
