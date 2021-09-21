@@ -40,6 +40,6 @@ public class TestJsonParsing {
         JsonLocation startLocation = fields.getStartLocation();
         JsonLocation endLocation = fields.getEndLocation();
         Assert.assertEquals(startLocation.getLineNumber(), 6);
-        Assert.assertEquals(endLocation.getLineNumber(), 31);
+        Assert.assertEquals(endLocation.getLineNumber(), 70);
     }
 }

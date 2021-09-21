@@ -17,7 +17,8 @@ public abstract class AvroNamedSchema extends AvroSchema {
     protected final String namespace;
     protected final String doc;
 
-    public AvroNamedSchema(String simpleName, String namespace, String doc) {
+    public AvroNamedSchema(CodeLocation codeLocation, String simpleName, String namespace, String doc) {
+        super(codeLocation);
         if (simpleName == null || simpleName.isEmpty()) {
             throw new IllegalArgumentException("simpleName cannot be null or empty");
         }

@@ -9,7 +9,8 @@ package com.linkedin.avroutil1.model;
 /**
  * field in an {@link AvroSchema}
  */
-public class AvroSchemaField {
+public class AvroSchemaField implements LocatedCode {
+    private final CodeLocation codeLocation;
     private final String name;
     private final String doc;
     /**
@@ -27,16 +28,22 @@ public class AvroSchemaField {
      */
     private int position = -1;
 
-    public AvroSchemaField(String name, String doc, SchemaOrRef schema) {
+    public AvroSchemaField(CodeLocation codeLocation, String name, String doc, SchemaOrRef schema) {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("name cannot be null or empty");
         }
         if (schema == null) {
             throw new IllegalArgumentException("schema for " + name + " cannot be null");
         }
+        this.codeLocation = codeLocation;
         this.name = name;
         this.doc = doc;
         this.schema = schema;
+    }
+
+    @Override
+    public CodeLocation getCodeLocation() {
+        return codeLocation;
     }
 
     public String getName() {

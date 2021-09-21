@@ -10,8 +10,8 @@ package com.linkedin.avroutil1.model;
  * represents either a declared avro schema (which may or may not be a named type)
  * or a reference to an avro schema (by FQCN, meaning the schema referenced is named)
  */
-public class SchemaOrRef {
-
+public class SchemaOrRef implements LocatedCode {
+    private final CodeLocation codeLocation;
     /**
      * a declared schema, if this represents a declared schema
      */
@@ -27,22 +27,29 @@ public class SchemaOrRef {
      */
     private AvroSchema schema;
 
-    public SchemaOrRef(AvroSchema decl) {
+    public SchemaOrRef(CodeLocation codeLocation ,AvroSchema decl) {
         if (decl == null) {
             throw new IllegalArgumentException("schema definition cannot be null");
         }
+        this.codeLocation = codeLocation;
         this.decl = decl;
         this.ref = null;
         this.schema = decl;
     }
 
-    public SchemaOrRef(String ref) {
+    public SchemaOrRef(CodeLocation codeLocation, String ref) {
         if (ref == null) {
             throw new IllegalArgumentException("schema reference cannot be null");
         }
+        this.codeLocation = codeLocation;
         this.decl = null;
         this.ref = ref;
         this.schema = null;
+    }
+
+    @Override
+    public CodeLocation getCodeLocation() {
+        return codeLocation;
     }
 
     public AvroSchema getDecl() {

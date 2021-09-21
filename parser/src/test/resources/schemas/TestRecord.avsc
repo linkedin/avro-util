@@ -5,6 +5,10 @@
   "doc": "nothing fancy",
   "fields": [
     {
+      "name": "booleanField",
+      "type": "boolean"
+    },
+    {
       "name": "intField",
       "type": "int"
     },
@@ -27,6 +31,41 @@
     {
       "name": "stringField",
       "type": "string"
+    },
+    {
+      "name": "enumField",
+      "type": {
+        "type": "enum",
+        "name": "SimpleEnum",
+        "namespace": "innerNamespace",
+        "symbols": ["A", "B", "C"],
+        "default": "A"
+      }
+    },
+    {
+      "name": "fixedField",
+      "type": {
+        "type": "fixed",
+        "name": "SimpleFixed",
+        "size": 7
+      }
+    },
+    {
+      "name": "strArrayField",
+      "type": {
+        "type": "array",
+        "items": "null"
+      },
+      "default": [null, null, null],
+      "doc": "this is silly, but legal"
+    },
+    {
+      "name": "enumMapField",
+      "type": {
+        "type": "map",
+        "values": "innerNamespace.SimpleEnum"
+      },
+      "doc": "back-ref to a schema defined earlier in the same file"
     }
   ]
 }
