@@ -69,7 +69,15 @@ public class AvscParser {
         try {
             root = jsonReader.readObject();
         } catch (JsonParsingException e) {
-            result.recordError(new JsonParseException("json parse error at " + e.getLocation(), e));
+            Throwable rootCause = Util.rootCause(e);
+            String message = rootCause.getMessage();
+            if (message != null && message.startsWith("Unexpected char 47")) {
+                //47 is ascii for '/' (utf-8 matches ascii on "low" characters). we are going to assume this means
+                //someone tried putting a //comment into an avsc source
+                result.recordError(new JsonParseException("comments not supported in json at" + e.getLocation(), e));
+            } else {
+                result.recordError(new JsonParseException("json parse error at " + e.getLocation(), e));
+            }
             return result;
         } catch (Exception e) {
             result.recordError(new JsonParseException("unknown json parse error", e));
@@ -183,11 +191,15 @@ public class AvscParser {
         String schemaNamespace;
         if (name.contains(".")) {
             //the name specified is a full name (namespace included)
-            //TODO - warn about use of full names in declarations
-            //if (namespace != null) {
-                //namespace should be ignored
-                //TODO - warn about using namespace in combination with a full name
-            //}
+            context.addIssue(AvscIssues.useOfFullName(
+                    new CodeLocation(context.getUri(), nameStr.getLocation(), nameStr.getLocation()),
+                    avroType, name));
+            if (namespace != null) {
+                //namespace will be ignored, but it's confusing to even list it
+                context.addIssue(AvscIssues.ignoredNamespace(
+                        new CodeLocation(context.getUri(), namespaceStr.getLocation(), namespaceStr.getLocation()),
+                        avroType, namespace, name));
+            }
             //TODO - validate names (no ending in dot, no spaces, etc)
             int lastDot = name.lastIndexOf('.');
             schemaSimpleName = name.substring(lastDot + 1);

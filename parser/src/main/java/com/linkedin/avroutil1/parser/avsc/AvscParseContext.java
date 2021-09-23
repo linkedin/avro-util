@@ -59,6 +59,10 @@ public class AvscParseContext {
      * a primitive or a union/collection
      */
     protected Located<AvroSchema> topLevelSchema = null;
+    /**
+     * any issues encountered during parsing
+     */
+    protected List<AvscIssue> issues = new ArrayList<>();
 
     public AvscParseContext(String avsc) {
         try {
@@ -131,6 +135,13 @@ public class AvscParseContext {
                 throw new AvroSyntaxException(s + " defined in " + schema.getLocation() + " conflicts with " + other);
             }
         }
+    }
+
+    public void addIssue(AvscIssue issue) {
+        if (issue == null) {
+            throw new IllegalArgumentException("issue cannot be null");
+        }
+        issues.add(issue);
     }
 
     /**

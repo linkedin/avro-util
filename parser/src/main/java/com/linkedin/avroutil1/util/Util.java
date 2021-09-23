@@ -37,4 +37,15 @@ public class Util {
     public static TextLocation convertLocation (JsonLocation jsonLocation) {
         return new TextLocation(jsonLocation.getLineNumber(), jsonLocation.getColumnNumber(), jsonLocation.getStreamOffset());
     }
+
+    public static Throwable rootCause(Throwable throwable) {
+        if (throwable == null) {
+            throw new IllegalArgumentException("argument cannot be null");
+        }
+        Throwable cause = throwable;
+        while (cause != null && cause.getCause() != null && cause.getCause() != cause) {
+            cause = cause.getCause();
+        }
+        return cause;
+    }
 }

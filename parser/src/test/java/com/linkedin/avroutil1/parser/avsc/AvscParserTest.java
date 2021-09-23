@@ -101,6 +101,16 @@ public class AvscParserTest {
     }
 
     @Test
+    public void testParseEndOfLineComment() throws Exception {
+        String avsc = TestUtil.load("schemas/TestEndOfLineCommentRecord.avsc");
+        AvscParser parser = new AvscParser();
+        AvscParseResult result = parser.parse(avsc);
+        Assert.assertNotNull(result.getParseError());
+        Assert.assertTrue(result.getParseError() instanceof JsonParseException);
+        Assert.assertTrue(result.getParseError().getMessage().contains("comment"));
+    }
+
+    @Test
     public void testSimpleParse() throws Exception {
         String avsc = TestUtil.load("schemas/TestRecord.avsc");
         AvscParser parser = new AvscParser();

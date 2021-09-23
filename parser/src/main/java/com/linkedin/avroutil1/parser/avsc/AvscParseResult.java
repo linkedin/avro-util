@@ -11,7 +11,9 @@ import com.linkedin.avroutil1.parser.Located;
 
 public class AvscParseResult {
     /**
-     * a fatal error preventing the complete parsing of the avsc schema
+     * a fatal error preventing the complete parsing of the avsc schema.
+     * this being null does not mean other, less-fatal issues might not
+     * exist in {@link #context}
      */
     private Throwable parseError;
     /**

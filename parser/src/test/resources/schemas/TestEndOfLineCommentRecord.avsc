@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "TestEndOfLineCommentRecord",
+  "doc": "json has no such thing as comments", //and yet - here's a comment
+  "fields": [
+    {
+      "name": "stringField",
+      "type": "string"
+    }
+  ]
+}
