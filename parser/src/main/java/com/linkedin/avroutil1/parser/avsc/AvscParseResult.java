@@ -7,9 +7,12 @@
 package com.linkedin.avroutil1.parser.avsc;
 
 import com.linkedin.avroutil1.model.AvroSchema;
+import com.linkedin.avroutil1.model.CodeLocation;
+import com.linkedin.avroutil1.model.LocatedCode;
 import com.linkedin.avroutil1.parser.Located;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AvscParseResult {
     /**
@@ -56,8 +59,12 @@ public class AvscParseResult {
     }
 
     public List<AvscIssue> getIssues() {
-        assertSuccess();
         return context.getIssues();
+    }
+
+    public List<AvscIssue> getIssues(LocatedCode relatedTo) {
+        CodeLocation span = relatedTo.getCodeLocation();
+        return getIssues().stream().filter(issue -> issue.getLocation().overlaps(span)).collect(Collectors.toList());
     }
 
     protected void assertSuccess() {

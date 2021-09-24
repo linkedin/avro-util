@@ -24,6 +24,22 @@ public class AvscIssue {
         this.throwable = throwable;
     }
 
+    public CodeLocation getLocation() {
+        return location;
+    }
+
+    public IssueSeverity getSeverity() {
+        return severity;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public Throwable getThrowable() {
+        return throwable;
+    }
+
     @Override
     public String toString() {
         return severity + " @ " + location.getStart() + ": " + message;

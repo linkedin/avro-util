@@ -25,6 +25,13 @@ public abstract class AvroSchema implements LocatedCode {
         return codeLocation;
     }
 
+    /**
+     * @return true if this schema allows null values/literals
+     */
+    public boolean isNullable() {
+        return false; //as a rule avro schemas do not allow nulls
+    }
+
     @Override
     public String toString() {
         return type().name().toLowerCase(Locale.ROOT);

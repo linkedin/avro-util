@@ -1,0 +1,79 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "TestRecordWithHorribleDefaultValues",
+  "doc": "unfixable",
+  "fields": [
+    {
+      "name": "nullField",
+      "type": "null",
+      "default": 42
+    },
+    {
+      "name": "booleanField",
+      "type": "boolean",
+      "default": "rofl"
+    },
+    {
+      "name": "intField",
+      "type": "int",
+      "default": 5000000000,
+      "doc": "over max int"
+    },
+    {
+      "name": "longField",
+      "type": "long",
+      "default": 4.20
+    },
+    {
+      "name": "floatField",
+      "type": "float",
+      "default": 3.56e+78,
+      "doc": "over max float"
+    },
+    {
+      "name": "doubleField",
+      "type": "double",
+      "default": 1.234e+567,
+      "doc": "over max double"
+    },
+    {
+      "name": "bytesField",
+      "type": "bytes",
+      "default": null
+    },
+    {
+      "name": "stringField",
+      "type": "string",
+      "default": true
+    },
+    {
+      "name": "enumField",
+      "type": {
+        "type": "enum",
+        "name": "SimpleEnum",
+        "namespace": "innerNamespace",
+        "symbols": ["A", "B", "C"],
+        "default": "something new"
+      },
+      "default": "something exciting"
+    },
+    {
+      "name": "fixedField",
+      "type": {
+        "type": "fixed",
+        "name": "SimpleFixed",
+        "size": 7
+      },
+      "default": "12345678"
+    },
+    {
+      "name": "strArrayField",
+      "type": {
+        "type": "array",
+        "items": "string"
+      },
+      "default": [1, false, null]
+    }
+  ]
+}

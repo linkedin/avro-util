@@ -9,6 +9,8 @@ package com.linkedin.avroutil1.parser.avsc;
 import com.linkedin.avroutil1.model.AvroType;
 import com.linkedin.avroutil1.model.CodeLocation;
 
+import java.util.List;
+
 /**
  * utility class to centralize all issue-creation in a single place
  */
@@ -60,7 +62,7 @@ public class AvscIssues {
         );
     }
 
-    public static AvscIssue badDefaultValue(
+    public static AvscIssue badFieldDefaultValue(
             CodeLocation valueLocation,
             String badValue,
             AvroType expectedAvroType,
@@ -71,6 +73,22 @@ public class AvscIssues {
                 IssueSeverity.SEVERE,
                 "default value for field " + fieldName + " at " + valueLocation.getStart()
                         + " cannot be decoded as a " + expectedAvroType + ": " + badValue,
+                null
+        );
+    }
+
+    public static AvscIssue badEnumDefaultValue(
+            CodeLocation valueLocation,
+            String badValue,
+            String enumName,
+            List<String> symbols
+    ) {
+        return new AvscIssue(
+                valueLocation,
+                IssueSeverity.SEVERE,
+                "enum " + enumName + " has a default value of \"" + badValue
+                        + "\" at " + valueLocation.getStart() + " which is not in its list of symbols"
+                        + " (" + symbols + ")",
                 null
         );
     }

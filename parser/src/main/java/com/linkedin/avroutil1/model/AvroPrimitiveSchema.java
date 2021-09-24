@@ -25,6 +25,11 @@ public class AvroPrimitiveSchema extends AvroSchema {
         return type;
     }
 
+    @Override
+    public boolean isNullable() {
+        return type == AvroType.NULL;
+    }
+
     public static AvroPrimitiveSchema forType(CodeLocation codeLocation, AvroType type) {
         return new AvroPrimitiveSchema(codeLocation, type);
     }

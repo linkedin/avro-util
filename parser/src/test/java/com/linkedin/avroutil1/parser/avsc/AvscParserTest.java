@@ -87,8 +87,12 @@ public class AvscParserTest {
         String avsc = TestUtil.load("schemas/TestBadEnumDefault.avsc");
         AvscParser parser = new AvscParser();
         AvscParseResult result = parser.parse(avsc);
-        Assert.assertNotNull(result.getParseError());
-        Assert.assertTrue(result.getParseError() instanceof AvroSyntaxException);
+        AvroRecordSchema recordSchema = (AvroRecordSchema) result.getTopLevelSchema();
+        List<AvscIssue> issues = result.getIssues(recordSchema);
+        Assert.assertFalse(issues.stream().noneMatch(issue -> issue.getMessage().contains("default value")));
+        AvroEnumSchema enumSchema = (AvroEnumSchema) recordSchema.getField("enumField").getSchema();
+        issues = result.getIssues(enumSchema);
+        Assert.assertFalse(issues.stream().noneMatch(issue -> issue.getMessage().contains("default value")));
     }
 
     @Test
@@ -217,7 +221,23 @@ public class AvscParserTest {
         Assert.assertNull(result.getParseError());
         AvroRecordSchema schema = (AvroRecordSchema) result.getTopLevelSchema();
         for (AvroSchemaField field : schema.getFields()) {
-            Assert.assertNotNull(field.getDefaultValue());
+            Assert.assertNotNull(field.getDefaultValue(), "field " + field.getName() + " has a null default");
+        }
+    }
+
+    @Test
+    public void testParsingHorribleDefaultValues() throws Exception {
+        String avsc = TestUtil.load("schemas/TestRecordWithHorribleDefaultValues.avsc");
+        AvscParser parser = new AvscParser();
+        AvscParseResult result = parser.parse(avsc);
+        Assert.assertNull(result.getParseError());
+        AvroRecordSchema schema = (AvroRecordSchema) result.getTopLevelSchema();
+        Assert.assertNotNull(schema);
+        for (AvroSchemaField field : schema.getFields()) {
+            List<AvscIssue> issuesWithField = result.getIssues(field);
+            Assert.assertFalse(issuesWithField.isEmpty(), "field " + field.getName() + " has no issues?!");
+            Assert.assertFalse(issuesWithField.stream().noneMatch(issue -> issue.getMessage().contains("default value")));
+            Assert.assertNull(field.getDefaultValue());
         }
     }
 
@@ -232,11 +252,21 @@ public class AvscParserTest {
         Assert.assertNotNull(vanillaParser.parse(avsc));
 
         avsc = TestUtil.load("schemas/TestMisleadingNamespaceRecord.avsc");
+        vanillaParser = new Schema.Parser();
+        vanillaParser.setValidate(true);
+        vanillaParser.setValidateDefaults(true);
         Schema parsed = vanillaParser.parse(avsc);
         Assert.assertEquals(parsed.getFullName(), "com.acme.TestMisleadingNamespaceRecord");
         Schema inner1 = parsed.getField("f1").schema();
         Assert.assertEquals(inner1.getFullName(), "com.acme.SimpleName");
         Schema inner2 = parsed.getField("f2").schema();
         Assert.assertEquals(inner2.getFullName(), "not.so.SimpleName");
+
+        avsc = TestUtil.load("schemas/TestRecordWithDefaultValues.avsc");
+        vanillaParser = new Schema.Parser();
+        vanillaParser.setValidate(true);
+        vanillaParser.setValidateDefaults(true);
+        parsed = vanillaParser.parse(avsc);
+        Assert.assertNotNull(parsed);
     }
 }

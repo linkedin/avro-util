@@ -47,6 +47,21 @@ public class AvroUnionSchema extends AvroSchema {
     }
 
     @Override
+    public boolean isNullable() {
+        if (types == null) {
+            throw new IllegalArgumentException("types cannot be null");
+        }
+        //unions allow null if any of the branches do (in theory only a single branch should)
+        for (SchemaOrRef branch : types) {
+            if (branch.getSchema().isNullable()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    @Override
     public String toString() {
         if (types == null) {
             return "union in progress?";

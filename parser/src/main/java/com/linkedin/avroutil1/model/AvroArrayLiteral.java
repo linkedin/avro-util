@@ -26,8 +26,8 @@ public class AvroArrayLiteral extends AvroLiteral {
     public String toString() {
         StringJoiner csv = new StringJoiner(", ");
         for (AvroLiteral v : value) {
-            csv.add(v.toString());
+            csv.add(String.valueOf(v));
         }
-        return "[" + csv.toString() + "]";
+        return "[" + csv + "]";
     }
 }
