@@ -35,8 +35,8 @@ dependencies {
     exclude group: "org.apache.avro"
   }
 
-  testImplementation "org.apache.avro:avro:1.10.0"
-  testImplementation "org.apache.avro:avro-compiler:1.10.0"
+  testImplementation "org.apache.avro:avro:1.10.2"
+  testImplementation "org.apache.avro:avro-compiler:1.10.2"
   testImplementation "com.google.guava:guava:28.2-jre"
   testImplementation "org.mockito:mockito-core:3.2.4"
 }

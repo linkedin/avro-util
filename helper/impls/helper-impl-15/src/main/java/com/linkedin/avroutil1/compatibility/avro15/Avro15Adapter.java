@@ -13,6 +13,7 @@ import com.linkedin.avroutil1.compatibility.AvroSchemaUtil;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
 import com.linkedin.avroutil1.compatibility.CodeGenerationConfig;
 import com.linkedin.avroutil1.compatibility.CodeTransformations;
+import com.linkedin.avroutil1.compatibility.ExceptionUtils;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
 import com.linkedin.avroutil1.compatibility.SchemaBuilder;
 import com.linkedin.avroutil1.compatibility.SchemaNormalization;
@@ -69,6 +70,8 @@ public class Avro15Adapter implements AvroAdapter {
   private final static Logger LOG = LoggerFactory.getLogger(Avro15Adapter.class);
 
   private boolean compilerSupported;
+  private Throwable compilerSupportIssue;
+  private String compilerSupportMessage;
   private Constructor<?> specificCompilerCtr;
   private Method compilerEnqueueMethod;
   private Method compilerCompileMethod;
@@ -98,6 +101,10 @@ public class Avro15Adapter implements AvroAdapter {
       //if a class we directly look for above isnt found, we get ClassNotFoundException
       //but if we're missing a transitive dependency we will get NoClassDefFoundError
       compilerSupported = false;
+      compilerSupportIssue = e;
+      String reason = ExceptionUtils.rootCause(compilerSupportIssue).getMessage();
+      compilerSupportMessage = "avro SpecificCompiler class could not be found or instantiated because " + reason
+              + ". please make sure you have a dependency on org.apache.avro:avro-compiler";
       //ignore
     }
   }
@@ -301,7 +308,7 @@ public class Avro15Adapter implements AvroAdapter {
       CodeGenerationConfig config
   ) {
     if (!compilerSupported) {
-      throw new UnsupportedOperationException("avro compiler jar was not found on classpath. please make sure you have a dependency on org.apache.avro:avro-compiler");
+      throw new UnsupportedOperationException(compilerSupportMessage, compilerSupportIssue);
     }
     if (!StringRepresentation.CharSequence.equals(config.getStringRepresentation())) {
       throw new UnsupportedOperationException("generating String fields as " + config.getStringRepresentation() + " unsupported under avro " + supportedMajorVersion());
