@@ -23,4 +23,9 @@ public class AvscIssue {
         this.message = message;
         this.throwable = throwable;
     }
+
+    @Override
+    public String toString() {
+        return severity + " @ " + location.getStart() + ": " + message;
+    }
 }

@@ -206,7 +206,19 @@ public class AvscParserTest {
         AvroRecordSchema inner2 = (AvroRecordSchema) schema.getField("f2").getSchema();
         Assert.assertEquals(inner1.getFullName(), "com.acme.SimpleName");
         Assert.assertEquals(inner2.getFullName(), "not.so.SimpleName");
-        //TODO - look for warnings about ignored namespaces and use of full names
+        Assert.assertEquals(result.getIssues().size(), 4);
+    }
+
+    @Test
+    public void testParsingDefaultValues() throws Exception {
+        String avsc = TestUtil.load("schemas/TestRecordWithDefaultValues.avsc");
+        AvscParser parser = new AvscParser();
+        AvscParseResult result = parser.parse(avsc);
+        Assert.assertNull(result.getParseError());
+        AvroRecordSchema schema = (AvroRecordSchema) result.getTopLevelSchema();
+        for (AvroSchemaField field : schema.getFields()) {
+            Assert.assertNotNull(field.getDefaultValue());
+        }
     }
 
     @Test

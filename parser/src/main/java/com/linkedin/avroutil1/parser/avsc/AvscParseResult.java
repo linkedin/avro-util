@@ -9,6 +9,8 @@ package com.linkedin.avroutil1.parser.avsc;
 import com.linkedin.avroutil1.model.AvroSchema;
 import com.linkedin.avroutil1.parser.Located;
 
+import java.util.List;
+
 public class AvscParseResult {
     /**
      * a fatal error preventing the complete parsing of the avsc schema.
@@ -53,6 +55,11 @@ public class AvscParseResult {
         return topLevelSchema == null ? null : topLevelSchema.getValue();
     }
 
+    public List<AvscIssue> getIssues() {
+        assertSuccess();
+        return context.getIssues();
+    }
+
     protected void assertSuccess() {
         if (parseError != null) {
             throw new IllegalStateException("parsing has failed", parseError);
@@ -67,6 +74,12 @@ public class AvscParseResult {
         if (parseError != null) {
             return "failed with " + parseError.getMessage();
         }
-        return "succeeded with " + context.getAllDefinedSchemas().size() + " schemas parsed";
+        StringBuilder sb = new StringBuilder();
+        sb.append("succeeded with ").append(context.getAllDefinedSchemas().size()).append(" schemas parsed");
+        List<AvscIssue> issues = context.getIssues();
+        if (!issues.isEmpty()) {
+            sb.append(" and ").append(issues.size()).append(" issues");
+        }
+        return sb.toString();
     }
 }

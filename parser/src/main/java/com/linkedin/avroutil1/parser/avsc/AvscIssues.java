@@ -54,8 +54,23 @@ public class AvscIssues {
                 namespaceLocation,
                 IssueSeverity.WARNING,
                 offendingSchemaType + " " + nameValue + " specifies a namespace value (" + namespaceValue + ")"
-                        + "at " + namespaceLocation + " that will be ignored because its name (" +nameValue
+                        + " at " + namespaceLocation.getStart() + " that will be ignored because its name (" +nameValue
                         + ") already includes a namespace",
+                null
+        );
+    }
+
+    public static AvscIssue badDefaultValue(
+            CodeLocation valueLocation,
+            String badValue,
+            AvroType expectedAvroType,
+            String fieldName
+    ) {
+        return new AvscIssue(
+                valueLocation,
+                IssueSeverity.SEVERE,
+                "default value for field " + fieldName + " at " + valueLocation.getStart()
+                        + " cannot be decoded as a " + expectedAvroType + ": " + badValue,
                 null
         );
     }

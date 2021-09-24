@@ -213,4 +213,8 @@ public class AvscParseContext {
     public List<Located<AvroSchema>> getAllDefinedSchemas() {
         return definedSchemas;
     }
+
+    public List<AvscIssue> getIssues() {
+        return issues;
+    }
 }

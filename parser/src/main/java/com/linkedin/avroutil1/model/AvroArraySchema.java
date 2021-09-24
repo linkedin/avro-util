@@ -19,4 +19,9 @@ public class AvroArraySchema extends AvroCollectionSchema {
     public AvroType type() {
         return AvroType.ARRAY;
     }
+
+    @Override
+    public String toString() {
+        return getValueSchema() + "[]";
+    }
 }
