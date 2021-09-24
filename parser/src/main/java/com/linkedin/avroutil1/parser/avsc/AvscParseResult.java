@@ -7,11 +7,18 @@
 package com.linkedin.avroutil1.parser.avsc;
 
 import com.linkedin.avroutil1.model.AvroSchema;
+import com.linkedin.avroutil1.model.CodeLocation;
+import com.linkedin.avroutil1.model.LocatedCode;
 import com.linkedin.avroutil1.parser.Located;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class AvscParseResult {
     /**
-     * a fatal error preventing the complete parsing of the avsc schema
+     * a fatal error preventing the complete parsing of the avsc schema.
+     * this being null does not mean other, less-fatal issues might not
+     * exist in {@link #context}
      */
     private Throwable parseError;
     /**
@@ -51,6 +58,15 @@ public class AvscParseResult {
         return topLevelSchema == null ? null : topLevelSchema.getValue();
     }
 
+    public List<AvscIssue> getIssues() {
+        return context.getIssues();
+    }
+
+    public List<AvscIssue> getIssues(LocatedCode relatedTo) {
+        CodeLocation span = relatedTo.getCodeLocation();
+        return getIssues().stream().filter(issue -> issue.getLocation().overlaps(span)).collect(Collectors.toList());
+    }
+
     protected void assertSuccess() {
         if (parseError != null) {
             throw new IllegalStateException("parsing has failed", parseError);
@@ -65,6 +81,12 @@ public class AvscParseResult {
         if (parseError != null) {
             return "failed with " + parseError.getMessage();
         }
-        return "succeeded with " + context.getAllDefinedSchemas().size() + " schemas parsed";
+        StringBuilder sb = new StringBuilder();
+        sb.append("succeeded with ").append(context.getAllDefinedSchemas().size()).append(" schemas parsed");
+        List<AvscIssue> issues = context.getIssues();
+        if (!issues.isEmpty()) {
+            sb.append(" and ").append(issues.size()).append(" issues");
+        }
+        return sb.toString();
     }
 }

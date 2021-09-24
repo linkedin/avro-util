@@ -6,16 +6,28 @@
 
 package com.linkedin.avroutil1.parser.avsc;
 
+import com.linkedin.avroutil1.model.AvroArrayLiteral;
 import com.linkedin.avroutil1.model.AvroArraySchema;
+import com.linkedin.avroutil1.model.AvroBooleanLiteral;
+import com.linkedin.avroutil1.model.AvroBytesLiteral;
 import com.linkedin.avroutil1.model.AvroCollectionSchema;
+import com.linkedin.avroutil1.model.AvroDoubleLiteral;
+import com.linkedin.avroutil1.model.AvroEnumLiteral;
 import com.linkedin.avroutil1.model.AvroEnumSchema;
+import com.linkedin.avroutil1.model.AvroFixedLiteral;
 import com.linkedin.avroutil1.model.AvroFixedSchema;
+import com.linkedin.avroutil1.model.AvroFloatLiteral;
+import com.linkedin.avroutil1.model.AvroIntegerLiteral;
+import com.linkedin.avroutil1.model.AvroLiteral;
+import com.linkedin.avroutil1.model.AvroLongLiteral;
 import com.linkedin.avroutil1.model.AvroMapSchema;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
+import com.linkedin.avroutil1.model.AvroNullLiteral;
 import com.linkedin.avroutil1.model.AvroPrimitiveSchema;
 import com.linkedin.avroutil1.model.AvroRecordSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
 import com.linkedin.avroutil1.model.AvroSchemaField;
+import com.linkedin.avroutil1.model.AvroStringLiteral;
 import com.linkedin.avroutil1.model.AvroType;
 import com.linkedin.avroutil1.model.AvroUnionSchema;
 import com.linkedin.avroutil1.model.CodeLocation;
@@ -38,7 +50,10 @@ import jakarta.json.JsonValue;
 import jakarta.json.stream.JsonParsingException;
 
 import java.io.StringReader;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -60,6 +75,12 @@ import java.util.function.Supplier;
  * </ul>
  */
 public class AvscParser {
+    private final static BigInteger MAX_INT = BigInteger.valueOf(Integer.MAX_VALUE);
+    private final static BigInteger MIN_INT = BigInteger.valueOf(Integer.MIN_VALUE);
+    private final static BigInteger MAX_LONG = BigInteger.valueOf(Long.MAX_VALUE);
+    private final static BigInteger MIN_LONG = BigInteger.valueOf(Long.MIN_VALUE);
+    private final static BigDecimal MAX_FLOAT = BigDecimal.valueOf(Float.MAX_VALUE);
+    private final static BigDecimal MAX_DOUBLE = BigDecimal.valueOf(Double.MAX_VALUE);
 
     public AvscParseResult parse(String avsc) {
         JsonReaderExt jsonReader = new JsonReaderWithLocations(new StringReader(avsc), null);
@@ -69,7 +90,15 @@ public class AvscParser {
         try {
             root = jsonReader.readObject();
         } catch (JsonParsingException e) {
-            result.recordError(new JsonParseException("json parse error at " + e.getLocation(), e));
+            Throwable rootCause = Util.rootCause(e);
+            String message = rootCause.getMessage();
+            if (message != null && message.startsWith("Unexpected char 47")) {
+                //47 is ascii for '/' (utf-8 matches ascii on "low" characters). we are going to assume this means
+                //someone tried putting a //comment into an avsc source
+                result.recordError(new JsonParseException("comments not supported in json at" + e.getLocation(), e));
+            } else {
+                result.recordError(new JsonParseException("json parse error at " + e.getLocation(), e));
+            }
             return result;
         } catch (Exception e) {
             result.recordError(new JsonParseException("unknown json parse error", e));
@@ -183,11 +212,15 @@ public class AvscParser {
         String schemaNamespace;
         if (name.contains(".")) {
             //the name specified is a full name (namespace included)
-            //TODO - warn about use of full names in declarations
-            //if (namespace != null) {
-                //namespace should be ignored
-                //TODO - warn about using namespace in combination with a full name
-            //}
+            context.addIssue(AvscIssues.useOfFullName(
+                    new CodeLocation(context.getUri(), nameStr.getLocation(), nameStr.getLocation()),
+                    avroType, name));
+            if (namespace != null) {
+                //namespace will be ignored, but it's confusing to even list it
+                context.addIssue(AvscIssues.ignoredNamespace(
+                        new CodeLocation(context.getUri(), namespaceStr.getLocation(), namespaceStr.getLocation()),
+                        avroType, namespace, name));
+            }
             //TODO - validate names (no ending in dot, no spaces, etc)
             int lastDot = name.lastIndexOf('.');
             schemaSimpleName = name.substring(lastDot + 1);
@@ -235,8 +268,20 @@ public class AvscParser {
                     JsonValueExt fieldTypeNode = getRequiredNode(fieldDecl, "type", () -> "all record fields must have a type");
                     SchemaOrRef fieldSchema = parseSchemaDeclOrRef(fieldTypeNode, context, false);
                     JsonValueExt fieldDefaultValueNode = fieldDecl.get("default");
-                    //TODO - validate and store default values
-                    AvroSchemaField field = new AvroSchemaField(fieldCodeLocation, fieldName.getValue(), null, fieldSchema);
+                    AvroLiteral defaultValue = null;
+                    if (fieldDefaultValueNode != null) {
+                        if (fieldSchema.isResolved()) {
+                            LiteralOrIssue defaultValurOrIssue = parseLiteral(fieldDefaultValueNode, fieldSchema.getSchema(), fieldName.getValue(), context);
+                            if (defaultValurOrIssue.getIssue() == null) {
+                                defaultValue = defaultValurOrIssue.getLiteral();
+                            }
+                        } else {
+                            //we cant parse the default value yet since we dont have the schema to decode it with
+                            //TODO - implement delayed default value parsing
+                            throw new UnsupportedOperationException("delayed parsing of default value for " + fieldName.getValue() + " TBD");
+                        }
+                    }
+                    AvroSchemaField field = new AvroSchemaField(fieldCodeLocation, fieldName.getValue(), null, fieldSchema, defaultValue);
                     fields.add(field);
                 }
                 recordSchema.setFields(fields);
@@ -260,8 +305,10 @@ public class AvscParser {
                 if (defaultStr != null) {
                     defaultSymbol = defaultStr.getValue();
                     if (!symbols.contains(defaultSymbol)) {
-                        throw new AvroSyntaxException("enum " + schemaSimpleName + " has a default value of " + defaultSymbol
-                                + " at " + defaultStr.getLocation() + " which is not in its list of symbols (" + symbols + ")");
+                        context.addIssue(AvscIssues.badEnumDefaultValue(locationOf(context.getUri(), defaultStr),
+                                defaultSymbol, schemaSimpleName, symbols));
+                        //TODO - support "fixing" by selecting 1st symbol as default?
+                        defaultSymbol = null;
                     }
                 }
                 namedSchema = new AvroEnumSchema(
@@ -334,6 +381,234 @@ public class AvscParser {
         unionSchema.setTypes(unionTypes);
         context.defineSchema(new Located<>(unionSchema, codeLocation.getStart()), topLevel);
         return new SchemaOrRef(codeLocation, unionSchema);
+    }
+
+    private LiteralOrIssue parseLiteral(
+            JsonValueExt literalNode,
+            AvroSchema schema,
+            String fieldName,
+            AvscParseContext context
+    ) {
+        AvroType avroType = schema.type();
+        JsonValue.ValueType jsonType = literalNode.getValueType();
+        AvscIssue issue;
+        BigInteger bigIntegerValue;
+        BigDecimal bigDecimalValue;
+        byte[] bytes;
+        switch (avroType) {
+            case NULL:
+                if (jsonType != JsonValue.ValueType.NULL) {
+                    issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                            literalNode.toString(), avroType, fieldName);
+                    context.addIssue(issue);
+                    return new LiteralOrIssue(issue);
+                }
+                return new LiteralOrIssue(new AvroNullLiteral(
+                        (AvroPrimitiveSchema) schema, locationOf(context.getUri(), literalNode)
+                ));
+            case BOOLEAN:
+                if (jsonType != JsonValue.ValueType.FALSE && jsonType != JsonValue.ValueType.TRUE) {
+                    issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                            literalNode.toString(), avroType, fieldName);
+                    context.addIssue(issue);
+                    return new LiteralOrIssue(issue);
+                }
+                boolean boolValue = jsonType == JsonValue.ValueType.TRUE;
+                return new LiteralOrIssue(new AvroBooleanLiteral(
+                        (AvroPrimitiveSchema) schema, locationOf(context.getUri(), literalNode), boolValue
+                ));
+            case INT:
+                if (jsonType != JsonValue.ValueType.NUMBER) {
+                    issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                            literalNode.toString(), avroType, fieldName);
+                    context.addIssue(issue);
+                    return new LiteralOrIssue(issue);
+                }
+                JsonNumberExt intNode = (JsonNumberExt) literalNode;
+                if (!intNode.isIntegral()) {
+                    //TODO - be more specific about this error (int vs float)
+                    issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                            literalNode.toString(), avroType, fieldName);
+                    context.addIssue(issue);
+                    return new LiteralOrIssue(issue);
+                }
+                bigIntegerValue = intNode.bigIntegerValue();
+                if (bigIntegerValue.compareTo(MAX_INT) > 0 || bigIntegerValue.compareTo(MIN_INT) < 0) {
+                    //TODO - be more specific about this error (out of signed int range)
+                    issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                            literalNode.toString(), avroType, fieldName);
+                    context.addIssue(issue);
+                    return new LiteralOrIssue(issue);
+                }
+                return new LiteralOrIssue(new AvroIntegerLiteral(
+                        (AvroPrimitiveSchema) schema, locationOf(context.getUri(), literalNode), bigIntegerValue.intValueExact()
+                ));
+            case LONG:
+                if (jsonType != JsonValue.ValueType.NUMBER) {
+                    issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                            literalNode.toString(), avroType, fieldName);
+                    context.addIssue(issue);
+                    return new LiteralOrIssue(issue);
+                }
+                JsonNumberExt longNode = (JsonNumberExt) literalNode;
+                if (!longNode.isIntegral()) {
+                    //TODO - be more specific about this error (long vs float)
+                    issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                            literalNode.toString(), avroType, fieldName);
+                    context.addIssue(issue);
+                    return new LiteralOrIssue(issue);
+                }
+                bigIntegerValue = longNode.bigIntegerValue();
+                if (bigIntegerValue.compareTo(MAX_LONG) > 0 || bigIntegerValue.compareTo(MIN_LONG) < 0) {
+                    //TODO - be more specific about this error (out of signed long range)
+                    issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                            literalNode.toString(), avroType, fieldName);
+                    context.addIssue(issue);
+                    return new LiteralOrIssue(issue);
+                }
+                return new LiteralOrIssue(new AvroLongLiteral(
+                        (AvroPrimitiveSchema) schema, locationOf(context.getUri(), literalNode), bigIntegerValue.longValueExact()
+                ));
+            case FLOAT:
+                if (jsonType != JsonValue.ValueType.NUMBER) {
+                    issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                            literalNode.toString(), avroType, fieldName);
+                    context.addIssue(issue);
+                    return new LiteralOrIssue(issue);
+                }
+                JsonNumberExt floatNode = (JsonNumberExt) literalNode;
+                bigDecimalValue = floatNode.bigDecimalValue();
+                if (bigDecimalValue.compareTo(MAX_FLOAT) > 0) {
+                    //TODO - be more specific about this error (out of float range)
+                    issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                            literalNode.toString(), avroType, fieldName);
+                    context.addIssue(issue);
+                    return new LiteralOrIssue(issue);
+                }
+                return new LiteralOrIssue(new AvroFloatLiteral(
+                        (AvroPrimitiveSchema) schema, locationOf(context.getUri(), literalNode), bigDecimalValue.floatValue()
+                ));
+            case DOUBLE:
+                if (jsonType != JsonValue.ValueType.NUMBER) {
+                    issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                            literalNode.toString(), avroType, fieldName);
+                    context.addIssue(issue);
+                    return new LiteralOrIssue(issue);
+                }
+                JsonNumberExt doubleNode = (JsonNumberExt) literalNode;
+                bigDecimalValue = doubleNode.bigDecimalValue();
+                if (bigDecimalValue.compareTo(MAX_DOUBLE) > 0) {
+                    //TODO - be more specific about this error (out of double range)
+                    issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                            literalNode.toString(), avroType, fieldName);
+                    context.addIssue(issue);
+                    return new LiteralOrIssue(issue);
+                }
+                return new LiteralOrIssue(new AvroDoubleLiteral(
+                        (AvroPrimitiveSchema) schema, locationOf(context.getUri(), literalNode), bigDecimalValue.doubleValue()
+                ));
+            case BYTES:
+                if (jsonType != JsonValue.ValueType.STRING) {
+                    issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                            literalNode.toString(), avroType, fieldName);
+                    context.addIssue(issue);
+                    return new LiteralOrIssue(issue);
+                }
+                JsonStringExt bytesNode = (JsonStringExt) literalNode;
+                //spec says "strings, where Unicode code points 0-255 are mapped to unsigned 8-bit byte values 0-255"
+                bytes = bytesNode.getString().getBytes(StandardCharsets.ISO_8859_1);
+                return new LiteralOrIssue(new AvroBytesLiteral(
+                        (AvroPrimitiveSchema) schema, locationOf(context.getUri(), literalNode), bytes
+                ));
+            case FIXED:
+                if (jsonType != JsonValue.ValueType.STRING) {
+                    issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                            literalNode.toString(), avroType, fieldName);
+                    context.addIssue(issue);
+                    return new LiteralOrIssue(issue);
+                }
+                AvroFixedSchema fixedSchema = (AvroFixedSchema) schema;
+                JsonStringExt fixedNode = (JsonStringExt) literalNode;
+                //spec says "strings, where Unicode code points 0-255 are mapped to unsigned 8-bit byte values 0-255"
+                bytes = fixedNode.getString().getBytes(StandardCharsets.ISO_8859_1);
+                if (bytes.length != fixedSchema.getSize()) {
+                    //TODO - be more specific about this error (wrong length)
+                    issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                            literalNode.toString(), avroType, fieldName);
+                    context.addIssue(issue);
+                    return new LiteralOrIssue(issue);
+                }
+                return new LiteralOrIssue(new AvroFixedLiteral(
+                        fixedSchema, locationOf(context.getUri(), literalNode), bytes
+                ));
+            case STRING:
+                if (jsonType != JsonValue.ValueType.STRING) {
+                    issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                            literalNode.toString(), avroType, fieldName);
+                    context.addIssue(issue);
+                    return new LiteralOrIssue(issue);
+                }
+                JsonStringExt stringNode = (JsonStringExt) literalNode;
+                return new LiteralOrIssue(new AvroStringLiteral(
+                        (AvroPrimitiveSchema) schema, locationOf(context.getUri(), literalNode), stringNode.getString()
+                ));
+            case ENUM:
+                if (jsonType != JsonValue.ValueType.STRING) {
+                    issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                            literalNode.toString(), avroType, fieldName);
+                    context.addIssue(issue);
+                    return new LiteralOrIssue(issue);
+                }
+                AvroEnumSchema enumSchema = (AvroEnumSchema) schema;
+                JsonStringExt enumNode = (JsonStringExt) literalNode;
+                String enumValue = enumNode.getString();
+                if (!enumSchema.getSymbols().contains(enumValue)) {
+                    //TODO - be more specific about this error (unknown symbol)
+                    issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                            literalNode.toString(), avroType, fieldName);
+                    context.addIssue(issue);
+                    return new LiteralOrIssue(issue);
+                }
+                return new LiteralOrIssue(new AvroEnumLiteral(
+                        enumSchema, locationOf(context.getUri(), literalNode), enumValue
+                ));
+            case ARRAY:
+                if (jsonType != JsonValue.ValueType.ARRAY) {
+                    issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                            literalNode.toString(), avroType, fieldName);
+                    context.addIssue(issue);
+                    return new LiteralOrIssue(issue);
+                }
+                AvroArraySchema arraySchema = (AvroArraySchema) schema;
+                AvroSchema valueSchema = arraySchema.getValueSchema();
+                JsonArrayExt arrayNode = (JsonArrayExt) literalNode;
+                ArrayList<AvroLiteral> values = new ArrayList<>(arrayNode.size());
+                for (int i = 0; i < arrayNode.size(); i++) {
+                    JsonValueExt valueNode = (JsonValueExt) arrayNode.get(i);
+                    LiteralOrIssue value = parseLiteral(valueNode, valueSchema, fieldName, context);
+                    //issues parsing any member value mean a failure to parse the array as a whole
+                    if (value.getIssue() != null) {
+                        //TODO - be more specific about this error (unparsable array element i)
+                        //TODO - add "causedBy" to AvscIssue and use it here
+                        issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                                literalNode.toString(), avroType, fieldName);
+
+                        context.addIssue(issue);
+                        return new LiteralOrIssue(issue);
+                    }
+                    values.add(value.getLiteral());
+                }
+                return new LiteralOrIssue(new AvroArrayLiteral(
+                        arraySchema, locationOf(context.getUri(), literalNode), values
+                ));
+            default:
+                throw new UnsupportedOperationException("dont know how to parse a " + avroType + " at " + literalNode.getStartLocation()
+                        + " out of a " + literalNode.getValueType() + " (" + literalNode + ")");
+        }
+    }
+
+    private CodeLocation locationOf(URI uri, Located<?> something) {
+        return new CodeLocation(uri, something.getLocation(), something.getLocation());
     }
 
     private CodeLocation locationOf(URI uri, JsonValueExt node) {

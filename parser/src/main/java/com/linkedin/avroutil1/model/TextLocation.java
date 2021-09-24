@@ -11,7 +11,7 @@ import java.util.Objects;
 /**
  * represents a single location in a body of text
  */
-public class TextLocation {
+public class TextLocation implements Comparable<TextLocation> {
     private final long lineNumber; //starts with 1
     private final long columnNumber; //starts with 1
     private final long streamOffset; //either characters or bytes, depending on context starts with 1
@@ -50,5 +50,10 @@ public class TextLocation {
     @Override
     public int hashCode() {
         return Objects.hash(lineNumber, columnNumber, streamOffset);
+    }
+
+    @Override
+    public int compareTo(TextLocation o) {
+        return Long.compare(streamOffset, o.streamOffset);
     }
 }

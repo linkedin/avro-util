@@ -19,4 +19,9 @@ public class AvroMapSchema extends AvroCollectionSchema {
     public AvroType type() {
         return AvroType.MAP;
     }
+
+    @Override
+    public String toString() {
+        return "Map<String, " + getValueSchema() + ">";
+    }
 }

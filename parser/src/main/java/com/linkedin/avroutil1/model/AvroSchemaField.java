@@ -27,8 +27,18 @@ public class AvroSchemaField implements LocatedCode {
      * parent schema. set once {@link #parentSchema} is assigned
      */
     private int position = -1;
+    /**
+     * this field's default value (if any).
+     */
+    private AvroLiteral defaultValue;
 
-    public AvroSchemaField(CodeLocation codeLocation, String name, String doc, SchemaOrRef schema) {
+    public AvroSchemaField(
+            CodeLocation codeLocation,
+            String name,
+            String doc,
+            SchemaOrRef schema,
+            AvroLiteral defaultValue
+    ) {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("name cannot be null or empty");
         }
@@ -39,6 +49,7 @@ public class AvroSchemaField implements LocatedCode {
         this.name = name;
         this.doc = doc;
         this.schema = schema;
+        this.defaultValue = defaultValue;
     }
 
     @Override
@@ -73,7 +84,12 @@ public class AvroSchemaField implements LocatedCode {
         return schema;
     }
 
+    public AvroLiteral getDefaultValue() {
+        return defaultValue;
+    }
+
     void assignTo(AvroRecordSchema recordSchema, int position) {
+
         if (recordSchema == null) {
             throw new IllegalArgumentException("cant assign null recordSchema to field " + getName());
         }

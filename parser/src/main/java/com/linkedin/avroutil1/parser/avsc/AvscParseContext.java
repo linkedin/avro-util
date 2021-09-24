@@ -59,6 +59,10 @@ public class AvscParseContext {
      * a primitive or a union/collection
      */
     protected Located<AvroSchema> topLevelSchema = null;
+    /**
+     * any issues encountered during parsing
+     */
+    protected List<AvscIssue> issues = new ArrayList<>();
 
     public AvscParseContext(String avsc) {
         try {
@@ -133,6 +137,13 @@ public class AvscParseContext {
         }
     }
 
+    public void addIssue(AvscIssue issue) {
+        if (issue == null) {
+            throw new IllegalArgumentException("issue cannot be null");
+        }
+        issues.add(issue);
+    }
+
     /**
      * iterates over all defined schemas and tries to resolve references that could not be resolved during
      * parsing - for example self-references in schemas
@@ -201,5 +212,9 @@ public class AvscParseContext {
 
     public List<Located<AvroSchema>> getAllDefinedSchemas() {
         return definedSchemas;
+    }
+
+    public List<AvscIssue> getIssues() {
+        return issues;
     }
 }

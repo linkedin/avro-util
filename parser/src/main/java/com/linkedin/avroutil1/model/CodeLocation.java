@@ -7,6 +7,7 @@
 package com.linkedin.avroutil1.model;
 
 import java.net.URI;
+import java.util.Objects;
 
 /**
  * represents the location of a piece of "code" (usually a schema).
@@ -34,5 +35,17 @@ public class CodeLocation {
 
     public TextLocation getEnd() {
         return end;
+    }
+
+    public boolean overlaps(CodeLocation other) {
+        if (other == null || !Objects.equals(uri, other.uri)) {
+            return false;
+        }
+        if (start.compareTo(other.start) >= 0 && start.compareTo(other.end) <= 0) {
+            //our start point is container within other
+            return true;
+        }
+        //maybe our end point is container within other
+        return end.compareTo(other.start) >= 0 && end.compareTo(other.end) <= 0;
     }
 }
