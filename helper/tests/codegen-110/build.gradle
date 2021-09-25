@@ -114,15 +114,15 @@ compileJava.dependsOn runVanillaAvroCodegen, runCompatAvroCodegen, runCompatAvro
 jar.dependsOn runResourceGeneration
 
 dependencies {
-  codegen "org.apache.avro:avro-tools:1.10.0"
-  codegen "org.apache.avro:avro-compiler:1.10.0"
+  codegen "org.apache.avro:avro-tools:1.10.2"
+  codegen "org.apache.avro:avro-compiler:1.10.2"
   codegen files('../codegenClasspath')
   codegen project(":helper:tests:helper-tests-common")
   codegen project(":helper:helper")
 
   //required because generated code depends on the helper
   implementation project(":helper:helper")
-  implementation "org.apache.avro:avro:1.10.0"
+  implementation "org.apache.avro:avro:1.10.2"
 
   //this block required for resource generation code
   implementation project(":helper:tests:helper-tests-common")
