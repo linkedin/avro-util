@@ -363,6 +363,12 @@ public class Avro17Adapter implements AvroAdapter {
   }
 
   @Override
+  public void setFieldPropFromJsonString(Schema.Field field, String propName, String valueAsJsonLiteral, boolean strict) {
+    JsonNode val = jsonStringToJsonNode(valueAsJsonLiteral);
+    Avro17Utils.setJsonProp(field, propName, val);
+  }
+
+  @Override
   public String getSchemaPropAsJsonString(Schema schema, String propName) {
     JsonNode val = Avro17Utils.getJsonProp(schema, propName);
     return jsonNodeToJsonString(val);
@@ -436,6 +442,17 @@ public class Avro17Adapter implements AvroAdapter {
       return OBJECT_MAPPER.writeValueAsString(val);
     } catch (Exception issue) {
       throw new IllegalStateException("while trying to serialize " + val + " (a " + val.getClass().getName() + ")", issue);
+    }
+  }
+
+  private JsonNode jsonStringToJsonNode(String val) {
+    if (val == null) {
+      return null;
+    }
+    try {
+      return OBJECT_MAPPER.readTree(val);
+    } catch (Exception issue) {
+      throw new IllegalStateException("while trying to deserialize " + val, issue);
     }
   }
 

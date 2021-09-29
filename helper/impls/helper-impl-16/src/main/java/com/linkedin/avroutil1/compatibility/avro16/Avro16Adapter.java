@@ -307,6 +307,11 @@ public class Avro16Adapter implements AvroAdapter {
   }
 
   @Override
+  public void setFieldPropFromJsonString(Schema.Field field, String propName, String valueAsJsonLiteral, boolean strict) {
+    field.addProp(propName, valueAsJsonLiteral);
+  }
+
+  @Override
   public String getSchemaPropAsJsonString(Schema schema, String propName) {
     String val = schema.getProp(propName);
     return val == null ? null : "\"" + val + "\"";

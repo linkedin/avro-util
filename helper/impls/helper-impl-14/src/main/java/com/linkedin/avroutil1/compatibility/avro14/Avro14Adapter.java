@@ -20,6 +20,7 @@ import com.linkedin.avroutil1.compatibility.SchemaParseResult;
 import com.linkedin.avroutil1.compatibility.SchemaValidator;
 import com.linkedin.avroutil1.compatibility.SkipDecoder;
 import com.linkedin.avroutil1.compatibility.StringRepresentation;
+import com.linkedin.avroutil1.compatibility.StringUtils;
 import com.linkedin.avroutil1.compatibility.avro14.backports.Avro14DefaultValuesCache;
 import com.linkedin.avroutil1.compatibility.avro14.backports.Avro18BufferedBinaryEncoder;
 import com.linkedin.avroutil1.compatibility.avro14.codec.BoundedMemoryDecoder;
@@ -265,13 +266,27 @@ public class Avro14Adapter implements AvroAdapter {
   @Override
   public String getFieldPropAsJsonString(Schema.Field field, String propName) {
     String val = field.getProp(propName);
-    return val == null ? null : "\"" + val + "\"";
+    return val == null ? null : StringUtils.quote(val);
+  }
+
+  @Override
+  public void setFieldPropFromJsonString(Schema.Field field, String propName, String valueAsJsonLiteral, boolean strict) {
+    boolean isQuoted = StringUtils.isQuoted(valueAsJsonLiteral);
+    if (strict && !isQuoted) {
+        throw new IllegalArgumentException("cant set property " + propName + " in field " + field.name() + " to " + valueAsJsonLiteral
+                + " as avro 1.4 only supports string properties and the given value is not a JSON string literal (must be quoted)");
+    }
+    String processed = valueAsJsonLiteral;
+    if (isQuoted) {
+      processed = StringUtils.stripQuotes(valueAsJsonLiteral);
+    }
+    field.addProp(propName, processed);
   }
 
   @Override
   public String getSchemaPropAsJsonString(Schema schema, String propName) {
     String val = schema.getProp(propName);
-    return val == null ? null : "\"" + val + "\"";
+    return val == null ? null : StringUtils.quote(val);
   }
 
   @Override

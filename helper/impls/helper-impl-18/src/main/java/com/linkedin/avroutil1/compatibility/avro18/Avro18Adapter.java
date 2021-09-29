@@ -302,6 +302,13 @@ public class Avro18Adapter implements AvroAdapter {
   }
 
   @Override
+  public void setFieldPropFromJsonString(Schema.Field field, String propName, String valueAsJsonLiteral, boolean strict) {
+    JsonNode val = jsonStringToJsonNode(valueAsJsonLiteral);
+    //noinspection deprecation this is faster
+    field.addProp(propName, val);
+  }
+
+  @Override
   public String getSchemaPropAsJsonString(Schema schema, String propName) {
     @SuppressWarnings("deprecation") //this is faster
     JsonNode val = schema.getJsonProp(propName);
@@ -376,6 +383,17 @@ public class Avro18Adapter implements AvroAdapter {
       return OBJECT_MAPPER.writeValueAsString(val);
     } catch (Exception issue) {
       throw new IllegalStateException("while trying to serialize " + val + " (a " + val.getClass().getName() + ")", issue);
+    }
+  }
+
+  private JsonNode jsonStringToJsonNode(String val) {
+    if (val == null) {
+      return null;
+    }
+    try {
+      return OBJECT_MAPPER.readTree(val);
+    } catch (Exception issue) {
+      throw new IllegalStateException("while trying to deserialize " + val, issue);
     }
   }
 

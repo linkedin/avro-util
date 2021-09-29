@@ -88,6 +88,19 @@ public class Avro17Utils {
         return new TextNode(strProp);
     }
 
+    static void setJsonProp(Schema.Field field, String propName, JsonNode value) {
+        if (ADD_JSON_PROP_METHOD != null) {
+            try {
+                ADD_JSON_PROP_METHOD.invoke(field, propName, value);
+            } catch (Exception e) {
+                throw new IllegalStateException(e);
+            }
+        } else {
+            //this must be < 1.7.3, which only handles string values
+            field.addProp(propName, value.asText());
+        }
+    }
+
     static JsonNode getJsonProp(Schema schema, String name) {
         if (GET_JSON_PROP_METHOD != null) {
             try {

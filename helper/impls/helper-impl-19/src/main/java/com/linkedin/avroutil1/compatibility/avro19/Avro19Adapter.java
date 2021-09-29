@@ -301,6 +301,12 @@ public class Avro19Adapter implements AvroAdapter {
   }
 
   @Override
+  public void setFieldPropFromJsonString(Schema.Field field, String propName, String valueAsJsonLiteral, boolean strict) {
+    Object val = jsonStringToObject(valueAsJsonLiteral);
+    field.addProp(propName, val);
+  }
+
+  @Override
   public String getSchemaPropAsJsonString(Schema schema, String propName) {
     Object val = schema.getObjectProp(propName);
     return objectPropToJsonString(val);
@@ -377,6 +383,20 @@ public class Avro19Adapter implements AvroAdapter {
     } catch (Exception issue) {
       throw new IllegalStateException("while trying to serialize " + val + " (a " + val.getClass().getName() + ")", issue);
     }
+  }
+
+  private Object jsonStringToObject(String val) {
+    if (val == null) {
+      return null;
+    }
+    JsonNode asJsonNode;
+    try {
+      asJsonNode = OBJECT_MAPPER.readTree(val);
+    } catch (Exception issue) {
+      throw new IllegalStateException("while trying to deserialize " + val, issue);
+    }
+    //the following is VERY rube-goldberg-ish, but will do until someone complains
+    return JacksonUtils.toObject(asJsonNode);
   }
 
   private Collection<AvroGeneratedSourceCode> transform(List<AvroGeneratedSourceCode> avroGenerated, AvroVersion minAvro, AvroVersion maxAvro) {

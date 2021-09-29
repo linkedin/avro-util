@@ -729,6 +729,10 @@ public class AvroCompatibilityHelper {
     return unquoteAndEscapeStringProp(value, quoteStringValues, unescapeInnerJson);
   }
 
+  public static void setFieldPropFromJsonString(Schema.Field field, String propName, String valueAsJsonLiteral, boolean strict) {
+    ADAPTER.setFieldPropFromJsonString(field, propName, valueAsJsonLiteral, strict);
+  }
+
   /**
    * returns the value of the specified schema prop as a json literal.
    * returns null if the schema has no such property.
