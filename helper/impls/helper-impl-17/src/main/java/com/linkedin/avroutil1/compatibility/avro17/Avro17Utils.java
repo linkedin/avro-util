@@ -6,6 +6,8 @@
 
 package com.linkedin.avroutil1.compatibility.avro17;
 
+import com.linkedin.avroutil1.compatibility.Jackson1Utils;
+import com.linkedin.avroutil1.compatibility.StringPropertyUtils;
 import org.apache.avro.Schema;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.TextNode;
@@ -78,36 +80,58 @@ public class Avro17Utils {
         }
     }
 
-    static JsonNode getJsonProp(Schema.Field field, String name) {
-        if (GET_JSON_PROP_METHOD != null) {
+    static String getJsonProp(Schema.Field field, String name) {
+        if (GET_JSON_PROP_METHOD != null) {  // >= Avro 1.7.3
+            JsonNode node;
             try {
-                return (JsonNode) GET_JSON_PROP_METHOD.invoke(field, name);
+                node = (JsonNode) GET_JSON_PROP_METHOD.invoke(field, name);
             } catch (Exception e) {
                 throw new IllegalStateException(e);
             }
+            return Jackson1Utils.toJsonString(node);
+        } else {  // <= Avro 1.7.2
+            return StringPropertyUtils.getFieldPropAsJsonString(field, name);
         }
-        //this must be < 1.7.3
-        String strProp = field.getProp(name);
-        if (strProp == null) {
-            return null;
-        }
-        return new TextNode(strProp);
     }
 
-    static JsonNode getJsonProp(Schema schema, String name) {
-        if (GET_JSON_PROP_METHOD != null) {
+    static void setJsonProp(Schema.Field field, String name, String value, boolean strict) {
+        if (ADD_JSON_PROP_METHOD != null) {  // >= Avro 1.7.3
+            JsonNode node = Jackson1Utils.toJsonNode(value, strict);
             try {
-                return (JsonNode) GET_JSON_PROP_METHOD.invoke(schema, name);
+                ADD_JSON_PROP_METHOD.invoke(field, name, node);
             } catch (Exception e) {
                 throw new IllegalStateException(e);
             }
+        } else {  // <= Avro 1.7.2
+            StringPropertyUtils.setFieldPropFromJsonString(field, name, value, strict);
         }
-        //this must be < 1.7.3
-        String strProp = schema.getProp(name);
-        if (strProp == null) {
-            return null;
+    }
+
+    static String getJsonProp(Schema schema, String name) {
+        if (GET_JSON_PROP_METHOD != null) {  // >= Avro 1.7.3
+            JsonNode node;
+            try {
+                node = (JsonNode) GET_JSON_PROP_METHOD.invoke(schema, name);
+            } catch (Exception e) {
+                throw new IllegalStateException(e);
+            }
+            return Jackson1Utils.toJsonString(node);
+        } else {  // <= Avro 1.7.2
+            return StringPropertyUtils.getSchemaPropAsJsonString(schema, name);
         }
-        return new TextNode(strProp);
+    }
+
+    static void setJsonProp(Schema schema, String name, String value, boolean strict) {
+        if (ADD_JSON_PROP_METHOD != null) {  // >= Avro 1.7.3
+            JsonNode node = Jackson1Utils.toJsonNode(value, strict);
+            try {
+                ADD_JSON_PROP_METHOD.invoke(schema, name, node);
+            } catch (Exception e) {
+                throw new IllegalStateException(e);
+            }
+        } else {  // <= Avro 1.7.2
+            StringPropertyUtils.setSchemaPropFromJsonString(schema, name, value, strict);
+        }
     }
 
     static Map<String, JsonNode> getProps(Schema.Field field) {

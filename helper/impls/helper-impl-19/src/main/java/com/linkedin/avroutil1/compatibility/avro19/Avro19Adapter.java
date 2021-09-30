@@ -15,6 +15,7 @@ import com.linkedin.avroutil1.compatibility.CodeGenerationConfig;
 import com.linkedin.avroutil1.compatibility.CodeTransformations;
 import com.linkedin.avroutil1.compatibility.ExceptionUtils;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
+import com.linkedin.avroutil1.compatibility.Jackson2Utils;
 import com.linkedin.avroutil1.compatibility.SchemaBuilder;
 import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
 import com.linkedin.avroutil1.compatibility.SchemaParseResult;
@@ -295,15 +296,31 @@ public class Avro19Adapter implements AvroAdapter {
   }
 
   @Override
-  public String getFieldPropAsJsonString(Schema.Field field, String propName) {
-    Object val = field.getObjectProp(propName);
-    return objectPropToJsonString(val);
+  public String getFieldPropAsJsonString(Schema.Field field, String name) {
+    // Goes from JsonNode to Object to JsonNode (again) to String. Painful, but suffices until somebody complains.
+    JsonNode node = JacksonUtils.toJsonNode(field.getObjectProp(name));
+    return Jackson2Utils.toJsonString(node);
   }
 
   @Override
-  public String getSchemaPropAsJsonString(Schema schema, String propName) {
-    Object val = schema.getObjectProp(propName);
-    return objectPropToJsonString(val);
+  public void setFieldPropFromJsonString(Schema.Field field, String name, String value, boolean strict) {
+    // Goes from String to JsonNode to Object to JsonNode (again). Painful, but suffices until somebody complains.
+    JsonNode node = Jackson2Utils.toJsonNode(value, strict);
+    field.addProp(name, JacksonUtils.toObject(node));
+  }
+
+  @Override
+  public String getSchemaPropAsJsonString(Schema schema, String name) {
+    // Goes from JsonNode to Object to JsonNode (again) to String. Painful, but suffices until somebody complains.
+    JsonNode node = JacksonUtils.toJsonNode(schema.getObjectProp(name));
+    return Jackson2Utils.toJsonString(node);
+  }
+
+  @Override
+  public void setSchemaPropFromJsonString(Schema schema, String name, String value, boolean strict) {
+    // Goes from String to JsonNode to Object to JsonNode (again). Painful, but suffices until somebody complains.
+    JsonNode node = Jackson2Utils.toJsonNode(value, strict);
+    schema.addProp(name, JacksonUtils.toObject(node));
   }
 
   @Override
@@ -363,19 +380,6 @@ public class Avro19Adapter implements AvroAdapter {
       throw e; //as-is
     } catch (Exception e) {
       throw new IllegalStateException(e);
-    }
-  }
-
-  private String objectPropToJsonString(Object val) {
-    if (val == null) {
-      return null;
-    }
-    //the following is VERY rube-goldberg-ish, but will do until someone complains
-    JsonNode asJsonNode = JacksonUtils.toJsonNode(val);
-    try {
-      return OBJECT_MAPPER.writeValueAsString(asJsonNode);
-    } catch (Exception issue) {
-      throw new IllegalStateException("while trying to serialize " + val + " (a " + val.getClass().getName() + ")", issue);
     }
   }
 

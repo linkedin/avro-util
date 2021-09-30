@@ -357,15 +357,23 @@ public class Avro17Adapter implements AvroAdapter {
   }
 
   @Override
-  public String getFieldPropAsJsonString(Schema.Field field, String propName) {
-    JsonNode val = Avro17Utils.getJsonProp(field, propName);
-    return jsonNodeToJsonString(val);
+  public String getFieldPropAsJsonString(Schema.Field field, String name) {
+    return Avro17Utils.getJsonProp(field, name);
   }
 
   @Override
-  public String getSchemaPropAsJsonString(Schema schema, String propName) {
-    JsonNode val = Avro17Utils.getJsonProp(schema, propName);
-    return jsonNodeToJsonString(val);
+  public void setFieldPropFromJsonString(Schema.Field field, String name, String value, boolean strict) {
+    Avro17Utils.setJsonProp(field, name, value, strict);
+  }
+
+  @Override
+  public String getSchemaPropAsJsonString(Schema schema, String name) {
+    return Avro17Utils.getJsonProp(schema, name);
+  }
+
+  @Override
+  public void setSchemaPropFromJsonString(Schema schema, String name, String value, boolean strict) {
+    Avro17Utils.setJsonProp(schema, name, value, strict);
   }
 
   @Override
@@ -425,17 +433,6 @@ public class Avro17Adapter implements AvroAdapter {
       throw e; //as-is
     } catch (Exception e) {
       throw new IllegalStateException(e);
-    }
-  }
-
-  private String jsonNodeToJsonString(JsonNode val) {
-    if (val == null) {
-      return null;
-    }
-    try {
-      return OBJECT_MAPPER.writeValueAsString(val);
-    } catch (Exception issue) {
-      throw new IllegalStateException("while trying to serialize " + val + " (a " + val.getClass().getName() + ")", issue);
     }
   }
 

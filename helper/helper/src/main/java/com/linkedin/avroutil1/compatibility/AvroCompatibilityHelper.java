@@ -33,7 +33,6 @@ import org.apache.avro.io.Encoder;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificRecord;
-import org.apache.commons.text.StringEscapeUtils;
 
 
 /**
@@ -689,6 +688,7 @@ public class AvroCompatibilityHelper {
    * @return fully constructed Field instance
    */
   public static Schema.Field createSchemaField(String name, Schema schema, String doc, Object defaultValue, Schema.Field.Order order) {
+    assertAvroAvailable();
     FieldBuilder fieldBuilder = ADAPTER.newFieldBuilder(name);
     fieldBuilder.setSchema(schema);
     fieldBuilder.setDoc(doc);
@@ -725,8 +725,37 @@ public class AvroCompatibilityHelper {
    * @return field property value as json literal, or null if no such property
    */
   public static String getFieldPropAsJsonString(Schema.Field field, String propName, boolean quoteStringValues, boolean unescapeInnerJson) {
+    assertAvroAvailable();
     String value = ADAPTER.getFieldPropAsJsonString(field, propName);
-    return unquoteAndEscapeStringProp(value, quoteStringValues, unescapeInnerJson);
+    return StringUtils.unquoteAndUnescapeStringProp(value, quoteStringValues, unescapeInnerJson);
+  }
+
+  /**
+   * Sets a field's property to the given value. None of the arguments can be null. It is illegal to add a property if
+   * another with the same name but different value already exists in this field.
+   *
+   * If strict is true, the value MUST be a single, proper JSON literal:
+   * <ul>
+   *   <li>
+   *     In Avro &lt;= 1.7.2, which only supports string-valued props, it must be a proper string literal (with
+   *     surrounding double-quotes and escaping within).
+   *   </li>
+   *   <li>
+   *     In Avro &gt;= 1.7.3, it will be parsed (deserialized) into an object.
+   *   </li>
+   * </ul>
+   *
+   * If strict is false: If the value is a single, proper JSON literal, it's treated the same way as above; If it's not
+   * a valid literal, it's treated as an unquoted, unescaped string value.
+   *
+   * @param field the field whose property is being set.
+   * @param propName the name of the property.
+   * @param valueAsJsonLiteral the value of the property as a JSON literal.
+   * @param strict see description for details.
+   */
+  public static void setFieldPropFromJsonString(Schema.Field field, String propName, String valueAsJsonLiteral, boolean strict) {
+    assertAvroAvailable();
+    ADAPTER.setFieldPropFromJsonString(field, propName, valueAsJsonLiteral, strict);
   }
 
   /**
@@ -753,30 +782,36 @@ public class AvroCompatibilityHelper {
    * @return schema property value as json literal, or null if no such property
    */
   public static String getSchemaPropAsJsonString(Schema schema, String propName, boolean quoteStringValues, boolean unescapeInnerJson) {
+    assertAvroAvailable();
     String value = ADAPTER.getSchemaPropAsJsonString(schema, propName);
-    return unquoteAndEscapeStringProp(value, quoteStringValues, unescapeInnerJson);
+    return StringUtils.unquoteAndUnescapeStringProp(value, quoteStringValues, unescapeInnerJson);
   }
 
-  private static String unquoteAndEscapeStringProp(String maybeAStringProp, boolean quoteStringValues, boolean unescapeInnerJson) {
-    if (maybeAStringProp == null) {
-      //no such prop
-      return null;
-    }
-    if (quoteStringValues && !unescapeInnerJson) {
-      //no changes actually required
-      return maybeAStringProp;
-    }
-    boolean isAStringValue = maybeAStringProp.startsWith("\"") && maybeAStringProp.endsWith("\"");
-    if (!isAStringValue) {
-      return maybeAStringProp;
-    }
-    String processed = maybeAStringProp;
-    if (!quoteStringValues) {
-      processed = processed.substring(1, processed.length() - 1); //remove enclosing quotes
-    }
-    if (unescapeInnerJson) {
-      processed = StringEscapeUtils.unescapeJson(processed);
-    }
-    return processed;
+  /**
+   * Sets a schema's property to the given value. None of the arguments can be null. It is illegal to add a property if
+   * another with the same name but different value already exists in this schema.
+   *
+   * If strict is true, the value MUST be a single, proper JSON literal:
+   * <ul>
+   *   <li>
+   *     In Avro &lt;= 1.7.2, which only supports string-valued props, it must be a proper string literal (with
+   *     surrounding double-quotes and escaping within).
+   *   </li>
+   *   <li>
+   *     In Avro &gt;= 1.7.3, it will be parsed (deserialized) into an object.
+   *   </li>
+   * </ul>
+   *
+   * If strict is false: If the value is a single, proper JSON literal, it's treated the same way as above; If it's not
+   * a valid literal, it's treated as an unquoted, unescaped string value.
+   *
+   * @param schema the field whose property is being set.
+   * @param propName the name of the property.
+   * @param valueAsJsonLiteral the value of the property as a JSON literal.
+   * @param strict see description for details.
+   */
+  public static void setSchemaPropFromJsonString(Schema schema, String propName, String valueAsJsonLiteral, boolean strict) {
+    assertAvroAvailable();
+    ADAPTER.setSchemaPropFromJsonString(schema, propName, valueAsJsonLiteral, strict);
   }
 }
