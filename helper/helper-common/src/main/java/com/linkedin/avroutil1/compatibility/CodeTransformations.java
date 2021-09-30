@@ -85,6 +85,8 @@ public class CodeTransformations {
           "        throw e instanceof org.apache.avro.AvroRuntimeException ? (org.apache.avro.AvroRuntimeException) e : new org.apache.avro.AvroRuntimeException(e);\n" +
           "      }");
   private static final String  IMPORT_HELPER = "import " + HelperConsts.HELPER_FQCN + ";";
+  private static final Pattern CATCH_UNQUALIFIED_EXCEPTION_PATTERN = Pattern.compile("catch\\s*\\(\\s*Exception\\s+");
+  private static final String  CATCH_QUALIFIED_EXCEPTION = Matcher.quoteReplacement("catch (java.lang.Exception ");
 
   private static final String FIXED_CLASS_BODY_TEMPLATE = TemplateUtil.loadTemplate("avroutil1/templates/SpecificFixedBody.template");
   private static final String FIXED_CLASS_NO_NAMESPACE_BODY_TEMPLATE = TemplateUtil.loadTemplate("avroutil1/templates/SpecificFixedBodyNoNamespace.template");
@@ -142,6 +144,9 @@ public class CodeTransformations {
 
     //add any required imports
     fixed = CodeTransformations.addImports(fixed, importStatements);
+
+    //general issues
+    fixed = CodeTransformations.transformUnqalifiedCatchClauses(fixed);
 
     return fixed;
   }
@@ -825,6 +830,22 @@ public class CodeTransformations {
     @SuppressWarnings("UnnecessaryLocalVariable")
     String codeWithout = code.substring(0, startMatcher.start()) + "\n" + code.substring(endMatcher.end());
     return codeWithout;
+  }
+
+  /**
+   * older avro may generate code with "catch (Exception e)" clauses. since this doesnt qualify "Exception"
+   * it might accidentally match a class called Exception in the same package.
+   *
+   * this method replaces any such unqualified catch clauses with fully-qualified "java.lang.Exception"
+   * @param code code with potentially unqualified catch clauses
+   * @return code with fully-qualified catch clauses
+   */
+  public static String transformUnqalifiedCatchClauses(String code) {
+    Matcher match = CATCH_UNQUALIFIED_EXCEPTION_PATTERN.matcher(code);
+    if (match.find()) {
+      return match.replaceAll(Matcher.quoteReplacement(CATCH_QUALIFIED_EXCEPTION));
+    }
+    return code;
   }
 
   private static String addImports(String code, Collection<String> importStatements) {
