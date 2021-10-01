@@ -79,6 +79,11 @@
             detects direct instantiations of org.apache.avro.Schema$Field
         </Details>
     </Detector>
+    <Detector class="com.linkedin.avroutil1.spotbugs.SingleSchemaDeserializationDetector">
+        <Details>
+            detects instantiation of DatumReaders using only a single Schema
+        </Details>
+    </Detector>
     <Detector class="com.linkedin.avroutil1.spotbugs.SpecificDataNewInstanceUsageDetector">
         <Details>
             detects usage of org.apache.avro.specific.SpecificData.newInstance()
@@ -309,6 +314,20 @@
 ]]>
         </Details>
     </BugPattern>
+    <BugPattern type="SINGLE_SCHEMA_DESERIALIZATION">
+        <ShortDescription>single Schema deserialization</ShortDescription>
+        <LongDescription>
+            construction of an avro DatumReader using only a single schema argument
+        </LongDescription>
+        <Details>
+            <![CDATA[
+   <p>
+      although there are valid cases for doing this, in real life this tends to indicate naive code that does not
+      take any schema evolution into considerations (hence assumes reader and writer schemas to be the same)
+   </p>
+]]>
+        </Details>
+    </BugPattern>
     <BugPattern type="SPECIFICDATA_NEWINSTANCE_USAGE">
         <ShortDescription>usage of org.apache.avro.specific.SpecificData.newInstance()</ShortDescription>
         <LongDescription>
@@ -341,4 +360,5 @@
     <BugCode abbrev="PA">incompatible prop access</BugCode>
     <BugCode abbrev="SDNI">SecificData.newInstance() usage</BugCode>
     <BugCode abbrev="SFI">Schema.Field instantiation</BugCode>
+    <BugCode abbrev="SSD">Single Schema deserialization</BugCode>
 </MessageCollection>

@@ -9,7 +9,9 @@ package com.linkedin.avroutil1.spotbugs;
 import com.linkedin.avroutil1.testcommon.TestUtil;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.JsonDecoder;
@@ -188,4 +190,13 @@ public abstract class BadClass {
 //        }
 //        encoder.encode(null);
 //    }
+
+    public void singleSchemaDecoding() throws Exception {
+        String avsc = TestUtil.load("PerfectlyNormalRecord.avsc");
+        Schema schema = Schema.parse(avsc);
+
+        GenericDatumReader<IndexedRecord> genericDatumReader = new GenericDatumReader<>(schema);
+        SpecificDatumReader<IndexedRecord> specificDatumReader = new SpecificDatumReader<>(schema);
+        //cant test for fastavro because not a dependency of this module
+    }
 }

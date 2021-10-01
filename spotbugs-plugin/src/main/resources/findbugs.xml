@@ -20,6 +20,7 @@
     <Detector class="com.linkedin.avroutil1.spotbugs.OldSchemaConstructableUsageDetector" reports="OLD_SCHEMACONSTRUCTABLE_USAGE" speed="fast" />
     <Detector class="com.linkedin.avroutil1.spotbugs.PropAccessDetector" reports="PROP_ACCESS" speed="fast" />
     <Detector class="com.linkedin.avroutil1.spotbugs.SchemaFieldInstantiationDetector" reports="SCHEMAFIELD_INSTANTIATION" speed="fast" />
+    <Detector class="com.linkedin.avroutil1.spotbugs.SingleSchemaDeserializationDetector" reports="SINGLE_SCHEMA_DESERIALIZATION" speed="fast" />
     <Detector class="com.linkedin.avroutil1.spotbugs.SpecificDataNewInstanceUsageDetector" reports="SPECIFICDATA_NEWINSTANCE_USAGE" speed="fast" />
 
     <BugPattern type="BINARY_DECODER_INSTANTIATION" category="AVRO" abbrev="BDI"/>
@@ -36,6 +37,7 @@
     <BugPattern type="OLD_SCHEMACONSTRUCTABLE_USAGE" category="AVRO" abbrev="OSCI"/>
     <BugPattern type="PROP_ACCESS" category="AVRO" abbrev="PA"/>
     <BugPattern type="SCHEMAFIELD_INSTANTIATION" category="AVRO" abbrev="SFI"/>
+    <BugPattern type="SINGLE_SCHEMA_DESERIALIZATION" category="AVRO" abbrev="SSD"/>
     <BugPattern type="SPECIFICDATA_NEWINSTANCE_USAGE" category="AVRO" abbrev="SDNI"/>
 
 </FindbugsPlugin>
