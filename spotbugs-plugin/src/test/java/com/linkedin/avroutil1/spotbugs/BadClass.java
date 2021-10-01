@@ -24,10 +24,12 @@ import java.util.List;
 @SuppressWarnings("unused") //not used in code, but the compiled bytecode is used in tests
 public abstract class BadClass {
 
+    //compiles under avro < 1.5
     public void instantiateBinaryDecoder() {
         BinaryDecoder bobTheDecoder = new BinaryDecoder(null);
     }
 
+    //compiles under avro < 1.5
     public void instantiateBinaryEncoder() {
         BinaryEncoder bobTheEncoder = new BinaryEncoder(null);
     }
@@ -170,5 +172,20 @@ public abstract class BadClass {
 //            GenericRecordBuilder grb = (GenericRecordBuilder) var;
 //            grb.build();
 //        }
+//    }
+
+//    //compiles under avro 1.8+
+//    public void binaryMessageEncoderUsage() throws Exception {
+//        String avsc = TestUtil.load("PerfectlyNormalRecord.avsc");
+//        Schema schema = Schema.parse(avsc);
+//        BinaryMessageEncoder<IndexedRecord> encoder = new BinaryMessageEncoder<>(GenericData.get(), schema);
+//        @SuppressWarnings({"RedundantCast", "rawtypes"})
+//        Object var = (BinaryMessageEncoder) null;
+//        //noinspection ConstantConditions
+//        if (var instanceof BinaryMessageEncoder) {
+//            @SuppressWarnings("rawtypes")
+//            BinaryMessageEncoder cast = (BinaryMessageEncoder) var;
+//        }
+//        encoder.encode(null);
 //    }
 }

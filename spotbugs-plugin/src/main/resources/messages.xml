@@ -19,6 +19,11 @@
             detects direct instantiations of org.apache.avro.io.BinaryEncoder
         </Details>
     </Detector>
+    <Detector class="com.linkedin.avroutil1.spotbugs.BinaryMessageEncoderUsageDetector">
+        <Details>
+            detects usage of org.apache.avro.message.BinaryMessageEncoder
+        </Details>
+    </Detector>
     <Detector class="com.linkedin.avroutil1.spotbugs.EnumSymbolInstantiationDetector">
         <Details>
             detects direct instantiations of org.apache.avro.generic.GenericData$EnumSymbol
@@ -109,6 +114,21 @@
       org.apache.avro.io.BinaryEncoder was made abstract in modern avro, while
       org.apache.avro.io.EncoderFactory only exists in avro 1.5+. for broadest compatibility
       use com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.newBinaryEncoder()
+   </p>
+]]>
+        </Details>
+    </BugPattern>
+    <BugPattern type="BINARYMESSAGEENCODER_USAGE">
+        <ShortDescription>usage of BinaryMessageEncoder</ShortDescription>
+        <LongDescription>
+            any usage of org.apache.avro.message.BinaryMessageEncoder, which only exists in avro 1.8+
+        </LongDescription>
+        <Details>
+            <![CDATA[
+   <p>
+      org.apache.avro.message.BinaryMessageEncoder was introduced as part of avro 1.8, and so using it
+      in code limits the compatibility of your codebase.
+      As of this writing, we dont have a compatible alternative. Please file a ticket if you need one.
    </p>
 ]]>
         </Details>
@@ -308,6 +328,7 @@
 
     <BugCode abbrev="BDI">BinaryDecoder instantiation</BugCode>
     <BugCode abbrev="BEI">BinaryEncoder instantiation</BugCode>
+    <BugCode abbrev="BME">BinaryMessageEncoder usage</BugCode>
     <BugCode abbrev="ESI">EnumSymbol instantiation</BugCode>
     <BugCode abbrev="FDVA">Field default value access</BugCode>
     <BugCode abbrev="FI">Fixed instantiation</BugCode>
