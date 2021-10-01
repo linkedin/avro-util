@@ -36,13 +36,19 @@ public class Avro17Utils {
     }
 
     static boolean isIsAtLeast173() {
-        try {
-            //this class was created as part of AVRO-1157 for 1.7.3
-            Class.forName("org.apache.avro.JsonProperties");
+        //class org.apache.avro.JsonProperties was created as part of AVRO-1157 for 1.7.3
+        //however, if we naively just test for its existence we risk finding it in some extra
+        //avro jar at the end of the classpath, with the "dominant" avro being an older jar
+        //at the beginning of the classpath (this is horrible, but such is life).
+        //as such a safer approach is to look up class org.apache.avro.Schema (which exists
+        //in all supported avro versions and so we assume originates from the "dominant" jar)
+        //and see if it extends org.apache.avro.JsonProperties
+        Class<? super Schema> parentOfSchema = Schema.class.getSuperclass();
+        //noinspection RedundantIfStatement
+        if ("org.apache.avro.JsonProperties".equals(parentOfSchema.getName())) {
             return true;
-        } catch (ClassNotFoundException nope) {
-            return false;
         }
+        return false; //presumably the parent is "java.lang.Object"
     }
 
     static Method findNewerGetPropsMethod() {
