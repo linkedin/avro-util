@@ -14,6 +14,7 @@ import org.apache.avro.generic.GenericData;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonToken;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.TextNode;
@@ -84,10 +85,12 @@ public class Jackson1Utils {
       }
       // Calling parser.nextToken() can raise an exception itself, if there are garbage chars at the end.
       // E.g., when str == "1,2", the ',' is the garbage char (raises JsonParseException).
-      if (parser.nextToken() != null) {
+      JsonToken token = parser.nextToken();
+      if (token != null) {
         // Or, if that succeeds and returns a valid token, the extra chars (while not garbage) are still unwanted.
         // E.g., when str == "1 2", the '2' is the extra token.
-        throw new IllegalStateException("str cannot have extra trailing chars; must be a single literal");
+        throw new IllegalStateException("unexpected token " + token + " at location " + parser.getTokenLocation()
+            + "; the value must be a single literal without extra trailing chars");
       }
       return node;
     } catch (Exception issue) {
