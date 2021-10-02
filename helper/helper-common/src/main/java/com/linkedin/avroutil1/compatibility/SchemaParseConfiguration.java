@@ -14,7 +14,7 @@ import java.util.Objects;
  */
 public class SchemaParseConfiguration {
   public final static SchemaParseConfiguration STRICT = new SchemaParseConfiguration(true, true);
-  public final static SchemaParseConfiguration LOOSE = new SchemaParseConfiguration(true, true);
+  public final static SchemaParseConfiguration LOOSE = new SchemaParseConfiguration(false, false);
 
   /**
    * validate that names for named types (records, enums, fixed types, fields) are
