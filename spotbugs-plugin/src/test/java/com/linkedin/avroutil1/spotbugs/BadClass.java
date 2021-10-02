@@ -177,7 +177,7 @@ public abstract class BadClass {
 //    }
 
 //    //compiles under avro 1.8+
-//    public void binaryMessageEncoderUsage() throws Exception {
+//    public void binaryMessageCodecUsage() throws Exception {
 //        String avsc = TestUtil.load("PerfectlyNormalRecord.avsc");
 //        Schema schema = Schema.parse(avsc);
 //        BinaryMessageEncoder<IndexedRecord> encoder = new BinaryMessageEncoder<>(GenericData.get(), schema);
@@ -189,6 +189,7 @@ public abstract class BadClass {
 //            BinaryMessageEncoder cast = (BinaryMessageEncoder) var;
 //        }
 //        encoder.encode(null);
+//        BinaryMessageDecoder decoder = new BinaryMessageDecoder<>(GenericData.get(), schema);
 //    }
 
     public void singleSchemaDecoding() throws Exception {

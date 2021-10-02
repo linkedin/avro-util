@@ -8,6 +8,7 @@
 
     <Detector class="com.linkedin.avroutil1.spotbugs.BinaryDecoderInstantiationDetector" reports="BINARY_DECODER_INSTANTIATION" speed="fast" />
     <Detector class="com.linkedin.avroutil1.spotbugs.BinaryEncoderInstantiationDetector" reports="BINARY_ENCODER_INSTANTIATION" speed="fast" />
+    <Detector class="com.linkedin.avroutil1.spotbugs.BinaryMessageDecoderUsageDetector" reports="BINARYMESSAGEDECODER_USAGE" speed="fast" />
     <Detector class="com.linkedin.avroutil1.spotbugs.BinaryMessageEncoderUsageDetector" reports="BINARYMESSAGEENCODER_USAGE" speed="fast" />
     <Detector class="com.linkedin.avroutil1.spotbugs.EnumSymbolInstantiationDetector" reports="ENUMSYMBOL_INSTANTIATION" speed="fast" />
     <Detector class="com.linkedin.avroutil1.spotbugs.FieldDefaultValueAccessDetector" reports="FIELD_DEFAULT_VALUE_ACCESS" speed="fast" />
@@ -25,6 +26,7 @@
 
     <BugPattern type="BINARY_DECODER_INSTANTIATION" category="AVRO" abbrev="BDI"/>
     <BugPattern type="BINARY_ENCODER_INSTANTIATION" category="AVRO" abbrev="BEI"/>
+    <BugPattern type="BINARYMESSAGEDECODER_USAGE" category="AVRO" abbrev="BMD"/>
     <BugPattern type="BINARYMESSAGEENCODER_USAGE" category="AVRO" abbrev="BME"/>
     <BugPattern type="ENUMSYMBOL_INSTANTIATION" category="AVRO" abbrev="ESI"/>
     <BugPattern type="FIELD_DEFAULT_VALUE_ACCESS" category="AVRO" abbrev="FDVA"/>
