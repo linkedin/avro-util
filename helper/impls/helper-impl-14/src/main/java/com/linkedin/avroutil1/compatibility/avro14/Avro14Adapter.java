@@ -17,6 +17,7 @@ import com.linkedin.avroutil1.compatibility.SchemaBuilder;
 import com.linkedin.avroutil1.compatibility.SchemaNormalization;
 import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
 import com.linkedin.avroutil1.compatibility.SchemaParseResult;
+import com.linkedin.avroutil1.compatibility.StringPropertyUtils;
 import com.linkedin.avroutil1.compatibility.SchemaValidator;
 import com.linkedin.avroutil1.compatibility.SkipDecoder;
 import com.linkedin.avroutil1.compatibility.StringRepresentation;
@@ -263,15 +264,23 @@ public class Avro14Adapter implements AvroAdapter {
   }
 
   @Override
-  public String getFieldPropAsJsonString(Schema.Field field, String propName) {
-    String val = field.getProp(propName);
-    return val == null ? null : "\"" + val + "\"";
+  public String getFieldPropAsJsonString(Schema.Field field, String name) {
+    return StringPropertyUtils.getFieldPropAsJsonString(field, name);
   }
 
   @Override
-  public String getSchemaPropAsJsonString(Schema schema, String propName) {
-    String val = schema.getProp(propName);
-    return val == null ? null : "\"" + val + "\"";
+  public void setFieldPropFromJsonString(Schema.Field field, String name, String value, boolean strict) {
+    StringPropertyUtils.setFieldPropFromJsonString(field, name, value, strict);
+  }
+
+  @Override
+  public String getSchemaPropAsJsonString(Schema schema, String name) {
+    return StringPropertyUtils.getSchemaPropAsJsonString(schema, name);
+  }
+
+  @Override
+  public void setSchemaPropFromJsonString(Schema schema, String name, String value, boolean strict) {
+    StringPropertyUtils.setSchemaPropFromJsonString(schema, name, value, strict);
   }
 
   @Override

@@ -27,7 +27,6 @@ dependencies {
   implementation project(":helper:impls:helper-impl-18")
   implementation project(":helper:impls:helper-impl-19")
   implementation project(":helper:impls:helper-impl-110")
-  implementation "org.apache.commons:commons-text:1.9"
 }
 
 shadowJar {

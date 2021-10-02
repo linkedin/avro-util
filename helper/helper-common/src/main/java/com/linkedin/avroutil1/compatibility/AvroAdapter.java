@@ -100,7 +100,11 @@ public interface AvroAdapter {
 
   String getFieldPropAsJsonString(Schema.Field field, String propName);
 
+  void setFieldPropFromJsonString(Schema.Field field, String propName, String valueAsJsonLiteral, boolean strict);
+
   String getSchemaPropAsJsonString(Schema schema, String propName);
+
+  void setSchemaPropFromJsonString(Schema field, String propName, String valueAsJsonLiteral, boolean strict);
 
   //code generation
 

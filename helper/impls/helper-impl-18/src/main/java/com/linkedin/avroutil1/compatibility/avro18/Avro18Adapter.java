@@ -13,6 +13,7 @@ import com.linkedin.avroutil1.compatibility.CodeGenerationConfig;
 import com.linkedin.avroutil1.compatibility.CodeTransformations;
 import com.linkedin.avroutil1.compatibility.ExceptionUtils;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
+import com.linkedin.avroutil1.compatibility.Jackson1Utils;
 import com.linkedin.avroutil1.compatibility.SchemaBuilder;
 import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
 import com.linkedin.avroutil1.compatibility.SchemaParseResult;
@@ -295,17 +296,31 @@ public class Avro18Adapter implements AvroAdapter {
   }
 
   @Override
-  public String getFieldPropAsJsonString(Schema.Field field, String propName) {
+  public String getFieldPropAsJsonString(Schema.Field field, String name) {
     @SuppressWarnings("deprecation") //this is faster
-    JsonNode val = field.getJsonProp(propName);
-    return JsonNodeToJsonString(val);
+    JsonNode node = field.getJsonProp(name);
+    return Jackson1Utils.toJsonString(node);
   }
 
   @Override
-  public String getSchemaPropAsJsonString(Schema schema, String propName) {
+  public void setFieldPropFromJsonString(Schema.Field field, String name, String value, boolean strict) {
+    JsonNode node = Jackson1Utils.toJsonNode(value, strict);
+    //noinspection deprecation this is faster
+    field.addProp(name, node);
+  }
+
+  @Override
+  public String getSchemaPropAsJsonString(Schema schema, String name) {
     @SuppressWarnings("deprecation") //this is faster
-    JsonNode val = schema.getJsonProp(propName);
-    return JsonNodeToJsonString(val);
+    JsonNode node = schema.getJsonProp(name);
+    return Jackson1Utils.toJsonString(node);
+  }
+
+  @Override
+  public void setSchemaPropFromJsonString(Schema schema, String name, String value, boolean strict) {
+    JsonNode node = Jackson1Utils.toJsonNode(value, strict);
+    //noinspection deprecation this is faster
+    schema.addProp(name, node);
   }
 
   @Override
@@ -365,17 +380,6 @@ public class Avro18Adapter implements AvroAdapter {
       throw e; //as-is
     } catch (Exception e) {
       throw new IllegalStateException(e);
-    }
-  }
-
-  private String JsonNodeToJsonString(JsonNode val) {
-    if (val == null) {
-      return null;
-    }
-    try {
-      return OBJECT_MAPPER.writeValueAsString(val);
-    } catch (Exception issue) {
-      throw new IllegalStateException("while trying to serialize " + val + " (a " + val.getClass().getName() + ")", issue);
     }
   }
 
