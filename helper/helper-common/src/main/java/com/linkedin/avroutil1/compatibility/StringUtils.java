@@ -42,18 +42,11 @@ public class StringUtils {
     }
     String processed = maybeAStringProp;
     if (!quoteStringValues) {
-      processed = stripQuotes(processed);
+      processed = processed.substring(1, processed.length() - 1);
     }
     if (unescapeInnerJson) {
       processed = StringEscapeUtils.unescapeJson(processed);
     }
     return processed;
-  }
-
-  private static String stripQuotes(String quoted) {
-    if (!isQuoted(quoted)) {
-      throw new IllegalArgumentException("argument " + quoted + " is not quoted");
-    }
-    return quoted.substring(1, quoted.length() - 1);
   }
 }

@@ -32,6 +32,9 @@ public class AvroCompatibilityHelperProps17Test {
       JsonNode node = schema.getJsonProp(name);
       Assert.assertFalse(node.isTextual(), name);
       Assert.assertEquals(node.toString(), value, name);
+
+      String got = AvroCompatibilityHelper.getSchemaPropAsJsonString(schema, name, false, false);
+      Assert.assertEquals(got, value, name);
     }
 
     // ----------------------------------------------------------------------------------------------
@@ -47,6 +50,9 @@ public class AvroCompatibilityHelperProps17Test {
       JsonNode node = field.getJsonProp(name);
       Assert.assertFalse(node.isTextual(), name);
       Assert.assertEquals(node.toString(), value, name);
+
+      String got = AvroCompatibilityHelper.getFieldPropAsJsonString(field, name, false, false);
+      Assert.assertEquals(got, value, name);
     }
   }
 }

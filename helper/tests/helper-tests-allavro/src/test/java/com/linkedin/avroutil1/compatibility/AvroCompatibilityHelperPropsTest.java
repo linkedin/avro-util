@@ -8,6 +8,7 @@ package com.linkedin.avroutil1.compatibility;
 
 import com.linkedin.avroutil1.testcommon.JsonLiterals;
 import com.linkedin.avroutil1.testcommon.TestUtil;
+import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.text.StringEscapeUtils;
@@ -193,6 +194,28 @@ public class AvroCompatibilityHelperPropsTest {
       AvroCompatibilityHelper.setFieldPropFromJsonString(field, name, value, false);
       String got = field.getProp(name);
       Assert.assertEquals(got, value, name);
+    }
+  }
+
+  @Test
+  public void testNullValue() throws Exception {
+    Schema schema = Schema.parse(TestUtil.load("PerfectlyNormalRecord.avsc"));
+    try {
+      AvroCompatibilityHelper.setSchemaPropFromJsonString(schema, "null", null, false);
+      Assert.fail("expected an error for null");
+    } catch (AvroRuntimeException | IllegalStateException expected) {
+      // expected
+    }
+
+    // ----------------------------------------------------------------------------------------------
+    // These tests below are the same as above, except applied to a Schema.Field instead of a Schema.
+
+    Schema.Field field = schema.getField("stringField");
+    try {
+      AvroCompatibilityHelper.setFieldPropFromJsonString(field, "null", null, false);
+      Assert.fail("expected an error for null");
+    } catch (AvroRuntimeException | IllegalStateException expected) {
+      // expected
     }
   }
 }

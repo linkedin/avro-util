@@ -33,6 +33,9 @@ public class AvroCompatibilityHelperProps19Test {
       JsonNode node = JacksonUtils.toJsonNode(schema.getObjectProp(name));
       Assert.assertFalse(node.isTextual(), name);
       Assert.assertEquals(node.toString(), value, name);
+
+      String got = AvroCompatibilityHelper.getSchemaPropAsJsonString(schema, name, false, false);
+      Assert.assertEquals(got, value, name);
     }
 
     // ----------------------------------------------------------------------------------------------
@@ -48,6 +51,9 @@ public class AvroCompatibilityHelperProps19Test {
       JsonNode node = JacksonUtils.toJsonNode(field.getObjectProp(name));
       Assert.assertFalse(node.isTextual(), name);
       Assert.assertEquals(node.toString(), value, name);
+
+      String got = AvroCompatibilityHelper.getFieldPropAsJsonString(field, name, false, false);
+      Assert.assertEquals(got, value, name);
     }
   }
 }
