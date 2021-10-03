@@ -1,0 +1,94 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "TestRecordWithLogicalTypes",
+  "doc": "very logical",
+  "fields": [
+    {
+      "name": "bytesDecimalField",
+      "type": {
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": 4,
+        "scale": 2
+      }
+    },
+    {
+      "name": "fixedDecimalField",
+      "type": {
+        "type": "fixed",
+        "name": "FixedDecimal",
+        "size": 10,
+        "logicalType": "decimal",
+        "precision": 4,
+        "doc": "scale is implicitly 0, precision (also?) limited by size"
+      }
+    },
+    {
+      "name": "fixedDurationField",
+      "type": {
+        "type": "fixed",
+        "name": "FixedDuration",
+        "size": 12,
+        "logicalType": "duration",
+        "doc": "probably the weirdest datatype I've ever seen"
+      }
+    },
+    {
+      "name": "stringUUIDField",
+      "type": {
+        "type": "string",
+        "logicalType": "uuid"
+      }
+    },
+    {
+      "name": "intDateField",
+      "type": {
+        "type": "int",
+        "logicalType": "date"
+      }
+    },
+    {
+      "name": "intTimeMillisField",
+      "type": {
+        "type": "int",
+        "logicalType": "time-millis"
+      }
+    },
+    {
+      "name": "longTimeMicrosField",
+      "type": {
+        "type": "long",
+        "logicalType": "time-micros"
+      }
+    },
+    {
+      "name": "longTimestampMillisField",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }
+    },
+    {
+      "name": "longTimestampMicrosField",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-micros"
+      }
+    },
+    {
+      "name": "longLocalTimestampMillisField",
+      "type": {
+        "type": "long",
+        "logicalType": "local-timestamp-millis"
+      }
+    },
+    {
+      "name": "longLocalTimestampMicrosField",
+      "type": {
+        "type": "long",
+        "logicalType": "local-timestamp-micros"
+      }
+    }
+  ]
+}

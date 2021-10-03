@@ -6,8 +6,6 @@
 
 package com.linkedin.avroutil1.model;
 
-import java.util.Locale;
-
 /**
  * parent class for all avro named types: records, enums and fixed
  */
@@ -39,6 +37,6 @@ public abstract class AvroNamedSchema extends AvroSchema {
 
     @Override
     public String toString() {
-        return type().name().toLowerCase(Locale.ROOT) + " " + getFullName();
+        return super.toString() + " " + getFullName();
     }
 }

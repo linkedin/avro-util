@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.parser.avsc;
 
+import com.linkedin.avroutil1.model.AvroLogicalType;
 import com.linkedin.avroutil1.model.AvroType;
 import com.linkedin.avroutil1.model.CodeLocation;
 
@@ -89,6 +90,58 @@ public class AvscIssues {
                 "enum " + enumName + " has a default value of \"" + badValue
                         + "\" at " + valueLocation.getStart() + " which is not in its list of symbols"
                         + " (" + symbols + ")",
+                null
+        );
+    }
+
+    public static AvscIssue unknownLogicalType(
+            CodeLocation valueLocation,
+            String badValue
+    ) {
+        return new AvscIssue(
+                valueLocation,
+                IssueSeverity.WARNING,
+                "unknown logical type \"" + badValue + "\" at " + valueLocation.getStart(),
+                null
+        );
+    }
+
+    public static AvscIssue mismatchedLogicalType(
+            CodeLocation valueLocation,
+            AvroLogicalType badValue,
+            AvroType baseType
+    ) {
+        return new AvscIssue(
+                valueLocation,
+                IssueSeverity.SEVERE,
+                "logical type \"" + badValue + "\" at " + valueLocation.getStart()
+                        + " is not a valid logical type for type " + baseType,
+                null
+        );
+    }
+
+    public static AvscIssue unknownJavaStringRepresentation(
+            CodeLocation valueLocation,
+            String badValue
+    ) {
+        return new AvscIssue(
+                valueLocation,
+                IssueSeverity.WARNING,
+                "unknown string representation \"" + badValue + "\" at " + valueLocation.getStart(),
+                null
+        );
+    }
+
+    public static AvscIssue stringRepresentationOnNonString(
+            CodeLocation valueLocation,
+            String badValue,
+            AvroType nonStringType
+    ) {
+        return new AvscIssue(
+                valueLocation,
+                IssueSeverity.WARNING,
+                "string representation \"" + badValue + "\" at " + valueLocation.getStart()
+                        + " has no meaning when used on nn-string type " + nonStringType,
                 null
         );
     }

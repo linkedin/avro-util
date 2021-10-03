@@ -22,6 +22,7 @@ import java.io.File;
 import java.net.URI;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -142,6 +143,13 @@ public class AvscParseContext {
             throw new IllegalArgumentException("issue cannot be null");
         }
         issues.add(issue);
+    }
+
+    public void addIssues(Collection<AvscIssue> issues) {
+        if (issues == null || issues.isEmpty()) {
+            throw new IllegalArgumentException("issues cannot be null or empty");
+        }
+        this.issues.addAll(issues);
     }
 
     /**

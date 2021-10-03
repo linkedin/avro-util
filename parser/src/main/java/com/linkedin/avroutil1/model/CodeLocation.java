@@ -48,4 +48,28 @@ public class CodeLocation {
         //maybe our end point is container within other
         return end.compareTo(other.start) >= 0 && end.compareTo(other.end) <= 0;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (start == end) {
+            //single coordinate
+            sb.append("line: ").append(start.getLineNumber()).append(" col:").append(start.getColumnNumber());
+        } else {
+            //start-end range
+            if (start.getLineNumber() != end.getLineNumber()) {
+                //spans multiple lines - print just lines
+                sb.append("lines ").append(start.getLineNumber()).append("-").append(end.getLineNumber());
+            } else {
+                //within a single line
+                sb.append("line ").append(start.getLineNumber()).append(" columns ").append(start.getColumnNumber())
+                        .append("-").append(end.getColumnNumber());
+            }
+        }
+        //is the uri meaningful?
+        if (!"avsc".equals(uri.getScheme())) {
+            sb.append(" @ ").append(uri);
+        }
+        return sb.toString();
+    }
 }

@@ -29,6 +29,11 @@ public class AvroUnionSchema extends AvroSchema {
         return AvroType.UNION;
     }
 
+    @Override
+    public AvroLogicalType logicalType() {
+        return null; //unions can have no logical types
+    }
+
     public List<SchemaOrRef> getTypes() {
         return types;
     }
