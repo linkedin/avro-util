@@ -19,6 +19,16 @@
             detects direct instantiations of org.apache.avro.io.BinaryEncoder
         </Details>
     </Detector>
+    <Detector class="com.linkedin.avroutil1.spotbugs.BinaryMessageDecoderUsageDetector">
+        <Details>
+            detects usage of org.apache.avro.message.BinaryMessageDecoder
+        </Details>
+    </Detector>
+    <Detector class="com.linkedin.avroutil1.spotbugs.BinaryMessageEncoderUsageDetector">
+        <Details>
+            detects usage of org.apache.avro.message.BinaryMessageEncoder
+        </Details>
+    </Detector>
     <Detector class="com.linkedin.avroutil1.spotbugs.EnumSymbolInstantiationDetector">
         <Details>
             detects direct instantiations of org.apache.avro.generic.GenericData$EnumSymbol
@@ -74,6 +84,11 @@
             detects direct instantiations of org.apache.avro.Schema$Field
         </Details>
     </Detector>
+    <Detector class="com.linkedin.avroutil1.spotbugs.SingleSchemaDeserializationDetector">
+        <Details>
+            detects instantiation of DatumReaders using only a single Schema
+        </Details>
+    </Detector>
     <Detector class="com.linkedin.avroutil1.spotbugs.SpecificDataNewInstanceUsageDetector">
         <Details>
             detects usage of org.apache.avro.specific.SpecificData.newInstance()
@@ -109,6 +124,36 @@
       org.apache.avro.io.BinaryEncoder was made abstract in modern avro, while
       org.apache.avro.io.EncoderFactory only exists in avro 1.5+. for broadest compatibility
       use com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.newBinaryEncoder()
+   </p>
+]]>
+        </Details>
+    </BugPattern>
+    <BugPattern type="BINARYMESSAGEDECODER_USAGE">
+        <ShortDescription>usage of BinaryMessageDecoder</ShortDescription>
+        <LongDescription>
+            any usage of org.apache.avro.message.BinaryMessageDecoder, which only exists in avro 1.8+
+        </LongDescription>
+        <Details>
+            <![CDATA[
+   <p>
+      org.apache.avro.message.BinaryMessageDecoder was introduced as part of avro 1.8, and so using it
+      in code limits the compatibility of your codebase.
+      As of this writing, we dont have a compatible alternative. Please file a ticket if you need one.
+   </p>
+]]>
+        </Details>
+    </BugPattern>
+    <BugPattern type="BINARYMESSAGEENCODER_USAGE">
+        <ShortDescription>usage of BinaryMessageEncoder</ShortDescription>
+        <LongDescription>
+            any usage of org.apache.avro.message.BinaryMessageEncoder, which only exists in avro 1.8+
+        </LongDescription>
+        <Details>
+            <![CDATA[
+   <p>
+      org.apache.avro.message.BinaryMessageEncoder was introduced as part of avro 1.8, and so using it
+      in code limits the compatibility of your codebase.
+      As of this writing, we dont have a compatible alternative. Please file a ticket if you need one.
    </p>
 ]]>
         </Details>
@@ -289,6 +334,20 @@
 ]]>
         </Details>
     </BugPattern>
+    <BugPattern type="SINGLE_SCHEMA_DESERIALIZATION">
+        <ShortDescription>single Schema deserialization</ShortDescription>
+        <LongDescription>
+            construction of an avro DatumReader using only a single schema argument
+        </LongDescription>
+        <Details>
+            <![CDATA[
+   <p>
+      although there are valid cases for doing this, in real life this tends to indicate naive code that does not
+      take any schema evolution into considerations (hence assumes reader and writer schemas to be the same)
+   </p>
+]]>
+        </Details>
+    </BugPattern>
     <BugPattern type="SPECIFICDATA_NEWINSTANCE_USAGE">
         <ShortDescription>usage of org.apache.avro.specific.SpecificData.newInstance()</ShortDescription>
         <LongDescription>
@@ -308,6 +367,8 @@
 
     <BugCode abbrev="BDI">BinaryDecoder instantiation</BugCode>
     <BugCode abbrev="BEI">BinaryEncoder instantiation</BugCode>
+    <BugCode abbrev="BMD">BinaryMessageDecoder usage</BugCode>
+    <BugCode abbrev="BME">BinaryMessageEncoder usage</BugCode>
     <BugCode abbrev="ESI">EnumSymbol instantiation</BugCode>
     <BugCode abbrev="FDVA">Field default value access</BugCode>
     <BugCode abbrev="FI">Fixed instantiation</BugCode>
@@ -320,4 +381,5 @@
     <BugCode abbrev="PA">incompatible prop access</BugCode>
     <BugCode abbrev="SDNI">SecificData.newInstance() usage</BugCode>
     <BugCode abbrev="SFI">Schema.Field instantiation</BugCode>
+    <BugCode abbrev="SSD">Single Schema deserialization</BugCode>
 </MessageCollection>

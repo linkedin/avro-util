@@ -8,12 +8,16 @@ package com.linkedin.avroutil1.spotbugs;
 
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
+import com.linkedin.avroutil1.testcommon.TestUtil;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericDatumReader;
+import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.io.Encoder;
+import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificRecordBase;
 
 import java.io.InputStream;
@@ -70,5 +74,14 @@ public class GoodClass {
 
         AvroCompatibilityHelper.getSchemaPropAsJsonString(s, "K");
         AvroCompatibilityHelper.getFieldPropAsJsonString(f, "K");
+    }
+
+    public void dualSchemaDecoding() throws Exception {
+        String avsc = TestUtil.load("PerfectlyNormalRecord.avsc");
+        Schema schema = Schema.parse(avsc);
+
+        GenericDatumReader<IndexedRecord> genericDatumReader = new GenericDatumReader<>(schema, schema);
+        SpecificDatumReader<IndexedRecord> specificDatumReader = new SpecificDatumReader<>(schema, schema);
+        //cant test for fastavro because not a dependency of this module
     }
 }

@@ -9,7 +9,9 @@ package com.linkedin.avroutil1.spotbugs;
 import com.linkedin.avroutil1.testcommon.TestUtil;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.JsonDecoder;
@@ -24,10 +26,12 @@ import java.util.List;
 @SuppressWarnings("unused") //not used in code, but the compiled bytecode is used in tests
 public abstract class BadClass {
 
+    //compiles under avro < 1.5
     public void instantiateBinaryDecoder() {
         BinaryDecoder bobTheDecoder = new BinaryDecoder(null);
     }
 
+    //compiles under avro < 1.5
     public void instantiateBinaryEncoder() {
         BinaryEncoder bobTheEncoder = new BinaryEncoder(null);
     }
@@ -171,4 +175,29 @@ public abstract class BadClass {
 //            grb.build();
 //        }
 //    }
+
+//    //compiles under avro 1.8+
+//    public void binaryMessageCodecUsage() throws Exception {
+//        String avsc = TestUtil.load("PerfectlyNormalRecord.avsc");
+//        Schema schema = Schema.parse(avsc);
+//        BinaryMessageEncoder<IndexedRecord> encoder = new BinaryMessageEncoder<>(GenericData.get(), schema);
+//        @SuppressWarnings({"RedundantCast", "rawtypes"})
+//        Object var = (BinaryMessageEncoder) null;
+//        //noinspection ConstantConditions
+//        if (var instanceof BinaryMessageEncoder) {
+//            @SuppressWarnings("rawtypes")
+//            BinaryMessageEncoder cast = (BinaryMessageEncoder) var;
+//        }
+//        encoder.encode(null);
+//        BinaryMessageDecoder decoder = new BinaryMessageDecoder<>(GenericData.get(), schema);
+//    }
+
+    public void singleSchemaDecoding() throws Exception {
+        String avsc = TestUtil.load("PerfectlyNormalRecord.avsc");
+        Schema schema = Schema.parse(avsc);
+
+        GenericDatumReader<IndexedRecord> genericDatumReader = new GenericDatumReader<>(schema);
+        SpecificDatumReader<IndexedRecord> specificDatumReader = new SpecificDatumReader<>(schema);
+        //cant test for fastavro because not a dependency of this module
+    }
 }
