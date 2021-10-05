@@ -160,7 +160,14 @@ public class AvscParser {
         }
         if (avroType.isPrimitive()) {
             //no logical type information or string representation in the schema if we got here
-            return new SchemaOrRef(codeLocation, AvroPrimitiveSchema.forType(codeLocation, avroType, null, null));
+            return new SchemaOrRef(codeLocation, AvroPrimitiveSchema.forType(
+                    codeLocation,
+                    avroType,
+                    null,
+                    null,
+                    0,
+                    0
+            ));
         }
         //if we got here it means we found something like "record" as a type literal. which is not valid syntax
         throw new AvroSyntaxException("Illegal avro type \"" + typeString + "\" at " + codeLocation.getStart() + ". "
@@ -173,10 +180,14 @@ public class AvscParser {
             AvroType avroType,
             CodeLocation codeLocation
     ) {
+        AvroLogicalType logicalType = null;
+        int scale = 0;
+        int precision = 0;
         Parsed<AvroLogicalType> logicalTypeResult = parseLogicalType(primitiveNode, context, avroType, codeLocation);
         if (logicalTypeResult.hasIssues()) {
             context.addIssues(logicalTypeResult.getIssues());
         }
+        logicalType = logicalTypeResult.getData(); //might be null
         Parsed<AvroJavaStringRepresentation> stringRepResult = parseStringRepresentation(primitiveNode, context, avroType, codeLocation);
         AvroJavaStringRepresentation stringRep = null;
         if (stringRepResult.hasIssues()) {
@@ -185,8 +196,41 @@ public class AvscParser {
         if (AvroType.STRING.equals(avroType) && stringRepResult.hasData()) {
             stringRep = stringRepResult.getData();
         }
+        Located<Integer> precisionResult = getOptionalInteger(primitiveNode, "precision", context);
+        Located<Integer> scaleResult = getOptionalInteger(primitiveNode, "scale", context);
+        boolean scaleAndPrecisionExpected = AvroType.BYTES.equals(avroType) && AvroLogicalType.DECIMAL.equals(logicalType);
+        if (scaleAndPrecisionExpected) {
+            boolean scaleAndPrecisionOK = true;
+            int precisionValue = 0;
+            int scaleValue = 0;
+            //precision is actually required
+            if (precisionResult == null) {
+                context.addIssue(AvscIssues.precisionRequiredAndNotSet(codeLocation, avroType, logicalType));
+                scaleAndPrecisionOK = false;
+            }
+            if (scaleAndPrecisionOK && scaleResult != null) {
+                precisionValue = precisionResult.getValue();
+                scaleValue = scaleResult.getValue();
+                if (precisionValue < scaleValue) {
+                    context.addIssue(AvscIssues.precisionSmallerThanScale(
+                            locationOf(context.getUri(), precisionResult),
+                            precisionValue,
+                            locationOf(context.getUri(), scaleResult),
+                            scaleValue
+                    ));
+                    scaleAndPrecisionOK = false;
+                }
+            }
+            if (scaleAndPrecisionOK) {
+                scale = scaleValue;
+                precision = precisionValue;
+            } else {
+                //"cancel" the logicalType
+                logicalType = null;
+            }
+        }
         //TODO - grab other props
-        return new AvroPrimitiveSchema(codeLocation, avroType, logicalTypeResult.getData(), stringRep);
+        return new AvroPrimitiveSchema(codeLocation, avroType, logicalType, stringRep, scale, precision);
     }
 
     private SchemaOrRef parseComplexSchema(
@@ -768,5 +812,27 @@ public class AvscParser {
                     + " is expected to be a string, not a " + JsonPUtil.describe(valType) + " (" + val + ")");
         }
         return new Located<>(((JsonStringExt)val).getString(), Util.convertLocation(val.getStartLocation()));
+    }
+
+    private Located<Integer> getOptionalInteger(JsonObjectExt node, String prop, AvscParseContext context) {
+        JsonValueExt val = node.get(prop);
+        if (val == null) {
+            return null;
+        }
+        JsonValue.ValueType valType = val.getValueType();
+        if (valType != JsonValue.ValueType.NUMBER) {
+            context.addIssue(AvscIssues.badPropertyType(
+                    prop, locationOf(context.getUri(), val), val, valType.name(), JsonValue.ValueType.NUMBER.name()
+                    ));
+            return null;
+        }
+        JsonNumberExt numberNode = (JsonNumberExt) val;
+        if (!numberNode.isIntegral()) {
+            context.addIssue(AvscIssues.badPropertyType(
+                    prop, locationOf(context.getUri(), val), val, "floating point value", "integer"
+            ));
+            return null;
+        }
+        return new Located<>(numberNode.intValueExact(), Util.convertLocation(val.getStartLocation()));
     }
 }

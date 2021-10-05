@@ -258,6 +258,8 @@ public class AvscParserTest {
                 case "bytesDecimalField":
                     Assert.assertEquals(field.getSchema().type(), AvroType.BYTES);
                     Assert.assertEquals(field.getSchema().logicalType(), AvroLogicalType.DECIMAL);
+                    Assert.assertEquals(((AvroPrimitiveSchema)field.getSchema()).getScale(), 2);
+                    Assert.assertEquals(((AvroPrimitiveSchema)field.getSchema()).getPrecision(), 4);
                     break;
                 case "fixedDecimalField":
                     Assert.assertEquals(field.getSchema().type(), AvroType.FIXED);
@@ -302,6 +304,19 @@ public class AvscParserTest {
                 default:
                     break;
             }
+        }
+    }
+
+    @Test
+    public void testParsingHorribleLogicalTypes() throws Exception {
+        String avsc = TestUtil.load("schemas/TestRecordWithHorribleLogicalTypes.avsc");
+        AvscParser parser = new AvscParser();
+        AvscParseResult result = parser.parse(avsc);
+        Assert.assertNull(result.getParseError());
+        AvroRecordSchema schema = (AvroRecordSchema) result.getTopLevelSchema();
+        for (AvroSchemaField field : schema.getFields()) {
+            Assert.assertNull(field.getSchema().logicalType(), "field " + field.getName()
+                    + " should not have a successfully-parsed logicalType");
         }
     }
 
@@ -364,6 +379,12 @@ public class AvscParserTest {
         field = parsed.getField("stringFieldWithMisplacedCharSequenceJavaType");
         Assert.assertEquals(field.getProp("avro.java.string"), GenericData.StringType.CharSequence.name());
         Assert.assertNull(field.schema().getProp("avro.java.string"));
+
+        parsed = vanillaParse("schemas/TestRecordWithHorribleLogicalTypes.avsc");
+        for (Schema.Field f : parsed.getFields()) {
+            Assert.assertNull(f.schema().getLogicalType(), "field " + f.name()
+                    + " should not have a successfully-parsed logical type");
+        }
     }
 
     private Schema vanillaParse(String resource) throws Exception {

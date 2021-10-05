@@ -145,4 +145,51 @@ public class AvscIssues {
                 null
         );
     }
+
+    public static AvscIssue precisionRequiredAndNotSet(
+            CodeLocation typeNode,
+            AvroType type,
+            AvroLogicalType logicalType
+    ) {
+        return new AvscIssue(
+                typeNode,
+                IssueSeverity.WARNING,
+                type + " at " + typeNode + " has logicalType " + logicalType
+                        + "which requires setting precision, yet precision is not specified"
+                ,
+                null
+        );
+    }
+
+    public static AvscIssue precisionSmallerThanScale(
+            CodeLocation precisionLocation,
+            int precisionValue,
+            CodeLocation scaleLocation,
+            int scaleValue
+    ) {
+        return new AvscIssue(
+                precisionLocation,
+                IssueSeverity.WARNING,
+                "precision value " + precisionValue + " at " + precisionLocation
+                        + " is smaller than scale " + scaleValue + " at " + scaleLocation
+                ,
+                null
+        );
+    }
+
+    public static AvscIssue badPropertyType(
+            String propertyName,
+            CodeLocation valueLocation,
+            Object value,
+            String valueType,
+            String valueExpectedType
+    ) {
+        return new AvscIssue(
+                valueLocation,
+                IssueSeverity.SEVERE,
+                "value " + value + " at " + valueLocation + " is expected to be a "
+                        + valueExpectedType + " but instead is a " + valueType,
+                null
+        );
+    }
 }
