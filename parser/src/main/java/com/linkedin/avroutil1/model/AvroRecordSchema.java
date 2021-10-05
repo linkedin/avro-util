@@ -59,8 +59,27 @@ public class AvroRecordSchema extends AvroNamedSchema {
         return null;
     }
 
+    public AvroSchemaField getField(int index) {
+        if (fields == null) {
+            throw new IllegalStateException("fields for record " + getFullName() + " have never been set");
+        }
+        if (index < 0) {
+            throw new IllegalArgumentException("index cannot be negative (argument was " + index + ")");
+        }
+        if (index >= fields.size()) {
+            throw new IllegalArgumentException("record " + getFullName() + " has " + fields.size()
+                    + " fields - no such index " + index);
+        }
+        return fields.get(index);
+    }
+
     @Override
     public AvroType type() {
         return AvroType.RECORD;
+    }
+
+    @Override
+    public AvroLogicalType logicalType() {
+        return null; //records can have no logical types
     }
 }

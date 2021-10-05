@@ -18,7 +18,9 @@ import com.linkedin.avroutil1.model.AvroFixedLiteral;
 import com.linkedin.avroutil1.model.AvroFixedSchema;
 import com.linkedin.avroutil1.model.AvroFloatLiteral;
 import com.linkedin.avroutil1.model.AvroIntegerLiteral;
+import com.linkedin.avroutil1.model.AvroJavaStringRepresentation;
 import com.linkedin.avroutil1.model.AvroLiteral;
+import com.linkedin.avroutil1.model.AvroLogicalType;
 import com.linkedin.avroutil1.model.AvroLongLiteral;
 import com.linkedin.avroutil1.model.AvroMapSchema;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
@@ -133,8 +135,8 @@ public class AvscParser {
         JsonValue.ValueType nodeType = node.getValueType();
         switch (nodeType) {
             case STRING: //primitive or ref
-                return parsePrimitiveOrRef((JsonStringExt) node, context);
-            case OBJECT: //record/enum/fixed/array/map/error
+                return parseSimplePrimitiveOrRef((JsonStringExt) node, context);
+            case OBJECT: //record/enum/fixed/array/map/error or a simpler type with extra props thrown-in
                 return parseComplexSchema((JsonObjectExt) node, context, topLevel);
             case ARRAY:  //union
                 return parseUnionSchema((JsonArrayExt) node, context, topLevel);
@@ -144,7 +146,7 @@ public class AvscParser {
         }
     }
 
-    private SchemaOrRef parsePrimitiveOrRef(
+    private SchemaOrRef parseSimplePrimitiveOrRef(
             JsonStringExt stringNode,
             AvscParseContext context
     ) {
@@ -157,11 +159,78 @@ public class AvscParser {
             return new SchemaOrRef(codeLocation, typeString);
         }
         if (avroType.isPrimitive()) {
-            return new SchemaOrRef(codeLocation, AvroPrimitiveSchema.forType(codeLocation, avroType));
+            //no logical type information or string representation in the schema if we got here
+            return new SchemaOrRef(codeLocation, AvroPrimitiveSchema.forType(
+                    codeLocation,
+                    avroType,
+                    null,
+                    null,
+                    0,
+                    0
+            ));
         }
         //if we got here it means we found something like "record" as a type literal. which is not valid syntax
         throw new AvroSyntaxException("Illegal avro type \"" + typeString + "\" at " + codeLocation.getStart() + ". "
                 + "Expecting a primitive type, an inline type definition or a reference the the fullname of a named type defined elsewhere");
+    }
+
+    private AvroPrimitiveSchema parseDecoratedPrimitiveSchema(
+            JsonObjectExt primitiveNode,
+            AvscParseContext context,
+            AvroType avroType,
+            CodeLocation codeLocation
+    ) {
+        AvroLogicalType logicalType = null;
+        int scale = 0;
+        int precision = 0;
+        Parsed<AvroLogicalType> logicalTypeResult = parseLogicalType(primitiveNode, context, avroType, codeLocation);
+        if (logicalTypeResult.hasIssues()) {
+            context.addIssues(logicalTypeResult.getIssues());
+        }
+        logicalType = logicalTypeResult.getData(); //might be null
+        Parsed<AvroJavaStringRepresentation> stringRepResult = parseStringRepresentation(primitiveNode, context, avroType, codeLocation);
+        AvroJavaStringRepresentation stringRep = null;
+        if (stringRepResult.hasIssues()) {
+            context.addIssues(stringRepResult.getIssues());
+        }
+        if (AvroType.STRING.equals(avroType) && stringRepResult.hasData()) {
+            stringRep = stringRepResult.getData();
+        }
+        Located<Integer> precisionResult = getOptionalInteger(primitiveNode, "precision", context);
+        Located<Integer> scaleResult = getOptionalInteger(primitiveNode, "scale", context);
+        boolean scaleAndPrecisionExpected = AvroType.BYTES.equals(avroType) && AvroLogicalType.DECIMAL.equals(logicalType);
+        if (scaleAndPrecisionExpected) {
+            boolean scaleAndPrecisionOK = true;
+            int precisionValue = 0;
+            int scaleValue = 0;
+            //precision is actually required
+            if (precisionResult == null) {
+                context.addIssue(AvscIssues.precisionRequiredAndNotSet(codeLocation, avroType, logicalType));
+                scaleAndPrecisionOK = false;
+            }
+            if (scaleAndPrecisionOK && scaleResult != null) {
+                precisionValue = precisionResult.getValue();
+                scaleValue = scaleResult.getValue();
+                if (precisionValue < scaleValue) {
+                    context.addIssue(AvscIssues.precisionSmallerThanScale(
+                            locationOf(context.getUri(), precisionResult),
+                            precisionValue,
+                            locationOf(context.getUri(), scaleResult),
+                            scaleValue
+                    ));
+                    scaleAndPrecisionOK = false;
+                }
+            }
+            if (scaleAndPrecisionOK) {
+                scale = scaleValue;
+                precision = precisionValue;
+            } else {
+                //"cancel" the logicalType
+                logicalType = null;
+            }
+        }
+        //TODO - grab other props
+        return new AvroPrimitiveSchema(codeLocation, avroType, logicalType, stringRep, scale, precision);
     }
 
     private SchemaOrRef parseComplexSchema(
@@ -182,6 +251,8 @@ public class AvscParser {
             definedSchema = parseNamedSchema(objectNode, context, avroType, codeLocation);
         } else if (avroType.isCollection()) {
             definedSchema = parseCollectionSchema(objectNode, context, avroType, codeLocation);
+        } else if (avroType.isPrimitive()) {
+            definedSchema = parseDecoratedPrimitiveSchema(objectNode, context, avroType, codeLocation);
         } else {
             throw new IllegalStateException("unhandled avro type " + avroType + " at " + typeStr.getLocation());
         }
@@ -275,6 +346,7 @@ public class AvscParser {
                             if (defaultValurOrIssue.getIssue() == null) {
                                 defaultValue = defaultValurOrIssue.getLiteral();
                             }
+                            //TODO - handle issues
                         } else {
                             //we cant parse the default value yet since we dont have the schema to decode it with
                             //TODO - implement delayed default value parsing
@@ -327,12 +399,17 @@ public class AvscParser {
                             + JsonPUtil.describe(sizeNode.getValueType()) + " (" + sizeNode + ")");
                 }
                 int fixedSize = ((JsonNumberExt) sizeNode).intValue();
+                Parsed<AvroLogicalType> logicalTypeResult = parseLogicalType(objectNode, context, avroType, codeLocation);
+                if (logicalTypeResult.hasIssues()) {
+                    context.addIssues(logicalTypeResult.getIssues());
+                }
                 namedSchema = new AvroFixedSchema(
                         codeLocation,
                         schemaSimpleName,
                         contextNamespace,
                         doc,
-                        fixedSize
+                        fixedSize,
+                        logicalTypeResult.getData()
                 );
                 break;
             default:
@@ -607,6 +684,70 @@ public class AvscParser {
         }
     }
 
+    private Parsed<AvroLogicalType> parseLogicalType(
+            JsonObjectExt objectNode, //type declaration node
+            AvscParseContext context,
+            AvroType avroType,
+            CodeLocation codeLocation
+    ) {
+        Parsed<AvroLogicalType> result;
+        Located<String> logicalTypeStr = getOptionalString(objectNode, "logicalType");
+        AvroLogicalType logicalType;
+        if (logicalTypeStr != null) {
+            logicalType = AvroLogicalType.fromJson(logicalTypeStr.getValue());
+            if (logicalType == null) {
+                return new Parsed<>(AvscIssues.unknownLogicalType(
+                        locationOf(context.getUri(), logicalTypeStr),
+                        logicalTypeStr.getValue()
+                ));
+            } else {
+                //we have a logicalType, see if it matches the type
+                if (!logicalType.getParentTypes().contains(avroType)) {
+                    return new Parsed<>(AvscIssues.mismatchedLogicalType(
+                            locationOf(context.getUri(), logicalTypeStr),
+                            logicalType,
+                            avroType
+                    ));
+                }
+                return new Parsed<>(logicalType);
+            }
+        } else {
+            //no logical type (also no issues)
+            return new Parsed<>((AvroLogicalType) null);
+        }
+    }
+
+    private Parsed<AvroJavaStringRepresentation> parseStringRepresentation(
+            JsonObjectExt objectNode, //type declaration node
+            AvscParseContext context,
+            AvroType avroType,
+            CodeLocation codeLocation
+    ) {
+        Parsed<AvroJavaStringRepresentation> result = new Parsed<>();
+        Located<String> repStr = getOptionalString(objectNode, "avro.java.string");
+        AvroJavaStringRepresentation representation;
+        if (repStr != null) {
+            representation = AvroJavaStringRepresentation.fromJson(repStr.getValue());
+            if (representation != null) {
+                result.setData(representation);
+            } else {
+                result.recordIssue(AvscIssues.unknownJavaStringRepresentation(
+                        locationOf(context.getUri(), repStr),
+                        repStr.getValue()
+                ));
+            }
+            //does string rep even make sense here? is type even a string?
+            if (!AvroType.STRING.equals(avroType)) {
+                result.recordIssue(AvscIssues.stringRepresentationOnNonString(
+                        locationOf(context.getUri(), repStr),
+                        repStr.getValue(),
+                        avroType
+                ));
+            }
+        }
+        return result;
+    }
+
     private CodeLocation locationOf(URI uri, Located<?> something) {
         return new CodeLocation(uri, something.getLocation(), something.getLocation());
     }
@@ -671,5 +812,27 @@ public class AvscParser {
                     + " is expected to be a string, not a " + JsonPUtil.describe(valType) + " (" + val + ")");
         }
         return new Located<>(((JsonStringExt)val).getString(), Util.convertLocation(val.getStartLocation()));
+    }
+
+    private Located<Integer> getOptionalInteger(JsonObjectExt node, String prop, AvscParseContext context) {
+        JsonValueExt val = node.get(prop);
+        if (val == null) {
+            return null;
+        }
+        JsonValue.ValueType valType = val.getValueType();
+        if (valType != JsonValue.ValueType.NUMBER) {
+            context.addIssue(AvscIssues.badPropertyType(
+                    prop, locationOf(context.getUri(), val), val, valType.name(), JsonValue.ValueType.NUMBER.name()
+                    ));
+            return null;
+        }
+        JsonNumberExt numberNode = (JsonNumberExt) val;
+        if (!numberNode.isIntegral()) {
+            context.addIssue(AvscIssues.badPropertyType(
+                    prop, locationOf(context.getUri(), val), val, "floating point value", "integer"
+            ));
+            return null;
+        }
+        return new Located<>(numberNode.intValueExact(), Util.convertLocation(val.getStartLocation()));
     }
 }

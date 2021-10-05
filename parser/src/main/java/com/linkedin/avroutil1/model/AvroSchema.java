@@ -20,6 +20,8 @@ public abstract class AvroSchema implements LocatedCode {
 
     public abstract AvroType type();
 
+    public abstract AvroLogicalType logicalType();
+
     @Override
     public CodeLocation getCodeLocation() {
         return codeLocation;
@@ -34,6 +36,11 @@ public abstract class AvroSchema implements LocatedCode {
 
     @Override
     public String toString() {
-        return type().name().toLowerCase(Locale.ROOT);
+        String typeName = type().name().toLowerCase(Locale.ROOT);
+        AvroLogicalType logicalType = logicalType();
+        if (logicalType == null) {
+            return typeName;
+        }
+        return typeName + " (" + logicalType + ")";
     }
 }

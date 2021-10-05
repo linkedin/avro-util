@@ -35,4 +35,9 @@ public abstract class AvroCollectionSchema extends AvroSchema {
     public AvroSchema getValueSchema() {
         return valueSchema.getSchema();
     }
+
+    @Override
+    public AvroLogicalType logicalType() {
+        return null; //collections can have no logical types
+    }
 }

@@ -34,6 +34,11 @@ public class AvroEnumSchema extends AvroNamedSchema {
         return AvroType.ENUM;
     }
 
+    @Override
+    public AvroLogicalType logicalType() {
+        return null; //enums can have no logical types
+    }
+
     public List<String> getSymbols() {
         return symbols;
     }

@@ -1,0 +1,35 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "TestRecordWithHorribleLogicalTypes",
+  "doc": "oh the humanity",
+  "fields": [
+    {
+      "name": "bytesDecimalFieldWithStringPrecision",
+      "type": {
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": "what is this",
+        "scale": 2.5
+      }
+    },
+    {
+      "name": "bytesDecimalFieldWithNegativePrecision",
+      "type": {
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": -7,
+        "scale": 2
+      }
+    },
+    {
+      "name": "bytesDecimalFieldWithTooLargeScale",
+      "type": {
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": 5,
+        "scale": 6
+      }
+    }
+  ]
+}

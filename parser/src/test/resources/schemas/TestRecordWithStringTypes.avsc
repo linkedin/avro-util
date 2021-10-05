@@ -1,0 +1,41 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "TestRecordWithStringTypes",
+  "doc": "various java representations of strings",
+  "fields": [
+    {
+      "name": "vanillaStringField",
+      "type": "string"
+    },
+    {
+      "name": "stringFieldWithStringJavaType",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+      }
+    },
+    {
+      "name": "stringFieldWithMisplacedCharSequenceJavaType",
+      "type": {
+        "type": "string"
+      },
+      "avro.java.string": "CharSequence",
+      "doc": "this sets a field prop and has no effect on generated types"
+    },
+    {
+      "name": "stringFieldWithCharSequenceJavaType",
+      "type": {
+        "type": "string",
+        "avro.java.string": "CharSequence"
+      }
+    },
+    {
+      "name": "stringFieldWithUtf8JavaType",
+      "type": {
+        "type": "string",
+        "avro.java.string": "Utf8"
+      }
+    }
+  ]
+}

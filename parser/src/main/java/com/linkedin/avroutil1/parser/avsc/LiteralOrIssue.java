@@ -8,6 +8,7 @@ package com.linkedin.avroutil1.parser.avsc;
 
 import com.linkedin.avroutil1.model.AvroLiteral;
 
+//TODO - make this Parsed<AvroLiteral>
 public class LiteralOrIssue {
     private final AvroLiteral literal;
     private final AvscIssue issue;
