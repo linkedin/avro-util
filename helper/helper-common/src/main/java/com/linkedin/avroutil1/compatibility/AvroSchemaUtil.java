@@ -65,7 +65,7 @@ public class AvroSchemaUtil {
       throw new IllegalArgumentException("scheme must not be null");
     }
     if (schema.getType() != Schema.Type.UNION) {
-      return schema;  // field is not a union.
+      return schema;  // schema is not a union.
     }
     List<Schema> branches = schema.getTypes();
     List<Schema> nonNullBranches = branches.stream().
