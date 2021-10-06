@@ -272,24 +272,24 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
         TestRecord.put(17, testFixedUnionArray0);
         int enumIndex0 = (decoder.readEnum());
         TestEnum enumValue0 = null;
-        if (enumIndex0 == 0) {
-            enumValue0 = TestEnum.values()[ 4 ];
-        } else {
-            if (enumIndex0 == 1) {
+        switch (enumIndex0) {
+            case  0 :
+                enumValue0 = TestEnum.values()[ 4 ];
+                break;
+            case  1 :
                 enumValue0 = TestEnum.values()[ 3 ];
-            } else {
-                if (enumIndex0 == 2) {
-                    enumValue0 = TestEnum.values()[ 1 ];
-                } else {
-                    if (enumIndex0 == 3) {
-                        enumValue0 = TestEnum.values()[ 2 ];
-                    } else {
-                        if (enumIndex0 == 4) {
-                            enumValue0 = TestEnum.values()[ 0 ];
-                        }
-                    }
-                }
-            }
+                break;
+            case  2 :
+                enumValue0 = TestEnum.values()[ 1 ];
+                break;
+            case  3 :
+                enumValue0 = TestEnum.values()[ 2 ];
+                break;
+            case  4 :
+                enumValue0 = TestEnum.values()[ 0 ];
+                break;
+            default:
+                throw new RuntimeException(("Illegal enum index for 'com.linkedin.avro.fastserde.generated.avro.TestEnum': "+ enumIndex0));
         }
         TestRecord.put(18, enumValue0);
         int unionIndex10 = (decoder.readIndex());
@@ -301,24 +301,24 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
             {
                 int enumIndex1 = (decoder.readEnum());
                 TestEnum enumValue1 = null;
-                if (enumIndex1 == 0) {
-                    enumValue1 = TestEnum.values()[ 4 ];
-                } else {
-                    if (enumIndex1 == 1) {
+                switch (enumIndex1) {
+                    case  0 :
+                        enumValue1 = TestEnum.values()[ 4 ];
+                        break;
+                    case  1 :
                         enumValue1 = TestEnum.values()[ 3 ];
-                    } else {
-                        if (enumIndex1 == 2) {
-                            enumValue1 = TestEnum.values()[ 1 ];
-                        } else {
-                            if (enumIndex1 == 3) {
-                                enumValue1 = TestEnum.values()[ 2 ];
-                            } else {
-                                if (enumIndex1 == 4) {
-                                    enumValue1 = TestEnum.values()[ 0 ];
-                                }
-                            }
-                        }
-                    }
+                        break;
+                    case  2 :
+                        enumValue1 = TestEnum.values()[ 1 ];
+                        break;
+                    case  3 :
+                        enumValue1 = TestEnum.values()[ 2 ];
+                        break;
+                    case  4 :
+                        enumValue1 = TestEnum.values()[ 0 ];
+                        break;
+                    default:
+                        throw new RuntimeException(("Illegal enum index for 'com.linkedin.avro.fastserde.generated.avro.TestEnum': "+ enumIndex1));
                 }
                 TestRecord.put(19, enumValue1);
                 break;
@@ -339,24 +339,24 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
             for (int counter2 = 0; (counter2 <chunkLen2); counter2 ++) {
                 int enumIndex2 = (decoder.readEnum());
                 TestEnum enumValue2 = null;
-                if (enumIndex2 == 0) {
-                    enumValue2 = TestEnum.values()[ 4 ];
-                } else {
-                    if (enumIndex2 == 1) {
+                switch (enumIndex2) {
+                    case  0 :
+                        enumValue2 = TestEnum.values()[ 4 ];
+                        break;
+                    case  1 :
                         enumValue2 = TestEnum.values()[ 3 ];
-                    } else {
-                        if (enumIndex2 == 2) {
-                            enumValue2 = TestEnum.values()[ 1 ];
-                        } else {
-                            if (enumIndex2 == 3) {
-                                enumValue2 = TestEnum.values()[ 2 ];
-                            } else {
-                                if (enumIndex2 == 4) {
-                                    enumValue2 = TestEnum.values()[ 0 ];
-                                }
-                            }
-                        }
-                    }
+                        break;
+                    case  2 :
+                        enumValue2 = TestEnum.values()[ 1 ];
+                        break;
+                    case  3 :
+                        enumValue2 = TestEnum.values()[ 2 ];
+                        break;
+                    case  4 :
+                        enumValue2 = TestEnum.values()[ 0 ];
+                        break;
+                    default:
+                        throw new RuntimeException(("Illegal enum index for 'com.linkedin.avro.fastserde.generated.avro.TestEnum': "+ enumIndex2));
                 }
                 testEnumArray0 .add(enumValue2);
             }
@@ -387,24 +387,24 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
                     {
                         int enumIndex3 = (decoder.readEnum());
                         TestEnum enumValue3 = null;
-                        if (enumIndex3 == 0) {
-                            enumValue3 = TestEnum.values()[ 4 ];
-                        } else {
-                            if (enumIndex3 == 1) {
+                        switch (enumIndex3) {
+                            case  0 :
+                                enumValue3 = TestEnum.values()[ 4 ];
+                                break;
+                            case  1 :
                                 enumValue3 = TestEnum.values()[ 3 ];
-                            } else {
-                                if (enumIndex3 == 2) {
-                                    enumValue3 = TestEnum.values()[ 1 ];
-                                } else {
-                                    if (enumIndex3 == 3) {
-                                        enumValue3 = TestEnum.values()[ 2 ];
-                                    } else {
-                                        if (enumIndex3 == 4) {
-                                            enumValue3 = TestEnum.values()[ 0 ];
-                                        }
-                                    }
-                                }
-                            }
+                                break;
+                            case  2 :
+                                enumValue3 = TestEnum.values()[ 1 ];
+                                break;
+                            case  3 :
+                                enumValue3 = TestEnum.values()[ 2 ];
+                                break;
+                            case  4 :
+                                enumValue3 = TestEnum.values()[ 0 ];
+                                break;
+                            default:
+                                throw new RuntimeException(("Illegal enum index for 'com.linkedin.avro.fastserde.generated.avro.TestEnum': "+ enumIndex3));
                         }
                         testEnumUnionArray0 .add(enumValue3);
                         break;

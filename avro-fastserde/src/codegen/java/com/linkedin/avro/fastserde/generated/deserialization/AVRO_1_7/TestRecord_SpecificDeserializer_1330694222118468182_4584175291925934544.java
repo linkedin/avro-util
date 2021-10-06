@@ -1,5 +1,5 @@
 
-package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_10;
+package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_7;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -10,19 +10,20 @@ import java.util.Map;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import com.linkedin.avro.fastserde.generated.avro.TestEnum;
 import com.linkedin.avro.fastserde.generated.avro.TestFixed;
+import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericFixed;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.util.Utf8;
 
-public class TestRecord_SpecificDeserializer_6151968197633927516_4584175291925934544
+public class TestRecord_SpecificDeserializer_1330694222118468182_4584175291925934544
     implements FastDeserializer<com.linkedin.avro.fastserde.generated.avro.TestRecord>
 {
 
     private final Schema readerSchema;
 
-    public TestRecord_SpecificDeserializer_6151968197633927516_4584175291925934544(Schema readerSchema) {
+    public TestRecord_SpecificDeserializer_1330694222118468182_4584175291925934544(Schema readerSchema) {
         this.readerSchema = readerSchema;
     }
 
@@ -288,6 +289,8 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
             case  4 :
                 enumValue0 = TestEnum.values()[ 0 ];
                 break;
+            case  5 :
+                throw new AvroTypeException("com.linkedin.avro.fastserde.generated.avro.TestEnum: No match for F");
             default:
                 throw new RuntimeException(("Illegal enum index for 'com.linkedin.avro.fastserde.generated.avro.TestEnum': "+ enumIndex0));
         }
@@ -317,6 +320,8 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
                     case  4 :
                         enumValue1 = TestEnum.values()[ 0 ];
                         break;
+                    case  5 :
+                        throw new AvroTypeException("com.linkedin.avro.fastserde.generated.avro.TestEnum: No match for F");
                     default:
                         throw new RuntimeException(("Illegal enum index for 'com.linkedin.avro.fastserde.generated.avro.TestEnum': "+ enumIndex1));
                 }
@@ -355,6 +360,8 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
                     case  4 :
                         enumValue2 = TestEnum.values()[ 0 ];
                         break;
+                    case  5 :
+                        throw new AvroTypeException("com.linkedin.avro.fastserde.generated.avro.TestEnum: No match for F");
                     default:
                         throw new RuntimeException(("Illegal enum index for 'com.linkedin.avro.fastserde.generated.avro.TestEnum': "+ enumIndex2));
                 }
@@ -403,6 +410,8 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
                             case  4 :
                                 enumValue3 = TestEnum.values()[ 0 ];
                                 break;
+                            case  5 :
+                                throw new AvroTypeException("com.linkedin.avro.fastserde.generated.avro.TestEnum: No match for F");
                             default:
                                 throw new RuntimeException(("Illegal enum index for 'com.linkedin.avro.fastserde.generated.avro.TestEnum': "+ enumIndex3));
                         }
