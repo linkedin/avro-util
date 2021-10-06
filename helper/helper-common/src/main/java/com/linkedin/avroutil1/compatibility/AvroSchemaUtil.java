@@ -62,7 +62,7 @@ public class AvroSchemaUtil {
    */
   public static Schema findNonNullUnionBranch(Schema schema) {
     if (schema == null) {
-      throw new IllegalArgumentException("scheme must not be null");
+      throw new IllegalArgumentException("schema must not be null");
     }
     if (schema.getType() != Schema.Type.UNION) {
       return schema;  // schema is not a union.
