@@ -27,8 +27,8 @@ import com.sun.codemodel.JWhileLoop;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -918,12 +918,13 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       }
 
       boolean enumOrderCorrect = true;
+      Set<Integer> unknownEnumIndexes = new HashSet<>();
       for (int i = 0; i < enumAdjustAction.adjustments.length; i++) {
         Object adjustment = enumAdjustAction.adjustments[i];
-        if (adjustment instanceof String) {
-          throw new FastDeserializerGeneratorException(
-              schema.getName() + " enum label impossible to deserialize: " + adjustment.toString());
-        } else if (!adjustment.equals(i)) {
+        if (!adjustment.equals(i)) {
+          if (adjustment instanceof String) {
+            unknownEnumIndexes.add(i);
+          }
           enumOrderCorrect = false;
         }
       }
@@ -938,15 +939,23 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
         JClass enumClass = schemaAssistant.classFromSchema(schema);
         newEnum = body.decl(enumClass, getUniqueName("enumValue"), JExpr._null());
 
-        JConditional ifBlock = null;
+        JSwitch switchBlock = body._switch(enumIndex);
         for (int i = 0; i < enumAdjustAction.adjustments.length; i++) {
-          JExpression ithVal =
-              schemaAssistant.getEnumValueByIndex(schema, JExpr.lit((Integer) enumAdjustAction.adjustments[i]),
-                  getSchemaExpr(schema));
-          JExpression condition = enumIndex.eq(JExpr.lit(i));
-          ifBlock = ifBlock != null ? ifBlock._elseif(condition) : body._if(condition);
-          ifBlock._then().assign((JVar) newEnum, ithVal);
+          JBlock caseBody = switchBlock._case(JExpr.lit(i)).body();
+          if (unknownEnumIndexes.contains(i)) {
+            caseBody._throw(JExpr._new(codeModel.ref(AvroTypeException.class))
+                .arg(JExpr.lit(schema.getFullName() + ": " + enumAdjustAction.adjustments[i].toString())));
+          } else {
+            JExpression ithVal =
+                schemaAssistant.getEnumValueByIndex(schema, JExpr.lit((Integer) enumAdjustAction.adjustments[i]),
+                    getSchemaExpr(schema));
+            caseBody.assign((JVar) newEnum, ithVal);
+            caseBody._break();
+          }
         }
+
+        switchBlock._default().body()._throw(JExpr._new(codeModel.ref(RuntimeException.class))
+            .arg(JExpr.lit("Illegal enum index for '" + schema.getFullName() + "': ").plus(enumIndex)));
       }
       putEnumIntoParent.accept(body, newEnum);
     } else {

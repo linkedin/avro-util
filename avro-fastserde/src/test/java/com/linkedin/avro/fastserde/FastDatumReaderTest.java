@@ -40,9 +40,6 @@ public class FastDatumReaderTest {
     FastDeserializer<TestRecord> fastSpecificDeserializer =
         (FastDeserializer<TestRecord>) cache.getFastSpecificDeserializer(TestRecord.SCHEMA$, TestRecord.SCHEMA$);
 
-    fastSpecificDeserializer =
-        (FastDeserializer<TestRecord>) cache.getFastSpecificDeserializer(TestRecord.SCHEMA$, TestRecord.SCHEMA$);
-
     Assert.assertNotNull(fastSpecificDeserializer);
     Assert.assertNotEquals(2, fastSpecificDeserializer.getClass().getDeclaredMethods().length);
     Assert.assertEquals(TestEnum.A, getField(fastSpecificDatumReader.read(null, specificDataAsDecoder(testRecord)), "testEnum"));
@@ -64,9 +61,6 @@ public class FastDatumReaderTest {
 
     // then
     FastDeserializer<TestRecord> fastSpecificDeserializer =
-        (FastDeserializer<TestRecord>) cache.getFastSpecificDeserializer(TestRecord.SCHEMA$, faultySchema);
-
-    fastSpecificDeserializer =
         (FastDeserializer<TestRecord>) cache.getFastSpecificDeserializer(TestRecord.SCHEMA$, faultySchema);
 
     Assert.assertNotNull(fastSpecificDeserializer);
@@ -92,9 +86,6 @@ public class FastDatumReaderTest {
 
     // then
     FastDeserializer<GenericRecord> fastGenericDeserializer =
-        (FastDeserializer<GenericRecord>) cache.getFastGenericDeserializer(recordSchema, recordSchema);
-
-    fastGenericDeserializer =
         (FastDeserializer<GenericRecord>) cache.getFastGenericDeserializer(recordSchema, recordSchema);
 
     Assert.assertNotNull(fastGenericDeserializer);
