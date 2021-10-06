@@ -51,17 +51,28 @@ public class AvroSchemaUtil {
     if (field == null) {
       return null;
     }
-    Schema fieldSchema = field.schema();
-    Schema.Type fieldSchemaType = fieldSchema.getType();
-    if (!Schema.Type.UNION.equals(fieldSchemaType)) {
-      return fieldSchema; //field is not a union
+    return findNonNullUnionBranch(field.schema());
+  }
+
+  /**
+   * Given a union schema with exactly one non-null branch, return that non-null branch.
+   * If the schema is not a union, return it as is.
+   * @param schema a union schema containing exactly one non-null branch, or a non-union schema.
+   * @return the non-null union branch, or the original schema.
+   */
+  public static Schema findNonNullUnionBranch(Schema schema) {
+    if (schema == null) {
+      throw new IllegalArgumentException("scheme must not be null");
     }
-    List<Schema> branches = fieldSchema.getTypes();
+    if (schema.getType() != Schema.Type.UNION) {
+      return schema;  // field is not a union.
+    }
+    List<Schema> branches = schema.getTypes();
     List<Schema> nonNullBranches = branches.stream().
-      filter(schema -> !Schema.Type.NULL.equals(schema.getType())).collect(Collectors.toList());
+        filter(branch -> branch.getType() != Schema.Type.NULL).collect(Collectors.toList());
     if (nonNullBranches.size() != 1) {
-      throw new IllegalArgumentException(String.format("field %s has %d non-null union branches, where exactly 1 is expected in %s",
-        fieldName, nonNullBranches.size(), parent));
+      throw new IllegalArgumentException(String.format("schema has %d non-null union branches, where exactly 1 is expected",
+          nonNullBranches.size()));
     }
     return nonNullBranches.get(0);
   }
