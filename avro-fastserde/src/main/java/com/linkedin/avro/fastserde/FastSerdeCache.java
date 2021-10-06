@@ -48,6 +48,20 @@ public final class FastSerdeCache {
 
   private static volatile FastSerdeCache _INSTANCE;
 
+  /**
+   * Fast-avro will generate and load serializer and deserializer(SerDes) classes into metaspace during runtime.
+   * During serialization and deserialization, fast-avro also leverages JIT compilation to boost the SerDes speed.
+   * And JIT compilation code is saved in code cache.
+   * Too much usage of metaspace and code cache will bring GC/OOM issue.
+   *
+   * We set a hard limit of the total number of SerDes classes generated and loaded by fast-avro.
+   * By default, the limit is set to MAX_INT.
+   * Fast-avro will fall back to regular avro after the limit is hit.
+   * One could set the limit through {@link FastSerdeCache} constructors.
+   */
+  private volatile int generatedFastSerDesLimit = Integer.MAX_VALUE;
+  private final AtomicInteger generatedSerDesNum = new AtomicInteger(0);
+
   private final Map<String, FastDeserializer<?>> fastSpecificRecordDeserializersCache =
       new FastAvroConcurrentHashMap<>();
   private final Map<String, FastDeserializer<?>> fastGenericRecordDeserializersCache =
@@ -83,6 +97,20 @@ public final class FastSerdeCache {
    */
   public FastSerdeCache(Executor executorService, Supplier<String> compileClassPathSupplier) {
     this(executorService, compileClassPathSupplier.get());
+  }
+
+  /**
+   *
+   * @param executorService
+   *            {@link Executor} used by serializer/deserializer compile threads
+   * @param compileClassPathSupplier
+   *            custom classpath {@link Supplier}
+   * @param limit
+   *            custom number {@link #generatedFastSerDesLimit}
+   */
+  public FastSerdeCache(Executor executorService, Supplier<String> compileClassPathSupplier, int limit) {
+    this(executorService, compileClassPathSupplier);
+    this.generatedFastSerDesLimit = limit;
   }
 
   public FastSerdeCache(String compileClassPath) {
@@ -124,6 +152,15 @@ public final class FastSerdeCache {
 
   private FastSerdeCache() {
     this((Executor) null);
+  }
+
+  /**
+   * @param limit
+   *            custom number {@link #generatedFastSerDesLimit}
+   */
+  public FastSerdeCache(int limit) {
+    this();
+    this.generatedFastSerDesLimit = limit;
   }
 
   /**
@@ -210,10 +247,11 @@ public final class FastSerdeCache {
           new FastDeserializerWithAvroSpecificImpl<>(writerSchema, readerSchema));
       if (deserializer == null) {
         deserializer = fastSpecificRecordDeserializersCache.get(schemaKey);
-        CompletableFuture.supplyAsync(() -> buildSpecificDeserializer(writerSchema, readerSchema), executor)
-            .thenAccept(d -> {
-              fastSpecificRecordDeserializersCache.put(schemaKey, d);
-            });
+        buildFastClassWithNumCheck(
+            () -> CompletableFuture.supplyAsync(() -> buildSpecificDeserializer(writerSchema, readerSchema), executor)
+                .thenAccept(s -> {
+                  fastSpecificRecordDeserializersCache.put(schemaKey, s);
+                }));
       }
     }
 
@@ -238,10 +276,11 @@ public final class FastSerdeCache {
           new FastDeserializerWithAvroGenericImpl(writerSchema, readerSchema));
       if (deserializer == null) {
         deserializer = fastGenericRecordDeserializersCache.get(schemaKey);
-        CompletableFuture.supplyAsync(() -> buildGenericDeserializer(writerSchema, readerSchema), executor)
-            .thenAccept(d -> {
-              fastGenericRecordDeserializersCache.put(schemaKey, d);
-            });
+        buildFastClassWithNumCheck(
+            () -> CompletableFuture.supplyAsync(() -> buildGenericDeserializer(writerSchema, readerSchema), executor)
+                .thenAccept(s -> {
+                  fastGenericRecordDeserializersCache.put(schemaKey, s);
+                }));
       }
     }
     return deserializer;
@@ -262,9 +301,11 @@ public final class FastSerdeCache {
           fastSpecificRecordSerializersCache.putIfAbsent(schemaKey, new FastSerializerWithAvroSpecificImpl(schema));
       if (serializer == null) {
         serializer = fastSpecificRecordSerializersCache.get(schemaKey);
-        CompletableFuture.supplyAsync(() -> buildSpecificSerializer(schema), executor).thenAccept(s -> {
-          fastSpecificRecordSerializersCache.put(schemaKey, s);
-        });
+        buildFastClassWithNumCheck(
+            () -> CompletableFuture.supplyAsync(() -> buildSpecificSerializer(schema), executor)
+                .thenAccept(s -> {
+                  fastSpecificRecordSerializersCache.put(schemaKey, s);
+                }));
       }
     }
 
@@ -287,9 +328,11 @@ public final class FastSerdeCache {
           fastGenericRecordSerializersCache.putIfAbsent(schemaKey, new FastSerializerWithAvroGenericImpl(schema));
       if (serializer == null) {
         serializer = fastGenericRecordSerializersCache.get(schemaKey);
-        CompletableFuture.supplyAsync(() -> buildGenericSerializer(schema), executor).thenAccept(s -> {
-          fastGenericRecordSerializersCache.put(schemaKey, s);
-        });
+        buildFastClassWithNumCheck(
+            () -> CompletableFuture.supplyAsync(() -> buildGenericSerializer(schema), executor)
+                .thenAccept(s -> {
+                  fastGenericRecordSerializersCache.put(schemaKey, s);
+                }));
       }
     }
     return serializer;
@@ -298,6 +341,26 @@ public final class FastSerdeCache {
   private String getSchemaKey(Schema writerSchema, Schema readerSchema) {
     return String.valueOf(Math.abs(getSchemaFingerprint(writerSchema))) + Math.abs(
         getSchemaFingerprint(readerSchema));
+  }
+
+  /**
+   * A wrapper function that limits the total number of fast de/serilizer calsses generated
+   *
+   * @param runnable The function to build and save fast de/serializer
+   */
+  private void buildFastClassWithNumCheck(Runnable runnable) {
+    try {
+      if (this.generatedSerDesNum.incrementAndGet() <= this.generatedFastSerDesLimit) {
+        runnable.run();
+      } else if (this.generatedSerDesNum.get() == this.generatedFastSerDesLimit + 1) {
+        // We still want to print the warning when the limit is hit
+        LOGGER.warn("Generated fast serdes classes number hits limit {}", this.generatedFastSerDesLimit);
+      } else {
+        LOGGER.debug("Generated serdes number {}, with fast serdes limit set to {}", this.generatedSerDesNum.get(), this.generatedFastSerDesLimit);
+      }
+    } catch (Exception e) {
+      LOGGER.error("Fast serdes class generation failed");
+    }
   }
 
   /**
