@@ -1,5 +1,5 @@
 
-package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_10;
+package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_4;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -10,19 +10,20 @@ import java.util.Map;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import com.linkedin.avro.fastserde.generated.avro.TestEnum;
 import com.linkedin.avro.fastserde.generated.avro.TestFixed;
+import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericFixed;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.util.Utf8;
 
-public class TestRecord_SpecificDeserializer_6151968197633927516_4584175291925934544
+public class TestRecord_SpecificDeserializer_1330694222118468182_4584175291925934544
     implements FastDeserializer<com.linkedin.avro.fastserde.generated.avro.TestRecord>
 {
 
     private final Schema readerSchema;
 
-    public TestRecord_SpecificDeserializer_6151968197633927516_4584175291925934544(Schema readerSchema) {
+    public TestRecord_SpecificDeserializer_1330694222118468182_4584175291925934544(Schema readerSchema) {
         this.readerSchema = readerSchema;
     }
 
@@ -137,17 +138,10 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
                 decoder.readNull();
                 break;
             case  1 :
-            {
-                Object oldString1 = TestRecord.get(13);
-                if (oldString1 instanceof Utf8) {
-                    TestRecord.put(13, (decoder).readString(((Utf8) oldString1)));
-                } else {
-                    TestRecord.put(13, (decoder).readString(null));
-                }
+                decoder.skipString();
                 break;
-            }
             default:
-                throw new RuntimeException(("Illegal union index for 'testStringUnion': "+ unionIndex6));
+                throw new RuntimeException(("Illegal union index for 'testStringAlias': "+ unionIndex6));
         }
         int unionIndex7 = (decoder.readIndex());
         switch (unionIndex7) {
@@ -288,6 +282,8 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
             case  4 :
                 enumValue0 = TestEnum.values()[ 0 ];
                 break;
+            case  5 :
+                throw new AvroTypeException("com.linkedin.avro.fastserde.generated.avro.TestEnum: No match for F");
             default:
                 throw new RuntimeException(("Illegal enum index for 'com.linkedin.avro.fastserde.generated.avro.TestEnum': "+ enumIndex0));
         }
@@ -317,6 +313,8 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
                     case  4 :
                         enumValue1 = TestEnum.values()[ 0 ];
                         break;
+                    case  5 :
+                        throw new AvroTypeException("com.linkedin.avro.fastserde.generated.avro.TestEnum: No match for F");
                     default:
                         throw new RuntimeException(("Illegal enum index for 'com.linkedin.avro.fastserde.generated.avro.TestEnum': "+ enumIndex1));
                 }
@@ -355,6 +353,8 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
                     case  4 :
                         enumValue2 = TestEnum.values()[ 0 ];
                         break;
+                    case  5 :
+                        throw new AvroTypeException("com.linkedin.avro.fastserde.generated.avro.TestEnum: No match for F");
                     default:
                         throw new RuntimeException(("Illegal enum index for 'com.linkedin.avro.fastserde.generated.avro.TestEnum': "+ enumIndex2));
                 }
@@ -403,6 +403,8 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
                             case  4 :
                                 enumValue3 = TestEnum.values()[ 0 ];
                                 break;
+                            case  5 :
+                                throw new AvroTypeException("com.linkedin.avro.fastserde.generated.avro.TestEnum: No match for F");
                             default:
                                 throw new RuntimeException(("Illegal enum index for 'com.linkedin.avro.fastserde.generated.avro.TestEnum': "+ enumIndex3));
                         }
@@ -808,9 +810,9 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
                 break;
             case  2 :
             {
-                Object oldString4 = TestRecord.get(32);
-                if (oldString4 instanceof Utf8) {
-                    TestRecord.put(32, (decoder).readString(((Utf8) oldString4)));
+                Object oldString3 = TestRecord.get(32);
+                if (oldString3 instanceof Utf8) {
+                    TestRecord.put(32, (decoder).readString(((Utf8) oldString3)));
                 } else {
                     TestRecord.put(32, (decoder).readString(null));
                 }
@@ -822,6 +824,7 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
             default:
                 throw new RuntimeException(("Illegal union index for 'union': "+ unionIndex26));
         }
+        TestRecord.put(13, null);
         ArrayList<Boolean> defaultArray0 = new ArrayList<Boolean>();
         TestRecord.put(33, defaultArray0);
         ArrayList<Double> defaultArray1 = new ArrayList<Double>();
@@ -853,9 +856,9 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
                 break;
             case  1 :
             {
-                Object oldString2 = SubRecord.get(0);
-                if (oldString2 instanceof Utf8) {
-                    SubRecord.put(0, (decoder).readString(((Utf8) oldString2)));
+                Object oldString1 = SubRecord.get(0);
+                if (oldString1 instanceof Utf8) {
+                    SubRecord.put(0, (decoder).readString(((Utf8) oldString1)));
                 } else {
                     SubRecord.put(0, (decoder).readString(null));
                 }
@@ -882,9 +885,9 @@ public class TestRecord_SpecificDeserializer_6151968197633927516_458417529192593
                 break;
             case  1 :
             {
-                Object oldString3 = SubRecord.get(1);
-                if (oldString3 instanceof Utf8) {
-                    SubRecord.put(1, (decoder).readString(((Utf8) oldString3)));
+                Object oldString2 = SubRecord.get(1);
+                if (oldString2 instanceof Utf8) {
+                    SubRecord.put(1, (decoder).readString(((Utf8) oldString2)));
                 } else {
                     SubRecord.put(1, (decoder).readString(null));
                 }

@@ -263,21 +263,21 @@ public class FastGenericDeserializerGeneratorTest {
     Assert.assertEquals("D", ((List<GenericData.EnumSymbol>) record.get("testEnumUnionArray")).get(0).toString());
   }
 
-  @Test(expectedExceptions = FastDeserializerGeneratorException.class, groups = {"deserializationTest"})
-  public void shouldNotReadStrippedEnum() {
+  @Test(expectedExceptions = AvroTypeException.class, groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldDecodeRecordAndOnlyFailWhenReadingStrippedEnum(Implementation implementation) {
     // given
     Schema enumSchema = createEnumSchema("testEnum", new String[]{"A", "B", "C"});
     Schema recordSchema = createRecord("testRecord", createField("testEnum", enumSchema));
 
     GenericRecord originalRecord = new GenericData.Record(recordSchema);
     originalRecord.put("testEnum",
-        AvroCompatibilityHelper.newEnumSymbol(null, "C"));//new GenericData.EnumSymbol("C"));
+        AvroCompatibilityHelper.newEnumSymbol(enumSchema, "C"));//new GenericData.EnumSymbol("C"));
 
     Schema enumSchema1 = createEnumSchema("testEnum", new String[]{"A", "B"});
     Schema recordSchema1 = createRecord("testRecord", createField("testEnum", enumSchema1));
 
     // when
-    GenericRecord record = decodeRecordWarmFast(recordSchema, recordSchema1, genericDataAsDecoder(originalRecord));
+    GenericRecord record = implementation.decode(recordSchema, recordSchema1, genericDataAsDecoder(originalRecord));
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")

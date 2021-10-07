@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
@@ -249,8 +250,9 @@ public class FastSpecificDeserializerGeneratorTest {
     Assert.assertEquals(TestEnum.D, ((List<TestEnum>) getField(record, "testEnumUnionArray")).get(0));
   }
 
-  @Test(expectedExceptions = FastDeserializerGeneratorException.class, groups = {"deserializationTest"})
-  public void shouldNotReadStrippedEnum() throws IOException {
+  @Test(expectedExceptions = AvroTypeException.class, groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
+  public void shouldDecodeRecordAndOnlyFailWhenReadingStrippedEnum(Boolean whetherUseFastDeserializer)
+      throws IOException {
     // given
     Schema oldRecordSchema =
         Schema.parse(this.getClass().getResourceAsStream("/schema/fastserdetestoldextendedenum.avsc"));
@@ -284,7 +286,11 @@ public class FastSpecificDeserializerGeneratorTest {
     oldRecord.put("recordsMapArray", Collections.emptyMap());
 
     // when
-    TestRecord record = decodeRecordFast(TestRecord.SCHEMA$, oldRecordSchema, genericDataAsDecoder(oldRecord));
+    if (whetherUseFastDeserializer) {
+      decodeRecordFast(TestRecord.SCHEMA$, oldRecordSchema, genericDataAsDecoder(oldRecord));
+    } else {
+      decodeRecordSlow(TestRecord.SCHEMA$, oldRecordSchema, genericDataAsDecoder(oldRecord));
+    }
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
@@ -799,6 +805,8 @@ public class FastSpecificDeserializerGeneratorTest {
 
     try {
       return deserializer.deserialize(null, decoder);
+    } catch (AvroTypeException e) {
+      throw e;
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
