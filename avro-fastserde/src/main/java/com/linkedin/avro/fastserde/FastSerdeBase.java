@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 import org.apache.avro.Schema;
@@ -32,6 +33,9 @@ public abstract class FastSerdeBase {
   protected static final String SEP = "_";
   public static final String GENERATED_PACKAGE_NAME_PREFIX = "com.linkedin.avro.fastserde.generated.";
 
+  private volatile int loadClassLimit = Integer.MAX_VALUE;
+  private int loadClassNum = 0;
+
   /**
    * A repository of how many times a given name was used.
    * N.B.: Does not actually need to be threadsafe, but it is made so just for defensive coding reasons.
@@ -46,6 +50,12 @@ public abstract class FastSerdeBase {
   protected final ClassLoader classLoader;
   protected final String compileClassPath;
   protected JDefinedClass generatedClass;
+
+  public FastSerdeBase(String description, boolean useGenericTypes, Class defaultStringClass, File destination, ClassLoader classLoader,
+      String compileClassPath, boolean isForSerializer, int loadClassLimit) {
+    this(description, useGenericTypes, defaultStringClass, destination, classLoader, compileClassPath, isForSerializer);
+    this.loadClassLimit = loadClassLimit;
+  }
 
   public FastSerdeBase(String description, boolean useGenericTypes, Class defaultStringClass, File destination, ClassLoader classLoader,
       String compileClassPath, boolean isForSerializer) {
@@ -145,6 +155,29 @@ public abstract class FastSerdeBase {
       LOGGER.info("Successfully compiled class {} defined at source file: {}", className, filePath);
     }
 
-    return classLoader.loadClass(generatedPackageName + "." + className);
+    return loadClassWithLimit(() -> {
+      try {
+        return classLoader.loadClass(generatedPackageName + "." + className);
+      } catch (ClassNotFoundException e) {
+        throw new FastSerdeGeneratorException("Unable to load:" + className + " from source file: " + filePath, e);
+      }
+    });
+  }
+
+  /**
+   * A wrapper function that limits the total number of fast de/serializer classes loaded
+   *
+   * @param supplier The function to load fast de/serializer class
+   */
+  protected synchronized <T> T loadClassWithLimit(Supplier<T> supplier) {
+    if (this.loadClassNum < this.loadClassLimit) {
+      T classObj = null;
+      classObj = supplier.get();
+      this.loadClassNum++;
+      return classObj;
+    } else {
+      LOGGER.warn("Loaded fast serdes classes number {}, with limit set to {}", loadClassNum, loadClassLimit);
+    }
+    return null;
   }
 }

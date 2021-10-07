@@ -48,6 +48,20 @@ public final class FastSerdeCache {
 
   private static volatile FastSerdeCache _INSTANCE;
 
+  /**
+   * Fast-avro will generate and load serializer and deserializer(SerDes) classes into metaspace during runtime.
+   * During serialization and deserialization, fast-avro also leverages JIT compilation to boost the SerDes speed.
+   * And JIT compilation code is saved in code cache.
+   * Too much usage of metaspace and code cache will bring GC/OOM issue.
+   *
+   * We set a hard limit of the total number of SerDes classes generated and loaded by fast-avro.
+   * By default, the limit is set to MAX_INT.
+   * Fast-avro will fall back to regular avro after the limit is hit.
+   * One could set the limit through {@link FastSerdeCache} constructors.
+   */
+  private volatile int generatedFastSerDesLimit = Integer.MAX_VALUE;
+  private final AtomicInteger generatedSerDesNum = new AtomicInteger(0);
+
   private final Map<String, FastDeserializer<?>> fastSpecificRecordDeserializersCache =
       new FastAvroConcurrentHashMap<>();
   private final Map<String, FastDeserializer<?>> fastGenericRecordDeserializersCache =
@@ -83,6 +97,20 @@ public final class FastSerdeCache {
    */
   public FastSerdeCache(Executor executorService, Supplier<String> compileClassPathSupplier) {
     this(executorService, compileClassPathSupplier.get());
+  }
+
+  /**
+   *
+   * @param executorService
+   *            {@link Executor} used by serializer/deserializer compile threads
+   * @param compileClassPathSupplier
+   *            custom classpath {@link Supplier}
+   * @param limit
+   *            custom number {@link #generatedFastSerDesLimit}
+   */
+  public FastSerdeCache(Executor executorService, Supplier<String> compileClassPathSupplier, int limit) {
+    this(executorService, compileClassPathSupplier);
+    this.generatedFastSerDesLimit = limit;
   }
 
   public FastSerdeCache(String compileClassPath) {
@@ -122,8 +150,22 @@ public final class FastSerdeCache {
     this.compileClassPath = Optional.empty();
   }
 
+  public FastSerdeCache(Executor executorService, int limit) {
+    this(executorService);
+    this.generatedFastSerDesLimit = limit;
+  }
+
   private FastSerdeCache() {
     this((Executor) null);
+  }
+
+  /**
+   * @param limit
+   *            custom number {@link #generatedFastSerDesLimit}
+   */
+  public FastSerdeCache(int limit) {
+    this();
+    this.generatedFastSerDesLimit = limit;
   }
 
   /**
@@ -301,6 +343,25 @@ public final class FastSerdeCache {
   }
 
   /**
+   * A wrapper function that limits the total number of fast de/serializer classes generated
+   *
+   * @param supplier The function to build and save fast de/serializer
+   */
+  private <T> T buildFastClassWithLimit(Supplier<T> supplier) {
+    T result = null;
+    if (this.generatedSerDesNum.get() < this.generatedFastSerDesLimit) {
+      result = supplier.get();
+    } else if (this.generatedSerDesNum.get() == this.generatedFastSerDesLimit) {
+      // We still want to print the warning when the limit is hit
+      LOGGER.warn("Generated fast serdes classes number hits limit {}", this.generatedFastSerDesLimit);
+    } else {
+      LOGGER.debug("Generated serdes number {}, with fast serdes limit set to {}", this.generatedSerDesNum.get(), this.generatedFastSerDesLimit);
+    }
+    generatedSerDesNum.incrementAndGet();
+    return result;
+  }
+
+  /**
    * This function will generate a fast specific deserializer, and it will throw exception if anything wrong happens.
    * This function can be used to verify whether current {@link FastSerdeCache} could generate proper fast deserializer.
    *
@@ -311,7 +372,7 @@ public final class FastSerdeCache {
   public FastDeserializer<?> buildFastSpecificDeserializer(Schema writerSchema, Schema readerSchema) {
     FastSpecificDeserializerGenerator<?> generator =
         new FastSpecificDeserializerGenerator<>(writerSchema, readerSchema, classesDir, classLoader,
-            compileClassPath.orElseGet(() -> null));
+            compileClassPath.orElseGet(() -> null), generatedFastSerDesLimit);
     FastDeserializer<?> fastDeserializer = generator.generateDeserializer();
 
     if (LOGGER.isDebugEnabled()) {
@@ -337,7 +398,10 @@ public final class FastSerdeCache {
    */
   private FastDeserializer<?> buildSpecificDeserializer(Schema writerSchema, Schema readerSchema) {
     try {
-      return buildFastSpecificDeserializer(writerSchema, readerSchema);
+      FastDeserializer<?> fastSpecificDeserializer = buildFastClassWithLimit(() -> buildFastSpecificDeserializer(writerSchema, readerSchema));
+      if (fastSpecificDeserializer != null) {
+        return fastSpecificDeserializer;
+      }
     } catch (FastDeserializerGeneratorException e) {
       LOGGER.warn("Deserializer generation exception when generating specific FastDeserializer for writer schema: "
               + "[\n{}\n] and reader schema: [\n{}\n]", writerSchema.toString(true), readerSchema.toString(true), e);
@@ -366,7 +430,7 @@ public final class FastSerdeCache {
   public FastDeserializer<?> buildFastGenericDeserializer(Schema writerSchema, Schema readerSchema) {
     FastGenericDeserializerGenerator<?> generator =
         new FastGenericDeserializerGenerator<>(writerSchema, readerSchema, classesDir, classLoader,
-            compileClassPath.orElseGet(() -> null));
+            compileClassPath.orElseGet(() -> null), generatedFastSerDesLimit);
 
     FastDeserializer<?> fastDeserializer = generator.generateDeserializer();
 
@@ -394,7 +458,10 @@ public final class FastSerdeCache {
    */
   private FastDeserializer<?> buildGenericDeserializer(Schema writerSchema, Schema readerSchema) {
     try {
-      return buildFastGenericDeserializer(writerSchema, readerSchema);
+      FastDeserializer<?> fastGenericDeserializer = buildFastClassWithLimit(() -> buildFastGenericDeserializer(writerSchema, readerSchema));
+      if (fastGenericDeserializer != null) {
+        return fastGenericDeserializer;
+      }
     } catch (FastDeserializerGeneratorException e) {
       LOGGER.warn("Deserializer generation exception when generating generic FastDeserializer for writer schema: [\n"
           + writerSchema.toString(true) + "\n] and reader schema:[\n" + readerSchema.toString(true) + "\n]", e);
@@ -419,7 +486,7 @@ public final class FastSerdeCache {
           Utils.getAvroVersionsSupportedForSerializer());
     }
     FastSpecificSerializerGenerator<?> generator =
-        new FastSpecificSerializerGenerator<>(schema, classesDir, classLoader, compileClassPath.orElseGet(() -> null));
+        new FastSpecificSerializerGenerator<>(schema, classesDir, classLoader, compileClassPath.orElseGet(() -> null), generatedFastSerDesLimit);
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Generated classes dir: {} and generation of specific FastSerializer is done for schema of type: {}" +
@@ -437,7 +504,10 @@ public final class FastSerdeCache {
     if (Utils.isSupportedAvroVersionsForSerializer()) {
       // Only build fast specific serializer for supported Avro versions.
       try {
-        return buildFastSpecificSerializer(schema);
+        FastSerializer<?> fastSpecificSerializer = buildFastClassWithLimit(() -> buildFastSpecificSerializer(schema));
+        if (fastSpecificSerializer != null) {
+          return fastSpecificSerializer;
+        }
       } catch (FastDeserializerGeneratorException e) {
         LOGGER.warn("Serializer generation exception when generating specific FastSerializer for schema: [\n{}\n]",
             schema.toString(true), e);
@@ -463,7 +533,7 @@ public final class FastSerdeCache {
           + Utils.getAvroVersionsSupportedForSerializer());
     }
     FastGenericSerializerGenerator<?> generator =
-        new FastGenericSerializerGenerator<>(schema, classesDir, classLoader, compileClassPath.orElseGet(() -> null));
+        new FastGenericSerializerGenerator<>(schema, classesDir, classLoader, compileClassPath.orElseGet(() -> null), generatedFastSerDesLimit);
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Generated classes dir: {} and generation of generic FastSerializer is done for schema of type: {}" +
@@ -481,7 +551,10 @@ public final class FastSerdeCache {
     if (Utils.isSupportedAvroVersionsForSerializer()) {
       // Only build fast generic serializer for supported Avro versions.
       try {
-        return buildFastGenericSerializer(schema);
+        FastSerializer<?> fastGenericSerializer = buildFastClassWithLimit(() -> buildFastGenericSerializer(schema));
+        if (fastGenericSerializer != null) {
+          return fastGenericSerializer;
+        }
       } catch (FastDeserializerGeneratorException e) {
         LOGGER.warn("Serializer generation exception when generating generic FastSerializer for schema: [\n{}\n]",
             schema.toString(true), e);

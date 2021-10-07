@@ -43,6 +43,12 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
     this.schema = schema;
   }
 
+  public FastSerializerGenerator(boolean useGenericTypes, Schema schema, File destination, ClassLoader classLoader,
+      String compileClassPath, int loadClassLimit) {
+    super("serialization", useGenericTypes, CharSequence.class, destination, classLoader, compileClassPath, true, loadClassLimit);
+    this.schema = schema;
+  }
+
   public static String getClassName(Schema schema, String description) {
     Long schemaId = Math.abs(Utils.getSchemaFingerprint(schema));
     String typeName = SchemaAssistant.getTypeName(schema);

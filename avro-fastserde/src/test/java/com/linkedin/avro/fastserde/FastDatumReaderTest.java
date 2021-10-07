@@ -101,4 +101,51 @@ public class FastDatumReaderTest {
     Assert.assertTrue(fastGenericDatumReader.isFastDeserializerUsed(), "FastGenericDatumReader should be using"
         + " Fast Deserializer when the fast deserializer generation is done.");
   }
+
+  @Test(groups = {"deserializationTest"})
+  @SuppressWarnings("unchecked")
+  public void shouldNotCreateFastDeserializerDueToLimit() throws IOException, InterruptedException {
+    // Set generatedFastSerDesLimit to 1
+    // Try to generate fast deserializer for the first schema
+    Schema recordSchema1 = createRecord("TestSchema1", createPrimitiveUnionFieldSchema("test", Schema.Type.STRING));
+    GenericRecord record1 = new GenericData.Record(recordSchema1);
+    record1.put("test", "test");
+
+    FastSerdeCache cacheLimit1 = new FastSerdeCache(Runnable::run, 1);
+    FastGenericDatumReader<GenericRecord> fastGenericDatumReader = new FastGenericDatumReader<>(recordSchema1, cacheLimit1);
+
+    // when
+    fastGenericDatumReader.read(null, FastSerdeTestsSupport.genericDataAsDecoder(record1));
+
+    // then
+    FastDeserializer<GenericRecord> fastGenericDeserializer =
+        (FastDeserializer<GenericRecord>) cacheLimit1.getFastGenericDeserializer(recordSchema1, recordSchema1);
+
+    fastGenericDeserializer =
+        (FastDeserializer<GenericRecord>) cacheLimit1.getFastGenericDeserializer(recordSchema1, recordSchema1);
+
+    Assert.assertNotNull(fastGenericDeserializer);
+    Assert.assertNotEquals(1, fastGenericDeserializer.getClass().getDeclaredMethods().length);
+    Assert.assertEquals(new Utf8("test"),
+        fastGenericDatumReader.read(null, FastSerdeTestsSupport.genericDataAsDecoder(record1)).get("test"));
+
+    // Try to generate fast deserializer for the second schema
+    // Verify only return FastDeserializerWithAvroGenericImpl
+    Schema recordSchema2 = createRecord("TestSchema2", createPrimitiveUnionFieldSchema("test", Schema.Type.STRING));
+    GenericRecord record2 = new GenericData.Record(recordSchema2);
+    record2.put("test", "test");
+
+    // when
+    fastGenericDatumReader.read(null, FastSerdeTestsSupport.genericDataAsDecoder(record2));
+
+    // then
+    FastDeserializer<GenericRecord> fastGenericDeserializer2 =
+        (FastDeserializer<GenericRecord>) cacheLimit1.getFastGenericDeserializer(recordSchema2, recordSchema2);
+
+    fastGenericDeserializer2 =
+        (FastDeserializer<GenericRecord>) cacheLimit1.getFastGenericDeserializer(recordSchema2, recordSchema2);
+
+    Assert.assertNotNull(fastGenericDeserializer2);
+    Assert.assertEquals(1, fastGenericDeserializer2.getClass().getDeclaredMethods().length);
+  }
 }
