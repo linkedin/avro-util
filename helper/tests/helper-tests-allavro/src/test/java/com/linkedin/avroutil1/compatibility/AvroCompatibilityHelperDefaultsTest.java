@@ -123,30 +123,28 @@ public class AvroCompatibilityHelperDefaultsTest {
 
   @Test
   public void testComplexDefaultValue() throws Exception {
-    Schema schema = by14.HasComplexDefaults.SCHEMA$;
+    Schema schema = under14.HasComplexDefaults.SCHEMA$;
 
     Schema.Field field = schema.getField("fieldWithDefaultEnum");
     Object specificDefault = AvroCompatibilityHelper.getSpecificDefaultValue(field);
     Assert.assertNotNull(specificDefault);
-    Assert.assertTrue(specificDefault instanceof by14.DefaultEnum);
+    Assert.assertTrue(specificDefault instanceof under14.DefaultEnum);
     Object genericDefault = AvroCompatibilityHelper.getGenericDefaultValue(field);
     Assert.assertNotNull(genericDefault);
     Assert.assertTrue(genericDefault instanceof GenericData.EnumSymbol);
 
-    //avro-1.4 fixed classes cant even be instantiated under avro 1.5+
-    //TODO - update this test to use compat generated code
-//    field = schema.getField("fieldWithDefaultFixed");
-//    specificDefault = AvroCompatibilityHelper.getSpecificDefaultValue(field);
-//    Assert.assertNotNull(specificDefault);
-//    Assert.assertTrue(specificDefault instanceof by14.DefaultFixed);
-//    genericDefault = AvroCompatibilityHelper.getGenericDefaultValue(field);
-//    Assert.assertNotNull(genericDefault);
-//    Assert.assertTrue(genericDefault instanceof GenericData.Fixed);
+    field = schema.getField("fieldWithDefaultFixed");
+    specificDefault = AvroCompatibilityHelper.getSpecificDefaultValue(field);
+    Assert.assertNotNull(specificDefault);
+    Assert.assertTrue(specificDefault instanceof under14.DefaultFixed);
+    genericDefault = AvroCompatibilityHelper.getGenericDefaultValue(field);
+    Assert.assertNotNull(genericDefault);
+    Assert.assertTrue(genericDefault instanceof GenericData.Fixed);
 
     field = schema.getField("fieldWithDefaultRecord");
     specificDefault = AvroCompatibilityHelper.getSpecificDefaultValue(field);
     Assert.assertNotNull(specificDefault);
-    Assert.assertTrue(specificDefault instanceof by14.DefaultRecord);
+    Assert.assertTrue(specificDefault instanceof under14.DefaultRecord);
     genericDefault = AvroCompatibilityHelper.getGenericDefaultValue(field);
     Assert.assertNotNull(genericDefault);
     Assert.assertTrue(genericDefault instanceof GenericData.Record);

@@ -10,13 +10,17 @@ import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.Map;
 import org.apache.avro.AvroRuntimeException;
+import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericFixed;
+import org.apache.avro.generic.IndexedRecord;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.JsonNodeFactory;
+import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
 
 
@@ -43,7 +47,7 @@ public class Jackson1Utils {
       try {
         return JsonNodeFactory.instance.textNode(new String((byte[]) datum, BYTES_CHARSET));
       } catch (UnsupportedEncodingException e) {
-        throw new AvroRuntimeException(e);
+        throw new AvroRuntimeException("unable to turn bytes into json string", e);
       }
     } else if (datum instanceof CharSequence || datum instanceof Enum<?>) {
       return JsonNodeFactory.instance.textNode(datum.toString());
@@ -66,6 +70,21 @@ public class Jackson1Utils {
     } else if (datum instanceof GenericData.EnumSymbol) {
       GenericData.EnumSymbol enumSymbol = (GenericData.EnumSymbol) datum;
       return JsonNodeFactory.instance.textNode(enumSymbol.toString());
+    } else if (datum instanceof GenericFixed) { //also covers specific fixed
+      GenericFixed fixed = (GenericFixed) datum;
+      try {
+        return JsonNodeFactory.instance.textNode(new String(fixed.bytes(), BYTES_CHARSET));
+      } catch (UnsupportedEncodingException e) {
+        throw new AvroRuntimeException("unable to turn fixed into json string", e);
+      }
+    } else if (datum instanceof IndexedRecord) { //generic or specific records
+      IndexedRecord record = (IndexedRecord) datum;
+      ObjectNode recordNode = JsonNodeFactory.instance.objectNode();
+      for (Schema.Field field : record.getSchema().getFields()) {
+        Object fieldValue = record.get(field.pos());
+        recordNode.put(field.name(), toJsonNode(fieldValue));
+      }
+      return recordNode;
     } else {
       throw new AvroRuntimeException("Unknown datum class: " + datum.getClass());
     }
