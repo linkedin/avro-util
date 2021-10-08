@@ -6,10 +6,15 @@
 
 package com.linkedin.avroutil1.compatibility;
 
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericFixed;
+import org.apache.avro.generic.IndexedRecord;
 
 
 public class AvroSchemaUtil {
@@ -75,6 +80,42 @@ public class AvroSchemaUtil {
           nonNullBranches.size()));
     }
     return nonNullBranches.get(0);
+  }
+
+  /**
+   * we want to be very generous with what we let users provide for default values.
+   * sadly, (modern) avro can only handle specific classes/collections/primitive-wrappers
+   * (see org.apache.avro.util.internal.JacksonUtils.toJson(Object, JsonGenerator) in 1.9+)
+   * @param mightNotBeFriendly a proposed field default value that might originate from
+   *                           a call like AvroCompatibilityHelper.getGenericDefaultValue()
+   * @return a representation of the input that avro likes for use as a field default value
+   */
+  public static Object avroFriendlyDefaultValue(Object mightNotBeFriendly) throws Exception {
+
+    //generic enums we turn to strings
+    if (mightNotBeFriendly instanceof GenericData.EnumSymbol) {
+      return mightNotBeFriendly.toString(); // == symbol string
+    }
+
+    //fixed (generic or specific) we turn to bytes
+    if (mightNotBeFriendly instanceof GenericFixed) {
+      return ((GenericFixed) mightNotBeFriendly).bytes();
+    }
+
+    //records (generic or specific) we turn to maps
+    if (mightNotBeFriendly instanceof IndexedRecord) {
+      IndexedRecord record = (IndexedRecord) mightNotBeFriendly;
+      Schema recordSchema = record.getSchema();
+
+      Map<String, Object> map = new HashMap<>();
+      for (Schema.Field field : recordSchema.getFields()) {
+        Object fieldValue = record.get(field.pos());
+        map.put(field.name(), avroFriendlyDefaultValue(fieldValue));
+        //TODO - extra props ?!
+      }
+      return map;
+    }
+    return mightNotBeFriendly;
   }
 
   private static void traverseSchema(Schema schema, SchemaVisitor visitor, IdentityHashMap<Object, Boolean> visited) {

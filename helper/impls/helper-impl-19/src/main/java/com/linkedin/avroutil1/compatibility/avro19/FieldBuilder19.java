@@ -6,16 +6,11 @@
 
 package com.linkedin.avroutil1.compatibility.avro19;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.linkedin.avroutil1.compatibility.AvroSchemaUtil;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field.Order;
-import org.apache.avro.generic.GenericData;
-import org.apache.avro.generic.IndexedRecord;
-import org.apache.avro.specific.SpecificFixed;
 
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -99,7 +94,7 @@ public class FieldBuilder19 implements FieldBuilder {
   public Schema.Field build() {
     Object avroFriendlyDefault;
     try {
-      avroFriendlyDefault = avroFriendlyDefaultValue(_defaultVal);
+      avroFriendlyDefault = AvroSchemaUtil.avroFriendlyDefaultValue(_defaultVal);
     } catch (Exception e) {
       throw new IllegalArgumentException("unable to convert default value " + _defaultVal + " into something avro can handle", e);
     }
@@ -110,44 +105,5 @@ public class FieldBuilder19 implements FieldBuilder {
       }
     }
     return result;
-  }
-
-  /**
-   * we want to be very generous with what we let users provide for default values.
-   * sadly, avro can only handle specific classes/collections/primitive-wrappers
-   * (see {@link org.apache.avro.util.internal.JacksonUtils#toJson(Object, JsonGenerator)})
-   * @param mightNotBeFriendly a proposed field default value that might originate from
-   *                           a call like AvroCompatibilityHelper.getGenericDefaultValue()
-   * @return a representation of the input that avro likes for use as a field default value
-   */
-  private Object avroFriendlyDefaultValue(Object mightNotBeFriendly) throws Exception {
-
-    //generics avro doesnt like
-    if (mightNotBeFriendly instanceof GenericData.EnumSymbol) {
-      return mightNotBeFriendly.toString(); // == symbol string
-    }
-    if (mightNotBeFriendly instanceof GenericData.Fixed) {
-      return ((GenericData.Fixed) mightNotBeFriendly).bytes();
-    }
-
-    //specifics avro doesnt like
-    if (mightNotBeFriendly instanceof SpecificFixed) {
-      return ((SpecificFixed) mightNotBeFriendly).bytes();
-    }
-
-    //avro hates records - generic or specific. we need to convert them to maps
-    if (mightNotBeFriendly instanceof IndexedRecord) {
-      IndexedRecord record = (IndexedRecord) mightNotBeFriendly;
-      Schema recordSchema = record.getSchema();
-
-      Map<String, Object> map = new HashMap<>();
-      for (Schema.Field field : recordSchema.getFields()) {
-        Object fieldValue = record.get(field.pos());
-        map.put(field.name(), avroFriendlyDefaultValue(fieldValue));
-        //TODO - extra props ?!
-      }
-      return map;
-    }
-    return mightNotBeFriendly;
   }
 }
