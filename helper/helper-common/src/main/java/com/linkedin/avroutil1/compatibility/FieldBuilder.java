@@ -17,6 +17,8 @@ import org.apache.avro.Schema.Field.Order;
  */
 public interface FieldBuilder {
 
+  FieldBuilder setName(String name);
+
   FieldBuilder setSchema(Schema schema);
 
   FieldBuilder setDoc(String doc);

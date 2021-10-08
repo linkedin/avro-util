@@ -31,24 +31,32 @@ public class FieldBuilder15 implements FieldBuilder {
     }
   }
 
-  private final String _name;
+  private String _name;
   private Schema _schema;
   private String _doc;
   private JsonNode _defaultVal;
   private Order _order;
   private Map<String,String> _props;
 
-  public FieldBuilder15(Schema.Field field) {
-    this(field.name());
-    _schema = field.schema();
-    _doc = field.doc();
-    _defaultVal = field.defaultValue();
-    _order = field.order();
-    _props = getProps(field);
+  public FieldBuilder15(Schema.Field other) {
+    if (other != null) {
+      _name = other.name();
+      _schema = other.schema();
+      _doc = other.doc();
+      _defaultVal = other.defaultValue();
+      _order = other.order();
+      _props = getProps(other);
+    }
   }
 
   public FieldBuilder15(String name) {
     _name = name;
+  }
+
+  @Override
+  public FieldBuilder setName(String name) {
+    _name = name;
+    return this;
   }
 
   @Override

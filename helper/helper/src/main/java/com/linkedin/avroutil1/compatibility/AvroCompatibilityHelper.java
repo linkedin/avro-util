@@ -536,14 +536,25 @@ public class AvroCompatibilityHelper {
   }
 
   /**
+   * returns a new FieldBuilder, optionally copying the initial values from a given Schema$Field
+   * @param other (optional) a field from which to set the initial values for the returned builder
+   * @return a new field builder
+   */
+  public static FieldBuilder newField(Schema.Field other) {
+    assertAvroAvailable();
+    return ADAPTER.newFieldBuilder(other);
+  }
+
+  /**
    * returns a FieldBuilder, containing an existing schema field.
    * @param field a schema field
    * @return a new FieldBuilder
    * @throws org.apache.avro.AvroRuntimeException if the field in question has no default.
+   * @deprecated use {@link #newField(Schema.Field)}
    */
+  @Deprecated
   public static FieldBuilder cloneSchemaField(Schema.Field field) {
-    assertAvroAvailable();
-    return ADAPTER.cloneSchemaField(field);
+    return newField(field);
   }
 
   public static SchemaBuilder cloneSchema(Schema schema) {
@@ -686,17 +697,23 @@ public class AvroCompatibilityHelper {
    *                     For avro 1.9 and newer, user should pass in the default value object directly.
    * @param order the order of the field.
    * @return fully constructed Field instance
+   * @deprecated use {@link #newField(Schema.Field)}
    */
+  @Deprecated
   public static Schema.Field createSchemaField(String name, Schema schema, String doc, Object defaultValue, Schema.Field.Order order) {
-    assertAvroAvailable();
-    FieldBuilder fieldBuilder = ADAPTER.newFieldBuilder(name);
-    fieldBuilder.setSchema(schema);
-    fieldBuilder.setDoc(doc);
-    fieldBuilder.setDefault(defaultValue);
-    fieldBuilder.setOrder(order);
-    return fieldBuilder.build();
+    return newField(null)
+            .setName(name)
+            .setSchema(schema)
+            .setDoc(doc)
+            .setDefault(defaultValue)
+            .setOrder(order)
+            .build();
   }
 
+  /**
+   * @deprecated use {@link #newField(Schema.Field)}
+   */
+  @Deprecated
   public static Schema.Field createSchemaField(String name, Schema schema, String doc, Object defaultValue) {
     return createSchemaField(name, schema, doc, defaultValue, Schema.Field.Order.ASCENDING);
   }

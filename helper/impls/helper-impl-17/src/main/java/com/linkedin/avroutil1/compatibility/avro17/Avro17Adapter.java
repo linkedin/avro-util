@@ -342,13 +342,8 @@ public class Avro17Adapter implements AvroAdapter {
   }
 
   @Override
-  public FieldBuilder cloneSchemaField(Schema.Field field) {
-    return new FieldBuilder17(field);
-  }
-
-  @Override
-  public FieldBuilder newFieldBuilder(String name) {
-    return new FieldBuilder17(name);
+  public FieldBuilder newFieldBuilder(Schema.Field other) {
+    return new FieldBuilder17(other);
   }
 
   @Override

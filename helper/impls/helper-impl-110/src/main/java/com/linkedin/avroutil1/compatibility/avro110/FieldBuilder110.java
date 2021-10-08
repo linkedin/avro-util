@@ -15,24 +15,28 @@ import java.util.Map;
 
 
 public class FieldBuilder110 implements FieldBuilder {
-  private final String _name;
+  private String _name;
   private Schema _schema;
   private String _doc;
   private Object _defaultVal;
   private Order _order;
   private Map<String, Object> _props;
 
-  public FieldBuilder110(Schema.Field field) {
-    this(field.name());
-    _schema = field.schema();
-    _doc = field.doc();
-    _defaultVal = field.defaultVal();
-    _order = field.order();
-    _props = field.getObjectProps();
+  public FieldBuilder110(Schema.Field other) {
+    if (other != null) {
+      _name = other.name();
+      _schema = other.schema();
+      _doc = other.doc();
+      _defaultVal = other.defaultVal();
+      _order = other.order();
+      _props = other.getObjectProps();
+    }
   }
 
-  public FieldBuilder110(String name) {
+  @Override
+  public FieldBuilder setName(String name) {
     _name = name;
+    return this;
   }
 
   @Override
@@ -88,7 +92,13 @@ public class FieldBuilder110 implements FieldBuilder {
 
   @Override
   public Schema.Field build() {
-    Schema.Field result = new Schema.Field(_name, _schema, _doc, _defaultVal, _order);
+    Object avroFriendlyDefault;
+    try {
+      avroFriendlyDefault = AvroSchemaUtil.avroFriendlyDefaultValue(_defaultVal);
+    } catch (Exception e) {
+      throw new IllegalArgumentException("unable to convert default value " + _defaultVal + " into something avro can handle", e);
+    }
+    Schema.Field result = new Schema.Field(_name, _schema, _doc, avroFriendlyDefault, _order);
     if (_props != null) {
       for (Map.Entry<String, Object> entry : _props.entrySet()) {
         result.addProp(entry.getKey(), entry.getValue());
