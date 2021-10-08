@@ -15,24 +15,28 @@ import java.util.Map;
 
 
 public class FieldBuilder19 implements FieldBuilder {
-  private final String _name;
+  private String _name;
   private Schema _schema;
   private String _doc;
   private Object _defaultVal;
   private Order _order;
   private Map<String, Object> _props;
 
-  public FieldBuilder19(Schema.Field field) {
-    this(field.name());
-    _schema = field.schema();
-    _doc = field.doc();
-    _defaultVal = field.defaultVal();
-    _order = field.order();
-    _props = field.getObjectProps();
+  public FieldBuilder19(Schema.Field other) {
+    if (other != null) {
+      _name = other.name();
+      _schema = other.schema();
+      _doc = other.doc();
+      _defaultVal = other.defaultVal();
+      _order = other.order();
+      _props = other.getObjectProps();
+    }
   }
 
-  public FieldBuilder19(String name) {
+  @Override
+  public FieldBuilder setName(String name) {
     _name = name;
+    return this;
   }
 
   @Override

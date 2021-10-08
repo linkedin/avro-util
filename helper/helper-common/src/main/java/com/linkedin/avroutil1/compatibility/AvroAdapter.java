@@ -92,9 +92,17 @@ public interface AvroAdapter {
 
   boolean fieldHasDefault(Schema.Field field);
 
-  FieldBuilder cloneSchemaField(Schema.Field field);
+  @Deprecated
+  default FieldBuilder cloneSchemaField(Schema.Field field) {
+    return newFieldBuilder(field);
+  }
 
-  FieldBuilder newFieldBuilder(String name);
+  FieldBuilder newFieldBuilder(Schema.Field other);
+
+  @Deprecated
+  default FieldBuilder newFieldBuilder(String name) {
+    return newFieldBuilder((Schema.Field) null).setName(name);
+  }
 
   SchemaBuilder cloneSchema(Schema schema);
 

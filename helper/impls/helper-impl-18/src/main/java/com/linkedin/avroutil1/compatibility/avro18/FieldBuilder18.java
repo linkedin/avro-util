@@ -18,27 +18,31 @@ import java.util.Map;
 
 
 public class FieldBuilder18 implements FieldBuilder {
-  private final String _name;
+  private String _name;
   private Schema _schema;
   private String _doc;
   private JsonNode _defaultVal;
   private Order _order;
   private Map<String, JsonNode> _props;
 
-  public FieldBuilder18(Schema.Field field) {
-    this(field.name());
-    _schema = field.schema();
-    _doc = field.doc();
-    //noinspection deprecation
-    _defaultVal = field.defaultValue(); //deprecated but faster
-    _order = field.order();
-    //this is actually faster
-    //noinspection deprecation
-    _props = field.getJsonProps();
+  public FieldBuilder18(Schema.Field other) {
+    if (other != null) {
+      _name = other.name();
+      _schema = other.schema();
+      _doc = other.doc();
+      //noinspection deprecation
+      _defaultVal = other.defaultValue(); //deprecated but faster
+      _order = other.order();
+      //this is actually faster
+      //noinspection deprecation
+      _props = other.getJsonProps();
+    }
   }
 
-  public FieldBuilder18(String name) {
+  @Override
+  public FieldBuilder setName(String name) {
     _name = name;
+    return this;
   }
 
   @Override
