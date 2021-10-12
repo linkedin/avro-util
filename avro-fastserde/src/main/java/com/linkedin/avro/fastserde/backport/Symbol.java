@@ -481,10 +481,20 @@ public abstract class Symbol {
   }
 
   public static class EnumAdjustAction extends IntCheckAction {
+    public final boolean noAdjustments;
     public final Object[] adjustments;
+
     @Deprecated public EnumAdjustAction(int rsymCount, Object[] adjustments) {
       super(rsymCount);
       this.adjustments = adjustments;
+      boolean noAdj = true;
+      if (adjustments != null) {
+        int count = Math.min(rsymCount, adjustments.length);
+        noAdj = (adjustments.length <= rsymCount);
+        for (int i = 0; noAdj && i < count; i++)
+          noAdj &= ((adjustments[i] instanceof Integer) && i == (Integer) adjustments[i]);
+      }
+      this.noAdjustments = noAdj;
     }
   }
 

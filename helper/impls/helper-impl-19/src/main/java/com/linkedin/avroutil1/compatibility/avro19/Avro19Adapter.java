@@ -319,6 +319,16 @@ public class Avro19Adapter implements AvroAdapter {
   }
 
   @Override
+  public String getEnumDefault(Schema s) {
+    return s.getEnumDefault();
+  }
+
+  @Override
+  public Schema newEnumSchema(String name, String doc, String namespace, List<String> values, String enumDefault) {
+    return Schema.createEnum(name, doc, namespace, values, enumDefault);
+  }
+
+  @Override
   public Collection<AvroGeneratedSourceCode> compile(
       Collection<Schema> toCompile,
       AvroVersion minSupportedVersion,

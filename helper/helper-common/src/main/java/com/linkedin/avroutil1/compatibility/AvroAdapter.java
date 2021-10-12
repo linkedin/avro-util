@@ -12,6 +12,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.List;
+import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.io.BinaryDecoder;
@@ -113,6 +115,17 @@ public interface AvroAdapter {
   String getSchemaPropAsJsonString(Schema schema, String propName);
 
   void setSchemaPropFromJsonString(Schema field, String propName, String valueAsJsonLiteral, boolean strict);
+
+  default String getEnumDefault(Schema s) {
+    throw new AvroTypeException("enum default is not supported in " + supportedMajorVersion().toString());
+  }
+
+  default Schema newEnumSchema(String name, String doc, String namespace, List<String> values, String enumDefault) {
+    if (enumDefault != null) {
+      throw new AvroTypeException("enum default is not supported in " + supportedMajorVersion().toString());
+    }
+    return Schema.createEnum(name, doc, namespace, values);
+  }
 
   //code generation
 

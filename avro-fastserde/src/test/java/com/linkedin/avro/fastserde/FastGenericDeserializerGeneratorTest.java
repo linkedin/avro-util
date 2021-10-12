@@ -227,6 +227,49 @@ public class FastGenericDeserializerGeneratorTest {
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadEnumDefault(Implementation implementation) {
+    if (!Utils.isAbleToSupportEnumDefault()) {
+      // skip if enum default is not supported in the schema
+      return;
+    }
+
+    // given
+    Schema enumSchema = createEnumSchema("testEnum", new String[]{"A", "B", "C"});
+    Schema writerSchema = createRecord(
+        createField("testEnum", enumSchema),
+        createUnionFieldWithNull("testEnumUnion", enumSchema),
+        createArrayFieldSchema("testEnumArray", enumSchema),
+        createArrayFieldSchema("testEnumUnionArray", createUnionSchema(enumSchema)));
+
+    GenericRecord originalRecord = new GenericData.Record(writerSchema);
+    originalRecord.put("testEnum",
+        AvroCompatibilityHelper.newEnumSymbol(enumSchema, "C"));
+    originalRecord.put("testEnumUnion",
+        AvroCompatibilityHelper.newEnumSymbol(enumSchema, "C"));
+    originalRecord.put("testEnumArray",
+        Arrays.asList(AvroCompatibilityHelper.newEnumSymbol(enumSchema, "C")));
+    originalRecord.put("testEnumUnionArray",
+        Arrays.asList(AvroCompatibilityHelper.newEnumSymbol(enumSchema, "C")));
+
+    Schema enumSchema1 = createEnumSchema("testEnum", new String[]{"A", "B"}, "A");
+    Schema readerSchema = createRecord(
+        createField("testEnum", enumSchema1),
+        createUnionFieldWithNull("testEnumUnion", enumSchema1),
+        createArrayFieldSchema("testEnumArray", enumSchema1),
+        createArrayFieldSchema("testEnumUnionArray", createUnionSchema(enumSchema1)));
+
+    // when
+    GenericRecord record = implementation.decode(writerSchema, readerSchema, genericDataAsDecoder(originalRecord));
+
+    // then
+    // C is missing in the schema, use default value A
+    Assert.assertEquals("A", record.get("testEnum").toString());
+    Assert.assertEquals("A", record.get("testEnumUnion").toString());
+    Assert.assertEquals("A", ((List<GenericData.EnumSymbol>) record.get("testEnumArray")).get(0).toString());
+    Assert.assertEquals("A", ((List<GenericData.EnumSymbol>) record.get("testEnumUnionArray")).get(0).toString());
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
   public void shouldReadPermutatedEnum(Implementation implementation) {
     // given
     Schema enumSchema = createEnumSchema("testEnum", new String[]{"A", "B", "C", "D", "E"});
