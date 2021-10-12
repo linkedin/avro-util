@@ -362,7 +362,7 @@ public final class FastSerdeCache {
       LOGGER.warn("Deserializer class instantiation exception", e);
     }
 
-    return new FastDeserializer<>() {
+    return new FastDeserializer<Object>() {
       private DatumReader datumReader = new SpecificDatumReader<>(writerSchema, readerSchema);
 
       @Override
@@ -419,7 +419,7 @@ public final class FastSerdeCache {
       LOGGER.warn("Deserializer class instantiation exception:" + e);
     }
 
-    return new FastDeserializer<>() {
+    return new FastDeserializer<Object>() {
       private DatumReader datumReader = new GenericDatumReader<>(writerSchema, readerSchema);
 
       @Override
@@ -463,7 +463,7 @@ public final class FastSerdeCache {
       }
     }
 
-    return new FastSerializer<>() {
+    return new FastSerializer<Object>() {
       private final DatumWriter datumWriter = new SpecificDatumWriter(schema);
 
       @Override
@@ -507,7 +507,7 @@ public final class FastSerdeCache {
       }
     }
 
-    return new FastSerializer<>() {
+    return new FastSerializer<Object>() {
       private final DatumWriter datumWriter = new GenericDatumWriter(schema);
 
       @Override
