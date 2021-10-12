@@ -16,6 +16,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
@@ -206,14 +207,17 @@ public final class FastSerdeCache {
     FastDeserializer<?> deserializer = fastSpecificRecordDeserializersCache.get(schemaKey);
 
     if (deserializer == null) {
-      deserializer = fastSpecificRecordDeserializersCache.putIfAbsent(schemaKey,
-          new FastDeserializerWithAvroSpecificImpl<>(writerSchema, readerSchema));
-      if (deserializer == null) {
-        deserializer = fastSpecificRecordDeserializersCache.get(schemaKey);
+      AtomicBoolean status = new AtomicBoolean(false);
+      deserializer = fastSpecificRecordDeserializersCache.computeIfAbsent(
+          schemaKey,
+          k -> {
+            status.set(true);
+            return new FastDeserializerWithAvroSpecificImpl<>(writerSchema, readerSchema);
+          });
+
+      if (status.get()) {
         CompletableFuture.supplyAsync(() -> buildSpecificDeserializer(writerSchema, readerSchema), executor)
-            .thenAccept(d -> {
-              fastSpecificRecordDeserializersCache.put(schemaKey, d);
-            });
+            .thenAccept(d -> fastSpecificRecordDeserializersCache.put(schemaKey, d));
       }
     }
 
@@ -234,14 +238,17 @@ public final class FastSerdeCache {
     FastDeserializer<?> deserializer = fastGenericRecordDeserializersCache.get(schemaKey);
 
     if (deserializer == null) {
-      deserializer = fastGenericRecordDeserializersCache.putIfAbsent(schemaKey,
-          new FastDeserializerWithAvroGenericImpl(writerSchema, readerSchema));
-      if (deserializer == null) {
-        deserializer = fastGenericRecordDeserializersCache.get(schemaKey);
+      AtomicBoolean status = new AtomicBoolean(false);
+      deserializer = fastGenericRecordDeserializersCache.computeIfAbsent(
+          schemaKey,
+          k -> {
+            status.set(true);
+            return new FastDeserializerWithAvroGenericImpl<>(writerSchema, readerSchema);
+          });
+
+      if (status.get()) {
         CompletableFuture.supplyAsync(() -> buildGenericDeserializer(writerSchema, readerSchema), executor)
-            .thenAccept(d -> {
-              fastGenericRecordDeserializersCache.put(schemaKey, d);
-            });
+            .thenAccept(d -> fastGenericRecordDeserializersCache.put(schemaKey, d));
       }
     }
     return deserializer;
@@ -257,14 +264,19 @@ public final class FastSerdeCache {
   public FastSerializer<?> getFastSpecificSerializer(Schema schema) {
     String schemaKey = getSchemaKey(schema, schema);
     FastSerializer<?> serializer = fastSpecificRecordSerializersCache.get(schemaKey);
+
     if (serializer == null) {
-      serializer =
-          fastSpecificRecordSerializersCache.putIfAbsent(schemaKey, new FastSerializerWithAvroSpecificImpl(schema));
-      if (serializer == null) {
-        serializer = fastSpecificRecordSerializersCache.get(schemaKey);
-        CompletableFuture.supplyAsync(() -> buildSpecificSerializer(schema), executor).thenAccept(s -> {
-          fastSpecificRecordSerializersCache.put(schemaKey, s);
-        });
+      AtomicBoolean status = new AtomicBoolean(false);
+      serializer = fastSpecificRecordSerializersCache.computeIfAbsent(
+          schemaKey,
+          k -> {
+            status.set(true);
+            return new FastSerializerWithAvroSpecificImpl<>(schema);
+          });
+
+      if (status.get()) {
+        CompletableFuture.supplyAsync(() -> buildSpecificSerializer(schema), executor)
+            .thenAccept(s -> fastSpecificRecordSerializersCache.put(schemaKey, s));
       }
     }
 
@@ -280,18 +292,23 @@ public final class FastSerdeCache {
    */
   public FastSerializer<?> getFastGenericSerializer(Schema schema) {
     String schemaKey = getSchemaKey(schema, schema);
-
     FastSerializer<?> serializer = fastGenericRecordSerializersCache.get(schemaKey);
+
     if (serializer == null) {
-      serializer =
-          fastGenericRecordSerializersCache.putIfAbsent(schemaKey, new FastSerializerWithAvroGenericImpl(schema));
-      if (serializer == null) {
-        serializer = fastGenericRecordSerializersCache.get(schemaKey);
-        CompletableFuture.supplyAsync(() -> buildGenericSerializer(schema), executor).thenAccept(s -> {
-          fastGenericRecordSerializersCache.put(schemaKey, s);
-        });
+      AtomicBoolean status = new AtomicBoolean(false);
+      serializer = fastGenericRecordSerializersCache.computeIfAbsent(
+          schemaKey,
+          k -> {
+            status.set(true);
+            return new FastSerializerWithAvroGenericImpl<>(schema);
+          });
+
+      if (status.get()) {
+        CompletableFuture.supplyAsync(() -> buildGenericSerializer(schema), executor)
+            .thenAccept(s -> fastGenericRecordSerializersCache.put(schemaKey, s));
       }
     }
+
     return serializer;
   }
 
@@ -311,7 +328,7 @@ public final class FastSerdeCache {
   public FastDeserializer<?> buildFastSpecificDeserializer(Schema writerSchema, Schema readerSchema) {
     FastSpecificDeserializerGenerator<?> generator =
         new FastSpecificDeserializerGenerator<>(writerSchema, readerSchema, classesDir, classLoader,
-            compileClassPath.orElseGet(() -> null));
+            compileClassPath.orElse(null));
     FastDeserializer<?> fastDeserializer = generator.generateDeserializer();
 
     if (LOGGER.isDebugEnabled()) {
@@ -366,7 +383,7 @@ public final class FastSerdeCache {
   public FastDeserializer<?> buildFastGenericDeserializer(Schema writerSchema, Schema readerSchema) {
     FastGenericDeserializerGenerator<?> generator =
         new FastGenericDeserializerGenerator<>(writerSchema, readerSchema, classesDir, classLoader,
-            compileClassPath.orElseGet(() -> null));
+            compileClassPath.orElse(null));
 
     FastDeserializer<?> fastDeserializer = generator.generateDeserializer();
 
@@ -419,7 +436,7 @@ public final class FastSerdeCache {
           Utils.getAvroVersionsSupportedForSerializer());
     }
     FastSpecificSerializerGenerator<?> generator =
-        new FastSpecificSerializerGenerator<>(schema, classesDir, classLoader, compileClassPath.orElseGet(() -> null));
+        new FastSpecificSerializerGenerator<>(schema, classesDir, classLoader, compileClassPath.orElse(null));
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Generated classes dir: {} and generation of specific FastSerializer is done for schema of type: {}" +
@@ -463,7 +480,7 @@ public final class FastSerdeCache {
           + Utils.getAvroVersionsSupportedForSerializer());
     }
     FastGenericSerializerGenerator<?> generator =
-        new FastGenericSerializerGenerator<>(schema, classesDir, classLoader, compileClassPath.orElseGet(() -> null));
+        new FastGenericSerializerGenerator<>(schema, classesDir, classLoader, compileClassPath.orElse(null));
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Generated classes dir: {} and generation of generic FastSerializer is done for schema of type: {}" +
