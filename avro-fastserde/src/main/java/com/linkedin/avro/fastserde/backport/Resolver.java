@@ -27,7 +27,7 @@ import org.apache.avro.generic.GenericData;
  *
  * Encapsulate schema-resolution logic in an easy-to-consume representation. See
  * resolve and also the separate document entitled
- * <tt>refactoring-resolution</tt> for more information. It might also be
+ * refactoring-resolution for more information. It might also be
  * helpful to study {@link org.apache.avro.io.parsing.ResolvingGrammarGenerator}
  * as an example of how to use this class.
  */
@@ -35,9 +35,9 @@ public class Resolver {
 
   /**
    * An abstract class for an action to be taken to resolve a writer's schema
-   * (found in public instance variable <tt>writer</tt>) against a reader's schema
-   * (in <tt>reader</tt>). Ordinarily, neither field can be <tt>null</tt>, except
-   * that the <tt>reader</tt> field can be <tt>null</tt> in a Skip, which
+   * (found in public instance variable writer) against a reader's schema
+   * (in reader). Ordinarily, neither field can be null, except
+   * that the reader field can be null in a Skip, which
    * is used to skip a field in a writer's record that doesn't exist in the
    * reader's (and thus there is no reader schema to resolve to).
    */
@@ -137,17 +137,17 @@ public class Resolver {
    * only detect when decoding data).
    *
    * These adjustments are reflected in the instance variable
-   * <tt>adjustments</tt>. For the symbol with index <tt>i</tt> in the writer's
-   * enum definition, <tt>adjustments[i]</tt> -- and integer -- contains the
+   * adjustments. For the symbol with index i in the writer's
+   * enum definition, adjustments[i] -- and integer -- contains the
    * adjustment for that symbol. If the integer is positive, then reader also has
    * the symbol and the integer is its index in the reader's schema. If
-   * <tt>adjustment[i]</tt> is negative, then the reader does <em>not</em> have
+   * adjustment[i] is negative, then the reader does not have
    * the corresponding symbol (which is the error case).
    *
    * Sometimes there's no adjustments needed: all symbols in the reader have the
    * same index in the reader's and writer's schema. This is a common case, and it
    * allows for some optimization. To signal that this is the case,
-   * <tt>noAdjustmentsNeeded</tt> is set to true.
+   * noAdjustmentsNeeded is set to true.
    */
   public static class EnumAdjust extends Action {
     public final int[] adjustments;
