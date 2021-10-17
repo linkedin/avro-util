@@ -20,9 +20,10 @@ public class AvroEnumSchema extends AvroNamedSchema {
             String namespace,
             String doc,
             List<String> symbols,
-            String defaultSymbol
+            String defaultSymbol,
+            JsonPropertiesContainer props
     ) {
-        super(codeLocation, simpleName, namespace, doc);
+        super(codeLocation, simpleName, namespace, doc, props);
         //TODO - check for dup symbols, same-name-different-case, etc
         //TODO - check default (if exists) is a symbol
         this.symbols = Collections.unmodifiableList(new ArrayList<>(symbols));

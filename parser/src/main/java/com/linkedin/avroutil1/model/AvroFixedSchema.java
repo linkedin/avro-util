@@ -16,9 +16,10 @@ public class AvroFixedSchema extends AvroNamedSchema {
             String namespace,
             String doc,
             int size,
-            AvroLogicalType logicalType
+            AvroLogicalType logicalType,
+            JsonPropertiesContainer props
     ) {
-        super(codeLocation, simpleName, namespace, doc);
+        super(codeLocation, simpleName, namespace, doc, props);
         if (logicalType != null && !logicalType.getParentTypes().contains(type())) {
             throw new IllegalArgumentException(type() + " " + simpleName + " at " + codeLocation
                     + " cannot have a logical type of " + logicalType + " (which can only be a logical type of "

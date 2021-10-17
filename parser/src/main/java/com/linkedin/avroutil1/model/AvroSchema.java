@@ -7,15 +7,21 @@
 package com.linkedin.avroutil1.model;
 
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * parent class for all avro types
  */
-public abstract class AvroSchema implements LocatedCode {
+public abstract class AvroSchema implements LocatedCode, JsonPropertiesContainer {
     protected final CodeLocation codeLocation;
+    /**
+     * any extra properties defined on this schema beyond the ones in the core avro specification
+     */
+    protected JsonPropertiesContainer props;
 
-    public AvroSchema(CodeLocation codeLocation) {
+    protected AvroSchema(CodeLocation codeLocation, JsonPropertiesContainer props) {
         this.codeLocation = codeLocation;
+        this.props = props;
     }
 
     public abstract AvroType type();
@@ -32,6 +38,21 @@ public abstract class AvroSchema implements LocatedCode {
      */
     public boolean isNullable() {
         return false; //as a rule avro schemas do not allow nulls
+    }
+
+    @Override
+    public Set<String> propertyNames() {
+        return props.propertyNames();
+    }
+
+    @Override
+    public Object getPropertyAsObject(String key) {
+        return props.getPropertyAsObject(key);
+    }
+
+    @Override
+    public String getPropertyAsJsonLiteral(String key) {
+        return props.getPropertyAsJsonLiteral(key);
     }
 
     @Override

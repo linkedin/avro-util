@@ -21,7 +21,7 @@ public class AvroUnionSchema extends AvroSchema {
     private List<SchemaOrRef> types;
 
     public AvroUnionSchema(CodeLocation codeLocation) {
-        super(codeLocation);
+        super(codeLocation, EMPTY); //cant put extra props on a union
     }
 
     @Override

@@ -16,8 +16,8 @@ public abstract class AvroCollectionSchema extends AvroSchema {
      */
     private final SchemaOrRef valueSchema;
 
-    protected AvroCollectionSchema(CodeLocation codeLocation, SchemaOrRef valueSchema) {
-        super(codeLocation);
+    protected AvroCollectionSchema(CodeLocation codeLocation, SchemaOrRef valueSchema, JsonPropertiesContainer props) {
+        super(codeLocation, props);
         if (valueSchema == null) {
             throw new IllegalArgumentException("value schema cannot be null");
         }

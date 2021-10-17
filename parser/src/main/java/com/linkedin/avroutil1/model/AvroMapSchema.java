@@ -11,8 +11,8 @@ package com.linkedin.avroutil1.model;
  */
 public class AvroMapSchema extends AvroCollectionSchema {
 
-    public AvroMapSchema(CodeLocation codeLocation, SchemaOrRef valueSchema) {
-        super(codeLocation, valueSchema);
+    public AvroMapSchema(CodeLocation codeLocation, SchemaOrRef valueSchema, JsonPropertiesContainer props) {
+        super(codeLocation, valueSchema, props);
     }
 
     @Override
