@@ -8,12 +8,11 @@ package com.linkedin.avroutil1.parser.jsonpext;
 
 import jakarta.json.JsonException;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 public class JsonObjectExtBuilder extends BuilderWithLocations<JsonObjectExt> {
 
-    protected Map<String, JsonValueExt> valueMap = new HashMap<>(1);
+    protected LinkedHashMap<String, JsonValueExt> valueMap = new LinkedHashMap<>(1);
 
     JsonObjectExtBuilder add(String name, JsonValueExt value) {
         JsonValueExt conflictingValue = valueMap.get(name);

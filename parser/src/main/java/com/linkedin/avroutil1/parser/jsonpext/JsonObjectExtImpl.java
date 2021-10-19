@@ -11,6 +11,7 @@ import jakarta.json.stream.JsonLocation;
 
 import java.nio.file.Path;
 import java.util.AbstractMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,14 +20,14 @@ public class JsonObjectExtImpl extends AbstractMap<String, JsonValue> implements
     private final Path source;
     private final JsonLocation startLocation;
     private final JsonLocation endLocation;
-    private final Map<String, JsonValueExt> valueMap;
+    private final LinkedHashMap<String, JsonValueExt> valueMap;
     private Integer hashCode = null;
 
     public JsonObjectExtImpl(
             Path source,
             JsonLocation startLocation,
             JsonLocation endLocation,
-            Map<String, JsonValueExt> values
+            LinkedHashMap<String, JsonValueExt> values
     ) {
         this.source = source;
         this.startLocation = startLocation;

@@ -6,12 +6,24 @@
 
 package com.linkedin.avroutil1.model;
 
+import java.util.Set;
+
 /**
  * field in an {@link AvroSchema}
  */
-public class AvroSchemaField implements LocatedCode {
+public class AvroSchemaField implements LocatedCode, JsonPropertiesContainer {
+    /**
+     * location of this field declaration in source file. starts at the beginning of the field
+     * name and ends at the end of the field declaration/reference.
+     */
     private final CodeLocation codeLocation;
+    /**
+     * field name
+     */
     private final String name;
+    /**
+     * field doc
+     */
     private final String doc;
     /**
      * this field's schema (which is either declared inline or a reference)
@@ -31,13 +43,18 @@ public class AvroSchemaField implements LocatedCode {
      * this field's default value (if any).
      */
     private AvroLiteral defaultValue;
+    /**
+     * any extra properties defined on this field beyond the ones in the core avro specification
+     */
+    private JsonPropertiesContainer props;
 
     public AvroSchemaField(
             CodeLocation codeLocation,
             String name,
             String doc,
             SchemaOrRef schema,
-            AvroLiteral defaultValue
+            AvroLiteral defaultValue,
+            JsonPropertiesContainer extraProps
     ) {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("name cannot be null or empty");
@@ -50,6 +67,7 @@ public class AvroSchemaField implements LocatedCode {
         this.doc = doc;
         this.schema = schema;
         this.defaultValue = defaultValue;
+        this.props = extraProps;
     }
 
     @Override
@@ -86,6 +104,21 @@ public class AvroSchemaField implements LocatedCode {
 
     public AvroLiteral getDefaultValue() {
         return defaultValue;
+    }
+
+    @Override
+    public Set<String> propertyNames() {
+        return props.propertyNames();
+    }
+
+    @Override
+    public Object getPropertyAsObject(String key) {
+        return props.getPropertyAsObject(key);
+    }
+
+    @Override
+    public String getPropertyAsJsonLiteral(String key) {
+        return props.getPropertyAsJsonLiteral(key);
     }
 
     void assignTo(AvroRecordSchema recordSchema, int position) {

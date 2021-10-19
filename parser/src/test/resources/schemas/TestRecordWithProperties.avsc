@@ -1,0 +1,40 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "TestRecordWithProperties",
+  "doc": "all the props",
+
+  "extraNullProp" : null,
+  "extraBooleanProp": true,
+  "extraIntProp": 42,
+  "extraFloatProp": 4.2,
+  "extraStringProp": "a string",
+  "extraArrayProp": [
+    null, 0, false, "wow", {
+      "this": "makes",
+      "little": "sense"
+    }
+  ],
+  "extraObjectProp": {
+    "thats": ["all", "folks"]
+  },
+
+  "fields": [
+    {
+      "name": "stringField",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String",
+        "typeStringProp": "typeStringValue"
+      },
+      "fieldStringProp": "fieldStringValue"
+    },
+    {
+      "name": "uuidField",
+      "type": {
+        "type": "string",
+        "logicalType" : "uuid"
+      }
+    }
+  ]
+}

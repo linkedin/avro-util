@@ -41,9 +41,10 @@ public class AvroPrimitiveSchema extends AvroSchema {
             AvroLogicalType logicalType,
             AvroJavaStringRepresentation javaStringRepresentation,
             int scale,
-            int precision
+            int precision,
+            JsonPropertiesContainer props
     ) {
-        super(codeLocation);
+        super(codeLocation, props);
         if (!type.isPrimitive()) {
             throw new IllegalArgumentException(type + " is not a primitive type");
         }
@@ -124,7 +125,8 @@ public class AvroPrimitiveSchema extends AvroSchema {
             AvroLogicalType logicalType,
             AvroJavaStringRepresentation javaStringRepresentation,
             int scale,
-            int precision
+            int precision,
+            JsonPropertiesContainer props
     ) {
         return new AvroPrimitiveSchema(
                 codeLocation,
@@ -132,7 +134,8 @@ public class AvroPrimitiveSchema extends AvroSchema {
                 logicalType,
                 javaStringRepresentation,
                 scale,
-                precision
+                precision,
+                props
         );
     }
 }

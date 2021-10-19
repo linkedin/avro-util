@@ -18,16 +18,22 @@ import com.linkedin.avroutil1.model.AvroSchema;
 import com.linkedin.avroutil1.model.AvroSchemaField;
 import com.linkedin.avroutil1.model.AvroType;
 import com.linkedin.avroutil1.model.AvroUnionSchema;
+import com.linkedin.avroutil1.model.JsonPropertiesContainer;
 import com.linkedin.avroutil1.model.SchemaOrRef;
 import com.linkedin.avroutil1.parser.exceptions.AvroSyntaxException;
 import com.linkedin.avroutil1.parser.exceptions.JsonParseException;
 import com.linkedin.avroutil1.testcommon.TestUtil;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class AvscParserTest {
@@ -353,6 +359,76 @@ public class AvscParserTest {
     }
 
     @Test
+    public void testParsingProperties() throws Exception {
+        String avsc = TestUtil.load("schemas/TestRecordWithProperties.avsc");
+        AvscParser parser = new AvscParser();
+        AvscParseResult result = parser.parse(avsc);
+        Assert.assertNull(result.getParseError());
+        AvroRecordSchema schema = (AvroRecordSchema) result.getTopLevelSchema();
+        Assert.assertNotNull(schema);
+        Assert.assertEquals(schema.propertyNames(), Arrays.asList( //order is important
+                "extraNullProp",
+                "extraBooleanProp",
+                "extraIntProp",
+                "extraFloatProp",
+                "extraStringProp",
+                "extraArrayProp",
+                "extraObjectProp"
+        ));
+        Assert.assertNull(schema.getPropertyAsJsonLiteral("noSuchProp"));
+        Assert.assertNull(schema.getPropertyAsObject("noSuchProp"));
+        Assert.assertEquals(schema.getPropertyAsJsonLiteral("extraNullProp"), "null");
+        Assert.assertEquals(schema.getPropertyAsObject("extraNullProp"), JsonPropertiesContainer.NULL_VALUE);
+        Assert.assertEquals(schema.getPropertyAsJsonLiteral("extraBooleanProp"), "true");
+        Assert.assertEquals(schema.getPropertyAsObject("extraBooleanProp"), Boolean.TRUE);
+        Assert.assertEquals(schema.getPropertyAsJsonLiteral("extraIntProp"), "42");
+        Assert.assertEquals(schema.getPropertyAsObject("extraIntProp"), new BigDecimal(42));
+        Assert.assertEquals(schema.getPropertyAsJsonLiteral("extraFloatProp"), "4.2");
+        //new BigDecimal(4.2d) is actually 4.20000000000000017763568394002504646778106689453125
+        //we love floating point precision
+        Assert.assertEquals(schema.getPropertyAsObject("extraFloatProp"), new BigDecimal("4.2"));
+        Assert.assertEquals(schema.getPropertyAsJsonLiteral("extraStringProp"), "\"a string\"");
+        Assert.assertEquals(schema.getPropertyAsObject("extraStringProp"), "a string");
+        JSONAssert.assertEquals(
+                "[null, 0, false, \"wow\", {\"this\" : \"makes\", \"little\" : \"sense\"}]",
+                schema.getPropertyAsJsonLiteral("extraArrayProp"),
+                JSONCompareMode.STRICT
+        );
+        Assert.assertEquals(schema.getPropertyAsObject("extraArrayProp"), Arrays.asList(
+                JsonPropertiesContainer.NULL_VALUE,
+                new BigDecimal(0),
+                Boolean.FALSE,
+                "wow",
+                new LinkedHashMap<String, Object>() {{
+                        put("this", "makes");
+                        put("little", "sense");
+                    }}
+        ));
+        JSONAssert.assertEquals(
+                "{\"thats\": [\"all\", \"folks\"]}",
+                schema.getPropertyAsJsonLiteral("extraObjectProp"),
+                JSONCompareMode.STRICT
+        );
+        Assert.assertEquals(
+                schema.getPropertyAsObject("extraObjectProp"),
+                new LinkedHashMap<String, Object>() {{
+                    put("thats", Arrays.asList("all", "folks"));
+                }}
+        );
+
+        AvroSchemaField stringField = schema.getField("stringField");
+        Assert.assertEquals(stringField.propertyNames(), Collections.singletonList("fieldStringProp"));
+        Assert.assertEquals(stringField.getPropertyAsJsonLiteral("fieldStringProp"), "\"fieldStringValue\"");
+        Assert.assertEquals(stringField.getPropertyAsObject("fieldStringProp"), "fieldStringValue");
+
+        AvroSchema stringSchema = stringField.getSchema();
+        Assert.assertEquals(stringSchema.propertyNames(), Arrays.asList("avro.java.string", "typeStringProp"));
+
+        AvroSchema uuidSchema = schema.getField("uuidField").getSchema();
+        Assert.assertEquals(uuidSchema.propertyNames(), Collections.singletonList("logicalType"));
+    }
+
+    @Test
     public void validateTestSchemas() throws Exception {
         //this test acts as a sanity check of test schemas by parsing them with the latest
         //version of avro (the reference impl)
@@ -385,6 +461,11 @@ public class AvscParserTest {
             Assert.assertNull(f.schema().getLogicalType(), "field " + f.name()
                     + " should not have a successfully-parsed logical type");
         }
+
+        parsed = vanillaParse("schemas/TestRecordWithProperties.avsc");
+        //avro preserves logical type info in props
+        Assert.assertEquals(parsed.getField("stringField").schema().getProp("avro.java.string"), "String");
+        Assert.assertEquals(parsed.getField("uuidField").schema().getProp("logicalType"), "uuid");
     }
 
     private Schema vanillaParse(String resource) throws Exception {

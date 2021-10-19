@@ -33,6 +33,7 @@ import com.linkedin.avroutil1.model.AvroStringLiteral;
 import com.linkedin.avroutil1.model.AvroType;
 import com.linkedin.avroutil1.model.AvroUnionSchema;
 import com.linkedin.avroutil1.model.CodeLocation;
+import com.linkedin.avroutil1.model.JsonPropertiesContainer;
 import com.linkedin.avroutil1.model.SchemaOrRef;
 import com.linkedin.avroutil1.model.TextLocation;
 import com.linkedin.avroutil1.parser.Located;
@@ -57,7 +58,13 @@ import java.math.BigInteger;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 
 /**
@@ -83,6 +90,37 @@ public class AvscParser {
     private final static BigInteger MIN_LONG = BigInteger.valueOf(Long.MIN_VALUE);
     private final static BigDecimal MAX_FLOAT = BigDecimal.valueOf(Float.MAX_VALUE);
     private final static BigDecimal MAX_DOUBLE = BigDecimal.valueOf(Double.MAX_VALUE);
+
+    /**
+     * set of properties considered a part of the "core" avro specification for schemas.
+     * any property that is NOT in this set is preserved as a property schema objects.
+     */
+    private final static Set<String> CORE_SCHEMA_PROPERTIES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
+            "aliases",
+            "default", //vanilla treats this as core on enums only. we think that's confusing
+            "doc",
+            "fields",
+            "items",
+            "name",
+            "namespace",
+            "size",
+            "symbols",
+            "type",
+            "values"
+    )));
+
+    /**
+     * set of properties considered a part of the "core" avro specification for fields.
+     * any property that is NOT in this set is preserved as a property field objects.
+     */
+    private final static Set<String> CORE_FIELD_PROPERTIES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
+            "aliases",
+            "default",
+            "doc",
+            "name",
+            "order",
+            "type"
+    )));
 
     public AvscParseResult parse(String avsc) {
         JsonReaderExt jsonReader = new JsonReaderWithLocations(new StringReader(avsc), null);
@@ -159,14 +197,15 @@ public class AvscParser {
             return new SchemaOrRef(codeLocation, typeString);
         }
         if (avroType.isPrimitive()) {
-            //no logical type information or string representation in the schema if we got here
+            //no logical type information, string representation or props in the schema if we got here
             return new SchemaOrRef(codeLocation, AvroPrimitiveSchema.forType(
                     codeLocation,
                     avroType,
                     null,
                     null,
                     0,
-                    0
+                    0,
+                    JsonPropertiesContainer.EMPTY
             ));
         }
         //if we got here it means we found something like "record" as a type literal. which is not valid syntax
@@ -178,7 +217,8 @@ public class AvscParser {
             JsonObjectExt primitiveNode,
             AvscParseContext context,
             AvroType avroType,
-            CodeLocation codeLocation
+            CodeLocation codeLocation,
+            JsonPropertiesContainer props
     ) {
         AvroLogicalType logicalType = null;
         int scale = 0;
@@ -229,8 +269,8 @@ public class AvscParser {
                 logicalType = null;
             }
         }
-        //TODO - grab other props
-        return new AvroPrimitiveSchema(codeLocation, avroType, logicalType, stringRep, scale, precision);
+
+        return new AvroPrimitiveSchema(codeLocation, avroType, logicalType, stringRep, scale, precision, props);
     }
 
     private SchemaOrRef parseComplexSchema(
@@ -246,18 +286,19 @@ public class AvscParser {
                     + typeStr.getLocation() + ". expecting \"record\", \"enum\" or \"fixed\"");
         }
 
+        LinkedHashMap<String, JsonValueExt> propsMap = parseExtraProps(objectNode, CORE_SCHEMA_PROPERTIES);
+        JsonPropertiesContainer props = propsMap.isEmpty() ? JsonPropertiesContainer.EMPTY : new JsonPropertiesContainerImpl(propsMap);
+
         AvroSchema definedSchema;
         if (avroType.isNamed()) {
-            definedSchema = parseNamedSchema(objectNode, context, avroType, codeLocation);
+            definedSchema = parseNamedSchema(objectNode, context, avroType, codeLocation, props);
         } else if (avroType.isCollection()) {
-            definedSchema = parseCollectionSchema(objectNode, context, avroType, codeLocation);
+            definedSchema = parseCollectionSchema(objectNode, context, avroType, codeLocation, props);
         } else if (avroType.isPrimitive()) {
-            definedSchema = parseDecoratedPrimitiveSchema(objectNode, context, avroType, codeLocation);
+            definedSchema = parseDecoratedPrimitiveSchema(objectNode, context, avroType, codeLocation, props);
         } else {
             throw new IllegalStateException("unhandled avro type " + avroType + " at " + typeStr.getLocation());
         }
-
-        //TODO - parse json props
 
         context.defineSchema(new Located<>(definedSchema, codeLocation.getStart()), topLevel);
 
@@ -268,7 +309,8 @@ public class AvscParser {
             JsonObjectExt objectNode,
             AvscParseContext context,
             AvroType avroType,
-            CodeLocation codeLocation
+            CodeLocation codeLocation,
+            JsonPropertiesContainer extraProps
     ) {
         Located<String> nameStr = getRequiredString(objectNode, "name", () -> avroType + " is a named type");
         Located<String> namespaceStr = getOptionalString(objectNode, "namespace");
@@ -320,7 +362,9 @@ public class AvscParser {
                         codeLocation,
                         schemaSimpleName,
                         contextNamespace,
-                        doc);
+                        doc,
+                        extraProps
+                );
                 JsonArrayExt fieldsNode = getRequiredArray(objectNode, "fields", () -> "all avro records must have fields");
                 List<AvroSchemaField> fields = new ArrayList<>(fieldsNode.size());
                 for (int fieldNum = 0; fieldNum < fieldsNode.size(); fieldNum++) {
@@ -353,7 +397,9 @@ public class AvscParser {
                             throw new UnsupportedOperationException("delayed parsing of default value for " + fieldName.getValue() + " TBD");
                         }
                     }
-                    AvroSchemaField field = new AvroSchemaField(fieldCodeLocation, fieldName.getValue(), null, fieldSchema, defaultValue);
+                    LinkedHashMap<String, JsonValueExt> props = parseExtraProps(fieldDecl, CORE_FIELD_PROPERTIES);
+                    JsonPropertiesContainer propsContainer = props.isEmpty() ? JsonPropertiesContainer.EMPTY : new JsonPropertiesContainerImpl(props);
+                    AvroSchemaField field = new AvroSchemaField(fieldCodeLocation, fieldName.getValue(), null, fieldSchema, defaultValue, propsContainer);
                     fields.add(field);
                 }
                 recordSchema.setFields(fields);
@@ -389,7 +435,9 @@ public class AvscParser {
                         contextNamespace,
                         doc,
                         symbols,
-                        defaultSymbol);
+                        defaultSymbol,
+                        extraProps
+                );
                 break;
             case FIXED:
                 JsonValueExt sizeNode = getRequiredNode(objectNode, "size", () -> "fixed types must have a size property");
@@ -409,7 +457,8 @@ public class AvscParser {
                         contextNamespace,
                         doc,
                         fixedSize,
-                        logicalTypeResult.getData()
+                        logicalTypeResult.getData(),
+                        extraProps
                 );
                 break;
             default:
@@ -426,17 +475,18 @@ public class AvscParser {
             JsonObjectExt objectNode,
             AvscParseContext context,
             AvroType avroType,
-            CodeLocation codeLocation
+            CodeLocation codeLocation,
+            JsonPropertiesContainer props
     ) {
         switch (avroType) {
             case ARRAY:
                 JsonValueExt arrayItemsNode = getRequiredNode(objectNode, "items", () -> "array declarations must have an items property");
                 SchemaOrRef arrayItemSchema = parseSchemaDeclOrRef(arrayItemsNode, context, false);
-                return new AvroArraySchema(codeLocation, arrayItemSchema);
+                return new AvroArraySchema(codeLocation, arrayItemSchema, props);
             case MAP:
                 JsonValueExt mapValuesNode = getRequiredNode(objectNode, "values", () -> "map declarations must have a values property");
                 SchemaOrRef mapValueSchema = parseSchemaDeclOrRef(mapValuesNode, context, false);
-                return new AvroMapSchema(codeLocation, mapValueSchema);
+                return new AvroMapSchema(codeLocation, mapValueSchema, props);
             default:
                 throw new IllegalStateException("unhandled: " + avroType + " for object at " + codeLocation.getStart());
         }
@@ -746,6 +796,19 @@ public class AvscParser {
             }
         }
         return result;
+    }
+
+    private LinkedHashMap<String, JsonValueExt> parseExtraProps(JsonObjectExt field, Set<String> toIgnore) {
+        LinkedHashMap<String, JsonValueExt> results = new LinkedHashMap<>(3);
+        for (Map.Entry<String, JsonValue> entry : field.entrySet()) { //doc says there are in the order they are in json
+            String propName = entry.getKey();
+            if (toIgnore.contains(propName)) {
+                continue;
+            }
+            JsonValueExt propValue = (JsonValueExt) entry.getValue();
+            results.put(propName, propValue);
+        }
+        return results;
     }
 
     private CodeLocation locationOf(URI uri, Located<?> something) {
