@@ -6,6 +6,8 @@
 
 package com.linkedin.avroutil1.model;
 
+import com.linkedin.avroutil1.parser.exceptions.UnresolvedReferenceException;
+
 /**
  * represents either a declared avro schema (which may or may not be a named type)
  * or a reference to an avro schema (by FQCN, meaning the schema referenced is named)
@@ -69,7 +71,7 @@ public class SchemaOrRef implements LocatedCode {
 
     public AvroSchema getSchema() {
         if (!isResolved()) {
-            throw new IllegalStateException("unresolved ref to " + ref);
+            throw new UnresolvedReferenceException("unresolved ref to " + ref);
         }
         return schema;
     }
@@ -100,7 +102,11 @@ public class SchemaOrRef implements LocatedCode {
     @Override
     public String toString() {
         if (ref != null) {
-            return "*" + ref;
+            String desc = "*" + ref;
+            if (schema == null) {
+                return desc + " (UNRESOLVED)";
+            }
+            return desc;
         }
         //noinspection ConstantConditions
         return decl.toString(); //!=null

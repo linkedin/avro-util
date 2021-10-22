@@ -35,6 +35,11 @@ public interface JsonPropertiesContainer {
         public String getPropertyAsJsonLiteral(String key) {
             return null;
         }
+
+        @Override
+        public String toString() {
+            return "no properties";
+        }
     };
 
     /**

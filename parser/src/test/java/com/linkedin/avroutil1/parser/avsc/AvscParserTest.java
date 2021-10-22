@@ -22,6 +22,7 @@ import com.linkedin.avroutil1.model.JsonPropertiesContainer;
 import com.linkedin.avroutil1.model.SchemaOrRef;
 import com.linkedin.avroutil1.parser.exceptions.AvroSyntaxException;
 import com.linkedin.avroutil1.parser.exceptions.JsonParseException;
+import com.linkedin.avroutil1.parser.exceptions.UnresolvedReferenceException;
 import com.linkedin.avroutil1.testcommon.TestUtil;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -426,6 +427,35 @@ public class AvscParserTest {
 
         AvroSchema uuidSchema = schema.getField("uuidField").getSchema();
         Assert.assertEquals(uuidSchema.propertyNames(), Collections.singletonList("logicalType"));
+    }
+
+    @Test
+    public void testParsingExternalReferences() throws Exception {
+        String referencingAvsc = TestUtil.load("schemas/TestRecordWithExternalReference.avsc");
+        String referencedAvsc = TestUtil.load("schemas/TestRecord.avsc");
+
+        AvscParser parser = new AvscParser();
+
+        AvscParseResult result1 = parser.parse(referencingAvsc);
+        Assert.assertEquals(result1.getExternalReferences().keySet(), Collections.singletonList("com.acme.TestRecord"));
+        AvroRecordSchema outerSchema = (AvroRecordSchema) result1.getTopLevelSchema();
+        try {
+            outerSchema.getField("testRecordField").getSchema();
+            Assert.fail("accessing unresolved ref expected to fail");
+        } catch (UnresolvedReferenceException expected) {
+            Assert.assertTrue(expected.getMessage().contains("unresolved"));
+            Assert.assertTrue(expected.getMessage().contains("com.acme.TestRecord"));
+        }
+
+        AvscParseResult result2 = parser.parse(referencedAvsc);
+
+        AvroParseContext overall = new AvroParseContext();
+        overall.add(result1);
+        overall.add(result2);
+        overall.resolveReferences();
+
+        //now reference is resolved just fine
+        Assert.assertNotNull(outerSchema.getField("testRecordField").getSchema());
     }
 
     @Test

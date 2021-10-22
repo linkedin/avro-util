@@ -9,9 +9,10 @@ package com.linkedin.avroutil1.parser.avsc;
 import com.linkedin.avroutil1.model.AvroSchema;
 import com.linkedin.avroutil1.model.CodeLocation;
 import com.linkedin.avroutil1.model.LocatedCode;
-import com.linkedin.avroutil1.parser.Located;
+import com.linkedin.avroutil1.model.SchemaOrRef;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class AvscParseResult {
@@ -24,7 +25,7 @@ public class AvscParseResult {
     /**
      * parse context. set on successful completion of parsing
      */
-    private AvscParseContext context;
+    private AvscFileParseContext context;
 
     public void recordError(Throwable error) {
         if (this.context != null) {
@@ -38,7 +39,7 @@ public class AvscParseResult {
         }
     }
 
-    public void recordParseComplete(AvscParseContext context) {
+    public void recordParseComplete(AvscFileParseContext context) {
         if (parseError != null) {
             throw new IllegalStateException("parsing already marked as failed");
         }
@@ -54,8 +55,17 @@ public class AvscParseResult {
 
     public AvroSchema getTopLevelSchema() {
         assertSuccess();
-        Located<AvroSchema> topLevelSchema = context.getTopLevelSchema();
-        return topLevelSchema == null ? null : topLevelSchema.getValue();
+        return context.getTopLevelSchema();
+    }
+
+    public Map<String, AvroSchema> getDefinedNamedSchemas() {
+        assertSuccess();
+        return context.getDefinedNamedSchemas();
+    }
+
+    public Map<String, List<SchemaOrRef>> getExternalReferences() {
+        assertSuccess();
+        return context.getExternalReferences();
     }
 
     public List<AvscIssue> getIssues() {
@@ -86,6 +96,11 @@ public class AvscParseResult {
         List<AvscIssue> issues = context.getIssues();
         if (!issues.isEmpty()) {
             sb.append(" and ").append(issues.size()).append(" issues");
+        }
+        Map<String, List<SchemaOrRef>> unresolved = context.getExternalReferences();
+        if (!unresolved.isEmpty()) {
+            int total = unresolved.values().stream().mapToInt(List::size).sum();
+            sb.append(" and ").append(total).append(" unresolved references to ").append(unresolved.size()).append(" FQCNs");
         }
         return sb.toString();
     }

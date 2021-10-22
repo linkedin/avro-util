@@ -12,6 +12,7 @@ plugins {
 
 dependencies {
     implementation project(":helper:helper")
+    implementation project(":parser")
 
     implementation "commons-io:commons-io:2.6"
     implementation "org.apache.logging.log4j:log4j-api:2.14.1"
