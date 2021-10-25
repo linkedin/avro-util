@@ -31,7 +31,7 @@ import org.apache.avro.generic.GenericData;
  * helpful to study {@link org.apache.avro.io.parsing.ResolvingGrammarGenerator}
  * as an example of how to use this class.
  */
-public class Resolver {
+public class Avro19Resolver {
 
   /**
    * An abstract class for an action to be taken to resolve a writer's schema
