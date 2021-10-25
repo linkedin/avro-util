@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.List;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
@@ -830,5 +831,27 @@ public class AvroCompatibilityHelper {
   public static void setSchemaPropFromJsonString(Schema schema, String propName, String valueAsJsonLiteral, boolean strict) {
     assertAvroAvailable();
     ADAPTER.setSchemaPropFromJsonString(schema, propName, valueAsJsonLiteral, strict);
+  }
+
+  /**
+   * returns the enum default value.
+   * returns null if schema has no such property.
+   *
+   * @param schema the schema who's property value we wish to get
+   * @return enum default value, or null if no such property
+   */
+  public static String getEnumDefault(Schema schema) {
+    assertAvroAvailable();
+    try {
+      return ADAPTER.getEnumDefault(schema);
+    } catch (RuntimeException e) {
+      return null;
+    }
+  }
+
+  public static Schema newEnumSchema(String name, String doc, String namespace, List<String> values,
+      String enumDefault) {
+    assertAvroAvailable();
+    return ADAPTER.newEnumSchema(name, doc, namespace, values, enumDefault);
   }
 }

@@ -17,6 +17,7 @@
  */
 package com.linkedin.avro.fastserde.backport;
 
+import com.linkedin.avro.fastserde.Utils;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -48,7 +49,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
    */
   public final Symbol generate(Schema writer, Schema reader)
     throws IOException {
-    return Symbol.root(generate(writer, reader, new HashMap<LitS, Symbol>()));
+    return Symbol.root(generate(writer, reader, new HashMap<>()));
   }
 
   /**
@@ -56,7 +57,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
    * reader and returns the start symbol for the grammar generated.
    * If there is already a symbol in the map seen for resolving the
    * two schemas, then that symbol is returned. Otherwise a new symbol is
-   * generated and returnd.
+   * generated and returned.
    * @param writer    The schema used by the writer
    * @param reader    The schema used by the reader
    * @param seen      The &lt;reader-schema, writer-schema&gt; to symbol
@@ -97,10 +98,12 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
         break;
 
       case ENUM:
-        if (AvroCompatibilityHelper.getSchemaFullName(writer) == null
-                || AvroCompatibilityHelper.getSchemaFullName(writer).equals(AvroCompatibilityHelper.getSchemaFullName(reader))) {
-          return Symbol.seq(mkEnumAdjust(writer.getEnumSymbols(),
-                  reader.getEnumSymbols()), Symbol.ENUM);
+        if (Utils.isAbleToSupportEnumDefault()) {
+          return Symbol.seq(mkEnumAdjustWithDefault(writer, reader), Symbol.ENUM);
+        } else if (AvroCompatibilityHelper.getSchemaFullName(writer) == null
+            || AvroCompatibilityHelper.getSchemaFullName(writer)
+            .equals(AvroCompatibilityHelper.getSchemaFullName(reader))) {
+          return Symbol.seq(mkEnumAdjust(writer.getEnumSymbols(), reader.getEnumSymbols()), Symbol.ENUM);
         }
         break;
 
@@ -446,6 +449,16 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
                                 : new Integer(j));
     }
     return Symbol.enumAdjustAction(rsymbols.size(), adjustments);
+  }
+
+  private static Symbol mkEnumAdjustWithDefault(Schema writer, Schema reader) {
+    Avro19Resolver.EnumAdjust e = (Avro19Resolver.EnumAdjust) Avro19Resolver.EnumAdjust.resolve(writer, reader, GenericData.get());
+    Object[] adjs = new Object[e.adjustments.length];
+    for (int i = 0; i < adjs.length; i++) {
+      adjs[i] = (0 <= e.adjustments[i] ? new Integer(e.adjustments[i])
+          : "No match for " + e.writer.getEnumSymbols().get(i));
+    }
+    return Symbol.enumAdjustAction(e.reader.getEnumSymbols().size(), adjs);
   }
 
   /**

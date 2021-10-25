@@ -137,6 +137,11 @@ public final class FastSerdeTestsSupport {
     return Schema.createEnum(name, "", "com.adpilot.utils.generated.avro", Arrays.asList(ordinals));
   }
 
+  public static Schema createEnumSchema(String name, String[] ordinals, String enumDefault) {
+    return AvroCompatibilityHelper.newEnumSchema(name, "", "com.adpilot.utils.generated.avro", Arrays.asList(ordinals),
+        enumDefault);
+  }
+
   public static Schema createUnionSchema(Schema... schemas) {
     List<Schema> typeList = new ArrayList<>();
     typeList.add(Schema.create(Schema.Type.NULL));

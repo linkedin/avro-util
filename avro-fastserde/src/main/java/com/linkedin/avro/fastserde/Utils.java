@@ -45,6 +45,11 @@ public class Utils {
     return AvroCompatibilityHelper.getRuntimeAvroVersion().equals(AvroVersion.AVRO_1_4);
   }
 
+  // enum default was added in avro 1.9
+  public static boolean isAbleToSupportEnumDefault() {
+    return AvroCompatibilityHelper.getRuntimeAvroVersion().laterThan(AvroVersion.AVRO_1_8);
+  }
+
   public static boolean isAbleToSupportStringableProps() {
     return AvroCompatibilityHelper.getRuntimeAvroVersion().laterThan(AvroVersion.AVRO_1_6);
   }
