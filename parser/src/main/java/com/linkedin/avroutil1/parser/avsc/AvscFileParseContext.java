@@ -15,7 +15,6 @@ import com.linkedin.avroutil1.model.AvroSchemaField;
 import com.linkedin.avroutil1.model.AvroType;
 import com.linkedin.avroutil1.model.AvroUnionSchema;
 import com.linkedin.avroutil1.model.SchemaOrRef;
-import com.linkedin.avroutil1.parser.Located;
 import com.linkedin.avroutil1.parser.exceptions.AvroSyntaxException;
 
 import java.io.File;
@@ -32,7 +31,7 @@ import java.util.Map;
  * maintains state for parse operations in progress for a single avsc source
  * - completed (parsed) schemas, unresolved references, current namespace etc
  */
-public class AvscParseContext {
+public class AvscFileParseContext {
     /**
      * represents the resource being parsed (typically an avsc file or a raw avsc string)
      */
@@ -49,23 +48,27 @@ public class AvscParseContext {
      * schemas may have 10s+ of nested record/enum/unions defined therein.
      * Schemas are only added to this collection once they are fully parsed.
      */
-    protected final List<Located<AvroSchema>> definedSchemas = new ArrayList<>();
+    protected final List<AvroSchema> definedSchemas = new ArrayList<>();
     /**
      * schemas out of the above collection that have a name, by their full name
      */
-    protected final Map<String, Located<AvroSchema>> definedNamedSchemas = new HashMap<>();
+    protected final Map<String, AvroSchema> definedNamedSchemas = new HashMap<>();
     /**
      * the top level (root, outer-most) schema in the avsc being parsed.
      * avsc sources typically have a single top level schema, though it may be
      * a primitive or a union/collection
      */
-    protected Located<AvroSchema> topLevelSchema = null;
+    protected AvroSchema topLevelSchema = null;
     /**
      * any issues encountered during parsing
      */
     protected List<AvscIssue> issues = new ArrayList<>();
+    /**
+     * references in this avsc to FQCNs that are not in this avsc (to be resolved by a wider context)
+     */
+    protected Map<String, List<SchemaOrRef>> externalReferences = new HashMap<>(1);
 
-    public AvscParseContext(String avsc) {
+    public AvscFileParseContext(String avsc) {
         try {
             uri = new URI("avsc://" + avsc.hashCode());
         } catch (Exception e) {
@@ -74,7 +77,7 @@ public class AvscParseContext {
         initializeNamespace();
     }
 
-    public AvscParseContext(File avsc) {
+    public AvscFileParseContext(File avsc) {
         uri = avsc.toURI();
         initializeNamespace();
     }
@@ -116,7 +119,7 @@ public class AvscParseContext {
      * @param schema new schema
      * @param isTopLevel true if schema is the top-level schema of the avsc being parsed
      */
-    public void defineSchema(Located<AvroSchema> schema, boolean isTopLevel) {
+    public void defineSchema(AvroSchema schema, boolean isTopLevel) {
         if (schema == null) {
             throw new IllegalArgumentException("schema cannot be null");
         }
@@ -128,12 +131,11 @@ public class AvscParseContext {
             topLevelSchema = schema;
         }
         definedSchemas.add(schema);
-        AvroSchema s = schema.getValue();
-        if (s.type().isNamed()) {
-            AvroNamedSchema namedSchema = (AvroNamedSchema) s;
-            Located<AvroSchema> other = definedNamedSchemas.putIfAbsent(namedSchema.getFullName(), schema);
+        if (schema.type().isNamed()) {
+            AvroNamedSchema namedSchema = (AvroNamedSchema) schema;
+            AvroSchema other = definedNamedSchemas.putIfAbsent(namedSchema.getFullName(), schema);
             if (other != null) {
-                throw new AvroSyntaxException(s + " defined in " + schema.getLocation() + " conflicts with " + other);
+                throw new AvroSyntaxException(schema + " defined in " + schema.getCodeLocation() + " conflicts with " + other);
             }
         }
     }
@@ -153,12 +155,11 @@ public class AvscParseContext {
     }
 
     /**
-     * iterates over all defined schemas and tries to resolve references that could not be resolved during
-     * parsing - for example self-references in schemas
+     * iterates over all defined schemas in this file and tries to resolve references that could
+     * not be resolved during parsing - for example self-references in schemas
      */
     public void resolveReferences() {
-        for (Located<AvroSchema> s : definedSchemas) {
-            AvroSchema schema = s.getValue();
+        for (AvroSchema schema : definedSchemas) {
             resolveReferences(schema);
         }
     }
@@ -206,23 +207,32 @@ public class AvscParseContext {
         } else {
             //unresolved (and so must be a) reference
             String fullName = possiblyRef.getRef();
-            Located<AvroSchema> resolved = definedNamedSchemas.get(fullName);
+            AvroSchema resolved = definedNamedSchemas.get(fullName);
             if (resolved != null) {
-                possiblyRef.setResolvedTo(resolved.getValue());
+                possiblyRef.setResolvedTo(resolved);
+            } else {
+                externalReferences.computeIfAbsent(fullName, s -> new ArrayList<>(1)).add(possiblyRef);
             }
-            //TODO - record unresolved references
         }
     }
 
-    public Located<AvroSchema> getTopLevelSchema() {
+    public AvroSchema getTopLevelSchema() {
         return topLevelSchema;
     }
 
-    public List<Located<AvroSchema>> getAllDefinedSchemas() {
+    public List<AvroSchema> getAllDefinedSchemas() {
         return definedSchemas;
+    }
+
+    public Map<String, AvroSchema> getDefinedNamedSchemas() {
+        return definedNamedSchemas;
     }
 
     public List<AvscIssue> getIssues() {
         return issues;
+    }
+
+    public Map<String, List<SchemaOrRef>> getExternalReferences() {
+        return externalReferences;
     }
 }

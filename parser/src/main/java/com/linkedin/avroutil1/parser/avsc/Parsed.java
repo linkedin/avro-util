@@ -13,7 +13,7 @@ import java.util.List;
  * represents the result of parsing some part of the schema.
  * composed of the thing that was parsed and any issued found
  * while parsing it.
- * note that the 2 values are not mutually exclusive - its possible to parse
+ * note that the 2 values are not mutually exclusive - it's possible to parse
  * something and also record issues (obviously not fatal ones) during.
  * @param <T> the type of thing that was (maybe) parsed.
  */

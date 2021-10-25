@@ -1,0 +1,16 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "TestRecordWithExternalReference",
+  "doc": "uses com.acme.TestRecord",
+  "fields": [
+    {
+      "name": "booleanField",
+      "type": "boolean"
+    },
+    {
+      "name": "testRecordField",
+      "type": "com.acme.TestRecord"
+    }
+  ]
+}

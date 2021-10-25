@@ -125,7 +125,7 @@ public class AvscParser {
     public AvscParseResult parse(String avsc) {
         JsonReaderExt jsonReader = new JsonReaderWithLocations(new StringReader(avsc), null);
         JsonObjectExt root;
-        AvscParseContext context = new AvscParseContext(avsc);
+        AvscFileParseContext context = new AvscFileParseContext(avsc);
         AvscParseResult result = new AvscParseResult();
         try {
             root = jsonReader.readObject();
@@ -167,7 +167,7 @@ public class AvscParser {
      */
     private SchemaOrRef parseSchemaDeclOrRef (
             JsonValueExt node,
-            AvscParseContext context,
+            AvscFileParseContext context,
             boolean topLevel
     ) throws ParseException {
         JsonValue.ValueType nodeType = node.getValueType();
@@ -186,7 +186,7 @@ public class AvscParser {
 
     private SchemaOrRef parseSimplePrimitiveOrRef(
             JsonStringExt stringNode,
-            AvscParseContext context
+            AvscFileParseContext context
     ) {
         CodeLocation codeLocation = locationOf(context.getUri(), stringNode);
         String typeString = stringNode.getString();
@@ -215,7 +215,7 @@ public class AvscParser {
 
     private AvroPrimitiveSchema parseDecoratedPrimitiveSchema(
             JsonObjectExt primitiveNode,
-            AvscParseContext context,
+            AvscFileParseContext context,
             AvroType avroType,
             CodeLocation codeLocation,
             JsonPropertiesContainer props
@@ -275,7 +275,7 @@ public class AvscParser {
 
     private SchemaOrRef parseComplexSchema(
             JsonObjectExt objectNode,
-            AvscParseContext context,
+            AvscFileParseContext context,
             boolean topLevel
     ) {
         CodeLocation codeLocation = locationOf(context.getUri(), objectNode);
@@ -300,14 +300,14 @@ public class AvscParser {
             throw new IllegalStateException("unhandled avro type " + avroType + " at " + typeStr.getLocation());
         }
 
-        context.defineSchema(new Located<>(definedSchema, codeLocation.getStart()), topLevel);
+        context.defineSchema(definedSchema, topLevel);
 
         return new SchemaOrRef(codeLocation, definedSchema);
     }
 
     private AvroNamedSchema parseNamedSchema(
             JsonObjectExt objectNode,
-            AvscParseContext context,
+            AvscFileParseContext context,
             AvroType avroType,
             CodeLocation codeLocation,
             JsonPropertiesContainer extraProps
@@ -473,7 +473,7 @@ public class AvscParser {
 
     private AvroCollectionSchema parseCollectionSchema(
             JsonObjectExt objectNode,
-            AvscParseContext context,
+            AvscFileParseContext context,
             AvroType avroType,
             CodeLocation codeLocation,
             JsonPropertiesContainer props
@@ -494,7 +494,7 @@ public class AvscParser {
 
     private SchemaOrRef parseUnionSchema(
             JsonArrayExt arrayNode,
-            AvscParseContext context,
+            AvscFileParseContext context,
             boolean topLevel
     ) {
         CodeLocation codeLocation = locationOf(context.getUri(), arrayNode);
@@ -506,7 +506,7 @@ public class AvscParser {
         }
         AvroUnionSchema unionSchema = new AvroUnionSchema(codeLocation);
         unionSchema.setTypes(unionTypes);
-        context.defineSchema(new Located<>(unionSchema, codeLocation.getStart()), topLevel);
+        context.defineSchema(unionSchema, topLevel);
         return new SchemaOrRef(codeLocation, unionSchema);
     }
 
@@ -514,7 +514,7 @@ public class AvscParser {
             JsonValueExt literalNode,
             AvroSchema schema,
             String fieldName,
-            AvscParseContext context
+            AvscFileParseContext context
     ) {
         AvroType avroType = schema.type();
         JsonValue.ValueType jsonType = literalNode.getValueType();
@@ -736,7 +736,7 @@ public class AvscParser {
 
     private Parsed<AvroLogicalType> parseLogicalType(
             JsonObjectExt objectNode, //type declaration node
-            AvscParseContext context,
+            AvscFileParseContext context,
             AvroType avroType,
             CodeLocation codeLocation
     ) {
@@ -769,7 +769,7 @@ public class AvscParser {
 
     private Parsed<AvroJavaStringRepresentation> parseStringRepresentation(
             JsonObjectExt objectNode, //type declaration node
-            AvscParseContext context,
+            AvscFileParseContext context,
             AvroType avroType,
             CodeLocation codeLocation
     ) {
@@ -877,7 +877,7 @@ public class AvscParser {
         return new Located<>(((JsonStringExt)val).getString(), Util.convertLocation(val.getStartLocation()));
     }
 
-    private Located<Integer> getOptionalInteger(JsonObjectExt node, String prop, AvscParseContext context) {
+    private Located<Integer> getOptionalInteger(JsonObjectExt node, String prop, AvscFileParseContext context) {
         JsonValueExt val = node.get(prop);
         if (val == null) {
             return null;
