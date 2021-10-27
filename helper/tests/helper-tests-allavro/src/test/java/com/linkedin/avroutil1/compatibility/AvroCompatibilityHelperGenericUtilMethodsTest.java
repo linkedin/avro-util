@@ -31,6 +31,20 @@ public class AvroCompatibilityHelperGenericUtilMethodsTest {
     symbol = AvroCompatibilityHelper.newEnumSymbol(schema, "B");
     Assert.assertNotNull(symbol);
     Assert.assertEquals(symbol.toString(), "B");
+
+    try {
+      AvroCompatibilityHelper.newEnumSymbol(schema, "no such thing");
+      Assert.fail("expected to throw");
+    } catch (IllegalArgumentException expected) {
+      Assert.assertTrue(expected.getMessage().contains("not a symbol"));
+    }
+
+    try {
+      AvroCompatibilityHelper.newEnumSymbol(schema, null);
+      Assert.fail("expected to throw");
+    } catch (IllegalArgumentException expected) {
+      Assert.assertTrue(expected.getMessage().contains("not a symbol"));
+    }
   }
 
   @Test
@@ -43,9 +57,13 @@ public class AvroCompatibilityHelperGenericUtilMethodsTest {
     Assert.assertNotNull(fixed);
     Assert.assertEquals(fixed.bytes(), new byte[] {1, 2, 3});
 
-    fixed = AvroCompatibilityHelper.newFixed(schema, null);
-    Assert.assertNotNull(fixed);
-    Assert.assertNull(fixed.bytes());
+    try {
+      AvroCompatibilityHelper.newFixed(schema, null);
+      Assert.fail("expected to throw");
+    } catch (IllegalArgumentException expected) {
+      //schema says 3 bytes. null is not valid input
+      Assert.assertTrue(expected.getMessage().contains("should be exactly"));
+    }
 
     fixed = AvroCompatibilityHelper.newFixed(schema);
     Assert.assertNotNull(fixed);

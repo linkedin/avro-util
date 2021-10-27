@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import com.linkedin.avroutil1.compatibility.AvroSchemaUtil;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
@@ -502,7 +504,10 @@ public class FastDeserializerDefaultsTest {
     GenericRecord record = new GenericData.Record(DefaultsSubRecord.SCHEMA$);
     record.put("subField", subField);
     record.put("anotherField", anotherField);
-    record.put("arrayField", Arrays.asList(AvroCompatibilityHelper.newEnumSymbol(null, arrayEnumValue)));
+    record.put("arrayField", Arrays.asList(AvroCompatibilityHelper.newEnumSymbol(
+            AvroSchemaUtil.findNonNullUnionBranch(record.getSchema(), "arrayField").getElementType(),
+            arrayEnumValue
+    )));
     return record;
   }
 
