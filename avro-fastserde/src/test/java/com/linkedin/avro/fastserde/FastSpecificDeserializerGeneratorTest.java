@@ -272,9 +272,9 @@ public class FastSpecificDeserializerGeneratorTest {
     oldRecord.put("testFixedArray", Arrays.asList(testFixed));
     oldRecord.put("testFixedUnionArray", Arrays.asList(testFixed));
     oldRecord.put("testEnum",
-        AvroCompatibilityHelper.newEnumSymbol(SCHEMA_FOR_TEST_ENUM, "F"));//new GenericData.EnumSymbol("F"));
+        AvroCompatibilityHelper.newEnumSymbol(SCHEMA_FOR_TEST_ENUM, "F", false));//new GenericData.EnumSymbol("F"));
     oldRecord.put("testEnumArray", Arrays.asList(
-        AvroCompatibilityHelper.newEnumSymbol(SCHEMA_FOR_TEST_ENUM, "F"))); //new GenericData.EnumSymbol("F")));
+        AvroCompatibilityHelper.newEnumSymbol(SCHEMA_FOR_TEST_ENUM, "F", false))); //new GenericData.EnumSymbol("F")));
     oldRecord.put("testEnumUnionArray", Collections.emptyList());
 
     oldRecord.put("subRecordUnion", subRecord);
@@ -442,8 +442,10 @@ public class FastSpecificDeserializerGeneratorTest {
 
     GenericData.Record subRecord =
         new GenericData.Record(oldRecordSchema.getField("subRecordUnion").schema().getTypes().get(1));
-    GenericData.EnumSymbol testEnum =
-        AvroCompatibilityHelper.newEnumSymbol(null, "A"); //new GenericData.EnumSymbol("A");
+    GenericData.EnumSymbol testEnum = AvroCompatibilityHelper.newEnumSymbol(
+            oldRecordSchema.getField("testEnum").schema(),
+            "A"
+    ); //new GenericData.EnumSymbol("A");
     GenericData.Fixed testFixed = newFixed(oldRecordSchema.getField("testFixed").schema(), new byte[]{0x01});
     GenericData.Record oldRecord = new GenericData.Record(oldRecordSchema);
     oldRecord.put("testInt", 1);

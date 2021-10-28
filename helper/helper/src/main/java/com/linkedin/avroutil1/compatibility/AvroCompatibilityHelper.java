@@ -468,7 +468,36 @@ public class AvroCompatibilityHelper {
    * @return a new {@link org.apache.avro.generic.GenericData.EnumSymbol}
    */
   public static GenericData.EnumSymbol newEnumSymbol(Schema enumSchema, String enumValue) {
+    return newEnumSymbol(enumSchema, enumValue, true);
+  }
+
+  /**
+   * creates a new {@link org.apache.avro.generic.GenericData.EnumSymbol} of the given schema with the given value
+   * @param enumSchema enum schema
+   * @param enumValue enum value (symbol)
+   * @param assertValueInSymbols true to check that the given symbol is in the given enum schema
+   * @return a new {@link org.apache.avro.generic.GenericData.EnumSymbol}
+   */
+  public static GenericData.EnumSymbol newEnumSymbol(Schema enumSchema, String enumValue, boolean assertValueInSymbols) {
     assertAvroAvailable();
+    assertSchemaType(enumSchema, Schema.Type.ENUM);
+    if (assertValueInSymbols) {
+      boolean match = false;
+      List<String> expected = enumSchema.getEnumSymbols();
+      for (String legalValue : expected) {
+        if (legalValue.equals(enumValue)) {
+          match = true;
+          break;
+        }
+      }
+      if (!match) {
+        String given = enumValue == null ? "a null value" : enumValue;
+        throw new IllegalArgumentException(given + " is not a symbol of enum "
+                + enumSchema.getFullName() + ". symbols are " + expected);
+      }
+    } else if (enumValue == null) { //we test for null anyway
+      throw new IllegalArgumentException("a null value is not a symbol of enum " + enumSchema.getFullName());
+    }
     return ADAPTER.newEnumSymbol(enumSchema, enumValue);
   }
 
@@ -479,6 +508,7 @@ public class AvroCompatibilityHelper {
    */
   public static GenericData.Fixed newFixed(Schema fixedSchema) {
     assertAvroAvailable();
+    assertSchemaType(fixedSchema, Schema.Type.FIXED);
     return ADAPTER.newFixedField(fixedSchema);
   }
 
@@ -490,6 +520,12 @@ public class AvroCompatibilityHelper {
    */
   public static GenericData.Fixed newFixed(Schema fixedSchema, byte[] contents) {
     assertAvroAvailable();
+    assertSchemaType(fixedSchema, Schema.Type.FIXED);
+    int fixedSize = fixedSchema.getFixedSize();
+    if (contents == null || contents.length != fixedSize) {
+      String given = (contents == null) ? null : (contents.length + " bytes");
+      throw new IllegalArgumentException("contents should be exactly " + fixedSize + " bytes. instead provided " + given);
+    }
     return ADAPTER.newFixedField(fixedSchema, contents);
   }
 
@@ -599,6 +635,17 @@ public class AvroCompatibilityHelper {
   private static void assertAvroAvailable() {
     if (DETECTED_VERSION == null) {
       throw new IllegalStateException("no version of avro found on the classpath");
+    }
+  }
+
+  private static void assertSchemaType(Schema schema, Schema.Type wanted) {
+    if (schema == null) {
+      throw new IllegalArgumentException("must provide a schema. got null");
+    }
+    Schema.Type given = schema.getType();
+    if (!wanted.equals(given)) {
+      throw new IllegalArgumentException("must provide a " + wanted
+              + " schema. instead got a " + given + ": " + schema);
     }
   }
 
