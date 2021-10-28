@@ -54,15 +54,14 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
                     arrayArrayElementReuseVar0 = ((GenericArray)(reuse)).peek();
                 }
                 int unionIndex0 = (decoder.readIndex());
-                switch (unionIndex0) {
-                    case  0 :
-                        decoder.readNull();
-                        break;
-                    case  1 :
+                if (unionIndex0 == 0) {
+                    decoder.readNull();
+                } else {
+                    if (unionIndex0 == 1) {
                         array0 .add(deserializeTestRecord0(arrayArrayElementReuseVar0, (decoder)));
-                        break;
-                    default:
+                    } else {
                         throw new RuntimeException(("Illegal union index for 'arrayElem': "+ unionIndex0));
+                    }
                 }
             }
             chunkLen0 = (decoder.arrayNext());
@@ -81,63 +80,58 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
         }
         TestRecord.put(0, (decoder.readInt()));
         int unionIndex1 = (decoder.readIndex());
-        switch (unionIndex1) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex1 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex1 == 1) {
                 TestRecord.put(1, (decoder.readInt()));
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'testIntUnion': "+ unionIndex1));
+            }
         }
         TestRecord.put(2, (decoder.readLong()));
         int unionIndex2 = (decoder.readIndex());
-        switch (unionIndex2) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex2 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex2 == 1) {
                 TestRecord.put(3, (decoder.readLong()));
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'testLongUnion': "+ unionIndex2));
+            }
         }
         TestRecord.put(4, (decoder.readDouble()));
         int unionIndex3 = (decoder.readIndex());
-        switch (unionIndex3) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex3 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex3 == 1) {
                 TestRecord.put(5, (decoder.readDouble()));
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'testDoubleUnion': "+ unionIndex3));
+            }
         }
         TestRecord.put(6, (decoder.readFloat()));
         int unionIndex4 = (decoder.readIndex());
-        switch (unionIndex4) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex4 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex4 == 1) {
                 TestRecord.put(7, (decoder.readFloat()));
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'testFloatUnion': "+ unionIndex4));
+            }
         }
         TestRecord.put(8, (decoder.readBoolean()));
         int unionIndex5 = (decoder.readIndex());
-        switch (unionIndex5) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex5 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex5 == 1) {
                 TestRecord.put(9, (decoder.readBoolean()));
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'testBooleanUnion': "+ unionIndex5));
+            }
         }
         Object oldBytes0 = TestRecord.get(10);
         if (oldBytes0 instanceof ByteBuffer) {
@@ -146,22 +140,19 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
             TestRecord.put(10, (decoder).readBytes((null)));
         }
         int unionIndex6 = (decoder.readIndex());
-        switch (unionIndex6) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
-            {
+        if (unionIndex6 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex6 == 1) {
                 Object oldBytes1 = TestRecord.get(11);
                 if (oldBytes1 instanceof ByteBuffer) {
                     TestRecord.put(11, (decoder).readBytes(((ByteBuffer) oldBytes1)));
                 } else {
                     TestRecord.put(11, (decoder).readBytes((null)));
                 }
-                break;
-            }
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'testBytesUnion': "+ unionIndex6));
+            }
         }
         Object oldString0 = TestRecord.get(12);
         if (oldString0 instanceof Utf8) {
@@ -170,22 +161,19 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
             TestRecord.put(12, (decoder).readString(null));
         }
         int unionIndex7 = (decoder.readIndex());
-        switch (unionIndex7) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
-            {
+        if (unionIndex7 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex7 == 1) {
                 Object oldString1 = TestRecord.get(13);
                 if (oldString1 instanceof Utf8) {
                     TestRecord.put(13, (decoder).readString(((Utf8) oldString1)));
                 } else {
                     TestRecord.put(13, (decoder).readString(null));
                 }
-                break;
-            }
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'testStringUnion': "+ unionIndex7));
+            }
         }
         byte[] testFixed0;
         Object oldFixed0 = TestRecord.get(14);
@@ -200,12 +188,10 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
         testFixed1.bytes(testFixed0);
         TestRecord.put(14, testFixed1);
         int unionIndex8 = (decoder.readIndex());
-        switch (unionIndex8) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
-            {
+        if (unionIndex8 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex8 == 1) {
                 byte[] testFixed2;
                 Object oldFixed1 = TestRecord.get(15);
                 if ((oldFixed1 instanceof GenericFixed)&&(((GenericFixed) oldFixed1).bytes().length == (1))) {
@@ -218,10 +204,9 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
                 testFixed3 = new TestFixed();
                 testFixed3.bytes(testFixed2);
                 TestRecord.put(15, testFixed3);
-                break;
-            }
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'testFixedUnion': "+ unionIndex8));
+            }
         }
         List<TestFixed> testFixedArray0 = null;
         long chunkLen1 = (decoder.readArrayStart());
@@ -270,12 +255,10 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
                     testFixedUnionArrayArrayElementReuseVar0 = ((GenericArray) oldArray1).peek();
                 }
                 int unionIndex9 = (decoder.readIndex());
-                switch (unionIndex9) {
-                    case  0 :
-                        decoder.readNull();
-                        break;
-                    case  1 :
-                    {
+                if (unionIndex9 == 0) {
+                    decoder.readNull();
+                } else {
+                    if (unionIndex9 == 1) {
                         byte[] testFixed6;
                         Object oldFixed3 = testFixedUnionArrayArrayElementReuseVar0;
                         if ((oldFixed3 instanceof GenericFixed)&&(((GenericFixed) oldFixed3).bytes().length == (1))) {
@@ -288,10 +271,9 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
                         testFixed7 = new TestFixed();
                         testFixed7.bytes(testFixed6);
                         testFixedUnionArray0 .add(testFixed7);
-                        break;
-                    }
-                    default:
+                    } else {
                         throw new RuntimeException(("Illegal union index for 'testFixedUnionArrayElem': "+ unionIndex9));
+                    }
                 }
             }
             chunkLen2 = (decoder.arrayNext());
@@ -299,15 +281,14 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
         TestRecord.put(17, testFixedUnionArray0);
         TestRecord.put(18, TestEnum.values()[(decoder.readEnum())]);
         int unionIndex10 = (decoder.readIndex());
-        switch (unionIndex10) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex10 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex10 == 1) {
                 TestRecord.put(19, TestEnum.values()[(decoder.readEnum())]);
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'testEnumUnion': "+ unionIndex10));
+            }
         }
         List<TestEnum> testEnumArray0 = null;
         long chunkLen3 = (decoder.readArrayStart());
@@ -341,30 +322,28 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
                     testEnumUnionArrayArrayElementReuseVar0 = ((GenericArray) oldArray3).peek();
                 }
                 int unionIndex11 = (decoder.readIndex());
-                switch (unionIndex11) {
-                    case  0 :
-                        decoder.readNull();
-                        break;
-                    case  1 :
+                if (unionIndex11 == 0) {
+                    decoder.readNull();
+                } else {
+                    if (unionIndex11 == 1) {
                         testEnumUnionArray0 .add(TestEnum.values()[(decoder.readEnum())]);
-                        break;
-                    default:
+                    } else {
                         throw new RuntimeException(("Illegal union index for 'testEnumUnionArrayElem': "+ unionIndex11));
+                    }
                 }
             }
             chunkLen4 = (decoder.arrayNext());
         }
         TestRecord.put(21, testEnumUnionArray0);
         int unionIndex12 = (decoder.readIndex());
-        switch (unionIndex12) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex12 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex12 == 1) {
                 TestRecord.put(22, deserializeSubRecord0(TestRecord.get(22), (decoder)));
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'subRecordUnion': "+ unionIndex12));
+            }
         }
         TestRecord.put(23, deserializeSubRecord0(TestRecord.get(23), (decoder)));
         List<com.linkedin.avro.fastserde.generated.avro.SubRecord> recordsArray0 = null;
@@ -413,12 +392,10 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
         }
         TestRecord.put(25, recordsMap0);
         int unionIndex15 = (decoder.readIndex());
-        switch (unionIndex15) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
-            {
+        if (unionIndex15 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex15 == 1) {
                 List<com.linkedin.avro.fastserde.generated.avro.SubRecord> recordsArrayUnionOption0 = null;
                 long chunkLen7 = (decoder.readArrayStart());
                 Object oldArray5 = TestRecord.get(26);
@@ -435,32 +412,28 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
                             recordsArrayUnionOptionArrayElementReuseVar0 = ((GenericArray) oldArray5).peek();
                         }
                         int unionIndex16 = (decoder.readIndex());
-                        switch (unionIndex16) {
-                            case  0 :
-                                decoder.readNull();
-                                break;
-                            case  1 :
+                        if (unionIndex16 == 0) {
+                            decoder.readNull();
+                        } else {
+                            if (unionIndex16 == 1) {
                                 recordsArrayUnionOption0 .add(deserializeSubRecord0(recordsArrayUnionOptionArrayElementReuseVar0, (decoder)));
-                                break;
-                            default:
+                            } else {
                                 throw new RuntimeException(("Illegal union index for 'recordsArrayUnionOptionElem': "+ unionIndex16));
+                            }
                         }
                     }
                     chunkLen7 = (decoder.arrayNext());
                 }
                 TestRecord.put(26, recordsArrayUnionOption0);
-                break;
-            }
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'recordsArrayUnion': "+ unionIndex15));
+            }
         }
         int unionIndex17 = (decoder.readIndex());
-        switch (unionIndex17) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
-            {
+        if (unionIndex17 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex17 == 1) {
                 Map<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord> recordsMapUnionOption0 = null;
                 long chunkLen8 = (decoder.readMapStart());
                 if (chunkLen8 > 0) {
@@ -479,15 +452,14 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
                         for (int counter8 = 0; (counter8 <chunkLen8); counter8 ++) {
                             Utf8 key1 = (decoder.readString(null));
                             int unionIndex18 = (decoder.readIndex());
-                            switch (unionIndex18) {
-                                case  0 :
-                                    decoder.readNull();
-                                    break;
-                                case  1 :
+                            if (unionIndex18 == 0) {
+                                decoder.readNull();
+                            } else {
+                                if (unionIndex18 == 1) {
                                     recordsMapUnionOption0 .put(key1, deserializeSubRecord0(null, (decoder)));
-                                    break;
-                                default:
+                                } else {
                                     throw new RuntimeException(("Illegal union index for 'recordsMapUnionOptionValue': "+ unionIndex18));
+                                }
                             }
                         }
                         chunkLen8 = (decoder.mapNext());
@@ -496,10 +468,9 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
                     recordsMapUnionOption0 = new HashMap<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>(0);
                 }
                 TestRecord.put(27, recordsMapUnionOption0);
-                break;
-            }
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'recordsMapUnion': "+ unionIndex17));
+            }
         }
         List<Map<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>> recordsArrayMap0 = null;
         long chunkLen9 = (decoder.readArrayStart());
@@ -533,15 +504,14 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
                         for (int counter10 = 0; (counter10 <chunkLen10); counter10 ++) {
                             Utf8 key2 = (decoder.readString(null));
                             int unionIndex19 = (decoder.readIndex());
-                            switch (unionIndex19) {
-                                case  0 :
-                                    decoder.readNull();
-                                    break;
-                                case  1 :
+                            if (unionIndex19 == 0) {
+                                decoder.readNull();
+                            } else {
+                                if (unionIndex19 == 1) {
                                     recordsArrayMapElem0 .put(key2, deserializeSubRecord0(null, (decoder)));
-                                    break;
-                                default:
+                                } else {
                                     throw new RuntimeException(("Illegal union index for 'recordsArrayMapElemValue': "+ unionIndex19));
+                                }
                             }
                         }
                         chunkLen10 = (decoder.mapNext());
@@ -586,15 +556,14 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
                                 recordsMapArrayValueArrayElementReuseVar0 = ((GenericArray) null).peek();
                             }
                             int unionIndex20 = (decoder.readIndex());
-                            switch (unionIndex20) {
-                                case  0 :
-                                    decoder.readNull();
-                                    break;
-                                case  1 :
+                            if (unionIndex20 == 0) {
+                                decoder.readNull();
+                            } else {
+                                if (unionIndex20 == 1) {
                                     recordsMapArrayValue0 .add(deserializeSubRecord0(recordsMapArrayValueArrayElementReuseVar0, (decoder)));
-                                    break;
-                                default:
+                                } else {
                                     throw new RuntimeException(("Illegal union index for 'recordsMapArrayValueElem': "+ unionIndex20));
+                                }
                             }
                         }
                         chunkLen12 = (decoder.arrayNext());
@@ -608,12 +577,10 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
         }
         TestRecord.put(29, recordsMapArray0);
         int unionIndex21 = (decoder.readIndex());
-        switch (unionIndex21) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
-            {
+        if (unionIndex21 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex21 == 1) {
                 List<Map<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>> recordsArrayMapUnionOption0 = null;
                 long chunkLen13 = (decoder.readArrayStart());
                 Object oldArray7 = TestRecord.get(30);
@@ -646,15 +613,14 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
                                 for (int counter14 = 0; (counter14 <chunkLen14); counter14 ++) {
                                     Utf8 key4 = (decoder.readString(null));
                                     int unionIndex22 = (decoder.readIndex());
-                                    switch (unionIndex22) {
-                                        case  0 :
-                                            decoder.readNull();
-                                            break;
-                                        case  1 :
+                                    if (unionIndex22 == 0) {
+                                        decoder.readNull();
+                                    } else {
+                                        if (unionIndex22 == 1) {
                                             recordsArrayMapUnionOptionElem0 .put(key4, deserializeSubRecord0(null, (decoder)));
-                                            break;
-                                        default:
+                                        } else {
                                             throw new RuntimeException(("Illegal union index for 'recordsArrayMapUnionOptionElemValue': "+ unionIndex22));
+                                        }
                                     }
                                 }
                                 chunkLen14 = (decoder.mapNext());
@@ -667,18 +633,15 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
                     chunkLen13 = (decoder.arrayNext());
                 }
                 TestRecord.put(30, recordsArrayMapUnionOption0);
-                break;
-            }
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'recordsArrayMapUnion': "+ unionIndex21));
+            }
         }
         int unionIndex23 = (decoder.readIndex());
-        switch (unionIndex23) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
-            {
+        if (unionIndex23 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex23 == 1) {
                 Map<Utf8, List<com.linkedin.avro.fastserde.generated.avro.SubRecord>> recordsMapArrayUnionOption0 = null;
                 long chunkLen15 = (decoder.readMapStart());
                 if (chunkLen15 > 0) {
@@ -711,15 +674,14 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
                                         recordsMapArrayUnionOptionValueArrayElementReuseVar0 = ((GenericArray) null).peek();
                                     }
                                     int unionIndex24 = (decoder.readIndex());
-                                    switch (unionIndex24) {
-                                        case  0 :
-                                            decoder.readNull();
-                                            break;
-                                        case  1 :
+                                    if (unionIndex24 == 0) {
+                                        decoder.readNull();
+                                    } else {
+                                        if (unionIndex24 == 1) {
                                             recordsMapArrayUnionOptionValue0 .add(deserializeSubRecord0(recordsMapArrayUnionOptionValueArrayElementReuseVar0, (decoder)));
-                                            break;
-                                        default:
+                                        } else {
                                             throw new RuntimeException(("Illegal union index for 'recordsMapArrayUnionOptionValueElem': "+ unionIndex24));
+                                        }
                                     }
                                 }
                                 chunkLen16 = (decoder.arrayNext());
@@ -732,34 +694,32 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
                     recordsMapArrayUnionOption0 = new HashMap<Utf8, List<com.linkedin.avro.fastserde.generated.avro.SubRecord>>(0);
                 }
                 TestRecord.put(31, recordsMapArrayUnionOption0);
-                break;
-            }
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'recordsMapArrayUnion': "+ unionIndex23));
+            }
         }
         int unionIndex25 = (decoder.readIndex());
-        switch (unionIndex25) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex25 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex25 == 1) {
                 TestRecord.put(32, deserializeSubRecord0(TestRecord.get(32), (decoder)));
-                break;
-            case  2 :
-            {
-                Object oldString4 = TestRecord.get(32);
-                if (oldString4 instanceof Utf8) {
-                    TestRecord.put(32, (decoder).readString(((Utf8) oldString4)));
+            } else {
+                if (unionIndex25 == 2) {
+                    Object oldString4 = TestRecord.get(32);
+                    if (oldString4 instanceof Utf8) {
+                        TestRecord.put(32, (decoder).readString(((Utf8) oldString4)));
+                    } else {
+                        TestRecord.put(32, (decoder).readString(null));
+                    }
                 } else {
-                    TestRecord.put(32, (decoder).readString(null));
+                    if (unionIndex25 == 3) {
+                        TestRecord.put(32, (decoder.readInt()));
+                    } else {
+                        throw new RuntimeException(("Illegal union index for 'union': "+ unionIndex25));
+                    }
                 }
-                break;
             }
-            case  3 :
-                TestRecord.put(32, (decoder.readInt()));
-                break;
-            default:
-                throw new RuntimeException(("Illegal union index for 'union': "+ unionIndex25));
         }
         PrimitiveBooleanList booleanArray0 = null;
         long chunkLen17 = (decoder.readArrayStart());
@@ -865,40 +825,34 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
             SubRecord = new com.linkedin.avro.fastserde.generated.avro.SubRecord();
         }
         int unionIndex13 = (decoder.readIndex());
-        switch (unionIndex13) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
-            {
+        if (unionIndex13 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex13 == 1) {
                 Object oldString2 = SubRecord.get(0);
                 if (oldString2 instanceof Utf8) {
                     SubRecord.put(0, (decoder).readString(((Utf8) oldString2)));
                 } else {
                     SubRecord.put(0, (decoder).readString(null));
                 }
-                break;
-            }
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'subField': "+ unionIndex13));
+            }
         }
         int unionIndex14 = (decoder.readIndex());
-        switch (unionIndex14) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
-            {
+        if (unionIndex14 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex14 == 1) {
                 Object oldString3 = SubRecord.get(1);
                 if (oldString3 instanceof Utf8) {
                     SubRecord.put(1, (decoder).readString(((Utf8) oldString3)));
                 } else {
                     SubRecord.put(1, (decoder).readString(null));
                 }
-                break;
-            }
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'anotherField': "+ unionIndex14));
+            }
         }
         return SubRecord;
     }

@@ -72,33 +72,29 @@ public class SplitRecordTest2_SpecificDeserializer_999827040798143854_1895547120
             IntRecord = new StringRecord();
         }
         int unionIndex0 = (decoder.readIndex());
-        switch (unionIndex0) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
-            {
+        if (unionIndex0 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex0 == 1) {
                 Object oldString0 = IntRecord.get(0);
                 if (oldString0 instanceof Utf8) {
                     IntRecord.put(0, (decoder).readString(((Utf8) oldString0)));
                 } else {
                     IntRecord.put(0, (decoder).readString(null));
                 }
-                break;
-            }
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'field1': "+ unionIndex0));
+            }
         }
         int unionIndex1 = (decoder.readIndex());
-        switch (unionIndex1) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex1 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex1 == 1) {
                 decoder.readInt();
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'field2': "+ unionIndex1));
+            }
         }
         return IntRecord;
     }
@@ -113,26 +109,24 @@ public class SplitRecordTest2_SpecificDeserializer_999827040798143854_1895547120
             IntRecord = new com.linkedin.avro.fastserde.generated.avro.IntRecord();
         }
         int unionIndex2 = (decoder.readIndex());
-        switch (unionIndex2) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex2 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex2 == 1) {
                 decoder.skipString();
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'field1': "+ unionIndex2));
+            }
         }
         int unionIndex3 = (decoder.readIndex());
-        switch (unionIndex3) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex3 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex3 == 1) {
                 IntRecord.put(0, (decoder.readInt()));
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'field2': "+ unionIndex3));
+            }
         }
         return IntRecord;
     }
@@ -147,33 +141,29 @@ public class SplitRecordTest2_SpecificDeserializer_999827040798143854_1895547120
             IntRecord = new FullRecord();
         }
         int unionIndex4 = (decoder.readIndex());
-        switch (unionIndex4) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
-            {
+        if (unionIndex4 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex4 == 1) {
                 Object oldString1 = IntRecord.get(0);
                 if (oldString1 instanceof Utf8) {
                     IntRecord.put(0, (decoder).readString(((Utf8) oldString1)));
                 } else {
                     IntRecord.put(0, (decoder).readString(null));
                 }
-                break;
-            }
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'field1': "+ unionIndex4));
+            }
         }
         int unionIndex5 = (decoder.readIndex());
-        switch (unionIndex5) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex5 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex5 == 1) {
                 IntRecord.put(1, (decoder.readInt()));
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'field2': "+ unionIndex5));
+            }
         }
         return IntRecord;
     }

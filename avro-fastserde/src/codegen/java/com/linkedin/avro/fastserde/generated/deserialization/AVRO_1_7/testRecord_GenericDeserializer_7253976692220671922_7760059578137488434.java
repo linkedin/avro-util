@@ -2,6 +2,9 @@
 package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_7;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
@@ -14,10 +17,16 @@ public class testRecord_GenericDeserializer_7253976692220671922_7760059578137488
 
     private final Schema readerSchema;
     private final Schema testEnum0;
+    private final Map enumMappingtestEnum0;
 
     public testRecord_GenericDeserializer_7253976692220671922_7760059578137488434(Schema readerSchema) {
         this.readerSchema = readerSchema;
         this.testEnum0 = readerSchema.getField("testEnum").schema();
+        HashMap tempEnumMapping0 = new HashMap(3);
+        tempEnumMapping0 .put(new Integer(0), new Integer(0));
+        tempEnumMapping0 .put(new Integer(1), new Integer(1));
+        tempEnumMapping0 .put(new Integer(2), new AvroTypeException("com.adpilot.utils.generated.avro.testEnum: No match for C"));
+        this.enumMappingtestEnum0 = Collections.unmodifiableMap(tempEnumMapping0);
     }
 
     public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
@@ -37,17 +46,15 @@ public class testRecord_GenericDeserializer_7253976692220671922_7760059578137488
         }
         int enumIndex0 = (decoder.readEnum());
         org.apache.avro.generic.GenericData.EnumSymbol enumValue0 = null;
-        switch (enumIndex0) {
-            case  0 :
-                enumValue0 = new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get(0));
-                break;
-            case  1 :
-                enumValue0 = new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get(1));
-                break;
-            case  2 :
-                throw new AvroTypeException("com.adpilot.utils.generated.avro.testEnum: No match for C");
-            default:
+        Object enumIndexLookupResult0 = enumMappingtestEnum0 .get(enumIndex0);
+        if (enumIndexLookupResult0 instanceof Integer) {
+            enumValue0 = new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get(((Integer) enumIndexLookupResult0)));
+        } else {
+            if (enumIndexLookupResult0 instanceof AvroTypeException) {
+                throw((AvroTypeException) enumIndexLookupResult0);
+            } else {
                 throw new RuntimeException(("Illegal enum index for 'com.adpilot.utils.generated.avro.testEnum': "+ enumIndex0));
+            }
         }
         testRecord.put(0, enumValue0);
         return testRecord;

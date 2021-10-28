@@ -13,13 +13,13 @@ import com.sun.codemodel.JConditional;
 import com.sun.codemodel.JDoLoop;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
+import com.sun.codemodel.JFieldRef;
 import com.sun.codemodel.JForLoop;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JStatement;
-import com.sun.codemodel.JSwitch;
 import com.sun.codemodel.JTryBlock;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
@@ -27,6 +27,7 @@ import com.sun.codemodel.JWhileLoop;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -515,17 +516,19 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       final Schema readerUnionSchema, JBlock body, FieldAction action,
       BiConsumer<JBlock, JExpression> putValueIntoParent, Supplier<JExpression> reuseSupplier) {
     JVar unionIndex = body.decl(codeModel.INT, getUniqueName("unionIndex"), JExpr.direct(DECODER + ".readIndex()"));
-    JSwitch switchBlock = body._switch(unionIndex);
+    JConditional ifBlock = null;
     for (int i = 0; i < unionSchema.getTypes().size(); i++) {
       Schema optionSchema = unionSchema.getTypes().get(i);
       Schema readerOptionSchema = null;
       int readerOptionUnionBranchIndex = -1;
       FieldAction unionAction;
-      JBlock caseBody = switchBlock._case(JExpr.lit(i)).body();
+      JExpression condition = unionIndex.eq(JExpr.lit(i));
+
+      ifBlock = ifBlock != null ? ifBlock._elseif(condition) : body._if(condition);
+      final JBlock thenBlock = ifBlock._then();
 
       if (Schema.Type.NULL.equals(optionSchema.getType())) {
-        caseBody.directStatement(DECODER + ".readNull();");
-        caseBody._break();
+        thenBlock.directStatement(DECODER + ".readNull();");
         continue;
       }
 
@@ -546,7 +549,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
         }
         if (null == readerOptionSchema) {
           // This is the same exception that vanilla Avro would throw in this circumstance
-          caseBody._throw(JExpr._new(codeModel.ref(AvroTypeException.class)).arg(
+          thenBlock._throw(JExpr._new(codeModel.ref(AvroTypeException.class)).arg(
               JExpr.lit("Found " + optionSchema + ", expecting " + readerUnionSchema.getTypes().toString())));
           continue;
         }
@@ -588,14 +591,15 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
         if (Schema.Type.UNION.equals(optionSchema.getType())) {
           throw new FastDeserializerGeneratorException("Union cannot be sub-type of union!");
         }
-        processComplexType(optionSchemaVar, optionName, optionSchema, readerOptionSchema, caseBody, unionAction,
+        processComplexType(optionSchemaVar, optionName, optionSchema, readerOptionSchema, thenBlock, unionAction,
             putValueIntoParent, reuseSupplier);
       } else {
-        processSimpleType(optionSchema, readerOptionSchema, caseBody, unionAction, putValueIntoParent, reuseSupplier);
+        processSimpleType(optionSchema, readerOptionSchema, thenBlock, unionAction, putValueIntoParent, reuseSupplier);
       }
-      caseBody._break();
     }
-    switchBlock._default().body()._throw(JExpr._new(codeModel.ref(RuntimeException.class)).arg(JExpr.lit("Illegal union index for '" + name + "': ").plus(unionIndex)));
+    if (ifBlock != null) {
+      ifBlock._else()._throw(JExpr._new(codeModel.ref(RuntimeException.class)).arg(JExpr.lit("Illegal union index for '" + name + "': ").plus(unionIndex)));
+    }
   }
 
   private void processArray(JVar arraySchemaVar, final String name, final Schema arraySchema,
@@ -903,9 +907,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
 
   private void processEnum(final Schema schema, final JBlock body, FieldAction action,
       BiConsumer<JBlock, JExpression> putEnumIntoParent) {
-
     if (action.getShouldRead()) {
-
       Symbol.EnumAdjustAction enumAdjustAction = null;
       if (action.getSymbol() instanceof Symbol.EnumAdjustAction) {
         enumAdjustAction = (Symbol.EnumAdjustAction) action.getSymbol();
@@ -935,26 +937,58 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       if (enumOrderCorrect) {
         newEnum = schemaAssistant.getEnumValueByIndex(schema, enumValueExpr, getSchemaExpr(schema));
       } else {
+
+        /**
+         * Define a class variable to keep the mapping between the enum index from the writer schema and the corresponding
+         * one in the reader schema, and there are some cases:
+         * 1. If the enum index doesn't exist in this map, runtime will throw RuntimeException.
+         * 2. If the enum index exists in the map, runtime will throw it if the mapping is an {@link AvroTypeException} because of unknown enum from reader schema.
+         * 3. If there is a corresponding enum in the reader schema, runtime will use this one to lookup the exact Enum Symbol from the reader schema.
+         */
+
+        JVar tempEnumMappingVar = constructor.body().decl(codeModel.ref(HashMap.class),  getUniqueName("tempEnumMapping"),
+            JExpr._new(codeModel.ref(HashMap.class)).arg(JExpr.lit(enumAdjustAction.adjustments.length)));
+        /**
+         * Populate the global enum mapping based on the enum adjustment.
+         */
+        for (int i = 0; i < enumAdjustAction.adjustments.length; i++) {
+          JInvocation keyExpr = JExpr._new(codeModel.ref(Integer.class)).arg(JExpr.lit(i));
+          JStatement mapUpdateStatement;
+          if (unknownEnumIndexes.contains(i)) {
+            JInvocation avroTypeExceptionExpr = JExpr._new(codeModel.ref(AvroTypeException.class))
+                .arg(JExpr.lit(schema.getFullName() + ": " + enumAdjustAction.adjustments[i].toString()));
+            mapUpdateStatement = tempEnumMappingVar.invoke("put").arg(keyExpr).arg(avroTypeExceptionExpr);
+          } else {
+            JInvocation valueExpr = JExpr._new(codeModel.ref(Integer.class)).arg(JExpr.lit((Integer)enumAdjustAction.adjustments[i]));
+            mapUpdateStatement = tempEnumMappingVar.invoke("put").arg(keyExpr).arg(valueExpr);
+          }
+          constructor.body().add(mapUpdateStatement);
+        }
+        JVar enumMappingVar = generatedClass.field(JMod.PRIVATE | JMod.FINAL, Map.class, getUniqueName("enumMapping" + schema.getName()));
+        constructor.body().assign(JExpr.refthis(enumMappingVar.name()), codeModel.ref(Collections.class).staticInvoke("unmodifiableMap").arg(tempEnumMappingVar));
+
         JVar enumIndex = body.decl(codeModel.INT, getUniqueName("enumIndex"), enumValueExpr);
         JClass enumClass = schemaAssistant.classFromSchema(schema);
         newEnum = body.decl(enumClass, getUniqueName("enumValue"), JExpr._null());
 
-        JSwitch switchBlock = body._switch(enumIndex);
-        for (int i = 0; i < enumAdjustAction.adjustments.length; i++) {
-          JBlock caseBody = switchBlock._case(JExpr.lit(i)).body();
-          if (unknownEnumIndexes.contains(i)) {
-            caseBody._throw(JExpr._new(codeModel.ref(AvroTypeException.class))
-                .arg(JExpr.lit(schema.getFullName() + ": " + enumAdjustAction.adjustments[i].toString())));
-          } else {
-            JExpression ithVal =
-                schemaAssistant.getEnumValueByIndex(schema, JExpr.lit((Integer) enumAdjustAction.adjustments[i]),
-                    getSchemaExpr(schema));
-            caseBody.assign((JVar) newEnum, ithVal);
-            caseBody._break();
-          }
-        }
-
-        switchBlock._default().body()._throw(JExpr._new(codeModel.ref(RuntimeException.class))
+        JVar lookupResult = body.decl(codeModel._ref(Object.class), getUniqueName("enumIndexLookupResult"),
+            enumMappingVar.invoke("get").arg(enumIndex));
+        /**
+         * Found the enum index mapping.
+         */
+        JConditional ifBlock = body._if(lookupResult._instanceof(codeModel.ref(Integer.class)));
+        JExpression ithValResult =
+            schemaAssistant.getEnumValueByIndex(schema, JExpr.cast(codeModel.ref(Integer.class), lookupResult), getSchemaExpr(schema));
+        ifBlock._then().assign((JVar) newEnum, ithValResult);
+        /**
+         * Unknown enum in reader schema.
+         */
+        JConditional elseIfBlock = ifBlock._elseif(lookupResult._instanceof(codeModel.ref(AvroTypeException.class)));
+        elseIfBlock._then()._throw(JExpr.cast(codeModel.ref(AvroTypeException.class), lookupResult));
+        /**
+         * Unknown enum in writer schema.
+         */
+        elseIfBlock._else()._throw(JExpr._new(codeModel.ref(RuntimeException.class))
             .arg(JExpr.lit("Illegal enum index for '" + schema.getFullName() + "': ").plus(enumIndex)));
       }
       putEnumIntoParent.accept(body, newEnum);

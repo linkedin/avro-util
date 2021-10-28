@@ -56,15 +56,14 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord_
         }
         deserializesubSubRecord0(null, (decoder));
         int unionIndex0 = (decoder.readIndex());
-        switch (unionIndex0) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex0 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex0 == 1) {
                 deserializesubSubRecord0(null, (decoder));
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'test3': "+ unionIndex0));
+            }
         }
         Object oldString1 = subRecord.get(1);
         if (oldString1 instanceof Utf8) {

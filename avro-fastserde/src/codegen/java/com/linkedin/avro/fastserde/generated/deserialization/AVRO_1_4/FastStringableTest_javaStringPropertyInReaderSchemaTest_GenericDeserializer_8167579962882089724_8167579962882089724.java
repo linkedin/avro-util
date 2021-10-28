@@ -50,22 +50,19 @@ public class FastStringableTest_javaStringPropertyInReaderSchemaTest_GenericDese
             FastStringableTest_javaStringPropertyInReaderSchemaTest.put(0, (decoder).readString(null));
         }
         int unionIndex0 = (decoder.readIndex());
-        switch (unionIndex0) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
-            {
+        if (unionIndex0 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex0 == 1) {
                 Object oldString1 = FastStringableTest_javaStringPropertyInReaderSchemaTest.get(1);
                 if (oldString1 instanceof Utf8) {
                     FastStringableTest_javaStringPropertyInReaderSchemaTest.put(1, (decoder).readString(((Utf8) oldString1)));
                 } else {
                     FastStringableTest_javaStringPropertyInReaderSchemaTest.put(1, (decoder).readString(null));
                 }
-                break;
-            }
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'testUnionString': "+ unionIndex0));
+            }
         }
         List<Utf8> testStringArray1 = null;
         long chunkLen0 = (decoder.readArrayStart());

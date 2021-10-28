@@ -42,15 +42,14 @@ public class recordName_GenericDeserializer_6897301803194779359_6897301803194779
             recordName.put(0, (decoder).readString(null));
         }
         int unionIndex0 = (decoder.readIndex());
-        switch (unionIndex0) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex0 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex0 == 1) {
                 recordName.put(1, deserializerecordName0(recordName.get(1), (decoder)));
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'unionField': "+ unionIndex0));
+            }
         }
         return recordName;
     }

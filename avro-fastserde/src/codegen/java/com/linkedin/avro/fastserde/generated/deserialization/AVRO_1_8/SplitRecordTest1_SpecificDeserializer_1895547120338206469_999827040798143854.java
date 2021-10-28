@@ -70,22 +70,19 @@ public class SplitRecordTest1_SpecificDeserializer_1895547120338206469_999827040
             FullRecord = new com.linkedin.avro.fastserde.generated.avro.FullRecord();
         }
         int unionIndex0 = (decoder.readIndex());
-        switch (unionIndex0) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
-            {
+        if (unionIndex0 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex0 == 1) {
                 Object oldString0 = FullRecord.get(0);
                 if (oldString0 instanceof Utf8) {
                     FullRecord.put(0, (decoder).readString(((Utf8) oldString0)));
                 } else {
                     FullRecord.put(0, (decoder).readString(null));
                 }
-                break;
-            }
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'field1': "+ unionIndex0));
+            }
         }
         FullRecord.put(1, null);
         return FullRecord;
@@ -101,15 +98,14 @@ public class SplitRecordTest1_SpecificDeserializer_1895547120338206469_999827040
             FullRecord = new com.linkedin.avro.fastserde.generated.avro.FullRecord();
         }
         int unionIndex1 = (decoder.readIndex());
-        switch (unionIndex1) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex1 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex1 == 1) {
                 FullRecord.put(1, (decoder.readInt()));
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'field2': "+ unionIndex1));
+            }
         }
         FullRecord.put(0, null);
         return FullRecord;
@@ -125,33 +121,29 @@ public class SplitRecordTest1_SpecificDeserializer_1895547120338206469_999827040
             FullRecord = new com.linkedin.avro.fastserde.generated.avro.FullRecord();
         }
         int unionIndex2 = (decoder.readIndex());
-        switch (unionIndex2) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
-            {
+        if (unionIndex2 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex2 == 1) {
                 Object oldString1 = FullRecord.get(0);
                 if (oldString1 instanceof Utf8) {
                     FullRecord.put(0, (decoder).readString(((Utf8) oldString1)));
                 } else {
                     FullRecord.put(0, (decoder).readString(null));
                 }
-                break;
-            }
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'field1': "+ unionIndex2));
+            }
         }
         int unionIndex3 = (decoder.readIndex());
-        switch (unionIndex3) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex3 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex3 == 1) {
                 FullRecord.put(1, (decoder.readInt()));
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'field2': "+ unionIndex3));
+            }
         }
         return FullRecord;
     }

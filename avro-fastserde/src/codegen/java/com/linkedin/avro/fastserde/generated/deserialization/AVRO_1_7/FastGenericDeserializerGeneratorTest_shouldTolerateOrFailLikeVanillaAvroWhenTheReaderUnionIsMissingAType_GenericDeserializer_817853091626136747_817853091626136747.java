@@ -36,25 +36,23 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanill
             FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         int unionIndex0 = (decoder.readIndex());
-        switch (unionIndex0) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
-            {
+        if (unionIndex0 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex0 == 1) {
                 Object oldString0 = FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType.get(0);
                 if (oldString0 instanceof Utf8) {
                     FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType.put(0, (decoder).readString(((Utf8) oldString0)));
                 } else {
                     FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType.put(0, (decoder).readString(null));
                 }
-                break;
+            } else {
+                if (unionIndex0 == 2) {
+                    FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType.put(0, (decoder.readLong()));
+                } else {
+                    throw new RuntimeException(("Illegal union index for 'test': "+ unionIndex0));
+                }
             }
-            case  2 :
-                FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType.put(0, (decoder.readLong()));
-                break;
-            default:
-                throw new RuntimeException(("Illegal union index for 'test': "+ unionIndex0));
         }
         return FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType;
     }
