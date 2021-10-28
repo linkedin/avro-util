@@ -50,15 +50,14 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
         }
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(0, (decoder.readInt()));
         int unionIndex0 = (decoder.readIndex());
-        switch (unionIndex0) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex0 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex0 == 1) {
                 FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(1, (decoder.readInt()));
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'testIntUnion': "+ unionIndex0));
+            }
         }
         Object oldString0 = FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(2);
         if (oldString0 instanceof Utf8) {
@@ -67,70 +66,63 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
             FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(2, (decoder).readString(null));
         }
         int unionIndex1 = (decoder.readIndex());
-        switch (unionIndex1) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
-            {
+        if (unionIndex1 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex1 == 1) {
                 Object oldString1 = FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(3);
                 if (oldString1 instanceof Utf8) {
                     FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(3, (decoder).readString(((Utf8) oldString1)));
                 } else {
                     FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(3, (decoder).readString(null));
                 }
-                break;
-            }
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'testStringUnion': "+ unionIndex1));
+            }
         }
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(4, (decoder.readLong()));
         int unionIndex2 = (decoder.readIndex());
-        switch (unionIndex2) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex2 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex2 == 1) {
                 FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(5, (decoder.readLong()));
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'testLongUnion': "+ unionIndex2));
+            }
         }
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(6, (decoder.readDouble()));
         int unionIndex3 = (decoder.readIndex());
-        switch (unionIndex3) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex3 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex3 == 1) {
                 FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(7, (decoder.readDouble()));
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'testDoubleUnion': "+ unionIndex3));
+            }
         }
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(8, (decoder.readFloat()));
         int unionIndex4 = (decoder.readIndex());
-        switch (unionIndex4) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex4 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex4 == 1) {
                 FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(9, (decoder.readFloat()));
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'testFloatUnion': "+ unionIndex4));
+            }
         }
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(10, (decoder.readBoolean()));
         int unionIndex5 = (decoder.readIndex());
-        switch (unionIndex5) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex5 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex5 == 1) {
                 FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(11, (decoder.readBoolean()));
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'testBooleanUnion': "+ unionIndex5));
+            }
         }
         Object oldBytes0 = FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(12);
         if (oldBytes0 instanceof ByteBuffer) {
@@ -139,22 +131,19 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
             FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(12, (decoder).readBytes((null)));
         }
         int unionIndex6 = (decoder.readIndex());
-        switch (unionIndex6) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
-            {
+        if (unionIndex6 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex6 == 1) {
                 Object oldBytes1 = FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(13);
                 if (oldBytes1 instanceof ByteBuffer) {
                     FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(13, (decoder).readBytes(((ByteBuffer) oldBytes1)));
                 } else {
                     FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(13, (decoder).readBytes((null)));
                 }
-                break;
-            }
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'testBytesUnion': "+ unionIndex6));
+            }
         }
         return FastGenericDeserializerGeneratorTest_shouldReadPrimitives;
     }

@@ -40,12 +40,10 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingW
             FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         int unionIndex0 = (decoder.readIndex());
-        switch (unionIndex0) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
-            {
+        if (unionIndex0 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex0 == 1) {
                 Map<Utf8, Integer> testOption0 = null;
                 long chunkLen0 = (decoder.readMapStart());
                 if (chunkLen0 > 0) {
@@ -71,10 +69,9 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingW
                     testOption0 = new HashMap<Utf8, Integer>(0);
                 }
                 FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps.put(0, testOption0);
-                break;
-            }
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'test': "+ unionIndex0));
+            }
         }
         return FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps;
     }

@@ -2,8 +2,12 @@
 package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_9;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.IndexedRecord;
@@ -15,18 +19,42 @@ public class FastGenericDeserializerGeneratorTest_shouldReadEnumDefault_GenericD
 
     private final Schema readerSchema;
     private final Schema testEnum0;
+    private final Map enumMappingtestEnum0;
     private final Schema testEnumUnion0;
+    private final Map enumMappingtestEnum1;
     private final Schema testEnumArray0;
+    private final Map enumMappingtestEnum2;
     private final Schema testEnumUnionArray0;
     private final Schema testEnumUnionArrayArrayElemSchema0;
+    private final Map enumMappingtestEnum3;
 
     public FastGenericDeserializerGeneratorTest_shouldReadEnumDefault_GenericDeserializer_6449530598550593627_7952268347558598968(Schema readerSchema) {
         this.readerSchema = readerSchema;
         this.testEnum0 = readerSchema.getField("testEnum").schema();
+        HashMap tempEnumMapping0 = new HashMap(3);
+        tempEnumMapping0 .put(new Integer(0), new Integer(0));
+        tempEnumMapping0 .put(new Integer(1), new Integer(1));
+        tempEnumMapping0 .put(new Integer(2), new Integer(0));
+        this.enumMappingtestEnum0 = Collections.unmodifiableMap(tempEnumMapping0);
         this.testEnumUnion0 = readerSchema.getField("testEnumUnion").schema();
+        HashMap tempEnumMapping1 = new HashMap(3);
+        tempEnumMapping1 .put(new Integer(0), new Integer(0));
+        tempEnumMapping1 .put(new Integer(1), new Integer(1));
+        tempEnumMapping1 .put(new Integer(2), new Integer(0));
+        this.enumMappingtestEnum1 = Collections.unmodifiableMap(tempEnumMapping1);
         this.testEnumArray0 = readerSchema.getField("testEnumArray").schema();
+        HashMap tempEnumMapping2 = new HashMap(3);
+        tempEnumMapping2 .put(new Integer(0), new Integer(0));
+        tempEnumMapping2 .put(new Integer(1), new Integer(1));
+        tempEnumMapping2 .put(new Integer(2), new Integer(0));
+        this.enumMappingtestEnum2 = Collections.unmodifiableMap(tempEnumMapping2);
         this.testEnumUnionArray0 = readerSchema.getField("testEnumUnionArray").schema();
         this.testEnumUnionArrayArrayElemSchema0 = testEnumUnionArray0 .getElementType();
+        HashMap tempEnumMapping3 = new HashMap(3);
+        tempEnumMapping3 .put(new Integer(0), new Integer(0));
+        tempEnumMapping3 .put(new Integer(1), new Integer(1));
+        tempEnumMapping3 .put(new Integer(2), new Integer(0));
+        this.enumMappingtestEnum3 = Collections.unmodifiableMap(tempEnumMapping3);
     }
 
     public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
@@ -46,47 +74,38 @@ public class FastGenericDeserializerGeneratorTest_shouldReadEnumDefault_GenericD
         }
         int enumIndex0 = (decoder.readEnum());
         org.apache.avro.generic.GenericData.EnumSymbol enumValue0 = null;
-        switch (enumIndex0) {
-            case  0 :
-                enumValue0 = new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get(0));
-                break;
-            case  1 :
-                enumValue0 = new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get(1));
-                break;
-            case  2 :
-                enumValue0 = new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get(0));
-                break;
-            default:
+        Object enumIndexLookupResult0 = enumMappingtestEnum0 .get(enumIndex0);
+        if (enumIndexLookupResult0 instanceof Integer) {
+            enumValue0 = new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get(((Integer) enumIndexLookupResult0)));
+        } else {
+            if (enumIndexLookupResult0 instanceof AvroTypeException) {
+                throw((AvroTypeException) enumIndexLookupResult0);
+            } else {
                 throw new RuntimeException(("Illegal enum index for 'com.adpilot.utils.generated.avro.testEnum': "+ enumIndex0));
+            }
         }
         FastGenericDeserializerGeneratorTest_shouldReadEnumDefault.put(0, enumValue0);
         int unionIndex0 = (decoder.readIndex());
-        switch (unionIndex0) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
-            {
+        if (unionIndex0 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex0 == 1) {
                 int enumIndex1 = (decoder.readEnum());
                 org.apache.avro.generic.GenericData.EnumSymbol enumValue1 = null;
-                switch (enumIndex1) {
-                    case  0 :
-                        enumValue1 = new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get(0));
-                        break;
-                    case  1 :
-                        enumValue1 = new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get(1));
-                        break;
-                    case  2 :
-                        enumValue1 = new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get(0));
-                        break;
-                    default:
+                Object enumIndexLookupResult1 = enumMappingtestEnum1 .get(enumIndex1);
+                if (enumIndexLookupResult1 instanceof Integer) {
+                    enumValue1 = new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get(((Integer) enumIndexLookupResult1)));
+                } else {
+                    if (enumIndexLookupResult1 instanceof AvroTypeException) {
+                        throw((AvroTypeException) enumIndexLookupResult1);
+                    } else {
                         throw new RuntimeException(("Illegal enum index for 'com.adpilot.utils.generated.avro.testEnum': "+ enumIndex1));
+                    }
                 }
                 FastGenericDeserializerGeneratorTest_shouldReadEnumDefault.put(1, enumValue1);
-                break;
-            }
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'testEnumUnion': "+ unionIndex0));
+            }
         }
         List<org.apache.avro.generic.GenericData.EnumSymbol> testEnumArray1 = null;
         long chunkLen0 = (decoder.readArrayStart());
@@ -101,18 +120,15 @@ public class FastGenericDeserializerGeneratorTest_shouldReadEnumDefault_GenericD
             for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
                 int enumIndex2 = (decoder.readEnum());
                 org.apache.avro.generic.GenericData.EnumSymbol enumValue2 = null;
-                switch (enumIndex2) {
-                    case  0 :
-                        enumValue2 = new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get(0));
-                        break;
-                    case  1 :
-                        enumValue2 = new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get(1));
-                        break;
-                    case  2 :
-                        enumValue2 = new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get(0));
-                        break;
-                    default:
+                Object enumIndexLookupResult2 = enumMappingtestEnum2 .get(enumIndex2);
+                if (enumIndexLookupResult2 instanceof Integer) {
+                    enumValue2 = new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get(((Integer) enumIndexLookupResult2)));
+                } else {
+                    if (enumIndexLookupResult2 instanceof AvroTypeException) {
+                        throw((AvroTypeException) enumIndexLookupResult2);
+                    } else {
                         throw new RuntimeException(("Illegal enum index for 'com.adpilot.utils.generated.avro.testEnum': "+ enumIndex2));
+                    }
                 }
                 testEnumArray1 .add(enumValue2);
             }
@@ -135,32 +151,26 @@ public class FastGenericDeserializerGeneratorTest_shouldReadEnumDefault_GenericD
                     testEnumUnionArrayArrayElementReuseVar0 = ((GenericArray) oldArray1).peek();
                 }
                 int unionIndex1 = (decoder.readIndex());
-                switch (unionIndex1) {
-                    case  0 :
-                        decoder.readNull();
-                        break;
-                    case  1 :
-                    {
+                if (unionIndex1 == 0) {
+                    decoder.readNull();
+                } else {
+                    if (unionIndex1 == 1) {
                         int enumIndex3 = (decoder.readEnum());
                         org.apache.avro.generic.GenericData.EnumSymbol enumValue3 = null;
-                        switch (enumIndex3) {
-                            case  0 :
-                                enumValue3 = new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get(0));
-                                break;
-                            case  1 :
-                                enumValue3 = new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get(1));
-                                break;
-                            case  2 :
-                                enumValue3 = new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get(0));
-                                break;
-                            default:
+                        Object enumIndexLookupResult3 = enumMappingtestEnum3 .get(enumIndex3);
+                        if (enumIndexLookupResult3 instanceof Integer) {
+                            enumValue3 = new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get(((Integer) enumIndexLookupResult3)));
+                        } else {
+                            if (enumIndexLookupResult3 instanceof AvroTypeException) {
+                                throw((AvroTypeException) enumIndexLookupResult3);
+                            } else {
                                 throw new RuntimeException(("Illegal enum index for 'com.adpilot.utils.generated.avro.testEnum': "+ enumIndex3));
+                            }
                         }
                         testEnumUnionArray1 .add(enumValue3);
-                        break;
-                    }
-                    default:
+                    } else {
                         throw new RuntimeException(("Illegal union index for 'testEnumUnionArrayElem': "+ unionIndex1));
+                    }
                 }
             }
             chunkLen1 = (decoder.arrayNext());

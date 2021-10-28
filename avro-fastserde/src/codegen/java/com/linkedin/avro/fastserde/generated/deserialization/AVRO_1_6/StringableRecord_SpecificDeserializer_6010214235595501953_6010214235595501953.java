@@ -130,15 +130,14 @@ public class StringableRecord_SpecificDeserializer_6010214235595501953_601021423
         StringableRecord.put(7, deserializeStringableSubRecord0(StringableRecord.get(7), (decoder)));
         StringableRecord.put(8, deserializeAnotherSubRecord0(StringableRecord.get(8), (decoder)));
         int unionIndex1 = (decoder.readIndex());
-        switch (unionIndex1) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex1 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex1 == 1) {
                 StringableRecord.put(9, (decoder).readString());
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'stringUnion': "+ unionIndex1));
+            }
         }
         return StringableRecord;
     }
@@ -159,25 +158,23 @@ public class StringableRecord_SpecificDeserializer_6010214235595501953_601021423
             StringableSubRecord.put(0, (decoder).readString(null));
         }
         int unionIndex0 = (decoder.readIndex());
-        switch (unionIndex0) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
-            {
+        if (unionIndex0 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex0 == 1) {
                 Object oldString6 = StringableSubRecord.get(1);
                 if (oldString6 instanceof Utf8) {
                     StringableSubRecord.put(1, (decoder).readString(((Utf8) oldString6)));
                 } else {
                     StringableSubRecord.put(1, (decoder).readString(null));
                 }
-                break;
+            } else {
+                if (unionIndex0 == 2) {
+                    StringableSubRecord.put(1, (decoder.readInt()));
+                } else {
+                    throw new RuntimeException(("Illegal union index for 'nullStringIntUnion': "+ unionIndex0));
+                }
             }
-            case  2 :
-                StringableSubRecord.put(1, (decoder.readInt()));
-                break;
-            default:
-                throw new RuntimeException(("Illegal union index for 'nullStringIntUnion': "+ unionIndex0));
         }
         return StringableSubRecord;
     }

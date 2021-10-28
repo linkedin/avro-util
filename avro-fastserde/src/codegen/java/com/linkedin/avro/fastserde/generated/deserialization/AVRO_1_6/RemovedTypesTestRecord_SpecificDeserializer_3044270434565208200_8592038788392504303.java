@@ -52,15 +52,14 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
             chunkLen0 = (decoder.arrayNext());
         }
         int unionIndex0 = (decoder.readIndex());
-        switch (unionIndex0) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex0 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex0 == 1) {
                 decoder.skipBytes();
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'removedBytesUnion': "+ unionIndex0));
+            }
         }
         long chunkLen1 = (decoder.readMapStart());
         if (chunkLen1 > 0) {
@@ -80,15 +79,14 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
                     removedBytesUnionArrayArrayElementReuseVar0 = ((GenericArray) null).peek();
                 }
                 int unionIndex1 = (decoder.readIndex());
-                switch (unionIndex1) {
-                    case  0 :
-                        decoder.readNull();
-                        break;
-                    case  1 :
+                if (unionIndex1 == 0) {
+                    decoder.readNull();
+                } else {
+                    if (unionIndex1 == 1) {
                         decoder.skipBytes();
-                        break;
-                    default:
+                    } else {
                         throw new RuntimeException(("Illegal union index for 'removedBytesUnionArrayElem': "+ unionIndex1));
+                    }
                 }
             }
             chunkLen2 = (decoder.arrayNext());
@@ -99,15 +97,14 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
                 for (int counter3 = 0; (counter3 <chunkLen3); counter3 ++) {
                     Utf8 key1 = (decoder.readString(null));
                     int unionIndex2 = (decoder.readIndex());
-                    switch (unionIndex2) {
-                        case  0 :
-                            decoder.readNull();
-                            break;
-                        case  1 :
+                    if (unionIndex2 == 0) {
+                        decoder.readNull();
+                    } else {
+                        if (unionIndex2 == 1) {
                             decoder.skipBytes();
-                            break;
-                        default:
+                        } else {
                             throw new RuntimeException(("Illegal union index for 'removedBytesUnionMapValue': "+ unionIndex2));
+                        }
                     }
                 }
                 chunkLen3 = (decoder.mapNext());
@@ -115,15 +112,14 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
         }
         decoder.skipFixed(1);
         int unionIndex3 = (decoder.readIndex());
-        switch (unionIndex3) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex3 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex3 == 1) {
                 decoder.skipFixed(1);
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'removedFixedUnion': "+ unionIndex3));
+            }
         }
         long chunkLen4 = (decoder.readArrayStart());
         while (chunkLen4 > 0) {
@@ -154,15 +150,14 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
                     removedFixedUnionArrayArrayElementReuseVar0 = ((GenericArray) null).peek();
                 }
                 int unionIndex4 = (decoder.readIndex());
-                switch (unionIndex4) {
-                    case  0 :
-                        decoder.readNull();
-                        break;
-                    case  1 :
+                if (unionIndex4 == 0) {
+                    decoder.readNull();
+                } else {
+                    if (unionIndex4 == 1) {
                         decoder.skipFixed(1);
-                        break;
-                    default:
+                    } else {
                         throw new RuntimeException(("Illegal union index for 'removedFixedUnionArrayElem': "+ unionIndex4));
+                    }
                 }
             }
             chunkLen6 = (decoder.arrayNext());
@@ -173,15 +168,14 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
                 for (int counter7 = 0; (counter7 <chunkLen7); counter7 ++) {
                     Utf8 key3 = (decoder.readString(null));
                     int unionIndex5 = (decoder.readIndex());
-                    switch (unionIndex5) {
-                        case  0 :
-                            decoder.readNull();
-                            break;
-                        case  1 :
+                    if (unionIndex5 == 0) {
+                        decoder.readNull();
+                    } else {
+                        if (unionIndex5 == 1) {
                             decoder.skipFixed(1);
-                            break;
-                        default:
+                        } else {
                             throw new RuntimeException(("Illegal union index for 'removedFixedUnionMapValue': "+ unionIndex5));
+                        }
                     }
                 }
                 chunkLen7 = (decoder.mapNext());
@@ -189,15 +183,14 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
         }
         decoder.readEnum();
         int unionIndex6 = (decoder.readIndex());
-        switch (unionIndex6) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex6 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex6 == 1) {
                 decoder.readEnum();
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'removedEnumUnion': "+ unionIndex6));
+            }
         }
         long chunkLen8 = (decoder.readArrayStart());
         while (chunkLen8 > 0) {
@@ -224,15 +217,14 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
                     removedEnumUnionArrayArrayElementReuseVar0 = ((GenericArray) null).peek();
                 }
                 int unionIndex7 = (decoder.readIndex());
-                switch (unionIndex7) {
-                    case  0 :
-                        decoder.readNull();
-                        break;
-                    case  1 :
+                if (unionIndex7 == 0) {
+                    decoder.readNull();
+                } else {
+                    if (unionIndex7 == 1) {
                         decoder.readEnum();
-                        break;
-                    default:
+                    } else {
                         throw new RuntimeException(("Illegal union index for 'removedEnumUnionArrayElem': "+ unionIndex7));
+                    }
                 }
             }
             chunkLen10 = (decoder.arrayNext());
@@ -243,15 +235,14 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
                 for (int counter11 = 0; (counter11 <chunkLen11); counter11 ++) {
                     Utf8 key5 = (decoder.readString(null));
                     int unionIndex8 = (decoder.readIndex());
-                    switch (unionIndex8) {
-                        case  0 :
-                            decoder.readNull();
-                            break;
-                        case  1 :
+                    if (unionIndex8 == 0) {
+                        decoder.readNull();
+                    } else {
+                        if (unionIndex8 == 1) {
                             decoder.readEnum();
-                            break;
-                        default:
+                        } else {
                             throw new RuntimeException(("Illegal union index for 'removedEnumUnionMapValue': "+ unionIndex8));
+                        }
                     }
                 }
                 chunkLen11 = (decoder.mapNext());
@@ -259,15 +250,14 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
         }
         deserializeRemovedSubRecord0(null, (decoder));
         int unionIndex9 = (decoder.readIndex());
-        switch (unionIndex9) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex9 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex9 == 1) {
                 deserializeRemovedSubRecord0(null, (decoder));
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'removedSubRecordUnion': "+ unionIndex9));
+            }
         }
         long chunkLen12 = (decoder.readArrayStart());
         while (chunkLen12 > 0) {
@@ -288,15 +278,14 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
                     removedSubRecordUnionArrayArrayElementReuseVar0 = ((GenericArray) null).peek();
                 }
                 int unionIndex10 = (decoder.readIndex());
-                switch (unionIndex10) {
-                    case  0 :
-                        decoder.readNull();
-                        break;
-                    case  1 :
+                if (unionIndex10 == 0) {
+                    decoder.readNull();
+                } else {
+                    if (unionIndex10 == 1) {
                         deserializeRemovedSubRecord0(removedSubRecordUnionArrayArrayElementReuseVar0, (decoder));
-                        break;
-                    default:
+                    } else {
                         throw new RuntimeException(("Illegal union index for 'removedSubRecordUnionArrayElem': "+ unionIndex10));
+                    }
                 }
             }
             chunkLen13 = (decoder.arrayNext());
@@ -317,15 +306,14 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
                 for (int counter15 = 0; (counter15 <chunkLen15); counter15 ++) {
                     Utf8 key7 = (decoder.readString(null));
                     int unionIndex11 = (decoder.readIndex());
-                    switch (unionIndex11) {
-                        case  0 :
-                            decoder.readNull();
-                            break;
-                        case  1 :
+                    if (unionIndex11 == 0) {
+                        decoder.readNull();
+                    } else {
+                        if (unionIndex11 == 1) {
                             deserializeRemovedSubRecord0(null, (decoder));
-                            break;
-                        default:
+                        } else {
                             throw new RuntimeException(("Illegal union index for 'removedSubRecordUnionMapValue': "+ unionIndex11));
+                        }
                     }
                 }
                 chunkLen15 = (decoder.mapNext());

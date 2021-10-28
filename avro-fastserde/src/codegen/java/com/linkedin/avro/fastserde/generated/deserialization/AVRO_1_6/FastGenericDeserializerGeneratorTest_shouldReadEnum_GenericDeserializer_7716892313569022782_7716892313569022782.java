@@ -46,15 +46,14 @@ public class FastGenericDeserializerGeneratorTest_shouldReadEnum_GenericDeserial
         }
         FastGenericDeserializerGeneratorTest_shouldReadEnum.put(0, new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get((decoder.readEnum()))));
         int unionIndex0 = (decoder.readIndex());
-        switch (unionIndex0) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex0 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex0 == 1) {
                 FastGenericDeserializerGeneratorTest_shouldReadEnum.put(1, new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get((decoder.readEnum()))));
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'testEnumUnion': "+ unionIndex0));
+            }
         }
         List<org.apache.avro.generic.GenericData.EnumSymbol> testEnumArray1 = null;
         long chunkLen0 = (decoder.readArrayStart());
@@ -88,15 +87,14 @@ public class FastGenericDeserializerGeneratorTest_shouldReadEnum_GenericDeserial
                     testEnumUnionArrayArrayElementReuseVar0 = ((GenericArray) oldArray1).peek();
                 }
                 int unionIndex1 = (decoder.readIndex());
-                switch (unionIndex1) {
-                    case  0 :
-                        decoder.readNull();
-                        break;
-                    case  1 :
+                if (unionIndex1 == 0) {
+                    decoder.readNull();
+                } else {
+                    if (unionIndex1 == 1) {
                         testEnumUnionArray1 .add(new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get((decoder.readEnum()))));
-                        break;
-                    default:
+                    } else {
                         throw new RuntimeException(("Illegal union index for 'testEnumUnionArrayElem': "+ unionIndex1));
+                    }
                 }
             }
             chunkLen1 = (decoder.arrayNext());

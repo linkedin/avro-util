@@ -82,22 +82,19 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSu
             aliasedSubRecord = new org.apache.avro.generic.GenericData.Record(record10);
         }
         int unionIndex0 = (decoder.readIndex());
-        switch (unionIndex0) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
-            {
+        if (unionIndex0 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex0 == 1) {
                 Object oldString0 = aliasedSubRecord.get(1);
                 if (oldString0 instanceof Utf8) {
                     aliasedSubRecord.put(1, (decoder).readString(((Utf8) oldString0)));
                 } else {
                     aliasedSubRecord.put(1, (decoder).readString(null));
                 }
-                break;
-            }
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'subField': "+ unionIndex0));
+            }
         }
         aliasedSubRecord.put(0, null);
         return aliasedSubRecord;
@@ -113,33 +110,29 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSu
             subRecord = new org.apache.avro.generic.GenericData.Record(record10);
         }
         int unionIndex1 = (decoder.readIndex());
-        switch (unionIndex1) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
+        if (unionIndex1 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex1 == 1) {
                 subRecord.put(0, (decoder.readInt()));
-                break;
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'intField': "+ unionIndex1));
+            }
         }
         int unionIndex2 = (decoder.readIndex());
-        switch (unionIndex2) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
-            {
+        if (unionIndex2 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex2 == 1) {
                 Object oldString1 = subRecord.get(1);
                 if (oldString1 instanceof Utf8) {
                     subRecord.put(1, (decoder).readString(((Utf8) oldString1)));
                 } else {
                     subRecord.put(1, (decoder).readString(null));
                 }
-                break;
-            }
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'subField': "+ unionIndex2));
+            }
         }
         return subRecord;
     }

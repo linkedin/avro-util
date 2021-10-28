@@ -103,12 +103,10 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
         }
         FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.put(1, recordsMap1);
         int unionIndex1 = (decoder.readIndex());
-        switch (unionIndex1) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
-            {
+        if (unionIndex1 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex1 == 1) {
                 List<IndexedRecord> recordsArrayUnionOption0 = null;
                 long chunkLen2 = (decoder.readArrayStart());
                 Object oldArray1 = FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.get(2);
@@ -125,32 +123,28 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
                             recordsArrayUnionOptionArrayElementReuseVar0 = ((GenericArray) oldArray1).peek();
                         }
                         int unionIndex2 = (decoder.readIndex());
-                        switch (unionIndex2) {
-                            case  0 :
-                                decoder.readNull();
-                                break;
-                            case  1 :
+                        if (unionIndex2 == 0) {
+                            decoder.readNull();
+                        } else {
+                            if (unionIndex2 == 1) {
                                 recordsArrayUnionOption0 .add(deserializesubRecord0(recordsArrayUnionOptionArrayElementReuseVar0, (decoder)));
-                                break;
-                            default:
+                            } else {
                                 throw new RuntimeException(("Illegal union index for 'recordsArrayUnionOptionElem': "+ unionIndex2));
+                            }
                         }
                     }
                     chunkLen2 = (decoder.arrayNext());
                 }
                 FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.put(2, recordsArrayUnionOption0);
-                break;
-            }
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'recordsArrayUnion': "+ unionIndex1));
+            }
         }
         int unionIndex3 = (decoder.readIndex());
-        switch (unionIndex3) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
-            {
+        if (unionIndex3 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex3 == 1) {
                 Map<Utf8, IndexedRecord> recordsMapUnionOption0 = null;
                 long chunkLen3 = (decoder.readMapStart());
                 if (chunkLen3 > 0) {
@@ -169,15 +163,14 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
                         for (int counter3 = 0; (counter3 <chunkLen3); counter3 ++) {
                             Utf8 key1 = (decoder.readString(null));
                             int unionIndex4 = (decoder.readIndex());
-                            switch (unionIndex4) {
-                                case  0 :
-                                    decoder.readNull();
-                                    break;
-                                case  1 :
+                            if (unionIndex4 == 0) {
+                                decoder.readNull();
+                            } else {
+                                if (unionIndex4 == 1) {
                                     recordsMapUnionOption0 .put(key1, deserializesubRecord0(null, (decoder)));
-                                    break;
-                                default:
+                                } else {
                                     throw new RuntimeException(("Illegal union index for 'recordsMapUnionOptionValue': "+ unionIndex4));
+                                }
                             }
                         }
                         chunkLen3 = (decoder.mapNext());
@@ -186,10 +179,9 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
                     recordsMapUnionOption0 = new HashMap<Utf8, IndexedRecord>(0);
                 }
                 FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.put(3, recordsMapUnionOption0);
-                break;
-            }
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'recordsMapUnion': "+ unionIndex3));
+            }
         }
         return FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField;
     }
@@ -204,22 +196,19 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
             subRecord = new org.apache.avro.generic.GenericData.Record(recordsArrayArrayElemSchema0);
         }
         int unionIndex0 = (decoder.readIndex());
-        switch (unionIndex0) {
-            case  0 :
-                decoder.readNull();
-                break;
-            case  1 :
-            {
+        if (unionIndex0 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex0 == 1) {
                 Object oldString0 = subRecord.get(0);
                 if (oldString0 instanceof Utf8) {
                     subRecord.put(0, (decoder).readString(((Utf8) oldString0)));
                 } else {
                     subRecord.put(0, (decoder).readString(null));
                 }
-                break;
-            }
-            default:
+            } else {
                 throw new RuntimeException(("Illegal union index for 'subField': "+ unionIndex0));
+            }
         }
         return subRecord;
     }
