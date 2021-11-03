@@ -45,7 +45,7 @@ java -jar spotbugs.jar -pluginList spotbugs-plugin.jar ...
 | JDI  | JsonDecoder instantiation   | ```new JsonDecoder(...)``` | ```AvroCompatibilityHelper.new<Compatible>JsonDecoder(...)``` |
 | JDFI |                             | ```DecoderFactory.jsonDecoder(...)``` | ```AvroCompatibilityHelper.new<Compatible>JsonDecoder(...)``` |
 | JEI  | JsonEncoder instantiation   | ```new JsonEncoder(...)``` | ```AvroCompatibilityHelper.newJsonEncoder(...)``` |
-| OSCI | SchemaConstructable usage   | ```implements SchemaConstructable``` | avoid |
+| OSCI | SchemaConstructable usage   | ```implements SchemaConstructable``` | use ```GenericData.Record``` directly |
 |      | SchemaConstructable instantiation | part of decoding | ```AvroCompatibilityHelper.newInstance(...)``` |
 | PA   | Schema/Field prop access    | ```x.getJsonProp()``` | ```AvroCompatibilityHelper.get<Field\|Schema>PropAsJsonString(...)``` |
 |      |                             | ```x.getObjectProp()``` | ```AvroCompatibilityHelper.get<Field\|Schema>PropAsJsonString(...)``` |
