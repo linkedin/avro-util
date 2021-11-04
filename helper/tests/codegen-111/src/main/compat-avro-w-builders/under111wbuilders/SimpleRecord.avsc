@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "namespace": "under111wbuilders",
+  "name": "SimpleRecord",
+  "fields": [
+    {
+      "name": "stringField",
+      "type": "string"
+    }
+  ]
+}

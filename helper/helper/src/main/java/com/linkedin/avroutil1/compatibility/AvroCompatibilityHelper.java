@@ -7,6 +7,7 @@
 package com.linkedin.avroutil1.compatibility;
 
 import com.linkedin.avroutil1.compatibility.avro110.Avro110Adapter;
+import com.linkedin.avroutil1.compatibility.avro111.Avro111Adapter;
 import com.linkedin.avroutil1.compatibility.avro14.Avro14Adapter;
 import com.linkedin.avroutil1.compatibility.avro15.Avro15Adapter;
 import com.linkedin.avroutil1.compatibility.avro16.Avro16Adapter;
@@ -20,6 +21,7 @@ import java.io.InputStreamReader;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
@@ -33,6 +35,7 @@ import org.apache.avro.io.Decoder;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
+import org.apache.avro.specific.SpecificData;
 import org.apache.avro.specific.SpecificRecord;
 
 
@@ -75,6 +78,9 @@ public class AvroCompatibilityHelper {
             break;
           case AVRO_1_10:
             ADAPTER = new Avro110Adapter();
+            break;
+          case AVRO_1_11:
+            ADAPTER = new Avro111Adapter();
             break;
           default:
             throw new IllegalStateException("unhandled avro version " + DETECTED_VERSION);
@@ -717,7 +723,23 @@ public class AvroCompatibilityHelper {
       return AvroVersion.AVRO_1_9;
     }
 
-    return AvroVersion.AVRO_1_10;
+    try {
+      //public static final Set<String> RESERVED_WORDS exists in 1.8+
+      @SuppressWarnings("JavaReflectionMemberAccess")
+      Field reservedWordsField = SpecificData.class.getField("RESERVED_WORDS");
+      @SuppressWarnings("unchecked")
+      Collection<String> reservedWords = (Collection<String>) reservedWordsField.get(null);
+      //"record" was added as a reserved word in 1.11 as part of https://issues.apache.org/jira/browse/AVRO-3116
+      if (!reservedWords.contains("record")) {
+        return AvroVersion.AVRO_1_10;
+      }
+    } catch (NoSuchFieldException unexpected1) {
+      throw new IllegalStateException("unable to find org.apache.avro.specific.SpecificData.RESERVED_WORDS", unexpected1);
+    } catch (IllegalAccessException unexpected2) {
+      throw new IllegalStateException("unable to access org.apache.avro.specific.SpecificData.RESERVED_WORDS", unexpected2);
+    }
+
+    return AvroVersion.AVRO_1_11;
   }
 
   /**

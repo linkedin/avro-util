@@ -60,6 +60,18 @@ public class AvroCompatibilityHelperGeneratedEnumClassesTest {
     roundtrip(instance);
   }
 
+  @Test
+  public void testEnumGeneratedUnderAvro110() throws Exception {
+    under110.SimpleEnum instance = under110.SimpleEnum.B;
+    roundtrip(instance);
+  }
+
+  @Test
+  public void testEnumGeneratedUnderAvro111() throws Exception {
+    under111.SimpleEnum instance = under111.SimpleEnum.B;
+    roundtrip(instance);
+  }
+
   private void roundtrip(Object thingie) throws Exception {
     Schema schema = SpecificData.get().getSchema(thingie.getClass());
     ByteArrayOutputStream os = new ByteArrayOutputStream();

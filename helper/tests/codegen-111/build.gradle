@@ -1,0 +1,133 @@
+/*
+ * Copyright 2021 LinkedIn Corp.
+ * Licensed under the BSD 2-Clause License (the "License").
+ * See License in the project root for license information.
+ */
+
+plugins {
+  id "java-library"
+  id "jacoco"
+  id "checkstyle"
+}
+
+configurations {
+  codegen {
+    extendsFrom implementation
+  }
+  resourcegen {
+    extendsFrom runtimeClasspath
+  }
+}
+
+sourceSets {
+  main {
+    java {
+      srcDir 'src/main/java'
+      srcDir "$buildDir/generated/sources/raw-avro/java/main"
+      srcDir "$buildDir/generated/sources/compat-avro/java/main"
+      srcDir "$buildDir/generated/sources/compat-avro-w-builders/java/main"
+    }
+    resources {
+      srcDirs = ["src/main/raw-avro", "src/main/compat-avro", "$buildDir/generated/resources"]
+    }
+  }
+}
+
+task runVanillaAvroCodegen {
+  description = 'generate specific classes using vanilla avro'
+  fileTree(dir: 'src/main/raw-avro', include:'**/*.avsc').each { file ->
+    doLast {
+      javaexec {
+        classpath configurations.codegen
+        main = 'org.apache.avro.tool.Main'
+        args = ["compile", "schema", file.getAbsolutePath(), "$buildDir/generated/sources/raw-avro/java/main"]
+      }
+    }
+  }
+}
+
+task runCompatAvroCodegen {
+  description = 'generate specific classes using compatibility helper'
+  outputs.dir("$buildDir/generated/sources/compat-avro/java/main").withPropertyName('outputDir')
+  fileTree(dir: 'src/main/compat-avro', include:'**/*.avsc').each { file ->
+    doLast {
+      javaexec {
+        classpath configurations.codegen
+        main = 'com.linkedin.avroutil1.TestTool'
+        args = [
+            "-op", "compile",
+            "-in", file.getAbsolutePath(),
+            "-out", "$buildDir/generated/sources/compat-avro/java/main",
+            "-min", "AVRO_1_4"
+        ]
+        debug = false
+      }
+    }
+  }
+}
+
+task runCompatAvroCodegenWithBuilders {
+  description = 'generate specific classes using compatibility helper with minimum avro 1.6 target'
+  outputs.dir("$buildDir/generated/sources/compat-avro-w-builders/java/main").withPropertyName('outputDir')
+  fileTree(dir: 'src/main/compat-avro-w-builders', include:'**/*.avsc').each { file ->
+    doLast {
+      javaexec {
+        classpath configurations.codegen
+        main = 'com.linkedin.avroutil1.TestTool'
+        args = [
+                "-op", "compile",
+                "-in", file.getAbsolutePath(),
+                "-out", "$buildDir/generated/sources/compat-avro-w-builders/java/main",
+                "-min", "AVRO_1_6"
+        ]
+      }
+    }
+  }
+}
+
+//copy output generated compatible code into resources so downstream modules can use it
+task copyCompatAvroCodeToResources(type: Copy) {
+  from "$buildDir/generated/sources/compat-avro/java/main"
+  into "$buildDir/resources/main"
+}
+
+task runResourceGeneration(type: JavaExec) {
+  classpath configurations.resourcegen + sourceSets.main.output
+  main = "com.linkedin.avroutil1.compatibility.avro111.Generate111TestResources"
+  args "$buildDir/generated/resources"
+  debug false
+}
+
+jar {
+  //normal contents
+  from sourceSets.main.output
+  //resource generation output. has to be explicitly included in the jar because
+  //"processResources" ran before this was generated
+  from "$buildDir/generated/resources"
+}
+
+//TODO - figure out why this must be done manually
+runCompatAvroCodegen.dependsOn ":helper:tests:helper-tests-common:jar"
+runCompatAvroCodegenWithBuilders.dependsOn ":helper:tests:helper-tests-common:jar"
+copyCompatAvroCodeToResources.dependsOn runCompatAvroCodegen
+compileJava.dependsOn runVanillaAvroCodegen, runCompatAvroCodegen, runCompatAvroCodegenWithBuilders, copyCompatAvroCodeToResources
+jar.dependsOn runResourceGeneration
+
+dependencies {
+  codegen "org.apache.avro:avro-tools:1.11.0"
+  codegen "org.apache.avro:avro-compiler:1.11.0"
+  codegen files('../codegenClasspath')
+  codegen project(":helper:tests:helper-tests-common")
+  codegen project(":helper:helper")
+
+  //required because generated code depends on the helper
+  implementation project(":helper:helper")
+  implementation "org.apache.avro:avro:1.11.0"
+
+  //this block required for resource generation code
+  implementation project(":helper:tests:helper-tests-common")
+  //redirect logging to log4j2 for resource generation
+  resourcegen "org.apache.logging.log4j:log4j-core:2.14.1"
+  resourcegen "org.apache.logging.log4j:log4j-slf4j-impl:2.14.1"
+  resourcegen files('../codegenClasspath')
+}

@@ -11,6 +11,7 @@ DEFAULT_AVRO_TOOLS_177_JAR="avro_tools/avro_tools_177/avro-tools-1.7.7.jar"
 DEFAULT_AVRO_TOOLS_182_JAR="avro_tools/avro_tools_182/avro-tools-1.8.2.jar"
 DEFAULT_AVRO_TOOLS_192_JAR="avro_tools/avro_tools_192/avro-tools-1.9.2.jar"
 DEFAULT_AVRO_TOOLS_1100_JAR="avro_tools/avro_tools_1100/avro-tools-1.10.2.jar"
+DEFAULT_AVRO_TOOLS_1110_JAR="avro_tools/avro_tools_1110/avro-tools-1.11.0.jar"
 
 if [ ! -f $DEFAULT_AVRO_TOOLS_140_JAR ]; then
   mkdir -p avro_tools/avro_tools_140 && pushd . && cd avro_tools/avro_tools_140
@@ -45,6 +46,11 @@ fi
 if [ ! -f $DEFAULT_AVRO_TOOLS_1100_JAR ]; then
   mkdir -p avro_tools/avro_tools_1100 && pushd . && cd avro_tools/avro_tools_1100
   curl -s -L -O -C - "https://repo1.maven.org/maven2/org/apache/avro/avro-tools/1.10.2/avro-tools-1.10.2.jar" -o avro-tools-1.10.2.jar
+  popd
+fi
+if [ ! -f $DEFAULT_AVRO_TOOLS_1110_JAR ]; then
+  mkdir -p avro_tools/avro_tools_1110 && pushd . && cd avro_tools/avro_tools_1110
+  curl -s -L -O -C - "https://repo1.maven.org/maven2/org/apache/avro/avro-tools/1.11.0/avro-tools-1.11.0.jar" -o avro-tools-1.11.0.jar
   popd
 fi
 

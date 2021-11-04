@@ -29,7 +29,12 @@ public class AvroCompatibilityHelperJsonCodecsTest {
 
   @DataProvider(name = "avroVersions")
   public static Object[] primeNumbers() {
-    return new Object[] {"14", "15", "16", "17", "18", "19", "110"};
+    AvroVersion[] versions = AvroVersion.values();
+    Object[] results =  new Object[versions.length];
+    for (int i = 0; i < versions.length; i++) {
+      results[i] = versions[i].toString().substring(5).replaceAll("_", "");
+    }
+    return results;
   }
 
   @Test(dataProvider = "avroVersions")

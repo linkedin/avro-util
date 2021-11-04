@@ -45,6 +45,16 @@ public class AvroCompatibilityHelperCodegenTest {
   }
 
   @Test
+  public void testRecordWithMultilineDocsUnder110Usable() {
+    new under110.RecordWithMultilineDoc();
+  }
+
+  @Test
+  public void testRecordWithMultilineDocsUnder111Usable() {
+    new under111.RecordWithMultilineDoc();
+  }
+
+  @Test
   public void testRecordWithComOrgFieldsUnder14Usable() {
     new under14.RecordWithComOrgFields();
   }
@@ -77,5 +87,10 @@ public class AvroCompatibilityHelperCodegenTest {
   @Test
   public void testRecordWithComOrgFieldsUnder110Usable() {
     new under110.RecordWithComOrgFields();
+  }
+
+  @Test
+  public void testRecordWithComOrgFieldsUnder111Usable() {
+    new under111.RecordWithComOrgFields();
   }
 }

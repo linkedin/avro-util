@@ -34,6 +34,9 @@ dependencies {
   testImplementation (project(":helper:tests:codegen-110")) {
     exclude group: "org.apache.avro"
   }
+  testImplementation (project(":helper:tests:codegen-111")) {
+    exclude group: "org.apache.avro"
+  }
 
   testImplementation "org.apache.avro:avro:1.7.7"
   testImplementation "org.apache.avro:avro-compiler:1.7.7"

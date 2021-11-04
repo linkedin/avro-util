@@ -17,6 +17,7 @@ configurations {
   avro1_8
   avro1_9
   avro1_10
+  avro1_11
 }
 
 test {
@@ -32,6 +33,7 @@ def AVRO_1_7 = "org.apache.avro:avro:1.7.7"
 def AVRO_1_8 = "org.apache.avro:avro:1.8.2"
 def AVRO_1_9 = "org.apache.avro:avro:1.9.2"
 def AVRO_1_10 = "org.apache.avro:avro:1.10.2"
+def AVRO_1_11 = "org.apache.avro:avro:1.11.0"
 def USE_AVRO_1_4 = project.hasProperty("USE_AVRO_1_4") ? true : false
 def USE_AVRO_1_5 = project.hasProperty("USE_AVRO_1_5") ? true : false
 def USE_AVRO_1_6 = project.hasProperty("USE_AVRO_1_6") ? true : false
@@ -39,6 +41,7 @@ def USE_AVRO_1_7 = project.hasProperty("USE_AVRO_1_7") ? true : false
 def USE_AVRO_1_8 = project.hasProperty("USE_AVRO_1_8") ? true : false
 def USE_AVRO_1_9 = project.hasProperty("USE_AVRO_1_9") ? true : false
 //def USE_AVRO_1_10 = project.hasProperty("USE_AVRO_1_10") ? true : false
+def USE_AVRO_1_11 = project.hasProperty("USE_AVRO_1_11") ? true : false
 // default to use Avro-1.10 lib
 def AVRO_LIB = AVRO_1_10
 def USE_AVRO_1_10 = true
@@ -59,6 +62,9 @@ if (USE_AVRO_1_4) {
   USE_AVRO_1_10 = false
 } else if (USE_AVRO_1_9) {
   AVRO_LIB = AVRO_1_9
+  USE_AVRO_1_10 = false
+} else if (USE_AVRO_1_11) {
+  AVRO_LIB = AVRO_1_11
   USE_AVRO_1_10 = false
 }
 
@@ -131,6 +137,9 @@ dependencies {
   avro1_10 (AVRO_1_10) {
     exclude group: "org.slf4j"
   }
+  avro1_11 (AVRO_1_11) {
+    exclude group: "org.slf4j"
+  }
 
   codegenCompile ("org.apache.avro:avro-compiler:1.10.2") {
     exclude group: "org.slf4j"
@@ -142,7 +151,7 @@ compileJmhJava {
   dependsOn compileTestJava
 }
 
-def avroVersions = ["1_4", "1_5", "1_6", "1_7", "1_8", "1_9", "1_10"]
+def avroVersions = ["1_4", "1_5", "1_6", "1_7", "1_8", "1_9", "1_10", "1_11"]
 
 for (String avroVersion : avroVersions) {
 
@@ -219,6 +228,11 @@ task generateAvroClasses1_10(type:Exec) {
   args "default_avro_1100"
 }
 
+task generateAvroClasses1_11(type:Exec) {
+  commandLine "./regenerate_avro.sh"
+  args "default_avro_1110"
+}
+
 task whetherToCompileAvroClasses1_10() {
   if (USE_AVRO_1_4) {
     dependsOn generateAvroClasses1_4
@@ -232,6 +246,8 @@ task whetherToCompileAvroClasses1_10() {
     dependsOn generateAvroClasses1_8
   } else if (USE_AVRO_1_9) {
     dependsOn generateAvroClasses1_9
+  } else if (USE_AVRO_1_11) {
+    dependsOn generateAvroClasses1_11
   } else {
     dependsOn generateAvroClasses1_10
   }
@@ -270,6 +286,10 @@ task cleanupAndRebuildTestsForAvro1_10(type:Exec) {
   workingDir '../'
   commandLine './gradlew', 'avro-fastserde:clean', 'avro-fastserde:testClasses', '-PUSE_AVRO_1_10'
 }
+task cleanupAndRebuildTestsForAvro1_11(type:Exec) {
+  workingDir '../'
+  commandLine './gradlew', 'avro-fastserde:clean', 'avro-fastserde:testClasses', '-PUSE_AVRO_1_11'
+}
 cleanupAndRebuildTestsForAvro1_4.dependsOn generateAvroClasses1_4
 cleanupAndRebuildTestsForAvro1_5.dependsOn generateAvroClasses1_5
 cleanupAndRebuildTestsForAvro1_6.dependsOn generateAvroClasses1_6
@@ -277,6 +297,7 @@ cleanupAndRebuildTestsForAvro1_7.dependsOn generateAvroClasses1_7
 cleanupAndRebuildTestsForAvro1_8.dependsOn generateAvroClasses1_8
 cleanupAndRebuildTestsForAvro1_9.dependsOn generateAvroClasses1_9
 cleanupAndRebuildTestsForAvro1_10.dependsOn generateAvroClasses1_10
+cleanupAndRebuildTestsForAvro1_11.dependsOn generateAvroClasses1_11
 
 testAvro1_4.dependsOn cleanupAndRebuildTestsForAvro1_4
 testAvro1_5.dependsOn cleanupAndRebuildTestsForAvro1_5
@@ -285,6 +306,7 @@ testAvro1_7.dependsOn cleanupAndRebuildTestsForAvro1_7
 testAvro1_8.dependsOn cleanupAndRebuildTestsForAvro1_8
 testAvro1_9.dependsOn cleanupAndRebuildTestsForAvro1_9
 testAvro1_10.dependsOn cleanupAndRebuildTestsForAvro1_10
+testAvro1_11.dependsOn cleanupAndRebuildTestsForAvro1_11
 
 //custom publishing code to export a dependency on "helper-all":
 publishing {
