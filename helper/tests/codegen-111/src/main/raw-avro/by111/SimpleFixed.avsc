@@ -1,0 +1,6 @@
+{
+  "type" : "fixed",
+  "namespace": "by111",
+  "name" : "SimpleFixed",
+  "size" : 3
+}

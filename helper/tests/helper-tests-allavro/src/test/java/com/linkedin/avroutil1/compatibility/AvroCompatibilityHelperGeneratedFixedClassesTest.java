@@ -59,6 +59,18 @@ public class AvroCompatibilityHelperGeneratedFixedClassesTest {
     roundtrip(instance);
   }
 
+  @Test
+  public void testFixedGeneratedUnderAvro110() throws Exception {
+    under110.SimpleFixed instance = new under110.SimpleFixed(new byte[] {9, 9, 9});
+    roundtrip(instance);
+  }
+
+  @Test
+  public void testFixedGeneratedUnderAvro111() throws Exception {
+    under111.SimpleFixed instance = new under111.SimpleFixed(new byte[] {9, 9, 9});
+    roundtrip(instance);
+  }
+
   private void roundtrip(Object thingie) throws Exception {
     Schema schema = SpecificData.get().getSchema(thingie.getClass());
     ByteArrayOutputStream os = new ByteArrayOutputStream();

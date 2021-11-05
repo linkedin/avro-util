@@ -68,4 +68,4 @@ LinkedIn.
 
 ### Supported versions of Avro ###
 
-The helper module supports avro 1.4 - 1.10 inclusive, fastserde included.
+The helper module supports avro 1.4 - 1.11 inclusive, fastserde included.

@@ -50,9 +50,10 @@ public class CodeTransformations {
   private static final Pattern FROM_BYTEBUFFER_METHOD_END_PATTERN = Pattern.compile("return DECODER.decode\\s*\\(\\s*b\\s*\\)\\s*;\\s*}");
   private static final Pattern IMPORT_CODECS_PATTERN = Pattern.compile("import org\\.apache\\.avro\\.message\\.([\\w.]+);");
   private static final Pattern AVROGENERATED_ANNOTATION_PATTERN = Pattern.compile(Pattern.quote("@org.apache.avro.specific.AvroGenerated"));
-  private static final Pattern MODEL_DECL_PATTERN = Pattern.compile(Pattern.quote("private static SpecificData MODEL$ = new SpecificData();"));
+  //avro < 1.11 has "private static SpecificData MODEL$", 1.11+ has "private static final SpecificData MODEL$"
+  private static final Pattern MODEL_DECL_PATTERN = Pattern.compile("private static (final )?SpecificData MODEL\\$ = new SpecificData\\(\\);");
   private static final Pattern MODEL_ADD_TYPE_CONVERSION_PATTERN = Pattern.compile("MODEL\\$\\.addLogicalTypeConversion\\(.*\\);");
-  private static final String  MODEL_DECL_REPLACEMENT = "private static org.apache.avro.specific.SpecificData MODEL$ = SpecificData.get();";
+  private static final String  MODEL_DECL_REPLACEMENT = "private static final org.apache.avro.specific.SpecificData MODEL$ = SpecificData.get();";
   private static final String  IMPORT_SPECIFICDATA = "import org.apache.avro.specific.SpecificData;";
   private static final Pattern GET_SPECIFICDATA_METHOD_PATTERN = Pattern.compile("public\\s*org\\.apache\\.avro\\.specific\\.SpecificData\\s*getSpecificData\\s*\\(\\s*\\)\\s*\\{\\s*return\\s*MODEL\\$\\s*;\\s*}");
   private static final Pattern WRITER_DOLLAR_DECL = Pattern.compile("WRITER\\$\\s*=\\s*([^;]+);");
@@ -693,7 +694,7 @@ public class CodeTransformations {
       return code;
     } else {
       if (maxSupportedVersion.laterThan(AvroVersion.AVRO_1_8)) {  // maxAvro >= 1.9
-        // add no-op MODEL$ to the end of the generate schema$ string
+        // add no-op MODEL$ to the end of the generated schema$ string
         // we also need an import statement for this
         importStatements.add(IMPORT_SPECIFICDATA);
         int schema$EndPosition = findEndOfSchemaDeclaration(code);
