@@ -45,127 +45,127 @@ public class NewRecord {
   }
 
   @Benchmark
-  public SpecificRecord vanillaDirect14() {
+  public SpecificRecord vanilla14Direct() {
     return set(new by14.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord vanillaDirect15() {
+  public SpecificRecord vanilla15Direct() {
     return set(new by15.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord vanillaDirect16() {
+  public SpecificRecord vanilla16Direct() {
     return set(new by16.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord vanillaDirect17() {
+  public SpecificRecord vanilla17Direct() {
     return set(new by17.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord vanillaDirect18() {
+  public SpecificRecord vanilla18Direct() {
     return set(new by18.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord vanillaDirect19() {
+  public SpecificRecord vanilla19Direct() {
     return set(new by19.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord vanillaDirect110() {
+  public SpecificRecord vanilla110Direct() {
     return set(new by110.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord vanillaDirect111() {
+  public SpecificRecord vanilla111Direct() {
     return set(new by111.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord vanillaBuilder16() {
+  public SpecificRecord vanilla16Builder() {
     return by16.SimpleRecord.newBuilder().setStringField(MESSAGE).build();
   }
 
   @Benchmark
-  public SpecificRecord vanillaBuilder17() {
+  public SpecificRecord vanilla17Builder() {
     return by17.SimpleRecord.newBuilder().setStringField(MESSAGE).build();
   }
 
   @Benchmark
-  public SpecificRecord vanillaBuilder18() {
+  public SpecificRecord vanilla18Builder() {
     return by18.SimpleRecord.newBuilder().setStringField(MESSAGE).build();
   }
 
   @Benchmark
-  public SpecificRecord vanillaBuilder19() {
+  public SpecificRecord vanilla19Builder() {
     return by19.SimpleRecord.newBuilder().setStringField(MESSAGE).build();
   }
 
   @Benchmark
-  public SpecificRecord vanillaBuilder110() {
+  public SpecificRecord vanilla110Builder() {
     return by110.SimpleRecord.newBuilder().setStringField(MESSAGE).build();
   }
 
   @Benchmark
-  public SpecificRecord processedDirect14() {
+  public SpecificRecord processed14Direct() {
     return set(new under14.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord processedDirect15() {
+  public SpecificRecord processed15Direct() {
     return set(new under15.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord processedDirect16() {
+  public SpecificRecord processed16Direct() {
     return set(new under16.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord processedDirect17() {
+  public SpecificRecord processed17Direct() {
     return set(new under17.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord processedDirect18() {
+  public SpecificRecord processed18Direct() {
     return set(new under18.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord processedDirect19() {
+  public SpecificRecord processed19Direct() {
     return set(new under19.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord processedDirect110() {
+  public SpecificRecord processed110Direct() {
     return set(new under110.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord processedDirect111() {
+  public SpecificRecord processed111Direct() {
     return set(new under111.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord processedBuilder17() {
+  public SpecificRecord processed17Builder() {
     return under17target17.SimpleRecord.newBuilder().setStringField(MESSAGE).build();
   }
 
   @Benchmark
-  public SpecificRecord processedBuilder18() {
+  public SpecificRecord processed18Builder() {
     return under18wbuilders.SimpleRecord.newBuilder().setStringField(MESSAGE).build();
   }
 
   @Benchmark
-  public SpecificRecord processedBuilder19() {
+  public SpecificRecord processed19Builder() {
     return under19wbuilders.SimpleRecord.newBuilder().setStringField(MESSAGE).build();
   }
 
   @Benchmark
-  public SpecificRecord processedBuilder110() {
+  public SpecificRecord processed110Builder() {
     return under110wbuilders.SimpleRecord.newBuilder().setStringField(MESSAGE).build();
   }
 }

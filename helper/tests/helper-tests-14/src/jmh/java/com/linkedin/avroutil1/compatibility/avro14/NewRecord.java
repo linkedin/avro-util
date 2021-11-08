@@ -45,52 +45,52 @@ public class NewRecord {
   }
 
   @Benchmark
-  public SpecificRecord vanillaDirect14() {
+  public SpecificRecord vanilla14Direct() {
     return set(new by14.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord vanillaDirect15() {
+  public SpecificRecord vanilla15Direct() {
     return set(new by15.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord processedDirect14() {
+  public SpecificRecord processed14Direct() {
     return set(new under14.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord processedDirect15() {
+  public SpecificRecord processed15Direct() {
     return set(new under15.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord processedDirect16() {
+  public SpecificRecord processed16Direct() {
     return set(new under16.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord processedDirect17() {
+  public SpecificRecord processed17Direct() {
     return set(new under17.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord processedDirect18() {
+  public SpecificRecord processed18Direct() {
     return set(new under18.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord processedDirect19() {
+  public SpecificRecord processed19Direct() {
     return set(new under19.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord processedDirect110() {
+  public SpecificRecord processed110Direct() {
     return set(new under110.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord processedDirect111() {
+  public SpecificRecord processed111Direct() {
     return set(new under111.SimpleRecord());
   }
 }
