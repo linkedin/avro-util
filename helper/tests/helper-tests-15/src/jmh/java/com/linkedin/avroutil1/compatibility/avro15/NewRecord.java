@@ -36,68 +36,71 @@ public class NewRecord {
     return record;
   }
 
+  // A baseline to compare the rest of the measurements against.
+  // Useful as a ceiling of the possible performance and to get
+  // an idea of the inherent overhead/variance involved.
   @Benchmark
   public SpecificRecord baseline() {
     return null;
   }
 
   @Benchmark
-  public SpecificRecord nativeVanilla14() {
+  public SpecificRecord vanillaDirect14() {
     return set(new by14.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord nativeVanilla15() {
+  public SpecificRecord vanillaDirect15() {
     return set(new by15.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord nativeVanilla16() {
+  public SpecificRecord vanillaDirect16() {
     return set(new by16.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord nativeVanilla17() {
+  public SpecificRecord vanillaDirect17() {
     return set(new by17.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord compatVanilla14() {
+  public SpecificRecord processedDirect14() {
     return set(new under14.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord compatVanilla15() {
+  public SpecificRecord processedDirect15() {
     return set(new under15.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord compatVanilla16() {
+  public SpecificRecord processedDirect16() {
     return set(new under16.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord compatVanilla17() {
+  public SpecificRecord processedDirect17() {
     return set(new under17.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord compatVanilla18() {
+  public SpecificRecord processedDirect18() {
     return set(new under18.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord compatVanilla19() {
+  public SpecificRecord processedDirect19() {
     return set(new under19.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord compatVanilla110() {
+  public SpecificRecord processedDirect110() {
     return set(new under110.SimpleRecord());
   }
 
   @Benchmark
-  public SpecificRecord compatVanilla111() {
+  public SpecificRecord processedDirect111() {
     return set(new under111.SimpleRecord());
   }
 }
