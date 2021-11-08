@@ -887,8 +887,8 @@ public class CodeTransformations {
   // * Make the other constructors call that instead, using the cached builder instance.
   //
   // Avro 1.11 codegen produces Builder constructors that call `super(SCHEMA$, MODEL$)`. Such a method doesn't exist in
-  // the super-class (SpecificRecordBase) in any older Avro. So, we transform those as well. This has the benefit that
-  // Avro 1.11 codegen (post-processed by us) can still be used with runtime Avro 1.6 through 1.10.
+  // the super-class (SpecificRecordBuilderBase) in any older Avro. So, we transform those as well. This has the benefit
+  // that Avro 1.11 codegen (post-processed by us) can still be used with runtime Avro 1.6 through 1.10.
   private static String fixBuilderConstructors(String code) {
     Matcher builderClassMatcher = BUILDER_CLASS_PATTERN.matcher(code);
     if (!builderClassMatcher.find()) {
