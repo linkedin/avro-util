@@ -219,3 +219,14 @@ for (String avroVersion : avroVersions) {
   }
 
 }
+
+task jmh {
+  dependsOn ':helper:tests:helper-tests-14:jmh'
+  dependsOn ':helper:tests:helper-tests-15:jmh'
+  dependsOn ':helper:tests:helper-tests-16:jmh'
+  dependsOn ':helper:tests:helper-tests-17:jmh'
+  dependsOn ':helper:tests:helper-tests-18:jmh'
+  dependsOn ':helper:tests:helper-tests-19:jmh'
+  dependsOn ':helper:tests:helper-tests-110:jmh'
+  dependsOn ':helper:tests:helper-tests-111:jmh'
+}

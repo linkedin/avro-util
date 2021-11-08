@@ -8,6 +8,7 @@ plugins {
   id "java-library"
   id "jacoco"
   id "checkstyle"
+  id "me.champeau.gradle.jmh" version "0.5.3"
 }
 
 dependencies {
