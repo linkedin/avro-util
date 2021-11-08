@@ -133,4 +133,9 @@ public class NewRecord {
   public SpecificRecord processed110Builder() {
     return under110wbuilders.SimpleRecord.newBuilder().setStringField(MESSAGE).build();
   }
+
+  @Benchmark
+  public SpecificRecord processed111Builder() {
+    return under111wbuilders.SimpleRecord.newBuilder().setStringField(MESSAGE).build();
+  }
 }

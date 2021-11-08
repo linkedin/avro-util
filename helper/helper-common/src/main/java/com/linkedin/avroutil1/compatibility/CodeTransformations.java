@@ -88,6 +88,10 @@ public class CodeTransformations {
   private static final String  IMPORT_HELPER = "import " + HelperConsts.HELPER_FQCN + ";";
   private static final Pattern CATCH_UNQUALIFIED_EXCEPTION_PATTERN = Pattern.compile("catch\\s*\\(\\s*Exception\\s+");
   private static final String  CATCH_QUALIFIED_EXCEPTION = Matcher.quoteReplacement("catch (java.lang.Exception ");
+  private static final Pattern BUILDER_CLASS_PATTERN = Pattern.compile("^\\s*implements org.apache.avro.data.RecordBuilder<\\w+> \\{$", Pattern.MULTILINE);
+  private static final Pattern BUILDER_SUPER_PATTERN = Pattern.compile("^\\s*super\\([\\w.]*SCHEMA\\$(?:, [\\w.]*MODEL\\$)?\\);$", Pattern.MULTILINE);
+  private static final String BUILDER_INSTANCE_NAME = "BUILDER_INSTANCE$";
+  private static final String BUILDER_SUPER_REPLACEMENT = Matcher.quoteReplacement("this(" + BUILDER_INSTANCE_NAME + ");");
 
   private static final String FIXED_CLASS_BODY_TEMPLATE = TemplateUtil.loadTemplate("avroutil1/templates/SpecificFixedBody.template");
   private static final String FIXED_CLASS_NO_NAMESPACE_BODY_TEMPLATE = TemplateUtil.loadTemplate("avroutil1/templates/SpecificFixedBodyNoNamespace.template");
@@ -148,6 +152,7 @@ public class CodeTransformations {
 
     //general issues
     fixed = CodeTransformations.transformUnqalifiedCatchClauses(fixed);
+    fixed = fixBuilderConstructors(fixed);
 
     return fixed;
   }
@@ -847,6 +852,75 @@ public class CodeTransformations {
       return match.replaceAll(Matcher.quoteReplacement(CATCH_QUALIFIED_EXCEPTION));
     }
     return code;
+  }
+
+  // We want to transform SpecificRecords that look like this:
+  //     public class SomeRecord ... {
+  //         ...
+  //         public static class Builder ... {
+  //             private Builder() {
+  //                 super(SCHEMA$);
+  //             }
+  //             private Builder(SomeRecord other) {
+  //                 super(SCHEMA$);
+  //                 ...
+  //             }
+  // Into this:
+  //     public class SomeRecord ... {
+  //         ...
+  //         private static final BUILDER_INSTANCE$ = new Builder(false);
+  //         public static class Builder ... {
+  //             private Builder(boolean unused) {
+  //                 super(SCHEMA$);
+  //             }
+  //             private Builder() {
+  //                 this(BUILDER_INSTANCE$);
+  //             }
+  //             private Builder(SomeRecord other) {
+  //                 this(BUILDER_INSTANCE$);
+  //                 ...
+  //             }
+  // See https://github.com/linkedin/avro-util/issues/220 for an explanation of why. Briefly:
+  // * `super(SCHEMA$)` is very expensive when running under Avro 1.9 and 1.10.
+  // * So, we call it once per SpecificRecord and cache the result in BUILDER_INSTANCE$.
+  // * There's a `private Builder(Builder other)` constructor not shown above; it's more performant.
+  // * Make the other constructors call that instead, using the cached builder instance.
+  //
+  // Avro 1.11 codegen produces Builder constructors that call `super(SCHEMA$, MODEL$)`. Such a method doesn't exist in
+  // the super-class (SpecificRecordBase) in any older Avro. So, we transform those as well. This has the benefit that
+  // Avro 1.11 codegen (post-processed by us) can still be used with runtime Avro 1.6 through 1.10.
+  private static String fixBuilderConstructors(String code) {
+    Matcher builderClassMatcher = BUILDER_CLASS_PATTERN.matcher(code);
+    if (!builderClassMatcher.find()) {
+      // There is no Builder in this code. Nothing to fix up.
+      return code;
+    }
+    // Introduce a new constructor that calls the expensive `super(SCHEMA$)` method.
+    // It is intended that this super() will NOT be matched by BUILDER_SUPER_PATTERN below.
+    code = code.substring(0, builderClassMatcher.end()) +
+        "\nprivate Builder(boolean unused) { super(SCHEMA$); }" +
+        code.substring(builderClassMatcher.end());
+
+    // Replace all the `super(SCHEMA$)` and `super(SCHEMA$, MODEL$)` calls with `this(BUILDER_INSTANCE$)`.
+    Matcher builderSuperMatcher = BUILDER_SUPER_PATTERN.matcher(code);
+    code = builderSuperMatcher.replaceAll(BUILDER_SUPER_REPLACEMENT);
+
+    // Get the type name of the Builder. It may be prefixed by the package, which is why we can't just use `Builder`.
+    builderClassMatcher = NEW_BUILDER_METHOD_PATTERN.matcher(code);
+    if (!builderClassMatcher.find()) {
+      throw new IllegalStateException("cannot locate newBuilder() method in " + code);
+    }
+    String builderClassName = builderClassMatcher.group(1);
+
+    // Add the cached instance. It's important to add it after the SCHEMA$ and MODEL$ definitions, since the creation
+    // of the cached instance may try to look up those fields.
+    int model$EndPosition = code.indexOf(MODEL_DECL_REPLACEMENT);
+    if (model$EndPosition < 0) {
+      throw new IllegalStateException("cannot locate MODEL$ declaration in " + code);
+    }
+    model$EndPosition += MODEL_DECL_REPLACEMENT.length();
+    return code.substring(0, model$EndPosition) + "\nprivate static final " + builderClassName +
+        " " + BUILDER_INSTANCE_NAME + " = new " + builderClassName + "(false);\n" + code.substring(model$EndPosition);
   }
 
   private static String addImports(String code, Collection<String> importStatements) {
