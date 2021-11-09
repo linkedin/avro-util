@@ -914,13 +914,15 @@ public class CodeTransformations {
 
     // Add the cached instance. It's important to add it after the SCHEMA$ and MODEL$ definitions, since the creation
     // of the cached instance may try to look up those fields.
-    int model$EndPosition = code.indexOf(MODEL_DECL_REPLACEMENT);
-    if (model$EndPosition < 0) {
-      throw new IllegalStateException("cannot locate MODEL$ declaration in " + code);
+    int insertPosition = code.indexOf(MODEL_DECL_REPLACEMENT);
+    if (insertPosition < 0) {
+      // This must be because the max targeted Avro version is <= 1.8, which doesn't use MODEL$. Use SCHEMA$ instead.
+      insertPosition = findEndOfSchemaDeclaration(code);
+    } else {
+      insertPosition += MODEL_DECL_REPLACEMENT.length();
     }
-    model$EndPosition += MODEL_DECL_REPLACEMENT.length();
-    return code.substring(0, model$EndPosition) + "\nprivate static final " + builderClassName +
-        " " + BUILDER_INSTANCE_NAME + " = new " + builderClassName + "(false);\n" + code.substring(model$EndPosition);
+    return code.substring(0, insertPosition) + "\nprivate static final " + builderClassName +
+        " " + BUILDER_INSTANCE_NAME + " = new " + builderClassName + "(false);\n" + code.substring(insertPosition);
   }
 
   private static String addImports(String code, Collection<String> importStatements) {
