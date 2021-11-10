@@ -1,6 +1,12 @@
 package com.linkedin.avro.fastserde;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import org.apache.avro.Schema;
 import org.apache.avro.io.DatumReader;
 import org.apache.avro.io.Decoder;
@@ -18,7 +24,7 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
   private Schema readerSchema;
   private FastSerdeCache cache;
 
-  private FastDeserializer<T> cachedFastDeserializer;
+  private final AtomicReference<FastDeserializer<T>> cachedFastDeserializer = new AtomicReference<>();
 
   public FastGenericDatumReader(Schema schema) {
     this(schema, schema);
@@ -38,7 +44,7 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
     this.cache = cache != null ? cache : FastSerdeCache.getDefaultInstance();
 
     if (!Utils.isSupportedAvroVersionsForDeserializer()) {
-      this.cachedFastDeserializer = getRegularAvroImpl(writerSchema, readerSchema);
+      this.cachedFastDeserializer.set(getRegularAvroImpl(writerSchema, readerSchema));
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(
             "Current avro version: " + Utils.getRuntimeAvroVersion() + " is not supported, and only the following"
@@ -47,10 +53,43 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
       }
     } else if (!FastSerdeCache.isSupportedForFastDeserializer(readerSchema.getType())) {
       // For unsupported schema type, we won't try to fetch it from FastSerdeCache since it is inefficient.
-      this.cachedFastDeserializer = getRegularAvroImpl(writerSchema, readerSchema);
+      this.cachedFastDeserializer.set(getRegularAvroImpl(writerSchema, readerSchema));
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Skip the FastGenericDeserializer generation since read schema type: " + readerSchema.getType()
             + " is not supported");
+      }
+    }
+  }
+
+  public void warmUp(Duration period, Duration timeout) {
+    if (cachedFastDeserializer.get() != null) {
+      return;
+    }
+
+    ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+
+    ScheduledFuture<?> updateTask = executor.scheduleWithFixedDelay(() -> {
+      FastDeserializer<T> fastDeserializer = getFastDeserializerFromCache(cache, writerSchema, readerSchema);
+      if (cachedFastDeserializer.get() == null && isFastDeserializer(fastDeserializer)) {
+        cachedFastDeserializer.compareAndSet(null, fastDeserializer);
+      }
+    }, 0, period.toMillis(), TimeUnit.MILLISECONDS);
+
+    try {
+      executor.scheduleWithFixedDelay(() -> {
+        if (cachedFastDeserializer.get() != null) {
+          updateTask.cancel(true);
+          // early termination
+          executor.shutdown();
+        }
+      }, 10, period.toMillis(), TimeUnit.MILLISECONDS).get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+    } catch (Exception e) {
+      if (cachedFastDeserializer.get() == null) {
+        LOGGER.warn("Failed to warm up Fast Deserializer", e);
+      }
+    } finally {
+      if (!executor.isShutdown()) {
+        executor.shutdown();
       }
     }
   }
@@ -71,14 +110,14 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
   public T read(T reuse, Decoder in) throws IOException {
     FastDeserializer<T> fastDeserializer = null;
 
-    if (cachedFastDeserializer != null) {
-      fastDeserializer = cachedFastDeserializer;
+    if (cachedFastDeserializer.get() != null) {
+      fastDeserializer = cachedFastDeserializer.get();
     } else {
       fastDeserializer = getFastDeserializerFromCache(cache, writerSchema, readerSchema);
       if (!isFastDeserializer(fastDeserializer)) {
         // don't cache
       } else {
-        cachedFastDeserializer = fastDeserializer;
+        cachedFastDeserializer.compareAndSet(null, fastDeserializer);
         if (LOGGER.isDebugEnabled()) {
           LOGGER.debug("FastGenericDeserializer was generated and cached for reader schema: ["
               + readerSchema + "], writer schema: [" + writerSchema + "]");
@@ -108,9 +147,9 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
    * @return
    */
   public boolean isFastDeserializerUsed() {
-    if (cachedFastDeserializer == null) {
+    if (cachedFastDeserializer.get() == null) {
       return false;
     }
-    return isFastDeserializer(cachedFastDeserializer);
+    return isFastDeserializer(cachedFastDeserializer.get());
   }
 }

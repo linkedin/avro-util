@@ -3,6 +3,7 @@ package com.linkedin.avro.fastserde;
 import com.linkedin.avro.fastserde.generated.avro.TestEnum;
 import com.linkedin.avro.fastserde.generated.avro.TestRecord;
 import java.io.IOException;
+import java.time.Duration;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
@@ -21,6 +22,24 @@ public class FastDatumReaderTest {
   @BeforeTest(groups = {"deserializationTest"})
   public void before() {
     cache = new FastSerdeCache(Runnable::run);
+  }
+
+  @Test(groups = {"deserializationTest"})
+  @SuppressWarnings("unchecked")
+  public void shouldWarmUpSpecificDatumReader() {
+    // given
+    FastSpecificDatumReader<TestRecord> fastSpecificDatumReader =
+        new FastSpecificDatumReader<>(TestRecord.SCHEMA$, cache);
+
+    // when
+    fastSpecificDatumReader.warmUp(Duration.ofMillis(10), Duration.ofMillis(1000));
+
+    // then
+    FastDeserializer<TestRecord> fastSpecificDeserializer =
+        (FastDeserializer<TestRecord>) cache.getFastSpecificDeserializer(TestRecord.SCHEMA$, TestRecord.SCHEMA$);
+
+    Assert.assertNotNull(fastSpecificDeserializer);
+    Assert.assertTrue(fastSpecificDatumReader.isFastDeserializerUsed());
   }
 
   @Test(groups = {"deserializationTest"})
@@ -65,6 +84,24 @@ public class FastDatumReaderTest {
 
     Assert.assertNotNull(fastSpecificDeserializer);
     Assert.assertEquals(fastSpecificDeserializer.getClass().getDeclaredMethods().length, 1);
+  }
+
+  @Test(groups = {"deserializationTest"})
+  @SuppressWarnings("unchecked")
+  public void shouldWarmUpGenericDatumReader() {
+    // given
+    Schema recordSchema = createRecord("TestSchema", createPrimitiveUnionFieldSchema("test", Schema.Type.STRING));
+    FastGenericDatumReader<GenericRecord> fastGenericDatumReader = new FastGenericDatumReader<>(recordSchema, cache);
+
+    // when
+    fastGenericDatumReader.warmUp(Duration.ofMillis(10), Duration.ofMillis(1000));
+
+    // then
+    FastDeserializer<GenericRecord> fastGenericDeserializer =
+        (FastDeserializer<GenericRecord>) cache.getFastGenericDeserializer(recordSchema, recordSchema);
+
+    Assert.assertNotNull(fastGenericDeserializer);
+    Assert.assertTrue(fastGenericDatumReader.isFastDeserializerUsed());
   }
 
   @Test(groups = {"deserializationTest"})

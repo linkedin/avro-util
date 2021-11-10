@@ -63,4 +63,19 @@ public class FastDatumReaderWriterUtilTest {
     Assert.assertSame(fastReader, newFastReader);
   }
 
+  @Test (groups = "deserializationTest")
+  public void testIsSupportedForFastGenericDatumReaderWarmUp() {
+    Schema testSchema = Schema.parse("{\"type\": \"record\", \"name\": \"test_record\", \"fields\":[]}");
+    FastDatumReaderWriterUtil.warmUpFastGenericDatumReader(testSchema, testSchema);
+    FastGenericDatumReader fastReader = FastDatumReaderWriterUtil.getFastGenericDatumReader(testSchema, testSchema);
+    Assert.assertTrue(fastReader.isFastDeserializerUsed());
+  }
+
+  @Test (groups = "deserializationTest")
+  public void testIsSupportedForFastSpecificDatumReaderWarmUp() {
+    Schema testSchema = Schema.parse("{\"type\": \"record\", \"name\": \"test_record\", \"fields\":[]}");
+    FastDatumReaderWriterUtil.warmUpFastSpecificDatumReader(testSchema, testSchema);
+    FastSpecificDatumReader fastReader = FastDatumReaderWriterUtil.getFastSpecificDatumReader(testSchema);
+    Assert.assertTrue(fastReader.isFastDeserializerUsed());
+  }
 }
