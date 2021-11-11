@@ -177,7 +177,7 @@ public abstract class PrimitiveArrayList<T, L, A> extends AbstractList<T>
       A newElements = newArray((size * 3)/2 + 1);
       if (location > 0) {
         // Copy the elements before the insertion location, if any, with same index
-        System.arraycopy(elementsArray, 0, newElements, 0, location - 1);
+        System.arraycopy(elementsArray, 0, newElements, 0, location);
       }
       // Copy the elements after the insertion location, with index offset by 1
       System.arraycopy(elementsArray, location, newElements, location + 1, size - location);
