@@ -1,8 +1,10 @@
 package com.linkedin.avro.fastserde;
 
-import java.time.Duration;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.avro.Schema;
 
@@ -53,10 +55,19 @@ public class FastDatumReaderWriterUtil {
   private static final Map<SchemaPair, FastSpecificDatumReader<?>> fastSpecificDatumReaderCache = new FastAvroConcurrentHashMap<>();
   private static final Map<Schema, FastSpecificDatumWriter<?>> fastSpecificDatumWriterCache = new WeakIdentityHashMap<>();
 
-  private static final Duration READER_WARM_UP_CHECK_PERIOD = Duration.ofMillis(100);
-  private static final Duration READER_WARM_UP_TIME_OUT = Duration.ofSeconds(3);
-
   private FastDatumReaderWriterUtil() {
+  }
+
+  public static void warmUpFastGenericDatumReader(Schema writerSchema, Schema readerSchema, long timeoutInMillis)
+      throws InterruptedException, ExecutionException, TimeoutException {
+    getFastGenericDatumReader(writerSchema, readerSchema).getFastDeserializer()
+        .get(timeoutInMillis, TimeUnit.MILLISECONDS);
+  }
+
+  public static void warmUpFastSpecificDatumReader(Schema writerSchema, Schema readerSchema, long timeoutInMillis)
+      throws InterruptedException, ExecutionException, TimeoutException {
+    getFastSpecificDatumReader(writerSchema, readerSchema).getFastDeserializer()
+        .get(timeoutInMillis, TimeUnit.MILLISECONDS);
   }
 
   public static <T> FastGenericDatumReader<T> getFastGenericDatumReader(Schema schema) {
@@ -66,15 +77,6 @@ public class FastDatumReaderWriterUtil {
   public static <T> FastGenericDatumReader<T> getFastGenericDatumReader(Schema writerSchema, Schema readerSchema) {
     SchemaPair schemaPair = new SchemaPair(writerSchema, readerSchema);
     return (FastGenericDatumReader<T>) fastGenericDatumReaderCache.computeIfAbsent(schemaPair, key -> new FastGenericDatumReader<>(writerSchema, readerSchema));
-  }
-
-  public static void warmUpFastGenericDatumReader(Schema writerSchema, Schema readerSchema, Duration period,
-      Duration timeout) {
-    getFastGenericDatumReader(writerSchema, readerSchema).warmUp(period, timeout);
-  }
-
-  public static void warmUpFastGenericDatumReader(Schema writerSchema, Schema readerSchema) {
-    getFastGenericDatumReader(writerSchema, readerSchema).warmUp(READER_WARM_UP_CHECK_PERIOD, READER_WARM_UP_TIME_OUT);
   }
 
   public static <T> FastGenericDatumWriter<T> getFastGenericDatumWriter(Schema writerSchema) {
@@ -107,15 +109,6 @@ public class FastDatumReaderWriterUtil {
   public static <T> FastSpecificDatumReader<T> getFastSpecificDatumReader(Schema writerSchema, Schema readerSchema) {
     SchemaPair schemaPair = new SchemaPair(writerSchema, readerSchema);
     return (FastSpecificDatumReader<T>) fastSpecificDatumReaderCache.computeIfAbsent(schemaPair, key -> new FastSpecificDatumReader<>(writerSchema, readerSchema));
-  }
-
-  public static void warmUpFastSpecificDatumReader(Schema writerSchema, Schema readerSchema, Duration period,
-      Duration timeout) {
-    getFastSpecificDatumReader(writerSchema, readerSchema).warmUp(period, timeout);
-  }
-
-  public static void warmUpFastSpecificDatumReader(Schema writerSchema, Schema readerSchema) {
-    getFastSpecificDatumReader(writerSchema, readerSchema).warmUp(READER_WARM_UP_CHECK_PERIOD, READER_WARM_UP_TIME_OUT);
   }
 
   public static <T> FastSpecificDatumWriter<T> getFastSpecificDatumWriter(Schema writerSchema) {

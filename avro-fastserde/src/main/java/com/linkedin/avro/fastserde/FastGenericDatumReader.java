@@ -1,11 +1,7 @@
 package com.linkedin.avro.fastserde;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 import org.apache.avro.Schema;
 import org.apache.avro.io.DatumReader;
@@ -61,39 +57,6 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
     }
   }
 
-  public void warmUp(Duration period, Duration timeout) {
-    if (cachedFastDeserializer.get() != null) {
-      return;
-    }
-
-    ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-
-    ScheduledFuture<?> updateTask = executor.scheduleWithFixedDelay(() -> {
-      FastDeserializer<T> fastDeserializer = getFastDeserializerFromCache(cache, writerSchema, readerSchema);
-      if (cachedFastDeserializer.get() == null && isFastDeserializer(fastDeserializer)) {
-        cachedFastDeserializer.compareAndSet(null, fastDeserializer);
-      }
-    }, 0, period.toMillis(), TimeUnit.MILLISECONDS);
-
-    try {
-      executor.scheduleWithFixedDelay(() -> {
-        if (cachedFastDeserializer.get() != null) {
-          updateTask.cancel(true);
-          // early termination
-          executor.shutdown();
-        }
-      }, 10, period.toMillis(), TimeUnit.MILLISECONDS).get(timeout.toMillis(), TimeUnit.MILLISECONDS);
-    } catch (Exception e) {
-      if (cachedFastDeserializer.get() == null) {
-        LOGGER.warn("Failed to warm up Fast Deserializer", e);
-      }
-    } finally {
-      if (!executor.isShutdown()) {
-        executor.shutdown();
-      }
-    }
-  }
-
   @Override
   public void setSchema(Schema schema) {
     if (writerSchema == null) {
@@ -114,7 +77,7 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
       fastDeserializer = cachedFastDeserializer.get();
     } else {
       fastDeserializer = getFastDeserializerFromCache(cache, writerSchema, readerSchema);
-      if (!isFastDeserializer(fastDeserializer)) {
+      if (!FastSerdeCache.isFastDeserializer(fastDeserializer)) {
         // don't cache
       } else {
         cachedFastDeserializer.compareAndSet(null, fastDeserializer);
@@ -128,6 +91,20 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
     return fastDeserializer.deserialize(reuse, in);
   }
 
+  public CompletableFuture<FastDeserializer<T>> getFastDeserializer() {
+    return cachedFastDeserializer.get() != null ? CompletableFuture.completedFuture(cachedFastDeserializer.get())
+        : getFastDeserializer(cache, writerSchema, readerSchema).thenApply(d -> {
+          cachedFastDeserializer.compareAndSet(null, d);
+          return d;
+        });
+  }
+
+  protected CompletableFuture<FastDeserializer<T>> getFastDeserializer(FastSerdeCache fastSerdeCache,
+      Schema writerSchema, Schema readerSchema) {
+    return fastSerdeCache.getFastGenericDeserializerAsync(writerSchema, readerSchema)
+        .thenApply(d -> (FastDeserializer<T>) d);
+  }
+
   protected FastDeserializer<T> getFastDeserializerFromCache(FastSerdeCache fastSerdeCache, Schema writerSchema,
       Schema readerSchema) {
     return (FastDeserializer<T>) fastSerdeCache.getFastGenericDeserializer(writerSchema, readerSchema);
@@ -137,19 +114,12 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
     return new FastSerdeCache.FastDeserializerWithAvroGenericImpl<>(writerSchema, readerSchema);
   }
 
-  private static boolean isFastDeserializer(FastDeserializer deserializer) {
-    return !(deserializer instanceof FastSerdeCache.FastDeserializerWithAvroSpecificImpl
-        || deserializer instanceof FastSerdeCache.FastDeserializerWithAvroGenericImpl);
-  }
-
   /**
    * Return a flag to indicate whether fast deserializer is being used or not.
-   * @return
+   * @return true if fast deserializer is being used.
    */
   public boolean isFastDeserializerUsed() {
-    if (cachedFastDeserializer.get() == null) {
-      return false;
-    }
-    return isFastDeserializer(cachedFastDeserializer.get());
+    FastDeserializer<T> fastDeserializer = cachedFastDeserializer.get();
+    return fastDeserializer != null && FastSerdeCache.isFastDeserializer(fastDeserializer);
   }
 }

@@ -1,5 +1,6 @@
 package com.linkedin.avro.fastserde;
 
+import java.util.concurrent.CompletableFuture;
 import org.apache.avro.Schema;
 
 
@@ -27,6 +28,13 @@ public class FastSpecificDatumReader<T> extends FastGenericDatumReader<T> {
   protected FastDeserializer<T> getFastDeserializerFromCache(FastSerdeCache fastSerdeCache, Schema writeSchema,
       Schema readerSchema) {
     return (FastDeserializer<T>) fastSerdeCache.getFastSpecificDeserializer(writeSchema, readerSchema);
+  }
+
+  @Override
+  protected CompletableFuture<FastDeserializer<T>> getFastDeserializer(FastSerdeCache fastSerdeCache,
+      Schema writerSchema, Schema readerSchema) {
+    return fastSerdeCache.getFastSpecificDeserializerAsync(writerSchema, readerSchema)
+        .thenApply(d -> (FastDeserializer<T>) d);
   }
 
   @Override

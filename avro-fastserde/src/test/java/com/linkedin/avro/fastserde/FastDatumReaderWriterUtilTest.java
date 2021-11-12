@@ -64,17 +64,17 @@ public class FastDatumReaderWriterUtilTest {
   }
 
   @Test (groups = "deserializationTest")
-  public void testIsSupportedForFastGenericDatumReaderWarmUp() {
+  public void testIsSupportedForFastGenericDatumReaderWarmUp() throws Exception {
     Schema testSchema = Schema.parse("{\"type\": \"record\", \"name\": \"test_record\", \"fields\":[]}");
-    FastDatumReaderWriterUtil.warmUpFastGenericDatumReader(testSchema, testSchema);
+    FastDatumReaderWriterUtil.warmUpFastGenericDatumReader(testSchema, testSchema, 1000);
     FastGenericDatumReader fastReader = FastDatumReaderWriterUtil.getFastGenericDatumReader(testSchema, testSchema);
     Assert.assertTrue(fastReader.isFastDeserializerUsed());
   }
 
   @Test (groups = "deserializationTest")
-  public void testIsSupportedForFastSpecificDatumReaderWarmUp() {
+  public void testIsSupportedForFastSpecificDatumReaderWarmUp() throws Exception {
     Schema testSchema = Schema.parse("{\"type\": \"record\", \"name\": \"test_record\", \"fields\":[]}");
-    FastDatumReaderWriterUtil.warmUpFastSpecificDatumReader(testSchema, testSchema);
+    FastDatumReaderWriterUtil.warmUpFastSpecificDatumReader(testSchema, testSchema, 1000);
     FastSpecificDatumReader fastReader = FastDatumReaderWriterUtil.getFastSpecificDatumReader(testSchema);
     Assert.assertTrue(fastReader.isFastDeserializerUsed());
   }
