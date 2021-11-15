@@ -279,6 +279,12 @@ public class Avro14Adapter implements AvroAdapter {
   }
 
   @Override
+  public String toAvsc(Schema schema, boolean pretty) {
+    Avro14AvscWriter writer = new Avro14AvscWriter(pretty);
+    return writer.toAvsc(schema);
+  }
+
+  @Override
   public Collection<AvroGeneratedSourceCode> compile(
       Collection<Schema> toCompile,
       AvroVersion minSupportedVersion,

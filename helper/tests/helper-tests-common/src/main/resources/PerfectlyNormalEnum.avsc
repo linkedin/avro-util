@@ -3,5 +3,6 @@
   "namespace": "com.acme",
   "name": "PerfectlyNormalEnum",
   "doc": "this enum is perfectly normal",
-  "symbols": ["A", "B"]
+  "symbols": ["A", "B"],
+  "default": "B"
 }
