@@ -923,4 +923,9 @@ public class AvroCompatibilityHelper {
     assertAvroAvailable();
     return ADAPTER.newEnumSchema(name, doc, namespace, values, enumDefault);
   }
+
+  public static String toAvsc(Schema schema, boolean pretty) {
+    assertAvroAvailable();
+    return ADAPTER.toAvsc(schema, pretty);
+  }
 }
