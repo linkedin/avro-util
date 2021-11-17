@@ -89,6 +89,9 @@ public class FastGenericDeserializerGeneratorTest {
 
     classLoader = URLClassLoader.newInstance(new URL[]{tempDir.toURI().toURL()},
         FastGenericDeserializerGeneratorTest.class.getClassLoader());
+
+    // In order to test the functionallity of the record split we set an unusually low number
+    FastGenericDeserializerGenerator.setFieldsPerPopulationMethod(2);
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
@@ -144,6 +147,32 @@ public class FastGenericDeserializerGeneratorTest {
     Assert.assertEquals(true, decodedRecord.get("testBooleanUnion"));
     Assert.assertEquals(ByteBuffer.wrap(new byte[]{0x01, 0x02}), decodedRecord.get("testBytes"));
     Assert.assertEquals(ByteBuffer.wrap(new byte[]{0x01, 0x02}), decodedRecord.get("testBytesUnion"));
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldBeAbleToReadVeryLargeSchema(Implementation implementation) {
+
+    // given
+    int n = 1000;
+    Schema.Field[] fields = new Schema.Field[n];
+    for(int i=0; i<n; i++) {
+      fields[i] = createPrimitiveUnionFieldSchema("F" + i, Schema.Type.STRING);
+    }
+    Schema recordSchema = createRecord(fields);
+
+    GenericRecord record = new GenericData.Record(recordSchema);
+
+    for(int i=0; i<n; i++) {
+      record.put("F" + i, "" + i);
+    }
+
+    // when
+    GenericRecord decodedRecord = implementation.decode(recordSchema, recordSchema, genericDataAsDecoder(record));
+
+    // then
+    for(int i=0; i<n; i++) {
+      Assert.assertEquals(new Utf8("" + i), decodedRecord.get("F" + i));
+    }
   }
 
   public GenericData.Fixed newFixed(Schema fixedSchema, byte[] bytes) {

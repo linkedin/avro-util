@@ -13,7 +13,6 @@ import com.sun.codemodel.JConditional;
 import com.sun.codemodel.JDoLoop;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
-import com.sun.codemodel.JFieldRef;
 import com.sun.codemodel.JForLoop;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
@@ -56,6 +55,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
   private static final Logger LOGGER = LoggerFactory.getLogger(FastDeserializerGenerator.class);
   private static final String DECODER = "decoder";
   private static final String VAR_NAME_FOR_REUSE = "reuse";
+  private static int FIELDS_PER_POPULATION_METHOD = 100;
 
   /**
    * This is sometimes passed into the reuse parameter,
@@ -252,11 +252,12 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       parentBody.invoke(method).arg(reuseSupplier.get()).arg(JExpr.direct(DECODER));
     }
 
-    final JBlock methodBody = method.body();
+    JBlock methodBody = method.body();
 
     final JVar result;
+    JClass recordClass = null;
     if (recordAction.getShouldRead()) {
-      JClass recordClass = schemaAssistant.classFromSchema(recordReaderSchema);
+      recordClass = schemaAssistant.classFromSchema(recordReaderSchema);
       result = methodBody.decl(recordClass, recordName);
 
       JExpression reuseVar = JExpr.direct(VAR_NAME_FOR_REUSE);
@@ -280,16 +281,40 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
         );
       } else {
         JInvocation finalNewRecordInvocation = newRecord;
+        JClass finalRecordClass = recordClass;
         ifCodeGen(methodBody,
             reuseVar.ne(JExpr._null()),
-            thenBlock -> thenBlock.assign(result, JExpr.cast(recordClass, reuseVar)),
+            thenBlock -> thenBlock.assign(result, JExpr.cast(finalRecordClass, reuseVar)),
             elseBlock -> elseBlock.assign(result, finalNewRecordInvocation)
         );
       }
     } else {
       result = null;
     }
+
+    int fieldCount = 0;
+    JBlock popMethodBody = methodBody;
+    JMethod popMethod = null;
     for (Schema.Field field : recordWriterSchema.getFields()) {
+      // We roll the population method for very large records, the initial fields are kept in the outer method as original to maintain performance for smaller records
+      fieldCount++;
+      if (fieldCount % FIELDS_PER_POPULATION_METHOD == 0) {
+        popMethod = generatedClass.method(JMod.PRIVATE, codeModel.VOID,
+                getUniqueName("populate_" + recordName));
+
+        popMethod._throws(IOException.class);
+        if (recordAction.getShouldRead()) {
+          popMethod.param(recordClass, recordName);
+        }
+        popMethod.param(Decoder.class, DECODER);
+        popMethodBody = popMethod.body();
+
+        JInvocation invocation = methodBody.invoke(popMethod);
+        if (recordAction.getShouldRead()) {
+          invocation.arg(JExpr.direct(recordName));
+        }
+        invocation.arg(JExpr.direct(DECODER));
+      }
       FieldAction action = seekFieldAction(recordAction.getShouldRead(), field, actionIterator);
       if (action.getSymbol() == END_SYMBOL) {
         break;
@@ -312,10 +337,16 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
         fieldReuseSupplier = () -> result.invoke("get").arg(JExpr.lit(readerFieldPos));
       }
       if (SchemaAssistant.isComplexType(field.schema())) {
-        processComplexType(fieldSchemaVar, field.name(), field.schema(), readerFieldSchema, methodBody, action,
+        processComplexType(fieldSchemaVar, field.name(), field.schema(), readerFieldSchema, popMethodBody, action,
             putExpressionInRecord, fieldReuseSupplier);
       } else {
-        processSimpleType(field.schema(), readerFieldSchema, methodBody, action, putExpressionInRecord, fieldReuseSupplier);
+        processSimpleType(field.schema(), readerFieldSchema, popMethodBody, action, putExpressionInRecord, fieldReuseSupplier);
+      }
+
+      if (popMethod != null) {
+        for(Class<? extends Exception> e: schemaAssistant.getExceptionsFromStringable()) {
+          popMethod._throws(e);
+        }
       }
     }
 
@@ -1184,5 +1215,9 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       return () -> oldValue;
     }
     return jExpressionSupplier;
+  }
+
+  static void setFieldsPerPopulationMethod(int fieldCount) {
+    FIELDS_PER_POPULATION_METHOD = fieldCount;
   }
 }

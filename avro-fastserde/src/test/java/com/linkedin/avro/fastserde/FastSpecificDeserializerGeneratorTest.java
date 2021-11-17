@@ -93,6 +93,9 @@ public class FastSpecificDeserializerGeneratorTest {
 
     classLoader = URLClassLoader.newInstance(new URL[]{tempDir.toURI().toURL()},
         FastSpecificDeserializerGeneratorTest.class.getClassLoader());
+
+    // In order to test the functionallity of the record split we set an unusually low number
+    FastGenericDeserializerGenerator.setFieldsPerPopulationMethod(2);
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
