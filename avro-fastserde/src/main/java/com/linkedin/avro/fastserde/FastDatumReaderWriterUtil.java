@@ -2,9 +2,6 @@ package com.linkedin.avro.fastserde;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.avro.Schema;
 
@@ -56,18 +53,6 @@ public class FastDatumReaderWriterUtil {
   private static final Map<Schema, FastSpecificDatumWriter<?>> fastSpecificDatumWriterCache = new WeakIdentityHashMap<>();
 
   private FastDatumReaderWriterUtil() {
-  }
-
-  public static void warmUpFastGenericDatumReader(Schema writerSchema, Schema readerSchema, long timeoutInMillis)
-      throws InterruptedException, ExecutionException, TimeoutException {
-    getFastGenericDatumReader(writerSchema, readerSchema).getFastDeserializer()
-        .get(timeoutInMillis, TimeUnit.MILLISECONDS);
-  }
-
-  public static void warmUpFastSpecificDatumReader(Schema writerSchema, Schema readerSchema, long timeoutInMillis)
-      throws InterruptedException, ExecutionException, TimeoutException {
-    getFastSpecificDatumReader(writerSchema, readerSchema).getFastDeserializer()
-        .get(timeoutInMillis, TimeUnit.MILLISECONDS);
   }
 
   public static <T> FastGenericDatumReader<T> getFastGenericDatumReader(Schema schema) {
