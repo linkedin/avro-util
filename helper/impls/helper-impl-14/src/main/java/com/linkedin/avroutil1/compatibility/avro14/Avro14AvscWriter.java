@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.compatibility.avro14;
 
+import com.linkedin.avroutil1.compatibility.HelperConsts;
 import com.linkedin.avroutil1.compatibility.avro14.backports.Avro111Name;
 import com.linkedin.avroutil1.compatibility.avro14.backports.Avro111Names;
 import org.apache.avro.AvroRuntimeException;
@@ -18,9 +19,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,11 +28,6 @@ public class Avro14AvscWriter {
     private static final Field SCHEMA_PROPS_FIELD;
     private static final Field FIELD_PROPS_FIELD;
     private static final Field FIELD_ALIASES_FIELD;
-    private static final Set<Schema.Type> NAMED_TYPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
-            Schema.Type.ENUM,
-            Schema.Type.FIXED,
-            Schema.Type.RECORD
-    )));
 
     private final boolean pretty;
 
@@ -260,7 +253,7 @@ public class Avro14AvscWriter {
 
     private static Avro111Name nameOf(Schema schema) {
         Schema.Type type = schema.getType();
-        if (!NAMED_TYPES.contains(type)) {
+        if (!HelperConsts.NAMED_TYPES.contains(type)) {
             throw new IllegalArgumentException("dont know how to build a Name out of " + type + " " + schema);
         }
         return new Avro111Name(schema.getName(), schema.getNamespace());

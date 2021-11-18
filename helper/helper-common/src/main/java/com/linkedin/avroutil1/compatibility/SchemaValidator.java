@@ -6,13 +6,10 @@
 
 package com.linkedin.avroutil1.compatibility;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaParseException;
@@ -26,12 +23,7 @@ import org.codehaus.jackson.JsonNode;
  * and this allows proper validation under versions of {@literal avro < 1.9}
  */
 public class SchemaValidator implements SchemaVisitor {
-  private final static Set<Schema.Type> NAMED_TYPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
-      Schema.Type.RECORD,
-      Schema.Type.ENUM,
-      Schema.Type.FIXED
-  )));
-//  private final static Pattern VALID_NAME_PATTERN = Pattern.compile("[A-Za-z_](A-Za-z0-9_)*");
+
 
   private final SchemaParseConfiguration validationSpec;
   private final Collection<Schema> grandfathered;
@@ -58,7 +50,7 @@ public class SchemaValidator implements SchemaVisitor {
       return;
     }
     Schema.Type type = schema.getType();
-    if (!NAMED_TYPES.contains(type)) {
+    if (!HelperConsts.NAMED_TYPES.contains(type)) {
       return;
     }
     //TODO - avro only validates the SIMPLE name, so for now so do we.

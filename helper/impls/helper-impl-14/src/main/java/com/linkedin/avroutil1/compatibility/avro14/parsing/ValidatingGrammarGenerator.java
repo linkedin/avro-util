@@ -23,24 +23,18 @@
  */
 package com.linkedin.avroutil1.compatibility.avro14.parsing;
 
+import com.linkedin.avroutil1.compatibility.HelperConsts;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * The class that generates validating grammar.
  */
 public class ValidatingGrammarGenerator {
-  protected final static Set<Schema.Type> NAMED_TYPES = Collections.unmodifiableSet(new HashSet<>(
-      Arrays.asList(Schema.Type.ENUM, Schema.Type.FIXED, Schema.Type.RECORD)
-  ));
 
   /**
    * Returns the non-terminal that is the start symbol
@@ -121,7 +115,7 @@ public class ValidatingGrammarGenerator {
         for (Schema b : sc.getTypes()) {
           symbols[i] = generate(b, seen, useFqcns);
           oldLabels[i] = b.getName();
-          newLabels[i] = NAMED_TYPES.contains(b.getType()) ? b.getFullName() : b.getName();
+          newLabels[i] = HelperConsts.NAMED_TYPES.contains(b.getType()) ? b.getFullName() : b.getName();
           i++;
         }
         return Symbol.seq(Symbol.alt(symbols, oldLabels, newLabels, useFqcns), Symbol.UNION);

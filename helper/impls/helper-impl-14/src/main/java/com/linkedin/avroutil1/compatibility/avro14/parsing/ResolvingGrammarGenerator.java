@@ -30,6 +30,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import com.linkedin.avroutil1.compatibility.HelperConsts;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field;
@@ -198,7 +200,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
     for (Schema w : alts) {
       symbols[i] = generate(w, reader, seen, useFqcns);
       oldLabels[i] = w.getName();
-      newLabels[i] = NAMED_TYPES.contains(w.getType()) ? w.getFullName() : w.getName();
+      newLabels[i] = HelperConsts.NAMED_TYPES.contains(w.getType()) ? w.getFullName() : w.getName();
       i++;
     }
     return Symbol.seq(Symbol.alt(symbols, oldLabels, newLabels, useFqcns),
