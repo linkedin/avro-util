@@ -62,5 +62,4 @@ public class FastDatumReaderWriterUtilTest {
     FastSpecificDatumReader newFastReader = FastDatumReaderWriterUtil.getFastSpecificDatumReader(testSchema);
     Assert.assertSame(fastReader, newFastReader);
   }
-
 }

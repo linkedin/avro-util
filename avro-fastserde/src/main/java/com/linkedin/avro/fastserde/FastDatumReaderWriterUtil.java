@@ -87,7 +87,6 @@ public class FastDatumReaderWriterUtil {
     return (FastGenericDatumWriter <T>) fastDatumWriter;
   }
 
-
   public static <T> FastSpecificDatumReader<T> getFastSpecificDatumReader(Schema schema) {
     return (FastSpecificDatumReader<T>) getFastSpecificDatumReader(schema, schema);
   }

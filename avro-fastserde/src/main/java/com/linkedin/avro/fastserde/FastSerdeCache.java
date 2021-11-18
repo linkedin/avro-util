@@ -193,6 +193,11 @@ public final class FastSerdeCache {
         Schema.Type.ARRAY);
   }
 
+  public static boolean isFastDeserializer(FastDeserializer deserializer) {
+    return !(deserializer instanceof FastDeserializerWithAvroSpecificImpl
+        || deserializer instanceof FastDeserializerWithAvroGenericImpl);
+  }
+
   /**
    * Generates if needed and returns specific-class aware avro {@link FastDeserializer}.
    *
@@ -312,7 +317,43 @@ public final class FastSerdeCache {
     return serializer;
   }
 
-  private String getSchemaKey(Schema writerSchema, Schema readerSchema) {
+  /**
+   * Asynchronously generates if needed and returns specific-class aware avro {@link FastDeserializer}.
+   *
+   * @param writerSchema {@link Schema} of written data
+   * @param readerSchema {@link Schema} intended to be used during deserialization
+   * @return {@link CompletableFuture} which contains specific-class aware avro {@link FastDeserializer}
+   */
+  public CompletableFuture<FastDeserializer<?>> getFastSpecificDeserializerAsync(Schema writerSchema, Schema readerSchema) {
+    return getFastDeserializerAsync(writerSchema, readerSchema, fastSpecificRecordDeserializersCache,
+        () -> buildSpecificDeserializer(writerSchema, readerSchema));
+  }
+
+  /**
+   * Asynchronously generates if needed and returns generic-class aware avro {@link FastDeserializer}.
+   *
+   * @param writerSchema {@link Schema} of written data
+   * @param readerSchema {@link Schema} intended to be used during deserialization
+   * @return {@link CompletableFuture} which contains generic-class aware avro {@link FastDeserializer}
+   */
+  public CompletableFuture<FastDeserializer<?>> getFastGenericDeserializerAsync(Schema writerSchema, Schema readerSchema) {
+    return getFastDeserializerAsync(writerSchema, readerSchema, fastGenericRecordDeserializersCache,
+        () -> buildGenericDeserializer(writerSchema, readerSchema));
+  }
+
+  private CompletableFuture<FastDeserializer<?>> getFastDeserializerAsync(Schema writerSchema, Schema readerSchema,
+      Map<String, FastDeserializer<?>> fastDeserializerCache, Supplier<FastDeserializer<?>> fastDeserializerSupplier) {
+    String schemaKey = getSchemaKey(writerSchema, readerSchema);
+    FastDeserializer<?> deserializer = fastDeserializerCache.get(schemaKey);
+    return deserializer != null && isFastDeserializer(deserializer) ? CompletableFuture.completedFuture(deserializer)
+        : CompletableFuture.supplyAsync(fastDeserializerSupplier, executor)
+            .thenApply(d -> {
+              fastDeserializerCache.put(schemaKey, d);
+              return d;
+            });
+  }
+
+  private static String getSchemaKey(Schema writerSchema, Schema readerSchema) {
     return String.valueOf(Math.abs(getSchemaFingerprint(writerSchema))) + Math.abs(
         getSchemaFingerprint(readerSchema));
   }
