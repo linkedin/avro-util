@@ -13,6 +13,7 @@ import com.linkedin.avroutil1.compatibility.AvroVersion;
 import com.linkedin.avroutil1.compatibility.CodeGenerationConfig;
 import com.linkedin.avroutil1.compatibility.CodeTransformations;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
+import com.linkedin.avroutil1.compatibility.HelperConsts;
 import com.linkedin.avroutil1.compatibility.SchemaBuilder;
 import com.linkedin.avroutil1.compatibility.SchemaNormalization;
 import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
@@ -39,8 +40,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.avro.Avro14SchemaAccessUtil;
 import org.apache.avro.AvroRuntimeException;
@@ -297,6 +301,9 @@ public class Avro14Adapter implements AvroAdapter {
     if (toCompile == null || toCompile.isEmpty()) {
       return Collections.emptyList();
     }
+
+    Map<String, String> fullNameToAlternativeAvsc = createAlternativeAvscs(toCompile, config);
+
     Iterator<Schema> schemaIter = toCompile.iterator();
     Schema first = schemaIter.next();
     try {
@@ -310,6 +317,7 @@ public class Avro14Adapter implements AvroAdapter {
 
       List<AvroGeneratedSourceCode> translated = outputFiles.stream()
           .map(o -> new AvroGeneratedSourceCode(getPath(o), getContents(o)))
+          .peek(code -> code.setAlternativeAvsc(fullNameToAlternativeAvsc.getOrDefault(code.getFullyQualifiedClassName(), null)))
           .collect(Collectors.toList());
 
       return transform(translated, minSupportedVersion, maxSupportedVersion);
@@ -320,10 +328,44 @@ public class Avro14Adapter implements AvroAdapter {
     }
   }
 
+  /**
+   * given schemas about to be code-gen'd and a code-gen config, returns a map of
+   * alternative AVSC to use by schema full name.
+   * @param toCompile schemas about to be "compiled"
+   * @param config configuration
+   * @return alternative AVSCs, keyed by schema full name
+   */
+  private Map<String, String> createAlternativeAvscs(Collection<Schema> toCompile, CodeGenerationConfig config) {
+    Set<String> schemasToGenerateBadAvscFor = config.getSchemasToGenerateBadAvscFor();
+    if (schemasToGenerateBadAvscFor == null) {
+      schemasToGenerateBadAvscFor = Collections.emptySet();
+    }
+    //we are running under avro 1.4, which will generate (potentially) bad avsc by default
+    //hence we only want to have alternative avsc for schemas that would "normally" be impacted
+    //by avro-702 but are NOT in schemasToGenerateBadAvscFor
+    Map<String, String> fullNameToAlternativeAvsc = new HashMap<>(1); //expected to be small
+    for (Schema schema : toCompile) {
+      if (!HelperConsts.NAMED_TYPES.contains(schema.getType())) {
+        continue;
+      }
+      String fullName = schema.getFullName();
+      if (AvroSchemaUtil.isImpactedByAvro702(schema) && !schemasToGenerateBadAvscFor.contains(fullName)) {
+        fullNameToAlternativeAvsc.put(fullName, toAvsc(schema, false));
+      }
+    }
+    return fullNameToAlternativeAvsc;
+  }
+
   private Collection<AvroGeneratedSourceCode> transform(List<AvroGeneratedSourceCode> avroGenerated, AvroVersion minAvro, AvroVersion maxAvro) {
     List<AvroGeneratedSourceCode> transformed = new ArrayList<>(avroGenerated.size());
     for (AvroGeneratedSourceCode generated : avroGenerated) {
-      String fixed = CodeTransformations.applyAll(generated.getContents(), supportedMajorVersion(), minAvro, maxAvro);
+      String fixed = CodeTransformations.applyAll(
+              generated.getContents(),
+              supportedMajorVersion(),
+              minAvro,
+              maxAvro,
+              generated.getAlternativeAvsc()
+      );
       transformed.add(new AvroGeneratedSourceCode(generated.getPath(), fixed));
     }
     return transformed;

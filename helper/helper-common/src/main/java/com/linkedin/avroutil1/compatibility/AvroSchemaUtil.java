@@ -118,6 +118,25 @@ public class AvroSchemaUtil {
     return mightNotBeFriendly;
   }
 
+  /**
+   * tests if a schema is impacted by avro-702 (the avsc result of Schema.toString() does
+   * not match the input schema).
+   * this can only be done under avro 1.4, but for dependency reasons we cant assert on runtime avro
+   * @param schema a schema to test
+   * @return true if schema is impacted by avro-702
+   */
+  public static boolean isImpactedByAvro702(Schema schema) {
+    String naiveAvsc = schema.toString(true);
+    boolean parseFailed = false;
+    Schema evilTwin = null;
+    try {
+      evilTwin = Schema.parse(naiveAvsc); //avro-702 can result in "exploded" schemas that dont parse
+    } catch (Exception ignored) {
+      parseFailed = true;
+    }
+    return parseFailed || !evilTwin.equals(schema);
+  }
+
   private static void traverseSchema(Schema schema, SchemaVisitor visitor, IdentityHashMap<Object, Boolean> visited) {
     if (visited.put(schema, Boolean.TRUE) != null) {
       return; //been there, done that

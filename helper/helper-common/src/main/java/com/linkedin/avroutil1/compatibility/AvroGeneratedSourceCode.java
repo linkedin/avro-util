@@ -22,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 public class AvroGeneratedSourceCode {
   private final String path;
   private final String contents;
+  private String alternativeAvsc = null;
 
   public AvroGeneratedSourceCode(String path, String contents) {
     this.path = path;
@@ -45,6 +46,14 @@ public class AvroGeneratedSourceCode {
   public String getFullyQualifiedClassName() {
     //avro leaves us little choice but to "guess" the FQCN from the file name
     return path.replaceAll("[\\\\/]", ".").replace(".java", "");
+  }
+
+  public String getAlternativeAvsc() {
+    return alternativeAvsc;
+  }
+
+  public void setAlternativeAvsc(String alternativeAvsc) {
+    this.alternativeAvsc = alternativeAvsc;
   }
 
   /**

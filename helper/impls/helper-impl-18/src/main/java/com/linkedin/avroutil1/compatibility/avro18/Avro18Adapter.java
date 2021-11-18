@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.avro.AvroRuntimeException;
@@ -331,6 +332,10 @@ public class Avro18Adapter implements AvroAdapter {
     if (minSupportedVersion.earlierThan(AvroVersion.AVRO_1_6) && !StringRepresentation.CharSequence.equals(config.getStringRepresentation())) {
       throw new IllegalArgumentException("StringRepresentation " + config.getStringRepresentation() + " incompatible with minimum supported avro " + minSupportedVersion);
     }
+    Set<String> schemasToGenerateBadAvscFor = config.getSchemasToGenerateBadAvscFor();
+    if (schemasToGenerateBadAvscFor != null && !schemasToGenerateBadAvscFor.isEmpty()) {
+      throw new UnsupportedOperationException("generating bad avsc under " + supportedMajorVersion() + " not implemented yet");
+    }
     if (toCompile == null || toCompile.isEmpty()) {
       return Collections.emptyList();
     }
@@ -381,7 +386,7 @@ public class Avro18Adapter implements AvroAdapter {
   private Collection<AvroGeneratedSourceCode> transform(List<AvroGeneratedSourceCode> avroGenerated, AvroVersion minAvro, AvroVersion maxAvro) {
     List<AvroGeneratedSourceCode> transformed = new ArrayList<>(avroGenerated.size());
     for (AvroGeneratedSourceCode generated : avroGenerated) {
-      String fixed = CodeTransformations.applyAll(generated.getContents(), supportedMajorVersion(), minAvro, maxAvro);
+      String fixed = CodeTransformations.applyAll(generated.getContents(), supportedMajorVersion(), minAvro, maxAvro, null);
       transformed.add(new AvroGeneratedSourceCode(generated.getPath(), fixed));
     }
     return transformed;

@@ -6,6 +6,8 @@
 
 package com.linkedin.avroutil1.compatibility;
 
+import org.apache.commons.text.StringEscapeUtils;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -114,16 +116,23 @@ public class CodeTransformations {
    * @param generatedBy major version of avro that generated the input code
    * @param minSupportedVersion minimum major avro version under which the result should "work"
    * @param maxSupportedVersion maximum major avro version under which the result should "work"
+   * @param alternativeAvsc alternative avsc to use in SCHEMA$
    * @return fixed-up code
    */
-  public static String applyAll(String code, AvroVersion generatedBy, AvroVersion minSupportedVersion, AvroVersion maxSupportedVersion) {
+  public static String applyAll(
+          String code,
+          AvroVersion generatedBy,
+          AvroVersion minSupportedVersion,
+          AvroVersion maxSupportedVersion,
+          String alternativeAvsc
+  ) {
     String fixed = code;
     Set<String> importStatements = new HashSet<>(1);
 
     //general fix-ups that are considered safe regardless of min or max avro version
     fixed = CodeTransformations.transformFixedClass(fixed, minSupportedVersion, maxSupportedVersion);
     fixed = CodeTransformations.transformEnumClass(fixed, minSupportedVersion, maxSupportedVersion);
-    fixed = CodeTransformations.transformParseCalls(fixed, generatedBy, minSupportedVersion, maxSupportedVersion, importStatements);
+    fixed = CodeTransformations.transformParseCalls(fixed, generatedBy, minSupportedVersion, maxSupportedVersion, alternativeAvsc, importStatements);
     fixed = CodeTransformations.addGetClassSchemaMethod(fixed, generatedBy, minSupportedVersion, maxSupportedVersion);
 
     //1.6+ features
@@ -339,11 +348,15 @@ public class CodeTransformations {
    * in doc properties) which will result in a json parse error when trying to instantiate the
    * generated java class (because at that point it will fail to parse the avsc in SCHEMA$)
    *
-   * this method does 3 things:
+   * on top of all the above, we may want to substitute the schema literal being parsed with a modified one,
+   * usually for bug-to-bug-compatibility with avro 1.4 reasons
+   *
+   * this method does 4 things:
    * <ul>
    *   <li>replaces all parse calls with Helper.parse() calls</li>
    *   <li>replaces giant literals inside the parse() calls with a StringBuilder</li>
    *   <li>properly escapes any control characters in string literals inside the avsc</li>
+   *   <li>potentially replaces the schema literal with an alternative AVSC</li>
    * </ul>
    * @param code avro generated source code which may have giant string literals in parse() calls
    * @param generatedWith version of avro that generated the original code
@@ -356,6 +369,7 @@ public class CodeTransformations {
       AvroVersion generatedWith,
       AvroVersion minSupportedVersion,
       AvroVersion maxSupportedVersion,
+      String alternativeAvsc,
       Collection<String> importStatements
   ) {
     Matcher startMatcher = PARSE_INVOCATION_START_PATTERN.matcher(code); //group 1 would be the args to parse()
@@ -369,6 +383,12 @@ public class CodeTransformations {
 
     //does not include the enclosing double quotes
     String stringLiteral = code.substring(startMatcher.end() + 1, endMatcher.start());
+
+    //drop in alternative avsc?
+    if (alternativeAvsc != null && !alternativeAvsc.isEmpty()) {
+      stringLiteral = StringEscapeUtils.escapeJava(alternativeAvsc);
+    }
+
     boolean largeString = stringLiteral.length() >= MAX_STRING_LITERAL_SIZE;
     //either we've already been here, or modern avro was used that already emits vararg
     boolean ourVararg = stringLiteral.contains("new StringBuilder().append(");
@@ -411,8 +431,18 @@ public class CodeTransformations {
           AvroVersion minSupportedVersion,
           AvroVersion maxSupportedVersion
   ) {
+    return transformParseCalls(code, generatedWith, minSupportedVersion, maxSupportedVersion, null);
+  }
+
+  public static String transformParseCalls(
+          String code,
+          AvroVersion generatedWith,
+          AvroVersion minSupportedVersion,
+          AvroVersion maxSupportedVersion,
+          String alternativeAvsc
+  ) {
     Set<String> importStatements = new HashSet<>(1);
-    String processed = transformParseCalls(code, generatedWith, minSupportedVersion, maxSupportedVersion, importStatements);
+    String processed = transformParseCalls(code, generatedWith, minSupportedVersion, maxSupportedVersion, alternativeAvsc, importStatements);
     return CodeTransformations.addImports(processed, importStatements);
   }
 
