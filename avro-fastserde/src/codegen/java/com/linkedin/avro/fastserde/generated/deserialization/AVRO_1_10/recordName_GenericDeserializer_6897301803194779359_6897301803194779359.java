@@ -41,6 +41,13 @@ public class recordName_GenericDeserializer_6897301803194779359_6897301803194779
         } else {
             recordName.put(0, (decoder).readString(null));
         }
+        populate_recordName0((recordName), (decoder));
+        return recordName;
+    }
+
+    private void populate_recordName0(IndexedRecord recordName, Decoder decoder)
+        throws IOException
+    {
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
@@ -51,7 +58,6 @@ public class recordName_GenericDeserializer_6897301803194779359_6897301803194779
                 throw new RuntimeException(("Illegal union index for 'unionField': "+ unionIndex0));
             }
         }
-        return recordName;
     }
 
 }

@@ -85,6 +85,14 @@ public class FastGenericDeserializerGeneratorTest_shouldReadEnumDefault_GenericD
             }
         }
         FastGenericDeserializerGeneratorTest_shouldReadEnumDefault.put(0, enumValue0);
+        populate_FastGenericDeserializerGeneratorTest_shouldReadEnumDefault0((FastGenericDeserializerGeneratorTest_shouldReadEnumDefault), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadEnumDefault1((FastGenericDeserializerGeneratorTest_shouldReadEnumDefault), (decoder));
+        return FastGenericDeserializerGeneratorTest_shouldReadEnumDefault;
+    }
+
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadEnumDefault0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadEnumDefault, Decoder decoder)
+        throws IOException
+    {
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
@@ -135,6 +143,11 @@ public class FastGenericDeserializerGeneratorTest_shouldReadEnumDefault_GenericD
             chunkLen0 = (decoder.arrayNext());
         }
         FastGenericDeserializerGeneratorTest_shouldReadEnumDefault.put(2, testEnumArray1);
+    }
+
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadEnumDefault1(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadEnumDefault, Decoder decoder)
+        throws IOException
+    {
         List<org.apache.avro.generic.GenericData.EnumSymbol> testEnumUnionArray1 = null;
         long chunkLen1 = (decoder.readArrayStart());
         Object oldArray1 = FastGenericDeserializerGeneratorTest_shouldReadEnumDefault.get(3);
@@ -176,7 +189,6 @@ public class FastGenericDeserializerGeneratorTest_shouldReadEnumDefault_GenericD
             chunkLen1 = (decoder.arrayNext());
         }
         FastGenericDeserializerGeneratorTest_shouldReadEnumDefault.put(3, testEnumUnionArray1);
-        return FastGenericDeserializerGeneratorTest_shouldReadEnumDefault;
     }
 
 }
