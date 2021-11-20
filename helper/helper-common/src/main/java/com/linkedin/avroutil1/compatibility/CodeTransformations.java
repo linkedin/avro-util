@@ -387,6 +387,13 @@ public class CodeTransformations {
     //drop in alternative avsc?
     if (alternativeAvsc != null && !alternativeAvsc.isEmpty()) {
       stringLiteral = StringEscapeUtils.escapeJava(alternativeAvsc);
+    } else if (generatedWith.earlierThan(AvroVersion.AVRO_1_6)) {
+      // See https://github.com/linkedin/avro-util/issues/253. Avro 1.4 and 1.5 generate broken code when there are
+      // escaped chars within strings. We undo the damage (unescape `\"` to `"`), and then fix it up properly (escape
+      // `\` to `\\`, followed by `"` to `\"`).
+      stringLiteral = stringLiteral.replace("\\\"", "\"")
+          .replace("\\", "\\\\")
+          .replace("\"", "\\\"");
     }
 
     boolean largeString = stringLiteral.length() >= MAX_STRING_LITERAL_SIZE;
@@ -395,19 +402,10 @@ public class CodeTransformations {
     boolean avroVararg = PARSE_VARARG_PATTERN.matcher(stringLiteral).find();
     boolean alreadyVararg = ourVararg || avroVararg;
 
-    //1st lets find any escape characters inside string literal(s) that may need escaping
-    //(if avro did the vararg avro also did escaping. likewise if we already did)
-    String escapedLiterals;
-    if (alreadyVararg || generatedWith.laterThan(AvroVersion.AVRO_1_5)) {
-      escapedLiterals = stringLiteral;
-    } else {
-      escapedLiterals = escapeJavaLiteral(stringLiteral);
-    }
-
     String argToParseCall;
     if (largeString && !alreadyVararg) {
-      List<String> pieces = safeSplit(escapedLiterals, MAX_STRING_LITERAL_SIZE);
-      StringBuilder argBuilder = new StringBuilder(escapedLiterals.length()); //at least
+      List<String> pieces = safeSplit(stringLiteral, MAX_STRING_LITERAL_SIZE);
+      StringBuilder argBuilder = new StringBuilder(stringLiteral.length()); //at least
       argBuilder.append("new StringBuilder()");
       for (String piece : pieces) {
         argBuilder.append(".append(\"").append(piece).append("\")");
@@ -415,7 +413,7 @@ public class CodeTransformations {
       argBuilder.append(".toString()");
       argToParseCall = argBuilder.toString();
     } else {
-      argToParseCall = "\"" + escapedLiterals + "\"";
+      argToParseCall = "\"" + stringLiteral + "\"";
     }
 
     String prefix = code.substring(0, startMatcher.start());
