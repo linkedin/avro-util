@@ -29,6 +29,12 @@ public class AvroGeneratedSourceCode {
     this.contents = contents;
   }
 
+  public AvroGeneratedSourceCode(String path, String contents, String alternativeAvsc) {
+    this.path = path;
+    this.contents = contents;
+    this.alternativeAvsc = alternativeAvsc;
+  }
+
   /**
    * @return the path (relative to source root) under which this file is intended to be written
    */

@@ -366,7 +366,7 @@ public class Avro14Adapter implements AvroAdapter {
               maxAvro,
               generated.getAlternativeAvsc()
       );
-      transformed.add(new AvroGeneratedSourceCode(generated.getPath(), fixed));
+      transformed.add(new AvroGeneratedSourceCode(generated.getPath(), fixed, generated.getAlternativeAvsc()));
     }
     return transformed;
   }

@@ -96,6 +96,23 @@ public class CodeTransformationsAvro14Test {
   }
 
   @Test
+  public void testAlternateAvscUnderAvro14WithEscaping() throws Exception {
+    String altAvsc = TestUtil.load("RecordWithMultilineDoc.avsc");
+    String avsc = TestUtil.load("RecordWithMultilineDoc.avsc");
+    Schema schema = AvroCompatibilityHelper.parse(avsc);
+    String originalCode = runNativeCodegen(schema);
+
+    String transformedCode = CodeTransformations.transformParseCalls(originalCode, AvroVersion.AVRO_1_4, AvroVersion.earliest(), AvroVersion.latest(), altAvsc);
+
+    Class<?> transformedClass = CompilerUtils.CACHED_COMPILER.loadFromJava(schema.getFullName(), transformedCode);
+    Assert.assertNotNull(transformedClass);
+
+    Schema inCode = (Schema) transformedClass.getField("SCHEMA$").get(null);
+
+    Assert.assertEquals(inCode, schema); //no (significant) harm done
+  }
+
+  @Test
   public void testFixAvro702() throws Exception {
     String avsc = TestUtil.load("MonsantoRecord.avsc");
     @SuppressWarnings("UnnecessaryLocalVariable")

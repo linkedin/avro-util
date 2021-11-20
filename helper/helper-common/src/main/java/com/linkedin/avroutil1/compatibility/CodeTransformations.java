@@ -386,7 +386,10 @@ public class CodeTransformations {
 
     //drop in alternative avsc?
     if (alternativeAvsc != null && !alternativeAvsc.isEmpty()) {
-      stringLiteral = StringEscapeUtils.escapeJava(alternativeAvsc);
+      //horrible hack to strip out escaped quotes and newlines in json literals (usually doc fields)
+      stringLiteral = alternativeAvsc.replaceAll("\\\\([n\"])", "");
+      //then escape the result to be a valida java string literal
+      stringLiteral = StringEscapeUtils.escapeJava(stringLiteral);
     }
 
     boolean largeString = stringLiteral.length() >= MAX_STRING_LITERAL_SIZE;
