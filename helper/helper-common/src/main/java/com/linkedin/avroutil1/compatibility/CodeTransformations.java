@@ -39,10 +39,6 @@ public class CodeTransformations {
   );
   private static final Pattern PARSE_INVOCATION_END_PATTERN = Pattern.compile("\"\\);\\s*[\\r\\n]+");
   private static final Pattern PARSE_VARARG_PATTERN = Pattern.compile("[^\\\\]\",\""); // a non-escaped "," sequence
-  private static final String  QUOTE = "\"";
-  private static final String  ESCAPED_QUOTE = "\\\"";
-  private static final String  BACKSLASH = "\\";
-  private static final String  DOUBLE_BACKSLASH = "\\\\";
   private static final Pattern GET_CLASS_SCHEMA_PATTERN = Pattern.compile(Pattern.quote("public static org.apache.avro.Schema getClassSchema()"));
   private static final Pattern SCHEMA_DOLLAR_DECL_PATTERN = Pattern.compile(Pattern.quote("public static final org.apache.avro.Schema SCHEMA$"));
   private static final Pattern END_OF_SCHEMA_DOLLAR_DECL_PATTERN = Pattern.compile("}\"\\)(\\.toString\\(\\)\\))?;");
@@ -442,63 +438,6 @@ public class CodeTransformations {
     Set<String> importStatements = new HashSet<>(1);
     String processed = transformParseCalls(code, generatedWith, minSupportedVersion, maxSupportedVersion, alternativeAvsc, importStatements);
     return CodeTransformations.addImports(processed, importStatements);
-  }
-
-  /**
-   * escapes any control characters inside string literals that are part of an argument json
-   * PACKAGE PRIVATE FOR TESTING
-   * @param str a piece of json, as a java string literal
-   * @return the given piece of json, safe for use as a java string literal
-   */
-  static String escapeJavaLiteral(String str) {
-    if (str == null || str.isEmpty()) {
-      return str;
-    }
-
-    int quotedStrStart; //start of current quoted string (index of the starting quote character)
-    int quotedStrEnd;   //end of current quoted string (index of the end quote character)
-    int lastEnd = 0;    //end of previous quoted string (index of the end quote character)
-    StringBuilder result = new StringBuilder(str.length());
-
-    //this code searches for json string literals inside a java string literal
-    //these would look like "{\"prop\":\"value\"}". we do this by finding pairs of \" (escaped quotes)
-    //and then making sure whats between them (the json string literals) is properly escaped
-
-    quotedStrStart = str.indexOf(ESCAPED_QUOTE, lastEnd);
-    while (quotedStrStart >= 0) {
-      quotedStrEnd = quotedStrStart;
-      while (true) {
-        quotedStrEnd = str.indexOf(ESCAPED_QUOTE, quotedStrEnd + 2);
-        if (quotedStrEnd < 0) {
-          throw new IllegalArgumentException(
-              "unterminated string literal starting at offset " + quotedStrStart + " in " + str);
-        }
-        char precedingChar = str.charAt(quotedStrEnd - 1); //character before the closing quote
-        if (precedingChar != '\\') {
-          break;
-        }
-      }
-
-      String quotedStr = str.substring(quotedStrStart + 2, quotedStrEnd); //without enclosing quotes
-
-      //we assume we start with a properly escaped json inside, so we double all backslashes, then take one out
-      //if it was escaping a quote :-)
-      String escaped = quotedStr.replace(BACKSLASH, DOUBLE_BACKSLASH).replace(ESCAPED_QUOTE, QUOTE);
-
-      //copy from end of last string to start of this one (included our start quote)
-      result.append(str, lastEnd, quotedStrStart + 2);
-      //append this string, escaped
-      result.append(escaped);
-
-      //move on to the next quoted string (if any)
-      lastEnd = quotedStrEnd;
-      quotedStrStart = str.indexOf(ESCAPED_QUOTE, lastEnd + 1);
-    }
-
-    //append the tail (there's always at least the last end quote)
-    result.append(str, lastEnd, str.length());
-
-    return result.toString();
   }
 
   /**
