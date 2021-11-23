@@ -54,6 +54,14 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord_
         } else {
             subRecord.put(0, (decoder).readString(null));
         }
+        populate_subRecord0((subRecord), (decoder));
+        populate_subRecord1((subRecord), (decoder));
+        return subRecord;
+    }
+
+    private void populate_subRecord0(IndexedRecord subRecord, Decoder decoder)
+        throws IOException
+    {
         deserializesubSubRecord0(null, (decoder));
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
@@ -65,20 +73,30 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord_
                 throw new RuntimeException(("Illegal union index for 'test3': "+ unionIndex0));
             }
         }
-        Object oldString1 = subRecord.get(1);
-        if (oldString1 instanceof Utf8) {
-            subRecord.put(1, (decoder).readString(((Utf8) oldString1)));
-        } else {
-            subRecord.put(1, (decoder).readString(null));
-        }
-        return subRecord;
     }
 
     public void deserializesubSubRecord0(Object reuse, Decoder decoder)
         throws IOException
     {
         decoder.skipString();
+        populate_subSubRecord0((decoder));
+    }
+
+    private void populate_subSubRecord0(Decoder decoder)
+        throws IOException
+    {
         decoder.skipString();
+    }
+
+    private void populate_subRecord1(IndexedRecord subRecord, Decoder decoder)
+        throws IOException
+    {
+        Object oldString1 = subRecord.get(1);
+        if (oldString1 instanceof Utf8) {
+            subRecord.put(1, (decoder).readString(((Utf8) oldString1)));
+        } else {
+            subRecord.put(1, (decoder).readString(null));
+        }
     }
 
 }

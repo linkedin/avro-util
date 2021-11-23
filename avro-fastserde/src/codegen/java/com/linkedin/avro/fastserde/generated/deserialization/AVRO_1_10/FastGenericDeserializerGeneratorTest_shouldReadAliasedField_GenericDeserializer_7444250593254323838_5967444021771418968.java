@@ -52,6 +52,13 @@ public class FastGenericDeserializerGeneratorTest_shouldReadAliasedField_Generic
                 throw new RuntimeException(("Illegal union index for 'testString': "+ unionIndex0));
             }
         }
+        populate_FastGenericDeserializerGeneratorTest_shouldReadAliasedField0((FastGenericDeserializerGeneratorTest_shouldReadAliasedField), (decoder));
+        return FastGenericDeserializerGeneratorTest_shouldReadAliasedField;
+    }
+
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadAliasedField0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadAliasedField, Decoder decoder)
+        throws IOException
+    {
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
@@ -67,7 +74,6 @@ public class FastGenericDeserializerGeneratorTest_shouldReadAliasedField_Generic
                 throw new RuntimeException(("Illegal union index for 'testStringUnionAlias': "+ unionIndex1));
             }
         }
-        return FastGenericDeserializerGeneratorTest_shouldReadAliasedField;
     }
 
 }

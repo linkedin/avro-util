@@ -48,27 +48,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSu
             FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields.put(0, deserializealiasedSubRecord0(FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields.get(0), (decoder)));
-        FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields.put(1, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields.get(1), (decoder)));
-        List<IndexedRecord> recordArray1 = null;
-        long chunkLen0 = (decoder.readArrayStart());
-        Object oldArray0 = FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields.get(2);
-        if (oldArray0 instanceof List) {
-            recordArray1 = ((List) oldArray0);
-            recordArray1 .clear();
-        } else {
-            recordArray1 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen0), recordArray0);
-        }
-        while (chunkLen0 > 0) {
-            for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
-                Object recordArrayArrayElementReuseVar0 = null;
-                if (oldArray0 instanceof GenericArray) {
-                    recordArrayArrayElementReuseVar0 = ((GenericArray) oldArray0).peek();
-                }
-                recordArray1 .add(deserializealiasedSubRecord0(recordArrayArrayElementReuseVar0, (decoder)));
-            }
-            chunkLen0 = (decoder.arrayNext());
-        }
-        FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields.put(2, recordArray1);
+        populate_FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields0((FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields), (decoder));
         return FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields;
     }
 
@@ -91,6 +71,13 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSu
                 throw new RuntimeException(("Illegal union index for 'intField': "+ unionIndex0));
             }
         }
+        populate_aliasedSubRecord0((aliasedSubRecord), (decoder));
+        return aliasedSubRecord;
+    }
+
+    private void populate_aliasedSubRecord0(IndexedRecord aliasedSubRecord, Decoder decoder)
+        throws IOException
+    {
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
@@ -106,7 +93,32 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSu
                 throw new RuntimeException(("Illegal union index for 'subField': "+ unionIndex1));
             }
         }
-        return aliasedSubRecord;
+    }
+
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields, Decoder decoder)
+        throws IOException
+    {
+        FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields.put(1, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields.get(1), (decoder)));
+        List<IndexedRecord> recordArray1 = null;
+        long chunkLen0 = (decoder.readArrayStart());
+        Object oldArray0 = FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields.get(2);
+        if (oldArray0 instanceof List) {
+            recordArray1 = ((List) oldArray0);
+            recordArray1 .clear();
+        } else {
+            recordArray1 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen0), recordArray0);
+        }
+        while (chunkLen0 > 0) {
+            for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
+                Object recordArrayArrayElementReuseVar0 = null;
+                if (oldArray0 instanceof GenericArray) {
+                    recordArrayArrayElementReuseVar0 = ((GenericArray) oldArray0).peek();
+                }
+                recordArray1 .add(deserializealiasedSubRecord0(recordArrayArrayElementReuseVar0, (decoder)));
+            }
+            chunkLen0 = (decoder.arrayNext());
+        }
+        FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields.put(2, recordArray1);
     }
 
     public IndexedRecord deserializesubRecord0(Object reuse, Decoder decoder)
@@ -128,6 +140,13 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSu
                 throw new RuntimeException(("Illegal union index for 'intField': "+ unionIndex2));
             }
         }
+        populate_aliasedSubRecord1((aliasedSubRecord), (decoder));
+        return aliasedSubRecord;
+    }
+
+    private void populate_aliasedSubRecord1(IndexedRecord aliasedSubRecord, Decoder decoder)
+        throws IOException
+    {
         int unionIndex3 = (decoder.readIndex());
         if (unionIndex3 == 0) {
             decoder.readNull();
@@ -143,7 +162,6 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSu
                 throw new RuntimeException(("Illegal union index for 'subField': "+ unionIndex3));
             }
         }
-        return aliasedSubRecord;
     }
 
 }
