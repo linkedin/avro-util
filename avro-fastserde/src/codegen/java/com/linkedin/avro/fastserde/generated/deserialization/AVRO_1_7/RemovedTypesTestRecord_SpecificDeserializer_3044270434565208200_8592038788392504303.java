@@ -39,6 +39,24 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
         } else {
             RemovedTypesTestRecord.put(0, (decoder).readString(null));
         }
+        populate_RemovedTypesTestRecord0((RemovedTypesTestRecord), (decoder));
+        populate_RemovedTypesTestRecord1((RemovedTypesTestRecord), (decoder));
+        populate_RemovedTypesTestRecord2((RemovedTypesTestRecord), (decoder));
+        populate_RemovedTypesTestRecord3((RemovedTypesTestRecord), (decoder));
+        populate_RemovedTypesTestRecord4((RemovedTypesTestRecord), (decoder));
+        populate_RemovedTypesTestRecord5((RemovedTypesTestRecord), (decoder));
+        populate_RemovedTypesTestRecord6((RemovedTypesTestRecord), (decoder));
+        populate_RemovedTypesTestRecord7((RemovedTypesTestRecord), (decoder));
+        populate_RemovedTypesTestRecord8((RemovedTypesTestRecord), (decoder));
+        populate_RemovedTypesTestRecord9((RemovedTypesTestRecord), (decoder));
+        populate_RemovedTypesTestRecord10((RemovedTypesTestRecord), (decoder));
+        populate_RemovedTypesTestRecord11((RemovedTypesTestRecord), (decoder));
+        return RemovedTypesTestRecord;
+    }
+
+    private void populate_RemovedTypesTestRecord0(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, Decoder decoder)
+        throws IOException
+    {
         decoder.skipBytes();
         long chunkLen0 = (decoder.readArrayStart());
         while (chunkLen0 > 0) {
@@ -51,6 +69,11 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
             }
             chunkLen0 = (decoder.arrayNext());
         }
+    }
+
+    private void populate_RemovedTypesTestRecord1(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, Decoder decoder)
+        throws IOException
+    {
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
@@ -71,6 +94,11 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
                 chunkLen1 = (decoder.mapNext());
             } while (chunkLen1 > 0);
         }
+    }
+
+    private void populate_RemovedTypesTestRecord2(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, Decoder decoder)
+        throws IOException
+    {
         long chunkLen2 = (decoder.readArrayStart());
         while (chunkLen2 > 0) {
             for (int counter2 = 0; (counter2 <chunkLen2); counter2 ++) {
@@ -110,6 +138,11 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
                 chunkLen3 = (decoder.mapNext());
             } while (chunkLen3 > 0);
         }
+    }
+
+    private void populate_RemovedTypesTestRecord3(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, Decoder decoder)
+        throws IOException
+    {
         decoder.skipFixed(1);
         int unionIndex3 = (decoder.readIndex());
         if (unionIndex3 == 0) {
@@ -121,6 +154,11 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
                 throw new RuntimeException(("Illegal union index for 'removedFixedUnion': "+ unionIndex3));
             }
         }
+    }
+
+    private void populate_RemovedTypesTestRecord4(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, Decoder decoder)
+        throws IOException
+    {
         long chunkLen4 = (decoder.readArrayStart());
         while (chunkLen4 > 0) {
             for (int counter4 = 0; (counter4 <chunkLen4); counter4 ++) {
@@ -142,6 +180,11 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
                 chunkLen5 = (decoder.mapNext());
             } while (chunkLen5 > 0);
         }
+    }
+
+    private void populate_RemovedTypesTestRecord5(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, Decoder decoder)
+        throws IOException
+    {
         long chunkLen6 = (decoder.readArrayStart());
         while (chunkLen6 > 0) {
             for (int counter6 = 0; (counter6 <chunkLen6); counter6 ++) {
@@ -181,6 +224,11 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
                 chunkLen7 = (decoder.mapNext());
             } while (chunkLen7 > 0);
         }
+    }
+
+    private void populate_RemovedTypesTestRecord6(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, Decoder decoder)
+        throws IOException
+    {
         decoder.readEnum();
         int unionIndex6 = (decoder.readIndex());
         if (unionIndex6 == 0) {
@@ -192,6 +240,11 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
                 throw new RuntimeException(("Illegal union index for 'removedEnumUnion': "+ unionIndex6));
             }
         }
+    }
+
+    private void populate_RemovedTypesTestRecord7(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, Decoder decoder)
+        throws IOException
+    {
         long chunkLen8 = (decoder.readArrayStart());
         while (chunkLen8 > 0) {
             for (int counter8 = 0; (counter8 <chunkLen8); counter8 ++) {
@@ -209,6 +262,11 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
                 chunkLen9 = (decoder.mapNext());
             } while (chunkLen9 > 0);
         }
+    }
+
+    private void populate_RemovedTypesTestRecord8(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, Decoder decoder)
+        throws IOException
+    {
         long chunkLen10 = (decoder.readArrayStart());
         while (chunkLen10 > 0) {
             for (int counter10 = 0; (counter10 <chunkLen10); counter10 ++) {
@@ -248,6 +306,11 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
                 chunkLen11 = (decoder.mapNext());
             } while (chunkLen11 > 0);
         }
+    }
+
+    private void populate_RemovedTypesTestRecord9(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, Decoder decoder)
+        throws IOException
+    {
         deserializeRemovedSubRecord0(null, (decoder));
         int unionIndex9 = (decoder.readIndex());
         if (unionIndex9 == 0) {
@@ -259,6 +322,17 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
                 throw new RuntimeException(("Illegal union index for 'removedSubRecordUnion': "+ unionIndex9));
             }
         }
+    }
+
+    public void deserializeRemovedSubRecord0(Object reuse, Decoder decoder)
+        throws IOException
+    {
+        decoder.skipString();
+    }
+
+    private void populate_RemovedTypesTestRecord10(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, Decoder decoder)
+        throws IOException
+    {
         long chunkLen12 = (decoder.readArrayStart());
         while (chunkLen12 > 0) {
             for (int counter12 = 0; (counter12 <chunkLen12); counter12 ++) {
@@ -290,6 +364,11 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
             }
             chunkLen13 = (decoder.arrayNext());
         }
+    }
+
+    private void populate_RemovedTypesTestRecord11(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, Decoder decoder)
+        throws IOException
+    {
         long chunkLen14 = (decoder.readMapStart());
         if (chunkLen14 > 0) {
             do {
@@ -319,13 +398,6 @@ public class RemovedTypesTestRecord_SpecificDeserializer_3044270434565208200_859
                 chunkLen15 = (decoder.mapNext());
             } while (chunkLen15 > 0);
         }
-        return RemovedTypesTestRecord;
-    }
-
-    public void deserializeRemovedSubRecord0(Object reuse, Decoder decoder)
-        throws IOException
-    {
-        decoder.skipString();
     }
 
 }

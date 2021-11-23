@@ -77,6 +77,41 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
             chunkLen0 = (decoder.arrayNext());
         }
         FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.put(0, recordsArray1);
+        populate_FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField0((FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField1((FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField), (decoder));
+        return FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField;
+    }
+
+    public IndexedRecord deserializesubRecord0(Object reuse, Decoder decoder)
+        throws IOException
+    {
+        IndexedRecord subRecord;
+        if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == recordsArrayArrayElemSchema0)) {
+            subRecord = ((IndexedRecord)(reuse));
+        } else {
+            subRecord = new org.apache.avro.generic.GenericData.Record(recordsArrayArrayElemSchema0);
+        }
+        int unionIndex0 = (decoder.readIndex());
+        if (unionIndex0 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex0 == 1) {
+                Object oldString0 = subRecord.get(0);
+                if (oldString0 instanceof Utf8) {
+                    subRecord.put(0, (decoder).readString(((Utf8) oldString0)));
+                } else {
+                    subRecord.put(0, (decoder).readString(null));
+                }
+            } else {
+                throw new RuntimeException(("Illegal union index for 'subField': "+ unionIndex0));
+            }
+        }
+        return subRecord;
+    }
+
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField, Decoder decoder)
+        throws IOException
+    {
         Map<Utf8, IndexedRecord> recordsMap1 = null;
         long chunkLen1 = (decoder.readMapStart());
         if (chunkLen1 > 0) {
@@ -140,6 +175,11 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
                 throw new RuntimeException(("Illegal union index for 'recordsArrayUnion': "+ unionIndex1));
             }
         }
+    }
+
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField1(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField, Decoder decoder)
+        throws IOException
+    {
         int unionIndex3 = (decoder.readIndex());
         if (unionIndex3 == 0) {
             decoder.readNull();
@@ -183,34 +223,6 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
                 throw new RuntimeException(("Illegal union index for 'recordsMapUnion': "+ unionIndex3));
             }
         }
-        return FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField;
-    }
-
-    public IndexedRecord deserializesubRecord0(Object reuse, Decoder decoder)
-        throws IOException
-    {
-        IndexedRecord subRecord;
-        if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == recordsArrayArrayElemSchema0)) {
-            subRecord = ((IndexedRecord)(reuse));
-        } else {
-            subRecord = new org.apache.avro.generic.GenericData.Record(recordsArrayArrayElemSchema0);
-        }
-        int unionIndex0 = (decoder.readIndex());
-        if (unionIndex0 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex0 == 1) {
-                Object oldString0 = subRecord.get(0);
-                if (oldString0 instanceof Utf8) {
-                    subRecord.put(0, (decoder).readString(((Utf8) oldString0)));
-                } else {
-                    subRecord.put(0, (decoder).readString(null));
-                }
-            } else {
-                throw new RuntimeException(("Illegal union index for 'subField': "+ unionIndex0));
-            }
-        }
-        return subRecord;
     }
 
 }

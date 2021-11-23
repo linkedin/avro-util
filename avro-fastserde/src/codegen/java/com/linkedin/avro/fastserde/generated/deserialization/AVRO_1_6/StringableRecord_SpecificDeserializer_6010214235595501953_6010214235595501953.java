@@ -54,6 +54,17 @@ public class StringableRecord_SpecificDeserializer_6010214235595501953_601021423
         } else {
             StringableRecord.put(0, (decoder).readString(null));
         }
+        populate_StringableRecord0((StringableRecord), (decoder));
+        populate_StringableRecord1((StringableRecord), (decoder));
+        populate_StringableRecord2((StringableRecord), (decoder));
+        populate_StringableRecord3((StringableRecord), (decoder));
+        populate_StringableRecord4((StringableRecord), (decoder));
+        return StringableRecord;
+    }
+
+    private void populate_StringableRecord0(com.linkedin.avro.fastserde.generated.avro.StringableRecord StringableRecord, Decoder decoder)
+        throws IOException, NumberFormatException, URISyntaxException
+    {
         Object oldString1 = StringableRecord.get(1);
         if (oldString1 instanceof Utf8) {
             StringableRecord.put(1, (decoder).readString(((Utf8) oldString1)));
@@ -66,6 +77,11 @@ public class StringableRecord_SpecificDeserializer_6010214235595501953_601021423
         } else {
             StringableRecord.put(2, (decoder).readString(null));
         }
+    }
+
+    private void populate_StringableRecord1(com.linkedin.avro.fastserde.generated.avro.StringableRecord StringableRecord, Decoder decoder)
+        throws IOException, NumberFormatException, MalformedURLException, URISyntaxException
+    {
         Object oldString3 = StringableRecord.get(3);
         if (oldString3 instanceof Utf8) {
             StringableRecord.put(3, (decoder).readString(((Utf8) oldString3)));
@@ -78,6 +94,11 @@ public class StringableRecord_SpecificDeserializer_6010214235595501953_601021423
         } else {
             StringableRecord.put(4, (decoder).readString(null));
         }
+    }
+
+    private void populate_StringableRecord2(com.linkedin.avro.fastserde.generated.avro.StringableRecord StringableRecord, Decoder decoder)
+        throws IOException, NumberFormatException, MalformedURLException, URISyntaxException
+    {
         List<Utf8> urlArray0 = null;
         long chunkLen0 = (decoder.readArrayStart());
         Object oldArray0 = StringableRecord.get(5);
@@ -127,19 +148,13 @@ public class StringableRecord_SpecificDeserializer_6010214235595501953_601021423
             urlMap0 = new HashMap<Utf8, Utf8>(0);
         }
         StringableRecord.put(6, urlMap0);
+    }
+
+    private void populate_StringableRecord3(com.linkedin.avro.fastserde.generated.avro.StringableRecord StringableRecord, Decoder decoder)
+        throws IOException, NumberFormatException, MalformedURLException, URISyntaxException
+    {
         StringableRecord.put(7, deserializeStringableSubRecord0(StringableRecord.get(7), (decoder)));
         StringableRecord.put(8, deserializeAnotherSubRecord0(StringableRecord.get(8), (decoder)));
-        int unionIndex1 = (decoder.readIndex());
-        if (unionIndex1 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex1 == 1) {
-                StringableRecord.put(9, (decoder).readString());
-            } else {
-                throw new RuntimeException(("Illegal union index for 'stringUnion': "+ unionIndex1));
-            }
-        }
-        return StringableRecord;
     }
 
     public com.linkedin.avro.fastserde.generated.avro.StringableSubRecord deserializeStringableSubRecord0(Object reuse, Decoder decoder)
@@ -157,6 +172,13 @@ public class StringableRecord_SpecificDeserializer_6010214235595501953_601021423
         } else {
             StringableSubRecord.put(0, (decoder).readString(null));
         }
+        populate_StringableSubRecord0((StringableSubRecord), (decoder));
+        return StringableSubRecord;
+    }
+
+    private void populate_StringableSubRecord0(com.linkedin.avro.fastserde.generated.avro.StringableSubRecord StringableSubRecord, Decoder decoder)
+        throws IOException, URISyntaxException
+    {
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
@@ -176,7 +198,6 @@ public class StringableRecord_SpecificDeserializer_6010214235595501953_601021423
                 }
             }
         }
-        return StringableSubRecord;
     }
 
     public com.linkedin.avro.fastserde.generated.avro.AnotherSubRecord deserializeAnotherSubRecord0(Object reuse, Decoder decoder)
@@ -190,6 +211,21 @@ public class StringableRecord_SpecificDeserializer_6010214235595501953_601021423
         }
         AnotherSubRecord.put(0, deserializeStringableSubRecord0(AnotherSubRecord.get(0), (decoder)));
         return AnotherSubRecord;
+    }
+
+    private void populate_StringableRecord4(com.linkedin.avro.fastserde.generated.avro.StringableRecord StringableRecord, Decoder decoder)
+        throws IOException, NumberFormatException, MalformedURLException, URISyntaxException
+    {
+        int unionIndex1 = (decoder.readIndex());
+        if (unionIndex1 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex1 == 1) {
+                StringableRecord.put(9, (decoder).readString());
+            } else {
+                throw new RuntimeException(("Illegal union index for 'stringUnion': "+ unionIndex1));
+            }
+        }
     }
 
 }

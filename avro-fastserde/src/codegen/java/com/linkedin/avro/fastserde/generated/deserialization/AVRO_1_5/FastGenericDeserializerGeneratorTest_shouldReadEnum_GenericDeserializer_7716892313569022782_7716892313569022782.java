@@ -45,6 +45,14 @@ public class FastGenericDeserializerGeneratorTest_shouldReadEnum_GenericDeserial
             FastGenericDeserializerGeneratorTest_shouldReadEnum = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         FastGenericDeserializerGeneratorTest_shouldReadEnum.put(0, new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0, testEnum0 .getEnumSymbols().get((decoder.readEnum()))));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadEnum0((FastGenericDeserializerGeneratorTest_shouldReadEnum), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadEnum1((FastGenericDeserializerGeneratorTest_shouldReadEnum), (decoder));
+        return FastGenericDeserializerGeneratorTest_shouldReadEnum;
+    }
+
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadEnum0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadEnum, Decoder decoder)
+        throws IOException
+    {
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
@@ -71,6 +79,11 @@ public class FastGenericDeserializerGeneratorTest_shouldReadEnum_GenericDeserial
             chunkLen0 = (decoder.arrayNext());
         }
         FastGenericDeserializerGeneratorTest_shouldReadEnum.put(2, testEnumArray1);
+    }
+
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadEnum1(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadEnum, Decoder decoder)
+        throws IOException
+    {
         List<org.apache.avro.generic.GenericData.EnumSymbol> testEnumUnionArray1 = null;
         long chunkLen1 = (decoder.readArrayStart());
         Object oldArray1 = FastGenericDeserializerGeneratorTest_shouldReadEnum.get(3);
@@ -100,7 +113,6 @@ public class FastGenericDeserializerGeneratorTest_shouldReadEnum_GenericDeserial
             chunkLen1 = (decoder.arrayNext());
         }
         FastGenericDeserializerGeneratorTest_shouldReadEnum.put(3, testEnumUnionArray1);
-        return FastGenericDeserializerGeneratorTest_shouldReadEnum;
     }
 
 }
