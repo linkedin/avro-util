@@ -49,6 +49,19 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
             FastGenericDeserializerGeneratorTest_shouldReadPrimitives = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(0, (decoder.readInt()));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives0((FastGenericDeserializerGeneratorTest_shouldReadPrimitives), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives1((FastGenericDeserializerGeneratorTest_shouldReadPrimitives), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives2((FastGenericDeserializerGeneratorTest_shouldReadPrimitives), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives3((FastGenericDeserializerGeneratorTest_shouldReadPrimitives), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives4((FastGenericDeserializerGeneratorTest_shouldReadPrimitives), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives5((FastGenericDeserializerGeneratorTest_shouldReadPrimitives), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives6((FastGenericDeserializerGeneratorTest_shouldReadPrimitives), (decoder));
+        return FastGenericDeserializerGeneratorTest_shouldReadPrimitives;
+    }
+
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPrimitives, Decoder decoder)
+        throws IOException
+    {
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
@@ -65,6 +78,11 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
         } else {
             FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(2, (decoder).readString(null));
         }
+    }
+
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives1(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPrimitives, Decoder decoder)
+        throws IOException
+    {
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
@@ -81,6 +99,11 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
             }
         }
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(4, (decoder.readLong()));
+    }
+
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives2(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPrimitives, Decoder decoder)
+        throws IOException
+    {
         int unionIndex2 = (decoder.readIndex());
         if (unionIndex2 == 0) {
             decoder.readNull();
@@ -92,6 +115,11 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
             }
         }
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(6, (decoder.readDouble()));
+    }
+
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives3(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPrimitives, Decoder decoder)
+        throws IOException
+    {
         int unionIndex3 = (decoder.readIndex());
         if (unionIndex3 == 0) {
             decoder.readNull();
@@ -103,6 +131,11 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
             }
         }
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(8, (decoder.readFloat()));
+    }
+
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives4(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPrimitives, Decoder decoder)
+        throws IOException
+    {
         int unionIndex4 = (decoder.readIndex());
         if (unionIndex4 == 0) {
             decoder.readNull();
@@ -114,6 +147,11 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
             }
         }
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(10, (decoder.readBoolean()));
+    }
+
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives5(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPrimitives, Decoder decoder)
+        throws IOException
+    {
         int unionIndex5 = (decoder.readIndex());
         if (unionIndex5 == 0) {
             decoder.readNull();
@@ -130,6 +168,11 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
         } else {
             FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(12, (decoder).readBytes((null)));
         }
+    }
+
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives6(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPrimitives, Decoder decoder)
+        throws IOException
+    {
         int unionIndex6 = (decoder.readIndex());
         if (unionIndex6 == 0) {
             decoder.readNull();
@@ -145,7 +188,6 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
                 throw new RuntimeException(("Illegal union index for 'testBytesUnion': "+ unionIndex6));
             }
         }
-        return FastGenericDeserializerGeneratorTest_shouldReadPrimitives;
     }
 
 }

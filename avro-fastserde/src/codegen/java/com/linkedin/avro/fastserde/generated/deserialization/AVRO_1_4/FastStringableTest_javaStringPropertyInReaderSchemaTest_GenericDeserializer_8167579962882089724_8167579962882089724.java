@@ -49,6 +49,14 @@ public class FastStringableTest_javaStringPropertyInReaderSchemaTest_GenericDese
         } else {
             FastStringableTest_javaStringPropertyInReaderSchemaTest.put(0, (decoder).readString(null));
         }
+        populate_FastStringableTest_javaStringPropertyInReaderSchemaTest0((FastStringableTest_javaStringPropertyInReaderSchemaTest), (decoder));
+        populate_FastStringableTest_javaStringPropertyInReaderSchemaTest1((FastStringableTest_javaStringPropertyInReaderSchemaTest), (decoder));
+        return FastStringableTest_javaStringPropertyInReaderSchemaTest;
+    }
+
+    private void populate_FastStringableTest_javaStringPropertyInReaderSchemaTest0(IndexedRecord FastStringableTest_javaStringPropertyInReaderSchemaTest, Decoder decoder)
+        throws IOException
+    {
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
@@ -88,6 +96,11 @@ public class FastStringableTest_javaStringPropertyInReaderSchemaTest_GenericDese
             chunkLen0 = (decoder.arrayNext());
         }
         FastStringableTest_javaStringPropertyInReaderSchemaTest.put(2, testStringArray1);
+    }
+
+    private void populate_FastStringableTest_javaStringPropertyInReaderSchemaTest1(IndexedRecord FastStringableTest_javaStringPropertyInReaderSchemaTest, Decoder decoder)
+        throws IOException
+    {
         Map<Utf8, Utf8> testStringMap1 = null;
         long chunkLen1 = (decoder.readMapStart());
         if (chunkLen1 > 0) {
@@ -113,7 +126,6 @@ public class FastStringableTest_javaStringPropertyInReaderSchemaTest_GenericDese
             testStringMap1 = new HashMap<Utf8, Utf8>(0);
         }
         FastStringableTest_javaStringPropertyInReaderSchemaTest.put(3, testStringMap1);
-        return FastStringableTest_javaStringPropertyInReaderSchemaTest;
     }
 
 }

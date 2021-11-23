@@ -68,6 +68,15 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
                 throw new RuntimeException(("Illegal union index for 'testNotRemoved': "+ unionIndex0));
             }
         }
+        populate_FastGenericDeserializerGeneratorTest_shouldSkipRemovedField0((FastGenericDeserializerGeneratorTest_shouldSkipRemovedField), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldSkipRemovedField1((FastGenericDeserializerGeneratorTest_shouldSkipRemovedField), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldSkipRemovedField2((FastGenericDeserializerGeneratorTest_shouldSkipRemovedField), (decoder));
+        return FastGenericDeserializerGeneratorTest_shouldSkipRemovedField;
+    }
+
+    private void populate_FastGenericDeserializerGeneratorTest_shouldSkipRemovedField0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldSkipRemovedField, Decoder decoder)
+        throws IOException
+    {
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
@@ -93,6 +102,11 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
                 throw new RuntimeException(("Illegal union index for 'testNotRemoved2': "+ unionIndex2));
             }
         }
+    }
+
+    private void populate_FastGenericDeserializerGeneratorTest_shouldSkipRemovedField1(IndexedRecord FastGenericDeserializerGeneratorTest_shouldSkipRemovedField, Decoder decoder)
+        throws IOException
+    {
         int unionIndex3 = (decoder.readIndex());
         if (unionIndex3 == 0) {
             decoder.readNull();
@@ -128,27 +142,6 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
             subRecordMap1 = new HashMap<Utf8, IndexedRecord>(0);
         }
         FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(3, subRecordMap1);
-        List<IndexedRecord> subRecordArray1 = null;
-        long chunkLen1 = (decoder.readArrayStart());
-        Object oldArray0 = FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(4);
-        if (oldArray0 instanceof List) {
-            subRecordArray1 = ((List) oldArray0);
-            subRecordArray1 .clear();
-        } else {
-            subRecordArray1 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen1), subRecordArray0);
-        }
-        while (chunkLen1 > 0) {
-            for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {
-                Object subRecordArrayArrayElementReuseVar0 = null;
-                if (oldArray0 instanceof GenericArray) {
-                    subRecordArrayArrayElementReuseVar0 = ((GenericArray) oldArray0).peek();
-                }
-                subRecordArray1 .add(deserializesubRecord0(subRecordArrayArrayElementReuseVar0, (decoder)));
-            }
-            chunkLen1 = (decoder.arrayNext());
-        }
-        FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(4, subRecordArray1);
-        return FastGenericDeserializerGeneratorTest_shouldSkipRemovedField;
     }
 
     public IndexedRecord deserializesubRecord0(Object reuse, Decoder decoder)
@@ -175,6 +168,13 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
                 throw new RuntimeException(("Illegal union index for 'testNotRemoved': "+ unionIndex4));
             }
         }
+        populate_subRecord0((subRecord), (decoder));
+        return subRecord;
+    }
+
+    private void populate_subRecord0(IndexedRecord subRecord, Decoder decoder)
+        throws IOException
+    {
         int unionIndex5 = (decoder.readIndex());
         if (unionIndex5 == 0) {
             decoder.readNull();
@@ -200,7 +200,31 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
                 throw new RuntimeException(("Illegal union index for 'testNotRemoved2': "+ unionIndex6));
             }
         }
-        return subRecord;
+    }
+
+    private void populate_FastGenericDeserializerGeneratorTest_shouldSkipRemovedField2(IndexedRecord FastGenericDeserializerGeneratorTest_shouldSkipRemovedField, Decoder decoder)
+        throws IOException
+    {
+        List<IndexedRecord> subRecordArray1 = null;
+        long chunkLen1 = (decoder.readArrayStart());
+        Object oldArray0 = FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(4);
+        if (oldArray0 instanceof List) {
+            subRecordArray1 = ((List) oldArray0);
+            subRecordArray1 .clear();
+        } else {
+            subRecordArray1 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen1), subRecordArray0);
+        }
+        while (chunkLen1 > 0) {
+            for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {
+                Object subRecordArrayArrayElementReuseVar0 = null;
+                if (oldArray0 instanceof GenericArray) {
+                    subRecordArrayArrayElementReuseVar0 = ((GenericArray) oldArray0).peek();
+                }
+                subRecordArray1 .add(deserializesubRecord0(subRecordArrayArrayElementReuseVar0, (decoder)));
+            }
+            chunkLen1 = (decoder.arrayNext());
+        }
+        FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(4, subRecordArray1);
     }
 
 }

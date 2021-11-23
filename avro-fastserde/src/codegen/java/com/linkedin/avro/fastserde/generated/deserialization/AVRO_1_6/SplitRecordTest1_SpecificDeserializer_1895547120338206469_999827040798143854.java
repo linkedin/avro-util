@@ -36,27 +36,7 @@ public class SplitRecordTest1_SpecificDeserializer_1895547120338206469_999827040
             SplitRecordTest1 = new com.linkedin.avro.fastserde.generated.avro.SplitRecordTest1();
         }
         SplitRecordTest1 .put(0, deserializeFullRecord0(SplitRecordTest1 .get(0), (decoder)));
-        SplitRecordTest1 .put(1, deserializeFullRecord1(SplitRecordTest1 .get(1), (decoder)));
-        List<com.linkedin.avro.fastserde.generated.avro.FullRecord> record30 = null;
-        long chunkLen0 = (decoder.readArrayStart());
-        Object oldArray0 = SplitRecordTest1 .get(2);
-        if (oldArray0 instanceof List) {
-            record30 = ((List) oldArray0);
-            record30 .clear();
-        } else {
-            record30 = new ArrayList<com.linkedin.avro.fastserde.generated.avro.FullRecord>(((int) chunkLen0));
-        }
-        while (chunkLen0 > 0) {
-            for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
-                Object record3ArrayElementReuseVar0 = null;
-                if (oldArray0 instanceof GenericArray) {
-                    record3ArrayElementReuseVar0 = ((GenericArray) oldArray0).peek();
-                }
-                record30 .add(deserializeFullRecord2(record3ArrayElementReuseVar0, (decoder)));
-            }
-            chunkLen0 = (decoder.arrayNext());
-        }
-        SplitRecordTest1 .put(2, record30);
+        populate_SplitRecordTest10((SplitRecordTest1), (decoder));
         return SplitRecordTest1;
     }
 
@@ -86,6 +66,32 @@ public class SplitRecordTest1_SpecificDeserializer_1895547120338206469_999827040
         }
         FullRecord.put(1, null);
         return FullRecord;
+    }
+
+    private void populate_SplitRecordTest10(com.linkedin.avro.fastserde.generated.avro.SplitRecordTest1 SplitRecordTest1, Decoder decoder)
+        throws IOException
+    {
+        SplitRecordTest1 .put(1, deserializeFullRecord1(SplitRecordTest1 .get(1), (decoder)));
+        List<com.linkedin.avro.fastserde.generated.avro.FullRecord> record30 = null;
+        long chunkLen0 = (decoder.readArrayStart());
+        Object oldArray0 = SplitRecordTest1 .get(2);
+        if (oldArray0 instanceof List) {
+            record30 = ((List) oldArray0);
+            record30 .clear();
+        } else {
+            record30 = new ArrayList<com.linkedin.avro.fastserde.generated.avro.FullRecord>(((int) chunkLen0));
+        }
+        while (chunkLen0 > 0) {
+            for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
+                Object record3ArrayElementReuseVar0 = null;
+                if (oldArray0 instanceof GenericArray) {
+                    record3ArrayElementReuseVar0 = ((GenericArray) oldArray0).peek();
+                }
+                record30 .add(deserializeFullRecord2(record3ArrayElementReuseVar0, (decoder)));
+            }
+            chunkLen0 = (decoder.arrayNext());
+        }
+        SplitRecordTest1 .put(2, record30);
     }
 
     public com.linkedin.avro.fastserde.generated.avro.FullRecord deserializeFullRecord1(Object reuse, Decoder decoder)
@@ -135,6 +141,13 @@ public class SplitRecordTest1_SpecificDeserializer_1895547120338206469_999827040
                 throw new RuntimeException(("Illegal union index for 'field1': "+ unionIndex2));
             }
         }
+        populate_FullRecord0((FullRecord), (decoder));
+        return FullRecord;
+    }
+
+    private void populate_FullRecord0(com.linkedin.avro.fastserde.generated.avro.FullRecord FullRecord, Decoder decoder)
+        throws IOException
+    {
         int unionIndex3 = (decoder.readIndex());
         if (unionIndex3 == 0) {
             decoder.readNull();
@@ -145,7 +158,6 @@ public class SplitRecordTest1_SpecificDeserializer_1895547120338206469_999827040
                 throw new RuntimeException(("Illegal union index for 'field2': "+ unionIndex3));
             }
         }
-        return FullRecord;
     }
 
 }

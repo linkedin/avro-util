@@ -80,6 +80,42 @@ public class TestRecord_SpecificDeserializer_1330694222118468182_458417529192593
             TestRecord = new com.linkedin.avro.fastserde.generated.avro.TestRecord();
         }
         TestRecord.put(0, (decoder.readInt()));
+        populate_TestRecord0((TestRecord), (decoder));
+        populate_TestRecord1((TestRecord), (decoder));
+        populate_TestRecord2((TestRecord), (decoder));
+        populate_TestRecord3((TestRecord), (decoder));
+        populate_TestRecord4((TestRecord), (decoder));
+        populate_TestRecord5((TestRecord), (decoder));
+        populate_TestRecord6((TestRecord), (decoder));
+        populate_TestRecord7((TestRecord), (decoder));
+        populate_TestRecord8((TestRecord), (decoder));
+        populate_TestRecord9((TestRecord), (decoder));
+        populate_TestRecord10((TestRecord), (decoder));
+        populate_TestRecord11((TestRecord), (decoder));
+        populate_TestRecord12((TestRecord), (decoder));
+        populate_TestRecord13((TestRecord), (decoder));
+        populate_TestRecord14((TestRecord), (decoder));
+        populate_TestRecord15((TestRecord), (decoder));
+        populate_TestRecord16((TestRecord), (decoder));
+        TestRecord.put(13, null);
+        ArrayList<Boolean> defaultArray0 = new ArrayList<Boolean>();
+        TestRecord.put(33, defaultArray0);
+        ArrayList<Double> defaultArray1 = new ArrayList<Double>();
+        TestRecord.put(34, defaultArray1);
+        ArrayList<Float> defaultArray2 = new ArrayList<Float>();
+        TestRecord.put(35, defaultArray2);
+        ArrayList<Integer> defaultArray3 = new ArrayList<Integer>();
+        TestRecord.put(36, defaultArray3);
+        ArrayList<Long> defaultArray4 = new ArrayList<Long>();
+        TestRecord.put(37, defaultArray4);
+        ArrayList<Utf8> defaultArray5 = new ArrayList<Utf8>();
+        TestRecord.put(38, defaultArray5);
+        return TestRecord;
+    }
+
+    private void populate_TestRecord0(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+        throws IOException
+    {
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
@@ -91,6 +127,11 @@ public class TestRecord_SpecificDeserializer_1330694222118468182_458417529192593
             }
         }
         TestRecord.put(2, (decoder.readLong()));
+    }
+
+    private void populate_TestRecord1(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+        throws IOException
+    {
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
@@ -102,6 +143,11 @@ public class TestRecord_SpecificDeserializer_1330694222118468182_458417529192593
             }
         }
         TestRecord.put(4, (decoder.readDouble()));
+    }
+
+    private void populate_TestRecord2(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+        throws IOException
+    {
         int unionIndex2 = (decoder.readIndex());
         if (unionIndex2 == 0) {
             decoder.readNull();
@@ -113,6 +159,11 @@ public class TestRecord_SpecificDeserializer_1330694222118468182_458417529192593
             }
         }
         TestRecord.put(6, (decoder.readFloat()));
+    }
+
+    private void populate_TestRecord3(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+        throws IOException
+    {
         int unionIndex3 = (decoder.readIndex());
         if (unionIndex3 == 0) {
             decoder.readNull();
@@ -124,6 +175,11 @@ public class TestRecord_SpecificDeserializer_1330694222118468182_458417529192593
             }
         }
         TestRecord.put(8, (decoder.readBoolean()));
+    }
+
+    private void populate_TestRecord4(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+        throws IOException
+    {
         int unionIndex4 = (decoder.readIndex());
         if (unionIndex4 == 0) {
             decoder.readNull();
@@ -140,6 +196,11 @@ public class TestRecord_SpecificDeserializer_1330694222118468182_458417529192593
         } else {
             TestRecord.put(10, (decoder).readBytes((null)));
         }
+    }
+
+    private void populate_TestRecord5(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+        throws IOException
+    {
         int unionIndex5 = (decoder.readIndex());
         if (unionIndex5 == 0) {
             decoder.readNull();
@@ -161,6 +222,11 @@ public class TestRecord_SpecificDeserializer_1330694222118468182_458417529192593
         } else {
             TestRecord.put(12, (decoder).readString(null));
         }
+    }
+
+    private void populate_TestRecord6(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+        throws IOException
+    {
         int unionIndex6 = (decoder.readIndex());
         if (unionIndex6 == 0) {
             decoder.readNull();
@@ -181,6 +247,11 @@ public class TestRecord_SpecificDeserializer_1330694222118468182_458417529192593
                 throw new RuntimeException(("Illegal union index for 'removedField': "+ unionIndex7));
             }
         }
+    }
+
+    private void populate_TestRecord7(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+        throws IOException
+    {
         byte[] testFixed0;
         Object oldFixed0 = TestRecord.get(14);
         if ((oldFixed0 instanceof GenericFixed)&&(((GenericFixed) oldFixed0).bytes().length == (1))) {
@@ -214,6 +285,11 @@ public class TestRecord_SpecificDeserializer_1330694222118468182_458417529192593
                 throw new RuntimeException(("Illegal union index for 'testFixedUnion': "+ unionIndex8));
             }
         }
+    }
+
+    private void populate_TestRecord8(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+        throws IOException
+    {
         List<TestFixed> testFixedArray0 = null;
         long chunkLen0 = (decoder.readArrayStart());
         Object oldArray0 = TestRecord.get(16);
@@ -285,6 +361,11 @@ public class TestRecord_SpecificDeserializer_1330694222118468182_458417529192593
             chunkLen1 = (decoder.arrayNext());
         }
         TestRecord.put(17, testFixedUnionArray0);
+    }
+
+    private void populate_TestRecord9(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+        throws IOException
+    {
         int enumIndex0 = (decoder.readEnum());
         TestEnum enumValue0 = null;
         Object enumIndexLookupResult0 = enumMappingTestEnum0 .get(enumIndex0);
@@ -320,6 +401,11 @@ public class TestRecord_SpecificDeserializer_1330694222118468182_458417529192593
                 throw new RuntimeException(("Illegal union index for 'testEnumUnion': "+ unionIndex10));
             }
         }
+    }
+
+    private void populate_TestRecord10(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+        throws IOException
+    {
         List<TestEnum> testEnumArray0 = null;
         long chunkLen2 = (decoder.readArrayStart());
         Object oldArray2 = TestRecord.get(20);
@@ -389,6 +475,11 @@ public class TestRecord_SpecificDeserializer_1330694222118468182_458417529192593
             chunkLen3 = (decoder.arrayNext());
         }
         TestRecord.put(21, testEnumUnionArray0);
+    }
+
+    private void populate_TestRecord11(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+        throws IOException
+    {
         int unionIndex12 = (decoder.readIndex());
         if (unionIndex12 == 0) {
             decoder.readNull();
@@ -400,6 +491,69 @@ public class TestRecord_SpecificDeserializer_1330694222118468182_458417529192593
             }
         }
         TestRecord.put(23, deserializeSubRecord0(TestRecord.get(23), (decoder)));
+    }
+
+    public com.linkedin.avro.fastserde.generated.avro.SubRecord deserializeSubRecord0(Object reuse, Decoder decoder)
+        throws IOException
+    {
+        com.linkedin.avro.fastserde.generated.avro.SubRecord SubRecord;
+        if ((reuse)!= null) {
+            SubRecord = ((com.linkedin.avro.fastserde.generated.avro.SubRecord)(reuse));
+        } else {
+            SubRecord = new com.linkedin.avro.fastserde.generated.avro.SubRecord();
+        }
+        int unionIndex13 = (decoder.readIndex());
+        if (unionIndex13 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex13 == 1) {
+                Object oldString1 = SubRecord.get(0);
+                if (oldString1 instanceof Utf8) {
+                    SubRecord.put(0, (decoder).readString(((Utf8) oldString1)));
+                } else {
+                    SubRecord.put(0, (decoder).readString(null));
+                }
+            } else {
+                throw new RuntimeException(("Illegal union index for 'subField': "+ unionIndex13));
+            }
+        }
+        populate_SubRecord0((SubRecord), (decoder));
+        return SubRecord;
+    }
+
+    private void populate_SubRecord0(com.linkedin.avro.fastserde.generated.avro.SubRecord SubRecord, Decoder decoder)
+        throws IOException
+    {
+        int unionIndex14 = (decoder.readIndex());
+        if (unionIndex14 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex14 == 1) {
+                decoder.skipString();
+            } else {
+                throw new RuntimeException(("Illegal union index for 'removedField': "+ unionIndex14));
+            }
+        }
+        int unionIndex15 = (decoder.readIndex());
+        if (unionIndex15 == 0) {
+            decoder.readNull();
+        } else {
+            if (unionIndex15 == 1) {
+                Object oldString2 = SubRecord.get(1);
+                if (oldString2 instanceof Utf8) {
+                    SubRecord.put(1, (decoder).readString(((Utf8) oldString2)));
+                } else {
+                    SubRecord.put(1, (decoder).readString(null));
+                }
+            } else {
+                throw new RuntimeException(("Illegal union index for 'anotherField': "+ unionIndex15));
+            }
+        }
+    }
+
+    private void populate_TestRecord12(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+        throws IOException
+    {
         List<com.linkedin.avro.fastserde.generated.avro.SubRecord> recordsArray0 = null;
         long chunkLen4 = (decoder.readArrayStart());
         Object oldArray4 = TestRecord.get(24);
@@ -445,6 +599,11 @@ public class TestRecord_SpecificDeserializer_1330694222118468182_458417529192593
             recordsMap0 = new HashMap<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>(0);
         }
         TestRecord.put(25, recordsMap0);
+    }
+
+    private void populate_TestRecord13(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+        throws IOException
+    {
         int unionIndex16 = (decoder.readIndex());
         if (unionIndex16 == 0) {
             decoder.readNull();
@@ -526,6 +685,11 @@ public class TestRecord_SpecificDeserializer_1330694222118468182_458417529192593
                 throw new RuntimeException(("Illegal union index for 'recordsMapUnion': "+ unionIndex18));
             }
         }
+    }
+
+    private void populate_TestRecord14(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+        throws IOException
+    {
         List<Map<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>> recordsArrayMap0 = null;
         long chunkLen8 = (decoder.readArrayStart());
         Object oldArray6 = TestRecord.get(28);
@@ -630,6 +794,11 @@ public class TestRecord_SpecificDeserializer_1330694222118468182_458417529192593
             recordsMapArray0 = new HashMap<Utf8, List<com.linkedin.avro.fastserde.generated.avro.SubRecord>>(0);
         }
         TestRecord.put(29, recordsMapArray0);
+    }
+
+    private void populate_TestRecord15(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+        throws IOException
+    {
         int unionIndex22 = (decoder.readIndex());
         if (unionIndex22 == 0) {
             decoder.readNull();
@@ -752,6 +921,11 @@ public class TestRecord_SpecificDeserializer_1330694222118468182_458417529192593
                 throw new RuntimeException(("Illegal union index for 'recordsMapArrayUnion': "+ unionIndex24));
             }
         }
+    }
+
+    private void populate_TestRecord16(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+        throws IOException
+    {
         int unionIndex26 = (decoder.readIndex());
         if (unionIndex26 == 0) {
             decoder.readNull();
@@ -775,72 +949,6 @@ public class TestRecord_SpecificDeserializer_1330694222118468182_458417529192593
                 }
             }
         }
-        TestRecord.put(13, null);
-        ArrayList<Boolean> defaultArray0 = new ArrayList<Boolean>();
-        TestRecord.put(33, defaultArray0);
-        ArrayList<Double> defaultArray1 = new ArrayList<Double>();
-        TestRecord.put(34, defaultArray1);
-        ArrayList<Float> defaultArray2 = new ArrayList<Float>();
-        TestRecord.put(35, defaultArray2);
-        ArrayList<Integer> defaultArray3 = new ArrayList<Integer>();
-        TestRecord.put(36, defaultArray3);
-        ArrayList<Long> defaultArray4 = new ArrayList<Long>();
-        TestRecord.put(37, defaultArray4);
-        ArrayList<Utf8> defaultArray5 = new ArrayList<Utf8>();
-        TestRecord.put(38, defaultArray5);
-        return TestRecord;
-    }
-
-    public com.linkedin.avro.fastserde.generated.avro.SubRecord deserializeSubRecord0(Object reuse, Decoder decoder)
-        throws IOException
-    {
-        com.linkedin.avro.fastserde.generated.avro.SubRecord SubRecord;
-        if ((reuse)!= null) {
-            SubRecord = ((com.linkedin.avro.fastserde.generated.avro.SubRecord)(reuse));
-        } else {
-            SubRecord = new com.linkedin.avro.fastserde.generated.avro.SubRecord();
-        }
-        int unionIndex13 = (decoder.readIndex());
-        if (unionIndex13 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex13 == 1) {
-                Object oldString1 = SubRecord.get(0);
-                if (oldString1 instanceof Utf8) {
-                    SubRecord.put(0, (decoder).readString(((Utf8) oldString1)));
-                } else {
-                    SubRecord.put(0, (decoder).readString(null));
-                }
-            } else {
-                throw new RuntimeException(("Illegal union index for 'subField': "+ unionIndex13));
-            }
-        }
-        int unionIndex14 = (decoder.readIndex());
-        if (unionIndex14 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex14 == 1) {
-                decoder.skipString();
-            } else {
-                throw new RuntimeException(("Illegal union index for 'removedField': "+ unionIndex14));
-            }
-        }
-        int unionIndex15 = (decoder.readIndex());
-        if (unionIndex15 == 0) {
-            decoder.readNull();
-        } else {
-            if (unionIndex15 == 1) {
-                Object oldString2 = SubRecord.get(1);
-                if (oldString2 instanceof Utf8) {
-                    SubRecord.put(1, (decoder).readString(((Utf8) oldString2)));
-                } else {
-                    SubRecord.put(1, (decoder).readString(null));
-                }
-            } else {
-                throw new RuntimeException(("Illegal union index for 'anotherField': "+ unionIndex15));
-            }
-        }
-        return SubRecord;
     }
 
 }
