@@ -778,12 +778,15 @@ public class CodeTransformations {
    * avro 1.9 introduced 3 new methods to {@link org.apache.avro.specific.SpecificRecordBase}:
    * <ul>
    *   <li>protected boolean hasCustomCoders()</li>
-   *   <li>public void customEncode</li>
-   *   <li>public void customDecode</li>
+   *   <li>public void customEncode(Encoder)</li>
+   *   <li>public void customDecode(ResolvingDecoder)</li>
    * </ul>
    *
    * the implementation of customDecode() relies on ResolvingDecoder.readFieldOrderIfDiff()
-   * which only exists in avro 1.9, so under older avro we strip it all out
+   * which only exists in avro 1.9, so under older avro we strip it all out.
+   *
+   * also, for records with too many fields, customDecode() can get big enough to prevent the
+   * generated class from even compiling (see https://issues.apache.org/jira/browse/AVRO-2796)
    *
    * @param code avro generated code that may have custom encode/decode support
    * @param minSupportedVersion lowest avro version under which the generated code should work
@@ -798,6 +801,24 @@ public class CodeTransformations {
     Matcher endMatcher = END_CUSTOM_DECODE_PATTERN.matcher(code);
     if (!endMatcher.find(startMatcher.end())) {
       throw new IllegalStateException("unable to find custom Encoder/Decoder support in " + code);
+    }
+
+    String codersSupportCode = code.substring(startMatcher.start(), endMatcher.end());
+
+    boolean stripOut = false;
+    if (minSupportedVersion.earlierThan(AvroVersion.AVRO_1_9)) {
+      //strip it out because it would reference ResolvingDecoder.readFieldOrderIfDiff()
+      //TODO - we can replace with ResolvingDecoder and some extra logic to make code portable
+      stripOut = true;
+    } else if (codersSupportCode.length() > 150000) {
+      //if the code isnt big enough to trip AVRO-2796 we can leave it as-is, otherwise we strip it out
+      //the threshold value we use is far from being an exact number. in local testing we have generated
+      //code up to 320K characters that still produces compilable classes.
+      stripOut = true;
+    }
+
+    if (!stripOut) {
+      return code;
     }
 
     @SuppressWarnings("UnnecessaryLocalVariable")

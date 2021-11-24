@@ -1,0 +1,746 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "RecordWith144Fields",
+  "doc": "less meme-worthy",
+  "fields": [
+    {
+      "name": "nullField001",
+      "type": "null"
+    },
+    {
+      "name": "boolField001",
+      "type": "boolean"
+    },
+    {
+      "name": "intField001",
+      "type": "int"
+    },
+    {
+      "name": "strField001",
+      "type": "string"
+    },
+    {
+      "name": "bytesField001",
+      "type": "bytes"
+    },
+    {
+      "name": "doubleArrayField001",
+      "type": {
+        "type": "array",
+        "items": "double"
+      }
+    },
+    {
+      "name": "longUnionArrayField001",
+      "type": {
+        "type": "array",
+        "items": ["null", "long"]
+      }
+    },
+    {
+      "name": "longMapField001",
+      "type": {
+        "type": "map",
+        "values": "long"
+      }
+    },
+    {
+      "name": "nullField002",
+      "type": "null"
+    },
+    {
+      "name": "boolField002",
+      "type": "boolean"
+    },
+    {
+      "name": "intField002",
+      "type": "int"
+    },
+    {
+      "name": "strField002",
+      "type": "string"
+    },
+    {
+      "name": "bytesField002",
+      "type": "bytes"
+    },
+    {
+      "name": "doubleArrayField002",
+      "type": {
+        "type": "array",
+        "items": "double"
+      }
+    },
+    {
+      "name": "longUnionArrayField002",
+      "type": {
+        "type": "array",
+        "items": ["null", "long"]
+      }
+    },
+    {
+      "name": "longMapField002",
+      "type": {
+        "type": "map",
+        "values": "long"
+      }
+    },
+    {
+      "name": "nullField003",
+      "type": "null"
+    },
+    {
+      "name": "boolField003",
+      "type": "boolean"
+    },
+    {
+      "name": "intField003",
+      "type": "int"
+    },
+    {
+      "name": "strField003",
+      "type": "string"
+    },
+    {
+      "name": "bytesField003",
+      "type": "bytes"
+    },
+    {
+      "name": "doubleArrayField003",
+      "type": {
+        "type": "array",
+        "items": "double"
+      }
+    },
+    {
+      "name": "longUnionArrayField003",
+      "type": {
+        "type": "array",
+        "items": ["null", "long"]
+      }
+    },
+    {
+      "name": "longMapField003",
+      "type": {
+        "type": "map",
+        "values": "long"
+      }
+    },
+    {
+      "name": "nullField004",
+      "type": "null"
+    },
+    {
+      "name": "boolField004",
+      "type": "boolean"
+    },
+    {
+      "name": "intField004",
+      "type": "int"
+    },
+    {
+      "name": "strField004",
+      "type": "string"
+    },
+    {
+      "name": "bytesField004",
+      "type": "bytes"
+    },
+    {
+      "name": "doubleArrayField004",
+      "type": {
+        "type": "array",
+        "items": "double"
+      }
+    },
+    {
+      "name": "longUnionArrayField004",
+      "type": {
+        "type": "array",
+        "items": ["null", "long"]
+      }
+    },
+    {
+      "name": "longMapField004",
+      "type": {
+        "type": "map",
+        "values": "long"
+      }
+    },
+    {
+      "name": "nullField005",
+      "type": "null"
+    },
+    {
+      "name": "boolField005",
+      "type": "boolean"
+    },
+    {
+      "name": "intField005",
+      "type": "int"
+    },
+    {
+      "name": "strField005",
+      "type": "string"
+    },
+    {
+      "name": "bytesField005",
+      "type": "bytes"
+    },
+    {
+      "name": "doubleArrayField005",
+      "type": {
+        "type": "array",
+        "items": "double"
+      }
+    },
+    {
+      "name": "longUnionArrayField005",
+      "type": {
+        "type": "array",
+        "items": ["null", "long"]
+      }
+    },
+    {
+      "name": "longMapField005",
+      "type": {
+        "type": "map",
+        "values": "long"
+      }
+    },
+    {
+      "name": "nullField006",
+      "type": "null"
+    },
+    {
+      "name": "boolField006",
+      "type": "boolean"
+    },
+    {
+      "name": "intField006",
+      "type": "int"
+    },
+    {
+      "name": "strField006",
+      "type": "string"
+    },
+    {
+      "name": "bytesField006",
+      "type": "bytes"
+    },
+    {
+      "name": "doubleArrayField006",
+      "type": {
+        "type": "array",
+        "items": "double"
+      }
+    },
+    {
+      "name": "longUnionArrayField006",
+      "type": {
+        "type": "array",
+        "items": ["null", "long"]
+      }
+    },
+    {
+      "name": "longMapField006",
+      "type": {
+        "type": "map",
+        "values": "long"
+      }
+    },
+    {
+      "name": "nullField007",
+      "type": "null"
+    },
+    {
+      "name": "boolField007",
+      "type": "boolean"
+    },
+    {
+      "name": "intField007",
+      "type": "int"
+    },
+    {
+      "name": "strField007",
+      "type": "string"
+    },
+    {
+      "name": "bytesField007",
+      "type": "bytes"
+    },
+    {
+      "name": "doubleArrayField007",
+      "type": {
+        "type": "array",
+        "items": "double"
+      }
+    },
+    {
+      "name": "longUnionArrayField007",
+      "type": {
+        "type": "array",
+        "items": ["null", "long"]
+      }
+    },
+    {
+      "name": "longMapField007",
+      "type": {
+        "type": "map",
+        "values": "long"
+      }
+    },
+    {
+      "name": "nullField008",
+      "type": "null"
+    },
+    {
+      "name": "boolField008",
+      "type": "boolean"
+    },
+    {
+      "name": "intField008",
+      "type": "int"
+    },
+    {
+      "name": "strField008",
+      "type": "string"
+    },
+    {
+      "name": "bytesField008",
+      "type": "bytes"
+    },
+    {
+      "name": "doubleArrayField008",
+      "type": {
+        "type": "array",
+        "items": "double"
+      }
+    },
+    {
+      "name": "longUnionArrayField008",
+      "type": {
+        "type": "array",
+        "items": ["null", "long"]
+      }
+    },
+    {
+      "name": "longMapField008",
+      "type": {
+        "type": "map",
+        "values": "long"
+      }
+    },
+    {
+      "name": "nullField009",
+      "type": "null"
+    },
+    {
+      "name": "boolField009",
+      "type": "boolean"
+    },
+    {
+      "name": "intField009",
+      "type": "int"
+    },
+    {
+      "name": "strField009",
+      "type": "string"
+    },
+    {
+      "name": "bytesField009",
+      "type": "bytes"
+    },
+    {
+      "name": "doubleArrayField009",
+      "type": {
+        "type": "array",
+        "items": "double"
+      }
+    },
+    {
+      "name": "longUnionArrayField009",
+      "type": {
+        "type": "array",
+        "items": ["null", "long"]
+      }
+    },
+    {
+      "name": "longMapField009",
+      "type": {
+        "type": "map",
+        "values": "long"
+      }
+    },
+    {
+      "name": "nullField011",
+      "type": "null"
+    },
+    {
+      "name": "boolField011",
+      "type": "boolean"
+    },
+    {
+      "name": "intField011",
+      "type": "int"
+    },
+    {
+      "name": "strField011",
+      "type": "string"
+    },
+    {
+      "name": "bytesField011",
+      "type": "bytes"
+    },
+    {
+      "name": "doubleArrayField011",
+      "type": {
+        "type": "array",
+        "items": "double"
+      }
+    },
+    {
+      "name": "longUnionArrayField011",
+      "type": {
+        "type": "array",
+        "items": ["null", "long"]
+      }
+    },
+    {
+      "name": "longMapField011",
+      "type": {
+        "type": "map",
+        "values": "long"
+      }
+    },
+    {
+      "name": "nullField012",
+      "type": "null"
+    },
+    {
+      "name": "boolField012",
+      "type": "boolean"
+    },
+    {
+      "name": "intField012",
+      "type": "int"
+    },
+    {
+      "name": "strField012",
+      "type": "string"
+    },
+    {
+      "name": "bytesField012",
+      "type": "bytes"
+    },
+    {
+      "name": "doubleArrayField012",
+      "type": {
+        "type": "array",
+        "items": "double"
+      }
+    },
+    {
+      "name": "longUnionArrayField012",
+      "type": {
+        "type": "array",
+        "items": ["null", "long"]
+      }
+    },
+    {
+      "name": "longMapField012",
+      "type": {
+        "type": "map",
+        "values": "long"
+      }
+    },
+    {
+      "name": "nullField013",
+      "type": "null"
+    },
+    {
+      "name": "boolField013",
+      "type": "boolean"
+    },
+    {
+      "name": "intField013",
+      "type": "int"
+    },
+    {
+      "name": "strField013",
+      "type": "string"
+    },
+    {
+      "name": "bytesField013",
+      "type": "bytes"
+    },
+    {
+      "name": "doubleArrayField013",
+      "type": {
+        "type": "array",
+        "items": "double"
+      }
+    },
+    {
+      "name": "longUnionArrayField013",
+      "type": {
+        "type": "array",
+        "items": ["null", "long"]
+      }
+    },
+    {
+      "name": "longMapField013",
+      "type": {
+        "type": "map",
+        "values": "long"
+      }
+    },
+    {
+      "name": "nullField014",
+      "type": "null"
+    },
+    {
+      "name": "boolField014",
+      "type": "boolean"
+    },
+    {
+      "name": "intField014",
+      "type": "int"
+    },
+    {
+      "name": "strField014",
+      "type": "string"
+    },
+    {
+      "name": "bytesField014",
+      "type": "bytes"
+    },
+    {
+      "name": "doubleArrayField014",
+      "type": {
+        "type": "array",
+        "items": "double"
+      }
+    },
+    {
+      "name": "longUnionArrayField014",
+      "type": {
+        "type": "array",
+        "items": ["null", "long"]
+      }
+    },
+    {
+      "name": "longMapField014",
+      "type": {
+        "type": "map",
+        "values": "long"
+      }
+    },
+    {
+      "name": "nullField015",
+      "type": "null"
+    },
+    {
+      "name": "boolField015",
+      "type": "boolean"
+    },
+    {
+      "name": "intField015",
+      "type": "int"
+    },
+    {
+      "name": "strField015",
+      "type": "string"
+    },
+    {
+      "name": "bytesField015",
+      "type": "bytes"
+    },
+    {
+      "name": "doubleArrayField015",
+      "type": {
+        "type": "array",
+        "items": "double"
+      }
+    },
+    {
+      "name": "longUnionArrayField015",
+      "type": {
+        "type": "array",
+        "items": ["null", "long"]
+      }
+    },
+    {
+      "name": "longMapField015",
+      "type": {
+        "type": "map",
+        "values": "long"
+      }
+    },
+    {
+      "name": "nullField016",
+      "type": "null"
+    },
+    {
+      "name": "boolField016",
+      "type": "boolean"
+    },
+    {
+      "name": "intField016",
+      "type": "int"
+    },
+    {
+      "name": "strField016",
+      "type": "string"
+    },
+    {
+      "name": "bytesField016",
+      "type": "bytes"
+    },
+    {
+      "name": "doubleArrayField016",
+      "type": {
+        "type": "array",
+        "items": "double"
+      }
+    },
+    {
+      "name": "longUnionArrayField016",
+      "type": {
+        "type": "array",
+        "items": ["null", "long"]
+      }
+    },
+    {
+      "name": "longMapField016",
+      "type": {
+        "type": "map",
+        "values": "long"
+      }
+    },
+    {
+      "name": "nullField017",
+      "type": "null"
+    },
+    {
+      "name": "boolField017",
+      "type": "boolean"
+    },
+    {
+      "name": "intField017",
+      "type": "int"
+    },
+    {
+      "name": "strField017",
+      "type": "string"
+    },
+    {
+      "name": "bytesField017",
+      "type": "bytes"
+    },
+    {
+      "name": "doubleArrayField017",
+      "type": {
+        "type": "array",
+        "items": "double"
+      }
+    },
+    {
+      "name": "longUnionArrayField017",
+      "type": {
+        "type": "array",
+        "items": ["null", "long"]
+      }
+    },
+    {
+      "name": "longMapField017",
+      "type": {
+        "type": "map",
+        "values": "long"
+      }
+    },
+    {
+      "name": "nullField018",
+      "type": "null"
+    },
+    {
+      "name": "boolField018",
+      "type": "boolean"
+    },
+    {
+      "name": "intField018",
+      "type": "int"
+    },
+    {
+      "name": "strField018",
+      "type": "string"
+    },
+    {
+      "name": "bytesField018",
+      "type": "bytes"
+    },
+    {
+      "name": "doubleArrayField018",
+      "type": {
+        "type": "array",
+        "items": "double"
+      }
+    },
+    {
+      "name": "longUnionArrayField018",
+      "type": {
+        "type": "array",
+        "items": ["null", "long"]
+      }
+    },
+    {
+      "name": "longMapField018",
+      "type": {
+        "type": "map",
+        "values": "long"
+      }
+    },
+    {
+      "name": "nullField019",
+      "type": "null"
+    },
+    {
+      "name": "boolField019",
+      "type": "boolean"
+    },
+    {
+      "name": "intField019",
+      "type": "int"
+    },
+    {
+      "name": "strField019",
+      "type": "string"
+    },
+    {
+      "name": "bytesField019",
+      "type": "bytes"
+    },
+    {
+      "name": "doubleArrayField019",
+      "type": {
+        "type": "array",
+        "items": "double"
+      }
+    },
+    {
+      "name": "longUnionArrayField019",
+      "type": {
+        "type": "array",
+        "items": ["null", "long"]
+      }
+    },
+    {
+      "name": "longMapField019",
+      "type": {
+        "type": "map",
+        "values": "long"
+      }
+    }
+  ]
+}
