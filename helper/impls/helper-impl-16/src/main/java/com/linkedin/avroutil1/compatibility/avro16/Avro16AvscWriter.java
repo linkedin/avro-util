@@ -4,7 +4,7 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1.compatibility.avro14;
+package com.linkedin.avroutil1.compatibility.avro16;
 
 import com.linkedin.avroutil1.compatibility.AvscWriter;
 import com.linkedin.avroutil1.compatibility.Jackson1JsonGeneratorWrapper;
@@ -16,31 +16,13 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Set;
 
-public class Avro14AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
+public class Avro16AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
     private static final JsonFactory FACTORY = new JsonFactory().setCodec(new ObjectMapper());
 
-    private static final Field SCHEMA_PROPS_FIELD;
-    private static final Field FIELD_PROPS_FIELD;
-    private static final Field FIELD_ALIASES_FIELD;
-
-    static {
-        try {
-            SCHEMA_PROPS_FIELD = Schema.class.getDeclaredField("props");
-            SCHEMA_PROPS_FIELD.setAccessible(true);
-            FIELD_PROPS_FIELD = Schema.Field.class.getDeclaredField("props");
-            FIELD_PROPS_FIELD.setAccessible(true);
-            FIELD_ALIASES_FIELD = Schema.Field.class.getDeclaredField("aliases");
-            FIELD_ALIASES_FIELD.setAccessible(true);
-        } catch (Exception e) {
-            throw new IllegalStateException("unable to access props field(s) or aliases field", e);
-        }
-    }
-
-    public Avro14AvscWriter(boolean pretty, boolean preAvro702) {
+    public Avro16AvscWriter(boolean pretty, boolean preAvro702) {
         super(pretty, preAvro702);
     }
 
@@ -55,19 +37,19 @@ public class Avro14AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
 
     @Override
     protected boolean hasProps(Schema schema) {
-        Map<String, String> props = getProps(schema);
+        Map<String, String> props = schema.getProps();
         return props != null && !props.isEmpty();
     }
 
     @Override
     protected void writeProps(Schema schema, Jackson1JsonGeneratorWrapper gen) throws IOException {
-        Map<String, String> props = getProps(schema);
+        Map<String, String> props = schema.getProps();
         writeProps(props, gen);
     }
 
     @Override
     protected void writeProps(Schema.Field field, Jackson1JsonGeneratorWrapper gen) throws IOException {
-        Map<String, String> props = getProps(field);
+        Map<String, String> props = field.props();
         writeProps(props, gen);
     }
 
@@ -82,30 +64,7 @@ public class Avro14AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
 
     @Override
     protected Set<String> getAliases(Schema.Field field) {
-        try {
-            //noinspection unchecked
-            return (Set<String>) FIELD_ALIASES_FIELD.get(field);
-        } catch (Exception e) {
-            throw new IllegalStateException("unable to access aliases on field " + field, e);
-        }
-    }
-
-    private Map<String, String> getProps(Schema schema) {
-        try {
-            //noinspection unchecked
-            return (Map<String, String>) SCHEMA_PROPS_FIELD.get(schema);
-        } catch (Exception e) {
-            throw new IllegalStateException("unable to access props on schema " + schema, e);
-        }
-    }
-
-    private Map<String, String> getProps(Schema.Field field) {
-        try {
-            //noinspection unchecked
-            return (Map<String, String>) FIELD_PROPS_FIELD.get(field);
-        } catch (Exception e) {
-            throw new IllegalStateException("unable to access props on field " + field, e);
-        }
+        return field.aliases();
     }
 
     private void writeProps(Map<String, String> props, Jackson1JsonGeneratorWrapper gen) throws IOException {

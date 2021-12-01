@@ -326,6 +326,16 @@ public class Avro111Adapter implements AvroAdapter {
     }
 
     @Override
+    public String toAvsc(Schema schema, boolean pretty, boolean retainPreAvro702Logic) {
+        if (!retainPreAvro702Logic) {
+            //TODO - remove when we have more confidence in AvscWriter
+            return schema.toString(pretty);
+        }
+        Avro111AvscWriter writer = new Avro111AvscWriter(pretty, retainPreAvro702Logic);
+        return writer.toAvsc(schema);
+    }
+
+    @Override
     public Collection<AvroGeneratedSourceCode> compile(
         Collection<Schema> toCompile,
         AvroVersion minSupportedVersion,

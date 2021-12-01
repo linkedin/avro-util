@@ -21,6 +21,16 @@ public class AvroCompatibilityHelperToAvscTest {
   public void testMonsantoSchema() throws Exception {
     String avsc = TestUtil.load("MonsantoRecord.avsc");
     testSchema(avsc);
+
+    Schema schema = Schema.parse(avsc);
+    String badAvsc = AvroCompatibilityHelper.toBadAvsc(schema, true);
+    Schema evilClone = Schema.parse(badAvsc);
+
+    //show avro-702
+    Schema correctInnerRecordSchema = schema.getField("outerField").schema().getField("middleField").schema();
+    Assert.assertEquals(correctInnerRecordSchema.getNamespace(), "com.acme.outer");
+    Schema evilInnerRecordSchema = evilClone.getField("outerField").schema().getField("middleField").schema();
+    Assert.assertEquals(evilInnerRecordSchema.getNamespace(), "com.acme.middle");
   }
 
   @Test

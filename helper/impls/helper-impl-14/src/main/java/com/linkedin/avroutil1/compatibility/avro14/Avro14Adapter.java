@@ -283,8 +283,12 @@ public class Avro14Adapter implements AvroAdapter {
   }
 
   @Override
-  public String toAvsc(Schema schema, boolean pretty) {
-    Avro14AvscWriter writer = new Avro14AvscWriter(pretty);
+  public String toAvsc(Schema schema, boolean pretty, boolean retainPreAvro702Logic) {
+    if (retainPreAvro702Logic) {
+      //TODO - remove when we have more confidence in AvscWriter
+      return schema.toString(pretty);
+    }
+    Avro14AvscWriter writer = new Avro14AvscWriter(pretty, retainPreAvro702Logic);
     return writer.toAvsc(schema);
   }
 
@@ -302,7 +306,12 @@ public class Avro14Adapter implements AvroAdapter {
       return Collections.emptyList();
     }
 
-    Map<String, String> fullNameToAlternativeAvsc = createAlternativeAvscs(toCompile, config);
+    Map<String, String> fullNameToAlternativeAvsc;
+    if (config.isNoAvro702Mitigation()) {
+      fullNameToAlternativeAvsc = Collections.emptyMap();
+    } else {
+      fullNameToAlternativeAvsc = createAlternativeAvscs(toCompile, config);
+    }
 
     Iterator<Schema> schemaIter = toCompile.iterator();
     Schema first = schemaIter.next();
@@ -350,7 +359,7 @@ public class Avro14Adapter implements AvroAdapter {
       }
       String fullName = schema.getFullName();
       if (AvroSchemaUtil.isImpactedByAvro702(schema) && !schemasToGenerateBadAvscFor.contains(fullName)) {
-        fullNameToAlternativeAvsc.put(fullName, toAvsc(schema, false));
+        fullNameToAlternativeAvsc.put(fullName, toAvsc(schema, false, false));
       }
     }
     return fullNameToAlternativeAvsc;

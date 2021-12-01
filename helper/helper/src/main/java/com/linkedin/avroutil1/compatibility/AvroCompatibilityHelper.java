@@ -924,8 +924,34 @@ public class AvroCompatibilityHelper {
     return ADAPTER.newEnumSchema(name, doc, namespace, values, enumDefault);
   }
 
+  /**
+   * given a schema, returns a (exploded, fully-inlined, self-container, however you want to call it)
+   * avsc representation of the schema.
+   * this is logically the same as {@link Schema#toString(boolean)} except not full of horrible bugs.
+   * specifically, under all versions of avro:
+   * <ul>
+   *     <li>the output is free of avro-702, even under avro 1.4</li>
+   *     <li>escapes characters in docs and default values remain properly escaped under avro &lt; 1.6</li>
+   * </ul>
+   * @param schema a schema to serialize to avsc
+   * @param pretty true to return a pretty-printed schema, false for single-line
+   * @return avsc
+   */
   public static String toAvsc(Schema schema, boolean pretty) {
     assertAvroAvailable();
-    return ADAPTER.toAvsc(schema, pretty);
+    return ADAPTER.toAvsc(schema, pretty, false);
+  }
+
+  /**
+   * given a schema returns an exploded avsc representation of the schema using the old, horrible
+   * avro 1.4 avro-702-susceptible logic.
+   * this might be required for bug-to-bug-compatibility with legacy code, but should otherwise be avoided
+   * @param schema a schema to serialize to (possibly bad) avsc
+   * @param pretty true to return a pretty-printed schema, false for single-line
+   * @return possibly bad avsc
+   */
+  public static String toBadAvsc(Schema schema, boolean pretty) {
+    assertAvroAvailable();
+    return ADAPTER.toAvsc(schema, pretty, true);
   }
 }

@@ -4,7 +4,7 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1.compatibility.avro14;
+package com.linkedin.avroutil1.compatibility.avro15;
 
 import com.linkedin.avroutil1.compatibility.AvscWriter;
 import com.linkedin.avroutil1.compatibility.Jackson1JsonGeneratorWrapper;
@@ -20,7 +20,7 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Set;
 
-public class Avro14AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
+public class Avro15AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
     private static final JsonFactory FACTORY = new JsonFactory().setCodec(new ObjectMapper());
 
     private static final Field SCHEMA_PROPS_FIELD;
@@ -40,7 +40,7 @@ public class Avro14AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
         }
     }
 
-    public Avro14AvscWriter(boolean pretty, boolean preAvro702) {
+    public Avro15AvscWriter(boolean pretty, boolean preAvro702) {
         super(pretty, preAvro702);
     }
 
