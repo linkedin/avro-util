@@ -4,7 +4,7 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1.compatibility.avro14.backports;
+package com.linkedin.avroutil1.compatibility.backports;
 
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaParseException;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class Avro111Names extends LinkedHashMap<Avro111Name, Schema> {
+public class AvroNames extends LinkedHashMap<AvroName, Schema> {
     private static final long serialVersionUID = 1L;
     private static final Map<String, Schema.Type> PRIMITIVES = new HashMap<>();
     static {
@@ -29,10 +29,10 @@ public class Avro111Names extends LinkedHashMap<Avro111Name, Schema> {
 
     private String space; // default namespace
 
-    public Avro111Names() {
+    public AvroNames() {
     }
 
-    public Avro111Names(String space) {
+    public AvroNames(String space) {
         this.space = space;
     }
 
@@ -49,24 +49,24 @@ public class Avro111Names extends LinkedHashMap<Avro111Name, Schema> {
         if (primitive != null) {
             return Schema.create(primitive);
         }
-        Avro111Name name = new Avro111Name(o, space);
+        AvroName name = new AvroName(o, space);
         if (!containsKey(name)) {
             // if not in default try anonymous
-            name = new Avro111Name(o, "");
+            name = new AvroName(o, "");
         }
         return super.get(name);
     }
 
     public boolean contains(Schema schema) {
-        return get(new Avro111Name(schema.getFullName(), null)) != null;
+        return get(new AvroName(schema.getFullName(), null)) != null;
     }
 
     public void add(Schema schema) {
-        put(new Avro111Name(schema.getFullName(), null), schema);
+        put(new AvroName(schema.getFullName(), null), schema);
     }
 
     @Override
-    public Schema put(Avro111Name name, Schema schema) {
+    public Schema put(AvroName name, Schema schema) {
         if (containsKey(name)) {
             throw new SchemaParseException("Can't redefine: " + name);
         }

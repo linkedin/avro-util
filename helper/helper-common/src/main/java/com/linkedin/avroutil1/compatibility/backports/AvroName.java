@@ -4,20 +4,20 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1.compatibility.avro14.backports;
+package com.linkedin.avroutil1.compatibility.backports;
 
+import com.linkedin.avroutil1.compatibility.JsonGeneratorWrapper;
 import org.apache.avro.SchemaParseException;
-import org.codehaus.jackson.JsonGenerator;
 
 import java.io.IOException;
 import java.util.Objects;
 
-public class Avro111Name {
+public class AvroName {
     private final String name;
     private final String space;
     private final String full;
 
-    public Avro111Name(String name, String space) {
+    public AvroName(String name, String space) {
         if (name == null) { // anonymous
             this.name = this.space = this.full = null;
             return;
@@ -57,10 +57,10 @@ public class Avro111Name {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof Avro111Name)) {
+        if (!(o instanceof AvroName)) {
             return false;
         }
-        Avro111Name that = (Avro111Name) o;
+        AvroName that = (AvroName) o;
         return Objects.equals(full, that.full);
     }
 
@@ -74,7 +74,7 @@ public class Avro111Name {
         return full;
     }
 
-    public void writeName(Avro111Names names, JsonGenerator gen) throws IOException {
+    public void writeName(AvroNames names, JsonGeneratorWrapper<?> gen) throws IOException {
         if (name != null) {
             gen.writeStringField("name", name);
         }
