@@ -112,6 +112,10 @@ if [[ $# -lt 1 ]]; then
   echo ""
   echo "$DEFAULT_AVRO_TOOLS_1100_JAR"
   echo ""
+  echo "if you use 'default_avro_1110', it will take:"
+  echo ""
+  echo "$DEFAULT_AVRO_TOOLS_1110_JAR"
+  echo ""
   echo "The $0 script uses avro-tools to generate SpecificRecord classes for the Avro schemas stored in:"
   echo ""
   for path in `ls ${AVRO_SCHEMAS_ROOT_PATH}/*.avsc`; do
@@ -144,6 +148,8 @@ elif [ "$AVRO_TOOLS_PATH_PARAM" = 'default_avro_192' ]; then
     AVRO_TOOLS_JAR=$DEFAULT_AVRO_TOOLS_192_JAR
 elif [ "$AVRO_TOOLS_PATH_PARAM" = 'default_avro_1100' ]; then
     AVRO_TOOLS_JAR=$DEFAULT_AVRO_TOOLS_1100_JAR
+elif [ "$AVRO_TOOLS_PATH_PARAM" = 'default_avro_1110' ]; then
+    AVRO_TOOLS_JAR=$DEFAULT_AVRO_TOOLS_1110_JAR
 else
     AVRO_TOOLS_JAR=$AVRO_TOOLS_PATH_PARAM
 fi

@@ -8,7 +8,6 @@ import java.io.IOException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.util.Utf8;
 import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -51,7 +50,7 @@ public class FastDatumWriterTest {
 
   @Test(groups = {"serializationTest"})
   @SuppressWarnings("unchecked")
-  public void shouldCreateGenericDatumReader() throws IOException, InterruptedException {
+  public void shouldCreateGenericDatumWriter() throws IOException, InterruptedException {
     Schema recordSchema = createRecord("TestSchema", createPrimitiveUnionFieldSchema("test", Schema.Type.STRING));
     FastGenericDatumWriter<GenericRecord> fastGenericDatumWriter = new FastGenericDatumWriter<>(recordSchema, cache);
 
