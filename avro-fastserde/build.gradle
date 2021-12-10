@@ -190,7 +190,7 @@ task cleanAllGeneratedFiles(type: Delete) {
   delete fileTree(dir: 'src/codegen', include: '**/*.java')
 }
 
-build.dependsOn cleanAllGeneratedFiles, testAvro1_4, testAvro1_5, testAvro1_6, testAvro1_7, testAvro1_8, testAvro1_9, testAvro1_10
+build.dependsOn cleanAllGeneratedFiles, testAvro1_4, testAvro1_5, testAvro1_6, testAvro1_7, testAvro1_8, testAvro1_9, testAvro1_10, testAvro1_11
 build.finalizedBy cleanGeneratedClassFiles
 
 task generateAvroClasses1_4(type:Exec) {
