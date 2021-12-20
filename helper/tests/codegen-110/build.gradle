@@ -127,7 +127,7 @@ dependencies {
   //this block required for resource generation code
   implementation project(":helper:tests:helper-tests-common")
   //redirect logging to log4j2 for resource generation
-  resourcegen "org.apache.logging.log4j:log4j-core:2.14.1"
-  resourcegen "org.apache.logging.log4j:log4j-slf4j-impl:2.14.1"
+  resourcegen "org.apache.logging.log4j:log4j-core:2.17.0"
+  resourcegen "org.apache.logging.log4j:log4j-slf4j-impl:2.17.0"
   resourcegen files('../codegenClasspath')
 }
