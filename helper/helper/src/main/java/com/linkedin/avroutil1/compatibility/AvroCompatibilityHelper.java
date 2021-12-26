@@ -925,21 +925,46 @@ public class AvroCompatibilityHelper {
   }
 
   /**
+   * given a schema, returns a (exploded, fully-inlined, self-contained, however you want to call it)
+   * avsc representation of the schema.
+   * this is logically the same as {@link Schema#toString(boolean)} except not full of horrible bugs.
+   * specifically, under all versions of avro, we support:
+   * <ul>
+   *     <li>output free of avro-702, even under avro 1.4</li>
+   *     <li>escaped characters in docs and default values remain properly escaped (avro-886)</li>
+   * </ul>
+   * (unless of course you choose to delegate to vanilla avro, at which point youre at the mercy of
+   * the runtime version thereof)
+   * @param schema a schema to serialize to avsc
+   * @param config configuration for avsc generation. see {@link AvscGenerationConfig} for available knobs
+   * @return avsc
+   */
+  public static String toAvsc(Schema schema, AvscGenerationConfig config) {
+    assertAvroAvailable();
+    if (config == null) {
+      throw new IllegalArgumentException("config must be provided");
+    }
+    return ADAPTER.toAvsc(schema, config);
+  }
+
+  /**
    * given a schema, returns a (exploded, fully-inlined, self-container, however you want to call it)
    * avsc representation of the schema.
    * this is logically the same as {@link Schema#toString(boolean)} except not full of horrible bugs.
    * specifically, under all versions of avro:
    * <ul>
    *     <li>the output is free of avro-702, even under avro 1.4</li>
-   *     <li>escapes characters in docs and default values remain properly escaped under avro &lt; 1.6</li>
+   *     <li>escaped characters in docs and default values remain properly escaped under avro &lt; 1.6</li>
    * </ul>
    * @param schema a schema to serialize to avsc
    * @param pretty true to return a pretty-printed schema, false for single-line
    * @return avsc
+   * @deprecated please use {@link #toAvsc(Schema, AvscGenerationConfig)} directly
    */
+  @Deprecated
   public static String toAvsc(Schema schema, boolean pretty) {
     assertAvroAvailable();
-    return ADAPTER.toAvsc(schema, pretty, false);
+    return ADAPTER.toAvsc(schema, pretty ? AvscGenerationConfig.CORRECT_PRETTY : AvscGenerationConfig.CORRECT_ONELINE);
   }
 
   /**
@@ -949,9 +974,15 @@ public class AvroCompatibilityHelper {
    * @param schema a schema to serialize to (possibly bad) avsc
    * @param pretty true to return a pretty-printed schema, false for single-line
    * @return possibly bad avsc
+   * @deprecated please use {@link #toAvsc(Schema, AvscGenerationConfig)} directly
    */
+  @Deprecated
   public static String toBadAvsc(Schema schema, boolean pretty) {
     assertAvroAvailable();
-    return ADAPTER.toAvsc(schema, pretty, true);
+    return ADAPTER.toAvsc(schema,
+            pretty ?
+                    AvscGenerationConfig.LEGACY_MITIGATED_PRETTY
+                  : AvscGenerationConfig.LEGACY_MITIGATED_ONELINE
+    );
   }
 }

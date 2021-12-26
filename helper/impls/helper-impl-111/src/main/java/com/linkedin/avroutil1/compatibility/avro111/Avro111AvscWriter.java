@@ -22,8 +22,8 @@ import java.util.Set;
 public class Avro111AvscWriter extends AvscWriter<Jackson2JsonGeneratorWrapper> {
     private static final JsonFactory FACTORY = new JsonFactory().setCodec(new ObjectMapper());
 
-    public Avro111AvscWriter(boolean pretty, boolean preAvro702) {
-        super(pretty, preAvro702);
+    public Avro111AvscWriter(boolean pretty, boolean preAvro702, boolean addAliasesForAvro702) {
+        super(pretty, preAvro702, addAliasesForAvro702);
     }
 
     @Override

@@ -129,7 +129,7 @@ public interface AvroAdapter {
     return Schema.createEnum(name, doc, namespace, values);
   }
 
-  String toAvsc(Schema schema, boolean pretty, boolean retainPreAvro702Logic);
+  String toAvsc(Schema schema, AvscGenerationConfig config);
 
   //code generation
 
