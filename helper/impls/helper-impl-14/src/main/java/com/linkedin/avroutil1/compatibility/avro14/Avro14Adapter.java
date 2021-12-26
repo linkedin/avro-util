@@ -10,6 +10,7 @@ import com.linkedin.avroutil1.compatibility.AvroAdapter;
 import com.linkedin.avroutil1.compatibility.AvroGeneratedSourceCode;
 import com.linkedin.avroutil1.compatibility.AvroSchemaUtil;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
+import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
 import com.linkedin.avroutil1.compatibility.CodeGenerationConfig;
 import com.linkedin.avroutil1.compatibility.CodeTransformations;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
@@ -44,6 +45,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.avro.Avro14SchemaAccessUtil;
@@ -283,13 +285,30 @@ public class Avro14Adapter implements AvroAdapter {
   }
 
   @Override
-  public String toAvsc(Schema schema, boolean pretty, boolean retainPreAvro702Logic) {
-    if (retainPreAvro702Logic) {
-      //TODO - remove when we have more confidence in AvscWriter
-      return schema.toString(pretty);
+  public String toAvsc(Schema schema, AvscGenerationConfig config) {
+    boolean useRuntime;
+    if (!isRuntimeAvroCapableOf(config)) {
+      if (config.isForceUseOfRuntimeAvro()) {
+        throw new UnsupportedOperationException("desired configuration " + config
+                + " is forced yet runtime avro " + supportedMajorVersion() + " is not capable of it");
+      }
+      useRuntime = false;
+    } else {
+      useRuntime = config.isPreferUseOfRuntimeAvro();
     }
-    Avro14AvscWriter writer = new Avro14AvscWriter(pretty, retainPreAvro702Logic);
-    return writer.toAvsc(schema);
+
+    if (useRuntime) {
+      return schema.toString(config.isPrettyPrint());
+    } else {
+      //if the user does not specify do whatever runtime avro would (which for 1.4 means produce bad schema)
+      boolean usePre702Logic = config.getRetainPreAvro702Logic().orElse(Boolean.TRUE);
+      Avro14AvscWriter writer = new Avro14AvscWriter(
+              config.isPrettyPrint(),
+              usePre702Logic,
+              config.isAddAvro702Aliases()
+      );
+      return writer.toAvsc(schema);
+    }
   }
 
   @Override
@@ -359,7 +378,7 @@ public class Avro14Adapter implements AvroAdapter {
       }
       String fullName = schema.getFullName();
       if (AvroSchemaUtil.isImpactedByAvro702(schema) && !schemasToGenerateBadAvscFor.contains(fullName)) {
-        fullNameToAlternativeAvsc.put(fullName, toAvsc(schema, false, false));
+        fullNameToAlternativeAvsc.put(fullName, toAvsc(schema, AvscGenerationConfig.CORRECT_MITIGATED_ONELINE));
       }
     }
     return fullNameToAlternativeAvsc;
@@ -394,5 +413,21 @@ public class Avro14Adapter implements AvroAdapter {
     } catch (Exception e) {
       throw new IllegalStateException("cant extract contents from avro OutputFile", e);
     }
+  }
+
+  private boolean isRuntimeAvroCapableOf(AvscGenerationConfig config) {
+    if (config == null) {
+      throw new IllegalArgumentException("config cannot be null");
+    }
+    if (config.isAddAvro702Aliases()) {
+      return false;
+    }
+    Optional<Boolean> preAvro702Output = config.getRetainPreAvro702Logic();
+    //noinspection RedundantIfStatement
+    if (preAvro702Output.isPresent() && preAvro702Output.get().equals(Boolean.FALSE)) {
+      //avro 1.4 can only do bad avsc
+      return false;
+    }
+    return true;
   }
 }

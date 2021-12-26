@@ -16,7 +16,7 @@ import java.io.StringWriter;
 import java.util.List;
 import java.util.Set;
 
-public abstract class AvscWriter<G extends JsonGeneratorWrapper> {
+public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
     /**
      * true for pretty-printing (newlines and indentation)
      * false foa one-liner (good for SCHEMA$)
@@ -27,10 +27,17 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper> {
      * false to produce proper, correct, avsc.
      */
     protected final boolean preAvro702;
+    /**
+     * true adds aliases to all named types (record, enum, fixed) to their "other fullname".
+     * "other fullname" is either the correct one of the avro702-impacted one, depending
+     * on the value of {@link #preAvro702}
+     */
+    protected final boolean addAliasesForAvro702;
 
-    protected AvscWriter(boolean pretty, boolean preAvro702) {
+    protected AvscWriter(boolean pretty, boolean preAvro702, boolean addAliasesForAvro702) {
         this.pretty = pretty;
         this.preAvro702 = preAvro702;
+        this.addAliasesForAvro702 = addAliasesForAvro702;
     }
 
     public String toAvsc(Schema schema) {
@@ -102,7 +109,7 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper> {
                 String savedSpace = names.space(); // save namespace
                 // set default namespace
                 if (preAvro702) {
-                    //avro 1.4 only ever sets namespace if thecurrent is null
+                    //avro 1.4 only ever sets namespace if the current is null
                     if (savedSpace == null) {
                         names.space(name.getSpace());
                     }
