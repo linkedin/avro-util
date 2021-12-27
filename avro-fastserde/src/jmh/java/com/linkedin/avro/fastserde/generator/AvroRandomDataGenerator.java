@@ -16,7 +16,6 @@
 
 package com.linkedin.avro.fastserde.generator;
 
-import com.linkedin.avro.fastserde.generator.GenericRecordBuilder;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -28,7 +27,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import org.apache.avro.Schema;
-import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericEnumSymbol;
 import org.apache.avro.generic.GenericFixed;
 import org.apache.avro.generic.GenericRecord;
@@ -38,6 +36,7 @@ import org.apache.avro.generic.GenericRecord;
  * Generates Java objects according to an {@link Schema Avro Schema}.
  */
 @SuppressWarnings("WeakerAccess")
+@Deprecated //functionality to be ported over to RandomRecordGenerator in "core" helper
 public class AvroRandomDataGenerator {
 
   /**

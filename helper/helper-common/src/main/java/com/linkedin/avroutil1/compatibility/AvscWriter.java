@@ -13,6 +13,7 @@ import org.apache.avro.Schema;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -54,6 +55,7 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
     }
 
     protected void toJson(Schema schema, AvroNames names, G gen) throws IOException {
+        AvroName extraAlias;
         switch (schema.getType()) {
             case ENUM:
                 //taken from EnumSchema.toJson() in avro 1.11
@@ -62,7 +64,7 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                 }
                 gen.writeStartObject();
                 gen.writeStringField("type", "enum");
-                writeName(schema, names, gen);
+                extraAlias = writeName(schema, names, gen);
                 if (schema.getDoc() != null) {
                     gen.writeStringField("doc", schema.getDoc());
                 }
@@ -77,7 +79,7 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                 //    gen.writeStringField("default", getEnumDefault());
                 //}
                 writeProps(schema, gen);
-                aliasesToJson(schema, gen);
+                aliasesToJson(schema, extraAlias, gen);
                 gen.writeEndObject();
                 break;
             case FIXED:
@@ -87,13 +89,13 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                 }
                 gen.writeStartObject();
                 gen.writeStringField("type", "fixed");
-                writeName(schema, names, gen);
+                extraAlias = writeName(schema, names, gen);
                 if (schema.getDoc() != null) {
                     gen.writeStringField("doc", schema.getDoc());
                 }
                 gen.writeNumberField("size", schema.getFixedSize());
                 writeProps(schema, gen);
-                aliasesToJson(schema, gen);
+                aliasesToJson(schema, extraAlias, gen);
                 gen.writeEndObject();
                 break;
             case RECORD:
@@ -103,19 +105,19 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                 }
                 gen.writeStartObject();
                 gen.writeStringField("type", schema.isError() ? "error" : "record");
-                writeName(schema, names, gen);
-                AvroName name = nameOf(schema);
+                extraAlias = writeName(schema, names, gen);
+                AvroName name = AvroName.of(schema);
 
-                String savedSpace = names.space(); // save namespace
-                // set default namespace
-                if (preAvro702) {
-                    //avro 1.4 only ever sets namespace if the current is null
-                    if (savedSpace == null) {
-                        names.space(name.getSpace());
-                    }
-                } else {
-                    names.space(name.getSpace());
+                //save current namespaces - both 1.4 and correct one
+                String savedBadSpace = names.badSpace(); //save avro-702 mode namespace
+                String savedCorrectSpace = names.correctSpace(); //save correct namespace
+
+                //avro 1.4 only ever sets namespace if the current is null
+                if (savedBadSpace == null) {
+                    names.badSpace(name.getSpace());
                 }
+                names.correctSpace(name.getSpace()); //always update correct namespace
+
                 if (schema.getDoc() != null) {
                     gen.writeStringField("doc", schema.getDoc());
                 }
@@ -124,11 +126,10 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                     fieldsToJson(schema, names, gen);
                 }
                 writeProps(schema, gen);
-                aliasesToJson(schema, gen);
+                aliasesToJson(schema, extraAlias, gen);
                 gen.writeEndObject();
-                if (!preAvro702) {
-                    names.space(savedSpace); // restore namespace
-                }
+                //avro 1.4 never restores namespace, so we never restore space
+                names.correctSpace(savedCorrectSpace); //always restore correct namespace
                 break;
             case ARRAY:
                 //taken from ArraySchema.toJson() in avro 1.11
@@ -169,17 +170,39 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
         }
     }
 
-    protected void aliasesToJson(Schema schema, G gen) throws IOException {
-        Set<String> aliases = schema.getAliases();
-        if (aliases == null || aliases.size() == 0) {
+    protected void aliasesToJson(Schema schema, AvroName extraAlias, G gen) throws IOException {
+        Set<String> userDefinedAliases = schema.getAliases();
+        Set<String> allAliases = userDefinedAliases; //could be null
+        String extraAliasFullname = null; //will be handled specially when printing
+        if (addAliasesForAvro702 && extraAlias != null) {
+            allAliases = new HashSet<>();
+            if (userDefinedAliases != null) {
+                allAliases.addAll(userDefinedAliases);
+            }
+            extraAliasFullname = extraAlias.getFull();
+            allAliases.add(extraAliasFullname);
+        }
+        if (allAliases == null || allAliases.size() == 0) {
             return;
         }
-        AvroName name = nameOf(schema);
+        AvroName name = AvroName.of(schema);
+        //"context" namespace for aliases is the fullname of the names type on which they are defined
+        //except for the extra alias. scenarios where extraAlias is used are those where the "effective"
+        //name of this schema (or its correct form) is different to its full name, so we want
+        //to very explicitly use the fullname of the alias for those.
+        String referenceNamespace = name.getSpace();
         gen.writeFieldName("aliases");
         gen.writeStartArray();
-        for (String s : aliases) {
+        //TODO - avro702 may have an impact on (regular) aliases, meaning we may need to
+        // add yet more aliases to account for those!
+        for (String s : allAliases) {
             AvroName alias = new AvroName(s, null);
-            gen.writeString(alias.getQualified(name.getSpace()));
+            if (alias.getFull().equals(extraAliasFullname)) {
+                gen.writeString(extraAliasFullname);
+            } else {
+                String relative = alias.getQualified(referenceNamespace);
+                gen.writeString(relative);
+            }
         }
         gen.writeEndArray();
     }
@@ -214,33 +237,24 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
         gen.writeEndArray();
     }
 
-    //returns true if this schema (by fqcn) is in names, hence has been written before, and so now
-    //just a "ref" (fqcn string) will do
+    //returns true if this schema (by fullname) is in names, hence has been written before, and so now
+    //just a "ref" (fullname string) will do
     protected boolean writeNameRef(Schema schema, AvroNames names, G gen) throws IOException {
-        AvroName name = nameOf(schema);
+        AvroName name = AvroName.of(schema);
         if (schema.equals(names.get(name))) {
-            gen.writeString(name.getQualified(names.space()));
+            gen.writeString(name.getQualified(names.badSpace()));
             return true;
-        } else if (!name.isAnonymous()) {
+        }
+        if (!name.isAnonymous()) {
             names.put(name, schema);
         }
         return false;
     }
 
-    protected void writeName(Schema schema, AvroNames names, G gen) throws IOException {
-        AvroName name = nameOf(schema);
-        name.writeName(names, gen);
+    protected AvroName writeName(Schema schema, AvroNames names, G gen) throws IOException {
+        AvroName name = AvroName.of(schema);
+        return name.writeName(names, preAvro702, gen);
     }
-
-    protected AvroName nameOf(Schema schema) {
-        Schema.Type type = schema.getType();
-        if (!HelperConsts.NAMED_TYPES.contains(type)) {
-            throw new IllegalArgumentException("dont know how to build a Name out of " + type + " " + schema);
-        }
-        return new AvroName(schema.getName(), schema.getNamespace());
-    }
-
-    //
 
     //json generator methods (will vary by jackson version across different avro versions)
 

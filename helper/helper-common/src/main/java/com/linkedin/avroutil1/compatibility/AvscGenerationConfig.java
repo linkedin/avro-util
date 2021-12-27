@@ -46,10 +46,22 @@ public class AvscGenerationConfig {
             true, false, true, Optional.of(Boolean.FALSE), false
     );
     /**
+     * always generates correct, pretty avsc, with aliases fo "bad" fullnames for better compatibility with avro 1.4
+     */
+    public static final AvscGenerationConfig CORRECT_MITIGATED_PRETTY = new AvscGenerationConfig(
+            false, false, true, Optional.of(Boolean.FALSE), true
+    );
+    /**
      * always generates correct, one-line avsc, with aliases fo "bad" fullnames for better compatibility with avro 1.4
      */
     public static final AvscGenerationConfig CORRECT_MITIGATED_ONELINE = new AvscGenerationConfig(
             false, false, false, Optional.of(Boolean.FALSE), true
+    );
+    /**
+     * always generates avro-702 impacted (but pretty) avsc. only use if you know what you're doing.
+     */
+    public static final AvscGenerationConfig LEGACY_PRETTY = new AvscGenerationConfig(
+            false, false, true, Optional.of(Boolean.TRUE), false
     );
     /**
      * always generates avro-702 impacted (but pretty) avsc, and adds aliases to the correct full names of
