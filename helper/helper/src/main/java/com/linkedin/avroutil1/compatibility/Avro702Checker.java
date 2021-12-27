@@ -18,7 +18,7 @@ public class Avro702Checker {
     }
 
     public static boolean isSusceptible(Schema schema) {
-        String badAvsc = AvroCompatibilityHelper.toBadAvsc(schema, true);
+        String badAvsc = AvroCompatibilityHelper.toAvsc(schema, AvscGenerationConfig.LEGACY_PRETTY);
         boolean parseFailed = false;
         Schema evilTwin = null;
         try {
