@@ -1,0 +1,25 @@
+{
+  "type": "record",
+  "namespace": "com.acme.outer",
+  "name": "OuterRecord",
+  "fields": [
+    {
+      "name": "outerField",
+      "type": {
+        "type": "record",
+        "name": "MiddleRecord",
+        "namespace": "com.acme.middle",
+        "fields": [
+          {
+            "name": "middleField",
+            "type": {
+              "type": "fixed",
+              "name": "InnerFixed",
+              "size": 7
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

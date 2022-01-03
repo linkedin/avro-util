@@ -7,7 +7,6 @@
 package com.linkedin.avroutil1.compatibility;
 
 import com.linkedin.avroutil1.testcommon.TestUtil;
-import net.javacrumbs.jsonunit.assertj.JsonAssertions;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericRecord;
@@ -22,9 +21,17 @@ import org.testng.annotations.Test;
 public class AvroCompatibilityHelperToAvscTest {
 
   @Test
+  public void testBadSchemaGeneration() throws Exception {
+    //show we can generate the same (bad) schemas that avro 1.4 would under any avro
+    testBadSchemaGeneration("avro702/Avro702DemoEnum-good.avsc", "avro702/Avro702DemoEnum-bad.avsc");
+    testBadSchemaGeneration("avro702/Avro702DemoFixed-good.avsc", "avro702/Avro702DemoFixed-bad.avsc");
+    testBadSchemaGeneration("avro702/Avro702DemoRecord-good.avsc", "avro702/Avro702DemoRecord-bad.avsc");
+  }
+
+  @Test
   public void testMonsantoSchema() throws Exception {
     String avsc = TestUtil.load("MonsantoRecord.avsc");
-    testSchema(avsc);
+    testSchemaRoundtrip(avsc);
 
     Schema schema = Schema.parse(avsc);
     String badAvsc = AvroCompatibilityHelper.toAvsc(schema, AvscGenerationConfig.LEGACY_PRETTY);
@@ -39,38 +46,38 @@ public class AvroCompatibilityHelperToAvscTest {
 
   @Test
   public void testOtherSchemas() throws Exception {
-    testSchema(TestUtil.load("PerfectlyNormalEnum.avsc"));
-    testSchema(TestUtil.load("PerfectlyNormalFixed.avsc"));
-    testSchema(TestUtil.load("PerfectlyNormalRecord.avsc"));
-    testSchema(TestUtil.load("RecordWithDefaults.avsc"));
-    testSchema(TestUtil.load("RecordWithFieldProps.avsc"));
-    testSchema(TestUtil.load("RecordWithLogicalTypes.avsc"));
+    testSchemaRoundtrip(TestUtil.load("PerfectlyNormalEnum.avsc"));
+    testSchemaRoundtrip(TestUtil.load("PerfectlyNormalFixed.avsc"));
+    testSchemaRoundtrip(TestUtil.load("PerfectlyNormalRecord.avsc"));
+    testSchemaRoundtrip(TestUtil.load("RecordWithDefaults.avsc"));
+    testSchemaRoundtrip(TestUtil.load("RecordWithFieldProps.avsc"));
+    testSchemaRoundtrip(TestUtil.load("RecordWithLogicalTypes.avsc"));
   }
 
   @Test
-  public void testAliasInjectionOnBadSchema() throws Exception {
-    long seed = System.currentTimeMillis();
-    AvroVersion runtimeVersion = AvroCompatibilityHelper.getRuntimeAvroVersion();
+  public void testAliasInjectionOnBadSchemas() throws Exception {
+    boolean modernAvro = AvroCompatibilityHelper.getRuntimeAvroVersion().laterThan(AvroVersion.AVRO_1_4);
+    testAliasInjection("avro702/Avro702DemoEnum-good.avsc", "avro702/Avro702DemoEnum-bad.avsc", !modernAvro);
+    testAliasInjection("avro702/Avro702DemoFixed-good.avsc", "avro702/Avro702DemoFixed-bad.avsc", !modernAvro);
+    //even modern avro "tolerates" renaming records ...
+    testAliasInjection("avro702/Avro702DemoRecord-good.avsc", "avro702/Avro702DemoRecord-bad.avsc", true);
+  }
 
-    String originalAvsc = TestUtil.load("avro702/Avro702DemoEnum-good.avsc");
+  private void testAliasInjection(String originalAvscPath, String badAvscPath, boolean vanillaExpectedToWork) throws Exception {
+    String originalAvsc = TestUtil.load(originalAvscPath);
     Schema originalSchema = Schema.parse(originalAvsc);
-    String expectedBadAvsc = TestUtil.load("avro702/Avro702DemoEnum-bad.avsc");
-    Schema expectedBadSchema = Schema.parse(expectedBadAvsc);
-
-    //demonstrate we can produce the same bad avsc that vanilla 1.4 does
-    String badAvsc = AvroCompatibilityHelper.toAvsc(originalSchema, AvscGenerationConfig.LEGACY_PRETTY);
-    JsonAssertions.assertThatJson(badAvsc).isEqualTo(expectedBadAvsc);
+    String badAvsc = TestUtil.load(badAvscPath);
     Schema badSchema = Schema.parse(badAvsc);
-    Assert.assertEquals(badSchema, expectedBadSchema);
+    long seed = System.currentTimeMillis();
 
-    //demonstrate that bad and original schemas cannot interop by default on avro 1.5+
+    //demonstrate that bad and original schemas cannot interop by default (except where expected to work)
     RandomRecordGenerator gen = new RandomRecordGenerator();
     //write with good schema, read with bad
     GenericRecord goodRecord = (GenericRecord) gen.randomGeneric(originalSchema, RecordGenerationConfig.newConfig().withSeed(seed));
-    testBinaryEncodingCycle(goodRecord, badSchema, runtimeVersion.earlierThan(AvroVersion.AVRO_1_5));
+    testBinaryEncodingCycle(goodRecord, badSchema, vanillaExpectedToWork);
     //write with bad schema, read with good
     GenericRecord badRecord = (GenericRecord) gen.randomGeneric(badSchema, RecordGenerationConfig.newConfig().withSeed(seed));
-    testBinaryEncodingCycle(badRecord, originalSchema, runtimeVersion.earlierThan(AvroVersion.AVRO_1_5));
+    testBinaryEncodingCycle(badRecord, originalSchema, vanillaExpectedToWork);
 
     //now generate both good and bad schemas with avro-702-mitigation aliases
     String badAvscWithAliases = AvroCompatibilityHelper.toAvsc(originalSchema, AvscGenerationConfig.LEGACY_MITIGATED_PRETTY);
@@ -83,12 +90,31 @@ public class AvroCompatibilityHelperToAvscTest {
   }
 
   /**
-   * show that we can "serialize" a schema and parse it back without issues - the the
+   * given original avsc file and an expected bad avsc file, show that we can generate
+   * the bad avsc from the original schema
+   * @param originalAvscPath
+   * @param expectedBadAvscPath
+   * @throws Exception
+   */
+  private void testBadSchemaGeneration(String originalAvscPath, String expectedBadAvscPath) throws Exception {
+    String originalAvsc = TestUtil.load(originalAvscPath);
+    String expectedBadAvsc = TestUtil.load(expectedBadAvscPath);
+    Schema originalSchema = Schema.parse(originalAvsc);
+    Schema expectedBadSchema = Schema.parse(expectedBadAvsc);
+
+    String generatedAvsc = AvroCompatibilityHelper.toAvsc(originalSchema, AvscGenerationConfig.LEGACY_PRETTY);
+    Schema parsedSchema = Schema.parse(generatedAvsc);
+    Assert.assertEquals(parsedSchema, expectedBadSchema);
+    Assert.assertNotEquals(parsedSchema, originalSchema);
+  }
+
+  /**
+   * show that we can "serialize" a schema correctly and parse it back without issues - the
    * resulting schema is equals() to the original schema
    * @param avsc avsc to run through a parse --> toAvsc --> parse cycle
    * @throws Exception if anything goes wrong
    */
-  private void testSchema(String avsc) throws Exception {
+  private void testSchemaRoundtrip(String avsc) throws Exception {
     Schema schema = Schema.parse(avsc);
     String oneLine = AvroCompatibilityHelper.toAvsc(schema, AvscGenerationConfig.CORRECT_ONELINE);
     String pretty = AvroCompatibilityHelper.toAvsc(schema, AvscGenerationConfig.CORRECT_PRETTY);
