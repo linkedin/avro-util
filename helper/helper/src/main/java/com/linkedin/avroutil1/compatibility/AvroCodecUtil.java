@@ -20,6 +20,7 @@ import org.apache.avro.specific.SpecificDatumWriter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
@@ -28,7 +29,7 @@ import java.nio.charset.StandardCharsets;
  */
 public class AvroCodecUtil {
 
-    public static byte[] serializeBinary(IndexedRecord record) throws Exception {
+    public static byte[] serializeBinary(IndexedRecord record) throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         BinaryEncoder binaryEncoder = AvroCompatibilityHelper.newBinaryEncoder(os);
         DatumWriter<IndexedRecord> writer = AvroCompatibilityHelper.isSpecificRecord(record) ?
@@ -40,7 +41,7 @@ public class AvroCodecUtil {
         return os.toByteArray();
     }
 
-    public static String serializeJson(IndexedRecord record, AvroVersion format) throws Exception {
+    public static String serializeJson(IndexedRecord record, AvroVersion format) throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         Encoder encoder = AvroCompatibilityHelper.newJsonEncoder(record.getSchema(), os, true, format);
         DatumWriter<IndexedRecord> writer = AvroCompatibilityHelper.isSpecificRecord(record) ?
@@ -54,7 +55,7 @@ public class AvroCodecUtil {
         return new String(os.toByteArray(), StandardCharsets.UTF_8);
     }
 
-    public static GenericRecord deserializeAsGeneric(byte[] binarySerialized, Schema writerSchema, Schema readerSchema) throws Exception {
+    public static GenericRecord deserializeAsGeneric(byte[] binarySerialized, Schema writerSchema, Schema readerSchema) throws IOException {
         ByteArrayInputStream is = new ByteArrayInputStream(binarySerialized);
         BinaryDecoder decoder = AvroCompatibilityHelper.newBinaryDecoder(is, false, null);
         GenericDatumReader<GenericRecord> reader = new GenericDatumReader<>(writerSchema, readerSchema);
@@ -66,7 +67,7 @@ public class AvroCodecUtil {
         return result;
     }
 
-    public static GenericRecord deserializeAsGeneric(String jsonSerialized, Schema writerSchema, Schema readerSchema) throws Exception {
+    public static GenericRecord deserializeAsGeneric(String jsonSerialized, Schema writerSchema, Schema readerSchema) throws IOException {
         InputStream is = new ByteArrayInputStream(jsonSerialized.getBytes(StandardCharsets.UTF_8));
         Decoder decoder = AvroCompatibilityHelper.newCompatibleJsonDecoder(writerSchema, is);
         GenericDatumReader<GenericRecord> reader = new GenericDatumReader<>(writerSchema, readerSchema);

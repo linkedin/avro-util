@@ -992,8 +992,8 @@ public class AvroCompatibilityHelper {
     assertAvroAvailable();
     return ADAPTER.toAvsc(schema,
             pretty ?
-                    AvscGenerationConfig.LEGACY_MITIGATED_PRETTY
-                  : AvscGenerationConfig.LEGACY_MITIGATED_ONELINE
+                    AvscGenerationConfig.LEGACY_PRETTY
+                  : AvscGenerationConfig.LEGACY_ONELINE
     );
   }
 }
