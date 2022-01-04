@@ -46,7 +46,7 @@ public class GoodClass {
     public void instanceOfGenericRecord() throws Exception {
         SpecificRecordBase someRecord = null;
         //noinspection ConstantConditions
-        if (AvroCompatibilityHelper.isGenericRecord(someRecord)) {
+        if (AvroCompatibilityHelper.isGenericDataRecord(someRecord)) {
             System.err.println("boom");
         }
     }

@@ -455,15 +455,26 @@ public class AvroCompatibilityHelper {
   // methods for dealing with generic records
 
   /**
-   * Return true if the {@link IndexedRecord} is a {@link org.apache.avro.generic.GenericRecord}.
+   * This method is deprecated. Please use {@link AvroCompatibilityHelper#isGenericDataRecord} instead.
    *
-   * This can be a source of confusion in avro 1.7+ because SpecificRecordBase implements GenericRecord
+   * @param indexedRecord a record
+   * @return true if argument is a {@link GenericData.Record}.
+   */
+  @Deprecated
+  public static boolean isGenericRecord(IndexedRecord indexedRecord) {
+    return isGenericDataRecord(indexedRecord);
+  }
+
+  /**
+   * Return true if the {@link IndexedRecord} is a {@link GenericData.Record}.
+   *
+   * This can be a source of confusion in avro 1.7+ because SpecificRecordBase implements {@link org.apache.avro.generic.GenericRecord}
    * so it would be wrong to check for instanceof GenericRecord!
    *
    * @param indexedRecord a record
-   * @return true if argument is a generic record
+   * @return true if argument is a {@link GenericData.Record}.
    */
-  public static boolean isGenericRecord(IndexedRecord indexedRecord) {
+  public static boolean isGenericDataRecord(IndexedRecord indexedRecord) {
     return !(isSpecificRecord(indexedRecord));
   }
 
