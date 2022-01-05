@@ -40,8 +40,8 @@ public class Avro14AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
         }
     }
 
-    public Avro14AvscWriter(boolean pretty, boolean preAvro702) {
-        super(pretty, preAvro702);
+    public Avro14AvscWriter(boolean pretty, boolean preAvro702, boolean addAliasesForAvro702) {
+        super(pretty, preAvro702, addAliasesForAvro702);
     }
 
     @Override

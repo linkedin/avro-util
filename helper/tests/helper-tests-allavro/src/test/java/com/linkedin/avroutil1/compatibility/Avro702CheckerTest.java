@@ -15,9 +15,13 @@ import org.testng.annotations.Test;
 public class Avro702CheckerTest {
 
   @Test
-  public void testMonsantoSchema() throws Exception {
-    String avsc = TestUtil.load("MonsantoRecord.avsc");
-    testSchema(avsc, true);
+  public void testImpactedSchemas() throws Exception {
+    testSchema(TestUtil.load("MonsantoRecord.avsc"), true);
+    testSchema(TestUtil.load("avro702/Avro702DemoEnum-good.avsc"), true);
+    testSchema(TestUtil.load("avro702/Avro702DemoHorribleEnum-good.avsc"), true);
+    testSchema(TestUtil.load("avro702/Avro702DemoFixed-good.avsc"), true);
+    testSchema(TestUtil.load("avro702/Avro702DemoRecord-good.avsc"), true);
+    testSchema(TestUtil.load("avro702/Avro702DemoUnion-good.avsc"), true);
   }
 
   @Test

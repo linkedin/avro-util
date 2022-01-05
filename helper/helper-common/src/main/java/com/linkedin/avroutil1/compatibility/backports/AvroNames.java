@@ -9,67 +9,70 @@ package com.linkedin.avroutil1.compatibility.backports;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaParseException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-public class AvroNames extends LinkedHashMap<AvroName, Schema> {
-    private static final long serialVersionUID = 1L;
-    private static final Map<String, Schema.Type> PRIMITIVES = new HashMap<>();
-    static {
-        PRIMITIVES.put("string", org.apache.avro.Schema.Type.STRING);
-        PRIMITIVES.put("bytes", org.apache.avro.Schema.Type.BYTES);
-        PRIMITIVES.put("int", org.apache.avro.Schema.Type.INT);
-        PRIMITIVES.put("long", org.apache.avro.Schema.Type.LONG);
-        PRIMITIVES.put("float", org.apache.avro.Schema.Type.FLOAT);
-        PRIMITIVES.put("double", org.apache.avro.Schema.Type.DOUBLE);
-        PRIMITIVES.put("boolean", org.apache.avro.Schema.Type.BOOLEAN);
-        PRIMITIVES.put("null", org.apache.avro.Schema.Type.NULL);
-    }
+public class AvroNames {
 
-    private String space; // default namespace
+    private String badSpace; // current namespace under pre-avro-702 logic
+    private String correctSpace; //current namespace under correct (post avro-702) implementation
+    private final Map<AvroName, Schema> known = new HashMap<>();
 
     public AvroNames() {
     }
 
-    public AvroNames(String space) {
-        this.space = space;
+    public String badSpace() {
+        return badSpace;
     }
 
-    public String space() {
-        return space;
+    public String correctSpace() {
+        return correctSpace;
     }
 
-    public void space(String space) {
-        this.space = space;
+    public void badSpace(String space) {
+        this.badSpace = space;
     }
 
-    public Schema get(String o) {
-        Schema.Type primitive = PRIMITIVES.get(o);
-        if (primitive != null) {
-            return Schema.create(primitive);
-        }
-        AvroName name = new AvroName(o, space);
-        if (!containsKey(name)) {
-            // if not in default try anonymous
-            name = new AvroName(o, "");
-        }
-        return super.get(name);
+    public void correctSpace(String space) {
+        this.correctSpace = space;
     }
 
     public boolean contains(Schema schema) {
-        return get(new AvroName(schema.getFullName(), null)) != null;
+        AvroName name = AvroName.of(schema);
+        return known.containsKey(name);
     }
 
-    public void add(Schema schema) {
-        put(new AvroName(schema.getFullName(), null), schema);
+    public Schema get(AvroName name) {
+        return known.get(name);
+    }
+
+    public Schema put(AvroName name, Schema schema) {
+        if (schema == null) {
+            throw new IllegalArgumentException("schema cannot be null");
+        }
+        if (known.containsKey(name)) {
+            throw new SchemaParseException("Can't redefine: " + name);
+        }
+        return known.put(name, schema);
     }
 
     @Override
-    public Schema put(AvroName name, Schema schema) {
-        if (containsKey(name)) {
-            throw new SchemaParseException("Can't redefine: " + name);
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (!Objects.equals(badSpace, correctSpace)) {
+            sb.append("wrong space = ").append(badSpace);
+            sb.append(", correct space = ").append(correctSpace);
+        } else {
+            sb.append("space = ").append(badSpace);
         }
-        return super.put(name, schema);
+        if (!known.isEmpty()) {
+            List<AvroName> sorted = new ArrayList<>(known.keySet());
+            sorted.sort(AvroName.BY_FULLNAME);
+            sb.append(", known = ").append(sorted);
+        }
+        return sb.toString();
     }
 }

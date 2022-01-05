@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linkedin.avroutil1.compatibility.AvroAdapter;
 import com.linkedin.avroutil1.compatibility.AvroGeneratedSourceCode;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
+import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
 import com.linkedin.avroutil1.compatibility.CodeGenerationConfig;
 import com.linkedin.avroutil1.compatibility.CodeTransformations;
 import com.linkedin.avroutil1.compatibility.ExceptionUtils;
@@ -41,6 +42,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -330,13 +332,30 @@ public class Avro19Adapter implements AvroAdapter {
   }
 
   @Override
-  public String toAvsc(Schema schema, boolean pretty, boolean retainPreAvro702Logic) {
-    if (!retainPreAvro702Logic) {
-      //TODO - remove when we have more confidence in AvscWriter
-      return schema.toString(pretty);
+  public String toAvsc(Schema schema, AvscGenerationConfig config) {
+    boolean useRuntime;
+    if (!isRuntimeAvroCapableOf(config)) {
+      if (config.isForceUseOfRuntimeAvro()) {
+        throw new UnsupportedOperationException("desired configuration " + config
+                + " is forced yet runtime avro " + supportedMajorVersion() + " is not capable of it");
+      }
+      useRuntime = false;
+    } else {
+      useRuntime = config.isPreferUseOfRuntimeAvro();
     }
-    Avro19AvscWriter writer = new Avro19AvscWriter(pretty, retainPreAvro702Logic);
-    return writer.toAvsc(schema);
+
+    if (useRuntime) {
+      return schema.toString(config.isPrettyPrint());
+    } else {
+      //if the user does not specify do whatever runtime avro would (which for 1.6 means produce correct schema)
+      boolean usePre702Logic = config.getRetainPreAvro702Logic().orElse(Boolean.FALSE);
+      Avro19AvscWriter writer = new Avro19AvscWriter(
+              config.isPrettyPrint(),
+              usePre702Logic,
+              config.isAddAvro702Aliases()
+      );
+      return writer.toAvsc(schema);
+    }
   }
 
   @Override
@@ -426,5 +445,21 @@ public class Avro19Adapter implements AvroAdapter {
     } catch (Exception e) {
       throw new IllegalStateException("cant extract contents from avro OutputFile", e);
     }
+  }
+
+  private boolean isRuntimeAvroCapableOf(AvscGenerationConfig config) {
+    if (config == null) {
+      throw new IllegalArgumentException("config cannot be null");
+    }
+    if (config.isAddAvro702Aliases()) {
+      return false;
+    }
+    Optional<Boolean> preAvro702Output = config.getRetainPreAvro702Logic();
+    //noinspection RedundantIfStatement
+    if (preAvro702Output.isPresent() && preAvro702Output.get().equals(Boolean.TRUE)) {
+      //avro 1.9 can only do correct avsc
+      return false;
+    }
+    return true;
   }
 }
