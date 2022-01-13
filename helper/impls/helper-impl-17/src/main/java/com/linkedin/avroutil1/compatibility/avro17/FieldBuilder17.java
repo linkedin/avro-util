@@ -99,7 +99,7 @@ public class FieldBuilder17 implements FieldBuilder {
 
   @Override
   public Schema.Field build() {
-    Schema.Field result = new Schema.Field(_name, _schema, _doc, _defaultVal, _order);
+    Schema.Field result = new Schema.Field(_name, _schema, _doc, _defaultVal, _order == null ? Order.ASCENDING : _order);
     if (_props != null) {
       Avro17Utils.setProps(result, _props);
     }

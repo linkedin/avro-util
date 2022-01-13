@@ -98,7 +98,7 @@ public class FieldBuilder19 implements FieldBuilder {
     } catch (Exception e) {
       throw new IllegalArgumentException("unable to convert default value " + _defaultVal + " into something avro can handle", e);
     }
-    Schema.Field result = new Schema.Field(_name, _schema, _doc, avroFriendlyDefault, _order);
+    Schema.Field result = new Schema.Field(_name, _schema, _doc, avroFriendlyDefault, _order == null ? Order.ASCENDING : _order);
     if (_props != null) {
       for (Map.Entry<String, Object> entry : _props.entrySet()) {
         result.addProp(entry.getKey(), entry.getValue());

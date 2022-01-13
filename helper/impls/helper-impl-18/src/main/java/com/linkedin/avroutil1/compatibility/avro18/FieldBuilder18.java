@@ -103,7 +103,7 @@ public class FieldBuilder18 implements FieldBuilder {
   @Override
   public Schema.Field build() {
     @SuppressWarnings("deprecation") //deprecated but faster
-    Schema.Field result = new Schema.Field(_name, _schema, _doc, _defaultVal, _order);
+    Schema.Field result = new Schema.Field(_name, _schema, _doc, _defaultVal, _order == null ? Order.ASCENDING : _order);
     if (_props != null) {
       for (Map.Entry<String, JsonNode> entry : _props.entrySet()) {
         //noinspection deprecation
