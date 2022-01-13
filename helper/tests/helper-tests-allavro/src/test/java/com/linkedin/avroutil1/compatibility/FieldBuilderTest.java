@@ -83,10 +83,6 @@ public class FieldBuilderTest {
         Schema.Field field = AvroCompatibilityHelper.newField(null).setName("default").build();
         Assert.assertEquals(field.order(), Schema.Field.Order.ASCENDING);
 
-        // explicit set the order to null (in our API); should get transformed to ASCENDING.
-        field = AvroCompatibilityHelper.newField(null).setName("null").setOrder(null).build();
-        Assert.assertEquals(field.order(), Schema.Field.Order.ASCENDING);
-
         field = AvroCompatibilityHelper.newField(null).setName("ascending").setOrder(Schema.Field.Order.ASCENDING).build();
         Assert.assertEquals(field.order(), Schema.Field.Order.ASCENDING);
 
@@ -98,6 +94,13 @@ public class FieldBuilderTest {
 
         Schema.Field copy = AvroCompatibilityHelper.newField(field).build();
         Assert.assertEquals(copy.order(), Schema.Field.Order.IGNORE);
+
+        try {
+            AvroCompatibilityHelper.newField(null).setName("null").setOrder(null).build();
+            Assert.fail("expected an exception");
+        } catch (IllegalArgumentException expected) {
+            // pass
+        }
     }
 
     private void setDefaultValues(Schema.Field field) {

@@ -22,7 +22,7 @@ public class FieldBuilder18 implements FieldBuilder {
   private Schema _schema;
   private String _doc;
   private JsonNode _defaultVal;
-  private Order _order;
+  private Order _order = Order.ASCENDING;
   private Map<String, JsonNode> _props;
 
   public FieldBuilder18(Schema.Field other) {
@@ -33,6 +33,10 @@ public class FieldBuilder18 implements FieldBuilder {
       //noinspection deprecation
       _defaultVal = other.defaultValue(); //deprecated but faster
       _order = other.order();
+      if (_order == null) {
+        // If the other field was created directly through Avro 1.8 APIs, it could have a null order.
+        _order = Order.ASCENDING;
+      }
       //this is actually faster
       //noinspection deprecation
       _props = other.getJsonProps();
@@ -90,6 +94,9 @@ public class FieldBuilder18 implements FieldBuilder {
 
   @Override
   public FieldBuilder setOrder(Order order) {
+    if (order == null) {
+      throw new IllegalArgumentException("sort order cannot be null");
+    }
     _order = order;
     return this;
   }
@@ -103,7 +110,7 @@ public class FieldBuilder18 implements FieldBuilder {
   @Override
   public Schema.Field build() {
     @SuppressWarnings("deprecation") //deprecated but faster
-    Schema.Field result = new Schema.Field(_name, _schema, _doc, _defaultVal, _order == null ? Order.ASCENDING : _order);
+    Schema.Field result = new Schema.Field(_name, _schema, _doc, _defaultVal, _order);
     if (_props != null) {
       for (Map.Entry<String, JsonNode> entry : _props.entrySet()) {
         //noinspection deprecation
