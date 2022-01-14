@@ -35,7 +35,7 @@ public class FieldBuilder15 implements FieldBuilder {
   private Schema _schema;
   private String _doc;
   private JsonNode _defaultVal;
-  private Order _order;
+  private Order _order = Order.ASCENDING;
   private Map<String,String> _props;
 
   public FieldBuilder15(Schema.Field other) {
@@ -45,6 +45,10 @@ public class FieldBuilder15 implements FieldBuilder {
       _doc = other.doc();
       _defaultVal = other.defaultValue();
       _order = other.order();
+      if (_order == null) {
+        // If the other field was created directly through Avro 1.5 APIs, it could have a null order.
+        _order = Order.ASCENDING;
+      }
       _props = getProps(other);
     }
   }
@@ -104,6 +108,9 @@ public class FieldBuilder15 implements FieldBuilder {
 
   @Override
   public FieldBuilder setOrder(Order order) {
+    if (order == null) {
+      throw new IllegalArgumentException("sort order cannot be null");
+    }
     _order = order;
     return this;
   }

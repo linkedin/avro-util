@@ -19,7 +19,7 @@ public class FieldBuilder110 implements FieldBuilder {
   private Schema _schema;
   private String _doc;
   private Object _defaultVal;
-  private Order _order;
+  private Order _order = Order.ASCENDING;
   private Map<String, Object> _props;
 
   public FieldBuilder110(Schema.Field other) {
@@ -28,7 +28,7 @@ public class FieldBuilder110 implements FieldBuilder {
       _schema = other.schema();
       _doc = other.doc();
       _defaultVal = other.defaultVal();
-      _order = other.order();
+      _order = other.order();  // other.order() cannot be null under Avro 1.10.*
       _props = other.getObjectProps();
     }
   }
@@ -80,6 +80,9 @@ public class FieldBuilder110 implements FieldBuilder {
 
   @Override
   public FieldBuilder setOrder(Order order) {
+    if (order == null) {
+      throw new IllegalArgumentException("sort order cannot be null");
+    }
     _order = order;
     return this;
   }

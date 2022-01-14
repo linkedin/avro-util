@@ -67,6 +67,42 @@ public class FieldBuilderTest {
         setDefaultValues(schema.getField("unionFieldWithDefaultRecord"));
     }
 
+    @Test
+    public void testDefaultSortOrderIsAscending() throws Exception {
+        // This record has no order specified for any of its fields. So, they should all be ASCENDING.
+        String avsc = TestUtil.load("RecordWithDefaults.avsc");
+        Schema schema = Schema.parse(avsc);
+        for (Schema.Field field : schema.getFields()) {
+            Assert.assertEquals(field.order(), Schema.Field.Order.ASCENDING);
+        }
+    }
+
+    @Test
+    public void testNewFieldSortOrder() throws Exception {
+        // default (no order specified).
+        Schema.Field field = AvroCompatibilityHelper.newField(null).setName("default").build();
+        Assert.assertEquals(field.order(), Schema.Field.Order.ASCENDING);
+
+        field = AvroCompatibilityHelper.newField(null).setName("ascending").setOrder(Schema.Field.Order.ASCENDING).build();
+        Assert.assertEquals(field.order(), Schema.Field.Order.ASCENDING);
+
+        field = AvroCompatibilityHelper.newField(null).setName("descending").setOrder(Schema.Field.Order.DESCENDING).build();
+        Assert.assertEquals(field.order(), Schema.Field.Order.DESCENDING);
+
+        field = AvroCompatibilityHelper.newField(null).setName("ignore").setOrder(Schema.Field.Order.IGNORE).build();
+        Assert.assertEquals(field.order(), Schema.Field.Order.IGNORE);
+
+        Schema.Field copy = AvroCompatibilityHelper.newField(field).build();
+        Assert.assertEquals(copy.order(), Schema.Field.Order.IGNORE);
+
+        try {
+            AvroCompatibilityHelper.newField(null).setName("null").setOrder(null).build();
+            Assert.fail("expected an exception");
+        } catch (IllegalArgumentException expected) {
+            // pass
+        }
+    }
+
     private void setDefaultValues(Schema.Field field) {
         Assert.assertTrue(AvroCompatibilityHelper.fieldHasDefault(field));
         Schema fieldSchema = field.schema();
@@ -78,7 +114,6 @@ public class FieldBuilderTest {
                 .setSchema(fieldSchema)
                 .setDefault(specificDefault)
                 .setName("excitingField") //required
-                .setOrder(Schema.Field.Order.ASCENDING) //required?
                 .build();
 
         //set default value using generics
@@ -86,7 +121,6 @@ public class FieldBuilderTest {
                 .setSchema(fieldSchema)
                 .setDefault(genericDefault)
                 .setName("excitingField") //required
-                .setOrder(Schema.Field.Order.ASCENDING) //required?
                 .build();
 
         Assert.assertEquals(newField, moreNewField);
