@@ -31,7 +31,9 @@ public class SchemaBuilder16 extends AbstractSchemaBuilder {
         switch (_type) {
             case RECORD:
                 result = Schema.createRecord(_name, _doc, _namespace, _isError);
-                result.setFields(cloneFields(_fields));
+                if (_fields != null && !_fields.isEmpty()) {
+                    result.setFields(cloneFields(_fields));
+                }
                 if (_props != null && !_props.isEmpty()) {
                     for (Map.Entry<String, String> entry : _props.entrySet()) {
                         result.addProp(entry.getKey(), entry.getValue());
