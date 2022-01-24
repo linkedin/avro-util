@@ -14,11 +14,17 @@ import org.apache.avro.Schema;
 public interface SchemaBuilder {
 
     /**
+     * sets the {@link Schema.Type} of the schema being built
+     * @param type a schema type
+     */
+    SchemaBuilder setType(Schema.Type type);
+
+    /**
      * add a field to the schema under construction. field is added
      * to the end of the field list
      * @param field new field to add
      * @return the builder
-     * @throws IllegalArgumentException if a field by the same name 
+     * @throws IllegalArgumentException if a field by the same name
      * (case INSENSITIVE) exists
      */
     SchemaBuilder addField(Schema.Field field);
@@ -29,7 +35,7 @@ public interface SchemaBuilder {
      * @param position desired position for the field to be added, 0 based.
      * @param field field to add
      * @return the builder
-     * @throws IllegalArgumentException if a field by the same name 
+     * @throws IllegalArgumentException if a field by the same name
      * (case INSENSITIVE) exists
      * @throws IndexOutOfBoundsException if index is invalid
      */

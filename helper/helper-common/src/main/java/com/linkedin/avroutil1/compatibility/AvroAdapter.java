@@ -13,6 +13,7 @@ import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.List;
+
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -99,6 +100,12 @@ public interface AvroAdapter {
     return newFieldBuilder(field);
   }
 
+  /**
+   * constructs a new {@link FieldBuilder}, optionally using a given {@link org.apache.avro.Schema.Field}
+   * for initial values
+   * @param other a starting point. or null.
+   * @return a new builder
+   */
   FieldBuilder newFieldBuilder(Schema.Field other);
 
   @Deprecated
@@ -106,7 +113,12 @@ public interface AvroAdapter {
     return newFieldBuilder((Schema.Field) null).setName(name);
   }
 
-  SchemaBuilder cloneSchema(Schema schema);
+  /**
+   * constructs a new {@link SchemaBuilder}, optionally using a given {@link Schema} for initial values
+   * @param other a starting point. or null.
+   * @return a new builder
+   */
+  SchemaBuilder newSchemaBuilder(Schema other);
 
   String getFieldPropAsJsonString(Schema.Field field, String propName);
 

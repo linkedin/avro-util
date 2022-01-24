@@ -23,13 +23,24 @@ public abstract class AbstractSchemaBuilder implements SchemaBuilder {
 
     protected AbstractSchemaBuilder(AvroAdapter _adapter, Schema original) {
         this._adapter = _adapter;
-        _type = original.getType();
-        _name = original.getName();
-        _namespace = original.getNamespace();
-        _doc = original.getDoc();
-        _isError = original.isError();
-        //make a copy of fields so its mutable
-        _fields = new ArrayList<>(original.getFields());
+        if (original != null) {
+            _type = original.getType();
+            _name = original.getName();
+            _namespace = original.getNamespace();
+            _doc = original.getDoc();
+            _isError = original.isError();
+            //make a copy of fields so its mutable
+            _fields = new ArrayList<>(original.getFields());
+        } else {
+            _fields = new ArrayList<>(1);
+        }
+    }
+
+    @Override
+    public SchemaBuilder setType(Schema.Type type) {
+        checkSchemaType(type);
+        _type = type;
+        return this;
     }
 
     @Override
@@ -78,6 +89,12 @@ public abstract class AbstractSchemaBuilder implements SchemaBuilder {
             clones.add(clone);
         }
         return clones;
+    }
+
+    protected void checkSchemaType(Schema.Type type) {
+        if (type == null) {
+            throw new IllegalArgumentException("argument cannot be null");
+        }
     }
 
     protected void checkNewField(Schema.Field field) {

@@ -33,8 +33,8 @@ public class AvroCodecUtil {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         BinaryEncoder binaryEncoder = AvroCompatibilityHelper.newBinaryEncoder(os);
         DatumWriter<IndexedRecord> writer = AvroCompatibilityHelper.isSpecificRecord(record) ?
-                new GenericDatumWriter<>(record.getSchema())
-                : new SpecificDatumWriter<>(record.getSchema());
+                new SpecificDatumWriter<>(record.getSchema())
+                : new GenericDatumWriter<>(record.getSchema());
         writer.write(record, binaryEncoder);
         binaryEncoder.flush();
         os.flush();
@@ -45,8 +45,8 @@ public class AvroCodecUtil {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         Encoder encoder = AvroCompatibilityHelper.newJsonEncoder(record.getSchema(), os, true, format);
         DatumWriter<IndexedRecord> writer = AvroCompatibilityHelper.isSpecificRecord(record) ?
-                new GenericDatumWriter<>(record.getSchema())
-                : new SpecificDatumWriter<>(record.getSchema());
+                new SpecificDatumWriter<>(record.getSchema())
+                : new GenericDatumWriter<>(record.getSchema());
         writer.write(record, encoder);
         encoder.flush();
         os.flush();

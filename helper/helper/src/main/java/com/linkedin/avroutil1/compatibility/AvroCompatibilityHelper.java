@@ -611,9 +611,24 @@ public class AvroCompatibilityHelper {
     return newField(field);
   }
 
+  /**
+   * clones a given schema, returning a (mutable) builder
+   * @param schema schema to clone
+   * @return a new {@link SchemaBuilder}
+   * @deprecated use {@link #newSchema(Schema)}
+   */
   public static SchemaBuilder cloneSchema(Schema schema) {
+    return newSchema(schema);
+  }
+
+  /**
+   * returns a new {@link SchemaBuilder}, optionally setting the initial state to match a given input schema
+   * @param schema an optional schema to start by cloning. can be null.
+   * @return a new {@link SchemaBuilder}
+   */
+  public static SchemaBuilder newSchema(Schema schema) {
     assertAvroAvailable();
-    return ADAPTER.cloneSchema(schema);
+    return ADAPTER.newSchemaBuilder(schema);
   }
 
   // code generation
