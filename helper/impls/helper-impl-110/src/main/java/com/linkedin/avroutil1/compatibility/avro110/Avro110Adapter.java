@@ -285,8 +285,8 @@ public class Avro110Adapter implements AvroAdapter {
     }
 
     @Override
-    public SchemaBuilder cloneSchema(Schema schema) {
-        return new SchemaBuilder110(this, schema);
+    public SchemaBuilder newSchemaBuilder(Schema other) {
+        return new SchemaBuilder110(this, other);
     }
 
     @Override

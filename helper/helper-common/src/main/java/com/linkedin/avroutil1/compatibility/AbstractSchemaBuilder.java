@@ -23,18 +23,32 @@ public abstract class AbstractSchemaBuilder implements SchemaBuilder {
 
     protected AbstractSchemaBuilder(AvroAdapter _adapter, Schema original) {
         this._adapter = _adapter;
-        _type = original.getType();
-        _name = original.getName();
-        _namespace = original.getNamespace();
-        _doc = original.getDoc();
-        _isError = original.isError();
-        //make a copy of fields so its mutable
-        _fields = new ArrayList<>(original.getFields());
+        if (original != null) {
+            _type = original.getType();
+            _name = original.getName();
+            _namespace = original.getNamespace();
+            _doc = original.getDoc();
+            _isError = original.isError();
+            //make a copy of fields so its mutable
+            _fields = new ArrayList<>(original.getFields());
+        } else {
+            _fields = null;
+        }
+    }
+
+    @Override
+    public SchemaBuilder setType(Schema.Type type) {
+        checkSchemaType(type);
+        _type = type;
+        return this;
     }
 
     @Override
     public SchemaBuilder addField(Schema.Field field) {
         checkNewField(field);
+        if (_fields == null) {
+            _fields = new ArrayList<>(1); //assume few fields
+        }
         _fields.add(field);
         return this;
     }
@@ -42,6 +56,9 @@ public abstract class AbstractSchemaBuilder implements SchemaBuilder {
     @Override
     public SchemaBuilder addField(int position, Schema.Field field) {
         checkNewField(field);
+        if (_fields == null) {
+            _fields = new ArrayList<>(1); //assume few fields
+        }
         _fields.add(position, field); //will throw IOOB on bad positions
         return this;
     }
@@ -60,6 +77,10 @@ public abstract class AbstractSchemaBuilder implements SchemaBuilder {
 
     @Override
     public SchemaBuilder removeField(int position) {
+        if (_fields ==  null) {
+            throw new IndexOutOfBoundsException("current builder has no fields defined. hence position "
+                    + position + " is invalid");
+        }
         _fields.remove(position); //throws IOOB
         return this;
     }
@@ -80,6 +101,12 @@ public abstract class AbstractSchemaBuilder implements SchemaBuilder {
         return clones;
     }
 
+    protected void checkSchemaType(Schema.Type type) {
+        if (type == null) {
+            throw new IllegalArgumentException("argument cannot be null");
+        }
+    }
+
     protected void checkNewField(Schema.Field field) {
         if (field == null) {
             throw new IllegalArgumentException("argument cannot be null");
@@ -91,6 +118,9 @@ public abstract class AbstractSchemaBuilder implements SchemaBuilder {
     }
 
     protected int fieldPositionByName(String name, boolean caseSensitive) {
+        if (_fields == null) {
+            return -1;
+        }
         for (int i = 0; i < _fields.size(); i++) {
             Schema.Field candidate = _fields.get(i);
             String cName = candidate.name();

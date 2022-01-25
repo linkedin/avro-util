@@ -32,7 +32,9 @@ public class SchemaBuilder17 extends AbstractSchemaBuilder {
         switch (_type) {
             case RECORD:
                 result = Schema.createRecord(_name, _doc, _namespace, _isError);
-                result.setFields(cloneFields(_fields));
+                if (_fields != null && !_fields.isEmpty()) {
+                    result.setFields(cloneFields(_fields));
+                }
                 if (_props != null && !_props.isEmpty()) {
                     Avro17Utils.setProps(result, _props);
                 }
