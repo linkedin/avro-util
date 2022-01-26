@@ -1,0 +1,50 @@
+{
+  "type": "record",
+  "namespace": "under14.outer",
+  "name": "Avro702CorrectedRecordWithoutAliases",
+  "doc": "this record demonstrates https://issues.apache.org/jira/browse/AVRO-702",
+  "fields": [
+    {
+      "name": "outerField",
+      "type": {
+        "type": "record",
+        "name": "Avro702CorrectedMiddleRecordWithoutAliases",
+        "namespace": "under14.middle",
+        "fields": [
+          {
+            "name": "middleRecordField",
+            "type": [
+              "null",
+              {
+                "type": "record",
+                "name": "Avro702CorrectedInnerRecordWithoutAliases",
+                "namespace": "under14.outer",
+                "doc": "this records namespace gets messed up under avro 1.4",
+                "fields": [
+                  {
+                    "name": "innerField",
+                    "type": "int"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "middleEnumField",
+            "type": [
+              "null",
+              {
+                "type": "enum",
+                "name": "Avro702CorrectedInnerEnumWithoutAliases",
+                "namespace": "under14.outer",
+                "doc": "this enums namespace gets messed up under avro 1.4",
+                "symbols": ["A", "B"]
+              }
+            ],
+            "default": null
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -6,7 +6,6 @@
 
 package com.linkedin.avroutil1.compatibility;
 
-import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -14,7 +13,10 @@ import java.util.Set;
  * from avro schemas
  */
 public class CodeGenerationConfig {
-    public static final CodeGenerationConfig COMPATIBLE_DEFAULTS = new CodeGenerationConfig(StringRepresentation.CharSequence);
+    public static final CodeGenerationConfig COMPATIBLE_DEFAULTS = new CodeGenerationConfig(
+            //TODO - in the future enable avro-702 mitigation here
+            StringRepresentation.CharSequence
+    );
 
     /**
      * how to represent string properties in generated code
@@ -22,26 +24,40 @@ public class CodeGenerationConfig {
     private final StringRepresentation stringRepresentation;
 
     /**
-     * if true no attempt to handle avro-702 (either way) will be made
+     * if false no attempt to handle avro-702 (either way) will be made
      * and generated code will be at the mercy of runtime avro.
      */
-    private final boolean noAvro702Mitigation;
+    private final boolean enableAvro702Handling;
 
     /**
-     * schema full names for which to use avro 1.4's bad logic to calculate the avsc for SCHEMA$
-     * (see https://issues.apache.org/jira/browse/AVRO-702). this may be required for bug-to-bug
-     * compatibility with legacy generated code. only kicks is if noAvro702Mitigation above is false
+     * for schemas susceptible to avro-702 (and if {@link #enableAvro702Handling} is true)
+     * what to replace the embedded SCHEMA$ with
      */
-    private final Set<String> schemasToGenerateBadAvscFor;
+    private final AvscGenerationConfig avro702AvscReplacement;
 
+    public CodeGenerationConfig(
+            StringRepresentation stringRepresentation,
+            boolean enableAvro702Handling,
+            AvscGenerationConfig avro702AvscReplacement
+    ) {
+        this.stringRepresentation = stringRepresentation;
+        this.enableAvro702Handling = enableAvro702Handling;
+        this.avro702AvscReplacement = avro702AvscReplacement;
+    }
+
+    @Deprecated
     public CodeGenerationConfig(
             StringRepresentation stringRepresentation,
             boolean noAvro702Mitigation,
             Set<String> schemasToGenerateBadAvscFor
     ) {
         this.stringRepresentation = stringRepresentation;
-        this.noAvro702Mitigation = noAvro702Mitigation;
-        this.schemasToGenerateBadAvscFor = schemasToGenerateBadAvscFor;
+        this.enableAvro702Handling = !noAvro702Mitigation;
+        if (schemasToGenerateBadAvscFor != null && !schemasToGenerateBadAvscFor.isEmpty()) {
+            throw new IllegalArgumentException("schemasToGenerateBadAvscFor no longer supported");
+        }
+        this.avro702AvscReplacement = this.enableAvro702Handling ?
+                AvscGenerationConfig.CORRECT_MITIGATED_ONELINE : AvscGenerationConfig.VANILLA_ONELINE;
     }
 
     @Deprecated
@@ -54,18 +70,28 @@ public class CodeGenerationConfig {
 
     @Deprecated
     public CodeGenerationConfig(StringRepresentation stringRepresentation) {
-        this(stringRepresentation, true, Collections.emptySet());
+        this(stringRepresentation, false, AvscGenerationConfig.VANILLA_ONELINE);
     }
 
     public StringRepresentation getStringRepresentation() {
         return stringRepresentation;
     }
 
-    public boolean isNoAvro702Mitigation() {
-        return noAvro702Mitigation;
+    public boolean isEnableAvro702Handling() {
+        return enableAvro702Handling;
     }
 
+    @Deprecated
+    public boolean isNoAvro702Mitigation() {
+        return !enableAvro702Handling;
+    }
+
+    @Deprecated
     public Set<String> getSchemasToGenerateBadAvscFor() {
-        return schemasToGenerateBadAvscFor;
+        throw new UnsupportedOperationException("feature no longer supported");
+    }
+
+    public AvscGenerationConfig getAvro702AvscReplacement() {
+        return avro702AvscReplacement;
     }
 }

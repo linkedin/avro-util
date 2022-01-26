@@ -24,6 +24,7 @@ import com.linkedin.avroutil1.compatibility.SchemaValidator;
 import com.linkedin.avroutil1.compatibility.SkipDecoder;
 import com.linkedin.avroutil1.compatibility.StringRepresentation;
 import com.linkedin.avroutil1.compatibility.avro16.backports.Avro16DefaultValuesCache;
+import com.linkedin.avroutil1.compatibility.avro16.codec.AliasAwareSpecificDatumReader;
 import com.linkedin.avroutil1.compatibility.avro16.codec.CachedResolvingDecoder;
 import com.linkedin.avroutil1.compatibility.avro16.codec.CompatibleJsonDecoder;
 import com.linkedin.avroutil1.compatibility.avro16.codec.CompatibleJsonEncoder;
@@ -46,7 +47,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.avro.AvroRuntimeException;
@@ -62,6 +62,7 @@ import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificData;
+import org.apache.avro.specific.SpecificDatumReader;
 import org.codehaus.jackson.JsonEncoding;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
@@ -207,6 +208,12 @@ public class Avro16Adapter implements AvroAdapter {
   @Override
   public Decoder newBoundedMemoryDecoder(byte[] data) throws IOException {
     return new BoundedMemoryDecoder(data);
+  }
+
+  @Override
+  public <T> SpecificDatumReader<T> newAliasAwareSpecificDatumReader(Schema writer, Class<T> readerClass) {
+    Schema readerSchema = AvroSchemaUtil.getClassSchema(readerClass);
+    return new AliasAwareSpecificDatumReader<>(writer, readerSchema);
   }
 
   @Override
@@ -358,10 +365,6 @@ public class Avro16Adapter implements AvroAdapter {
     }
     if (minSupportedVersion.earlierThan(AvroVersion.AVRO_1_6) && !StringRepresentation.CharSequence.equals(config.getStringRepresentation())) {
       throw new IllegalArgumentException("StringRepresentation " + config.getStringRepresentation() + " incompatible with minimum supported avro " + minSupportedVersion);
-    }
-    Set<String> schemasToGenerateBadAvscFor = config.getSchemasToGenerateBadAvscFor();
-    if (schemasToGenerateBadAvscFor != null && !schemasToGenerateBadAvscFor.isEmpty()) {
-      throw new UnsupportedOperationException("generating bad avsc under " + supportedMajorVersion() + " not implemented yet");
     }
     if (toCompile == null || toCompile.isEmpty()) {
       return Collections.emptyList();

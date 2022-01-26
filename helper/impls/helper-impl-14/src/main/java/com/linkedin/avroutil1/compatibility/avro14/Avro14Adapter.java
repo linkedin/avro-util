@@ -25,6 +25,7 @@ import com.linkedin.avroutil1.compatibility.SkipDecoder;
 import com.linkedin.avroutil1.compatibility.StringRepresentation;
 import com.linkedin.avroutil1.compatibility.avro14.backports.Avro14DefaultValuesCache;
 import com.linkedin.avroutil1.compatibility.avro14.backports.Avro18BufferedBinaryEncoder;
+import com.linkedin.avroutil1.compatibility.avro14.codec.AliasAwareSpecificDatumReader;
 import com.linkedin.avroutil1.compatibility.avro14.codec.BoundedMemoryDecoder;
 import com.linkedin.avroutil1.compatibility.avro14.codec.CachedResolvingDecoder;
 import com.linkedin.avroutil1.compatibility.avro14.codec.CompatibleJsonDecoder;
@@ -46,8 +47,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.avro.Avro14SchemaAccessUtil;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
@@ -61,6 +60,7 @@ import org.apache.avro.io.Encoder;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificCompiler;
+import org.apache.avro.specific.SpecificDatumReader;
 import org.codehaus.jackson.JsonEncoding;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
@@ -186,6 +186,12 @@ public class Avro14Adapter implements AvroAdapter {
   @Override
   public Decoder newBoundedMemoryDecoder(byte[] data) throws IOException {
     return new BoundedMemoryDecoder(data);
+  }
+
+  @Override
+  public <T> SpecificDatumReader<T> newAliasAwareSpecificDatumReader(Schema writer, Class<T> readerClass) {
+    Schema readerSchema = AvroSchemaUtil.getClassSchema(readerClass);
+    return new AliasAwareSpecificDatumReader<>(writer, readerSchema);
   }
 
   @Override
@@ -326,7 +332,7 @@ public class Avro14Adapter implements AvroAdapter {
     }
 
     Map<String, String> fullNameToAlternativeAvsc;
-    if (config.isNoAvro702Mitigation()) {
+    if (!config.isEnableAvro702Handling()) {
       fullNameToAlternativeAvsc = Collections.emptyMap();
     } else {
       fullNameToAlternativeAvsc = createAlternativeAvscs(toCompile, config);
@@ -343,12 +349,17 @@ public class Avro14Adapter implements AvroAdapter {
 
       Collection<?> outputFiles = (Collection<?>) compilerCompileMethod.invoke(compiler);
 
-      List<AvroGeneratedSourceCode> translated = outputFiles.stream()
-          .map(o -> new AvroGeneratedSourceCode(getPath(o), getContents(o)))
-          .peek(code -> code.setAlternativeAvsc(fullNameToAlternativeAvsc.getOrDefault(code.getFullyQualifiedClassName(), null)))
-          .collect(Collectors.toList());
+      List<AvroGeneratedSourceCode> sourceFiles = new ArrayList<>(outputFiles.size());
+      for (Object outputFile : outputFiles) {
+        AvroGeneratedSourceCode sourceCode = new AvroGeneratedSourceCode(getPath(outputFile), getContents(outputFile));
+        String altAvsc = fullNameToAlternativeAvsc.get(sourceCode.getFullyQualifiedClassName());
+        if (altAvsc != null) {
+          sourceCode.setAlternativeAvsc(altAvsc);
+        }
+        sourceFiles.add(sourceCode);
+      }
 
-      return transform(translated, minSupportedVersion, maxSupportedVersion);
+      return transform(sourceFiles, minSupportedVersion, maxSupportedVersion);
     } catch (UnsupportedOperationException e) {
       throw e; //as-is
     } catch (Exception e) {
@@ -364,21 +375,20 @@ public class Avro14Adapter implements AvroAdapter {
    * @return alternative AVSCs, keyed by schema full name
    */
   private Map<String, String> createAlternativeAvscs(Collection<Schema> toCompile, CodeGenerationConfig config) {
-    Set<String> schemasToGenerateBadAvscFor = config.getSchemasToGenerateBadAvscFor();
-    if (schemasToGenerateBadAvscFor == null) {
-      schemasToGenerateBadAvscFor = Collections.emptySet();
+    if (!config.isEnableAvro702Handling()) {
+      return Collections.emptyMap();
     }
-    //we are running under avro 1.4, which will generate (potentially) bad avsc by default
-    //hence we only want to have alternative avsc for schemas that would "normally" be impacted
-    //by avro-702 but are NOT in schemasToGenerateBadAvscFor
+    AvscGenerationConfig avscGenConfig = config.getAvro702AvscReplacement();
     Map<String, String> fullNameToAlternativeAvsc = new HashMap<>(1); //expected to be small
+    //look for schemas that are susceptible to avro-702, and re-generate their AVSC if required
     for (Schema schema : toCompile) {
       if (!HelperConsts.NAMED_TYPES.contains(schema.getType())) {
-        continue;
+        continue; //only named types impacted by avro-702 to begin with
       }
       String fullName = schema.getFullName();
-      if (AvroSchemaUtil.isImpactedByAvro702(schema) && !schemasToGenerateBadAvscFor.contains(fullName)) {
-        fullNameToAlternativeAvsc.put(fullName, toAvsc(schema, AvscGenerationConfig.CORRECT_MITIGATED_ONELINE));
+      if (isSusceptibleToAvro702(schema)) {
+        String altAvsc = toAvsc(schema, avscGenConfig);
+        fullNameToAlternativeAvsc.put(fullName, altAvsc);
       }
     }
     return fullNameToAlternativeAvsc;

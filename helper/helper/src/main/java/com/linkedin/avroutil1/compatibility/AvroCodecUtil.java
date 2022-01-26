@@ -16,6 +16,8 @@ import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.io.Encoder;
+import org.apache.avro.specific.SpecificData;
+import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificDatumWriter;
 
 import java.io.ByteArrayInputStream;
@@ -72,6 +74,31 @@ public class AvroCodecUtil {
         Decoder decoder = AvroCompatibilityHelper.newCompatibleJsonDecoder(writerSchema, is);
         GenericDatumReader<GenericRecord> reader = new GenericDatumReader<>(writerSchema, readerSchema);
         GenericRecord result = reader.read(null, decoder);
+        //make sure everything was read out
+        if (is.available() != 0) {
+            throw new IllegalStateException("leftover bytes in input. schema given likely partial?");
+        }
+        return result;
+    }
+
+    public static <T> T deserializeAsSpecific(byte[] binarySerialized, Schema writerSchema, Class<T> specificRecordClass) throws IOException {
+        ByteArrayInputStream is = new ByteArrayInputStream(binarySerialized);
+        BinaryDecoder decoder = AvroCompatibilityHelper.newBinaryDecoder(is, false, null);
+        Schema readerSchema = SpecificData.get().getSchema(specificRecordClass);
+        SpecificDatumReader<T> reader = new SpecificDatumReader<>(writerSchema, readerSchema);
+        T result = reader.read(null, decoder);
+        //make sure everything was read out
+        if (is.available() != 0) {
+            throw new IllegalStateException("leftover bytes in input. schema given likely partial?");
+        }
+        return result;
+    }
+
+    public static <T> T deserializeAsSpecificWithAliases(byte[] binarySerialized, Schema writerSchema, Class<T> specificRecordClass) throws IOException {
+        ByteArrayInputStream is = new ByteArrayInputStream(binarySerialized);
+        BinaryDecoder decoder = AvroCompatibilityHelper.newBinaryDecoder(is, false, null);
+        SpecificDatumReader<T> reader = AvroCompatibilityHelper.newAliasAwareSpecificDatumReader(writerSchema, specificRecordClass);
+        T result = reader.read(null, decoder);
         //make sure everything was read out
         if (is.available() != 0) {
             throw new IllegalStateException("leftover bytes in input. schema given likely partial?");

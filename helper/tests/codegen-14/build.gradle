@@ -25,9 +25,18 @@ sourceSets {
       srcDir 'src/main/java'
       srcDir "$buildDir/generated/sources/raw-avro/java/main"
       srcDir "$buildDir/generated/sources/compat-avro/java/main"
+      srcDir "$buildDir/generated/sources/compat-avro-702/java/main"
+      srcDir "$buildDir/generated/sources/compat-avro-702-mitigated/java/main"
     }
     resources {
-      srcDirs = ["src/main/raw-avro", "src/main/compat-avro", "$buildDir/generated/resources"]
+      srcDirs = [
+              "src/main/raw-avro",
+              "src/main/compat-avro",
+              "src/main/compat-avro-702",
+              "src/main/compat-avro-702-mitigated",
+              "src/main/compat-avro-noaliases",
+              "$buildDir/generated/resources"
+      ]
     }
   }
 }
@@ -57,7 +66,52 @@ task runCompatAvroCodegen {
             "-op", "compile",
             "-in", file.getAbsolutePath(),
             "-out", "$buildDir/generated/sources/compat-avro/java/main",
-            "-min", "AVRO_1_4"
+            "-min", "AVRO_1_4",
+            "-handle702", "true",
+            "-produceCorrectSchema", "true",
+            "-add702Aliases", "true"
+        ]
+      }
+    }
+  }
+}
+
+task runCompatAvroCodegenWith702 {
+  description = 'generate specific classes using compatibility helper producing bad (avro-702) schemas'
+  outputs.dir("$buildDir/generated/sources/compat-avro-702/java/main").withPropertyName('outputDir')
+  fileTree(dir: 'src/main/compat-avro-702', include:'**/*.avsc').each { file ->
+    doLast {
+      javaexec {
+        classpath configurations.codegen
+        main = 'com.linkedin.avroutil1.TestTool'
+        args = [
+                "-op", "compile",
+                "-in", file.getAbsolutePath(),
+                "-out", "$buildDir/generated/sources/compat-avro-702/java/main",
+                "-min", "AVRO_1_4",
+                "-handle702", "false"
+        ]
+      }
+    }
+  }
+}
+
+task runCompatAvroCodegenWith702Mitigated {
+  description = 'generate specific classes using compatibility helper producing bad (avro-702) schemas with aliases'
+  outputs.dir("$buildDir/generated/sources/compat-avro-702-mitigated/java/main").withPropertyName('outputDir')
+  fileTree(dir: 'src/main/compat-avro-702-mitigated', include:'**/*.avsc').each { file ->
+    doLast {
+      javaexec {
+        classpath configurations.codegen
+        main = 'com.linkedin.avroutil1.TestTool'
+        args = [
+                "-op", "compile",
+                "-in", file.getAbsolutePath(),
+                "-out", "$buildDir/generated/sources/compat-avro-702-mitigated/java/main",
+                "-min", "AVRO_1_4",
+                "-handle702", "true",
+                "-produceCorrectSchema", "false",
+                "-add702Aliases", "true"
         ]
       }
     }
@@ -88,7 +142,7 @@ jar {
 //TODO - figure out why this must be done manually
 runCompatAvroCodegen.dependsOn ":helper:tests:helper-tests-common:jar"
 copyCompatAvroCodeToResources.dependsOn runCompatAvroCodegen
-compileJava.dependsOn runVanillaAvroCodegen, runCompatAvroCodegen
+compileJava.dependsOn runVanillaAvroCodegen, runCompatAvroCodegen, runCompatAvroCodegenWith702, runCompatAvroCodegenWith702Mitigated
 jar.dependsOn runResourceGeneration
 
 dependencies {

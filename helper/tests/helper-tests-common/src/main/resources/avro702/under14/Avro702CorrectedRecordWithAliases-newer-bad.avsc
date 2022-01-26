@@ -1,0 +1,64 @@
+{
+  "type": "record",
+  "name": "Avro702CorrectedRecordWithAliases",
+  "namespace": "under14.outer",
+  "fields": [
+    {
+      "name": "outerField",
+      "type": {
+        "type": "record",
+        "name": "Avro702CorrectedMiddleRecordWithAliases",
+        "namespace": "under14.middle",
+        "fields": [
+          {
+            "name": "middleRecordField",
+            "type": [
+              "null",
+              {
+                "type": "record",
+                "name": "Avro702CorrectedInnerRecordWithAliases",
+                "doc": "this records namespace gets messed up under avro 1.4",
+                "fields": [
+                  {
+                    "name": "innerField",
+                    "type": "int"
+                  },
+                  {
+                    "name": "innerField2",
+                    "type": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "middleEnumField",
+            "type": [
+              "null",
+              {
+                "type": "enum",
+                "name": "Avro702CorrectedInnerEnumWithAliases",
+                "doc": "this enums namespace gets messed up under avro 1.4",
+                "symbols": ["A", "B"]
+              }
+            ],
+            "default": null
+          },
+          {
+            "name": "middleFixedField",
+            "type": [
+              "null",
+              {
+                "type": "fixed",
+                "name": "Avro702CorrectedInnerFixedWithAliases",
+                "doc": "this fixed's namespace gets messed up under avro 1.4",
+                "size": 3
+              }
+            ],
+            "default": null
+          }
+        ]
+      }
+    }
+  ]
+}
