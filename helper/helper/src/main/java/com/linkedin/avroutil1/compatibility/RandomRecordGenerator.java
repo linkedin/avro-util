@@ -129,6 +129,10 @@ public class RandomRecordGenerator {
   }
 
   private boolean isAcceptableUnionBranch(Schema unionSchema, Schema proposedBranch, RecordGenerationConfig config) {
-    return !config.avoidNulls() || proposedBranch.getType() != Schema.Type.NULL;
+    if (proposedBranch.getType() != Schema.Type.NULL) {
+      return true; //non-null union branches are always acceptable
+    }
+    //null branches are acceptable only if we're not actively trying to avoid nulls
+    return !config.avoidNulls();
   }
 }

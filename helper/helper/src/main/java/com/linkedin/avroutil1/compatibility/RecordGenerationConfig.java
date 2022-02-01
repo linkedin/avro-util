@@ -14,6 +14,12 @@ import java.util.Random;
 public class RecordGenerationConfig {
     private final long seed;
     private final Random random;
+    /**
+     * if true the generator will void emitting a null value whenever possible.
+     * if a field is of type NULL, hence the only possible value is null, null will
+     * still be emitted, but if a field is a union  [null, Anything, Else] one of the
+     * other branches of the union would be selected (with equal probability)
+     */
     private final boolean avoidNulls;
 
     private final Random randomToUse;
@@ -41,6 +47,10 @@ public class RecordGenerationConfig {
         return randomToUse;
     }
 
+    /**
+     * whether null values are avoided if/when possible (==in unions)
+     * @return true if null values are avoided where possible
+     */
     public boolean avoidNulls() {
         return avoidNulls;
     }

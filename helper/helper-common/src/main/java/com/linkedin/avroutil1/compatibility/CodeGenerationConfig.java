@@ -77,7 +77,7 @@ public class CodeGenerationConfig {
         return stringRepresentation;
     }
 
-    public boolean isEnableAvro702Handling() {
+    public boolean isAvro702HandlingEnabled() {
         return enableAvro702Handling;
     }
 

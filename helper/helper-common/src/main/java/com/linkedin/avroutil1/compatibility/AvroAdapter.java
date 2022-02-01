@@ -153,8 +153,8 @@ public interface AvroAdapter {
 
   default boolean isSusceptibleToAvro702(Schema schema) {
     //this implementation is slow, as it completely serializes the schema and parses it back again
-    //and potentially catches adn exception. its possible to write a stripped down version of the
-    //AvscWriter recursion that will simply return a boolean is pre- and post-702 states ever "diverge"
+    //and potentially catches an exception. its possible to write a stripped down version of the
+    //AvscWriter recursion that will simply return a boolean if pre- and post-702 states ever "diverge"
     String naiveAvsc = toAvsc(schema, AvscGenerationConfig.LEGACY_ONELINE);
     boolean parseFailed = false;
     Schema evilTwin = null;

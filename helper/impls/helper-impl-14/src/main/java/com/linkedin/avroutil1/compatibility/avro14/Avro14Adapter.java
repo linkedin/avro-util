@@ -332,7 +332,7 @@ public class Avro14Adapter implements AvroAdapter {
     }
 
     Map<String, String> fullNameToAlternativeAvsc;
-    if (!config.isEnableAvro702Handling()) {
+    if (!config.isAvro702HandlingEnabled()) {
       fullNameToAlternativeAvsc = Collections.emptyMap();
     } else {
       fullNameToAlternativeAvsc = createAlternativeAvscs(toCompile, config);
@@ -375,7 +375,7 @@ public class Avro14Adapter implements AvroAdapter {
    * @return alternative AVSCs, keyed by schema full name
    */
   private Map<String, String> createAlternativeAvscs(Collection<Schema> toCompile, CodeGenerationConfig config) {
-    if (!config.isEnableAvro702Handling()) {
+    if (!config.isAvro702HandlingEnabled()) {
       return Collections.emptyMap();
     }
     AvscGenerationConfig avscGenConfig = config.getAvro702AvscReplacement();
