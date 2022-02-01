@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "RecordWithStringType",
+  "namespace": "com.acme",
+  "doc": "PropUrn and associated info.",
+  "fields": [
+    {
+      "name": "strProp",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+      }
+    }
+  ]
+}

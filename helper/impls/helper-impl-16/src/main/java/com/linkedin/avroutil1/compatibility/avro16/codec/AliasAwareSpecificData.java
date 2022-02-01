@@ -1,0 +1,43 @@
+/*
+ * Copyright 2022 LinkedIn Corp.
+ * Licensed under the BSD 2-Clause License (the "License").
+ * See License in the project root for license information.
+ */
+
+package com.linkedin.avroutil1.compatibility.avro16.codec;
+
+import com.linkedin.avroutil1.compatibility.codec.ClassCache;
+import org.apache.avro.Schema;
+import org.apache.avro.specific.SpecificData;
+
+
+public class AliasAwareSpecificData extends SpecificData {
+
+    protected final ClassCache classCache = ClassCache.getDefaultInstance();
+
+    @Override
+    public Object createFixed(Object old, Schema schema) {
+        Class<?> c = SpecificData.get().getClass(schema);
+        if (c == null) {
+            c = classCache.lookupByAlias(schema);
+        }
+        if (c == null) {
+            classCache.dontPuntToGeneric(schema);
+        }
+        assert c != null; //make IDE happy
+        return c.isInstance(old) ? old : newInstance(c, schema);
+    }
+
+    @Override
+    public Object newRecord(Object old, Schema schema) {
+        Class<?> c = SpecificData.get().getClass(schema); //this is what vanilla does
+        if (c == null) {
+            c = classCache.lookupByAlias(schema);
+        }
+        if (c == null) {
+            classCache.dontPuntToGeneric(schema);
+        }
+        assert c != null; //make IDE happy
+        return (c.isInstance(old) ? old : newInstance(c, schema));
+    }
+}

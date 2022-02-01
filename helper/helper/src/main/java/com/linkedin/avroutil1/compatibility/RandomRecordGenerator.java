@@ -10,6 +10,7 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -98,12 +99,40 @@ public class RandomRecordGenerator {
         }
         return map;
       case UNION:
-        List<Schema> branches = of.getTypes();
-        index = random.nextInt(branches.size());
-        Schema branch = branches.get(index);
+        List<Schema> acceptableBranches = narrowDownUnionBranches(of, of.getTypes(), config);
+        index = random.nextInt(acceptableBranches.size());
+        Schema branch = acceptableBranches.get(index);
         return newRandomGeneric(branch, config);
       default:
         throw new UnsupportedOperationException("unhandled: " + of.getType());
     }
+  }
+
+  /**
+   * given a union schema, narrow down "acceptable" union branches that match the given generation config
+   * @param unionSchema union schema
+   * @param branches branches of the union schema
+   * @param config config to determine which branches are "acceptable"
+   * @return acceptable branches. throws an exception if no branches meet criteria
+   */
+  private List<Schema> narrowDownUnionBranches(Schema unionSchema, List<Schema> branches, RecordGenerationConfig config) {
+    List<Schema> results = new ArrayList<>(branches.size());
+    for (Schema branch : branches) {
+      if (isAcceptableUnionBranch(unionSchema, branch, config)) {
+        results.add(branch);
+      }
+    }
+    if (results.isEmpty()) {
+      throw new IllegalStateException("no acceptable union branches out of original " + unionSchema);
+    }
+    return results;
+  }
+
+  private boolean isAcceptableUnionBranch(Schema unionSchema, Schema proposedBranch, RecordGenerationConfig config) {
+    if (proposedBranch.getType() != Schema.Type.NULL) {
+      return true; //non-null union branches are always acceptable
+    }
+    //null branches are acceptable only if we're not actively trying to avoid nulls
+    return !config.avoidNulls();
   }
 }

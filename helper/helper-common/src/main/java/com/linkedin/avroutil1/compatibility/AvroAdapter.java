@@ -23,6 +23,7 @@ import org.apache.avro.io.Decoder;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
+import org.apache.avro.specific.SpecificDatumReader;
 
 
 /**
@@ -66,6 +67,8 @@ public interface AvroAdapter {
   Decoder newBoundedMemoryDecoder(InputStream in) throws IOException;
 
   Decoder newBoundedMemoryDecoder(byte[] data) throws IOException;
+
+  <T> SpecificDatumReader<T> newAliasAwareSpecificDatumReader(Schema writer, Class<T> readerClass);
 
   //parsing and Schema-related
 
@@ -141,7 +144,27 @@ public interface AvroAdapter {
     return Schema.createEnum(name, doc, namespace, values);
   }
 
+  /**
+   * "serialize" a {@link Schema} to avsc format
+   * @param schema a schema to print out as (exploded/fully-defined) avsc
+   * @return the given schema as avsc
+   */
   String toAvsc(Schema schema, AvscGenerationConfig config);
+
+  default boolean isSusceptibleToAvro702(Schema schema) {
+    //this implementation is slow, as it completely serializes the schema and parses it back again
+    //and potentially catches an exception. its possible to write a stripped down version of the
+    //AvscWriter recursion that will simply return a boolean if pre- and post-702 states ever "diverge"
+    String naiveAvsc = toAvsc(schema, AvscGenerationConfig.LEGACY_ONELINE);
+    boolean parseFailed = false;
+    Schema evilTwin = null;
+    try {
+      evilTwin = Schema.parse(naiveAvsc); //avro-702 can result in "exploded" schemas that dont parse
+    } catch (Exception ignored) {
+      parseFailed = true;
+    }
+    return parseFailed || !evilTwin.equals(schema);
+  }
 
   //code generation
 

@@ -15,6 +15,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
+
+import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
+import com.linkedin.avroutil1.compatibility.CodeGenerationConfig;
+import com.linkedin.avroutil1.compatibility.StringRepresentation;
 import org.apache.avro.Schema;
 import org.apache.commons.io.IOUtils;
 import org.kohsuke.args4j.CmdLineParser;
@@ -36,13 +40,26 @@ public class TestTool {
     private File input;
     @Option(name = "-out", required = true)
     private File output;
+    @Option(name = "-handle702")
+    private BoolEnum enableAvro702Handling = BoolEnum.FALSE;
+    @Option(name = "-produceCorrectSchema")
+    private BoolEnum produceCorrectSchema = BoolEnum.TRUE;
+    @Option(name = "-add702Aliases")
+    private BoolEnum add702Aliases = BoolEnum.TRUE;
   }
 
   public static void main(String[] args) throws Exception {
     Arguments arguments =  parse(args);
     switch (arguments.operation) {
       case "compile":
-        generateSpecificClasses(arguments.input, arguments.output, arguments.minVer);
+        generateSpecificClasses(
+                arguments.input,
+                arguments.output,
+                arguments.minVer,
+                arguments.enableAvro702Handling.get(),
+                arguments.produceCorrectSchema.get(),
+                arguments.add702Aliases.get()
+        );
         break;
       default:
         System.err.println("unrecognized operation " + arguments.operation + ": known operations are \"compile\"");
@@ -57,7 +74,14 @@ public class TestTool {
     return arguments;
   }
 
-  public static void generateSpecificClasses(File input, File output, AvroVersion minVer) throws IOException {
+  public static void generateSpecificClasses(
+          File input,
+          File output,
+          AvroVersion minVer,
+          boolean enableAvro702Handling,
+          boolean produceCorrectSchema,
+          boolean add702Aliases
+  ) throws IOException {
     if (!input.exists() || !input.isFile() || !input.canRead()) {
       System.err.println("input file " + input.getAbsolutePath() + " does not exist or is not readable");
       System.exit(1);
@@ -79,11 +103,27 @@ public class TestTool {
       System.out.println("read " + input.getAbsolutePath());
     }
     Schema schema = AvroCompatibilityHelper.parse(avsc);
+
+    AvscGenerationConfig avscGenerationConfig;
+    if (produceCorrectSchema) {
+      avscGenerationConfig = add702Aliases ? AvscGenerationConfig.CORRECT_MITIGATED_ONELINE : AvscGenerationConfig.CORRECT_ONELINE;
+    } else {
+      avscGenerationConfig = add702Aliases ? AvscGenerationConfig.LEGACY_MITIGATED_ONELINE : AvscGenerationConfig.LEGACY_ONELINE;
+    }
+
+    CodeGenerationConfig codeGenerationConfig = new CodeGenerationConfig(
+            StringRepresentation.CharSequence,
+            enableAvro702Handling,
+            avscGenerationConfig
+    );
+
     Collection<AvroGeneratedSourceCode> compilationResults = AvroCompatibilityHelper.compile(
         Collections.singletonList(schema),
         minVer,
-        AvroVersion.latest()
+        AvroVersion.latest(),
+        codeGenerationConfig
     );
+
     for (AvroGeneratedSourceCode sourceFile : compilationResults) {
       File fileOnDisk = sourceFile.writeToDestination(output);
       System.out.println("(over)wrote " + fileOnDisk.getAbsolutePath());

@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "name": "RecordWithStringType",
+  "namespace": "com.acme",
+  "doc": "PropUrn and associated info.",
+  "fields": [
+    {
+      "name": "strProp",
+      "type": "string"
+    }
+  ]
+}

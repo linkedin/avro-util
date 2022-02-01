@@ -36,6 +36,7 @@ import org.apache.avro.io.Encoder;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificData;
+import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificRecord;
 
 
@@ -317,6 +318,11 @@ public class AvroCompatibilityHelper {
   public static Decoder newBoundedMemoryDecoder(byte[] data) throws IOException {
     assertAvroAvailable();
     return ADAPTER.newBoundedMemoryDecoder(data);
+  }
+
+  public static <T> SpecificDatumReader<T> newAliasAwareSpecificDatumReader(Schema writerSchema, Class<T> readerClass) {
+    assertAvroAvailable();
+    return ADAPTER.newAliasAwareSpecificDatumReader(writerSchema, readerClass);
   }
 
   // schema parsing, and other Schema-related operations
