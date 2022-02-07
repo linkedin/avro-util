@@ -105,4 +105,29 @@ public class AvroCodecUtil {
         }
         return result;
     }
+
+    public static <T> T deserializeAsSpecific(String jsonSerialized, Schema writerSchema, Class<T> specificRecordClass) throws IOException {
+        ByteArrayInputStream is = new ByteArrayInputStream(jsonSerialized.getBytes(StandardCharsets.UTF_8));
+        Decoder decoder = AvroCompatibilityHelper.newCompatibleJsonDecoder(writerSchema, is);
+        Schema readerSchema = SpecificData.get().getSchema(specificRecordClass);
+        SpecificDatumReader<T> reader = new SpecificDatumReader<>(writerSchema, readerSchema);
+        T result = reader.read(null, decoder);
+        //make sure everything was read out
+        if (is.available() != 0) {
+            throw new IllegalStateException("leftover bytes in input. schema given likely partial?");
+        }
+        return result;
+    }
+
+    public static <T> T deserializeAsSpecificWithAliases(String jsonSerialized, Schema writerSchema, Class<T> specificRecordClass) throws IOException {
+        ByteArrayInputStream is = new ByteArrayInputStream(jsonSerialized.getBytes(StandardCharsets.UTF_8));
+        Decoder decoder = AvroCompatibilityHelper.newCompatibleJsonDecoder(writerSchema, is);
+        SpecificDatumReader<T> reader = AvroCompatibilityHelper.newAliasAwareSpecificDatumReader(writerSchema, specificRecordClass);
+        T result = reader.read(null, decoder);
+        //make sure everything was read out
+        if (is.available() != 0) {
+            throw new IllegalStateException("leftover bytes in input. schema given likely partial?");
+        }
+        return result;
+    }
 }
