@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -39,21 +40,30 @@ import org.testng.Assert;
  */
 public class CompilerHelper {
 
+    public static void assertCompiles(JavaFileObject sourceFile) throws Exception {
+        List<JavaFileObject> fileObjects = Arrays.asList(sourceFile);
+        assertCompiles(fileObjects);
+    }
+
     public static void assertCompiles(Path sourceRoot) throws Exception {
+        List<JavaFileObject> fileObjects = listSourceFiles(sourceRoot);
+        assertCompiles(fileObjects);
+    }
+
+    public static void assertCompiles(List<JavaFileObject> fileObjects) throws Exception {
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         ClassFileManager manager = new ClassFileManager(compiler.getStandardFileManager(null, null, null));
         CompilationListener listener = new CompilationListener();
-        List<JavaSourceFile> fileObjects = listSourceFiles(sourceRoot);
         JavaCompiler.CompilationTask compilationTask = compiler.getTask(null, manager, listener, null, null, fileObjects);
         Boolean success = compilationTask.call();
 
         if (!Boolean.TRUE.equals(success) || !listener.errors.isEmpty()) {
-            Assert.fail("failed to compile code under " + sourceRoot + ": " + listener.errors);
+            Assert.fail("failed to compile code: " + listener.errors);
         }
     }
 
-    private static List<JavaSourceFile> listSourceFiles(Path root) throws IOException {
-        List<JavaSourceFile> fileObjects = new ArrayList<>();
+    private static List<JavaFileObject> listSourceFiles(Path root) throws IOException {
+        List<JavaFileObject> fileObjects = new ArrayList<>();
         //noinspection Convert2Diamond because java 8 isnt smart enough to figure this out
         Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
             @Override
@@ -103,7 +113,7 @@ public class CompilerHelper {
             if (kind != JavaFileObject.Kind.CLASS) {
                 throw new UnsupportedOperationException("unhandled kind " + kind);
             }
-            return classObjects.computeIfAbsent(className, s -> new JavaClassObject((JavaSourceFile) sibling, className));
+            return classObjects.computeIfAbsent(className, s -> new JavaClassObject((JavaFileObject) sibling, className));
         }
 
     }
@@ -128,11 +138,11 @@ public class CompilerHelper {
     }
 
     private static class JavaClassObject extends SimpleJavaFileObject {
-        private final JavaSourceFile sourceFile;
+        private final JavaFileObject sourceFile;
         private final String fqcn;
         private volatile ByteArrayOutputStream outputStream;
 
-        public JavaClassObject(JavaSourceFile sourceFile, String fqcn) {
+        public JavaClassObject(JavaFileObject sourceFile, String fqcn) {
             super(URI.create("mem:///" + fqcn.replace('.', '/')), Kind.CLASS);
             this.sourceFile = sourceFile;
             this.fqcn = fqcn;

@@ -11,9 +11,10 @@ plugins {
 }
 
 dependencies {
+    api project(":parser")
     implementation project(":helper:helper")
-    implementation project(":parser")
 
+    implementation "com.squareup:javapoet:1.13.0"
     implementation "commons-io:commons-io:2.6"
     implementation "org.apache.logging.log4j:log4j-api:2.17.1"
     implementation "com.beust:jcommander:1.78"
@@ -28,6 +29,7 @@ dependencies {
         exclude group: "org.slf4j"
     }
 
+    testImplementation project(":test-common")
     testImplementation ("org.apache.avro:avro:1.4.1") {
         exclude group: "org.mortbay.jetty"
         exclude group: "org.apache.velocity"
