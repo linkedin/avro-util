@@ -11,6 +11,10 @@ public class ClassLoaderUtil {
         //util class
     }
 
+    public static Class<?> forName(String className) throws ClassNotFoundException {
+        return forName(null, className);
+    }
+
     public static Class<?> forName(ClassLoader classLoader, String className) throws ClassNotFoundException {
         if (className == null || className.isEmpty()) {
             throw new IllegalArgumentException("className required");
