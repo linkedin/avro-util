@@ -60,6 +60,22 @@
       "default": {
         "intField": 9
       }
+    },
+    {
+      "name": "recordFieldWithInnerUnion",
+      "type": {
+        "type": "record",
+        "name": "OuterRecordType",
+        "fields": [
+          {
+            "name": "innerUnionField",
+            "type": ["null", "string"]
+          }
+        ]
+      },
+      "default": {
+        "innerUnionField": null
+      }
     }
   ]
 }
