@@ -65,6 +65,7 @@ public class FieldBuilderTest {
         setDefaultValues(schema.getField("fieldWithDefaultRecord"));
         setDefaultValues(schema.getField("fieldWithDefaultIntArray"));
         setDefaultValues(schema.getField("unionFieldWithDefaultRecord"));
+        setDefaultValues(schema.getField("recordFieldWithInnerUnion"));
     }
 
     @Test
