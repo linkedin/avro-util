@@ -28,11 +28,23 @@ public abstract class AvroNamedSchema extends AvroSchema {
         this.doc = doc;
     }
 
+    public String getSimpleName() {
+        return simpleName;
+    }
+
+    public String getNamespace() {
+        return namespace;
+    }
+
     public String getFullName() {
         if (namespace.isEmpty()) {
             return simpleName;
         }
         return namespace + "." + simpleName;
+    }
+
+    public String getDoc() {
+        return doc;
     }
 
     @Override
