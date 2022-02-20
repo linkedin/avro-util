@@ -10,7 +10,7 @@ import java.util.regex.Pattern
 buildscript {
   repositories {
     mavenLocal()
-    jcenter()
+    mavenCentral()
   }
 }
 
@@ -26,7 +26,7 @@ group = 'com.linkedin.avroutil1'
 
 repositories {
   mavenLocal()
-  jcenter()
+  mavenCentral()
 }
 
 //does not include "helper" as that module has its own publishing section (because fat jar)
@@ -51,7 +51,7 @@ subprojects {
 
     repositories {
       mavenLocal()
-      jcenter()
+      mavenCentral()
     }
 
     dependencies {
@@ -240,9 +240,9 @@ subprojects {
     //we dont need reports at the individual module level as we generate an aggregate
     jacocoTestReport {
       reports {
-        xml.enabled false
-        html.enabled false
-        csv.enabled false
+        xml.required = false
+        html.required = false
+        csv.required = false
       }
     }
   }
@@ -265,10 +265,10 @@ task codeCoverageReport(type: JacocoReport) {
   }
 
   reports {
-    xml.enabled true
+    xml.required = true
     xml.destination = new File("${buildDir}/reports/jacoco/report.xml")
-    html.enabled false //useful as a debug aid and for local dev
-    csv.enabled false
+    html.required = false //useful as a debug aid and for local dev
+    csv.required = false
   }
 }
 

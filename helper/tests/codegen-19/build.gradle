@@ -39,7 +39,7 @@ task runVanillaAvroCodegen {
     doLast {
       javaexec {
         classpath configurations.codegen
-        main = 'org.apache.avro.tool.Main'
+        mainClass = 'org.apache.avro.tool.Main'
         args = ["compile", "schema", file.getAbsolutePath(), "$buildDir/generated/sources/raw-avro/java/main"]
       }
     }
@@ -53,7 +53,7 @@ task runCompatAvroCodegen {
     doLast {
       javaexec {
         classpath configurations.codegen
-        main = 'com.linkedin.avroutil1.TestTool'
+        mainClass = 'com.linkedin.avroutil1.TestTool'
         args = [
             "-op", "compile",
             "-in", file.getAbsolutePath(),
@@ -72,7 +72,7 @@ task runCompatAvroCodegenWithBuilders {
     doLast {
       javaexec {
         classpath configurations.codegen
-        main = 'com.linkedin.avroutil1.TestTool'
+        mainClass = 'com.linkedin.avroutil1.TestTool'
         args = [
                 "-op", "compile",
                 "-in", file.getAbsolutePath(),
@@ -92,7 +92,7 @@ task copyCompatAvroCodeToResources(type: Copy) {
 
 task runResourceGeneration(type: JavaExec) {
   classpath configurations.resourcegen + sourceSets.main.output
-  main = "com.linkedin.avroutil1.compatibility.avro19.Generate19TestResources"
+  mainClass = "com.linkedin.avroutil1.compatibility.avro19.Generate19TestResources"
   args "$buildDir/generated/resources"
   debug false
 }
