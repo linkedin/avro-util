@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.compatibility;
 
+import java.util.List;
 import org.apache.avro.Schema;
 
 /**
@@ -16,11 +17,62 @@ public interface SchemaBuilder {
     /**
      * sets the {@link Schema.Type} of the schema being built
      * @param type a schema type
+     * @return the builder
      */
     SchemaBuilder setType(Schema.Type type);
 
     /**
-     * add a field to the schema under construction. field is added
+     * sets the name of a (named) schema being built
+     * @param name either a simple of a full ("x.y.Z") name.
+     *             name must be simple if {@link #setNamespace(String)} is used
+     * @return the builder
+     */
+    SchemaBuilder setName(String name);
+
+    /**
+     * sets the namespace of a (named) schema being built
+     * @param namespace namespace
+     * @return this builder
+     */
+    SchemaBuilder setNamespace(String namespace);
+
+    /**
+     * sets the element type for the (array) schema being built
+     * @param elementSchema schema of array elements
+     * @return the builder
+     */
+    SchemaBuilder setElementType(Schema elementSchema);
+
+    /**
+     * sets the value type for the (map) schema being built (keys are always strings in avro)
+     * @param valueSchema schema of map values
+     * @return the builder
+     */
+    SchemaBuilder setValueType(Schema valueSchema);
+
+    /**
+     * sets the size for the (fixed) schema being built
+     * @param size number of bytes in a fixed blob schema
+     * @return the builder
+     */
+    SchemaBuilder setSize(int size);
+
+    /**
+     * sets of symbols for the (enum) schema being built
+     * @param symbols the (distinct, ordered) symbols
+     * @return the builder
+     */
+    SchemaBuilder setSymbols(List<String> symbols);
+
+    /**
+     * sets the default symbol for the (enum) schema being built
+     * @param defaultSymbol the default value
+     * @return the builder
+     */
+    SchemaBuilder setDefaultSymbol(String defaultSymbol);
+
+    /**
+     * add a field to the (record) schema under construction. field is added
      * to the end of the field list
      * @param field new field to add
      * @return the builder
@@ -30,7 +82,7 @@ public interface SchemaBuilder {
     SchemaBuilder addField(Schema.Field field);
 
     /**
-     * add a field to the schema under construction at the specified position.
+     * add a field to the (record) schema under construction at the specified position.
      * existing fields starting from the specified position are "right shifted"
      * @param position desired position for the field to be added, 0 based.
      * @param field field to add
@@ -56,6 +108,13 @@ public interface SchemaBuilder {
      * @throws IndexOutOfBoundsException if position is invalid
      */
     SchemaBuilder removeField(int position);
+
+    /**
+     * sets the union branches of (union) schema being built
+     * @param branches list of union branches
+     * @return the builder
+     */
+    SchemaBuilder setUnionBranches(List<Schema> branches);
 
     /**
      * constructs a {@link Schema} out of this builder

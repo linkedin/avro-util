@@ -315,6 +315,11 @@ public class Avro15Adapter implements AvroAdapter {
   }
 
   @Override
+  public String getEnumDefault(Schema s) {
+    return s.getProp("default");
+  }
+
+  @Override
   public String toAvsc(Schema schema, AvscGenerationConfig config) {
     boolean useRuntime;
     if (!isRuntimeAvroCapableOf(config)) {

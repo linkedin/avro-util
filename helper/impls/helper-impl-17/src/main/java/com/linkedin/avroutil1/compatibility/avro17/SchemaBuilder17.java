@@ -8,10 +8,13 @@ package com.linkedin.avroutil1.compatibility.avro17;
 
 import com.linkedin.avroutil1.compatibility.AbstractSchemaBuilder;
 import com.linkedin.avroutil1.compatibility.AvroAdapter;
+import java.util.HashMap;
 import org.apache.avro.Schema;
 import org.codehaus.jackson.JsonNode;
 
 import java.util.Map;
+import org.codehaus.jackson.node.TextNode;
+
 
 public class SchemaBuilder17 extends AbstractSchemaBuilder {
 
@@ -19,29 +22,25 @@ public class SchemaBuilder17 extends AbstractSchemaBuilder {
 
     public SchemaBuilder17(AvroAdapter adapter, Schema original) {
         super(adapter, original);
-        _props = Avro17Utils.getProps(original);
+        if (original != null) {
+            _props = Avro17Utils.getProps(original);
+        } else {
+            _props= new HashMap<>(1);
+        }
     }
 
     @Override
-    public Schema build() {
-        if (_type == null) {
-            throw new IllegalArgumentException("type not set");
+    protected void setPropsInternal(Schema result) {
+        if (_props != null && !_props.isEmpty()) {
+            Avro17Utils.setProps(result, _props);
         }
-        Schema result;
-        //noinspection SwitchStatementWithTooFewBranches
-        switch (_type) {
-            case RECORD:
-                result = Schema.createRecord(_name, _doc, _namespace, _isError);
-                if (_fields != null && !_fields.isEmpty()) {
-                    result.setFields(cloneFields(_fields));
-                }
-                if (_props != null && !_props.isEmpty()) {
-                    Avro17Utils.setProps(result, _props);
-                }
-                break;
-            default:
-                throw new UnsupportedOperationException("unhandled type " + _type);
+        if (result.getType() == Schema.Type.ENUM) {
+            if (_defaultSymbol != null) {
+                //avro 1.7 doesnt support defaults, but we can at least keep it around as a prop
+                Map<String, JsonNode> defaultProp = new HashMap<>(1);
+                defaultProp.put("default", new TextNode(_defaultSymbol));
+                Avro17Utils.setProps(result, defaultProp);
+            }
         }
-        return result;
     }
 }

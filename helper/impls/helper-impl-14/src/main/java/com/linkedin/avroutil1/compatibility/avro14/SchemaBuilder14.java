@@ -8,6 +8,7 @@ package com.linkedin.avroutil1.compatibility.avro14;
 
 import com.linkedin.avroutil1.compatibility.AbstractSchemaBuilder;
 import com.linkedin.avroutil1.compatibility.AvroAdapter;
+import java.util.HashMap;
 import org.apache.avro.Schema;
 
 import java.lang.reflect.Field;
@@ -30,30 +31,24 @@ public class SchemaBuilder14 extends AbstractSchemaBuilder {
 
     public SchemaBuilder14(AvroAdapter adapter, Schema original) {
         super(adapter, original);
-        _props = getProps(original);
+        if (original != null) {
+            _props = getProps(original);
+        } else {
+            _props= new HashMap<>(1);
+        }
     }
 
     @Override
-    public Schema build() {
-        if (_type == null) {
-            throw new IllegalArgumentException("type not set");
+    protected void setPropsInternal(Schema result) {
+        if (_props != null && !_props.isEmpty()) {
+            getProps(result).putAll(_props);
         }
-        Schema result;
-        //noinspection SwitchStatementWithTooFewBranches
-        switch (_type) {
-            case RECORD:
-                result = Schema.createRecord(_name, _doc, _namespace, _isError);
-                if (_fields != null && !_fields.isEmpty()) {
-                    result.setFields(cloneFields(_fields));
-                }
-                if (_props != null && !_props.isEmpty()) {
-                    getProps(result).putAll(_props);
-                }
-                break;
-            default:
-                throw new UnsupportedOperationException("unhandled type " + _type);
+        if (result.getType() == Schema.Type.ENUM) {
+            if (_defaultSymbol != null) {
+                //avro 1.4 doesnt support defaults, but we can at least keep it around as a prop
+                getProps(result).put("default", _defaultSymbol);
+            }
         }
-        return result;
     }
 
     private Map<String,String> getProps(Schema schema) {
