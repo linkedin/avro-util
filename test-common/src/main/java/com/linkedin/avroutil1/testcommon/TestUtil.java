@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
+import org.testng.Assert;
 
 
 public class TestUtil {
@@ -117,5 +118,16 @@ public class TestUtil {
       }
     });
     return new ArrayList<>(classesToCheck);
+  }
+
+  public static void expect(Runnable closure, Class<? extends Throwable> expected) {
+    try {
+      closure.run();
+      Assert.fail("was expected to throw a " + expected.getName());
+    } catch (Throwable t) {
+      Class<? extends Throwable> got = t.getClass();
+      Assert.assertTrue(expected.isAssignableFrom(got), "expected to throw a "  + expected.getName() + " but got a " + got.getName());
+    }
+
   }
 }

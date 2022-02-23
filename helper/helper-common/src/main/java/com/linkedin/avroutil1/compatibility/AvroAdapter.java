@@ -131,10 +131,7 @@ public interface AvroAdapter {
 
   void setSchemaPropFromJsonString(Schema field, String propName, String valueAsJsonLiteral, boolean strict);
 
-  default String getEnumDefault(Schema s) {
-    //TODO - implement via properties
-    throw new AvroTypeException("enum default is not supported in " + supportedMajorVersion().toString());
-  }
+  String getEnumDefault(Schema s);
 
   default Schema newEnumSchema(String name, String doc, String namespace, List<String> values, String enumDefault) {
     if (enumDefault != null) {

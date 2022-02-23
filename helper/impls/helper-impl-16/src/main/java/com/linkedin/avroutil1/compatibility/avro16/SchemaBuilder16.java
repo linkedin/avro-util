@@ -8,6 +8,7 @@ package com.linkedin.avroutil1.compatibility.avro16;
 
 import com.linkedin.avroutil1.compatibility.AbstractSchemaBuilder;
 import com.linkedin.avroutil1.compatibility.AvroAdapter;
+import java.util.HashMap;
 import org.apache.avro.Schema;
 
 import java.util.Map;
@@ -18,31 +19,25 @@ public class SchemaBuilder16 extends AbstractSchemaBuilder {
 
     public SchemaBuilder16(AvroAdapter adapter, Schema original) {
         super(adapter, original);
-        _props = original.getProps();
+        if (original != null) {
+            _props = original.getProps();
+        } else {
+            _props= new HashMap<>(1);
+        }
     }
 
     @Override
-    public Schema build() {
-        if (_type == null) {
-            throw new IllegalArgumentException("type not set");
+    protected void setPropsInternal(Schema result) {
+        if (_props != null && !_props.isEmpty()) {
+            for (Map.Entry<String, String> entry : _props.entrySet()) {
+                result.addProp(entry.getKey(), entry.getValue());
+            }
         }
-        Schema result;
-        //noinspection SwitchStatementWithTooFewBranches
-        switch (_type) {
-            case RECORD:
-                result = Schema.createRecord(_name, _doc, _namespace, _isError);
-                if (_fields != null && !_fields.isEmpty()) {
-                    result.setFields(cloneFields(_fields));
-                }
-                if (_props != null && !_props.isEmpty()) {
-                    for (Map.Entry<String, String> entry : _props.entrySet()) {
-                        result.addProp(entry.getKey(), entry.getValue());
-                    }
-                }
-                break;
-            default:
-                throw new UnsupportedOperationException("unhandled type " + _type);
+        if (result.getType() == Schema.Type.ENUM) {
+            if (_defaultSymbol != null) {
+                //avro 1.6 doesnt support defaults, but we can at least keep it around as a prop
+                result.addProp("default", _defaultSymbol);
+            }
         }
-        return result;
     }
 }

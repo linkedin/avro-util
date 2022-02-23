@@ -8,10 +8,13 @@ package com.linkedin.avroutil1.compatibility.avro18;
 
 import com.linkedin.avroutil1.compatibility.AbstractSchemaBuilder;
 import com.linkedin.avroutil1.compatibility.AvroAdapter;
+import java.util.HashMap;
 import org.apache.avro.Schema;
 import org.codehaus.jackson.JsonNode;
 
 import java.util.Map;
+import org.codehaus.jackson.node.TextNode;
+
 
 public class SchemaBuilder18 extends AbstractSchemaBuilder {
 
@@ -19,32 +22,26 @@ public class SchemaBuilder18 extends AbstractSchemaBuilder {
 
     public SchemaBuilder18(AvroAdapter adapter, Schema original) {
         super(adapter, original);
-        //noinspection deprecation
-        _props = original.getJsonProps(); //actually faster
+        if (original != null) {
+            //noinspection deprecation
+            _props = original.getJsonProps(); //actually faster
+        } else {
+            _props= new HashMap<>(1);
+        }
     }
 
     @Override
-    public Schema build() {
-        if (_type == null) {
-            throw new IllegalArgumentException("type not set");
+    protected void setPropsInternal(Schema result) {
+        if (_props != null && !_props.isEmpty()) {
+            for (Map.Entry<String, JsonNode> entry : _props.entrySet()) {
+                result.addProp(entry.getKey(), entry.getValue()); //deprecated but faster
+            }
         }
-        Schema result;
-        //noinspection SwitchStatementWithTooFewBranches
-        switch (_type) {
-            case RECORD:
-                result = Schema.createRecord(_name, _doc, _namespace, _isError);
-                if (_fields != null && !_fields.isEmpty()) {
-                    result.setFields(cloneFields(_fields));
-                }
-                if (_props != null && !_props.isEmpty()) {
-                    for (Map.Entry<String, JsonNode> entry : _props.entrySet()) {
-                        result.addProp(entry.getKey(), entry.getValue()); //deprecated but faster
-                    }
-                }
-                break;
-            default:
-                throw new UnsupportedOperationException("unhandled type " + _type);
+        if (result.getType() == Schema.Type.ENUM) {
+            if (_defaultSymbol != null) {
+                //avro 1.8 doesnt support defaults, but we can at least keep it around as a prop
+                result.addProp("default", new TextNode(_defaultSymbol));
+            }
         }
-        return result;
     }
 }

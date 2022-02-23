@@ -8,6 +8,7 @@ package com.linkedin.avroutil1.compatibility.avro111;
 
 import com.linkedin.avroutil1.compatibility.AbstractSchemaBuilder;
 import com.linkedin.avroutil1.compatibility.AvroAdapter;
+import java.util.HashMap;
 import org.apache.avro.Schema;
 
 import java.util.Map;
@@ -18,31 +19,24 @@ public class SchemaBuilder111 extends AbstractSchemaBuilder {
 
     public SchemaBuilder111(AvroAdapter adapter, Schema original) {
         super(adapter, original);
-        _props = original.getObjectProps();
+        if (original != null) {
+            _props = original.getObjectProps();
+        } else {
+            _props= new HashMap<>(1);
+        }
     }
 
     @Override
-    public Schema build() {
-        if (_type == null) {
-            throw new IllegalArgumentException("type not set");
+    protected Schema buildEnumSchemaInternal() {
+        return Schema.createEnum(_name, _doc, _namespace, _symbols, _defaultSymbol);
+    }
+
+    @Override
+    protected void setPropsInternal(Schema result) {
+        if (_props != null && !_props.isEmpty()) {
+            for (Map.Entry<String, Object> entry : _props.entrySet()) {
+                result.addProp(entry.getKey(), entry.getValue());
+            }
         }
-        Schema result;
-        //noinspection SwitchStatementWithTooFewBranches
-        switch (_type) {
-            case RECORD:
-                result = Schema.createRecord(_name, _doc, _namespace, _isError);
-                if (_fields != null && !_fields.isEmpty()) {
-                    result.setFields(cloneFields(_fields));
-                }
-                if (_props != null && !_props.isEmpty()) {
-                    for (Map.Entry<String, Object> entry : _props.entrySet()) {
-                        result.addProp(entry.getKey(), entry.getValue());
-                    }
-                }
-                break;
-            default:
-                throw new UnsupportedOperationException("unhandled type " + _type);
-        }
-        return result;
     }
 }
