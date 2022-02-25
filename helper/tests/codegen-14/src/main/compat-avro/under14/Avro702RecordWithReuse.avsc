@@ -1,0 +1,40 @@
+{
+  "type": "record",
+  "namespace": "under14.outer",
+  "name": "Avro702RecordWithReuse",
+  "fields": [
+    {
+      "name": "outerField",
+      "type": {
+        "type": "record",
+        "name": "Avro702RecordWithReuseMiddle",
+        "namespace": "under14.middle",
+        "fields": [
+          {
+            "name": "middleRecordField",
+            "type": [
+              "null",
+              {
+                "type": "record",
+                "name": "Avro702RecordWithReuseInner",
+                "namespace": "under14.outer",
+                "doc": "this records namespace gets messed up under avro 1.4",
+                "fields": [
+                  {
+                    "name": "innerField",
+                    "type": "int"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "middleField3",
+            "type": "under14.outer.Avro702RecordWithReuseInner",
+            "doc": "avro 1.4 generates this reference as a simple name only, which is wrong"
+          }
+        ]
+      }
+    }
+  ]
+}

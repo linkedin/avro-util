@@ -14,7 +14,6 @@ import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
 import com.linkedin.avroutil1.compatibility.CodeGenerationConfig;
 import com.linkedin.avroutil1.compatibility.CodeTransformations;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
-import com.linkedin.avroutil1.compatibility.HelperConsts;
 import com.linkedin.avroutil1.compatibility.SchemaBuilder;
 import com.linkedin.avroutil1.compatibility.SchemaNormalization;
 import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
@@ -42,7 +41,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -370,33 +368,6 @@ public class Avro14Adapter implements AvroAdapter {
     } catch (Exception e) {
       throw new IllegalStateException(e);
     }
-  }
-
-  /**
-   * given schemas about to be code-gen'd and a code-gen config, returns a map of
-   * alternative AVSC to use by schema full name.
-   * @param toCompile schemas about to be "compiled"
-   * @param config configuration
-   * @return alternative AVSCs, keyed by schema full name
-   */
-  private Map<String, String> createAlternativeAvscs(Collection<Schema> toCompile, CodeGenerationConfig config) {
-    if (!config.isAvro702HandlingEnabled()) {
-      return Collections.emptyMap();
-    }
-    AvscGenerationConfig avscGenConfig = config.getAvro702AvscReplacement();
-    Map<String, String> fullNameToAlternativeAvsc = new HashMap<>(1); //expected to be small
-    //look for schemas that are susceptible to avro-702, and re-generate their AVSC if required
-    for (Schema schema : toCompile) {
-      if (!HelperConsts.NAMED_TYPES.contains(schema.getType())) {
-        continue; //only named types impacted by avro-702 to begin with
-      }
-      String fullName = schema.getFullName();
-      if (isSusceptibleToAvro702(schema)) {
-        String altAvsc = toAvsc(schema, avscGenConfig);
-        fullNameToAlternativeAvsc.put(fullName, altAvsc);
-      }
-    }
-    return fullNameToAlternativeAvsc;
   }
 
   private Collection<AvroGeneratedSourceCode> transform(List<AvroGeneratedSourceCode> avroGenerated, AvroVersion minAvro, AvroVersion maxAvro) {

@@ -242,7 +242,9 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
     protected boolean writeNameRef(Schema schema, AvroNames names, G gen) throws IOException {
         AvroName name = AvroName.of(schema);
         if (schema.equals(names.get(name))) {
-            gen.writeString(name.getQualified(names.badSpace()));
+            //"context" namespace depends on which "mode" we're generating in.
+            String contextNamespace = preAvro702 ? names.badSpace() : names.correctSpace();
+            gen.writeString(name.getQualified(contextNamespace));
             return true;
         }
         if (!name.isAnonymous()) {

@@ -43,7 +43,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
@@ -377,6 +376,14 @@ public class Avro18Adapter implements AvroAdapter {
     if (toCompile == null || toCompile.isEmpty()) {
       return Collections.emptyList();
     }
+
+    Map<String, String> fullNameToAlternativeAvsc;
+    if (!config.isAvro702HandlingEnabled()) {
+      fullNameToAlternativeAvsc = Collections.emptyMap();
+    } else {
+      fullNameToAlternativeAvsc = createAlternativeAvscs(toCompile, config);
+    }
+
     Iterator<Schema> schemaIter = toCompile.iterator();
     Schema first = schemaIter.next();
     try {
@@ -409,11 +416,17 @@ public class Avro18Adapter implements AvroAdapter {
 
       Collection<?> outputFiles = (Collection<?>) compilerCompileMethod.invoke(compiler);
 
-      List<AvroGeneratedSourceCode> translated = outputFiles.stream()
-          .map(o -> new AvroGeneratedSourceCode(getPath(o), getContents(o)))
-          .collect(Collectors.toList());
+      List<AvroGeneratedSourceCode> sourceFiles = new ArrayList<>(outputFiles.size());
+      for (Object outputFile : outputFiles) {
+        AvroGeneratedSourceCode sourceCode = new AvroGeneratedSourceCode(getPath(outputFile), getContents(outputFile));
+        String altAvsc = fullNameToAlternativeAvsc.get(sourceCode.getFullyQualifiedClassName());
+        if (altAvsc != null) {
+          sourceCode.setAlternativeAvsc(altAvsc);
+        }
+        sourceFiles.add(sourceCode);
+      }
 
-      return transform(translated, minSupportedVersion, maxSupportedVersion);
+      return transform(sourceFiles, minSupportedVersion, maxSupportedVersion);
     } catch (UnsupportedOperationException e) {
       throw e; //as-is
     } catch (Exception e) {
