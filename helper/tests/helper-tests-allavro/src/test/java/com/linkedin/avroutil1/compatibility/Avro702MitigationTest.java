@@ -18,6 +18,7 @@ import under14.outer.Avro702BadRecordWithAliases;
 import under14.outer.Avro702CorrectedRecordWithAliases;
 import under14.outer.Avro702InnerRecord;
 import under14.outer.Avro702OuterRecordWithUnion;
+import under14.outer.Avro702RecordWithReuse;
 
 
 /**
@@ -165,6 +166,12 @@ public class Avro702MitigationTest {
         Assert.assertNotNull(deserialized);
         Assert.assertNotNull(deserialized.outerField.middleRecordField);
         Assert.assertNotNull(deserialized.outerField.middleEnumField);
+    }
+
+    @Test
+    public void testReferenceToImpactedNestedType() {
+        //if SCHEMA$ was generated badly, this will throw
+        new Avro702RecordWithReuse();
     }
 
     @Test

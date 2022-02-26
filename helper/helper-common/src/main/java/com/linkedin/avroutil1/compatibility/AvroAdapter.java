@@ -12,8 +12,11 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
+import java.util.Map;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -161,6 +164,33 @@ public interface AvroAdapter {
       parseFailed = true;
     }
     return parseFailed || !evilTwin.equals(schema);
+  }
+
+  /**
+   * given schemas about to be code-gen'd and a code-gen config, returns a map of
+   * alternative AVSC to use by schema full name.
+   * @param toCompile schemas about to be "compiled"
+   * @param config configuration
+   * @return alternative AVSCs, keyed by schema full name
+   */
+  default Map<String, String> createAlternativeAvscs(Collection<Schema> toCompile, CodeGenerationConfig config) {
+    if (!config.isAvro702HandlingEnabled()) {
+      return Collections.emptyMap();
+    }
+    AvscGenerationConfig avscGenConfig = config.getAvro702AvscReplacement();
+    Map<String, String> fullNameToAlternativeAvsc = new HashMap<>(1); //expected to be small
+    //look for schemas that are susceptible to avro-702, and re-generate their AVSC if required
+    for (Schema schema : toCompile) {
+      if (!HelperConsts.NAMED_TYPES.contains(schema.getType())) {
+        continue; //only named types impacted by avro-702 to begin with
+      }
+      String fullName = schema.getFullName();
+      if (isSusceptibleToAvro702(schema)) {
+        String altAvsc = toAvsc(schema, avscGenConfig);
+        fullNameToAlternativeAvsc.put(fullName, altAvsc);
+      }
+    }
+    return fullNameToAlternativeAvsc;
   }
 
   //code generation
