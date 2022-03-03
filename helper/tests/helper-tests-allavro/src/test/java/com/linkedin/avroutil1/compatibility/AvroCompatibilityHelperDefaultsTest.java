@@ -51,6 +51,21 @@ public class AvroCompatibilityHelperDefaultsTest {
   }
 
   @Test
+  public void testGetCompatibleDefaultValue() throws Exception {
+    String avsc = TestUtil.load("RecordWithDefaults.avsc");
+    SchemaParseResult result = AvroCompatibilityHelper.parse(avsc, SchemaParseConfiguration.STRICT, null);
+    Schema schema = result.getMainSchema();
+
+    Assert.assertNull(AvroCompatibilityHelper.getCompatibleDefaultValue(schema.getField("nullField")));
+    Assert.assertTrue((Boolean) AvroCompatibilityHelper.getCompatibleDefaultValue(schema.getField("boolField")));
+    //returns a Utf8
+    Assert.assertEquals(AvroCompatibilityHelper.getCompatibleDefaultValue(schema.getField("strField")).toString(), "default");
+    Assert.assertNull(AvroCompatibilityHelper.getCompatibleDefaultValue(schema.getField("unionWithNullDefault")));
+    //Utf8
+    Assert.assertEquals(AvroCompatibilityHelper.getCompatibleDefaultValue(schema.getField("unionWithStringDefault")).toString(), "def");
+  }
+
+  @Test
   public void testGetFieldDefaultsAsJson() throws Exception {
     String avsc = TestUtil.load("RecordWithDefaults.avsc");
     SchemaParseResult result = AvroCompatibilityHelper.parse(avsc, SchemaParseConfiguration.STRICT, null);
@@ -119,6 +134,17 @@ public class AvroCompatibilityHelperDefaultsTest {
       Throwable root = Throwables.getRootCause(expected);
       Assert.assertTrue(root.getMessage().contains("unionWithStringNoDefault"));
     }
+  }
+
+  @Test
+  public void testGetCompatibleDefaultValueWithoutDefaults() throws Exception {
+    String avsc = TestUtil.load("RecordWithDefaults.avsc");
+    SchemaParseResult result = AvroCompatibilityHelper.parse(avsc, SchemaParseConfiguration.STRICT, null);
+    Schema schema = result.getMainSchema();
+    
+    Assert.assertNull(AvroCompatibilityHelper.getCompatibleDefaultValue(schema.getField("nullWithoutDefault")));
+    Assert.assertNull(AvroCompatibilityHelper.getCompatibleDefaultValue(schema.getField("boolWithoutDefault")));
+    Assert.assertNull(AvroCompatibilityHelper.getCompatibleDefaultValue(schema.getField("unionWithStringNoDefault")));
   }
 
   @Test
