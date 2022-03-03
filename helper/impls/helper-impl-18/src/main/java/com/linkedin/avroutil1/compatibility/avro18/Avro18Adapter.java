@@ -437,7 +437,13 @@ public class Avro18Adapter implements AvroAdapter {
   private Collection<AvroGeneratedSourceCode> transform(List<AvroGeneratedSourceCode> avroGenerated, AvroVersion minAvro, AvroVersion maxAvro) {
     List<AvroGeneratedSourceCode> transformed = new ArrayList<>(avroGenerated.size());
     for (AvroGeneratedSourceCode generated : avroGenerated) {
-      String fixed = CodeTransformations.applyAll(generated.getContents(), supportedMajorVersion(), minAvro, maxAvro, null);
+      String fixed = CodeTransformations.applyAll(
+          generated.getContents(),
+          supportedMajorVersion(),
+          minAvro,
+          maxAvro,
+          generated.getAlternativeAvsc()
+      );
       transformed.add(new AvroGeneratedSourceCode(generated.getPath(), fixed));
     }
     return transformed;
