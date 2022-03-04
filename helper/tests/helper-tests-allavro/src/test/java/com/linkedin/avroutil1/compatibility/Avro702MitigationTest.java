@@ -7,6 +7,7 @@
 package com.linkedin.avroutil1.compatibility;
 
 import com.linkedin.avroutil1.testcommon.TestUtil;
+import java.util.Arrays;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -172,6 +173,39 @@ public class Avro702MitigationTest {
     public void testReferenceToImpactedNestedType() {
         //if SCHEMA$ was generated badly, this will throw
         new Avro702RecordWithReuse();
+    }
+
+    @Test
+    public void testDeeplyNestedAvro702Mitigation() throws Exception {
+        String goodAvsc = TestUtil.load("avro702/Avro702DeepRecord-good.avsc");
+        Schema goodSchema = Schema.parse(goodAvsc);
+        String badWithAliases = AvroCompatibilityHelper.toAvsc(goodSchema, AvscGenerationConfig.LEGACY_MITIGATED_PRETTY);
+        Schema badMitigatedSchema = Schema.parse(badWithAliases);
+
+        Schema avro702DeepRecordISchema = badMitigatedSchema.getField("f1").schema();
+        Schema avro702DeepRecordIISchema = avro702DeepRecordISchema.getField("f2").schema().getTypes().get(1);
+        Schema avro702DeepRecordIIISchema = avro702DeepRecordIISchema.getField("f3").schema();
+
+        Assert.assertEquals(avro702DeepRecordISchema.getNamespace(), "middle");
+        Assert.assertTrue(avro702DeepRecordISchema.getAliases().isEmpty());
+        Assert.assertEquals(avro702DeepRecordIISchema.getNamespace(), "middle");
+        Assert.assertEquals(avro702DeepRecordIISchema.getAliases(), Arrays.asList("outer.Avro702DeepRecordII"));
+        Assert.assertEquals(avro702DeepRecordIIISchema.getNamespace(), "middle");
+        Assert.assertEquals(avro702DeepRecordIIISchema.getAliases(), Arrays.asList("outer.Avro702DeepRecordIII"));
+
+        String goodWithAliases = AvroCompatibilityHelper.toAvsc(goodSchema, AvscGenerationConfig.CORRECT_MITIGATED_PRETTY);
+        Schema goodMitigatedSchema = Schema.parse(goodWithAliases);
+
+        avro702DeepRecordISchema = goodMitigatedSchema.getField("f1").schema();
+        avro702DeepRecordIISchema = avro702DeepRecordISchema.getField("f2").schema().getTypes().get(1);
+        avro702DeepRecordIIISchema = avro702DeepRecordIISchema.getField("f3").schema();
+
+        Assert.assertEquals(avro702DeepRecordISchema.getNamespace(), "middle");
+        Assert.assertTrue(avro702DeepRecordISchema.getAliases().isEmpty());
+        Assert.assertEquals(avro702DeepRecordIISchema.getNamespace(), "outer");
+        Assert.assertEquals(avro702DeepRecordIISchema.getAliases(), Arrays.asList("middle.Avro702DeepRecordII"));
+        Assert.assertEquals(avro702DeepRecordIIISchema.getNamespace(), "outer");
+        Assert.assertEquals(avro702DeepRecordIIISchema.getAliases(), Arrays.asList("middle.Avro702DeepRecordIII"));
     }
 
     @Test

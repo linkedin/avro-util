@@ -1,0 +1,44 @@
+{
+  "type": "record",
+  "namespace": "outer",
+  "name": "Avro702DeepRecord",
+  "fields": [
+    {
+      "name": "f1",
+      "type": {
+        "type": "record",
+        "name": "Avro702DeepRecordI",
+        "namespace": "middle",
+        "fields": [
+          {
+            "name": "f2",
+            "type": [
+              "null",
+              {
+                "type": "record",
+                "name": "Avro702DeepRecordII",
+                "namespace": "outer",
+                "doc": "things start getting bad here",
+                "fields": [
+                  {
+                    "name": "f3",
+                    "type": {
+                      "type": "record",
+                      "name": "Avro702DeepRecordIII",
+                      "fields": [
+                        {
+                          "name": "intField",
+                          "type": "int"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
