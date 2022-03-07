@@ -12,6 +12,9 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
+import org.apache.avro.specific.SpecificData;
+import org.apache.avro.specific.SpecificRecord;
 
 
 public class AvroSchemaUtil {
@@ -36,6 +39,41 @@ public class AvroSchemaUtil {
             schema.getType() == Schema.Type.UNION &&
             !schema.getTypes().isEmpty() &&
             schema.getTypes().get(0).getType() == Schema.Type.NULL);
+  }
+
+  /**
+   * returns true if the given value is a valid "instance" of the given schema
+   * @param value a value, possibly null
+   * @param schema a schema to check vs the value. required.
+   * @return true if the value is an instance of the schema
+   */
+  public static boolean isValidValueForSchema(Object value, Schema schema) {
+    if (schema == null) {
+      throw new IllegalArgumentException("schema required");
+    }
+    Schema.Type schemaType = schema.getType();
+    if (value == null) {
+      //NOTHING in avro is nullable except type NULL and unions (which might have type NULL as a branch)
+      if (schemaType == Schema.Type.NULL) {
+        return true;
+      }
+      if (schemaType == Schema.Type.UNION) {
+        List<Schema> branches = schema.getTypes();
+        for (Schema branch : branches) {
+          if (isValidValueForSchema(value, branch)) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+    boolean isSpecific = value instanceof SpecificRecord;
+    //these handle unions
+    if (isSpecific) {
+      return SpecificData.get().validate(schema, value);
+    } else {
+      return GenericData.get().validate(schema, value);
+    }
   }
 
   /**

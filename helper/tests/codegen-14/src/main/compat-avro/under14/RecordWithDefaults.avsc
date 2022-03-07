@@ -1,7 +1,7 @@
 {
   "type": "record",
-  "namespace": "com.acme",
-  "name": "HasDefaults",
+  "namespace": "under14",
+  "name": "RecordWithDefaults",
   "fields": [
     {
       "name": "nullWithoutDefault",
@@ -44,7 +44,7 @@
       "name": "enumField",
       "type": {
         "type": "enum",
-        "name": "EnumForHasDefaults",
+        "name": "EnumForRecordWithDefaults",
         "symbols": ["A", "B"]
       },
       "default": "A"
@@ -53,7 +53,7 @@
       "name": "recordField",
       "type": {
         "type": "record",
-        "name": "RecordForHasDefaults",
+        "name": "RecordForRecordWithDefaults",
         "fields": [
           {
             "name": "innerLongField",
