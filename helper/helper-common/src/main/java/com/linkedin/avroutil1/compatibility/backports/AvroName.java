@@ -8,6 +8,8 @@ package com.linkedin.avroutil1.compatibility.backports;
 
 import com.linkedin.avroutil1.compatibility.HelperConsts;
 import com.linkedin.avroutil1.compatibility.JsonGeneratorWrapper;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaParseException;
 
@@ -91,37 +93,74 @@ public class AvroName {
      * writes this name (as a name prop and optionally a namespace prop) to an underlying json genrator
      * @param names the set of "known fullnames" and current "inherited" namespace used by the current avsc
      *              generation operation
+     * @param preAvro702 true to emit the same output as avro 1.4 would (before avro-702 was fixed in 1.5+)
+     * @param namespaceWhenParsed the context namespace at this point under correct output
+     * @param namespaceWhen702 the context namespace at this point under pre-avro-702 output
      * @param gen json output to write to
-     * @return an alternate name to this, if names and alternativeNames would result in different output from
-     * this object. more specifically - if the "effective full name" (simple name + either explicitly printed
-     * or inherited namespace) for this AvroName would be different under alternativeNames, the fullname
-     * under alternativeNames is returned.
-     * if the result of this method would have been the exact same under alternativeNames returns null
+     * @return information about what was actually done and how ancient vs modern avro would emit this named type
      * @throws IOException
      */
-    public AvroName writeName(AvroNames names, boolean preAvro702, JsonGeneratorWrapper<?> gen) throws IOException {
+    public Avro702Data writeName(
+        AvroNames names,
+        boolean preAvro702,
+        String namespaceWhenParsed,
+        String namespaceWhen702,
+        JsonGeneratorWrapper<?> gen
+    ) throws IOException {
         //always emit a name (if we have one?)
         if (name != null) {
             gen.writeStringField("name", name);
         }
+
+        String cleanNamespace = space == null ? "" : space;
+
+        //what would ancient avro do?
+        String contextNamespaceAfter702;
         boolean shouldEmitNSPre702 = shouldEmitNamespace(names.badSpace());
+        if (shouldEmitNSPre702) {
+            contextNamespaceAfter702 = cleanNamespace;
+        } else {
+            contextNamespaceAfter702 = namespaceWhen702;
+        }
+
+        //what would modern avro do?
+        String contextNamespaceAfter;
         boolean shouldEmitNSNormally = shouldEmitNamespace(names.correctSpace());
+        if (shouldEmitNSNormally) {
+            contextNamespaceAfter = cleanNamespace;
+        } else {
+            contextNamespaceAfter = namespaceWhenParsed;
+        }
+
+        //what should we do?
         boolean emitNS = preAvro702 ? shouldEmitNSPre702 : shouldEmitNSNormally;
         if (emitNS) {
-            String toEmit = space == null ? "" : space;
-            gen.writeStringField("namespace", toEmit);
+            gen.writeStringField("namespace", cleanNamespace);
         }
-        //even under 702, if we emit a NS explicitly we get the correct fullname (==this)
-        //otherwise we are creating (effectively) a fullname that is our simpleName combined
-        //with the (correct!) current "context" namespace
-        AvroName effectiveNameUnder702 = shouldEmitNSPre702 ? this : new AvroName(this.name, names.correctSpace());
-        //if our (effective) name under 702 is different than our correct name we need to return an alias
-        if (!effectiveNameUnder702.equals(this)) {
-            //if we are generating pre-702 output it means we just emitted effectiveNameUnder702 and need to return
-            //ourselves (the correct fullname) as an alias. otherwise the opposite
-            return preAvro702 ? this : effectiveNameUnder702;
+
+        //how will Schema.parse() read the output of ancient and modern avro?
+        AvroName fullnameWhenParsed = new AvroName(this.name, contextNamespaceAfter);
+        AvroName fullnameWhenParsedUnder702 = new AvroName(this.name, contextNamespaceAfter702);
+
+        //how will Schema.parse() read our actual output?
+        AvroName asWritten = preAvro702 ? fullnameWhenParsedUnder702 : fullnameWhenParsed;
+
+        List<AvroName> aliases = new ArrayList<>(0);
+        if (!fullnameWhenParsed.equals(fullnameWhenParsedUnder702)) {
+            if (preAvro702) {
+                aliases.add(fullnameWhenParsed);
+            } else {
+                aliases.add(fullnameWhenParsedUnder702);
+            }
         }
-        return null;
+
+        return new Avro702Data(
+            this,
+            asWritten,
+            aliases,
+            contextNamespaceAfter,
+            contextNamespaceAfter702
+        );
     }
 
     public String getQualified(String defaultSpace) {
