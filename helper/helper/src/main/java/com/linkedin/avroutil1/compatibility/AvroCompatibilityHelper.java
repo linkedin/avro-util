@@ -603,9 +603,9 @@ public class AvroCompatibilityHelper {
    * @param field a schema field
    * @return the default value of the field (if such a value exists),
    *         as a generic record class. Returns null if there is no default value.
-   *         null default also means union field with null. If null default value
-   *         is returned, if needed choose appropriate default value based on
-   *         schema type.
+   *         A null default also means that field is of type NULL or union field with null 
+   *         and null being the first member. If null default value is returned, 
+   *         if needed choose appropriate default value based on schema type.
    */
   public static Object getNullableGenericDefaultValue(Schema.Field field) {
     return fieldHasDefault(field) ? getGenericDefaultValue(field) : null;
