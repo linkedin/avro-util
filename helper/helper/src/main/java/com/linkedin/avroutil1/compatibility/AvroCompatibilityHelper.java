@@ -607,7 +607,7 @@ public class AvroCompatibilityHelper {
    *         is returned, if needed choose appropriate default value based on
    *         schema type.
    */
-  public static Object getCompatibleDefaultValue(Schema.Field field) {
+  public static Object getNullableGenericDefaultValue(Schema.Field field) {
     return fieldHasDefault(field) ? getGenericDefaultValue(field) : null;
   }
 

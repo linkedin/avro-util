@@ -56,13 +56,13 @@ public class AvroCompatibilityHelperDefaultsTest {
     SchemaParseResult result = AvroCompatibilityHelper.parse(avsc, SchemaParseConfiguration.STRICT, null);
     Schema schema = result.getMainSchema();
 
-    Assert.assertNull(AvroCompatibilityHelper.getCompatibleDefaultValue(schema.getField("nullField")));
-    Assert.assertTrue((Boolean) AvroCompatibilityHelper.getCompatibleDefaultValue(schema.getField("boolField")));
+    Assert.assertNull(AvroCompatibilityHelper.getNullableGenericDefaultValue(schema.getField("nullField")));
+    Assert.assertTrue((Boolean) AvroCompatibilityHelper.getNullableGenericDefaultValue(schema.getField("boolField")));
     //returns a Utf8
-    Assert.assertEquals(AvroCompatibilityHelper.getCompatibleDefaultValue(schema.getField("strField")).toString(), "default");
-    Assert.assertNull(AvroCompatibilityHelper.getCompatibleDefaultValue(schema.getField("unionWithNullDefault")));
+    Assert.assertEquals(AvroCompatibilityHelper.getNullableGenericDefaultValue(schema.getField("strField")).toString(), "default");
+    Assert.assertNull(AvroCompatibilityHelper.getNullableGenericDefaultValue(schema.getField("unionWithNullDefault")));
     //Utf8
-    Assert.assertEquals(AvroCompatibilityHelper.getCompatibleDefaultValue(schema.getField("unionWithStringDefault")).toString(), "def");
+    Assert.assertEquals(AvroCompatibilityHelper.getNullableGenericDefaultValue(schema.getField("unionWithStringDefault")).toString(), "def");
   }
 
   @Test
@@ -142,9 +142,9 @@ public class AvroCompatibilityHelperDefaultsTest {
     SchemaParseResult result = AvroCompatibilityHelper.parse(avsc, SchemaParseConfiguration.STRICT, null);
     Schema schema = result.getMainSchema();
     
-    Assert.assertNull(AvroCompatibilityHelper.getCompatibleDefaultValue(schema.getField("nullWithoutDefault")));
-    Assert.assertNull(AvroCompatibilityHelper.getCompatibleDefaultValue(schema.getField("boolWithoutDefault")));
-    Assert.assertNull(AvroCompatibilityHelper.getCompatibleDefaultValue(schema.getField("unionWithStringNoDefault")));
+    Assert.assertNull(AvroCompatibilityHelper.getNullableGenericDefaultValue(schema.getField("nullWithoutDefault")));
+    Assert.assertNull(AvroCompatibilityHelper.getNullableGenericDefaultValue(schema.getField("boolWithoutDefault")));
+    Assert.assertNull(AvroCompatibilityHelper.getNullableGenericDefaultValue(schema.getField("unionWithStringNoDefault")));
   }
 
   @Test
