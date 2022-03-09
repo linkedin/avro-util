@@ -596,6 +596,22 @@ public class AvroCompatibilityHelper {
   }
 
   /**
+   * returns the default value for a schema field, as a generic record class
+   * (if the default value is complex enough - say records, enums, fixed fields etc)
+   * or as a JDK/Avro class (for simple values like Strings or booleans). <br>
+   *
+   * @param field a schema field
+   * @return the default value of the field (if such a value exists),
+   *         as a generic record class. Returns null if there is no default value.
+   *         A null default also means that field is of type NULL or union field with null 
+   *         and null being the first member. If null default value is returned, 
+   *         if needed choose appropriate default value based on schema type.
+   */
+  public static Object getNullableGenericDefaultValue(Schema.Field field) {
+    return fieldHasDefault(field) ? getGenericDefaultValue(field) : null;
+  }
+
+  /**
    * returns a new FieldBuilder, optionally copying the initial values from a given Schema$Field
    * @param other (optional) a field from which to set the initial values for the returned builder
    * @return a new field builder
@@ -799,9 +815,7 @@ public class AvroCompatibilityHelper {
    *                     For avro 1.9 and newer, user should pass in the default value object directly.
    * @param order the order of the field.
    * @return fully constructed Field instance
-   * @deprecated use {@link #newField(Schema.Field)}
    */
-  @Deprecated
   public static Schema.Field createSchemaField(String name, Schema schema, String doc, Object defaultValue, Schema.Field.Order order) {
     return newField(null)
             .setName(name)
