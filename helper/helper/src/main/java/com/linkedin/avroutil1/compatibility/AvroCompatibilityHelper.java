@@ -825,11 +825,7 @@ public class AvroCompatibilityHelper {
             .setOrder(order)
             .build();
   }
-
-  /**
-   * @deprecated use {@link #newField(Schema.Field)}
-   */
-  @Deprecated
+  
   public static Schema.Field createSchemaField(String name, Schema schema, String doc, Object defaultValue) {
     return createSchemaField(name, schema, doc, defaultValue, Schema.Field.Order.ASCENDING);
   }
