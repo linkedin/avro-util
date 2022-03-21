@@ -14,8 +14,12 @@ public class AvroLongLiteral extends AvroPrimitiveLiteral {
         this.value = value;
     }
 
+    public long getValue() {
+        return value;
+    }
+
     @Override
-    protected AvroType expectedType() {
+    protected AvroType primitiveType() {
         return AvroType.LONG;
     }
 

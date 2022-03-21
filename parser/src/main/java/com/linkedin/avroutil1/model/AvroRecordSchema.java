@@ -19,8 +19,14 @@ public class AvroRecordSchema extends AvroNamedSchema {
      */
     private List<AvroSchemaField> fields;
 
-    public AvroRecordSchema(CodeLocation codeLocation, String simpleName, String namespace, String doc, JsonPropertiesContainer props) {
-        super(codeLocation, simpleName, namespace, doc, props);
+    public AvroRecordSchema(
+        CodeLocation codeLocation,
+        AvroName name,
+        List<AvroName> aliases,
+        String doc,
+        JsonPropertiesContainer props
+    ) {
+        super(codeLocation, name, aliases, doc, props);
     }
 
     public void setFields(List<AvroSchemaField> fields) {

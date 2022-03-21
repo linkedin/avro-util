@@ -22,6 +22,10 @@ public class AvroArrayLiteral extends AvroLiteral {
         this.value = value;
     }
 
+    public List<AvroLiteral> getValue() {
+        return value;
+    }
+
     @Override
     public String toString() {
         StringJoiner csv = new StringJoiner(", ");

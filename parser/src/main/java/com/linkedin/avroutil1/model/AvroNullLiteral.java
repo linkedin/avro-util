@@ -13,7 +13,7 @@ public class AvroNullLiteral extends AvroPrimitiveLiteral {
     }
 
     @Override
-    protected AvroType expectedType() {
+    protected AvroType primitiveType() {
         return AvroType.NULL;
     }
 

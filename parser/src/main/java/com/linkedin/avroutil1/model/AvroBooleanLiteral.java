@@ -15,8 +15,12 @@ public class AvroBooleanLiteral extends AvroPrimitiveLiteral {
     }
 
     @Override
-    protected AvroType expectedType() {
+    protected AvroType primitiveType() {
         return AvroType.BOOLEAN;
+    }
+
+    public boolean getValue() {
+        return value;
     }
 
     @Override

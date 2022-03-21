@@ -14,8 +14,12 @@ public class AvroFloatLiteral extends AvroPrimitiveLiteral {
         this.value = value;
     }
 
+    public float getValue() {
+        return value;
+    }
+
     @Override
-    protected AvroType expectedType() {
+    protected AvroType primitiveType() {
         return AvroType.FLOAT;
     }
 

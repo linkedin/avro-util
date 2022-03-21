@@ -14,8 +14,12 @@ public class AvroIntegerLiteral extends AvroPrimitiveLiteral {
         this.value = value;
     }
 
+    public int getValue() {
+        return value;
+    }
+
     @Override
-    protected AvroType expectedType() {
+    protected AvroType primitiveType() {
         return AvroType.INT;
     }
 

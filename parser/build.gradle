@@ -14,8 +14,10 @@ dependencies {
     //json-p under its new home @ https://projects.eclipse.org/projects/ee4j.jsonp
     api "jakarta.json:jakarta.json-api:2.0.1"
     implementation "org.glassfish:jakarta.json:2.0.1"
+//    implementation project(path: ':helper:helper', configuration: 'shadow')
 
     testImplementation project(":test-common")
+    testImplementation project(path: ':helper:helper', configuration: 'shadow')
     testImplementation "org.apache.avro:avro:1.10.2"
     testImplementation "org.skyscreamer:jsonassert:1.5.0"
 }
