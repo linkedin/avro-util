@@ -15,8 +15,12 @@ import org.apache.bcel.Const;
 /***
  * Avro v1.4 is vulnerable to AVRO-702,
  * Detects and reports usage of org.apache.avro.Schema.toString
+ * Also detects String.valueOf(org.apache.avro.Schema) which uses toString
  */
 public class SchemaSerializationDetector extends OpcodeStackDetector {
+  public static final String BUG_TYPE = "SCHEMA_SERIALIZATION_USING_TOSTRING";
+  public static final String EMPTY = "";
+
   private final BugReporter bugReporter;
 
   public SchemaSerializationDetector(BugReporter bugReporter) {
@@ -25,17 +29,22 @@ public class SchemaSerializationDetector extends OpcodeStackDetector {
 
   @Override
   public void sawOpcode(int seen) {
-    if (seen != Const.INVOKEVIRTUAL) {
+    if (seen != Const.INVOKEVIRTUAL && seen != Const.INVOKESTATIC) {
       return;
     }
     if (getClassConstantOperand().equals("org/apache/avro/Schema") && getMethodDescriptorOperand().getName()
-        .equals("toString")) {
+        .equals("toString")
+        || getClassConstantOperand().equals("java/lang/String") && getMethodDescriptorOperand().getName()
+        .equals("valueOf") && getStackItemSignature().contains("org/apache/avro/Schema")) {
       {
         BugInstance bug =
-            new BugInstance(this, "SCHEMA_SERIALIZATION_USING_TOSTRING", NORMAL_PRIORITY).addClassAndMethod(this)
-                .addSourceLine(this, getPC());
+            new BugInstance(this, BUG_TYPE, NORMAL_PRIORITY).addClassAndMethod(this).addSourceLine(this, getPC());
         bugReporter.reportBug(bug);
       }
     }
+  }
+
+  private String getStackItemSignature() {
+    return getStack() == null || getStack().getStackDepth() == 0 ? EMPTY : getStack().getStackItem(0).getSignature();
   }
 }

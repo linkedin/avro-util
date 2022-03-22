@@ -16,6 +16,7 @@ import org.hamcrest.MatcherAssert;
 import org.junit.Rule;
 import org.junit.Test;
 
+import static com.linkedin.avroutil1.spotbugs.SchemaSerializationDetector.BUG_TYPE;
 import static edu.umd.cs.findbugs.test.CountMatcher.containsExactly;
 
 
@@ -29,9 +30,9 @@ public class SchemaSerializationDetectorTest {
     BugCollection bugCollection = spotbugs.performAnalysis(path);
 
     BugInstanceMatcher bugTypeMatcher = new BugInstanceMatcherBuilder()
-        .bugType("SCHEMA_SERIALIZATION_USING_TOSTRING")
+        .bugType(BUG_TYPE)
         .inMethod("serializeSchemaUsingToString").build();
-    MatcherAssert.assertThat(bugCollection, containsExactly(1, bugTypeMatcher));
+    MatcherAssert.assertThat(bugCollection, containsExactly(2, bugTypeMatcher));
   }
 
   @Test
@@ -40,7 +41,7 @@ public class SchemaSerializationDetectorTest {
     BugCollection bugCollection = spotbugs.performAnalysis(path);
 
     BugInstanceMatcher bugTypeMatcher = new BugInstanceMatcherBuilder()
-        .bugType("SCHEMA_SERIALIZATION_USING_TOSTRING")
+        .bugType(BUG_TYPE)
         .inMethod("serializeSchemaUsingToString").build();
     MatcherAssert.assertThat(bugCollection, containsExactly(0, bugTypeMatcher));
   }

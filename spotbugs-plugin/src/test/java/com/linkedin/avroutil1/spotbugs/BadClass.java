@@ -204,5 +204,6 @@ public abstract class BadClass {
     public void serializeSchemaUsingToString() {
         Schema schema = Schema.create(Schema.Type.STRING);
         String serialized = schema.toString();
+        String.valueOf(schema);
     }
 }
