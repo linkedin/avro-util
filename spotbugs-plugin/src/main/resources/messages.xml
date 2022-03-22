@@ -94,6 +94,11 @@
             detects usage of org.apache.avro.specific.SpecificData.newInstance()
         </Details>
     </Detector>
+    <Detector class="com.linkedin.avroutil1.spotbugs.SchemaSerializationDetector">
+        <Details>
+            detects usage of org.apache.avro.Schema.toString()
+        </Details>
+    </Detector>
 
     <!-- bug pattern descriptions -->
 
@@ -362,6 +367,19 @@
 ]]>
         </Details>
     </BugPattern>
+    <BugPattern type="SCHEMA_SERIALIZATION_USING_TOSTRING">
+        <ShortDescription>usage of org.apache.avro.specific.Schema.toString()</ShortDescription>
+        <LongDescription>
+            usage of org.apache.avro.specific.Schema.toString()
+        </LongDescription>
+        <Details>
+            <![CDATA[
+   <p>
+      usage of org.apache.avro.specific.Schema.toString() in avro 1.4 generates incorrect namespaces.
+   </p>
+]]>
+        </Details>
+    </BugPattern>
 
     <!-- bug codes -->
 
@@ -382,4 +400,5 @@
     <BugCode abbrev="SDNI">SecificData.newInstance() usage</BugCode>
     <BugCode abbrev="SFI">Schema.Field instantiation</BugCode>
     <BugCode abbrev="SSD">Single Schema deserialization</BugCode>
+    <BugCode abbrev="SSUT">Schema Serialization using toString</BugCode>
 </MessageCollection>
