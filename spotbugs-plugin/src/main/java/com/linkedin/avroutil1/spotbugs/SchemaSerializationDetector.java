@@ -9,6 +9,7 @@ package com.linkedin.avroutil1.spotbugs;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
+import javax.annotation.Nonnull;
 import org.apache.bcel.Const;
 
 
@@ -19,7 +20,7 @@ import org.apache.bcel.Const;
  */
 public class SchemaSerializationDetector extends OpcodeStackDetector {
   public static final String BUG_TYPE = "SCHEMA_SERIALIZATION_USING_TOSTRING";
-  public static final String EMPTY = "";
+  public static final String EMPTY_STRING = "";
 
   private final BugReporter bugReporter;
 
@@ -29,22 +30,29 @@ public class SchemaSerializationDetector extends OpcodeStackDetector {
 
   @Override
   public void sawOpcode(int seen) {
+    final String slashedSchemaClassPath = "org/apache/avro/Schema";
+    final String slashedStringClassPath = "java/lang/String";
+    final String toStringMethod = "toString";
+    final String valueOfMethod = "valueOf";
+
     if (seen != Const.INVOKEVIRTUAL && seen != Const.INVOKESTATIC) {
       return;
     }
-    if (getClassConstantOperand().equals("org/apache/avro/Schema") && getMethodDescriptorOperand().getName()
-        .equals("toString")
-        || getClassConstantOperand().equals("java/lang/String") && getMethodDescriptorOperand().getName()
-        .equals("valueOf") && getStackItemSignature().contains("org/apache/avro/Schema")) {
-      {
-        BugInstance bug =
-            new BugInstance(this, BUG_TYPE, NORMAL_PRIORITY).addClassAndMethod(this).addSourceLine(this, getPC());
-        bugReporter.reportBug(bug);
-      }
+
+    if (toStringMethod.equals(getMethodDescriptorOperand().getName()) && checkClassConstantOperand(slashedSchemaClassPath)
+        || valueOfMethod.equals(getMethodDescriptorOperand().getName()) && checkClassConstantOperand(
+        slashedStringClassPath) && getStackItemSignature().contains(slashedSchemaClassPath)) {
+      BugInstance bug =
+          new BugInstance(this, BUG_TYPE, NORMAL_PRIORITY).addClassAndMethod(this).addSourceLine(this, getPC());
+      bugReporter.reportBug(bug);
     }
   }
 
+  private boolean checkClassConstantOperand(@Nonnull String classPath) {
+    return getClassConstantOperand() == null || classPath.equals(getClassConstantOperand());
+  }
+
   private String getStackItemSignature() {
-    return getStack() == null || getStack().getStackDepth() == 0 ? EMPTY : getStack().getStackItem(0).getSignature();
+    return getStack() == null || getStack().getStackDepth() == 0 ? EMPTY_STRING : getStack().getStackItem(0).getSignature();
   }
 }
