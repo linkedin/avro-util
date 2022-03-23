@@ -200,4 +200,10 @@ public abstract class BadClass {
         SpecificDatumReader<IndexedRecord> specificDatumReader = new SpecificDatumReader<>(schema);
         //cant test for fastavro because not a dependency of this module
     }
+
+    public void serializeSchemaUsingToString() {
+        Schema schema = Schema.create(Schema.Type.STRING);
+        String serialized = schema.toString();
+        String.valueOf(schema);
+    }
 }
