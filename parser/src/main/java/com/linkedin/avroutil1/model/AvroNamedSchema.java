@@ -6,41 +6,52 @@
 
 package com.linkedin.avroutil1.model;
 
+import java.util.List;
+
+
 /**
  * parent class for all avro named types: records, enums and fixed
  */
 public abstract class AvroNamedSchema extends AvroSchema {
 
-    protected final String simpleName;
-    protected final String namespace;
+    protected final AvroName name;
+    protected final List<AvroName> aliases; //as fullnames
     protected final String doc;
 
-    public AvroNamedSchema(CodeLocation codeLocation, String simpleName, String namespace, String doc, JsonPropertiesContainer props) {
+    public AvroNamedSchema(
+        CodeLocation codeLocation,
+        AvroName name,
+        List<AvroName> aliases,
+        String doc,
+        JsonPropertiesContainer props
+    ) {
         super(codeLocation, props);
-        if (simpleName == null || simpleName.isEmpty()) {
-            throw new IllegalArgumentException("simpleName cannot be null or empty");
+        if (name == null) {
+            throw new IllegalArgumentException("name cannot be null");
         }
-        if (namespace == null) {
-            throw new IllegalArgumentException("namespace for " + simpleName + " cannot be null"); //can be empty
-        }
-        this.simpleName = simpleName;
-        this.namespace = namespace;
+        this.name = name;
+        this.aliases = aliases;
         this.doc = doc;
     }
 
+    public AvroName getName() {
+        return name;
+    }
+
     public String getSimpleName() {
-        return simpleName;
+        return name.getSimpleName();
     }
 
     public String getNamespace() {
-        return namespace;
+        return name.getNamespace();
     }
 
     public String getFullName() {
-        if (namespace.isEmpty()) {
-            return simpleName;
-        }
-        return namespace + "." + simpleName;
+        return name.getFullname();
+    }
+
+    public List<AvroName> getAliases() {
+        return aliases;
     }
 
     public String getDoc() {

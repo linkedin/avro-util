@@ -6,22 +6,25 @@
 
 package com.linkedin.avroutil1.model;
 
+import java.util.List;
+
+
 public class AvroFixedSchema extends AvroNamedSchema {
     private final int size;
     private final AvroLogicalType logicalType;
 
     public AvroFixedSchema(
             CodeLocation codeLocation,
-            String simpleName,
-            String namespace,
+            AvroName name,
+            List<AvroName> aliases,
             String doc,
             int size,
             AvroLogicalType logicalType,
             JsonPropertiesContainer props
     ) {
-        super(codeLocation, simpleName, namespace, doc, props);
+        super(codeLocation, name, aliases, doc, props);
         if (logicalType != null && !logicalType.getParentTypes().contains(type())) {
-            throw new IllegalArgumentException(type() + " " + simpleName + " at " + codeLocation
+            throw new IllegalArgumentException(type() + " " + getSimpleName() + " at " + codeLocation
                     + " cannot have a logical type of " + logicalType + " (which can only be a logical type of "
                     + logicalType.getParentTypes() + ")");
         }

@@ -81,7 +81,11 @@ public enum AvroType {
         return collection;
     }
 
-    public static AvroType fromJson(String jsonTypeStr) {
+    public String toTypeName() {
+        return name().toLowerCase(Locale.ROOT);
+    }
+
+    public static AvroType fromTypeName(String jsonTypeStr) {
         //todo - optimize to not rely on exception
         try {
             return valueOf(jsonTypeStr.toUpperCase(Locale.ROOT));

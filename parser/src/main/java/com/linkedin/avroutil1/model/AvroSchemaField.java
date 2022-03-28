@@ -79,6 +79,10 @@ public class AvroSchemaField implements LocatedCode, JsonPropertiesContainer {
         return name;
     }
 
+    public boolean hasDoc() {
+        return doc != null; //empty string counts
+    }
+
     public String getDoc() {
         return doc;
     }
@@ -100,6 +104,10 @@ public class AvroSchemaField implements LocatedCode, JsonPropertiesContainer {
      */
     public SchemaOrRef getSchemaOrRef() {
         return schema;
+    }
+
+    public boolean hasDefaultValue() {
+        return defaultValue != null;
     }
 
     public AvroLiteral getDefaultValue() {

@@ -10,11 +10,11 @@ public abstract class AvroPrimitiveLiteral extends AvroLiteral {
 
     public AvroPrimitiveLiteral(AvroPrimitiveSchema schema, CodeLocation codeLocation) {
         super(schema, codeLocation);
-        if (!expectedType().equals(schema.type())) {
+        if (!primitiveType().equals(schema.type())) {
             throw new IllegalArgumentException("schema " + schema + " is not a "
-                    + expectedType() + " schema but rather a " + schema.type());
+                    + primitiveType() + " schema but rather a " + schema.type());
         }
     }
 
-    protected abstract AvroType expectedType();
+    protected abstract AvroType primitiveType();
 }

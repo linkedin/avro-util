@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.parser.avsc;
 
+import com.linkedin.avroutil1.model.AvroJavaStringRepresentation;
 import com.linkedin.avroutil1.model.AvroLogicalType;
 import com.linkedin.avroutil1.model.AvroType;
 import com.linkedin.avroutil1.model.CodeLocation;
@@ -127,7 +128,8 @@ public class AvscIssues {
         return new AvscIssue(
                 valueLocation,
                 IssueSeverity.WARNING,
-                "unknown string representation \"" + badValue + "\" at " + valueLocation.getStart(),
+                "unknown string representation \"" + badValue + "\" at " + valueLocation.getStart()
+                    + ". expected values: " + AvroJavaStringRepresentation.legalJsonValues(),
                 null
         );
     }
@@ -190,6 +192,18 @@ public class AvscIssues {
                 "value " + value + " at " + valueLocation + " is expected to be a "
                         + valueExpectedType + " but instead is a " + valueType,
                 null
+        );
+    }
+
+    public static AvscIssue duplicateAlias(
+        String fullAlias,
+        CodeLocation aliasLocation
+    ) {
+        return new AvscIssue(
+            aliasLocation,
+            IssueSeverity.WARNING,
+            "alias " + fullAlias + " at " + aliasLocation + " is a duplicate",
+            null
         );
     }
 }

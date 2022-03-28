@@ -22,6 +22,10 @@ public class AvroFixedLiteral extends AvroLiteral {
         this.value = value;
     }
 
+    public byte[] getValue() {
+        return value;
+    }
+
     @Override
     public String toString() {
         //TODO - hex encode

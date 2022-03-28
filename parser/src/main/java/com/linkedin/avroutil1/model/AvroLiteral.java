@@ -26,6 +26,10 @@ public abstract class AvroLiteral implements LocatedCode {
         this.codeLocation = codeLocation;
     }
 
+    public AvroSchema getSchema() {
+        return schema;
+    }
+
     public AvroType type() {
         return schema.type();
     }

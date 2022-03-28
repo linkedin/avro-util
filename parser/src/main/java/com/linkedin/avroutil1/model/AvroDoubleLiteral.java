@@ -14,8 +14,12 @@ public class AvroDoubleLiteral extends AvroPrimitiveLiteral {
         this.value = value;
     }
 
+    public double getValue() {
+        return value;
+    }
+
     @Override
-    protected AvroType expectedType() {
+    protected AvroType primitiveType() {
         return AvroType.DOUBLE;
     }
 

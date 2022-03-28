@@ -16,14 +16,14 @@ public class AvroEnumSchema extends AvroNamedSchema {
 
     public AvroEnumSchema(
             CodeLocation codeLocation,
-            String simpleName,
-            String namespace,
+            AvroName name,
+            List<AvroName> aliases,
             String doc,
             List<String> symbols,
             String defaultSymbol,
             JsonPropertiesContainer props
     ) {
-        super(codeLocation, simpleName, namespace, doc, props);
+        super(codeLocation, name, aliases, doc, props);
         //TODO - check for dup symbols, same-name-different-case, etc
         //TODO - check default (if exists) is a symbol
         this.symbols = Collections.unmodifiableList(new ArrayList<>(symbols));

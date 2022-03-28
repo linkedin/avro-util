@@ -42,6 +42,11 @@ public interface JsonPropertiesContainer {
         }
     };
 
+    default boolean hasProperties() {
+        Set<String> propertyNames = propertyNames();
+        return propertyNames != null && !propertyNames.isEmpty();
+    }
+
     /**
      * @return returns all the "extra" (non core) properties defined
      * on an avro schema part, in order of definition in the source

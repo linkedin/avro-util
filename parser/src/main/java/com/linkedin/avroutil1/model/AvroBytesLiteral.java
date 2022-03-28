@@ -14,8 +14,12 @@ public class AvroBytesLiteral extends AvroPrimitiveLiteral {
         this.value = value;
     }
 
+    public byte[] getValue() {
+        return value;
+    }
+
     @Override
-    protected AvroType expectedType() {
+    protected AvroType primitiveType() {
         return AvroType.BYTES;
     }
 
