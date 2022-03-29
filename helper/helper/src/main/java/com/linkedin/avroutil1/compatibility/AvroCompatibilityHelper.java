@@ -444,14 +444,19 @@ public class AvroCompatibilityHelper {
   }
 
   /**
-   * Returns the default value for a schema field, as a specific record class
+   * Returns the STRICTLY LEGAL default value for a schema field, as a specific record class
    * (if the default value is complex enough - say records, enums, fixed fields etc)
    * or as a JDK/Avro class (for simple values like Strings or booleans). <br>
+   *
+   * this method strictly validates the default value conforms to the schema, which means it
+   * may throw for schemas that were parsed with loose validation or under old avro.
+   * it will also throw if the field in question has no default value.
    *
    * @param field a schema field
    * @return the default value of the field (if such a value exists),
    *         as a specific record class. may be null.
    * @throws org.apache.avro.AvroRuntimeException if the field in question has no default.
+   * @throws org.apache.avro.AvroTypeException if the default value for the field is illegal
    */
   public static Object getSpecificDefaultValue(Schema.Field field) {
     assertAvroAvailable();
@@ -581,14 +586,19 @@ public class AvroCompatibilityHelper {
   }
 
   /**
-   * returns the default value for a schema field, as a generic record class
+   * returns the STRICTLY LEGAL default value for a schema field, as a generic record class
    * (if the default value is complex enough - say records, enums, fixed fields etc)
    * or as a JDK/Avro class (for simple values like Strings or booleans). <br>
    *
+   * this method strictly validates the default value conforms to the schema, which means it
+   * may throw for schemas that were parsed with loose validation or under old avro.
+   * it will also throw if the field in question has no default value.
+   *
    * @param field a schema field
    * @return the default value of the field (if such a value exists),
-   *         as a generic record class. may be null.
+   *         as a generic record class. may be null (only if the default value is a legal null)
    * @throws org.apache.avro.AvroRuntimeException if the field in question has no default.
+   * @throws org.apache.avro.AvroTypeException if the default value for the field is illegal
    */
   public static Object getGenericDefaultValue(Schema.Field field) {
     assertAvroAvailable();
@@ -600,15 +610,30 @@ public class AvroCompatibilityHelper {
    * (if the default value is complex enough - say records, enums, fixed fields etc)
    * or as a JDK/Avro class (for simple values like Strings or booleans). <br>
    *
+   * this variant is more forgiving of foelds with no or illegal default values,
+   * and returns null for those cases. it may also return null if thats the actual
+   * legal default value for the field. users who case about this distinction should
+   * use {@link #getGenericDefaultValue(Schema.Field)} instead
+   *
    * @param field a schema field
-   * @return the default value of the field (if such a value exists),
-   *         as a generic record class. Returns null if there is no default value.
-   *         A null default also means that field is of type NULL or union field with null 
-   *         and null being the first member. If null default value is returned, 
+   * @return the default value of the field (if such a value exists and is legal),
+   *         as a generic record class. Returns null if there is no or illegal default value.
+   *         A null default also means that field is of type NULL or union field with null
+   *         and null being the first member. If null default value is returned,
    *         if needed choose appropriate default value based on schema type.
    */
   public static Object getNullableGenericDefaultValue(Schema.Field field) {
-    return fieldHasDefault(field) ? getGenericDefaultValue(field) : null;
+    if (!fieldHasDefault(field)) {
+      return null;
+    }
+    try {
+      return getGenericDefaultValue(field);
+    } catch (Exception ignored) {
+      //(likely) means bad default - we cant catch a "proper" AvroTypeException here
+      //because this would cause the helper class to fail to load in case there's no avro
+      //on the CP (which is a use case ...)
+      return null;
+    }
   }
 
   /**
@@ -825,7 +850,7 @@ public class AvroCompatibilityHelper {
             .setOrder(order)
             .build();
   }
-  
+
   public static Schema.Field createSchemaField(String name, Schema schema, String doc, Object defaultValue) {
     return createSchemaField(name, schema, doc, defaultValue, Schema.Field.Order.ASCENDING);
   }

@@ -6,12 +6,14 @@
 
 package com.linkedin.avroutil1.compatibility.avro14.backports;
 
+import com.linkedin.avroutil1.compatibility.avro14.Avro14SchemaValidator;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 import org.apache.avro.AvroRuntimeException;
+import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.io.BinaryDecoder;
@@ -44,15 +46,16 @@ public class Avro14DefaultValuesCache {
   public static Object getDefaultValue(Schema.Field field, boolean specific) {
 
     JsonNode json = field.defaultValue();
+    Schema schema = field.schema();
     if (json == null) {
       //avro 1.4 Field has no decent toString()
-      String fieldStr = field.name() + " type:" + field.schema().getType() + " pos:" + field.pos();
-      throw new AvroRuntimeException("Field " + fieldStr + " not set and has no default value");
+      String fieldStr = field.name() + " type:" + schema.getType() + " pos:" + field.pos();
+      throw new AvroRuntimeException("Field " + fieldStr + " has no default value");
     }
     if (json.isNull()
-        && (field.schema().getType() == Schema.Type.NULL
-        || (field.schema().getType() == Schema.Type.UNION
-        && field.schema().getTypes().get(0).getType() == Schema.Type.NULL))) {
+        && (schema.getType() == Schema.Type.NULL
+        || (schema.getType() == Schema.Type.UNION
+        && schema.getTypes().get(0).getType() == Schema.Type.NULL))) {
       return null;
     }
 
@@ -60,27 +63,38 @@ public class Avro14DefaultValuesCache {
 
     // Check the cache
     Object defaultValue = cache.get(field);
+    if (defaultValue != null) {
+      return defaultValue;
+    }
+
+    //validate the default JsonNode vs the fieldSchema, because old avro doesnt validate
+    //and applying the logic below to decode will return very weird results
+    if (!Avro14SchemaValidator.isValidDefault(schema, json)) {
+      //throw ~the same exception modern avro would
+      String message = "Invalid default for field " + field.name() + ": "
+          + json + " (a " + json.getClass().getSimpleName() + ") is not a " + schema;
+      throw new AvroTypeException(message);
+    }
 
     // If not cached, get the default Java value by encoding the default JSON
-    // value and then decoding it:
-    if (defaultValue == null)
-      try {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        BinaryEncoder encoder = new BinaryEncoder(baos);
-        Avro14ResolvingGrammarGeneratorAccessUtil.encode(encoder, field.schema(), json);
-        encoder.flush();
-        BinaryDecoder decoder = DecoderFactory.defaultFactory().createBinaryDecoder(baos.toByteArray(), null);
-        DatumReader reader;
-        if (specific) {
-          reader = new SpecificDatumReader(field.schema());
-        } else {
-          reader = new GenericDatumReader(field.schema());
-        }
-        defaultValue = reader.read(null, decoder);
-        cache.put(field, defaultValue);
-      } catch (IOException e) {
-        throw new AvroRuntimeException(e);
+    // value and then decoding it (same as avro does in ResolvingGrammarGenerator.resolveRecords()):
+    try {
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      BinaryEncoder encoder = new BinaryEncoder(baos);
+      Avro14ResolvingGrammarGeneratorAccessUtil.encode(encoder, schema, json);
+      encoder.flush();
+      BinaryDecoder decoder = DecoderFactory.defaultFactory().createBinaryDecoder(baos.toByteArray(), null);
+      DatumReader reader;
+      if (specific) {
+        reader = new SpecificDatumReader(schema);
+      } else {
+        reader = new GenericDatumReader(schema);
       }
+      defaultValue = reader.read(null, decoder);
+      cache.put(field, defaultValue);
+    } catch (IOException e) {
+      throw new AvroRuntimeException(e);
+    }
 
     return defaultValue;
   }

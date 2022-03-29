@@ -89,11 +89,11 @@ sourceSets {
 }
 
 dependencies {
-  compile project(":helper:helper")
+  implementation project(":helper:helper")
 
-  compile "org.slf4j:slf4j-api:1.7.14"
-  compile "org.apache.commons:commons-lang3:3.4"
-  compile "com.sun.codemodel:codemodel:2.6"
+  implementation "org.slf4j:slf4j-api:1.7.14"
+  implementation "org.apache.commons:commons-lang3:3.4"
+  implementation "com.sun.codemodel:codemodel:2.6"
 
   // By default, the compile and testCompile configuration is using avro-1.8, and
   // if you need to switch to an old version of Avro, we need to make
@@ -106,8 +106,8 @@ dependencies {
 
   jmh AVRO_LIB
 
-  testCompile 'org.testng:testng:6.14.3'
-  testCompile 'org.slf4j:slf4j-simple:1.7.14'
+  testImplementation 'org.testng:testng:6.14.3'
+  testImplementation 'org.slf4j:slf4j-simple:1.7.14'
   jmhCompile "org.openjdk.jmh:jmh-core:1.19"
   jmhAnnotationProcessor "org.openjdk.jmh:jmh-generator-annprocess:1.19"
 

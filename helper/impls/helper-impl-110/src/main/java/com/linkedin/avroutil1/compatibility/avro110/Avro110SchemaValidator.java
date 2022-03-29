@@ -1,11 +1,15 @@
 /*
- * Copyright 2020 LinkedIn Corp.
+ * Copyright 2022 LinkedIn Corp.
  * Licensed under the BSD 2-Clause License (the "License").
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1.compatibility;
+package com.linkedin.avroutil1.compatibility.avro110;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.linkedin.avroutil1.compatibility.HelperConsts;
+import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
+import com.linkedin.avroutil1.compatibility.SchemaVisitor;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -13,17 +17,10 @@ import java.util.Locale;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaParseException;
-import org.codehaus.jackson.JsonNode;
+import org.apache.avro.util.internal.Accessor;
 
 
-/**
- * a utility class that (in combination with {@link AvroSchemaUtil#traverseSchema(Schema, SchemaVisitor)})
- * can validate avro schemas vs the avro specification. <br>
- * this class exists because historically avro has been very bad at validating its own specification
- * and this allows proper validation under versions of {@literal avro < 1.9}
- */
-public class SchemaValidator implements SchemaVisitor {
-
+public class Avro110SchemaValidator implements SchemaVisitor {
 
   private final SchemaParseConfiguration validationSpec;
   private final Collection<Schema> grandfathered;
@@ -33,7 +30,7 @@ public class SchemaValidator implements SchemaVisitor {
    * @param validationSpec determines what should be validated
    * @param grandfathered a set of schemas to be excluded from validation (if encountered)
    */
-  public SchemaValidator(SchemaParseConfiguration validationSpec, Collection<Schema> grandfathered) {
+  public Avro110SchemaValidator(SchemaParseConfiguration validationSpec, Collection<Schema> grandfathered) {
     if (validationSpec == null) {
       throw new IllegalArgumentException("validationSpec required");
     }
@@ -74,7 +71,7 @@ public class SchemaValidator implements SchemaVisitor {
       String fieldName = field.name();
       validateName(fieldName, " in field " + parent.getFullName() + "." + fieldName);
     }
-    JsonNode defaultValue = field.defaultValue();
+    JsonNode defaultValue = Accessor.defaultValue(field);
     if (validationSpec.validateDefaultValues() && defaultValue != null) {
       Schema fieldSchema = field.schema();
       boolean validDefault = isValidDefault(fieldSchema, defaultValue);
@@ -116,9 +113,8 @@ public class SchemaValidator implements SchemaVisitor {
    * @throws SchemaParseException is name is invalid
    */
   public static boolean isValidDefault(Schema schema, JsonNode defaultValue) {
-    if (defaultValue == null) {
+    if (defaultValue == null)
       return false;
-    }
     switch (schema.getType()) {
       case STRING:
       case BYTES:
@@ -126,7 +122,9 @@ public class SchemaValidator implements SchemaVisitor {
       case FIXED:
         return defaultValue.isTextual();
       case INT:
+        return defaultValue.isIntegralNumber() && defaultValue.canConvertToInt();
       case LONG:
+        return defaultValue.isIntegralNumber() && defaultValue.canConvertToLong();
       case FLOAT:
       case DOUBLE:
         return defaultValue.isNumber();
@@ -135,39 +133,34 @@ public class SchemaValidator implements SchemaVisitor {
       case NULL:
         return defaultValue.isNull();
       case ARRAY:
-        if (!defaultValue.isArray()) {
+        if (!defaultValue.isArray())
           return false;
-        }
-        for (JsonNode element : defaultValue) {
-          if (!isValidDefault(schema.getElementType(), element)) {
+        for (JsonNode element : defaultValue)
+          if (!isValidDefault(schema.getElementType(), element))
             return false;
-          }
-        }
         return true;
       case MAP:
-        if (!defaultValue.isObject()) {
+        if (!defaultValue.isObject())
           return false;
-        }
-        for (JsonNode value : defaultValue) {
-          if (!isValidDefault(schema.getValueType(), value)) {
+        for (JsonNode value : defaultValue)
+          if (!isValidDefault(schema.getValueType(), value))
             return false;
-          }
-        }
         return true;
       case UNION: // union default: first branch
         return isValidDefault(schema.getTypes().get(0), defaultValue);
       case RECORD:
-        if (!defaultValue.isObject()) {
+        if (!defaultValue.isObject())
           return false;
-        }
         for (Schema.Field field : schema.getFields()) {
+          JsonNode fieldDefaultNode = Accessor.defaultValue(field);
           if (!isValidDefault(
               field.schema(),
-              defaultValue.get(field.name()) != null ? defaultValue.get(field.name()) : field.defaultValue()
+              defaultValue.has(field.name()) ? defaultValue.get(field.name()) : fieldDefaultNode
           )) {
             return false;
           }
         }
+
         return true;
       default:
         return false;

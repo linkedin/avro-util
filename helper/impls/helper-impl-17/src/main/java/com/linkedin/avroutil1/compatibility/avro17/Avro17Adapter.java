@@ -337,12 +337,8 @@ public class Avro17Adapter implements AvroAdapter {
 
   @Override
   public Object getGenericDefaultValue(Schema.Field field) {
-    if (getSpecificDefaultValueMethod != null) {
-      return GenericData.get().getDefaultValue(field);
-    } else {
-      //old avro 1.7 - punt to back-ported code
-      return Avro17DefaultValuesCache.getDefaultValue(field, false);
-    }
+    //always use our cache for the validation
+    return Avro17DefaultValuesCache.getDefaultValue(field, false);
   }
 
   @Override

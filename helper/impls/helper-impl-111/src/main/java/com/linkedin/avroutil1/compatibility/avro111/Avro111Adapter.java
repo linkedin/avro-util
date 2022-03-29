@@ -23,6 +23,7 @@ import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
 import com.linkedin.avroutil1.compatibility.SchemaParseResult;
 import com.linkedin.avroutil1.compatibility.SkipDecoder;
 import com.linkedin.avroutil1.compatibility.StringRepresentation;
+import com.linkedin.avroutil1.compatibility.avro111.backports.Avro111DefaultValuesCache;
 import com.linkedin.avroutil1.compatibility.avro111.codec.AliasAwareSpecificDatumReader;
 import com.linkedin.avroutil1.compatibility.avro111.codec.CachedResolvingDecoder;
 import com.linkedin.avroutil1.compatibility.avro111.codec.CompatibleJsonDecoder;
@@ -278,7 +279,8 @@ public class Avro111Adapter implements AvroAdapter {
 
     @Override
     public Object getGenericDefaultValue(Schema.Field field) {
-        return GenericData.get().getDefaultValue(field);
+        //always use our cache for the validation
+        return Avro111DefaultValuesCache.getDefaultValue(field, false);
     }
 
     @Override
