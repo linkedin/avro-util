@@ -1,11 +1,14 @@
 /*
- * Copyright 2020 LinkedIn Corp.
+ * Copyright 2022 LinkedIn Corp.
  * Licensed under the BSD 2-Clause License (the "License").
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1.compatibility;
+package com.linkedin.avroutil1.compatibility.avro18;
 
+import com.linkedin.avroutil1.compatibility.HelperConsts;
+import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
+import com.linkedin.avroutil1.compatibility.SchemaVisitor;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -16,14 +19,7 @@ import org.apache.avro.SchemaParseException;
 import org.codehaus.jackson.JsonNode;
 
 
-/**
- * a utility class that (in combination with {@link AvroSchemaUtil#traverseSchema(Schema, SchemaVisitor)})
- * can validate avro schemas vs the avro specification. <br>
- * this class exists because historically avro has been very bad at validating its own specification
- * and this allows proper validation under versions of {@literal avro < 1.9}
- */
-public class SchemaValidator implements SchemaVisitor {
-
+public class Avro18SchemaValidator implements SchemaVisitor {
 
   private final SchemaParseConfiguration validationSpec;
   private final Collection<Schema> grandfathered;
@@ -33,7 +29,7 @@ public class SchemaValidator implements SchemaVisitor {
    * @param validationSpec determines what should be validated
    * @param grandfathered a set of schemas to be excluded from validation (if encountered)
    */
-  public SchemaValidator(SchemaParseConfiguration validationSpec, Collection<Schema> grandfathered) {
+  public Avro18SchemaValidator(SchemaParseConfiguration validationSpec, Collection<Schema> grandfathered) {
     if (validationSpec == null) {
       throw new IllegalArgumentException("validationSpec required");
     }
@@ -117,6 +113,7 @@ public class SchemaValidator implements SchemaVisitor {
    */
   public static boolean isValidDefault(Schema schema, JsonNode defaultValue) {
     if (defaultValue == null) {
+      //means no default value
       return false;
     }
     switch (schema.getType()) {
@@ -126,7 +123,9 @@ public class SchemaValidator implements SchemaVisitor {
       case FIXED:
         return defaultValue.isTextual();
       case INT:
+        return defaultValue.isIntegralNumber() && defaultValue.isInt();
       case LONG:
+        return defaultValue.isIntegralNumber() && (defaultValue.isInt() || defaultValue.isLong());
       case FLOAT:
       case DOUBLE:
         return defaultValue.isNumber();

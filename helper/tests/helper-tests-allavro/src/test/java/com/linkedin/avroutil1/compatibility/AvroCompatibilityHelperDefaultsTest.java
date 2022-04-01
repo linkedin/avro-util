@@ -8,7 +8,16 @@ package com.linkedin.avroutil1.compatibility;
 
 import com.google.common.base.Throwables;
 import com.linkedin.avroutil1.testcommon.TestUtil;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Random;
+import java.util.StringJoiner;
 import org.apache.avro.AvroRuntimeException;
+import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.testng.Assert;
@@ -141,7 +150,7 @@ public class AvroCompatibilityHelperDefaultsTest {
     String avsc = TestUtil.load("RecordWithDefaults.avsc");
     SchemaParseResult result = AvroCompatibilityHelper.parse(avsc, SchemaParseConfiguration.STRICT, null);
     Schema schema = result.getMainSchema();
-    
+
     Assert.assertNull(AvroCompatibilityHelper.getNullableGenericDefaultValue(schema.getField("nullWithoutDefault")));
     Assert.assertNull(AvroCompatibilityHelper.getNullableGenericDefaultValue(schema.getField("boolWithoutDefault")));
     Assert.assertNull(AvroCompatibilityHelper.getNullableGenericDefaultValue(schema.getField("unionWithStringNoDefault")));
@@ -174,5 +183,151 @@ public class AvroCompatibilityHelperDefaultsTest {
     genericDefault = AvroCompatibilityHelper.getGenericDefaultValue(field);
     Assert.assertNotNull(genericDefault);
     Assert.assertTrue(genericDefault instanceof GenericData.Record);
+  }
+
+  @Test
+  public void testBadDefaultValues() throws Exception {
+    List<Schema.Type> primitives = Arrays.asList(
+        Schema.Type.NULL,
+        Schema.Type.BOOLEAN,
+        Schema.Type.INT,
+        Schema.Type.LONG,
+        Schema.Type.FLOAT,
+        Schema.Type.DOUBLE,
+        Schema.Type.STRING,
+        Schema.Type.BYTES
+    );
+    //key is type, values are "equivalent" types
+    Map<Schema.Type, List<Schema.Type>> types = new LinkedHashMap<>();
+    types.put(Schema.Type.NULL, Arrays.asList(Schema.Type.NULL));
+    types.put(Schema.Type.BOOLEAN, Arrays.asList(Schema.Type.BOOLEAN));
+    types.put(Schema.Type.INT, Arrays.asList(Schema.Type.INT, Schema.Type.LONG));
+    types.put(Schema.Type.LONG, Arrays.asList(Schema.Type.INT, Schema.Type.LONG));
+    types.put(Schema.Type.FLOAT, Arrays.asList(Schema.Type.INT, Schema.Type.LONG, Schema.Type.FLOAT, Schema.Type.DOUBLE));
+    types.put(Schema.Type.DOUBLE, Arrays.asList(Schema.Type.INT, Schema.Type.LONG, Schema.Type.FLOAT, Schema.Type.DOUBLE));
+    types.put(Schema.Type.STRING, Arrays.asList(Schema.Type.STRING, Schema.Type.BYTES));
+    types.put(Schema.Type.BYTES, Arrays.asList(Schema.Type.STRING, Schema.Type.BYTES));
+
+    for (Schema.Type type : types.keySet()) {
+      List<Schema.Type> equivalents = types.get(type);
+      List<Schema.Type> badValueCandidates = new ArrayList<>(primitives);
+      List<Schema.Type> goodValueCandidates = new ArrayList<>(primitives);
+      badValueCandidates.removeAll(equivalents);
+      goodValueCandidates.removeAll(badValueCandidates);
+
+      //do all the simple fields
+      for (Schema.Type valueType : badValueCandidates) {
+        String typeStr = type.name().toLowerCase(Locale.ROOT);
+        String badTypeStr = valueType.name().toLowerCase(Locale.ROOT);
+        String badLiteral = randomJsonLiteral(valueType);
+        String fieldName = typeStr + "With" + badTypeStr + "Default";
+        String avsc = "{\"type\": \"record\", \"name\": \"HasBadDefaults\", \"fields\": [{\"name\": \""
+            + fieldName + "\", \"type\": \"" + typeStr + "\", \"default\": " + badLiteral + "}]}";
+        runBadDefaultCycle(avsc, fieldName);
+      }
+
+      //now do arrays
+      for (Schema.Type valueType : badValueCandidates) {
+        String typeStr = type.name().toLowerCase(Locale.ROOT);
+        String badTypeStr = valueType.name().toLowerCase(Locale.ROOT);
+        String badLiteral = randomJsonLiteral(valueType);
+        String fieldName = typeStr + "ArrayWith" + badTypeStr + "Default";
+        String avsc = "{\"type\": \"record\", \"name\": \"HasBadDefaults\", \"fields\": [{\"name\": \""
+            + fieldName + "\", \"type\": { \"type\": \"array\", \"items\": \"" + typeStr + "\"}, \"default\": " + badLiteral + "}]}";
+        runBadDefaultCycle(avsc, fieldName);
+      }
+
+      //and arrays with array defaults
+      for (Schema.Type valueType : badValueCandidates) {
+        String typeStr = type.name().toLowerCase(Locale.ROOT);
+        String badTypeStr = valueType.name().toLowerCase(Locale.ROOT);
+        String badLiteral = randomArrayJsonLiteral(valueType);
+        String fieldName = typeStr + "ArrayWith" + badTypeStr + "DefaultArray";
+        String avsc = "{\"type\": \"record\", \"name\": \"HasBadDefaults\", \"fields\": [{\"name\": \""
+            + fieldName + "\", \"type\": { \"type\": \"array\", \"items\": \"" + typeStr + "\"}, \"default\": " + badLiteral + "}]}";
+        runBadDefaultCycle(avsc, fieldName);
+      }
+    }
+
+    //throw in a few manual ones that random is unlikely to generate
+    runBadDefaultCycle(
+        "{\"type\": \"record\", \"name\": \"HasBadDefaults\", \"fields\": [{\"name\": \"intWithRoundFloatDefault\", \"type\": \"int\", \"default\": 5.0}]}",
+        "intWithRoundFloatDefault"
+    );
+  }
+
+  public static String randomArrayJsonLiteral(Schema.Type type) {
+    Random random = new Random();
+    int length = 1 + random.nextInt(5); //1-5 because an empty array is valid for all array types
+    StringJoiner csv = new StringJoiner(", ");
+    for (int i = 0; i < length; i++) {
+      csv.add(randomJsonLiteral(type));
+    }
+    return "[" + csv.toString() + "]";
+  }
+
+  public static String randomJsonLiteral(Schema.Type type) {
+    Random random = new Random();
+    int length;
+    StringBuilder sb;
+    switch (type) {
+      case NULL:
+        return "null";
+      case BOOLEAN:
+        return random.nextBoolean() ? "true" : "false";
+      case INT:
+        return "" + random.nextInt(100);
+      case LONG:
+        return "" + ( ((long) Integer.MAX_VALUE) + 1 + random.nextInt(100) );
+      case FLOAT:
+        return "" + random.nextFloat();
+      case DOUBLE:
+        return "" + random.nextDouble();
+      case STRING:
+        length = random.nextInt(10); //0-9
+        sb = new StringBuilder();
+        sb.append("\"");
+        for (int i = 0; i < length; i++) {
+          int val = 64 + random.nextInt(10);
+          sb.append((char) val);
+        }
+        sb.append("\"");
+        return sb.toString();
+      case BYTES:
+        length = random.nextInt(10); //0-9
+        sb = new StringBuilder();
+        sb.append("\"");
+        for (int i = 0; i < length; i++) {
+          int val = 64 + random.nextInt(10);
+          sb.append((char) val);
+        }
+        sb.append("\"");
+        return sb.toString();
+      default:
+        throw new IllegalStateException("dont know how to generate a random " + type);
+    }
+  }
+
+  public void runBadDefaultCycle(String avsc, String fieldName) throws Exception {
+    Schema parsed;
+    try {
+      parsed = AvroCompatibilityHelper.parse(avsc, SchemaParseConfiguration.LOOSE, null).getMainSchema();
+    } catch (NumberFormatException validatedByAvro) {
+      //avro gets progressively better at validation. where it does, we cant test this
+      return;
+    } catch (Exception unexpected) {
+      Assert.fail("avro refused to parse " + avsc, unexpected);
+      return;
+    }
+    Schema.Field field = parsed.getField(fieldName);
+    //strict should fail
+    try {
+      AvroCompatibilityHelper.getGenericDefaultValue(field);
+      Assert.fail("should have thrown for " + avsc);
+    } catch (AvroTypeException expected) {
+      Assert.assertTrue(expected.getMessage().toLowerCase(Locale.ROOT).contains("invalid default"));
+    }
+    //the more forgiving method should just return null
+    Assert.assertNull(AvroCompatibilityHelper.getNullableGenericDefaultValue(field));
   }
 }

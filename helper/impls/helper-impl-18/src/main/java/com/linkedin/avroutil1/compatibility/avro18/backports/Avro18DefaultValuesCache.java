@@ -1,12 +1,12 @@
 /*
- * Copyright 2020 LinkedIn Corp.
+ * Copyright 2022 LinkedIn Corp.
  * Licensed under the BSD 2-Clause License (the "License").
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1.compatibility.avro16.backports;
+package com.linkedin.avroutil1.compatibility.avro18.backports;
 
-import com.linkedin.avroutil1.compatibility.avro16.Avro16SchemaValidator;
+import com.linkedin.avroutil1.compatibility.avro18.Avro18SchemaValidator;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -29,11 +29,12 @@ import org.codehaus.jackson.JsonNode;
 
 /**
  * this class holds a cache of generic and specific default values for various
- * schema fields. the implementations were taken out of avro 1.7 classes
+ * schema fields. the implementations were taken out of avro 1.7.7 classes and
+ * exists here for use with older 1.7.* versions that do not have this functionality
  * {@link org.apache.avro.specific.SpecificData} and
  * {@link org.apache.avro.generic.GenericData}
  */
-public class Avro16DefaultValuesCache {
+public class Avro18DefaultValuesCache {
 
   private static final Map<Schema.Field, Object> GENERIC_CACHED_DEFAULTS = Collections.synchronizedMap(new WeakHashMap<>());
   private static final Map<Schema.Field, Object> SPECIFIC_CACHED_DEFAULTS = Collections.synchronizedMap(new WeakHashMap<>());
@@ -69,7 +70,7 @@ public class Avro16DefaultValuesCache {
 
     //validate the default JsonNode vs the fieldSchema, because old avro doesnt validate
     //and applying the logic below to decode will return very weird results
-    if (!Avro16SchemaValidator.isValidDefault(schema, json)) {
+    if (!Avro18SchemaValidator.isValidDefault(schema, json)) {
       //throw ~the same exception modern avro would
       String message = "Invalid default for field " + field.name() + ": "
           + json + " (a " + json.getClass().getSimpleName() + ") is not a " + schema;
