@@ -66,6 +66,14 @@ public class Avro19AvscWriter extends AvscWriter<Jackson2JsonGeneratorWrapper> {
     }
 
     @Override
+    protected void writeEnumDefault(Schema enumSchema, Jackson2JsonGeneratorWrapper gen) throws IOException {
+        String defaultStr = enumSchema.getEnumDefault();
+        if (defaultStr != null) {
+            gen.writeStringField("default", defaultStr);
+        }
+    }
+
+    @Override
     protected Set<String> getAliases(Schema.Field field) {
         return field.aliases();
     }

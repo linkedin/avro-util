@@ -8,6 +8,7 @@ package com.linkedin.avroutil1.compatibility.avro16;
 
 import com.linkedin.avroutil1.compatibility.AvscWriter;
 import com.linkedin.avroutil1.compatibility.Jackson1JsonGeneratorWrapper;
+import java.util.function.Predicate;
 import org.apache.avro.Schema;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
@@ -44,7 +45,12 @@ public class Avro16AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
     @Override
     protected void writeProps(Schema schema, Jackson1JsonGeneratorWrapper gen) throws IOException {
         Map<String, String> props = schema.getProps();
-        writeProps(props, gen);
+        //write all props except "default" for enums
+        if (schema.getType() == Schema.Type.ENUM) {
+            writeProps(props, gen, s -> !"default".equals(s));
+        } else {
+            writeProps(props, gen);
+        }
     }
 
     @Override
@@ -63,13 +69,33 @@ public class Avro16AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
     }
 
     @Override
+    protected void writeEnumDefault(Schema enumSchema, Jackson1JsonGeneratorWrapper gen) throws IOException {
+        //avro 1.6 does not have an explicit default() API for enums, but they show up in props
+        String defaultStr = enumSchema.getProp("default");
+        if (defaultStr != null) {
+            gen.writeStringField("default", defaultStr);
+        }
+    }
+
+    @Override
     protected Set<String> getAliases(Schema.Field field) {
         return field.aliases();
     }
 
     private void writeProps(Map<String, String> props, Jackson1JsonGeneratorWrapper gen) throws IOException {
+        writeProps(props, gen, null);
+    }
+
+    private void writeProps(
+        Map<String, String> props,
+        Jackson1JsonGeneratorWrapper gen,
+        Predicate<String> propNameFilter
+    ) throws IOException {
         for (Map.Entry<String, String> entry : props.entrySet()) {
-            gen.writeStringField(entry.getKey(), entry.getValue());
+            String propName = entry.getKey();
+            if (propNameFilter == null || propNameFilter.test(propName)) {
+                gen.writeStringField(propName, entry.getValue());
+            }
         }
     }
 }
