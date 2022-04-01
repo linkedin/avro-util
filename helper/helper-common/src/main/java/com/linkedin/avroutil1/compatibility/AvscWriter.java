@@ -80,11 +80,7 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                     gen.writeString(symbol);
                 }
                 gen.writeEndArray();
-                //avro 1.4 doesnt natively support enum defaults, but they should show up as props
-                //TODO - implement this
-                //if (schema.getEnumDefault() != null) {
-                //    gen.writeStringField("default", getEnumDefault());
-                //}
+                writeEnumDefault(schema, gen);
                 writeProps(schema, gen);
                 aliasesToJson(schema, avro702Data.getExtraAliases(), gen);
                 gen.writeEndObject();
@@ -297,6 +293,8 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
     protected abstract void writeProps(Schema.Field field, G gen) throws IOException;
 
     protected abstract void writeDefaultValue(Schema.Field field, G gen) throws IOException;
+
+    protected abstract void writeEnumDefault(Schema enumSchema, G gen) throws IOException;
 
     protected abstract Set<String> getAliases(Schema.Field field);
 }
