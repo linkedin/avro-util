@@ -18,7 +18,6 @@ import com.linkedin.avroutil1.compatibility.FieldBuilder;
 import com.linkedin.avroutil1.compatibility.SchemaBuilder;
 import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
 import com.linkedin.avroutil1.compatibility.SchemaParseResult;
-import com.linkedin.avroutil1.compatibility.SchemaValidator;
 import com.linkedin.avroutil1.compatibility.SkipDecoder;
 import com.linkedin.avroutil1.compatibility.StringRepresentation;
 import com.linkedin.avroutil1.compatibility.avro17.backports.Avro17DefaultValuesCache;
@@ -280,14 +279,11 @@ public class Avro17Adapter implements AvroAdapter {
       parser.addTypes(knownByFullName);
     }
     Schema mainSchema = parser.parse(schemaJson);
-
-    if (validateDefaults && setValidateDefaultsMethod == null) {
-      //older avro 1.7 doesnt support validating default values, so we have to do it ourselves
-      SchemaValidator validator = new SchemaValidator(configUsed, known);
-      AvroSchemaUtil.traverseSchema(mainSchema, validator); //will throw on issues
-    }
-
     Map<String, Schema> knownByFullName = parser.getTypes();
+    if (configUsed.validateDefaultValues()) {
+      Avro17SchemaValidator validator = new Avro17SchemaValidator(configUsed, known);
+      AvroSchemaUtil.traverseSchema(mainSchema, validator);
+    }
     return new SchemaParseResult(mainSchema, knownByFullName, configUsed);
   }
 

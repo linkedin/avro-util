@@ -235,10 +235,13 @@ public class Avro18Adapter implements AvroAdapter {
       parser.addTypes(knownByFullName);
     }
     Schema mainSchema = parser.parse(schemaJson);
-
-    //avro 1.8 can (optionally) validate defaults - so even if the user asked for that we have no further work to do
-
     Map<String, Schema> knownByFullName = parser.getTypes();
+    SchemaParseConfiguration configUsed = new SchemaParseConfiguration(validateNames, validateDefaults);
+    if (configUsed.validateDefaultValues()) {
+      //dont trust avro, also run our own
+      Avro18SchemaValidator validator = new Avro18SchemaValidator(configUsed, known);
+      AvroSchemaUtil.traverseSchema(mainSchema, validator);
+    }
     return new SchemaParseResult(mainSchema, knownByFullName, new SchemaParseConfiguration(validateNames, validateDefaults));
   }
 

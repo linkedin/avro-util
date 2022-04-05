@@ -19,7 +19,6 @@ import com.linkedin.avroutil1.compatibility.SchemaNormalization;
 import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
 import com.linkedin.avroutil1.compatibility.SchemaParseResult;
 import com.linkedin.avroutil1.compatibility.StringPropertyUtils;
-import com.linkedin.avroutil1.compatibility.SchemaValidator;
 import com.linkedin.avroutil1.compatibility.SkipDecoder;
 import com.linkedin.avroutil1.compatibility.StringRepresentation;
 import com.linkedin.avroutil1.compatibility.avro14.backports.Avro14DefaultValuesCache;
@@ -198,7 +197,7 @@ public class Avro14Adapter implements AvroAdapter {
     if (desiredConf != null && !desiredConf.equals(result.getConfigUsed())) {
       //avro 1.4 doesnt validate anything, so if user wants anything stricter we have to do it ourselves
       Schema schema = result.getMainSchema();
-      SchemaValidator validator = new SchemaValidator(desiredConf, known);
+      Avro14SchemaValidator validator = new Avro14SchemaValidator(desiredConf, known);
       AvroSchemaUtil.traverseSchema(schema, validator); //will throw on issues
       return new SchemaParseResult(result.getMainSchema(), result.getAllSchemas(), desiredConf);
     } else {

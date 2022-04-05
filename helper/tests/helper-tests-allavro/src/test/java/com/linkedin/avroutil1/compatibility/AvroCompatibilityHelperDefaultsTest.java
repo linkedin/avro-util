@@ -7,6 +7,7 @@
 package com.linkedin.avroutil1.compatibility;
 
 import com.google.common.base.Throwables;
+import com.linkedin.avroutil1.UsefulBiConsumer;
 import com.linkedin.avroutil1.testcommon.TestUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -186,7 +187,38 @@ public class AvroCompatibilityHelperDefaultsTest {
   }
 
   @Test
-  public void testBadDefaultValues() throws Exception {
+  public void testParseBadDefaultValues() throws Exception {
+    Map<Schema.Type, List<Schema.Type>> types = buildTypeEquivalenceMap(false);
+
+    forAllPossibleBadDefaultValues(types, this::runParseBadDefault);
+
+    //throw in a few hand-tailored schemas
+    runParseBadDefault(
+        "{\"type\": \"record\", \"name\": \"HasBadDefaults\", \"fields\": [{\"name\": \"age\", \"type\": \"float\", \"default\": -1}]}",
+        "age"
+    );
+    AvroCompatibilityHelper.parse( //expected to pass
+        "{\"type\": \"record\", \"name\": \"HasBadDefaults\", \"fields\": [{\"name\": \"age\", \"type\": \"float\", \"default\": 3.14}]}",
+        SchemaParseConfiguration.STRICT,
+        null
+        );
+  }
+
+  @Test
+  public void testGetBadDefaultValues() throws Exception {
+    Map<Schema.Type, List<Schema.Type>> types = buildTypeEquivalenceMap(false);
+
+    forAllPossibleBadDefaultValues(types, this::runGetBadDefaultCycle);
+
+    //throw in a few manual ones that random is unlikely to generate
+    runGetBadDefaultCycle(
+        "{\"type\": \"record\", \"name\": \"HasBadDefaults\", \"fields\": [{\"name\": \"intWithRoundFloatDefault\", \"type\": \"int\", \"default\": 5.0}]}",
+        "intWithRoundFloatDefault"
+    );
+  }
+
+  private Map<Schema.Type, List<Schema.Type>> buildTypeEquivalenceMap(boolean allowIntegersForFloats) {
+    //all the types for which we test default values
     List<Schema.Type> primitives = Arrays.asList(
         Schema.Type.NULL,
         Schema.Type.BOOLEAN,
@@ -197,21 +229,33 @@ public class AvroCompatibilityHelperDefaultsTest {
         Schema.Type.STRING,
         Schema.Type.BYTES
     );
-    //key is type, values are "equivalent" types
+    //key is type, values are "equivalent" types (for purposes of default value)
     Map<Schema.Type, List<Schema.Type>> types = new LinkedHashMap<>();
     types.put(Schema.Type.NULL, Arrays.asList(Schema.Type.NULL));
     types.put(Schema.Type.BOOLEAN, Arrays.asList(Schema.Type.BOOLEAN));
     types.put(Schema.Type.INT, Arrays.asList(Schema.Type.INT, Schema.Type.LONG));
     types.put(Schema.Type.LONG, Arrays.asList(Schema.Type.INT, Schema.Type.LONG));
-    types.put(Schema.Type.FLOAT, Arrays.asList(Schema.Type.INT, Schema.Type.LONG, Schema.Type.FLOAT, Schema.Type.DOUBLE));
-    types.put(Schema.Type.DOUBLE, Arrays.asList(Schema.Type.INT, Schema.Type.LONG, Schema.Type.FLOAT, Schema.Type.DOUBLE));
+    if (allowIntegersForFloats) {
+      types.put(Schema.Type.FLOAT, Arrays.asList(Schema.Type.INT, Schema.Type.LONG, Schema.Type.FLOAT, Schema.Type.DOUBLE));
+      types.put(Schema.Type.DOUBLE, Arrays.asList(Schema.Type.INT, Schema.Type.LONG, Schema.Type.FLOAT, Schema.Type.DOUBLE));
+    } else {
+      types.put(Schema.Type.FLOAT, Arrays.asList(Schema.Type.FLOAT, Schema.Type.DOUBLE));
+      types.put(Schema.Type.DOUBLE, Arrays.asList(Schema.Type.FLOAT, Schema.Type.DOUBLE));
+    }
     types.put(Schema.Type.STRING, Arrays.asList(Schema.Type.STRING, Schema.Type.BYTES));
     types.put(Schema.Type.BYTES, Arrays.asList(Schema.Type.STRING, Schema.Type.BYTES));
 
-    for (Schema.Type type : types.keySet()) {
-      List<Schema.Type> equivalents = types.get(type);
-      List<Schema.Type> badValueCandidates = new ArrayList<>(primitives);
-      List<Schema.Type> goodValueCandidates = new ArrayList<>(primitives);
+    return types;
+  }
+
+  public void forAllPossibleBadDefaultValues(
+      Map<Schema.Type, List<Schema.Type>> allowedDefaultTypes,
+      UsefulBiConsumer<String, String> schemaConsumer
+  ) throws Exception {
+    for (Schema.Type type : allowedDefaultTypes.keySet()) {
+      List<Schema.Type> equivalents = allowedDefaultTypes.get(type);
+      List<Schema.Type> badValueCandidates = new ArrayList<>(allowedDefaultTypes.keySet());
+      List<Schema.Type> goodValueCandidates = new ArrayList<>(allowedDefaultTypes.keySet());
       badValueCandidates.removeAll(equivalents);
       goodValueCandidates.removeAll(badValueCandidates);
 
@@ -223,7 +267,7 @@ public class AvroCompatibilityHelperDefaultsTest {
         String fieldName = typeStr + "With" + badTypeStr + "Default";
         String avsc = "{\"type\": \"record\", \"name\": \"HasBadDefaults\", \"fields\": [{\"name\": \""
             + fieldName + "\", \"type\": \"" + typeStr + "\", \"default\": " + badLiteral + "}]}";
-        runBadDefaultCycle(avsc, fieldName);
+        schemaConsumer.accept(avsc, fieldName);
       }
 
       //now do arrays
@@ -234,7 +278,7 @@ public class AvroCompatibilityHelperDefaultsTest {
         String fieldName = typeStr + "ArrayWith" + badTypeStr + "Default";
         String avsc = "{\"type\": \"record\", \"name\": \"HasBadDefaults\", \"fields\": [{\"name\": \""
             + fieldName + "\", \"type\": { \"type\": \"array\", \"items\": \"" + typeStr + "\"}, \"default\": " + badLiteral + "}]}";
-        runBadDefaultCycle(avsc, fieldName);
+        schemaConsumer.accept(avsc, fieldName);
       }
 
       //and arrays with array defaults
@@ -245,15 +289,9 @@ public class AvroCompatibilityHelperDefaultsTest {
         String fieldName = typeStr + "ArrayWith" + badTypeStr + "DefaultArray";
         String avsc = "{\"type\": \"record\", \"name\": \"HasBadDefaults\", \"fields\": [{\"name\": \""
             + fieldName + "\", \"type\": { \"type\": \"array\", \"items\": \"" + typeStr + "\"}, \"default\": " + badLiteral + "}]}";
-        runBadDefaultCycle(avsc, fieldName);
+        schemaConsumer.accept(avsc, fieldName);
       }
     }
-
-    //throw in a few manual ones that random is unlikely to generate
-    runBadDefaultCycle(
-        "{\"type\": \"record\", \"name\": \"HasBadDefaults\", \"fields\": [{\"name\": \"intWithRoundFloatDefault\", \"type\": \"int\", \"default\": 5.0}]}",
-        "intWithRoundFloatDefault"
-    );
   }
 
   public static String randomArrayJsonLiteral(Schema.Type type) {
@@ -308,7 +346,20 @@ public class AvroCompatibilityHelperDefaultsTest {
     }
   }
 
-  public void runBadDefaultCycle(String avsc, String fieldName) throws Exception {
+  public void runParseBadDefault(String avsc, String fieldName) throws Exception {
+    try {
+      AvroCompatibilityHelper.parse(avsc, SchemaParseConfiguration.STRICT, null);
+      Assert.fail("expected to fail: " + avsc);
+    } catch (Exception expected) {
+      if (expected instanceof NumberFormatException) {
+        //these come directly from avro and dont carry the field name
+        return;
+      }
+      Assert.assertTrue(expected.getMessage().contains(fieldName));
+    }
+  }
+
+  public void runGetBadDefaultCycle(String avsc, String fieldName) throws Exception {
     Schema parsed;
     try {
       parsed = AvroCompatibilityHelper.parse(avsc, SchemaParseConfiguration.LOOSE, null).getMainSchema();
