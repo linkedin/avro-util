@@ -21,7 +21,10 @@ import org.codehaus.jackson.JsonNode;
  * can validate avro schemas vs the avro specification. <br>
  * this class exists because historically avro has been very bad at validating its own specification
  * and this allows proper validation under versions of {@literal avro < 1.9}
+ *
+ * @deprecated DO NOT USE
  */
+@Deprecated
 public class SchemaValidator implements SchemaVisitor {
 
 

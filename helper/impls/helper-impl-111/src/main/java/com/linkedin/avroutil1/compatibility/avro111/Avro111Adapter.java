@@ -234,8 +234,13 @@ public class Avro111Adapter implements AvroAdapter {
         }
         Schema mainSchema = parser.parse(schemaJson);
         Map<String, Schema> knownByFullName = parser.getTypes();
-        //todo - depending on how https://issues.apache.org/jira/browse/AVRO-2742 is settled, may need to use our own validator here
-        return new SchemaParseResult(mainSchema, knownByFullName, new SchemaParseConfiguration(validateNames, validateDefaults));
+        SchemaParseConfiguration configUsed = new SchemaParseConfiguration(validateNames, validateDefaults);
+        if (configUsed.validateDefaultValues()) {
+            //dont trust avro, also run our own
+            Avro111SchemaValidator validator = new Avro111SchemaValidator(configUsed, known);
+            AvroSchemaUtil.traverseSchema(mainSchema, validator);
+        }
+        return new SchemaParseResult(mainSchema, knownByFullName, configUsed);
     }
 
     @Override

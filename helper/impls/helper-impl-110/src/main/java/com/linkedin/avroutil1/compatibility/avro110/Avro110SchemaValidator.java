@@ -6,14 +6,18 @@
 
 package com.linkedin.avroutil1.compatibility.avro110;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.linkedin.avroutil1.compatibility.HelperConsts;
 import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
 import com.linkedin.avroutil1.compatibility.SchemaVisitor;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaParseException;
@@ -21,6 +25,19 @@ import org.apache.avro.util.internal.Accessor;
 
 
 public class Avro110SchemaValidator implements SchemaVisitor {
+  private final static Map<Schema.Type, List<JsonParser.NumberType>> JSON_NUMERIC_TYPES_PER_AVRO_TYPE;
+
+  static {
+    Map<Schema.Type, List<JsonParser.NumberType>> temp = new HashMap<>();
+    //noinspection ArraysAsListWithZeroOrOneArgument
+    temp.put(Schema.Type.INT, Collections.unmodifiableList(Arrays.asList(JsonParser.NumberType.INT)));
+    temp.put(Schema.Type.LONG, Collections.unmodifiableList(Arrays.asList(JsonParser.NumberType.INT, JsonParser.NumberType.LONG)));
+    //jackson (used by avro) seems to like parsing everything as DoubleNode
+    temp.put(Schema.Type.FLOAT, Collections.unmodifiableList(Arrays.asList(JsonParser.NumberType.FLOAT, JsonParser.NumberType.DOUBLE)));
+    temp.put(Schema.Type.DOUBLE, Collections.unmodifiableList(Arrays.asList(JsonParser.NumberType.FLOAT, JsonParser.NumberType.DOUBLE)));
+
+    JSON_NUMERIC_TYPES_PER_AVRO_TYPE = Collections.unmodifiableMap(temp);
+  }
 
   private final SchemaParseConfiguration validationSpec;
   private final Collection<Schema> grandfathered;
@@ -78,7 +95,7 @@ public class Avro110SchemaValidator implements SchemaVisitor {
       if (!validDefault) {
         //throw ~the same exception avro would
         String message = "Invalid default for field " + parent.getFullName() + "." + field.name() + ": "
-            + defaultValue + " not a " + fieldSchema;
+            + defaultValue + " (a " + defaultValue.getClass().getSimpleName() + ") not a " + fieldSchema;
         throw new AvroTypeException(message);
       }
     }
@@ -113,21 +130,22 @@ public class Avro110SchemaValidator implements SchemaVisitor {
    * @throws SchemaParseException is name is invalid
    */
   public static boolean isValidDefault(Schema schema, JsonNode defaultValue) {
-    if (defaultValue == null)
+    if (defaultValue == null) {
       return false;
-    switch (schema.getType()) {
+    }
+    Schema.Type avroType = schema.getType();
+    switch (avroType) {
       case STRING:
       case BYTES:
       case ENUM:
       case FIXED:
         return defaultValue.isTextual();
       case INT:
-        return defaultValue.isIntegralNumber() && defaultValue.canConvertToInt();
       case LONG:
-        return defaultValue.isIntegralNumber() && defaultValue.canConvertToLong();
       case FLOAT:
       case DOUBLE:
-        return defaultValue.isNumber();
+        List<JsonParser.NumberType> jsonTypes = JSON_NUMERIC_TYPES_PER_AVRO_TYPE.get(avroType);
+        return jsonTypes != null && jsonTypes.contains(defaultValue.numberType());
       case BOOLEAN:
         return defaultValue.isBoolean();
       case NULL:
@@ -160,7 +178,6 @@ public class Avro110SchemaValidator implements SchemaVisitor {
             return false;
           }
         }
-
         return true;
       default:
         return false;

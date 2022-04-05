@@ -341,10 +341,10 @@ public class AvroCompatibilityHelper {
   }
 
   /**
-   * convenience method to parse a string into a single (top level) schema.
+   * concatenates all the string arguments into a single avsc schema and parses that.
+   * intended to be called by generated code (because string literals in java source
+   * code cannot exceed 64K and some SCHEMA$ fields are over that).
    * NOTE: this method uses loose validation for broad compatibility
-   * <br>
-   * this method is also called from generated classes
    * @param schemaPieces an avro schema in json form. potentially in pieces (because of java restrictions on the size of a string literal)
    * @return a {@link Schema}
    */
@@ -374,7 +374,6 @@ public class AvroCompatibilityHelper {
    * @return parsing results
    */
   public static SchemaParseResult parse(InputStream schemaJson, SchemaParseConfiguration desiredConf, Collection<Schema> known) throws IOException {
-    assertAvroAvailable();
     StringBuilder sb = new StringBuilder();
     try (InputStreamReader reader = new InputStreamReader(schemaJson, StandardCharsets.UTF_8)) {
       char[] buffer = new char[8192];
@@ -384,7 +383,7 @@ public class AvroCompatibilityHelper {
         charsRead = reader.read(buffer);
       }
     }
-    return ADAPTER.parse(sb.toString(), desiredConf, known);
+    return parse(sb.toString(), desiredConf, known);
   }
 
   /**

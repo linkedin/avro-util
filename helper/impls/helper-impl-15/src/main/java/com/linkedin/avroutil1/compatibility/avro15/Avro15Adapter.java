@@ -21,7 +21,6 @@ import com.linkedin.avroutil1.compatibility.SchemaNormalization;
 import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
 import com.linkedin.avroutil1.compatibility.SchemaParseResult;
 import com.linkedin.avroutil1.compatibility.StringPropertyUtils;
-import com.linkedin.avroutil1.compatibility.SchemaValidator;
 import com.linkedin.avroutil1.compatibility.SkipDecoder;
 import com.linkedin.avroutil1.compatibility.StringRepresentation;
 import com.linkedin.avroutil1.compatibility.avro15.backports.Avro15DefaultValuesCache;
@@ -223,14 +222,12 @@ public class Avro15Adapter implements AvroAdapter {
       parser.addTypes(knownByFullName);
     }
     Schema mainSchema = parser.parse(schemaJson);
-
-    if (validateDefaults) {
+    Map<String, Schema> knownByFullName = parser.getTypes();
+    if (configUsed.validateDefaultValues()) {
       //avro 1.5 doesnt properly validate default values, so we have to do it ourselves
-      SchemaValidator validator = new SchemaValidator(configUsed, known);
+      Avro15SchemaValidator validator = new Avro15SchemaValidator(configUsed, known);
       AvroSchemaUtil.traverseSchema(mainSchema, validator); //will throw on issues
     }
-
-    Map<String, Schema> knownByFullName = parser.getTypes();
     return new SchemaParseResult(mainSchema, knownByFullName, configUsed);
   }
 
