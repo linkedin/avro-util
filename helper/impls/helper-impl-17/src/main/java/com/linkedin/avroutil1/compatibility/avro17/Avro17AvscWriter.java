@@ -19,9 +19,17 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Map;
 import java.util.Set;
+import org.codehaus.jackson.node.DoubleNode;
+import org.codehaus.jackson.node.IntNode;
+import org.codehaus.jackson.node.LongNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class Avro17AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
     private static final JsonFactory FACTORY = new JsonFactory().setCodec(new ObjectMapper());
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Avro17AvscWriter.class);
 
     public Avro17AvscWriter(boolean pretty, boolean preAvro702, boolean addAliasesForAvro702) {
         super(pretty, preAvro702, addAliasesForAvro702);
@@ -68,6 +76,9 @@ public class Avro17AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
     protected void writeDefaultValue(Schema.Field field, Jackson1JsonGeneratorWrapper gen) throws IOException {
         JsonNode defaultValue = field.defaultValue();
         if (defaultValue != null) {
+            if (defaultValue.isNumber()) {
+                defaultValue = enforceUniformNumericDefaultValues(field);
+            }
             gen.writeFieldName("default");
             gen.getDelegate().writeTree(defaultValue);
         }
@@ -102,6 +113,34 @@ public class Avro17AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
             if (propNameFilter == null || propNameFilter.test(propName)) {
                 delegate.writeObjectField(entry.getKey(), entry.getValue());
             }
+        }
+    }
+
+    /**
+     *  Enforces uniform numeric default values across Avro versions
+     */
+    private JsonNode enforceUniformNumericDefaultValues(Schema.Field field) {
+        JsonNode defaultValue = field.defaultValue();
+        double numericValue = defaultValue.getNumberValue().doubleValue();
+        switch (field.schema().getType()) {
+            case INT:
+                if (numericValue % 1 != 0) {
+                    LOGGER.warn(String.format("Invalid default value: %s for \"int\" field: %s", field.defaultValue(), field.name()));
+                    return defaultValue;
+                }
+                return new IntNode(defaultValue.getNumberValue().intValue());
+            case LONG:
+                if (numericValue % 1 != 0) {
+                    LOGGER.warn(String.format("Invalid default value: %s for \"long\" field: %s", field.defaultValue(), field.name()));
+                    return defaultValue;
+                }
+                return new LongNode(defaultValue.getNumberValue().longValue());
+            case DOUBLE:
+                return new DoubleNode(defaultValue.getNumberValue().doubleValue());
+            case FLOAT:
+                return new DoubleNode(defaultValue.getNumberValue().floatValue());
+            default:
+                return defaultValue;
         }
     }
 }
