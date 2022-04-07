@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.LongNode;
 import com.linkedin.avroutil1.compatibility.AvscWriter;
 import com.linkedin.avroutil1.compatibility.Jackson2JsonGeneratorWrapper;
+import java.math.BigDecimal;
 import org.apache.avro.Schema;
 import org.apache.avro.util.internal.Accessor;
 import org.apache.avro.util.internal.JacksonUtils;
@@ -107,20 +108,20 @@ public class Avro19AvscWriter extends AvscWriter<Jackson2JsonGeneratorWrapper> {
      */
     private JsonNode enforceUniformNumericDefaultValues(Schema.Field field) {
         JsonNode genericDefaultValue = Accessor.defaultValue(field);
-        double numericDefaultValue = genericDefaultValue.doubleValue();
+        BigDecimal numericDefaultValue = genericDefaultValue.decimalValue();
         Schema schema = field.schema();
         // a default value for a union, must match the first element of the union
         Schema.Type defaultType = schema.getType() == UNION ? schema.getTypes().get(0).getType() : schema.getType();
 
         switch (defaultType) {
             case INT:
-                if (numericDefaultValue % 1 != 0) {
+                if (!isAMathematicalInteger(numericDefaultValue)) {
                     LOGGER.warn(String.format("Invalid default value: %s for \"int\" field: %s", genericDefaultValue, field.name()));
                     return genericDefaultValue;
                 }
                 return new IntNode(genericDefaultValue.intValue());
             case LONG:
-                if (numericDefaultValue % 1 != 0) {
+                if (!isAMathematicalInteger(numericDefaultValue)) {
                     LOGGER.warn(String.format("Invalid default value: %s for \"long\" field: %s", genericDefaultValue, field.name()));
                     return genericDefaultValue;
                 }
@@ -132,5 +133,9 @@ public class Avro19AvscWriter extends AvscWriter<Jackson2JsonGeneratorWrapper> {
             default:
                 return genericDefaultValue;
         }
+    }
+
+    private boolean isAMathematicalInteger(BigDecimal bigDecimal) {
+        return bigDecimal.stripTrailingZeros().scale() <= 0;
     }
 }

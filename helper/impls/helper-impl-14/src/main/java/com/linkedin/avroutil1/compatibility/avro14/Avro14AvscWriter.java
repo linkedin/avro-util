@@ -8,6 +8,7 @@ package com.linkedin.avroutil1.compatibility.avro14;
 
 import com.linkedin.avroutil1.compatibility.AvscWriter;
 import com.linkedin.avroutil1.compatibility.Jackson1JsonGeneratorWrapper;
+import java.math.BigDecimal;
 import java.util.function.Predicate;
 import org.apache.avro.Schema;
 import org.codehaus.jackson.JsonFactory;
@@ -158,20 +159,20 @@ public class Avro14AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
      */
     private JsonNode enforceUniformNumericDefaultValues(Schema.Field field) {
         JsonNode defaultValue = field.defaultValue();
-        double numericValue = defaultValue.getNumberValue().doubleValue();
+        BigDecimal numericValue = defaultValue.getDecimalValue();
         Schema schema = field.schema();
         // a default value for a union, must match the first element of the union
         Schema.Type defaultType = schema.getType() == UNION ? schema.getTypes().get(0).getType() : schema.getType();
 
         switch (defaultType) {
             case INT:
-                if (numericValue % 1 != 0) {
+                if (!isAMathematicalInteger(numericValue)) {
                     LOGGER.warn(String.format("Invalid default value: %s for \"int\" field: %s", field.defaultValue(), field.name()));
                     return defaultValue;
                 }
                 return new IntNode(defaultValue.getNumberValue().intValue());
             case LONG:
-                if (numericValue % 1 != 0) {
+                if (!isAMathematicalInteger(numericValue)) {
                     LOGGER.warn(String.format("Invalid default value: %s for \"long\" field: %s", field.defaultValue(), field.name()));
                     return defaultValue;
                 }
@@ -183,5 +184,9 @@ public class Avro14AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
             default:
                 return defaultValue;
         }
+    }
+
+    private boolean isAMathematicalInteger(BigDecimal bigDecimal) {
+        return bigDecimal.stripTrailingZeros().scale() <= 0;
     }
 }
