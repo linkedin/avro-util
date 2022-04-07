@@ -23,7 +23,7 @@ rootProject.name = 'avro-util'
 include 'test-common'
 include 'parser'
 include 'avro-codegen'
-//include 'avro-fastserde'
+include 'avro-fastserde'
 
 include 'helper:helper-common'
 include 'helper:impls:helper-impl-14'
