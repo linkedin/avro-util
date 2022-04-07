@@ -27,6 +27,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.apache.avro.Schema.Type.*;
+
 
 public class Avro110AvscWriter extends AvscWriter<Jackson2JsonGeneratorWrapper> {
     private static final JsonFactory FACTORY = new JsonFactory().setCodec(new ObjectMapper());
@@ -106,7 +108,11 @@ public class Avro110AvscWriter extends AvscWriter<Jackson2JsonGeneratorWrapper> 
     private JsonNode enforceUniformNumericDefaultValues(Schema.Field field) {
         JsonNode genericDefaultValue = Accessor.defaultValue(field);
         double numericDefaultValue = genericDefaultValue.doubleValue();
-        switch (field.schema().getType()) {
+        Schema schema = field.schema();
+        // a default value for a union, must match the first element of the union
+        Schema.Type defaultType = schema.getType() == UNION ? schema.getTypes().get(0).getType() : schema.getType();
+
+        switch (defaultType) {
             case INT:
                 if (numericDefaultValue % 1 != 0) {
                     LOGGER.warn(String.format("Invalid default value: %s for \"int\" field: %s", genericDefaultValue, field.name()));
