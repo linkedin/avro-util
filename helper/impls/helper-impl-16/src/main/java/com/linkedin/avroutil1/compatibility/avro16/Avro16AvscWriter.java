@@ -25,7 +25,7 @@ import org.codehaus.jackson.node.LongNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.apache.avro.Schema.Type.*;
+import static org.apache.avro.Schema.Type.UNION;
 
 
 public class Avro16AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {

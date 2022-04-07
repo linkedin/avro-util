@@ -27,7 +27,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.apache.avro.Schema.Type.*;
+import static org.apache.avro.Schema.Type.UNION;
 
 
 public class Avro19AvscWriter extends AvscWriter<Jackson2JsonGeneratorWrapper> {
