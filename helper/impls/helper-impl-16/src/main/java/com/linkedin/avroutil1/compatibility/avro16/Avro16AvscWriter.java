@@ -8,7 +8,11 @@ package com.linkedin.avroutil1.compatibility.avro16;
 
 import com.linkedin.avroutil1.compatibility.AvscWriter;
 import com.linkedin.avroutil1.compatibility.Jackson1JsonGeneratorWrapper;
-import java.math.BigDecimal;
+import com.linkedin.avroutil1.compatibility.Jackson1Utils;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 import org.apache.avro.Schema;
 import org.codehaus.jackson.JsonFactory;
@@ -16,23 +20,9 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Map;
-import java.util.Set;
-import org.codehaus.jackson.node.DoubleNode;
-import org.codehaus.jackson.node.IntNode;
-import org.codehaus.jackson.node.LongNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static org.apache.avro.Schema.Type.UNION;
-
 
 public class Avro16AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
     private static final JsonFactory FACTORY = new JsonFactory().setCodec(new ObjectMapper());
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(Avro16AvscWriter.class);
 
     public Avro16AvscWriter(boolean pretty, boolean preAvro702, boolean addAliasesForAvro702) {
         super(pretty, preAvro702, addAliasesForAvro702);
@@ -75,7 +65,7 @@ public class Avro16AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
         JsonNode defaultValue = field.defaultValue();
         if (defaultValue != null) {
             if (defaultValue.isNumber()) {
-                defaultValue = enforceUniformNumericDefaultValues(field);
+                defaultValue = Jackson1Utils.enforceUniformNumericDefaultValues(field);
             }
             gen.writeFieldName("default");
             gen.getDelegate().writeTree(defaultValue);
@@ -111,41 +101,5 @@ public class Avro16AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
                 gen.writeStringField(propName, entry.getValue());
             }
         }
-    }
-
-    /**
-     *  Enforces uniform numeric default values across Avro versions
-     */
-    private JsonNode enforceUniformNumericDefaultValues(Schema.Field field) {
-        JsonNode defaultValue = field.defaultValue();
-        BigDecimal numericValue = defaultValue.getDecimalValue();
-        Schema schema = field.schema();
-        // a default value for a union, must match the first element of the union
-        Schema.Type defaultType = schema.getType() == UNION ? schema.getTypes().get(0).getType() : schema.getType();
-
-        switch (defaultType) {
-            case INT:
-                if (!isAMathematicalInteger(numericValue)) {
-                    LOGGER.warn(String.format("Invalid default value: %s for \"int\" field: %s", field.defaultValue(), field.name()));
-                    return defaultValue;
-                }
-                return new IntNode(defaultValue.getNumberValue().intValue());
-            case LONG:
-                if (!isAMathematicalInteger(numericValue)) {
-                    LOGGER.warn(String.format("Invalid default value: %s for \"long\" field: %s", field.defaultValue(), field.name()));
-                    return defaultValue;
-                }
-                return new LongNode(defaultValue.getNumberValue().longValue());
-            case DOUBLE:
-                return new DoubleNode(defaultValue.getNumberValue().doubleValue());
-            case FLOAT:
-                return new DoubleNode(defaultValue.getNumberValue().floatValue());
-            default:
-                return defaultValue;
-        }
-    }
-
-    private boolean isAMathematicalInteger(BigDecimal bigDecimal) {
-        return bigDecimal.stripTrailingZeros().scale() <= 0;
     }
 }

@@ -7,6 +7,7 @@
 package com.linkedin.avroutil1.compatibility;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Map;
 import org.apache.avro.AvroRuntimeException;
@@ -19,15 +20,24 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.DoubleNode;
+import org.codehaus.jackson.node.IntNode;
 import org.codehaus.jackson.node.JsonNodeFactory;
+import org.codehaus.jackson.node.LongNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.node.TextNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.apache.avro.Schema.Type.*;
 
 
 public class Jackson1Utils {
   private static final String BYTES_CHARSET = "ISO-8859-1";
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
   private static final JsonFactory JSON_FACTORY = new JsonFactory();
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(Jackson1Utils.class);
 
   private Jackson1Utils() {
     // Util class; should not be instantiated.
@@ -130,5 +140,41 @@ public class Jackson1Utils {
       throw new IllegalStateException("while trying to serialize " + node + " (a " + node.getClass().getName() + ")",
           issue);
     }
+  }
+
+  /**
+   *  Enforces uniform numeric default values across Avro versions
+   */
+  static public JsonNode enforceUniformNumericDefaultValues(Schema.Field field) {
+    JsonNode defaultValue = field.defaultValue();
+    BigDecimal numericValue = defaultValue.getDecimalValue();
+    Schema schema = field.schema();
+    // a default value for a union, must match the first element of the union
+    Schema.Type defaultType = schema.getType() == UNION ? schema.getTypes().get(0).getType() : schema.getType();
+
+    switch (defaultType) {
+      case INT:
+        if (!isAMathematicalInteger(numericValue)) {
+          LOGGER.warn(String.format("Invalid default value: %s for \"int\" field: %s", field.defaultValue(), field.name()));
+          return defaultValue;
+        }
+        return new IntNode(defaultValue.getNumberValue().intValue());
+      case LONG:
+        if (!isAMathematicalInteger(numericValue)) {
+          LOGGER.warn(String.format("Invalid default value: %s for \"long\" field: %s", field.defaultValue(), field.name()));
+          return defaultValue;
+        }
+        return new LongNode(defaultValue.getNumberValue().longValue());
+      case DOUBLE:
+        return new DoubleNode(defaultValue.getNumberValue().doubleValue());
+      case FLOAT:
+        return new DoubleNode(defaultValue.getNumberValue().floatValue());
+      default:
+        return defaultValue;
+    }
+  }
+
+  static private boolean isAMathematicalInteger(BigDecimal bigDecimal) {
+    return bigDecimal.stripTrailingZeros().scale() <= 0;
   }
 }

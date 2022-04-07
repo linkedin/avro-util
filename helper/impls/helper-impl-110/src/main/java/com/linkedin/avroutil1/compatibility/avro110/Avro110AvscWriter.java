@@ -10,31 +10,20 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.DoubleNode;
-import com.fasterxml.jackson.databind.node.FloatNode;
-import com.fasterxml.jackson.databind.node.IntNode;
-import com.fasterxml.jackson.databind.node.LongNode;
 import com.linkedin.avroutil1.compatibility.AvscWriter;
 import com.linkedin.avroutil1.compatibility.Jackson2JsonGeneratorWrapper;
-import java.math.BigDecimal;
-import org.apache.avro.Schema;
-import org.apache.avro.util.internal.Accessor;
-import org.apache.avro.util.internal.JacksonUtils;
-
+import com.linkedin.avroutil1.compatibility.Jackson2Utils;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Map;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static org.apache.avro.Schema.Type.UNION;
+import org.apache.avro.Schema;
+import org.apache.avro.util.internal.Accessor;
+import org.apache.avro.util.internal.JacksonUtils;
 
 
 public class Avro110AvscWriter extends AvscWriter<Jackson2JsonGeneratorWrapper> {
     private static final JsonFactory FACTORY = new JsonFactory().setCodec(new ObjectMapper());
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(Avro110AvscWriter.class);
 
     public Avro110AvscWriter(boolean pretty, boolean preAvro702, boolean addAliasesForAvro702) {
         super(pretty, preAvro702, addAliasesForAvro702);
@@ -75,7 +64,7 @@ public class Avro110AvscWriter extends AvscWriter<Jackson2JsonGeneratorWrapper> 
         if (field.hasDefaultValue()) {
             JsonNode defaultValue = Accessor.defaultValue(field);
             if (defaultValue.isNumber()) {
-                defaultValue = enforceUniformNumericDefaultValues(field);
+                defaultValue = Jackson2Utils.enforceUniformNumericDefaultValues(field, defaultValue);
             }
             gen.writeFieldName("default");
             gen.getDelegate().writeTree(defaultValue);
@@ -101,41 +90,5 @@ public class Avro110AvscWriter extends AvscWriter<Jackson2JsonGeneratorWrapper> 
             Object o = entry.getValue();
             delegate.writeObjectField(entry.getKey(), JacksonUtils.toJsonNode(o));
         }
-    }
-
-    /**
-     *  Enforces uniform numeric default values across Avro versions
-     */
-    private JsonNode enforceUniformNumericDefaultValues(Schema.Field field) {
-        JsonNode genericDefaultValue = Accessor.defaultValue(field);
-        BigDecimal numericDefaultValue = genericDefaultValue.decimalValue();
-        Schema schema = field.schema();
-        // a default value for a union, must match the first element of the union
-        Schema.Type defaultType = schema.getType() == UNION ? schema.getTypes().get(0).getType() : schema.getType();
-
-        switch (defaultType) {
-            case INT:
-                if (!isAMathematicalInteger(numericDefaultValue)) {
-                    LOGGER.warn(String.format("Invalid default value: %s for \"int\" field: %s", genericDefaultValue, field.name()));
-                    return genericDefaultValue;
-                }
-                return new IntNode(genericDefaultValue.intValue());
-            case LONG:
-                if (!isAMathematicalInteger(numericDefaultValue)) {
-                    LOGGER.warn(String.format("Invalid default value: %s for \"long\" field: %s", genericDefaultValue, field.name()));
-                    return genericDefaultValue;
-                }
-                return new LongNode(genericDefaultValue.longValue());
-            case DOUBLE:
-                return new DoubleNode(genericDefaultValue.doubleValue());
-            case FLOAT:
-                return new FloatNode(genericDefaultValue.floatValue());
-            default:
-                return genericDefaultValue;
-        }
-    }
-
-    private boolean isAMathematicalInteger(BigDecimal bigDecimal) {
-        return bigDecimal.stripTrailingZeros().scale() <= 0;
     }
 }
