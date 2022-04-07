@@ -33,8 +33,8 @@ public class AvscWriterDefaultNumericsTest {
   @Test
   public void testWriteBadUnionDefaultValues() throws Exception {
     runAvscWriterOnBadUnionWithNumericDefaultValues(Schema.Type.INT, "-1", "-1", false);
-    runAvscWriterOnBadUnionWithNumericDefaultValues(Schema.Type.INT, "-1.0", "-1", true);
-    runAvscWriterOnBadUnionWithNumericDefaultValues(Schema.Type.INT, "0.0", "0", true);
+    runAvscWriterOnBadUnionWithNumericDefaultValues(Schema.Type.INT, "-1.0", "-1", false);
+    runAvscWriterOnBadUnionWithNumericDefaultValues(Schema.Type.INT, "0.0", "0", false);
     runAvscWriterOnBadUnionWithNumericDefaultValues(Schema.Type.INT, "0", "0", false);
 
     runAvscWriterOnBadUnionWithNumericDefaultValues(Schema.Type.LONG, "-1.0", "-1", true);

@@ -70,9 +70,12 @@ public class Avro111AvscWriter extends AvscWriter<Jackson2JsonGeneratorWrapper> 
     @Override
     protected void writeDefaultValue(Schema.Field field, Jackson2JsonGeneratorWrapper gen) throws IOException {
         if (field.hasDefaultValue()) {
-            JsonNode coercedDefaultValue = enforceUniformNumericDefaultValues(field);
+            JsonNode defaultValue = Accessor.defaultValue(field);
+            if (defaultValue.isNumber()) {
+                defaultValue = enforceUniformNumericDefaultValues(field);
+            }
             gen.writeFieldName("default");
-            gen.getDelegate().writeTree(coercedDefaultValue);
+            gen.getDelegate().writeTree(defaultValue);
         }
     }
 
@@ -102,10 +105,6 @@ public class Avro111AvscWriter extends AvscWriter<Jackson2JsonGeneratorWrapper> 
      */
     private JsonNode enforceUniformNumericDefaultValues(Schema.Field field) {
         JsonNode genericDefaultValue = Accessor.defaultValue(field);
-        if (!genericDefaultValue.isNumber()) {
-            LOGGER.warn(String.format("Invalid default value: %s for \"long\" field: %s", genericDefaultValue, field.name()));
-            return genericDefaultValue;
-        }
         double numericDefaultValue = genericDefaultValue.doubleValue();
         switch (field.schema().getType()) {
             case INT:
