@@ -8,6 +8,12 @@ package com.linkedin.avroutil1.compatibility.avro15;
 
 import com.linkedin.avroutil1.compatibility.AvscWriter;
 import com.linkedin.avroutil1.compatibility.Jackson1JsonGeneratorWrapper;
+import com.linkedin.avroutil1.compatibility.Jackson1Utils;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.lang.reflect.Field;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 import org.apache.avro.Schema;
 import org.codehaus.jackson.JsonFactory;
@@ -15,11 +21,6 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.lang.reflect.Field;
-import java.util.Map;
-import java.util.Set;
 
 public class Avro15AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
     private static final JsonFactory FACTORY = new JsonFactory().setCodec(new ObjectMapper());
@@ -81,6 +82,9 @@ public class Avro15AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
     protected void writeDefaultValue(Schema.Field field, Jackson1JsonGeneratorWrapper gen) throws IOException {
         JsonNode defaultValue = field.defaultValue();
         if (defaultValue != null) {
+            if (defaultValue.isNumber()) {
+                defaultValue = Jackson1Utils.enforceUniformNumericDefaultValues(field);
+            }
             gen.writeFieldName("default");
             gen.getDelegate().writeTree(defaultValue);
         }

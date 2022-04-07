@@ -8,16 +8,19 @@ package com.linkedin.avroutil1.compatibility.avro110;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linkedin.avroutil1.compatibility.AvscWriter;
 import com.linkedin.avroutil1.compatibility.Jackson2JsonGeneratorWrapper;
-import org.apache.avro.Schema;
-import org.apache.avro.util.internal.JacksonUtils;
-
+import com.linkedin.avroutil1.compatibility.Jackson2Utils;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Map;
 import java.util.Set;
+import org.apache.avro.Schema;
+import org.apache.avro.util.internal.Accessor;
+import org.apache.avro.util.internal.JacksonUtils;
+
 
 public class Avro110AvscWriter extends AvscWriter<Jackson2JsonGeneratorWrapper> {
     private static final JsonFactory FACTORY = new JsonFactory().setCodec(new ObjectMapper());
@@ -59,9 +62,12 @@ public class Avro110AvscWriter extends AvscWriter<Jackson2JsonGeneratorWrapper> 
     @Override
     protected void writeDefaultValue(Schema.Field field, Jackson2JsonGeneratorWrapper gen) throws IOException {
         if (field.hasDefaultValue()) {
+            JsonNode defaultValue = Accessor.defaultValue(field);
+            if (defaultValue.isNumber()) {
+                defaultValue = Jackson2Utils.enforceUniformNumericDefaultValues(field, defaultValue);
+            }
             gen.writeFieldName("default");
-            Object o = field.defaultVal();
-            gen.getDelegate().writeTree(JacksonUtils.toJsonNode(o));
+            gen.getDelegate().writeTree(defaultValue);
         }
     }
 

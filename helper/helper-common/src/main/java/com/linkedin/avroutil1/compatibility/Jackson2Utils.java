@@ -11,12 +11,24 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.DoubleNode;
+import com.fasterxml.jackson.databind.node.FloatNode;
+import com.fasterxml.jackson.databind.node.IntNode;
+import com.fasterxml.jackson.databind.node.LongNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+import java.math.BigDecimal;
+import org.apache.avro.Schema;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.apache.avro.Schema.Type.UNION;
 
 
 public class Jackson2Utils {
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
   private static final JsonFactory JSON_FACTORY = new JsonFactory();
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(Jackson2Utils.class);
 
   private Jackson2Utils() {
     // Util class; should not be instantiated.
@@ -61,5 +73,40 @@ public class Jackson2Utils {
       throw new IllegalStateException("while trying to serialize " + node + " (a " + node.getClass().getName() + ")",
           issue);
     }
+  }
+
+  /**
+   *  Enforces uniform numeric default values across Avro versions
+   */
+  static public JsonNode enforceUniformNumericDefaultValues(Schema.Field field, JsonNode genericDefaultValue) {
+    BigDecimal numericDefaultValue = genericDefaultValue.decimalValue();
+    Schema schema = field.schema();
+    // a default value for a union, must match the first element of the union
+    Schema.Type defaultType = schema.getType() == UNION ? schema.getTypes().get(0).getType() : schema.getType();
+
+    switch (defaultType) {
+      case INT:
+        if (!isAMathematicalInteger(numericDefaultValue)) {
+          LOGGER.warn(String.format("Invalid default value: %s for \"int\" field: %s", genericDefaultValue, field.name()));
+          return genericDefaultValue;
+        }
+        return new IntNode(genericDefaultValue.intValue());
+      case LONG:
+        if (!isAMathematicalInteger(numericDefaultValue)) {
+          LOGGER.warn(String.format("Invalid default value: %s for \"long\" field: %s", genericDefaultValue, field.name()));
+          return genericDefaultValue;
+        }
+        return new LongNode(genericDefaultValue.longValue());
+      case DOUBLE:
+        return new DoubleNode(genericDefaultValue.doubleValue());
+      case FLOAT:
+        return new FloatNode(genericDefaultValue.floatValue());
+      default:
+        return genericDefaultValue;
+    }
+  }
+
+  static private boolean isAMathematicalInteger(BigDecimal bigDecimal) {
+    return bigDecimal.stripTrailingZeros().scale() <= 0;
   }
 }
