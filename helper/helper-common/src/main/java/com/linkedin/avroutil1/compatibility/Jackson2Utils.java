@@ -21,7 +21,7 @@ import org.apache.avro.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.apache.avro.Schema.Type.*;
+import static org.apache.avro.Schema.Type.UNION;
 
 
 public class Jackson2Utils {
