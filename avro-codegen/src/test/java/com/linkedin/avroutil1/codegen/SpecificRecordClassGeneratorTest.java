@@ -31,4 +31,18 @@ public class SpecificRecordClassGeneratorTest {
 
     CompilerHelper.assertCompiles(javaSourceFile);
   }
+
+  @Test
+  public void testHugeEnum() throws Exception {
+    String avsc = TestUtil.load("schemas/SimpleEnumWithHugeDoc.avsc");
+    SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
+    AvscParser parser = new AvscParser();
+    AvscParseResult result = parser.parse(avsc);
+    Assert.assertNull(result.getParseError());
+    AvroEnumSchema enumSchema = (AvroEnumSchema) result.getTopLevelSchema();
+    Assert.assertNotNull(enumSchema);
+    JavaFileObject javaSourceFile = generator.generateSpecificRecordClass(enumSchema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
+
+    CompilerHelper.assertCompiles(javaSourceFile);
+  }
 }
