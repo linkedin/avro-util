@@ -31,7 +31,7 @@ public class SingleSchemaDeserializationDetectorTest {
         BugInstanceMatcher bugTypeMatcher = new BugInstanceMatcherBuilder()
                 .bugType("SINGLE_SCHEMA_DESERIALIZATION")
                 .inMethod("singleSchemaDecoding").build();
-        MatcherAssert.assertThat(bugCollection, containsExactly(2, bugTypeMatcher));
+        MatcherAssert.assertThat(bugCollection, containsExactly(1, bugTypeMatcher));
     }
 
     @Test
