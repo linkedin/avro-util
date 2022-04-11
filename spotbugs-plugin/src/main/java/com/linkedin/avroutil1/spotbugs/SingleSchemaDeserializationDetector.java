@@ -57,7 +57,8 @@ public class SingleSchemaDeserializationDetector extends OpcodeStackDetector {
         }
         MethodDescriptor constructorDesc = getMethodDescriptorOperand();
         int numSchemaArgs = occurrences("org/apache/avro/Schema", constructorDesc.getSignature());
-        if (numSchemaArgs == 1) {
+        if (numSchemaArgs == 1
+            && occurrences("GenericDatumReader", String.valueOf(getXClass().getSuperclassDescriptor())) == 0) {
             // single schema arg constructor
             BugInstance bug = new BugInstance(this, "SINGLE_SCHEMA_DESERIALIZATION", NORMAL_PRIORITY)
                     .addClassAndMethod(this)
