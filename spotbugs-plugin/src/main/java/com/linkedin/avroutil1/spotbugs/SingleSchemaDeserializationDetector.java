@@ -31,10 +31,7 @@ import java.util.Set;
  */
 public class SingleSchemaDeserializationDetector extends OpcodeStackDetector {
 
-    private final static String DOTTED_GENERIC_DATUM_READER_CLASS = "org.apache.avro.generic.GenericDatumReader";
-
     private final static Set<String> READER_FQCNS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
-            DOTTED_GENERIC_DATUM_READER_CLASS,
             "org.apache.avro.specific.SpecificDatumReader",
             "com.linkedin.avro.fastserde.FastGenericDatumReader",
             "com.linkedin.avro.fastserde.FastSpecificDatumReader"
@@ -60,8 +57,7 @@ public class SingleSchemaDeserializationDetector extends OpcodeStackDetector {
         }
         MethodDescriptor constructorDesc = getMethodDescriptorOperand();
         int numSchemaArgs = occurrences("org/apache/avro/Schema", constructorDesc.getSignature());
-        if (numSchemaArgs == 1 && occurrences(DOTTED_GENERIC_DATUM_READER_CLASS,
-            String.valueOf(getXClass().getSuperclassDescriptor().getDottedClassName())) == 0) {
+        if (numSchemaArgs == 1) {
             // single schema arg constructor
             BugInstance bug = new BugInstance(this, "SINGLE_SCHEMA_DESERIALIZATION", NORMAL_PRIORITY)
                     .addClassAndMethod(this)
