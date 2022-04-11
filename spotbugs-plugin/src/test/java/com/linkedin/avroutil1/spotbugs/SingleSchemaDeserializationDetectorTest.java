@@ -31,7 +31,18 @@ public class SingleSchemaDeserializationDetectorTest {
         BugInstanceMatcher bugTypeMatcher = new BugInstanceMatcherBuilder()
                 .bugType("SINGLE_SCHEMA_DESERIALIZATION")
                 .inMethod("singleSchemaDecoding").build();
-        MatcherAssert.assertThat(bugCollection, containsExactly(2, bugTypeMatcher));
+        MatcherAssert.assertThat(bugCollection, containsExactly(1, bugTypeMatcher));
+    }
+
+    @Test
+    public void testFalsePositive() {
+        Path path = Paths.get("build/classes/java/test", DatumReaderClass.class.getName().replace('.', '/') + ".class");
+        BugCollection bugCollection = spotbugs.performAnalysis(path);
+
+        BugInstanceMatcher bugTypeMatcher = new BugInstanceMatcherBuilder()
+            .bugType("SINGLE_SCHEMA_DESERIALIZATION")
+            .inMethod("singleSchemaDecoding").build();
+        MatcherAssert.assertThat(bugCollection, containsExactly(0, bugTypeMatcher));
     }
 
     @Test
