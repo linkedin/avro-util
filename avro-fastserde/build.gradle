@@ -89,7 +89,7 @@ sourceSets {
 }
 
 dependencies {
-  implementation project(":helper:helper")
+  implementation "com.linkedin.avroutil1:helper-all:${project.version}"
 
   implementation "org.slf4j:slf4j-api:1.7.14"
   implementation "org.apache.commons:commons-lang3:3.4"
