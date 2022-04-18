@@ -6,12 +6,35 @@
 
 package com.linkedin.avroutil1.compatibility;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericEnumSymbol;
+import org.apache.avro.generic.GenericFixed;
+import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.generic.IndexedRecord;
+import org.apache.avro.specific.SpecificData;
+import org.apache.avro.specific.SpecificFixed;
+import org.apache.avro.specific.SpecificRecord;
+import org.apache.avro.util.Utf8;
 
 
 public class AvroRecordUtil {
+  private static final List<StringRepresentation> STRING_ONLY = Collections.singletonList(StringRepresentation.String);
+  private static final List<StringRepresentation> UTF8_PREFERRED = Collections.unmodifiableList(Arrays.asList(
+      StringRepresentation.Utf8, StringRepresentation.String
+  ));
 
   private AvroRecordUtil() {
     //utility class
@@ -76,5 +99,482 @@ public class AvroRecordUtil {
       }
     }
     return record;
+  }
+
+  /**
+   * converts a given {@link GenericData.Record} into an instance of the "equivalent"
+   * {@link SpecificRecord} (SR) class. Can optionally reuse a given SR instance as output,
+   * otherwise SR class will be looked up on the current thread's classpath by fullname
+   * (or optionally by aliases) <br>
+   * <b>WARNING:</b> this method is a crutch. If at all possible, configure your avro decoding operation
+   * to generate the desired output type - either generics or specifics - directly. it will be FAR cheaper
+   * than using this method of conversion.
+   * @param input generic record to convert from. required
+   * @param outputReuse specific record to convert into. optional. if provided must be of the correct
+   *                    fullname (matching input or any of input's aliases, depending on config)
+   * @param config configuration for the operation
+   * @param <T> type of the SR class
+   * @return a SR converted from the input
+   */
+  public static <T extends SpecificRecord> T genericRecordToSpecificRecord(
+          GenericRecord input,
+          T outputReuse,
+          RecordConversionConfig config
+  ) {
+    if (input == null) {
+      throw new IllegalArgumentException("input required");
+    }
+    if (config == null) {
+      throw new IllegalArgumentException("config required");
+    }
+
+    RecordConversionContext context = new RecordConversionContext(config);
+    context.setUseSpecifics(true);
+
+    Schema inputSchema = input.getSchema();
+    Schema outputSchema;
+    ClassLoader cl;
+    T outputRecord;
+    if (outputReuse == null) {
+      //use context loader
+      Class<T> srClass;
+      cl = Thread.currentThread().getContextClassLoader();
+      context.setClassLoader(cl);
+      //look up SR class by fullname and possibly aliases
+      //noinspection unchecked
+      srClass = (Class<T>) context.lookup(inputSchema);
+
+      outputSchema = AvroSchemaUtil.getDeclaredSchema(srClass);
+      //noinspection unchecked
+      outputRecord = (T) AvroCompatibilityHelper.newInstance(srClass, outputSchema);
+    } else {
+      //use same loader that loaded output
+      cl = outputReuse.getClass().getClassLoader();
+      context.setClassLoader(cl);
+      outputSchema = outputReuse.getSchema();
+      //TODO - validate output schema vs input schema
+      outputRecord = outputReuse;
+    }
+
+    deepConvertRecord(input, outputRecord, context);
+
+    return outputRecord;
+  }
+
+  /**
+   * converts a given {@link SpecificRecord} (SR) into an instance of the "equivalent"
+   * {@link GenericData.Record}. Can optionally reuse a given GR instance as output.
+   * otherwise a new GR will be created using the schema from the input SR<br>
+   * <b>WARNING:</b> this method is a crutch. If at all possible, configure your avro decoding operation
+   * to generate the desired output type - either generics or specifics - directly. it will be FAR cheaper
+   * than using this method of conversion.
+   * @param input specific record to convert from. required
+   * @param outputReuse generic record to convert into. optional. if provided must be of the correct
+   *                    fullname (matching input or any of input's aliases, depending on config)
+   * @param config configuration for the operation
+   * @return a SR converted from the input
+   */
+  public static GenericRecord specificRecordToGenericRecord(
+      SpecificRecord input,
+      GenericRecord outputReuse,
+      RecordConversionConfig config
+  ) {
+    if (input == null) {
+      throw new IllegalArgumentException("input required");
+    }
+    if (config == null) {
+      throw new IllegalArgumentException("config required");
+    }
+
+    RecordConversionContext context = new RecordConversionContext(config);
+    context.setUseSpecifics(false);
+
+    Schema inputSchema = input.getSchema();
+    Schema outputSchema;
+    ClassLoader cl;
+    GenericRecord outputRecord;
+    if (outputReuse == null) {
+      //use context loader
+      cl = Thread.currentThread().getContextClassLoader();
+      context.setClassLoader(cl);
+
+      outputSchema = inputSchema;
+      outputRecord = new GenericData.Record(outputSchema);
+    } else {
+      //use same loader that loaded output
+      cl = outputReuse.getClass().getClassLoader();
+      context.setClassLoader(cl);
+      outputSchema = outputReuse.getSchema();
+      //TODO - validate output schema vs input schema
+      outputRecord = outputReuse;
+    }
+
+    deepConvertRecord(input, outputRecord, context);
+
+    return outputRecord;
+  }
+
+  private static void deepConvertRecord(IndexedRecord input, IndexedRecord output, RecordConversionContext context) {
+    RecordConversionConfig config = context.getConfig();
+    Schema inputSchema = input.getSchema();
+    Schema outputSchema = output.getSchema();
+    for (Schema.Field outField : outputSchema.getFields()) {
+      //look up field on input by name then (optionally) aliases
+      Schema.Field inField = findMatchingField(outField, inputSchema, config);
+      //grab and convert inField value if found, use outField default if not
+      Object outputValue;
+      if (inField == null) {
+        outputValue = context.isUseSpecifics() ? AvroCompatibilityHelper.getSpecificDefaultValue(outField)
+                : AvroCompatibilityHelper.getGenericDefaultValue(outField);
+      } else {
+        Object inputValue = input.get(inField.pos());
+        //figure out what type (in avro) this value is, which is only tricky for unions
+        Schema inFieldSchema = inField.schema();
+        Schema inValueSchema;
+        Schema.Type inFieldSchemaType = inFieldSchema.getType();
+        if (inFieldSchemaType == Schema.Type.UNION) {
+          boolean inputSpecific = AvroCompatibilityHelper.isSpecificRecord(input);
+          int unionBranch;
+          if (inputSpecific) {
+            unionBranch = SpecificData.get().resolveUnion(inFieldSchema, inputValue);
+          } else {
+            unionBranch = GenericData.get().resolveUnion(inFieldSchema, inputValue);
+          }
+          inValueSchema = inFieldSchema.getTypes().get(unionBranch);
+        } else {
+          inValueSchema = inFieldSchema;
+        }
+
+        //figure out the output schema that matches the input value (following the same logic
+        //as regular avro decoding)
+        Schema outFieldSchema = outField.schema();
+        SchemaResolutionResult readerSchemaResolution = AvroSchemaUtil.resolveReaderVsWriter(
+                inValueSchema,
+                outFieldSchema,
+                config.isUseAliasesOnNamedTypes()
+                , true
+        );
+        if (readerSchemaResolution == null) {
+          throw new IllegalArgumentException("value for field " + inField.name() + " (" + inValueSchema + " value "
+                  + inputValue + ") cannot me resolved to destination schema " + outFieldSchema);
+        }
+        Schema readerSchema = readerSchemaResolution.getReaderMatch();
+
+        //if reader (destination) field is a string, determine what string representation to use
+        StringRepresentation stringRepresentation = context.getConfig().getPreferredStringRepresentation();
+        if (readerSchema.getType() == Schema.Type.STRING) {
+          if (context.isUseSpecifics()) {
+            List<StringRepresentation> fieldPrefs = stringRepForSpecificField((SpecificRecord) output, outField);
+            if (config.isUseStringRepresentationHints()) {
+              stringRepresentation = fieldPrefs.get(0);
+            } else {
+              if (!fieldPrefs.contains(stringRepresentation)) {
+                //only use field prefs if its physically impossible to use the config pref
+                stringRepresentation = fieldPrefs.get(0);
+              }
+            }
+          } else {
+            StringRepresentation fieldPref = stringRepForGenericField(outputSchema, outField);
+            if (stringRepresentation != null && config.isUseStringRepresentationHints()) {
+              stringRepresentation = fieldPref;
+            }
+          }
+        }
+
+        outputValue = deepConvert(inputValue, inValueSchema, readerSchema, context, stringRepresentation);
+
+      }
+
+      output.put(outField.pos(), outputValue);
+    }
+  }
+
+  /**
+   * find the corresponding "source" field from an input ("writer") record schema
+   * that matches a given "output" field from a destination ("reader") record schema
+   * @param outField
+   * @param inputSchema
+   * @param config
+   * @return
+   */
+  private static Schema.Field findMatchingField(Schema.Field outField, Schema inputSchema, RecordConversionConfig config) {
+    String outFieldName = outField.name();
+    //look up field on input by name then (optionally) aliases
+    Schema.Field inField = inputSchema.getField(outFieldName);
+    if (inField == null && config.isUseAliasesOnFields()) {
+      //~same as avro applying reader schema aliases to writer schema on decoding
+      Set<String> fieldAliases = AvroCompatibilityHelper.getFieldAliases(outField); //never null
+      for (String fieldAlias : fieldAliases) {
+        Schema.Field matchByAlias = inputSchema.getField(fieldAlias);
+        if (matchByAlias == null) {
+          continue;
+        }
+        if (inField != null) {
+          //TODO - consider better matching by type as well? see what avro decoding does
+          throw new IllegalStateException("output field " + outFieldName
+                  + " has multiple input fields matching by aliases: " + inField.name() + " and " + fieldAlias);
+        }
+        inField = matchByAlias;
+      }
+    }
+    return inField;
+  }
+
+  private static Object deepConvert(
+          Object inputValue,
+          Schema inputSchema,
+          Schema outputSchema,
+          RecordConversionContext context,
+          StringRepresentation stringRepresentation
+  ) {
+    Schema.Type inputType = inputSchema.getType();
+    Schema.Type outputType = outputSchema.getType();
+    switch (outputType) {
+
+      //primitives
+
+      case NULL:
+        if (inputValue != null) {
+          throw new IllegalArgumentException("only legal input value for type NULL is null, not " + inputValue);
+        }
+        return null;
+      case BOOLEAN:
+        //noinspection RedundantCast - cast serves as input validation
+        return (Boolean) inputValue;
+      case INT:
+        //noinspection RedundantCast - cast serves as input validation
+        return (Integer) inputValue;
+      case LONG:
+        switch (inputType) {
+          case INT:
+            return ((Integer) inputValue).longValue();
+          case LONG:
+            //noinspection RedundantCast - cast serves as input validation
+            return (Long) inputValue;
+        }
+        break;
+      case FLOAT:
+        switch (inputType) {
+          case INT:
+            return ((Integer) inputValue).floatValue();
+          case LONG:
+            return ((Long) inputValue).floatValue();
+          case FLOAT:
+            //noinspection RedundantCast - cast serves as input validation
+            return (Float) inputValue;
+        }
+        break;
+      case DOUBLE:
+        switch (inputType) {
+          case INT:
+            return ((Integer) inputValue).doubleValue();
+          case LONG:
+            return ((Long) inputValue).doubleValue();
+          case FLOAT:
+            return ((Float) inputValue).doubleValue();
+          case DOUBLE:
+            //noinspection RedundantCast - cast serves as input validation
+            return (Double) inputValue;
+        }
+        break;
+      case BYTES:
+        switch (inputType) {
+          case BYTES:
+            //noinspection RedundantCast - cast serves as input validation
+            return (ByteBuffer) inputValue;
+          case STRING:
+            return ByteBuffer.wrap(((String) inputValue).getBytes(StandardCharsets.UTF_8));
+        }
+        break;
+      case STRING:
+        switch (inputType) {
+          case BYTES:
+            ByteBuffer buf = (ByteBuffer) inputValue;
+            if (buf.position() != 0) {
+              buf.flip();
+            }
+            byte[] bytes = new byte[buf.limit()];
+            buf.get(bytes);
+            return toString(bytes, stringRepresentation);
+          case STRING:
+            return toString((CharSequence) inputValue, stringRepresentation);
+        }
+        break;
+
+      //named types
+
+      case FIXED:
+        GenericFixed fixedInput = (GenericFixed) inputValue; //works on generics and specifics
+        byte[] bytes = fixedInput.bytes();
+        if (context.isUseSpecifics()) {
+          @SuppressWarnings("unchecked")
+          Class<? extends SpecificFixed> fixedClass = (Class<? extends SpecificFixed>) context.lookup(outputSchema);
+          SpecificFixed specific = (SpecificFixed) AvroCompatibilityHelper.newInstance(fixedClass, outputSchema);
+          specific.bytes(bytes);
+          return specific;
+        } else {
+          return AvroCompatibilityHelper.newFixed(outputSchema, bytes);
+        }
+      case ENUM:
+        String inputSymbolStr;
+        if (inputValue instanceof GenericEnumSymbol) {
+          inputSymbolStr = inputValue.toString();
+        } else if (inputValue instanceof Enum) {
+          inputSymbolStr = ((Enum<?>) inputValue).name();
+        } else {
+          throw new IllegalArgumentException("input " + inputValue + " (a " + inputValue.getClass().getName() + ") not any kind of enum?");
+        }
+        String outputSymbolStr = inputSymbolStr;
+        if (!outputSchema.hasEnumSymbol(inputSymbolStr)) {
+          outputSymbolStr = null;
+          if (context.getConfig().isUseEnumDefaults()) {
+            outputSymbolStr = AvroCompatibilityHelper.getEnumDefault(outputSchema);
+          }
+        }
+        if (outputSymbolStr == null) {
+          throw new IllegalArgumentException("cant map input enum symbol " + inputSymbolStr + " to output " + outputSchema.getFullName());
+        }
+        if (context.isUseSpecifics()) {
+          @SuppressWarnings("unchecked")
+          Class<? extends Enum<?>> enumClass = (Class<? extends Enum<?>>) context.lookup(outputSchema);
+          return getSpecificEnumSymbol(enumClass, outputSymbolStr);
+        } else {
+          return AvroCompatibilityHelper.newEnumSymbol(outputSchema, outputSymbolStr);
+        }
+      case RECORD:
+        IndexedRecord inputRecord = (IndexedRecord) inputValue;
+        IndexedRecord outputRecord;
+        if (context.isUseSpecifics()) {
+          Class<?> recordClass = context.lookup(outputSchema);
+          outputRecord = (IndexedRecord) AvroCompatibilityHelper.newInstance(recordClass, outputSchema);
+        } else {
+          outputRecord = new GenericData.Record(outputSchema);
+        }
+        deepConvertRecord(inputRecord, outputRecord, context);
+        return outputRecord;
+
+      //collection schemas
+
+      case ARRAY:
+        List<?> inputList = (List<?>) inputValue;
+        List<Object> outputList;
+        if (context.isUseSpecifics()) {
+          outputList = new ArrayList<>(inputList.size());
+        } else {
+          outputList = new GenericData.Array<>(inputList.size(), outputSchema);
+        }
+        //TODO - add support for collections of unions
+        Schema inputElementDeclaredSchema = inputSchema.getElementType();
+        if (inputElementDeclaredSchema.getType() == Schema.Type.UNION) {
+          throw new UnsupportedOperationException("collections of unions TBD");
+        }
+        Schema outputElementDeclaredSchema = outputSchema.getElementType();
+        if (outputElementDeclaredSchema.getType() == Schema.Type.UNION) {
+          throw new UnsupportedOperationException("collections of unions TBD");
+        }
+        for (Object inputElement : inputList) {
+          Object outputElement = deepConvert(
+              inputElement,
+              inputElementDeclaredSchema,
+              outputElementDeclaredSchema,
+              context,
+              stringRepresentation
+          );
+          outputList.add(outputElement);
+        }
+        return outputList;
+
+      case MAP:
+        @SuppressWarnings("unchecked") //cast serves as input validation
+        Map<? extends CharSequence, ?> inputMap = (Map<String, ?>) inputValue;
+        Map<CharSequence, Object> outputMap = new HashMap<>(inputMap.size()); //for both generic and specific output
+        //TODO - add support for collections of unions
+        Schema inputValueDeclaredSchema = inputSchema.getValueType();
+        if (inputValueDeclaredSchema.getType() == Schema.Type.UNION) {
+          throw new UnsupportedOperationException("collections of unions TBD");
+        }
+        Schema outputValueDeclaredSchema = outputSchema.getValueType();
+        if (outputValueDeclaredSchema.getType() == Schema.Type.UNION) {
+          throw new UnsupportedOperationException("collections of unions TBD");
+        }
+        for (Map.Entry<? extends CharSequence, ?> entry : inputMap.entrySet()) {
+          CharSequence key = entry.getKey();
+          Object inputElement = entry.getValue();
+          Object outputElement = deepConvert(
+              inputElement,
+              inputValueDeclaredSchema,
+              outputValueDeclaredSchema,
+              context,
+              stringRepresentation
+          );
+          CharSequence outputKey = toString(key, stringRepresentation);
+          outputMap.put(outputKey, outputElement);
+        }
+        return outputMap;
+    }
+    String inputClassName = inputValue == null ? "null" : inputValue.getClass().getName();
+    throw new UnsupportedOperationException("dont know how to convert " + inputType + " " + inputValue
+            + " (a " + inputClassName + ") into " + outputType);
+  }
+
+  /**
+   *
+   * @param record record
+   * @param field (string) field of record
+   * @return possible string representations field can accept, in order of preference
+   */
+  private static List<StringRepresentation> stringRepForSpecificField(SpecificRecord record, Schema.Field field) {
+    try {
+      Field actualField = record.getClass().getDeclaredField(field.name());
+      Class<?> type = actualField.getType();
+      if (String.class.equals(type)) {
+        return STRING_ONLY;
+      }
+      if (!CharSequence.class.equals(type)) {
+        throw new IllegalStateException("dont know what string representation to use for " + type.getName());
+      }
+      return UTF8_PREFERRED;
+    } catch (Exception e) {
+      throw new IllegalStateException("unable to access " + record.getClass().getName() + "." + field.name(), e);
+    }
+  }
+
+  private static StringRepresentation stringRepForGenericField(Schema schema, Schema.Field field) {
+    String preferredRepString = field.getProp(HelperConsts.STRING_REPRESENTATION_PROP);
+    if (preferredRepString == null) {
+      return null;
+    }
+    return StringRepresentation.valueOf(preferredRepString);
+  }
+
+  private static CharSequence toString(CharSequence inputStr, StringRepresentation desired) {
+    switch (desired) {
+      case String:
+        return String.valueOf(inputStr);
+      case Utf8:
+        return new Utf8(String.valueOf(inputStr));
+      default:
+        throw new IllegalStateException("dont know how to convert to " + desired);
+    }
+  }
+
+  private static CharSequence toString(byte[] inputBytes, StringRepresentation desired) {
+    switch (desired) {
+      case String:
+        return new String(inputBytes, StandardCharsets.UTF_8);
+      case Utf8:
+        return new Utf8(inputBytes);
+      default:
+        throw new IllegalStateException("dont know how to convert to " + desired);
+    }
+  }
+
+  private static Enum<?> getSpecificEnumSymbol(Class<? extends Enum<?>> enumClass, String symbolStr) {
+    try {
+      Method valueOf = enumClass.getDeclaredMethod("valueOf", String.class);
+      return (Enum<?>) valueOf.invoke(enumClass, symbolStr);
+    } catch (Exception e) {
+      throw new IllegalStateException("while trying to resolve " + enumClass.getName() + ".valueOf(" + symbolStr + ")", e);
+    }
   }
 }

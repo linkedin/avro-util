@@ -13,6 +13,8 @@ import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
 import com.linkedin.avroutil1.parser.avsc.AvscParser;
 import java.io.File;
 import java.util.List;
+import java.util.regex.Matcher;
+
 import org.apache.avro.Schema;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -100,7 +102,7 @@ public class AvscSchemaWriterTest {
     if (HelperConsts.NAMED_TYPES.contains(reference.getType())){
       //for named schemas the file path is determined by schema name
       Assert.assertNotNull(file.getPathFromRoot());
-      String expectedFileName = reference.getFullName().replaceAll("\\.", File.separator) + ".avsc";
+      String expectedFileName = reference.getFullName().replaceAll("\\.", Matcher.quoteReplacement(File.separator)) + ".avsc";
       Assert.assertEquals(file.getPathFromRoot().toString(), expectedFileName);
     } else {
       //cant auto-name files containing other schema types

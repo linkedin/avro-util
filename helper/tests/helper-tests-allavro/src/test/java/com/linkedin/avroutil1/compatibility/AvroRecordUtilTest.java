@@ -7,11 +7,13 @@
 package com.linkedin.avroutil1.compatibility;
 
 import com.linkedin.avroutil1.testcommon.TestUtil;
+import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.specific.SpecificRecord;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import under14.RecordWithDefaults;
 
 
 public class AvroRecordUtilTest {
@@ -42,7 +44,7 @@ public class AvroRecordUtilTest {
 
   @Test
   public void testSupplementDefaultIntoSpecificRecord() throws Exception {
-    under14.RecordWithDefaults record = new RecordWithDefaults();
+    under14.RecordWithDefaults record = new under14.RecordWithDefaults();
 
     //there are unpopulated fields with no defaults, see that full population is thus impossible
     Assert.assertThrows(IllegalArgumentException.class, () -> AvroRecordUtil.supplementDefaults(record, true));
@@ -58,5 +60,37 @@ public class AvroRecordUtilTest {
 
     //should now pass
     AvroCodecUtil.serializeBinary(record);
+  }
+
+  @Test
+  public void testTrivialGenericToSpecificConversion() throws Exception {
+    Schema schema = under111.SimpleRecord.SCHEMA$;
+    RandomRecordGenerator gen = new RandomRecordGenerator();
+    GenericRecord genericInstance = (GenericRecord) gen.randomGeneric(schema, RecordGenerationConfig.newConfig().withAvoidNulls(true));
+    convertRoundTrip(genericInstance);
+  }
+
+  @Test
+  public void testGenericToSpecific() throws Exception {
+    Schema schema = under14.RecordWithDefaults.SCHEMA$;
+    RandomRecordGenerator gen = new RandomRecordGenerator();
+    GenericRecord genericInstance = (GenericRecord) gen.randomGeneric(schema, RecordGenerationConfig.newConfig().withAvoidNulls(false));
+    convertRoundTrip(genericInstance);
+  }
+
+  private void convertRoundTrip(GenericRecord original) {
+    Assert.assertNotNull(original);
+    SpecificRecord converted = AvroRecordUtil.genericRecordToSpecificRecord(original, null, RecordConversionConfig.ALLOW_ALL);
+    Assert.assertNotNull(converted);
+    GenericRecord backAgain = AvroRecordUtil.specificRecordToGenericRecord(converted, null, RecordConversionConfig.ALLOW_ALL);
+    Assert.assertNotSame(original, backAgain);
+    try {
+      Assert.assertEquals(backAgain, original);
+    } catch (AvroRuntimeException expected) {
+      //avro 1.4 cant compare anything with map schemas for equality
+      if (!expected.getMessage().contains("compare maps") || AvroCompatibilityHelper.getRuntimeAvroVersion().laterThan(AvroVersion.AVRO_1_4)) {
+        Assert.fail("while attempting to compare generic records", expected);
+      }
+    }
   }
 }

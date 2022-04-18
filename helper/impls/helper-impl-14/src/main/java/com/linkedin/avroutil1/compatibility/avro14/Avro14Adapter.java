@@ -18,8 +18,8 @@ import com.linkedin.avroutil1.compatibility.SchemaBuilder;
 import com.linkedin.avroutil1.compatibility.SchemaNormalization;
 import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
 import com.linkedin.avroutil1.compatibility.SchemaParseResult;
-import com.linkedin.avroutil1.compatibility.StringPropertyUtils;
 import com.linkedin.avroutil1.compatibility.SkipDecoder;
+import com.linkedin.avroutil1.compatibility.StringPropertyUtils;
 import com.linkedin.avroutil1.compatibility.StringRepresentation;
 import com.linkedin.avroutil1.compatibility.avro14.backports.Avro14DefaultValuesCache;
 import com.linkedin.avroutil1.compatibility.avro14.backports.Avro18BufferedBinaryEncoder;
@@ -30,20 +30,6 @@ import com.linkedin.avroutil1.compatibility.avro14.codec.CompatibleJsonDecoder;
 import com.linkedin.avroutil1.compatibility.avro14.codec.CompatibleJsonEncoder;
 import com.linkedin.avroutil1.compatibility.backports.ObjectInputToInputStreamAdapter;
 import com.linkedin.avroutil1.compatibility.backports.ObjectOutputToOutputStreamAdapter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.OutputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import org.apache.avro.Avro14SchemaAccessUtil;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
@@ -65,18 +51,41 @@ import org.codehaus.jackson.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.OutputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
 
 public class Avro14Adapter implements AvroAdapter {
   private final static Logger LOG = LoggerFactory.getLogger(Avro14Adapter.class);
   private final static DecoderFactory DIRECT_DECODER_FACTORY = new DecoderFactory().configureDirectDecoder(true);
   private final static DecoderFactory BUFFERED_DECODER_FACTORY = DecoderFactory.defaultFactory();
 
+  private final Field fieldAliasesField;
   private final Method compilerEnqueueMethod;
   private final Method compilerCompileMethod;
   private final Field outputFilePathField;
   private final Field outputFileContentsField;
 
   public Avro14Adapter() {
+    try {
+      fieldAliasesField = Schema.Field.class.getDeclaredField("aliases");
+      fieldAliasesField.setAccessible(true);
+    } catch (Exception e) {
+      throw new IllegalStateException("error initializing adapter", e);
+    }
     try {
       compilerEnqueueMethod = SpecificCompiler.class.getDeclaredMethod("enqueue", Schema.class);
       compilerEnqueueMethod.setAccessible(true); //private
@@ -187,7 +196,7 @@ public class Avro14Adapter implements AvroAdapter {
 
   @Override
   public <T> SpecificDatumReader<T> newAliasAwareSpecificDatumReader(Schema writer, Class<T> readerClass) {
-    Schema readerSchema = AvroSchemaUtil.getClassSchema(readerClass);
+    Schema readerSchema = AvroSchemaUtil.getDeclaredSchema(readerClass);
     return new AliasAwareSpecificDatumReader<>(writer, readerSchema);
   }
 
@@ -255,6 +264,20 @@ public class Avro14Adapter implements AvroAdapter {
   @Override
   public boolean fieldHasDefault(Schema.Field field) {
     return null != field.defaultValue();
+  }
+
+  @Override
+  public Set<String> getFieldAliases(Schema.Field field) {
+    try {
+      @SuppressWarnings("unchecked")
+      Set<String> raw = (Set<String>) fieldAliasesField.get(field);
+      if (raw == null || raw.isEmpty()) {
+        return Collections.emptySet();
+      }
+      return Collections.unmodifiableSet(raw); //defensive
+    } catch (Exception e) {
+      throw new IllegalStateException("cant access field aliases", e);
+    }
   }
 
   @Override

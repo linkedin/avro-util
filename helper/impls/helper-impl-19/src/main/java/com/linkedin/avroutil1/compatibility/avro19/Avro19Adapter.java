@@ -7,7 +7,6 @@
 package com.linkedin.avroutil1.compatibility.avro19;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linkedin.avroutil1.compatibility.AvroAdapter;
 import com.linkedin.avroutil1.compatibility.AvroGeneratedSourceCode;
 import com.linkedin.avroutil1.compatibility.AvroSchemaUtil;
@@ -25,28 +24,11 @@ import com.linkedin.avroutil1.compatibility.SkipDecoder;
 import com.linkedin.avroutil1.compatibility.StringRepresentation;
 import com.linkedin.avroutil1.compatibility.avro19.backports.Avro19DefaultValuesCache;
 import com.linkedin.avroutil1.compatibility.avro19.codec.AliasAwareSpecificDatumReader;
+import com.linkedin.avroutil1.compatibility.avro19.codec.BoundedMemoryDecoder;
 import com.linkedin.avroutil1.compatibility.avro19.codec.CachedResolvingDecoder;
 import com.linkedin.avroutil1.compatibility.avro19.codec.CompatibleJsonDecoder;
 import com.linkedin.avroutil1.compatibility.avro19.codec.CompatibleJsonEncoder;
-import com.linkedin.avroutil1.compatibility.avro19.codec.BoundedMemoryDecoder;
 import com.linkedin.avroutil1.compatibility.backports.ObjectInputToInputStreamAdapter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.OutputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaNormalization;
@@ -67,12 +49,27 @@ import org.apache.avro.util.internal.JacksonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.OutputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
 
 public class Avro19Adapter implements AvroAdapter {
   private final static Logger LOG = LoggerFactory.getLogger(Avro19Adapter.class);
-
-  //doc says thread safe outside config methods
-  private final static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
   private boolean compilerSupported;
   private Throwable compilerSupportIssue;
@@ -214,7 +211,7 @@ public class Avro19Adapter implements AvroAdapter {
 
   @Override
   public <T> SpecificDatumReader<T> newAliasAwareSpecificDatumReader(Schema writer, Class<T> readerClass) {
-    Schema readerSchema = AvroSchemaUtil.getClassSchema(readerClass);
+    Schema readerSchema = AvroSchemaUtil.getDeclaredSchema(readerClass);
     return new AliasAwareSpecificDatumReader<>(writer, readerSchema);
   }
 
@@ -295,6 +292,11 @@ public class Avro19Adapter implements AvroAdapter {
   @Override
   public boolean fieldHasDefault(Schema.Field field) {
     return field.hasDefaultValue();
+  }
+
+  @Override
+  public Set<String> getFieldAliases(Schema.Field field) {
+    return field.aliases();
   }
 
   @Override

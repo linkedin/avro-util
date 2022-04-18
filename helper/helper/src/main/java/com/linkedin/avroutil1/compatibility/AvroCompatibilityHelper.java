@@ -28,6 +28,7 @@ import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
@@ -601,6 +602,11 @@ public class AvroCompatibilityHelper {
   public static boolean fieldHasDefault(Schema.Field field) {
     assertAvroAvailable();
     return ADAPTER.fieldHasDefault(field);
+  }
+
+  public static Set<String> getFieldAliases(Schema.Field field) {
+    assertAvroAvailable();
+    return ADAPTER.getFieldAliases(field);
   }
 
   /**
