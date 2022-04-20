@@ -41,15 +41,12 @@ import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificData;
 import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificRecord;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
  * a Utility class for performing various avro-related operations under a wide range of avro versions at runtime.
  */
 public class AvroCompatibilityHelper {
-  private final static Logger LOGGER = LoggerFactory.getLogger(AvroCompatibilityHelper.class);
 
   private static final AvroVersion DETECTED_VERSION;
   private static final AvroVersion DETECTED_COMPILER_VERSION;
@@ -66,8 +63,8 @@ public class AvroCompatibilityHelper {
     if (DETECTED_VERSION == null) {
       ADAPTER = null;
     } else {
-      if (DETECTED_VERSION != DETECTED_COMPILER_VERSION) {
-        LOGGER.error(
+      if (DETECTED_COMPILER_VERSION != null && DETECTED_VERSION != DETECTED_COMPILER_VERSION) {
+        throw new IllegalStateException(
             String.format("avro and avro-compiler version mismatch! avro version: %s. avro-compiler version: %s",
                 DETECTED_VERSION, DETECTED_COMPILER_VERSION));
       }
@@ -108,7 +105,7 @@ public class AvroCompatibilityHelper {
   }
 
   /**
-   * returns the detected runtime version of avro, or null if none found
+   * returns the detected runtime version of avro, or null if no avro-compiler found
    * @return the version of avro detected on the runtime classpath, or null if no avro found
    */
   public static AvroVersion getRuntimeAvroVersion() {
@@ -840,14 +837,22 @@ public class AvroCompatibilityHelper {
   private static AvroVersion detectAvroCompilerVersion() {
     Class<?> specificCompilerClass;
 
-    // There is no avro-compiler in 1.4.X
+    // In Avro 1.4, SpecificCompiler was a class of org.apache.avro.specific. In 1.5.0, SpecificCompiler was moved
+    // to its own package.
     try {
-      specificCompilerClass = Class.forName("org.apache.avro.compiler.specific.SpecificCompiler");
-    } catch (ClassNotFoundException unexpected) {
+      Class.forName("org.apache.avro.specific.SpecificCompiler");
       return AvroVersion.AVRO_1_4;
+    } catch (ClassNotFoundException ignored) {
     }
 
-    // SpecificCompiler.isUnboxedJavaTypeNullable(Schema s) method was added to 1.6.0
+    // The case where no avro SpecificCompiler exists on the classpath.
+    try {
+      specificCompilerClass = Class.forName("org.apache.avro.compiler.specific.SpecificCompiler");
+    } catch (ClassNotFoundException expected) {
+      return null;
+    }
+
+    // SpecificCompiler.isUnboxedJavaTypeNullable(Schema s) method was added to 1.6.0.
     try {
       specificCompilerClass.getMethod("isUnboxedJavaTypeNullable", Schema.class);
     } catch (NoSuchMethodException expected) {
@@ -874,21 +879,21 @@ public class AvroCompatibilityHelper {
       return null;
     }
 
-    //SpecificCompiler.isGettersReturnOptional() method was added in 1.9.0
+    //SpecificCompiler.isGettersReturnOptional() method was added in 1.9.0.
     try {
       specificCompilerClass.getMethod("isGettersReturnOptional");
     } catch (NoSuchMethodException expected) {
       return AvroVersion.AVRO_1_8;
     }
 
-    //SpecificCompiler.isOptionalGettersForNullableFieldsOnly() method was added in 1.10.0
+    //SpecificCompiler.isOptionalGettersForNullableFieldsOnly() method was added in 1.10.0.
     try {
       specificCompilerClass.getMethod("isOptionalGettersForNullableFieldsOnly");
     } catch (NoSuchMethodException expected) {
       return AvroVersion.AVRO_1_9;
     }
 
-    // SpecificCompiler.getUsedCustomLogicalTypeFactories() method was added in 1.11.0
+    // SpecificCompiler.getUsedCustomLogicalTypeFactories() method was added in 1.11.0.
     try {
       specificCompilerClass.getMethod("getUsedCustomLogicalTypeFactories", Schema.class);
     } catch (NoSuchMethodException expected) {
@@ -920,8 +925,9 @@ public class AvroCompatibilityHelper {
       return fileResourceLoaderClassProperty != null;
 
       // We should never reach these exceptions
-    } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | ClassNotFoundException | InvocationTargetException | NoSuchFieldException expected) {
-      throw new RuntimeException(expected.fillInStackTrace());
+    } catch (Exception expected) {
+      throw new IllegalStateException("unexpected exception while retrieving velocity engine config",
+          expected.fillInStackTrace());
     }
   }
 
