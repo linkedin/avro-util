@@ -30,8 +30,8 @@ import java.util.Set;
  * take any schema evolution into considerations (hence assumes reader and writer schemas to be the same)
  */
 public class SingleSchemaDeserializationDetector extends OpcodeStackDetector {
+
     private final static Set<String> READER_FQCNS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
-            "org.apache.avro.generic.GenericDatumReader",
             "org.apache.avro.specific.SpecificDatumReader",
             "com.linkedin.avro.fastserde.FastGenericDatumReader",
             "com.linkedin.avro.fastserde.FastSpecificDatumReader"

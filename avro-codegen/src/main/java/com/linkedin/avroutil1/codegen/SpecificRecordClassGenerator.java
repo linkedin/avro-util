@@ -6,15 +6,22 @@
 
 package com.linkedin.avroutil1.codegen;
 
+import com.linkedin.avroutil1.compatibility.HelperConsts;
+import com.linkedin.avroutil1.compatibility.SourceCodeUtils;
 import com.linkedin.avroutil1.model.AvroEnumSchema;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
 import com.linkedin.avroutil1.model.AvroType;
+import com.linkedin.avroutil1.writer.avsc.AvscSchemaWriter;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import javax.lang.model.element.Modifier;
 import javax.tools.JavaFileObject;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.StringJoiner;
 
 
 /**
@@ -56,13 +63,7 @@ public class SpecificRecordClassGenerator {
     }
 
     //add public final static SCHEMA$
-    ClassName avroSchemaType = ClassName.get("org.apache.avro", "Schema");
-    classBuilder.alwaysQualify(avroSchemaType.simpleName()); //no import statements
-    classBuilder.addField(FieldSpec
-        .builder(avroSchemaType, "SCHEMA$", Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
-        .initializer("null") //TODO - provide avsc string here
-        .build()
-    );
+    addSchema$ToGeneratedClass(classBuilder, enumSchema);
 
     //create file object
     TypeSpec classSpec = classBuilder.build();
@@ -72,5 +73,53 @@ public class SpecificRecordClassGenerator {
         .build();
 
     return javaFile.toJavaFileObject();
+  }
+
+  /**
+   * adds "public final static Schema SCHEMA$" field to generated classes for named avro types.
+   * the field is defined as:
+   * public final static Schema SCHEMA$ =
+   *    com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.parse(avsc1, avsc2, avsc3 ...)
+   * where the arguments are pieces of the input schema's self-contained (fully-inlined) avsc
+   * representation. java does not allow string literals to be &gt; 64K in size, so large avsc literals
+   * are chunked and the var-args Helper.parse() is used.
+   * @param classBuilder builder for a class being generated
+   * @param classSchema schema of the class being generated
+   */
+  protected void addSchema$ToGeneratedClass(TypeSpec.Builder classBuilder, AvroNamedSchema classSchema) {
+    ClassName avroSchemaType = ClassName.get("org.apache.avro", "Schema");
+    classBuilder.alwaysQualify(avroSchemaType.simpleName()); //no import statements
+
+    //get fully-inlined single-line avsc from schema
+    AvscSchemaWriter avscWriter = new AvscSchemaWriter();
+    String avsc = avscWriter.writeSingle(classSchema).getContents();
+
+    //JVM spec spec says string literals cant be over 65535 bytes in size (this isnt simply the
+    //character count as horrible wide unicode characters could be involved).
+    //for details see https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.4.7
+    //we add some extra safety margin
+    String parseFormat;
+    Object[] parseFormatArgs;
+    if (avsc.getBytes(StandardCharsets.UTF_8).length > 64000) {
+      //not 100% safe as argument is in characters and should be bytes ...
+      List<String> chunks = SourceCodeUtils.safeSplit(avsc, 20000);
+      StringJoiner csv = new StringJoiner(", ");
+      for (int i = 1; i <= chunks.size(); i++) {
+        //"$1S, $2S, ... $NS"
+        csv.add("$" + i + "S");
+      }
+      parseFormat = HelperConsts.HELPER_FQCN + ".parse(" + csv + ")";
+      parseFormatArgs = chunks.toArray(new Object[] {});
+    } else {
+      //no need to split anything
+      parseFormat = HelperConsts.HELPER_FQCN + ".parse($1S)";
+      parseFormatArgs = new Object[] {avsc};
+    }
+    classBuilder.addField(FieldSpec
+            .builder(avroSchemaType, "SCHEMA$", Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
+            //TODO - use strict parsing
+            .initializer(CodeBlock.of(parseFormat, parseFormatArgs))
+            .build()
+    );
   }
 }
