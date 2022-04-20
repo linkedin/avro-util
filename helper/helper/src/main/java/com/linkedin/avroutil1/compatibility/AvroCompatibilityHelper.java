@@ -23,7 +23,6 @@ import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
@@ -837,20 +836,24 @@ public class AvroCompatibilityHelper {
   private static AvroVersion detectAvroCompilerVersion() {
     Class<?> specificCompilerClass;
 
-    // In Avro 1.4, SpecificCompiler was a class of org.apache.avro.specific. In 1.5.0, SpecificCompiler was moved
-    // to its own package.
-    try {
-      Class.forName("org.apache.avro.specific.SpecificCompiler");
-      return AvroVersion.AVRO_1_4;
-    } catch (ClassNotFoundException ignored) {
-    }
-
-    // The case where no avro SpecificCompiler exists on the classpath.
+    // In Avro 1.5.0+, SpecificRecord is part of the org.apache.avro.compiler.specific ClassPath.
     try {
       specificCompilerClass = Class.forName("org.apache.avro.compiler.specific.SpecificCompiler");
     } catch (ClassNotFoundException expected) {
-      return null;
+      try {
+        // In Avro 1.4, SpecificCompiler was a class of org.apache.avro.specific. In 1.5.0, SpecificCompiler was moved
+        // to its own package.
+        Class.forName("org.apache.avro.specific.SpecificCompiler");
+        return AvroVersion.AVRO_1_4;
+
+        // In the case that SpecificRecord doesn't exist in the ClassPath at all (only possible in 1.5+).
+      } catch (ClassNotFoundException ignored) {
+        return null;
+      }
     }
+
+
+
 
     // SpecificCompiler.isUnboxedJavaTypeNullable(Schema s) method was added to 1.6.0.
     try {
