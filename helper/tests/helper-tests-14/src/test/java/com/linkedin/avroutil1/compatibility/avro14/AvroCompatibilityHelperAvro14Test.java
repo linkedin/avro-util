@@ -31,6 +31,12 @@ public class AvroCompatibilityHelperAvro14Test {
     AvroVersion detected = AvroCompatibilityHelper.getRuntimeAvroVersion();
     Assert.assertEquals(detected, expected, "expected " + expected + ", got " + detected);
   }
+  @Test
+  public void testAvroCompilerVersionDetection() {
+    AvroVersion expected = AvroVersion.AVRO_1_4;
+    AvroVersion detected = AvroCompatibilityHelper.getRuntimeAvroCompilerVersion();
+    Assert.assertEquals(detected, expected, "expected " + expected + ", got " + detected);
+  }
 
   @Test
   public void testSchemaConstructableNewInstance() {

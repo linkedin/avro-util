@@ -33,6 +33,13 @@ public class AvroCompatibilityHelperAvro17Test {
   }
 
   @Test
+  public void testAvroCompilerVersionDetection() {
+    AvroVersion expected = AvroVersion.AVRO_1_7;
+    AvroVersion detected = AvroCompatibilityHelper.getRuntimeAvroCompilerVersion();
+    Assert.assertEquals(detected, expected, "expected " + expected + ", got " + detected);
+  }
+
+  @Test
   public void testSchemaConstructableNewInstance() {
     Schema schema = Mockito.mock(Schema.class);
     Object instance = AvroCompatibilityHelper.newInstance(Avro17SchemaConstructable.class, schema);
