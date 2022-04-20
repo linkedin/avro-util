@@ -21,7 +21,10 @@ import java.io.InputStreamReader;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
@@ -38,13 +41,18 @@ import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificData;
 import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * a Utility class for performing various avro-related operations under a wide range of avro versions at runtime.
  */
 public class AvroCompatibilityHelper {
+  private final static Logger LOGGER = LoggerFactory.getLogger(AvroCompatibilityHelper.class);
+
   private static final AvroVersion DETECTED_VERSION;
+  private static final AvroVersion DETECTED_COMPILER_VERSION;
   private static final AvroAdapter ADAPTER;
 
   static {
@@ -54,9 +62,16 @@ public class AvroCompatibilityHelper {
           + " differs from constant (" + HelperConsts.HELPER_FQCN + ")");
     }
     DETECTED_VERSION = detectAvroVersion();
+    DETECTED_COMPILER_VERSION = detectAvroCompilerVersion();
     if (DETECTED_VERSION == null) {
       ADAPTER = null;
     } else {
+      if (DETECTED_VERSION != DETECTED_COMPILER_VERSION) {
+        LOGGER.error(
+            String.format("avro and avro-compiler version mismatch! avro version: %s. avro-compiler version: %s",
+                DETECTED_VERSION, DETECTED_COMPILER_VERSION));
+      }
+
       try {
         switch (DETECTED_VERSION) {
           case AVRO_1_4:
@@ -98,6 +113,14 @@ public class AvroCompatibilityHelper {
    */
   public static AvroVersion getRuntimeAvroVersion() {
     return DETECTED_VERSION;
+  }
+
+  /**
+   * returns the detected runtime version of avro-compiler, or null if none found
+   * @return the version of avro detected on the runtime classpath, or null if no avro found
+   */
+  public static AvroVersion getRuntimeAvroCompilerVersion() {
+    return DETECTED_COMPILER_VERSION;
   }
 
   // encoders/decoders
@@ -813,6 +836,92 @@ public class AvroCompatibilityHelper {
 
     return AvroVersion.AVRO_1_11;
   }
+
+  // TODO: check if methods appear in all future versions
+  private static AvroVersion detectAvroCompilerVersion() {
+    Class<?> specificCompilerClass;
+    try {
+      specificCompilerClass = Class.forName("org.apache.avro.compiler.specific.SpecificCompiler");
+      // Avro 1.4 does not include an Avro Compiler
+    } catch (ClassNotFoundException unexpected) {
+      return AvroVersion.AVRO_1_4;
+    }
+
+    // isUnboxedJavaTypeNullable(Schema s) method added to 1.6.0
+    try {
+      specificCompilerClass.getMethod("isUnboxedJavaTypeNullable", Schema.class);
+    } catch (NoSuchMethodException expected) {
+      return AvroVersion.AVRO_1_5;
+    }
+
+    // A new property is added to velocityEngine in version 1.7.0.
+    // There were no differences in the public interface, so we check for the presence of a property in the private
+    // field, `velocityEngine`.
+    // To further complicate matters, this field is used in 1.7.0 and removed by 1.10.2. So the presence
+    // of the field only indicates that version is one of 1.6, 1.10+.
+    boolean fileResourceLoaderClassExists = checkIfVelocityEngineFileResourceLoaderClassExists(specificCompilerClass);
+
+    // hasBuilder() method added for 1.8.0
+    try {
+      specificCompilerClass.getMethod("hasBuilder", Schema.class);
+    } catch (NoSuchMethodException expected) {
+      if (fileResourceLoaderClassExists) {
+        return AvroVersion.AVRO_1_7;
+      } else {
+        return AvroVersion.AVRO_1_6;
+      }
+    }
+
+    //method added for 1.9.0
+    try {
+      specificCompilerClass.getMethod("isGettersReturnOptional");
+    } catch (NoSuchMethodException expected) {
+      return AvroVersion.AVRO_1_8;
+    }
+
+    //method added for 1.10.0
+    try {
+      specificCompilerClass.getMethod("isOptionalGettersForNullableFieldsOnly");
+    } catch (NoSuchMethodException expected) {
+      return AvroVersion.AVRO_1_9;
+    }
+
+    //method added for 1.11.0
+    try {
+      specificCompilerClass.getMethod("getUsedCustomLogicalTypeFactories", Schema.class);
+    } catch (NoSuchMethodException expected) {
+      return AvroVersion.AVRO_1_10;
+    }
+
+    return AvroVersion.AVRO_1_11;
+  }
+
+  // We are fishing for the ```file.resource.loader.class``` property in the private field `velocityEngine`.
+  private static boolean checkIfVelocityEngineFileResourceLoaderClassExists(Class<?> specificCompilerClass) {
+    try {
+      // If `velocityEngine` were public, we could simplify this reflection to be
+      // ```VelocityEngine velocityEngine = (new SpecificRecord()).velocityEngine;````
+      Field velocityEngineField = specificCompilerClass.getDeclaredField("velocityEngine");
+      velocityEngineField.setAccessible(true);
+      // The default constructor is also private.
+      Constructor constructor = specificCompilerClass.getDeclaredConstructor();
+      constructor.setAccessible(true);
+      constructor.newInstance();
+      Object velocityEngine = velocityEngineField.get(constructor.newInstance());
+
+      // Without reflection, this would be ```velocityEngine.getProperty("file.resource.loader.class");```
+      Class<?> velocityEngineClass = Class.forName("org.apache.velocity.app.VelocityEngine");
+      Method velocityEngineGetPropertyMethod = velocityEngineClass.getMethod("getProperty", String.class);
+      Object fileResourceLoaderClassProperty = velocityEngineGetPropertyMethod.invoke(velocityEngine, "file.resource.loader.class");
+
+      return fileResourceLoaderClassProperty != null;
+
+      // We should never reach these exceptions
+    } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | ClassNotFoundException | InvocationTargetException | NoSuchFieldException expected) {
+      throw new RuntimeException(expected.fillInStackTrace());
+    }
+  }
+
 
   /**
    * Get the full schema name for records or type name for primitives. This adds compatibility
