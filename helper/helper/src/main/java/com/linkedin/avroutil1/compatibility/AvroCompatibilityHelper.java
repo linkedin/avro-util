@@ -837,31 +837,31 @@ public class AvroCompatibilityHelper {
     return AvroVersion.AVRO_1_11;
   }
 
-  // TODO: check if methods appear in all future versions
   private static AvroVersion detectAvroCompilerVersion() {
     Class<?> specificCompilerClass;
+
+    // There is no avro-compiler in 1.4.X
     try {
       specificCompilerClass = Class.forName("org.apache.avro.compiler.specific.SpecificCompiler");
-      // Avro 1.4 does not include an Avro Compiler
     } catch (ClassNotFoundException unexpected) {
       return AvroVersion.AVRO_1_4;
     }
 
-    // isUnboxedJavaTypeNullable(Schema s) method added to 1.6.0
+    // SpecificCompiler.isUnboxedJavaTypeNullable(Schema s) method added to 1.6.0
     try {
       specificCompilerClass.getMethod("isUnboxedJavaTypeNullable", Schema.class);
     } catch (NoSuchMethodException expected) {
       return AvroVersion.AVRO_1_5;
     }
 
-    // A new property is added to velocityEngine in version 1.7.0.
+    // In AVRO-1094, a new property is added to velocityEngine in version 1.7.0.
     // There were no differences in the public interface, so we check for the presence of a property in the private
     // field, `velocityEngine`.
     // To further complicate matters, this field is used in 1.7.0 and removed by 1.10.2. So the presence
     // of the field only indicates that version is one of 1.6, 1.10+.
     boolean fileResourceLoaderClassExists = checkIfVelocityEngineFileResourceLoaderClassExists(specificCompilerClass);
 
-    // hasBuilder() method added for 1.8.0
+    // SpecificCompiler.hasBuilder(Schema s) method is added in 1.8.0
     try {
       specificCompilerClass.getMethod("hasBuilder", Schema.class);
     } catch (NoSuchMethodException expected) {
@@ -872,21 +872,21 @@ public class AvroCompatibilityHelper {
       }
     }
 
-    //method added for 1.9.0
+    //SpecificCompiler.isGettersReturnOptional() method added in 1.9.0
     try {
       specificCompilerClass.getMethod("isGettersReturnOptional");
     } catch (NoSuchMethodException expected) {
       return AvroVersion.AVRO_1_8;
     }
 
-    //method added for 1.10.0
+    //SpecificCompiler.isOptionalGettersForNullableFieldsOnly() method added in 1.10.0
     try {
       specificCompilerClass.getMethod("isOptionalGettersForNullableFieldsOnly");
     } catch (NoSuchMethodException expected) {
       return AvroVersion.AVRO_1_9;
     }
 
-    //method added for 1.11.0
+    // SpecificCompiler.getUsedCustomLogicalTypeFactories() method added in 1.11.0
     try {
       specificCompilerClass.getMethod("getUsedCustomLogicalTypeFactories", Schema.class);
     } catch (NoSuchMethodException expected) {
@@ -896,7 +896,8 @@ public class AvroCompatibilityHelper {
     return AvroVersion.AVRO_1_11;
   }
 
-  // We are fishing for the ```file.resource.loader.class``` property in the private field `velocityEngine`.
+  // We are fishing for the ```file.resource.loader.class``` property in the private field `velocityEngine` of
+  // a SpecificCompiler class.
   private static boolean checkIfVelocityEngineFileResourceLoaderClassExists(Class<?> specificCompilerClass) {
     try {
       // If `velocityEngine` were public, we could simplify this reflection to be
