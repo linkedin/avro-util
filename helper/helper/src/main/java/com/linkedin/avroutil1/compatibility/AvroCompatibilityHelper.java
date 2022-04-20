@@ -836,7 +836,7 @@ public class AvroCompatibilityHelper {
   private static AvroVersion detectAvroCompilerVersion() {
     Class<?> specificCompilerClass;
 
-    // In Avro 1.5.0+, SpecificRecord is part of the org.apache.avro.compiler.specific ClassPath.
+    // In Avro 1.5.0+, SpecificCompiler is part of the org.apache.avro.compiler.specific package.
     try {
       specificCompilerClass = Class.forName("org.apache.avro.compiler.specific.SpecificCompiler");
     } catch (ClassNotFoundException expected) {
@@ -846,14 +846,11 @@ public class AvroCompatibilityHelper {
         Class.forName("org.apache.avro.specific.SpecificCompiler");
         return AvroVersion.AVRO_1_4;
 
-        // In the case that SpecificRecord doesn't exist in the ClassPath at all (only possible in 1.5+).
+        // In the case that SpecificCompiler doesn't exist in the ClassPath at all (only possible in 1.5+).
       } catch (ClassNotFoundException ignored) {
         return null;
       }
     }
-
-
-
 
     // SpecificCompiler.isUnboxedJavaTypeNullable(Schema s) method was added to 1.6.0.
     try {
@@ -869,14 +866,10 @@ public class AvroCompatibilityHelper {
     // of the field only indicates that version is one of 1.6, 1.10+.
 
     // SpecificCompiler.hasBuilder(Schema s) method was added in 1.8.0
-    Boolean fileResourceLoaderClassExists = false;
     try {
-      fileResourceLoaderClassExists = checkIfVelocityEngineFileResourceLoaderClassExists(specificCompilerClass);
       specificCompilerClass.getMethod("hasBuilder", Schema.class);
-    } catch (IllegalStateException unexpected) {
-      return null;
     } catch (NoSuchMethodException expected) {
-      if (fileResourceLoaderClassExists) {
+      if (checkIfVelocityEngineFileResourceLoaderClassExists(specificCompilerClass)) {
         return AvroVersion.AVRO_1_7;
       } else {
         return AvroVersion.AVRO_1_6;
@@ -913,7 +906,7 @@ public class AvroCompatibilityHelper {
       throws IllegalStateException {
     try {
       // If `velocityEngine` were public, we could simplify this reflection to be
-      // ```VelocityEngine velocityEngine = (new SpecificRecord()).velocityEngine;````
+      // ```VelocityEngine velocityEngine = (new SpecificCompiler()).velocityEngine;````
       Field velocityEngineField = specificCompilerClass.getDeclaredField("velocityEngine");
       velocityEngineField.setAccessible(true);
       // SpecificCompiler's default constructor is also private.
@@ -936,7 +929,6 @@ public class AvroCompatibilityHelper {
           expected.fillInStackTrace());
     }
   }
-
 
   /**
    * Get the full schema name for records or type name for primitives. This adds compatibility
