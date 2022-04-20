@@ -847,21 +847,21 @@ public class AvroCompatibilityHelper {
       return AvroVersion.AVRO_1_4;
     }
 
-    // SpecificCompiler.isUnboxedJavaTypeNullable(Schema s) method added to 1.6.0
+    // SpecificCompiler.isUnboxedJavaTypeNullable(Schema s) method was added to 1.6.0
     try {
       specificCompilerClass.getMethod("isUnboxedJavaTypeNullable", Schema.class);
     } catch (NoSuchMethodException expected) {
       return AvroVersion.AVRO_1_5;
     }
 
-    // In AVRO-1094, a new property is added to velocityEngine in version 1.7.0.
+    // In AVRO-1094, a new property was added to velocityEngine in version 1.7.0.
     // There were no differences in the public interface, so we check for the presence of a property in the private
     // field, `velocityEngine`.
     // To further complicate matters, this field is used in 1.7.0 and removed by 1.10.2. So the presence
     // of the field only indicates that version is one of 1.6, 1.10+.
     boolean fileResourceLoaderClassExists = checkIfVelocityEngineFileResourceLoaderClassExists(specificCompilerClass);
 
-    // SpecificCompiler.hasBuilder(Schema s) method is added in 1.8.0
+    // SpecificCompiler.hasBuilder(Schema s) method was added in 1.8.0
     try {
       specificCompilerClass.getMethod("hasBuilder", Schema.class);
     } catch (NoSuchMethodException expected) {
@@ -872,21 +872,21 @@ public class AvroCompatibilityHelper {
       }
     }
 
-    //SpecificCompiler.isGettersReturnOptional() method added in 1.9.0
+    //SpecificCompiler.isGettersReturnOptional() method was added in 1.9.0
     try {
       specificCompilerClass.getMethod("isGettersReturnOptional");
     } catch (NoSuchMethodException expected) {
       return AvroVersion.AVRO_1_8;
     }
 
-    //SpecificCompiler.isOptionalGettersForNullableFieldsOnly() method added in 1.10.0
+    //SpecificCompiler.isOptionalGettersForNullableFieldsOnly() method was added in 1.10.0
     try {
       specificCompilerClass.getMethod("isOptionalGettersForNullableFieldsOnly");
     } catch (NoSuchMethodException expected) {
       return AvroVersion.AVRO_1_9;
     }
 
-    // SpecificCompiler.getUsedCustomLogicalTypeFactories() method added in 1.11.0
+    // SpecificCompiler.getUsedCustomLogicalTypeFactories() method was added in 1.11.0
     try {
       specificCompilerClass.getMethod("getUsedCustomLogicalTypeFactories", Schema.class);
     } catch (NoSuchMethodException expected) {
@@ -904,7 +904,7 @@ public class AvroCompatibilityHelper {
       // ```VelocityEngine velocityEngine = (new SpecificRecord()).velocityEngine;````
       Field velocityEngineField = specificCompilerClass.getDeclaredField("velocityEngine");
       velocityEngineField.setAccessible(true);
-      // The default constructor is also private.
+      // SpecificCompiler's default constructor is also private.
       Constructor constructor = specificCompilerClass.getDeclaredConstructor();
       constructor.setAccessible(true);
       constructor.newInstance();
