@@ -105,7 +105,7 @@ public class AvroCompatibilityHelper {
   }
 
   /**
-   * returns the detected runtime version of avro, or null if no avro-compiler found
+   * returns the detected runtime version of avro, or null if none found
    * @return the version of avro detected on the runtime classpath, or null if no avro found
    */
   public static AvroVersion getRuntimeAvroVersion() {
@@ -113,8 +113,8 @@ public class AvroCompatibilityHelper {
   }
 
   /**
-   * returns the detected runtime version of avro-compiler, or null if none found
-   * @return the version of avro detected on the runtime classpath, or null if no avro found
+   * returns the detected runtime version of avro-compiler, or null if if no avro-compiler found
+   * @return the version of avro-compiler detected on the runtime classpath, or null if no avro-compiler found
    */
   public static AvroVersion getRuntimeAvroCompilerVersion() {
     return DETECTED_COMPILER_VERSION;
