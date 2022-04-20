@@ -870,6 +870,8 @@ public class AvroCompatibilityHelper {
       } else {
         return AvroVersion.AVRO_1_6;
       }
+    } catch (RuntimeException unexpected) {
+      return null;
     }
 
     //SpecificCompiler.isGettersReturnOptional() method was added in 1.9.0
