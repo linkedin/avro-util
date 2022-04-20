@@ -864,19 +864,20 @@ public class AvroCompatibilityHelper {
     // field, `velocityEngine`.
     // To further complicate matters, this field is used in 1.7.0 and removed by 1.10.2. So the presence
     // of the field only indicates that version is one of 1.6, 1.10+.
-    boolean fileResourceLoaderClassExists = checkIfVelocityEngineFileResourceLoaderClassExists(specificCompilerClass);
 
     // SpecificCompiler.hasBuilder(Schema s) method was added in 1.8.0
+    Boolean fileResourceLoaderClassExists = false;
     try {
+      fileResourceLoaderClassExists = checkIfVelocityEngineFileResourceLoaderClassExists(specificCompilerClass);
       specificCompilerClass.getMethod("hasBuilder", Schema.class);
+    } catch (IllegalStateException unexpected) {
+      return null;
     } catch (NoSuchMethodException expected) {
       if (fileResourceLoaderClassExists) {
         return AvroVersion.AVRO_1_7;
       } else {
         return AvroVersion.AVRO_1_6;
       }
-    } catch (RuntimeException unexpected) {
-      return null;
     }
 
     //SpecificCompiler.isGettersReturnOptional() method was added in 1.9.0.
@@ -905,7 +906,8 @@ public class AvroCompatibilityHelper {
 
   // We are fishing for the ```file.resource.loader.class``` property in the private field `velocityEngine` of
   // a SpecificCompiler class.
-  private static boolean checkIfVelocityEngineFileResourceLoaderClassExists(Class<?> specificCompilerClass) {
+  private static boolean checkIfVelocityEngineFileResourceLoaderClassExists(Class<?> specificCompilerClass)
+      throws IllegalStateException {
     try {
       // If `velocityEngine` were public, we could simplify this reflection to be
       // ```VelocityEngine velocityEngine = (new SpecificRecord()).velocityEngine;````
@@ -920,7 +922,8 @@ public class AvroCompatibilityHelper {
       // Without reflection, this would be ```velocityEngine.getProperty("file.resource.loader.class");```
       Class<?> velocityEngineClass = Class.forName("org.apache.velocity.app.VelocityEngine");
       Method velocityEngineGetPropertyMethod = velocityEngineClass.getMethod("getProperty", String.class);
-      Object fileResourceLoaderClassProperty = velocityEngineGetPropertyMethod.invoke(velocityEngine, "file.resource.loader.class");
+      Object fileResourceLoaderClassProperty =
+          velocityEngineGetPropertyMethod.invoke(velocityEngine, "file.resource.loader.class");
 
       return fileResourceLoaderClassProperty != null;
 
