@@ -13,17 +13,21 @@ import java.util.HashSet;
 import java.util.Set;
 
 
+/***
+ * Base class for Spotbugs detectors in avro-util
+ */
 public abstract class AvroUtilDetectorBase extends OpcodeStackDetector {
   private final static Set<String> GENERATED_PARENT_CLASSES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
       "org.apache.avro.specific.SpecificRecordBase",
       "org.apache.avro.specific.SpecificFixed"
   )));
 
-
-
+  /***
+   * Adds check for generated files and bypasses spotbugs check for them.
+   */
   @Override
   public boolean beforeOpcode(int seen) {
-    return super.beforeOpcode(seen) && isGenerated();
+    return super.beforeOpcode(seen) && isNotGenerated();
   }
 
   protected int occurrences(@SuppressWarnings("SameParameterValue") String needle, String hayStack) {
@@ -36,7 +40,7 @@ public abstract class AvroUtilDetectorBase extends OpcodeStackDetector {
     return occurrences;
   }
 
-  private boolean isGenerated() {
+  private boolean isNotGenerated() {
     return (getXClass().getSuperclassDescriptor() == null) || !GENERATED_PARENT_CLASSES.contains(
         getXClass().getSuperclassDescriptor().getDottedClassName());
   }
