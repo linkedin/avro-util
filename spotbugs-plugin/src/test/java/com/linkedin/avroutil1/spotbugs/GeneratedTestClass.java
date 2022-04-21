@@ -25,4 +25,10 @@ public class GeneratedTestClass extends org.apache.avro.specific.SpecificRecordB
   public void put(int field, Object value) {
 
   }
+
+  public void serializeSchemaUsingToString() {
+    Schema schema = Schema.create(Schema.Type.STRING);
+    String serialized = schema.toString();
+    String.valueOf(schema);
+  }
 }
