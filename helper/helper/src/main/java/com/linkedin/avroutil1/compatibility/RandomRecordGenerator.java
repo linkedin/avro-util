@@ -46,7 +46,7 @@ public class RandomRecordGenerator {
 
   @SuppressWarnings("unchecked")
   public <T> T randomSpecific(Class<T> specificClass, RecordGenerationConfig config) {
-    return (T) newRandomSpecific(specificClass, AvroSchemaUtil.getClassSchema(specificClass), config);
+    return (T) newRandomSpecific(specificClass, AvroSchemaUtil.getDeclaredSchema(specificClass), config);
   }
 
   private Object newRandomGeneric(Schema of, RecordGenerationConfig config) {

@@ -301,7 +301,7 @@ public class AvroCompatibilityHelperDefaultsTest {
     for (int i = 0; i < length; i++) {
       csv.add(randomJsonLiteral(type));
     }
-    return "[" + csv.toString() + "]";
+    return "[" + csv + "]";
   }
 
   public static String randomJsonLiteral(Schema.Type type) {

@@ -7,7 +7,6 @@
 package com.linkedin.avroutil1.compatibility.avro110;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linkedin.avroutil1.compatibility.AvroAdapter;
 import com.linkedin.avroutil1.compatibility.AvroGeneratedSourceCode;
 import com.linkedin.avroutil1.compatibility.AvroSchemaUtil;
@@ -25,10 +24,10 @@ import com.linkedin.avroutil1.compatibility.SkipDecoder;
 import com.linkedin.avroutil1.compatibility.StringRepresentation;
 import com.linkedin.avroutil1.compatibility.avro110.backports.Avro110DefaultValuesCache;
 import com.linkedin.avroutil1.compatibility.avro110.codec.AliasAwareSpecificDatumReader;
+import com.linkedin.avroutil1.compatibility.avro110.codec.BoundedMemoryDecoder;
 import com.linkedin.avroutil1.compatibility.avro110.codec.CachedResolvingDecoder;
 import com.linkedin.avroutil1.compatibility.avro110.codec.CompatibleJsonDecoder;
 import com.linkedin.avroutil1.compatibility.avro110.codec.CompatibleJsonEncoder;
-import com.linkedin.avroutil1.compatibility.avro110.codec.BoundedMemoryDecoder;
 import com.linkedin.avroutil1.compatibility.backports.ObjectInputToInputStreamAdapter;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
@@ -64,11 +63,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public class Avro110Adapter implements AvroAdapter {
-
-    //doc says thread safe outside config methods
-    private final static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private boolean compilerSupported;
     private Throwable compilerSupportIssue;
@@ -210,7 +207,7 @@ public class Avro110Adapter implements AvroAdapter {
 
     @Override
     public <T> SpecificDatumReader<T> newAliasAwareSpecificDatumReader(Schema writer, Class<T> readerClass) {
-        Schema readerSchema = AvroSchemaUtil.getClassSchema(readerClass);
+        Schema readerSchema = AvroSchemaUtil.getDeclaredSchema(readerClass);
         return new AliasAwareSpecificDatumReader<>(writer, readerSchema);
     }
 
@@ -292,6 +289,11 @@ public class Avro110Adapter implements AvroAdapter {
     @Override
     public boolean fieldHasDefault(Schema.Field field) {
         return field.hasDefaultValue();
+    }
+
+    @Override
+    public Set<String> getFieldAliases(Schema.Field field) {
+        return field.aliases();
     }
 
     @Override

@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import java.util.Map;
+import java.util.Set;
+
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -100,6 +102,8 @@ public interface AvroAdapter {
   //schema query and manipulation utils
 
   boolean fieldHasDefault(Schema.Field field);
+
+  Set<String> getFieldAliases(Schema.Field field);
 
   @Deprecated
   default FieldBuilder cloneSchemaField(Schema.Field field) {
