@@ -8,10 +8,9 @@ package com.linkedin.avroutil1.spotbugs;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
-import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 import org.apache.bcel.Const;
 
-public class JsonDecoderInstantiationDetector extends OpcodeStackDetector {
+public class JsonDecoderInstantiationDetector extends AvroUtilDetectorBase {
     private final BugReporter bugReporter;
 
     public JsonDecoderInstantiationDetector(BugReporter bugReporter) {

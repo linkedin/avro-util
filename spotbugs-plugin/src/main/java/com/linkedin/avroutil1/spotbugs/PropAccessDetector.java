@@ -8,14 +8,12 @@ package com.linkedin.avroutil1.spotbugs;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
-import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 import edu.umd.cs.findbugs.classfile.MethodDescriptor;
-import org.apache.bcel.Const;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.bcel.Const;
 
 /**
  * detects access to the following methods on org.apache.avro.Schema,
@@ -33,7 +31,7 @@ import java.util.Set;
  * the getProp(Str) and addProp(Str) methods exist in all avro versions (hence are compatible),
  * but only operate on string props
  */
-public class PropAccessDetector extends OpcodeStackDetector {
+public class PropAccessDetector extends AvroUtilDetectorBase {
     private final BugReporter bugReporter;
     private final static Set<String> CLASSES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
             "org/apache/avro/Schema",

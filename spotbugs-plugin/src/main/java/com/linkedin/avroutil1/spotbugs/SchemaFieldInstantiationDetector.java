@@ -8,14 +8,13 @@ package com.linkedin.avroutil1.spotbugs;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
-import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 import org.apache.bcel.Const;
 
 /**
  * detects direct instantiations of Schema.Field, the constructor of which
  * has changed in avro 1.8 and again incompatibly in avro 1.9+
  */
-public class SchemaFieldInstantiationDetector extends OpcodeStackDetector {
+public class SchemaFieldInstantiationDetector extends AvroUtilDetectorBase {
     private final BugReporter bugReporter;
 
     public SchemaFieldInstantiationDetector(BugReporter bugReporter) {

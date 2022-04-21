@@ -8,14 +8,13 @@ package com.linkedin.avroutil1.spotbugs;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
-import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 import org.apache.bcel.Const;
 
 /**
  * detects calls to SpecificData.newInstance(), which may not work as expected
  * in the presence of old (pre 1.6) SchemaConstructables
  */
-public class SpecificDataNewInstanceUsageDetector extends OpcodeStackDetector {
+public class SpecificDataNewInstanceUsageDetector extends AvroUtilDetectorBase {
     private final BugReporter bugReporter;
 
     public SpecificDataNewInstanceUsageDetector(BugReporter bugReporter) {

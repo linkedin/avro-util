@@ -9,7 +9,6 @@ package com.linkedin.avroutil1.spotbugs;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.ba.ClassContext;
-import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 import org.apache.bcel.Const;
 import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.classfile.LocalVariable;
@@ -21,7 +20,7 @@ import org.apache.bcel.generic.Type;
  * detects usage of org.apache.avro.specific.SpecificDatumReader.SchemaConstructable,
  * which has been moved in avro 1.6+ (to org.apache.avro.specific.SpecificData.SchemaConstructable)
  */
-public class OldSchemaConstructableUsageDetector extends OpcodeStackDetector {
+public class OldSchemaConstructableUsageDetector extends AvroUtilDetectorBase {
     public static final String OLD_SCHEMACONSTRUCTABLE_FQCN = "org.apache.avro.specific.SpecificDatumReader$SchemaConstructable";
     public static final String OLD_SCHEMACONSTRUCTABLE_CLASSCONSTANT = OLD_SCHEMACONSTRUCTABLE_FQCN.replace('.', '/');
     public static final String BUG_TYPE = "OLD_SCHEMACONSTRUCTABLE_USAGE";

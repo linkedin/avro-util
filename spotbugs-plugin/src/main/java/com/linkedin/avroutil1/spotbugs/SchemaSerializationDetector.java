@@ -8,7 +8,6 @@ package com.linkedin.avroutil1.spotbugs;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
-import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 import javax.annotation.Nonnull;
 import org.apache.bcel.Const;
 
@@ -18,7 +17,7 @@ import org.apache.bcel.Const;
  * Detects and reports usage of org.apache.avro.Schema.toString
  * Also detects String.valueOf(org.apache.avro.Schema) which uses toString
  */
-public class SchemaSerializationDetector extends OpcodeStackDetector {
+public class SchemaSerializationDetector extends AvroUtilDetectorBase {
   public static final String BUG_TYPE = "SCHEMA_SERIALIZATION_USING_TOSTRING";
   public static final String EMPTY_STRING = "";
 

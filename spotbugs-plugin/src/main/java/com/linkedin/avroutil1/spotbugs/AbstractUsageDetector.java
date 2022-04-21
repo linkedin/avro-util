@@ -9,7 +9,6 @@ package com.linkedin.avroutil1.spotbugs;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.ba.ClassContext;
-import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 import org.apache.bcel.Const;
 import org.apache.bcel.classfile.LocalVariable;
 import org.apache.bcel.classfile.LocalVariableTable;
@@ -19,7 +18,7 @@ import org.apache.bcel.generic.Type;
 /**
  * parent class for detectors that alert on _ANY_ usage of a given class/interface
  */
-public abstract class AbstractUsageDetector extends OpcodeStackDetector {
+public abstract class AbstractUsageDetector extends AvroUtilDetectorBase {
     protected final BugReporter bugReporter;
     protected final String targetFqcn;
     protected final String classConstant;
