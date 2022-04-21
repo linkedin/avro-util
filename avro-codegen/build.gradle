@@ -38,7 +38,7 @@ dependencies {
         exclude group: "com.thoughtworks.paranamer", module: "paranamer-ant"
         exclude group: "org.slf4j"
     }
-    testImplementation 'net.openhft:compiler:2.3.6'
+    testImplementation 'net.openhft:compiler:2.4.1'
 }
 
 jar {

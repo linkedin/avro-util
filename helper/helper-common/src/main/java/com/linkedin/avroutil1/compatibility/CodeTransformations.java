@@ -400,7 +400,7 @@ public class CodeTransformations {
 
     String argToParseCall;
     if (largeString && !alreadyVararg) {
-      List<String> pieces = safeSplit(stringLiteral, MAX_STRING_LITERAL_SIZE);
+      List<String> pieces = SourceCodeUtils.safeSplit(stringLiteral, MAX_STRING_LITERAL_SIZE);
       StringBuilder argBuilder = new StringBuilder(stringLiteral.length()); //at least
       argBuilder.append("new StringBuilder()");
       for (String piece : pieces) {
@@ -983,54 +983,5 @@ public class CodeTransformations {
     }
     String newImports = joiner.toString();
     return code.substring(0, endOfImports) + "\n" + newImports + "\n" + code.substring(endOfImports);
-  }
-
-  /**
-   * splits a large java string literal into smaller pieces in a safe way.
-   * by safe we mean avoids splitting anywhere near an escape sequence
-   * @param javaStringLiteral large string literal
-   * @return smaller string literals that can be joined to reform the argument
-   */
-  static List<String> safeSplit(String javaStringLiteral, int maxChunkSize) {
-    String remainder = javaStringLiteral;
-    List<String> results = new ArrayList<>(remainder.length() / maxChunkSize);
-    while (remainder.length() > maxChunkSize) {
-      int cutIndex = maxChunkSize;
-      while (cutIndex > 0 && escapesNear(remainder, cutIndex)) {
-        cutIndex--;
-      }
-      if (cutIndex <= 0) {
-        //should never happen ...
-        throw new IllegalStateException("unable to split " + javaStringLiteral);
-      }
-      String piece = remainder.substring(0, cutIndex);
-      results.add(piece);
-      remainder = remainder.substring(cutIndex);
-    }
-    if (!remainder.isEmpty()) {
-      results.add(remainder);
-    }
-    return results;
-  }
-
-  /**
-   * returns true is there's a string escape sequence starting anywhere
-   * near a given index in a given string literal. since the longest escape
-   * sequences in java are ~5-6 characters (unicode escapes) a safety margin
-   * of 10 characters is used.
-   * @param literal string literal to look for escape sequences in
-   * @param index index around (before) which to look for escapes
-   * @return true if any escape sequence found
-   */
-  static boolean escapesNear(String literal, int index) {
-    //we start at index because we dont want the char at the start of the next fragment
-    //to be an "interesting" character either
-    for (int i = index; i > Math.max(0, index - 6); i--) {
-      char c = literal.charAt(i);
-      if (c == '\\' || c == '"' || c == '\'') {
-        return true;
-      }
-    }
-    return false;
   }
 }
