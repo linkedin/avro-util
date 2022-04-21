@@ -20,4 +20,11 @@ public class AvroCompatibilityHelperAvro111Test {
     AvroVersion detected = AvroCompatibilityHelper.getRuntimeAvroVersion();
     Assert.assertEquals(detected, expected, "expected " + expected + ", got " + detected);
   }
+
+  @Test
+  public void testAvroCompilerVersionDetection() {
+    AvroVersion expected = AvroVersion.AVRO_1_11;
+    AvroVersion detected = AvroCompatibilityHelper.getRuntimeAvroCompilerVersion();
+    Assert.assertEquals(detected, expected, "expected " + expected + ", got " + detected);
+  }
 }
