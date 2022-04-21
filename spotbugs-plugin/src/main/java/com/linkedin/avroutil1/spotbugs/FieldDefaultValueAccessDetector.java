@@ -8,13 +8,12 @@ package com.linkedin.avroutil1.spotbugs;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
-import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 import org.apache.bcel.Const;
 
 /**
  * detects assess to org.apache.avro.Schema#Field default values
  */
-public class FieldDefaultValueAccessDetector extends OpcodeStackDetector {
+public class FieldDefaultValueAccessDetector extends AvroUtilDetectorBase {
     private final BugReporter bugReporter;
 
     public FieldDefaultValueAccessDetector(BugReporter bugReporter) {

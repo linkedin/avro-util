@@ -8,14 +8,13 @@ package com.linkedin.avroutil1.spotbugs;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
-import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 import org.apache.bcel.Const;
 
 /**
  * detects direct instantiations of GenericData.Fixed, the constructor of which
  * has changed in 1.5+
  */
-public class FixedInstantiationDetector extends OpcodeStackDetector {
+public class FixedInstantiationDetector extends AvroUtilDetectorBase {
     private final BugReporter bugReporter;
 
     public FixedInstantiationDetector(BugReporter bugReporter) {

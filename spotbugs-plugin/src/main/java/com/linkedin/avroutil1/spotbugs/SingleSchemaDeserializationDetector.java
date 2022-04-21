@@ -8,15 +8,13 @@ package com.linkedin.avroutil1.spotbugs;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
-import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 import edu.umd.cs.findbugs.classfile.ClassDescriptor;
 import edu.umd.cs.findbugs.classfile.MethodDescriptor;
-import org.apache.bcel.Const;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.bcel.Const;
 
 /**
  * detects instantiations of org.apache.avro.io.DatumReaders of various sorts using only a single schema:
@@ -29,7 +27,7 @@ import java.util.Set;
  * although there are valid cases for doing this, in real life this tends to indicate naive code that does not
  * take any schema evolution into considerations (hence assumes reader and writer schemas to be the same)
  */
-public class SingleSchemaDeserializationDetector extends OpcodeStackDetector {
+public class SingleSchemaDeserializationDetector extends AvroUtilDetectorBase {
 
     private final static Set<String> READER_FQCNS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
             "org.apache.avro.specific.SpecificDatumReader",
@@ -64,16 +62,5 @@ public class SingleSchemaDeserializationDetector extends OpcodeStackDetector {
                     .addSourceLine(this, getPC());
             bugReporter.reportBug(bug);
         }
-    }
-
-    //TODO - move to common StringUtils
-    int occurrences(@SuppressWarnings("SameParameterValue") String needle, String hayStack) {
-        int occurrences = 0;
-        int index = hayStack.indexOf(needle);
-        while (index != -1) {
-            occurrences++;
-            index = hayStack.indexOf(needle, index + needle.length()); //no overlaps
-        }
-        return occurrences;
     }
 }

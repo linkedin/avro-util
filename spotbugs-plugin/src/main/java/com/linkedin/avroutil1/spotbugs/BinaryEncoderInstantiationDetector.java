@@ -8,13 +8,12 @@ package com.linkedin.avroutil1.spotbugs;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
-import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 import org.apache.bcel.Const;
 
 /**
  * detects direct instantiations of BinaryEncoder
  */
-public class BinaryEncoderInstantiationDetector extends OpcodeStackDetector {
+public class BinaryEncoderInstantiationDetector extends AvroUtilDetectorBase {
     private final BugReporter bugReporter;
 
     public BinaryEncoderInstantiationDetector(BugReporter bugReporter) {

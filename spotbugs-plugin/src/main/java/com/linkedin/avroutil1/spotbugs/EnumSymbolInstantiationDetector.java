@@ -8,14 +8,13 @@ package com.linkedin.avroutil1.spotbugs;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
-import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 import org.apache.bcel.Const;
 
 /**
  * detects direct instantiations of GenericData.EnumSymbol, the constructor of which
  * has changed in avro 1.5+
  */
-public class EnumSymbolInstantiationDetector extends OpcodeStackDetector {
+public class EnumSymbolInstantiationDetector extends AvroUtilDetectorBase {
     private final BugReporter bugReporter;
 
     public EnumSymbolInstantiationDetector(BugReporter bugReporter) {
