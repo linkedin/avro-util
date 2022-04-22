@@ -72,9 +72,16 @@ public class AvroRecordUtilTest {
 
   @Test
   public void testGenericToSpecific() throws Exception {
-    Schema schema = under14.RecordWithDefaults.SCHEMA$;
     RandomRecordGenerator gen = new RandomRecordGenerator();
-    GenericRecord genericInstance = (GenericRecord) gen.randomGeneric(schema, RecordGenerationConfig.newConfig().withAvoidNulls(false));
+    Schema schema;
+    GenericRecord genericInstance;
+
+    schema = under14.RecordWithDefaults.SCHEMA$;
+    genericInstance = (GenericRecord) gen.randomGeneric(schema, RecordGenerationConfig.newConfig().withAvoidNulls(false));
+    convertRoundTrip(genericInstance);
+
+    schema = under14.HasComplexDefaults.SCHEMA$;
+    genericInstance = (GenericRecord) gen.randomGeneric(schema, RecordGenerationConfig.newConfig().withAvoidNulls(true));
     convertRoundTrip(genericInstance);
   }
 
