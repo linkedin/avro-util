@@ -840,27 +840,36 @@ public class AvroCompatibilityHelper {
   }
 
   private static AvroVersion detectAvroCompilerVersion() {
-    Class<?> specificCompilerClass;
+    Class<?> oldCompilerClass = null;
+    Class<?> newCompilerClass = null;
 
-    // In Avro 1.5.0+, SpecificCompiler is part of the org.apache.avro.compiler.specific package.
     try {
-      specificCompilerClass = Class.forName("org.apache.avro.compiler.specific.SpecificCompiler");
-    } catch (ClassNotFoundException expected) {
-      try {
-        // In Avro 1.4, SpecificCompiler was a class of org.apache.avro.specific. In 1.5.0, SpecificCompiler was moved
-        // to its own package.
-        Class.forName("org.apache.avro.specific.SpecificCompiler");
-        return AvroVersion.AVRO_1_4;
-
-        // In the case that SpecificCompiler doesn't exist in the ClassPath at all (only possible in 1.5+).
-      } catch (ClassNotFoundException ignored) {
-        return null;
-      }
+      oldCompilerClass = Class.forName("org.apache.avro.specific.SpecificCompiler");
+    } catch (Throwable ignored) {
+      //empty
     }
+    try {
+      newCompilerClass = Class.forName("org.apache.avro.compiler.specific.SpecificCompiler");
+    } catch (Throwable ignored) {
+      //empty
+    }
+
+    if (oldCompilerClass != null && newCompilerClass != null) {
+      throw new IllegalStateException("found both old (1.4) and modern avro compiler classes on the classpath");
+    }
+    if (oldCompilerClass == null && newCompilerClass == null) {
+      return null;
+    }
+
+    if (oldCompilerClass != null) {
+      return AvroVersion.AVRO_1_4;
+    }
+
+    //dealing with avro 1.5+ from now on
 
     // SpecificCompiler.isUnboxedJavaTypeNullable(Schema s) method was added to 1.6.0.
     try {
-      specificCompilerClass.getMethod("isUnboxedJavaTypeNullable", Schema.class);
+      newCompilerClass.getMethod("isUnboxedJavaTypeNullable", Schema.class);
     } catch (NoSuchMethodException expected) {
       return AvroVersion.AVRO_1_5;
     }
@@ -873,9 +882,9 @@ public class AvroCompatibilityHelper {
 
     // SpecificCompiler.hasBuilder(Schema s) method was added in 1.8.0
     try {
-      specificCompilerClass.getMethod("hasBuilder", Schema.class);
+      newCompilerClass.getMethod("hasBuilder", Schema.class);
     } catch (NoSuchMethodException expected) {
-      if (checkIfVelocityEngineFileResourceLoaderClassExists(specificCompilerClass)) {
+      if (checkIfVelocityEngineFileResourceLoaderClassExists(newCompilerClass)) {
         return AvroVersion.AVRO_1_7;
       } else {
         return AvroVersion.AVRO_1_6;
@@ -884,21 +893,21 @@ public class AvroCompatibilityHelper {
 
     //SpecificCompiler.isGettersReturnOptional() method was added in 1.9.0.
     try {
-      specificCompilerClass.getMethod("isGettersReturnOptional");
+      newCompilerClass.getMethod("isGettersReturnOptional");
     } catch (NoSuchMethodException expected) {
       return AvroVersion.AVRO_1_8;
     }
 
     //SpecificCompiler.isOptionalGettersForNullableFieldsOnly() method was added in 1.10.0.
     try {
-      specificCompilerClass.getMethod("isOptionalGettersForNullableFieldsOnly");
+      newCompilerClass.getMethod("isOptionalGettersForNullableFieldsOnly");
     } catch (NoSuchMethodException expected) {
       return AvroVersion.AVRO_1_9;
     }
 
     // SpecificCompiler.getUsedCustomLogicalTypeFactories() method was added in 1.11.0.
     try {
-      specificCompilerClass.getMethod("getUsedCustomLogicalTypeFactories", Schema.class);
+      newCompilerClass.getMethod("getUsedCustomLogicalTypeFactories", Schema.class);
     } catch (NoSuchMethodException expected) {
       return AvroVersion.AVRO_1_10;
     }
