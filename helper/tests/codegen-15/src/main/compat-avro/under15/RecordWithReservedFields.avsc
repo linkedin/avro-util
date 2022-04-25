@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "namespace": "under15",
+  "name": "RecordWithReservedFields",
+  "fields": [
+    {
+      "name": "package",
+      "type": "string"
+    }
+  ]
+}
