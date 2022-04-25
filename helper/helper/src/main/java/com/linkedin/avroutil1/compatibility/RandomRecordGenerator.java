@@ -56,7 +56,8 @@ public class RandomRecordGenerator {
   }
 
   public Object randomGeneric(Schema of, RecordGenerationConfig config) {
-    return newRandomGeneric(of, config);
+    RecordGenerationContext context = new RecordGenerationContext(config);
+    return newRandomGeneric(of, context);
   }
 
   public <T> T randomSpecific(Class<T> specificClass) {
@@ -65,15 +66,24 @@ public class RandomRecordGenerator {
 
   @SuppressWarnings("unchecked")
   public <T> T randomSpecific(Class<T> specificClass, RecordGenerationConfig config) {
-    return (T) newRandomSpecific(specificClass, AvroSchemaUtil.getDeclaredSchema(specificClass), config);
+    RecordGenerationContext context = new RecordGenerationContext(config);
+    Schema declaredSchema = AvroSchemaUtil.getDeclaredSchema(specificClass);
+    if (declaredSchema == null) {
+      throw new IllegalStateException("unable to determine declared schema for class " + specificClass.getName());
+    }
+    return (T) newRandomSpecific(specificClass, declaredSchema, context);
   }
 
-  private Object newRandomGeneric(Schema of, RecordGenerationConfig config) {
+  private Object newRandomGeneric(Schema of, RecordGenerationContext context) {
+    RecordGenerationConfig config = context.getConfig();
     Random random = config.random();
     int size;
     byte[] randomBytes;
     int index;
     StringRepresentation stringRep = config.preferredStringRepresentation();
+    Schema popped;
+
+    //TODO - logical types?
     switch (of.getType()) {
       case NULL:
         return null;
@@ -108,36 +118,57 @@ public class RandomRecordGenerator {
         index = random.nextInt(symbols.size());
         return AvroCompatibilityHelper.newEnumSymbol(of, symbols.get(index));
       case RECORD:
+        context.pushPath(of);
         GenericData.Record record = new GenericData.Record(of);
         for (Schema.Field field : of.getFields()) {
           //TODO - extend to allow (multiple-hop-long) self-references to complete the experience :-)
           Schema fieldSchema = field.schema();
-          Object randomValue = newRandomGeneric(fieldSchema, config);
+          Object randomValue = newRandomGeneric(fieldSchema, context);
           record.put(field.pos(), randomValue);
+        }
+        popped = context.popPath();
+        if (popped != of) {
+          throw new IllegalStateException("bug in path handling, pushed " + of + " but popped " + popped);
         }
         return record;
       case ARRAY:
+        context.pushPath(of);
         size = random.nextInt(11); //[0, 10]
         GenericData.Array<Object> array = new GenericData.Array<>(size, of);
         Schema elementType = of.getElementType();
         for (int i = 0; i < size; i++) {
-          array.add(newRandomGeneric(elementType, config));
+          array.add(newRandomGeneric(elementType, context));
+        }
+        popped = context.popPath();
+        if (popped != of) {
+          throw new IllegalStateException("bug in path handling, pushed " + of + " but popped " + popped);
         }
         return array;
       case MAP:
+        context.pushPath(of);
         size = random.nextInt(11); //[0, 10]
         HashMap<CharSequence, Object> map = new HashMap<>(size);
         Schema valueType = of.getValueType();
         for (int i = 0; i < size; i++) {
           String key = "key-" + i; //TODO - better randomness (yet results should be unique)
-          map.put(convertStringToType(key, stringRep), newRandomGeneric(valueType, config));
+          map.put(convertStringToType(key, stringRep), newRandomGeneric(valueType, context));
+        }
+        popped = context.popPath();
+        if (popped != of) {
+          throw new IllegalStateException("bug in path handling, pushed " + of + " but popped " + popped);
         }
         return map;
       case UNION:
-        List<Schema> acceptableBranches = narrowDownUnionBranches(of, of.getTypes(), config);
+        context.pushPath(of);
+        List<Schema> acceptableBranches = narrowDownUnionBranches(of, of.getTypes(), context);
         index = random.nextInt(acceptableBranches.size());
         Schema branch = acceptableBranches.get(index);
-        return newRandomGeneric(branch, config);
+        Object value = newRandomGeneric(branch, context);
+        popped = context.popPath();
+        if (popped != of) {
+          throw new IllegalStateException("bug in path handling, pushed " + of + " but popped " + popped);
+        }
+        return value;
       default:
         throw new UnsupportedOperationException("unhandled: " + of.getType());
     }
@@ -148,15 +179,18 @@ public class RandomRecordGenerator {
    * @param clazz (optional) the return value should be an instanceof this class. null means the method can return
    *              an instance of any type it sees fit (according to the avro schema)
    * @param of avro schema of desired return value
-   * @param config config used for generating data
+   * @param context context for this operation (which includes config)
    * @return a returned value that conforms to both the desired avro schema and java class
    */
-  private Object newRandomSpecific(Class<?> clazz, Schema of, RecordGenerationConfig config) {
+  private Object newRandomSpecific(Class<?> clazz, Schema of, RecordGenerationContext context) {
+    RecordGenerationConfig config = context.getConfig();
     Random random = config.random();
     int size;
     byte[] randomBytes;
     int index;
     StringRepresentation stringRep = config.preferredStringRepresentation();
+    Schema popped;
+
     //TODO - logical types !?
     switch (of.getType()) {
       case NULL:
@@ -221,6 +255,7 @@ public class RandomRecordGenerator {
         index = random.nextInt(symbols.length);
         return symbols[index];
       case RECORD:
+        context.pushPath(of);
         Class<?> recordClass = clazz;
         if (recordClass == null) {
           recordClass = findClassForSchema(of);
@@ -231,21 +266,31 @@ public class RandomRecordGenerator {
           //TODO - extend to allow (multiple-hop-long) self-references to complete the experience :-)
           Schema fieldSchema = field.schema();
           Class<?> expectedClass = expectedFieldType(recordClass, field);
-          Object randomValue = newRandomSpecific(expectedClass, fieldSchema, config);
+          Object randomValue = newRandomSpecific(expectedClass, fieldSchema, context);
           record.put(field.pos(), randomValue);
+        }
+        popped = context.popPath();
+        if (popped != of) {
+          throw new IllegalStateException("bug in path handling, pushed " + of + " but popped " + popped);
         }
         return record;
       case ARRAY:
+        context.pushPath(of);
         size = random.nextInt(11); //[0, 10]
         ArrayList<Object> array = new ArrayList<>(size);
         //we cant get the generic info from the class argument (that i know of?)
         //we we take the element type from the schema and hope for the best
         Schema elementType = of.getElementType();
         for (int i = 0; i < size; i++) {
-          array.add(newRandomSpecific(null, elementType, config));
+          array.add(newRandomSpecific(null, elementType, context));
+        }
+        popped = context.popPath();
+        if (popped != of) {
+          throw new IllegalStateException("bug in path handling, pushed " + of + " but popped " + popped);
         }
         return array;
       case MAP:
+        context.pushPath(of);
         size = random.nextInt(11); //[0, 10]
         HashMap<CharSequence, Object> map = new HashMap<>(size);
         Schema valueType = of.getValueType();
@@ -253,14 +298,24 @@ public class RandomRecordGenerator {
         //we we take the element type from the schema and hope for the best
         for (int i = 0; i < size; i++) {
           String key = "key-" + i; //TODO - better randomness (yet results should be unique)
-          map.put(convertStringToType(key, stringRep), newRandomSpecific(null, valueType, config));
+          map.put(convertStringToType(key, stringRep), newRandomSpecific(null, valueType, context));
+        }
+        popped = context.popPath();
+        if (popped != of) {
+          throw new IllegalStateException("bug in path handling, pushed " + of + " but popped " + popped);
         }
         return map;
       case UNION:
-        List<Schema> acceptableBranches = narrowDownUnionBranches(of, of.getTypes(), config);
+        context.pushPath(of);
+        List<Schema> acceptableBranches = narrowDownUnionBranches(of, of.getTypes(), context);
         index = random.nextInt(acceptableBranches.size());
         Schema branch = acceptableBranches.get(index);
-        return newRandomSpecific(null, branch, config); //TODO - find class?
+        Object value = newRandomSpecific(null, branch, context); //TODO - find class?
+        popped = context.popPath();
+        if (popped != of) {
+          throw new IllegalStateException("bug in path handling, pushed " + of + " but popped " + popped);
+        }
+        return value;
       default:
         throw new UnsupportedOperationException("unhandled: " + of.getType());
     }
@@ -270,28 +325,39 @@ public class RandomRecordGenerator {
    * given a union schema, narrow down "acceptable" union branches that match the given generation config
    * @param unionSchema union schema
    * @param branches branches of the union schema
-   * @param config config to determine which branches are "acceptable"
+   * @param context operation context (which will include config)
    * @return acceptable branches. throws an exception if no branches meet criteria
    */
-  private List<Schema> narrowDownUnionBranches(Schema unionSchema, List<Schema> branches, RecordGenerationConfig config) {
+  private List<Schema> narrowDownUnionBranches(Schema unionSchema, List<Schema> branches, RecordGenerationContext context) {
+    RecordGenerationConfig config = context.getConfig();
     List<Schema> results = new ArrayList<>(branches.size());
+
+    //first of all go over all branches and pick those that are not loops, and at some (decaying) probability also those that are loops
+    Schema unionNullBranch = null;
     for (Schema branch : branches) {
-      if (isAcceptableUnionBranch(unionSchema, branch, config)) {
+      if (branch.getType() == Schema.Type.NULL) {
+        //handle nulls later
+        unionNullBranch = branch;
+        continue;
+      }
+      int loopDepth = context.seen(branch);
+      if (loopDepth == 0) {
+        results.add(branch); //never seen this path
+        continue;
+      }
+      if (config.random().nextDouble() > 1.0 - config.selfReferenceProbability()) {
         results.add(branch);
       }
     }
+    //null branch is a candidate if it exists and config allows it or no other choice (due to loop elimination)
+    if (unionNullBranch != null && (!config.avoidNulls() || results.isEmpty())) {
+      results.add(unionNullBranch);
+    }
+
     if (results.isEmpty()) {
       throw new IllegalStateException("no acceptable union branches out of original " + unionSchema);
     }
     return results;
-  }
-
-  private boolean isAcceptableUnionBranch(Schema unionSchema, Schema proposedBranch, RecordGenerationConfig config) {
-    if (proposedBranch.getType() != Schema.Type.NULL) {
-      return true; //non-null union branches are always acceptable
-    }
-    //null branches are acceptable only if we're not actively trying to avoid nulls
-    return !config.avoidNulls();
   }
 
   private static final Class<?>[] NO_ARGS = new Class[0];
