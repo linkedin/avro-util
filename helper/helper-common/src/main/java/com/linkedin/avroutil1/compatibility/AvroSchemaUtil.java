@@ -6,12 +6,17 @@
 
 package com.linkedin.avroutil1.compatibility;
 
+import java.util.Collection;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericContainer;
 import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericEnumSymbol;
+import org.apache.avro.generic.GenericFixed;
+import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.specific.SpecificData;
 import org.apache.avro.specific.SpecificFixed;
-import org.apache.avro.specific.SpecificRecord;
+import org.apache.avro.specific.SpecificRecordBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,11 +129,13 @@ public class AvroSchemaUtil {
       }
       return false;
     }
-    boolean isSpecific = value instanceof SpecificRecord;
+
+    Boolean isSpecific = isSpecific(value);
     //these handle unions
-    if (isSpecific) {
+    if (Boolean.TRUE.equals(isSpecific)) {
       return SpecificData.get().validate(schema, value);
     } else {
+      //unknown values get treated as generic
       return GenericData.get().validate(schema, value);
     }
   }
@@ -442,5 +449,41 @@ public class AvroSchemaUtil {
         break;
       default:
     }
+  }
+
+  /**
+   * @param value some datum
+   * @return true if datum is specific record/fixed/enum of a collection thereof,
+   * false if datum is any form of GenericData, null id unable to tell (primitives/wrappers)
+   */
+  static Boolean isSpecific(Object value) { //package access for testing
+    if (value == null) {
+      return null;
+    }
+    if (value instanceof SpecificRecordBase || value instanceof SpecificFixed || value instanceof Enum) {
+      return true; //possibly some form of generated class
+    }
+    if (value instanceof GenericRecord || value instanceof GenericFixed || value instanceof GenericEnumSymbol) {
+      //we already checked for specifics, so this means generics
+      return false;
+    }
+    if (value instanceof Collection) {
+      for (Object content : ((Collection<?>) value)) {
+        Boolean result = isSpecific(content);
+        if (result != null) {
+          return result;
+        }
+      }
+    }
+    if (value instanceof Map) {
+      for (Map.Entry<?, ?> entry : ((Map<?,?>) value).entrySet()) {
+        //avro map keys are strings, so not interesting
+        Boolean result = isSpecific(entry.getValue());
+        if (result != null) {
+          return result;
+        }
+      }
+    }
+    return null; //dont know
   }
 }

@@ -6,6 +6,8 @@
 
 package com.linkedin.avroutil1.compatibility;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -402,6 +404,46 @@ public class AvroSchemaUtilTest {
     assertPrimitivePromotions(Schema.Type.STRING, Collections.singletonList(Schema.Type.BYTES));
     //bytes is promotable to string
     assertPrimitivePromotions(Schema.Type.BYTES, Collections.singletonList(Schema.Type.STRING));
+  }
+
+  @Test
+  public void testIsSpecific() throws Exception {
+    //primitives
+    Assert.assertNull(AvroSchemaUtil.isSpecific(null));
+    Assert.assertNull(AvroSchemaUtil.isSpecific("a string"));
+    Assert.assertNull(AvroSchemaUtil.isSpecific(42));
+    Assert.assertNull(AvroSchemaUtil.isSpecific(Boolean.FALSE));
+
+    //generics
+    Assert.assertFalse(AvroSchemaUtil.isSpecific(AvroCompatibilityHelper.newEnumSymbol(under14.SimpleEnum.SCHEMA$, "B")));
+    Assert.assertFalse(AvroSchemaUtil.isSpecific(AvroCompatibilityHelper.newEnumSymbol(under111.SimpleEnum.SCHEMA$, "B")));
+    Assert.assertFalse(AvroSchemaUtil.isSpecific(AvroCompatibilityHelper.newFixed(under14.SimpleFixed.SCHEMA$, new byte[] {1, 2, 3})));
+    Assert.assertFalse(AvroSchemaUtil.isSpecific(AvroCompatibilityHelper.newFixed(under111.SimpleFixed.SCHEMA$, new byte[] {1, 2, 3})));
+    Assert.assertFalse(AvroSchemaUtil.isSpecific(new GenericData.Record(under14.SimpleRecord.SCHEMA$)));
+    Assert.assertFalse(AvroSchemaUtil.isSpecific(new GenericData.Record(under111.SimpleRecord.SCHEMA$)));
+
+    //specifics
+    Assert.assertTrue(AvroSchemaUtil.isSpecific(under14.SimpleEnum.B));
+    Assert.assertTrue(AvroSchemaUtil.isSpecific(under111.SimpleEnum.B));
+    Assert.assertTrue(AvroSchemaUtil.isSpecific(new under14.SimpleFixed(new byte[] {1, 2, 3})));
+    Assert.assertTrue(AvroSchemaUtil.isSpecific(new under111.SimpleFixed(new byte[] {1, 2, 3})));
+    Assert.assertTrue(AvroSchemaUtil.isSpecific(new under14.SimpleRecord()));
+    Assert.assertTrue(AvroSchemaUtil.isSpecific(new under111.SimpleRecord()));
+
+    //collections of generics
+    Assert.assertFalse(AvroSchemaUtil.isSpecific(
+            Collections.singletonList(AvroCompatibilityHelper.newEnumSymbol(under14.SimpleEnum.SCHEMA$, "B")))
+    );
+    Map<String, Object> map = new HashMap<>();
+    map.put("whatever", new GenericData.Record(under111.SimpleRecord.SCHEMA$));
+    Assert.assertFalse(AvroSchemaUtil.isSpecific(map));
+
+    //collections of specifics
+
+    //schema doesnt need to match, just be array
+    Collection<Object> col = new GenericData.Array<>(1, Schema.parse("{\"type\": \"array\", \"items\" : \"string\"}"));
+    col.add(new under111.SimpleRecord());
+    Assert.assertTrue(AvroSchemaUtil.isSpecific(col));
   }
 
   private void assertPrimitivePromotions(Schema.Type writerType, Collection<Schema.Type> promotableTo) {
