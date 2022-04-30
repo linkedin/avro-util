@@ -57,6 +57,8 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
   private static final String VAR_NAME_FOR_REUSE = "reuse";
   private static int FIELDS_PER_POPULATION_METHOD = 100;
 
+  private final boolean breakEarly = System.getProperty("AVRO_FAST_DESERIALIZER_BREAK_EARLY", "").equalsIgnoreCase("true");
+
   /**
    * This is sometimes passed into the reuse parameter,
    * and Avro treats null as a sentinel value indicating that it should
@@ -117,7 +119,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       switch (aliasedWriterSchema.getType()) {
         case RECORD:
           processRecord(readerSchemaVar, aliasedWriterSchema.getName(), aliasedWriterSchema, reader,
-              topLevelDeserializeBlock, fieldAction, JBlock::_return, reuseSupplier);
+              topLevelDeserializeBlock, fieldAction, JBlock::_return, reuseSupplier, true);
           break;
         case ARRAY:
           processArray(readerSchemaVar, "array", aliasedWriterSchema, reader, topLevelDeserializeBlock, fieldAction,
@@ -164,7 +166,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     switch (schema.getType()) {
       case RECORD:
         processRecord(fieldSchemaVar, schema.getName(), schema, readerFieldSchema, methodBody, action,
-            putExpressionIntoParent, reuseSupplier);
+            putExpressionIntoParent, reuseSupplier, false);
         break;
       case ARRAY:
         processArray(fieldSchemaVar, name, schema, readerFieldSchema, methodBody, action, putExpressionIntoParent,
@@ -205,7 +207,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
 
   private void processRecord(JVar recordSchemaVar, String recordName, final Schema recordWriterSchema,
       final Schema recordReaderSchema, JBlock parentBody, FieldAction recordAction,
-      BiConsumer<JBlock, JExpression> putRecordIntoParent, Supplier<JExpression> reuseSupplier) {
+      BiConsumer<JBlock, JExpression> putRecordIntoParent, Supplier<JExpression> reuseSupplier, Boolean isTopLevel) {
 
     ListIterator<Symbol> actionIterator = actionIterator(recordAction);
 
@@ -293,6 +295,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     }
 
     int fieldCount = 0;
+    int fieldsWrittenToTarget = 0;
     JBlock popMethodBody = methodBody;
     JMethod popMethod = null;
     for (Schema.Field field : recordWriterSchema.getFields()) {
@@ -335,6 +338,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
               recordSchemaVar.invoke("getField").arg(field.name()).invoke("schema"));
         }
         fieldReuseSupplier = () -> result.invoke("get").arg(JExpr.lit(readerFieldPos));
+        fieldsWrittenToTarget++;
       }
       if (SchemaAssistant.isComplexType(field.schema())) {
         processComplexType(fieldSchemaVar, field.name(), field.schema(), readerFieldSchema, popMethodBody, action,
@@ -347,6 +351,10 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
         for(Class<? extends Exception> e: schemaAssistant.getExceptionsFromStringable()) {
           popMethod._throws(e);
         }
+      }
+
+      if (breakEarly && isTopLevel && (fieldsWrittenToTarget == recordReaderSchema.getFields().size())) {
+        break;
       }
     }
 

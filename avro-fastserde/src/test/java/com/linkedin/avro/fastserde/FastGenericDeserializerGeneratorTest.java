@@ -175,6 +175,54 @@ public class FastGenericDeserializerGeneratorTest {
     }
   }
 
+  @Test(groups = {"deserializationTest"})
+  public void shouldBeAbleToBreakEarly() {
+// given
+    Schema recordSchema = createRecord(
+            createField("testInt", Schema.create(Schema.Type.INT)),
+            createPrimitiveUnionFieldSchema("testIntUnion", Schema.Type.INT),
+            createField("testString", Schema.create(Schema.Type.STRING)),
+            createPrimitiveUnionFieldSchema("testStringUnion", Schema.Type.STRING),
+            createField("testLong", Schema.create(Schema.Type.LONG)),
+            createPrimitiveUnionFieldSchema("testLongUnion", Schema.Type.LONG));
+
+    // Create a read schema with only part of the fields
+    Schema readSchema = createRecord(
+            createField("testInt", Schema.create(Schema.Type.INT)),
+            createField("testString", Schema.create(Schema.Type.STRING)));
+
+    // To test the decoder isn't reading the last fields will create a schema with mistakes in it as  writter schema
+    Schema wrongSchema = createRecord(
+            createField("testInt", Schema.create(Schema.Type.INT)),
+            createPrimitiveUnionFieldSchema("testIntUnion", Schema.Type.INT),
+            createField("testString", Schema.create(Schema.Type.STRING)),
+            createPrimitiveUnionFieldSchema("testStringUnion", Schema.Type.STRING),
+            createField("testLong", Schema.create(Schema.Type.STRING)),
+            createPrimitiveUnionFieldSchema("testLongUnion", Schema.Type.STRING));
+
+    GenericRecord record = new GenericData.Record(recordSchema);
+    record.put("testInt", 1);
+    record.put("testIntUnion", 1);
+    record.put("testString", "aaa");
+    record.put("testStringUnion", "aaa");
+    record.put("testLong", 1l);
+    record.put("testLongUnion", 1l);
+
+    // when
+    String def = System.getProperty("AVRO_FAST_DESERIALIZER_BREAK_EARLY");
+    System.setProperty("AVRO_FAST_DESERIALIZER_BREAK_EARLY", "true");
+    try {
+      GenericRecord decodedRecord = decodeRecordWarmFast(wrongSchema, readSchema, genericDataAsDecoder(record));
+      // then
+      Assert.assertEquals(1, decodedRecord.get("testInt"));
+      Assert.assertEquals(new Utf8("aaa"), decodedRecord.get("testString"));
+    } finally {
+      if (def != null) {
+        System.setProperty("AVRO_FAST_DESERIALIZER_BREAK_EARLY", def);
+      }
+    }
+  }
+
   public GenericData.Fixed newFixed(Schema fixedSchema, byte[] bytes) {
     GenericData.Fixed fixed = new GenericData.Fixed(fixedSchema);
     fixed.bytes(bytes);
