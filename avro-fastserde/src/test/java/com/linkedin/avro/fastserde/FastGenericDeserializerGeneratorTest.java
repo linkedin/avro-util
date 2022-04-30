@@ -186,10 +186,11 @@ public class FastGenericDeserializerGeneratorTest {
             createField("testLong", Schema.create(Schema.Type.LONG)),
             createPrimitiveUnionFieldSchema("testLongUnion", Schema.Type.LONG));
 
-    // Create a read schema with only part of the fields
+    // Create a read schema with only part of the fields (but also extra fields that should be ignored)
     Schema readSchema = createRecord(
             createField("testInt", Schema.create(Schema.Type.INT)),
-            createField("testString", Schema.create(Schema.Type.STRING)));
+            createField("testString", Schema.create(Schema.Type.STRING)),
+            createPrimitiveUnionFieldSchema("somethingMissing", Schema.Type.LONG));
 
     // To test the decoder isn't reading the last fields will create a schema with mistakes in it as  writter schema
     Schema wrongSchema = createRecord(
@@ -216,6 +217,7 @@ public class FastGenericDeserializerGeneratorTest {
       // then
       Assert.assertEquals(1, decodedRecord.get("testInt"));
       Assert.assertEquals(new Utf8("aaa"), decodedRecord.get("testString"));
+      Assert.assertEquals(null, decodedRecord.get("somethingMissing"));
     } finally {
       if (def != null) {
         System.setProperty("AVRO_FAST_DESERIALIZER_BREAK_EARLY", def);
