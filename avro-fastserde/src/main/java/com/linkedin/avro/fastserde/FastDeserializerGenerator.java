@@ -296,8 +296,11 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
 
     int fieldCount = 0;
 
-    Set<String> readNames = recordReaderSchema.getFields().stream().map(Schema.Field::name).collect(Collectors.toSet());
-    long expectedFieldsToWrite = recordWriterSchema.getFields().stream().filter(f -> readNames.contains(f.name())).count();
+    long expectedFieldsToWrite = 0;
+    if (recordReaderSchema != null) {
+      Set<String> readNames = recordReaderSchema.getFields().stream().map(Schema.Field::name).collect(Collectors.toSet());
+      expectedFieldsToWrite = recordWriterSchema.getFields().stream().filter(f -> readNames.contains(f.name())).count();
+    }
     int fieldsWrittenToTarget = 0;
     JBlock popMethodBody = methodBody;
     JMethod popMethod = null;
