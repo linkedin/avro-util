@@ -99,6 +99,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexColl
                             int unionIndex0 = (decoder.readIndex());
                             if (unionIndex0 == 0) {
                                 decoder.readNull();
+                                recordsArrayMapElem0 .put(key0, null);
                             } else {
                                 if (unionIndex0 == 1) {
                                     recordsArrayMapElem0 .put(key0, deserializesubRecord0(null, (decoder)));
@@ -134,6 +135,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexColl
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
+            subRecord.put(0, null);
         } else {
             if (unionIndex1 == 1) {
                 Object oldString0 = subRecord.get(0);
@@ -186,6 +188,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexColl
                             int unionIndex2 = (decoder.readIndex());
                             if (unionIndex2 == 0) {
                                 decoder.readNull();
+                                recordsMapArrayValue0 .add(null);
                             } else {
                                 if (unionIndex2 == 1) {
                                     recordsMapArrayValue0 .add(deserializesubRecord0(recordsMapArrayValueArrayElementReuseVar0, (decoder)));
@@ -207,6 +210,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexColl
         int unionIndex3 = (decoder.readIndex());
         if (unionIndex3 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexCollectionsField.put(2, null);
         } else {
             if (unionIndex3 == 1) {
                 List<Map<Utf8, IndexedRecord>> recordsArrayMapUnionOption0 = null;
@@ -243,6 +247,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexColl
                                     int unionIndex4 = (decoder.readIndex());
                                     if (unionIndex4 == 0) {
                                         decoder.readNull();
+                                        recordsArrayMapUnionOptionElem0 .put(key2, null);
                                     } else {
                                         if (unionIndex4 == 1) {
                                             recordsArrayMapUnionOptionElem0 .put(key2, deserializesubRecord0(null, (decoder)));
@@ -273,6 +278,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexColl
         int unionIndex5 = (decoder.readIndex());
         if (unionIndex5 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexCollectionsField.put(3, null);
         } else {
             if (unionIndex5 == 1) {
                 Map<Utf8, List<IndexedRecord>> recordsMapArrayUnionOption0 = null;
@@ -309,6 +315,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexColl
                                     int unionIndex6 = (decoder.readIndex());
                                     if (unionIndex6 == 0) {
                                         decoder.readNull();
+                                        recordsMapArrayUnionOptionValue0 .add(null);
                                     } else {
                                         if (unionIndex6 == 1) {
                                             recordsMapArrayUnionOptionValue0 .add(deserializesubRecord0(recordsMapArrayUnionOptionValueArrayElementReuseVar0, (decoder)));

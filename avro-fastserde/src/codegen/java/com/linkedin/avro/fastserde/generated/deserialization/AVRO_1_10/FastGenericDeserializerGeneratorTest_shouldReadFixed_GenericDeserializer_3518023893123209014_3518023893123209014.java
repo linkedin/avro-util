@@ -65,6 +65,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadFixed_GenericDeseria
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldReadFixed.put(1, null);
         } else {
             if (unionIndex0 == 1) {
                 byte[] testFixed2;
@@ -131,6 +132,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadFixed_GenericDeseria
                 int unionIndex1 = (decoder.readIndex());
                 if (unionIndex1 == 0) {
                     decoder.readNull();
+                    testFixedUnionArray1 .add(null);
                 } else {
                     if (unionIndex1 == 1) {
                         byte[] testFixed4;

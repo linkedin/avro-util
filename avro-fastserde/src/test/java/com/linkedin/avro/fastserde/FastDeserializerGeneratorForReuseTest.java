@@ -174,7 +174,7 @@ public class FastDeserializerGeneratorForReuseTest {
   }
 
   @Test(groups = {"deserializationTest"})
-  public void testFastGenericDeserializerPrimitFloatList() throws Exception {
+  public void testFastGenericDeserializerPrimitiveFloatList() throws Exception {
     String schemaString = "{\"type\":\"record\",\"name\":\"KeyRecord\",\"fields\":[{\"name\":\"name\",\"type\":\"string\",\"doc\":\"name field\"}, {\"name\":\"inventory\", \"type\" : {  \"type\" : \"array\", \"items\" : \"float\" }}] }";
 
     Schema oldRecordSchema = Schema.parse(schemaString);
@@ -214,6 +214,35 @@ public class FastDeserializerGeneratorForReuseTest {
     genericRecord = deserializer.deserialize(deserRecord, getDecoder(serializedBytes));
     list = (List<Float>)genericRecord.get(1);
     Assert.assertEquals(list.size(), 3);
+  }
 
+  @Test(groups = {"deserializationTest"})
+  public void testFastGenericDeserializerWithNullableField() throws Exception {
+    String schemaString = "{\n" + "  \"type\": \"record\",\n" + "  \"name\": \"KeyRecord\",\n" + "  \"fields\": [\n"
+        + "     {\"name\": \"int_field\", \"type\": \"int\"},\n"
+        + "     {\"name\": \"nullable_string_field\", \"type\": [\"null\", \"string\"], \"default\": null}\n" + "   ]\n"
+        + "}";
+    Schema oldRecordSchema = Schema.parse(schemaString);
+    FastSerdeCache cache = FastSerdeCache.getDefaultInstance();
+    FastDeserializer<GenericRecord> deserializer =
+        (FastDeserializer<GenericRecord>) cache.buildFastGenericDeserializer(oldRecordSchema, oldRecordSchema);
+
+    GenericData.Record record = new GenericData.Record(oldRecordSchema);
+    record.put("int_field", 10);
+    record.put("nullable_string_field", "previous_string_value");
+    byte[] serializedBytes = serialize(record, oldRecordSchema);
+    GenericRecord deserRecord = deserializer.deserialize(getDecoder(serializedBytes));
+
+    // Generate a different record
+    // "nullable_string_field" will be null.
+    GenericData.Record record1 = new GenericData.Record(oldRecordSchema);
+    record1.put("int_field", 11);
+    record1.put("nullable_string_field", null);
+    serializedBytes = serialize(record1, oldRecordSchema);
+    // deserialize it with a reused record, whose "nullable_string_field" is not null
+    GenericRecord genericRecord = deserializer.deserialize(deserRecord, getDecoder(serializedBytes));
+    int int_field = (Integer)genericRecord.get(0);
+    Assert.assertEquals(genericRecord.get("int_field"), Integer.valueOf(11));
+    Assert.assertNull(genericRecord.get("nullable_string_field"));
   }
 }

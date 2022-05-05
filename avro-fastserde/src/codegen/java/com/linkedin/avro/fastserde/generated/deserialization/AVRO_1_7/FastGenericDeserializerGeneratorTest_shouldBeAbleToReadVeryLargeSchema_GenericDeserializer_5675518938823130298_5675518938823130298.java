@@ -2036,6 +2036,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(0, null);
         } else {
             if (unionIndex0 == 1) {
                 Object oldString0 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(0);
@@ -2557,6 +2558,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(1, null);
         } else {
             if (unionIndex1 == 1) {
                 Object oldString1 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(1);
@@ -2572,6 +2574,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex2 = (decoder.readIndex());
         if (unionIndex2 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(2, null);
         } else {
             if (unionIndex2 == 1) {
                 Object oldString2 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(2);
@@ -2592,6 +2595,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex3 = (decoder.readIndex());
         if (unionIndex3 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(3, null);
         } else {
             if (unionIndex3 == 1) {
                 Object oldString3 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(3);
@@ -2607,6 +2611,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex4 = (decoder.readIndex());
         if (unionIndex4 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(4, null);
         } else {
             if (unionIndex4 == 1) {
                 Object oldString4 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(4);
@@ -2627,6 +2632,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex5 = (decoder.readIndex());
         if (unionIndex5 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(5, null);
         } else {
             if (unionIndex5 == 1) {
                 Object oldString5 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(5);
@@ -2642,6 +2648,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex6 = (decoder.readIndex());
         if (unionIndex6 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(6, null);
         } else {
             if (unionIndex6 == 1) {
                 Object oldString6 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(6);
@@ -2662,6 +2669,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex7 = (decoder.readIndex());
         if (unionIndex7 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(7, null);
         } else {
             if (unionIndex7 == 1) {
                 Object oldString7 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(7);
@@ -2677,6 +2685,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex8 = (decoder.readIndex());
         if (unionIndex8 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(8, null);
         } else {
             if (unionIndex8 == 1) {
                 Object oldString8 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(8);
@@ -2697,6 +2706,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex9 = (decoder.readIndex());
         if (unionIndex9 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(9, null);
         } else {
             if (unionIndex9 == 1) {
                 Object oldString9 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(9);
@@ -2712,6 +2722,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex10 = (decoder.readIndex());
         if (unionIndex10 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(10, null);
         } else {
             if (unionIndex10 == 1) {
                 Object oldString10 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(10);
@@ -2732,6 +2743,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex11 = (decoder.readIndex());
         if (unionIndex11 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(11, null);
         } else {
             if (unionIndex11 == 1) {
                 Object oldString11 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(11);
@@ -2747,6 +2759,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex12 = (decoder.readIndex());
         if (unionIndex12 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(12, null);
         } else {
             if (unionIndex12 == 1) {
                 Object oldString12 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(12);
@@ -2767,6 +2780,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex13 = (decoder.readIndex());
         if (unionIndex13 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(13, null);
         } else {
             if (unionIndex13 == 1) {
                 Object oldString13 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(13);
@@ -2782,6 +2796,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex14 = (decoder.readIndex());
         if (unionIndex14 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(14, null);
         } else {
             if (unionIndex14 == 1) {
                 Object oldString14 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(14);
@@ -2802,6 +2817,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex15 = (decoder.readIndex());
         if (unionIndex15 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(15, null);
         } else {
             if (unionIndex15 == 1) {
                 Object oldString15 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(15);
@@ -2817,6 +2833,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex16 = (decoder.readIndex());
         if (unionIndex16 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(16, null);
         } else {
             if (unionIndex16 == 1) {
                 Object oldString16 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(16);
@@ -2837,6 +2854,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex17 = (decoder.readIndex());
         if (unionIndex17 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(17, null);
         } else {
             if (unionIndex17 == 1) {
                 Object oldString17 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(17);
@@ -2852,6 +2870,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex18 = (decoder.readIndex());
         if (unionIndex18 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(18, null);
         } else {
             if (unionIndex18 == 1) {
                 Object oldString18 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(18);
@@ -2872,6 +2891,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex19 = (decoder.readIndex());
         if (unionIndex19 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(19, null);
         } else {
             if (unionIndex19 == 1) {
                 Object oldString19 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(19);
@@ -2887,6 +2907,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex20 = (decoder.readIndex());
         if (unionIndex20 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(20, null);
         } else {
             if (unionIndex20 == 1) {
                 Object oldString20 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(20);
@@ -2907,6 +2928,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex21 = (decoder.readIndex());
         if (unionIndex21 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(21, null);
         } else {
             if (unionIndex21 == 1) {
                 Object oldString21 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(21);
@@ -2922,6 +2944,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex22 = (decoder.readIndex());
         if (unionIndex22 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(22, null);
         } else {
             if (unionIndex22 == 1) {
                 Object oldString22 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(22);
@@ -2942,6 +2965,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex23 = (decoder.readIndex());
         if (unionIndex23 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(23, null);
         } else {
             if (unionIndex23 == 1) {
                 Object oldString23 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(23);
@@ -2957,6 +2981,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex24 = (decoder.readIndex());
         if (unionIndex24 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(24, null);
         } else {
             if (unionIndex24 == 1) {
                 Object oldString24 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(24);
@@ -2977,6 +3002,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex25 = (decoder.readIndex());
         if (unionIndex25 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(25, null);
         } else {
             if (unionIndex25 == 1) {
                 Object oldString25 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(25);
@@ -2992,6 +3018,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex26 = (decoder.readIndex());
         if (unionIndex26 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(26, null);
         } else {
             if (unionIndex26 == 1) {
                 Object oldString26 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(26);
@@ -3012,6 +3039,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex27 = (decoder.readIndex());
         if (unionIndex27 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(27, null);
         } else {
             if (unionIndex27 == 1) {
                 Object oldString27 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(27);
@@ -3027,6 +3055,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex28 = (decoder.readIndex());
         if (unionIndex28 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(28, null);
         } else {
             if (unionIndex28 == 1) {
                 Object oldString28 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(28);
@@ -3047,6 +3076,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex29 = (decoder.readIndex());
         if (unionIndex29 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(29, null);
         } else {
             if (unionIndex29 == 1) {
                 Object oldString29 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(29);
@@ -3062,6 +3092,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex30 = (decoder.readIndex());
         if (unionIndex30 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(30, null);
         } else {
             if (unionIndex30 == 1) {
                 Object oldString30 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(30);
@@ -3082,6 +3113,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex31 = (decoder.readIndex());
         if (unionIndex31 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(31, null);
         } else {
             if (unionIndex31 == 1) {
                 Object oldString31 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(31);
@@ -3097,6 +3129,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex32 = (decoder.readIndex());
         if (unionIndex32 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(32, null);
         } else {
             if (unionIndex32 == 1) {
                 Object oldString32 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(32);
@@ -3117,6 +3150,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex33 = (decoder.readIndex());
         if (unionIndex33 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(33, null);
         } else {
             if (unionIndex33 == 1) {
                 Object oldString33 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(33);
@@ -3132,6 +3166,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex34 = (decoder.readIndex());
         if (unionIndex34 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(34, null);
         } else {
             if (unionIndex34 == 1) {
                 Object oldString34 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(34);
@@ -3152,6 +3187,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex35 = (decoder.readIndex());
         if (unionIndex35 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(35, null);
         } else {
             if (unionIndex35 == 1) {
                 Object oldString35 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(35);
@@ -3167,6 +3203,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex36 = (decoder.readIndex());
         if (unionIndex36 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(36, null);
         } else {
             if (unionIndex36 == 1) {
                 Object oldString36 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(36);
@@ -3187,6 +3224,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex37 = (decoder.readIndex());
         if (unionIndex37 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(37, null);
         } else {
             if (unionIndex37 == 1) {
                 Object oldString37 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(37);
@@ -3202,6 +3240,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex38 = (decoder.readIndex());
         if (unionIndex38 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(38, null);
         } else {
             if (unionIndex38 == 1) {
                 Object oldString38 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(38);
@@ -3222,6 +3261,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex39 = (decoder.readIndex());
         if (unionIndex39 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(39, null);
         } else {
             if (unionIndex39 == 1) {
                 Object oldString39 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(39);
@@ -3237,6 +3277,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex40 = (decoder.readIndex());
         if (unionIndex40 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(40, null);
         } else {
             if (unionIndex40 == 1) {
                 Object oldString40 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(40);
@@ -3257,6 +3298,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex41 = (decoder.readIndex());
         if (unionIndex41 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(41, null);
         } else {
             if (unionIndex41 == 1) {
                 Object oldString41 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(41);
@@ -3272,6 +3314,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex42 = (decoder.readIndex());
         if (unionIndex42 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(42, null);
         } else {
             if (unionIndex42 == 1) {
                 Object oldString42 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(42);
@@ -3292,6 +3335,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex43 = (decoder.readIndex());
         if (unionIndex43 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(43, null);
         } else {
             if (unionIndex43 == 1) {
                 Object oldString43 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(43);
@@ -3307,6 +3351,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex44 = (decoder.readIndex());
         if (unionIndex44 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(44, null);
         } else {
             if (unionIndex44 == 1) {
                 Object oldString44 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(44);
@@ -3327,6 +3372,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex45 = (decoder.readIndex());
         if (unionIndex45 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(45, null);
         } else {
             if (unionIndex45 == 1) {
                 Object oldString45 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(45);
@@ -3342,6 +3388,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex46 = (decoder.readIndex());
         if (unionIndex46 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(46, null);
         } else {
             if (unionIndex46 == 1) {
                 Object oldString46 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(46);
@@ -3362,6 +3409,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex47 = (decoder.readIndex());
         if (unionIndex47 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(47, null);
         } else {
             if (unionIndex47 == 1) {
                 Object oldString47 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(47);
@@ -3377,6 +3425,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex48 = (decoder.readIndex());
         if (unionIndex48 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(48, null);
         } else {
             if (unionIndex48 == 1) {
                 Object oldString48 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(48);
@@ -3397,6 +3446,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex49 = (decoder.readIndex());
         if (unionIndex49 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(49, null);
         } else {
             if (unionIndex49 == 1) {
                 Object oldString49 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(49);
@@ -3412,6 +3462,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex50 = (decoder.readIndex());
         if (unionIndex50 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(50, null);
         } else {
             if (unionIndex50 == 1) {
                 Object oldString50 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(50);
@@ -3432,6 +3483,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex51 = (decoder.readIndex());
         if (unionIndex51 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(51, null);
         } else {
             if (unionIndex51 == 1) {
                 Object oldString51 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(51);
@@ -3447,6 +3499,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex52 = (decoder.readIndex());
         if (unionIndex52 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(52, null);
         } else {
             if (unionIndex52 == 1) {
                 Object oldString52 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(52);
@@ -3467,6 +3520,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex53 = (decoder.readIndex());
         if (unionIndex53 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(53, null);
         } else {
             if (unionIndex53 == 1) {
                 Object oldString53 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(53);
@@ -3482,6 +3536,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex54 = (decoder.readIndex());
         if (unionIndex54 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(54, null);
         } else {
             if (unionIndex54 == 1) {
                 Object oldString54 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(54);
@@ -3502,6 +3557,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex55 = (decoder.readIndex());
         if (unionIndex55 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(55, null);
         } else {
             if (unionIndex55 == 1) {
                 Object oldString55 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(55);
@@ -3517,6 +3573,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex56 = (decoder.readIndex());
         if (unionIndex56 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(56, null);
         } else {
             if (unionIndex56 == 1) {
                 Object oldString56 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(56);
@@ -3537,6 +3594,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex57 = (decoder.readIndex());
         if (unionIndex57 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(57, null);
         } else {
             if (unionIndex57 == 1) {
                 Object oldString57 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(57);
@@ -3552,6 +3610,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex58 = (decoder.readIndex());
         if (unionIndex58 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(58, null);
         } else {
             if (unionIndex58 == 1) {
                 Object oldString58 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(58);
@@ -3572,6 +3631,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex59 = (decoder.readIndex());
         if (unionIndex59 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(59, null);
         } else {
             if (unionIndex59 == 1) {
                 Object oldString59 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(59);
@@ -3587,6 +3647,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex60 = (decoder.readIndex());
         if (unionIndex60 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(60, null);
         } else {
             if (unionIndex60 == 1) {
                 Object oldString60 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(60);
@@ -3607,6 +3668,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex61 = (decoder.readIndex());
         if (unionIndex61 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(61, null);
         } else {
             if (unionIndex61 == 1) {
                 Object oldString61 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(61);
@@ -3622,6 +3684,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex62 = (decoder.readIndex());
         if (unionIndex62 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(62, null);
         } else {
             if (unionIndex62 == 1) {
                 Object oldString62 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(62);
@@ -3642,6 +3705,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex63 = (decoder.readIndex());
         if (unionIndex63 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(63, null);
         } else {
             if (unionIndex63 == 1) {
                 Object oldString63 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(63);
@@ -3657,6 +3721,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex64 = (decoder.readIndex());
         if (unionIndex64 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(64, null);
         } else {
             if (unionIndex64 == 1) {
                 Object oldString64 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(64);
@@ -3677,6 +3742,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex65 = (decoder.readIndex());
         if (unionIndex65 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(65, null);
         } else {
             if (unionIndex65 == 1) {
                 Object oldString65 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(65);
@@ -3692,6 +3758,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex66 = (decoder.readIndex());
         if (unionIndex66 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(66, null);
         } else {
             if (unionIndex66 == 1) {
                 Object oldString66 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(66);
@@ -3712,6 +3779,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex67 = (decoder.readIndex());
         if (unionIndex67 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(67, null);
         } else {
             if (unionIndex67 == 1) {
                 Object oldString67 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(67);
@@ -3727,6 +3795,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex68 = (decoder.readIndex());
         if (unionIndex68 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(68, null);
         } else {
             if (unionIndex68 == 1) {
                 Object oldString68 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(68);
@@ -3747,6 +3816,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex69 = (decoder.readIndex());
         if (unionIndex69 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(69, null);
         } else {
             if (unionIndex69 == 1) {
                 Object oldString69 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(69);
@@ -3762,6 +3832,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex70 = (decoder.readIndex());
         if (unionIndex70 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(70, null);
         } else {
             if (unionIndex70 == 1) {
                 Object oldString70 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(70);
@@ -3782,6 +3853,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex71 = (decoder.readIndex());
         if (unionIndex71 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(71, null);
         } else {
             if (unionIndex71 == 1) {
                 Object oldString71 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(71);
@@ -3797,6 +3869,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex72 = (decoder.readIndex());
         if (unionIndex72 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(72, null);
         } else {
             if (unionIndex72 == 1) {
                 Object oldString72 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(72);
@@ -3817,6 +3890,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex73 = (decoder.readIndex());
         if (unionIndex73 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(73, null);
         } else {
             if (unionIndex73 == 1) {
                 Object oldString73 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(73);
@@ -3832,6 +3906,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex74 = (decoder.readIndex());
         if (unionIndex74 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(74, null);
         } else {
             if (unionIndex74 == 1) {
                 Object oldString74 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(74);
@@ -3852,6 +3927,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex75 = (decoder.readIndex());
         if (unionIndex75 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(75, null);
         } else {
             if (unionIndex75 == 1) {
                 Object oldString75 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(75);
@@ -3867,6 +3943,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex76 = (decoder.readIndex());
         if (unionIndex76 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(76, null);
         } else {
             if (unionIndex76 == 1) {
                 Object oldString76 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(76);
@@ -3887,6 +3964,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex77 = (decoder.readIndex());
         if (unionIndex77 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(77, null);
         } else {
             if (unionIndex77 == 1) {
                 Object oldString77 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(77);
@@ -3902,6 +3980,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex78 = (decoder.readIndex());
         if (unionIndex78 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(78, null);
         } else {
             if (unionIndex78 == 1) {
                 Object oldString78 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(78);
@@ -3922,6 +4001,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex79 = (decoder.readIndex());
         if (unionIndex79 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(79, null);
         } else {
             if (unionIndex79 == 1) {
                 Object oldString79 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(79);
@@ -3937,6 +4017,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex80 = (decoder.readIndex());
         if (unionIndex80 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(80, null);
         } else {
             if (unionIndex80 == 1) {
                 Object oldString80 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(80);
@@ -3957,6 +4038,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex81 = (decoder.readIndex());
         if (unionIndex81 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(81, null);
         } else {
             if (unionIndex81 == 1) {
                 Object oldString81 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(81);
@@ -3972,6 +4054,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex82 = (decoder.readIndex());
         if (unionIndex82 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(82, null);
         } else {
             if (unionIndex82 == 1) {
                 Object oldString82 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(82);
@@ -3992,6 +4075,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex83 = (decoder.readIndex());
         if (unionIndex83 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(83, null);
         } else {
             if (unionIndex83 == 1) {
                 Object oldString83 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(83);
@@ -4007,6 +4091,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex84 = (decoder.readIndex());
         if (unionIndex84 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(84, null);
         } else {
             if (unionIndex84 == 1) {
                 Object oldString84 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(84);
@@ -4027,6 +4112,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex85 = (decoder.readIndex());
         if (unionIndex85 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(85, null);
         } else {
             if (unionIndex85 == 1) {
                 Object oldString85 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(85);
@@ -4042,6 +4128,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex86 = (decoder.readIndex());
         if (unionIndex86 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(86, null);
         } else {
             if (unionIndex86 == 1) {
                 Object oldString86 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(86);
@@ -4062,6 +4149,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex87 = (decoder.readIndex());
         if (unionIndex87 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(87, null);
         } else {
             if (unionIndex87 == 1) {
                 Object oldString87 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(87);
@@ -4077,6 +4165,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex88 = (decoder.readIndex());
         if (unionIndex88 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(88, null);
         } else {
             if (unionIndex88 == 1) {
                 Object oldString88 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(88);
@@ -4097,6 +4186,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex89 = (decoder.readIndex());
         if (unionIndex89 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(89, null);
         } else {
             if (unionIndex89 == 1) {
                 Object oldString89 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(89);
@@ -4112,6 +4202,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex90 = (decoder.readIndex());
         if (unionIndex90 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(90, null);
         } else {
             if (unionIndex90 == 1) {
                 Object oldString90 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(90);
@@ -4132,6 +4223,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex91 = (decoder.readIndex());
         if (unionIndex91 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(91, null);
         } else {
             if (unionIndex91 == 1) {
                 Object oldString91 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(91);
@@ -4147,6 +4239,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex92 = (decoder.readIndex());
         if (unionIndex92 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(92, null);
         } else {
             if (unionIndex92 == 1) {
                 Object oldString92 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(92);
@@ -4167,6 +4260,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex93 = (decoder.readIndex());
         if (unionIndex93 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(93, null);
         } else {
             if (unionIndex93 == 1) {
                 Object oldString93 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(93);
@@ -4182,6 +4276,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex94 = (decoder.readIndex());
         if (unionIndex94 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(94, null);
         } else {
             if (unionIndex94 == 1) {
                 Object oldString94 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(94);
@@ -4202,6 +4297,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex95 = (decoder.readIndex());
         if (unionIndex95 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(95, null);
         } else {
             if (unionIndex95 == 1) {
                 Object oldString95 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(95);
@@ -4217,6 +4313,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex96 = (decoder.readIndex());
         if (unionIndex96 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(96, null);
         } else {
             if (unionIndex96 == 1) {
                 Object oldString96 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(96);
@@ -4237,6 +4334,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex97 = (decoder.readIndex());
         if (unionIndex97 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(97, null);
         } else {
             if (unionIndex97 == 1) {
                 Object oldString97 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(97);
@@ -4252,6 +4350,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex98 = (decoder.readIndex());
         if (unionIndex98 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(98, null);
         } else {
             if (unionIndex98 == 1) {
                 Object oldString98 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(98);
@@ -4272,6 +4371,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex99 = (decoder.readIndex());
         if (unionIndex99 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(99, null);
         } else {
             if (unionIndex99 == 1) {
                 Object oldString99 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(99);
@@ -4287,6 +4387,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex100 = (decoder.readIndex());
         if (unionIndex100 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(100, null);
         } else {
             if (unionIndex100 == 1) {
                 Object oldString100 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(100);
@@ -4307,6 +4408,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex101 = (decoder.readIndex());
         if (unionIndex101 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(101, null);
         } else {
             if (unionIndex101 == 1) {
                 Object oldString101 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(101);
@@ -4322,6 +4424,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex102 = (decoder.readIndex());
         if (unionIndex102 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(102, null);
         } else {
             if (unionIndex102 == 1) {
                 Object oldString102 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(102);
@@ -4342,6 +4445,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex103 = (decoder.readIndex());
         if (unionIndex103 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(103, null);
         } else {
             if (unionIndex103 == 1) {
                 Object oldString103 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(103);
@@ -4357,6 +4461,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex104 = (decoder.readIndex());
         if (unionIndex104 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(104, null);
         } else {
             if (unionIndex104 == 1) {
                 Object oldString104 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(104);
@@ -4377,6 +4482,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex105 = (decoder.readIndex());
         if (unionIndex105 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(105, null);
         } else {
             if (unionIndex105 == 1) {
                 Object oldString105 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(105);
@@ -4392,6 +4498,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex106 = (decoder.readIndex());
         if (unionIndex106 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(106, null);
         } else {
             if (unionIndex106 == 1) {
                 Object oldString106 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(106);
@@ -4412,6 +4519,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex107 = (decoder.readIndex());
         if (unionIndex107 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(107, null);
         } else {
             if (unionIndex107 == 1) {
                 Object oldString107 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(107);
@@ -4427,6 +4535,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex108 = (decoder.readIndex());
         if (unionIndex108 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(108, null);
         } else {
             if (unionIndex108 == 1) {
                 Object oldString108 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(108);
@@ -4447,6 +4556,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex109 = (decoder.readIndex());
         if (unionIndex109 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(109, null);
         } else {
             if (unionIndex109 == 1) {
                 Object oldString109 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(109);
@@ -4462,6 +4572,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex110 = (decoder.readIndex());
         if (unionIndex110 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(110, null);
         } else {
             if (unionIndex110 == 1) {
                 Object oldString110 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(110);
@@ -4482,6 +4593,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex111 = (decoder.readIndex());
         if (unionIndex111 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(111, null);
         } else {
             if (unionIndex111 == 1) {
                 Object oldString111 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(111);
@@ -4497,6 +4609,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex112 = (decoder.readIndex());
         if (unionIndex112 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(112, null);
         } else {
             if (unionIndex112 == 1) {
                 Object oldString112 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(112);
@@ -4517,6 +4630,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex113 = (decoder.readIndex());
         if (unionIndex113 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(113, null);
         } else {
             if (unionIndex113 == 1) {
                 Object oldString113 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(113);
@@ -4532,6 +4646,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex114 = (decoder.readIndex());
         if (unionIndex114 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(114, null);
         } else {
             if (unionIndex114 == 1) {
                 Object oldString114 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(114);
@@ -4552,6 +4667,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex115 = (decoder.readIndex());
         if (unionIndex115 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(115, null);
         } else {
             if (unionIndex115 == 1) {
                 Object oldString115 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(115);
@@ -4567,6 +4683,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex116 = (decoder.readIndex());
         if (unionIndex116 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(116, null);
         } else {
             if (unionIndex116 == 1) {
                 Object oldString116 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(116);
@@ -4587,6 +4704,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex117 = (decoder.readIndex());
         if (unionIndex117 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(117, null);
         } else {
             if (unionIndex117 == 1) {
                 Object oldString117 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(117);
@@ -4602,6 +4720,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex118 = (decoder.readIndex());
         if (unionIndex118 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(118, null);
         } else {
             if (unionIndex118 == 1) {
                 Object oldString118 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(118);
@@ -4622,6 +4741,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex119 = (decoder.readIndex());
         if (unionIndex119 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(119, null);
         } else {
             if (unionIndex119 == 1) {
                 Object oldString119 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(119);
@@ -4637,6 +4757,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex120 = (decoder.readIndex());
         if (unionIndex120 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(120, null);
         } else {
             if (unionIndex120 == 1) {
                 Object oldString120 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(120);
@@ -4657,6 +4778,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex121 = (decoder.readIndex());
         if (unionIndex121 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(121, null);
         } else {
             if (unionIndex121 == 1) {
                 Object oldString121 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(121);
@@ -4672,6 +4794,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex122 = (decoder.readIndex());
         if (unionIndex122 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(122, null);
         } else {
             if (unionIndex122 == 1) {
                 Object oldString122 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(122);
@@ -4692,6 +4815,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex123 = (decoder.readIndex());
         if (unionIndex123 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(123, null);
         } else {
             if (unionIndex123 == 1) {
                 Object oldString123 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(123);
@@ -4707,6 +4831,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex124 = (decoder.readIndex());
         if (unionIndex124 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(124, null);
         } else {
             if (unionIndex124 == 1) {
                 Object oldString124 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(124);
@@ -4727,6 +4852,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex125 = (decoder.readIndex());
         if (unionIndex125 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(125, null);
         } else {
             if (unionIndex125 == 1) {
                 Object oldString125 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(125);
@@ -4742,6 +4868,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex126 = (decoder.readIndex());
         if (unionIndex126 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(126, null);
         } else {
             if (unionIndex126 == 1) {
                 Object oldString126 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(126);
@@ -4762,6 +4889,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex127 = (decoder.readIndex());
         if (unionIndex127 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(127, null);
         } else {
             if (unionIndex127 == 1) {
                 Object oldString127 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(127);
@@ -4777,6 +4905,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex128 = (decoder.readIndex());
         if (unionIndex128 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(128, null);
         } else {
             if (unionIndex128 == 1) {
                 Object oldString128 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(128);
@@ -4797,6 +4926,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex129 = (decoder.readIndex());
         if (unionIndex129 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(129, null);
         } else {
             if (unionIndex129 == 1) {
                 Object oldString129 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(129);
@@ -4812,6 +4942,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex130 = (decoder.readIndex());
         if (unionIndex130 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(130, null);
         } else {
             if (unionIndex130 == 1) {
                 Object oldString130 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(130);
@@ -4832,6 +4963,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex131 = (decoder.readIndex());
         if (unionIndex131 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(131, null);
         } else {
             if (unionIndex131 == 1) {
                 Object oldString131 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(131);
@@ -4847,6 +4979,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex132 = (decoder.readIndex());
         if (unionIndex132 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(132, null);
         } else {
             if (unionIndex132 == 1) {
                 Object oldString132 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(132);
@@ -4867,6 +5000,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex133 = (decoder.readIndex());
         if (unionIndex133 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(133, null);
         } else {
             if (unionIndex133 == 1) {
                 Object oldString133 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(133);
@@ -4882,6 +5016,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex134 = (decoder.readIndex());
         if (unionIndex134 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(134, null);
         } else {
             if (unionIndex134 == 1) {
                 Object oldString134 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(134);
@@ -4902,6 +5037,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex135 = (decoder.readIndex());
         if (unionIndex135 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(135, null);
         } else {
             if (unionIndex135 == 1) {
                 Object oldString135 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(135);
@@ -4917,6 +5053,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex136 = (decoder.readIndex());
         if (unionIndex136 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(136, null);
         } else {
             if (unionIndex136 == 1) {
                 Object oldString136 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(136);
@@ -4937,6 +5074,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex137 = (decoder.readIndex());
         if (unionIndex137 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(137, null);
         } else {
             if (unionIndex137 == 1) {
                 Object oldString137 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(137);
@@ -4952,6 +5090,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex138 = (decoder.readIndex());
         if (unionIndex138 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(138, null);
         } else {
             if (unionIndex138 == 1) {
                 Object oldString138 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(138);
@@ -4972,6 +5111,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex139 = (decoder.readIndex());
         if (unionIndex139 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(139, null);
         } else {
             if (unionIndex139 == 1) {
                 Object oldString139 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(139);
@@ -4987,6 +5127,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex140 = (decoder.readIndex());
         if (unionIndex140 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(140, null);
         } else {
             if (unionIndex140 == 1) {
                 Object oldString140 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(140);
@@ -5007,6 +5148,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex141 = (decoder.readIndex());
         if (unionIndex141 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(141, null);
         } else {
             if (unionIndex141 == 1) {
                 Object oldString141 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(141);
@@ -5022,6 +5164,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex142 = (decoder.readIndex());
         if (unionIndex142 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(142, null);
         } else {
             if (unionIndex142 == 1) {
                 Object oldString142 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(142);
@@ -5042,6 +5185,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex143 = (decoder.readIndex());
         if (unionIndex143 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(143, null);
         } else {
             if (unionIndex143 == 1) {
                 Object oldString143 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(143);
@@ -5057,6 +5201,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex144 = (decoder.readIndex());
         if (unionIndex144 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(144, null);
         } else {
             if (unionIndex144 == 1) {
                 Object oldString144 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(144);
@@ -5077,6 +5222,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex145 = (decoder.readIndex());
         if (unionIndex145 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(145, null);
         } else {
             if (unionIndex145 == 1) {
                 Object oldString145 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(145);
@@ -5092,6 +5238,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex146 = (decoder.readIndex());
         if (unionIndex146 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(146, null);
         } else {
             if (unionIndex146 == 1) {
                 Object oldString146 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(146);
@@ -5112,6 +5259,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex147 = (decoder.readIndex());
         if (unionIndex147 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(147, null);
         } else {
             if (unionIndex147 == 1) {
                 Object oldString147 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(147);
@@ -5127,6 +5275,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex148 = (decoder.readIndex());
         if (unionIndex148 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(148, null);
         } else {
             if (unionIndex148 == 1) {
                 Object oldString148 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(148);
@@ -5147,6 +5296,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex149 = (decoder.readIndex());
         if (unionIndex149 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(149, null);
         } else {
             if (unionIndex149 == 1) {
                 Object oldString149 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(149);
@@ -5162,6 +5312,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex150 = (decoder.readIndex());
         if (unionIndex150 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(150, null);
         } else {
             if (unionIndex150 == 1) {
                 Object oldString150 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(150);
@@ -5182,6 +5333,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex151 = (decoder.readIndex());
         if (unionIndex151 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(151, null);
         } else {
             if (unionIndex151 == 1) {
                 Object oldString151 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(151);
@@ -5197,6 +5349,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex152 = (decoder.readIndex());
         if (unionIndex152 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(152, null);
         } else {
             if (unionIndex152 == 1) {
                 Object oldString152 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(152);
@@ -5217,6 +5370,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex153 = (decoder.readIndex());
         if (unionIndex153 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(153, null);
         } else {
             if (unionIndex153 == 1) {
                 Object oldString153 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(153);
@@ -5232,6 +5386,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex154 = (decoder.readIndex());
         if (unionIndex154 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(154, null);
         } else {
             if (unionIndex154 == 1) {
                 Object oldString154 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(154);
@@ -5252,6 +5407,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex155 = (decoder.readIndex());
         if (unionIndex155 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(155, null);
         } else {
             if (unionIndex155 == 1) {
                 Object oldString155 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(155);
@@ -5267,6 +5423,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex156 = (decoder.readIndex());
         if (unionIndex156 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(156, null);
         } else {
             if (unionIndex156 == 1) {
                 Object oldString156 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(156);
@@ -5287,6 +5444,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex157 = (decoder.readIndex());
         if (unionIndex157 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(157, null);
         } else {
             if (unionIndex157 == 1) {
                 Object oldString157 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(157);
@@ -5302,6 +5460,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex158 = (decoder.readIndex());
         if (unionIndex158 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(158, null);
         } else {
             if (unionIndex158 == 1) {
                 Object oldString158 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(158);
@@ -5322,6 +5481,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex159 = (decoder.readIndex());
         if (unionIndex159 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(159, null);
         } else {
             if (unionIndex159 == 1) {
                 Object oldString159 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(159);
@@ -5337,6 +5497,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex160 = (decoder.readIndex());
         if (unionIndex160 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(160, null);
         } else {
             if (unionIndex160 == 1) {
                 Object oldString160 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(160);
@@ -5357,6 +5518,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex161 = (decoder.readIndex());
         if (unionIndex161 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(161, null);
         } else {
             if (unionIndex161 == 1) {
                 Object oldString161 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(161);
@@ -5372,6 +5534,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex162 = (decoder.readIndex());
         if (unionIndex162 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(162, null);
         } else {
             if (unionIndex162 == 1) {
                 Object oldString162 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(162);
@@ -5392,6 +5555,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex163 = (decoder.readIndex());
         if (unionIndex163 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(163, null);
         } else {
             if (unionIndex163 == 1) {
                 Object oldString163 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(163);
@@ -5407,6 +5571,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex164 = (decoder.readIndex());
         if (unionIndex164 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(164, null);
         } else {
             if (unionIndex164 == 1) {
                 Object oldString164 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(164);
@@ -5427,6 +5592,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex165 = (decoder.readIndex());
         if (unionIndex165 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(165, null);
         } else {
             if (unionIndex165 == 1) {
                 Object oldString165 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(165);
@@ -5442,6 +5608,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex166 = (decoder.readIndex());
         if (unionIndex166 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(166, null);
         } else {
             if (unionIndex166 == 1) {
                 Object oldString166 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(166);
@@ -5462,6 +5629,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex167 = (decoder.readIndex());
         if (unionIndex167 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(167, null);
         } else {
             if (unionIndex167 == 1) {
                 Object oldString167 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(167);
@@ -5477,6 +5645,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex168 = (decoder.readIndex());
         if (unionIndex168 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(168, null);
         } else {
             if (unionIndex168 == 1) {
                 Object oldString168 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(168);
@@ -5497,6 +5666,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex169 = (decoder.readIndex());
         if (unionIndex169 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(169, null);
         } else {
             if (unionIndex169 == 1) {
                 Object oldString169 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(169);
@@ -5512,6 +5682,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex170 = (decoder.readIndex());
         if (unionIndex170 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(170, null);
         } else {
             if (unionIndex170 == 1) {
                 Object oldString170 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(170);
@@ -5532,6 +5703,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex171 = (decoder.readIndex());
         if (unionIndex171 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(171, null);
         } else {
             if (unionIndex171 == 1) {
                 Object oldString171 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(171);
@@ -5547,6 +5719,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex172 = (decoder.readIndex());
         if (unionIndex172 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(172, null);
         } else {
             if (unionIndex172 == 1) {
                 Object oldString172 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(172);
@@ -5567,6 +5740,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex173 = (decoder.readIndex());
         if (unionIndex173 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(173, null);
         } else {
             if (unionIndex173 == 1) {
                 Object oldString173 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(173);
@@ -5582,6 +5756,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex174 = (decoder.readIndex());
         if (unionIndex174 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(174, null);
         } else {
             if (unionIndex174 == 1) {
                 Object oldString174 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(174);
@@ -5602,6 +5777,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex175 = (decoder.readIndex());
         if (unionIndex175 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(175, null);
         } else {
             if (unionIndex175 == 1) {
                 Object oldString175 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(175);
@@ -5617,6 +5793,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex176 = (decoder.readIndex());
         if (unionIndex176 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(176, null);
         } else {
             if (unionIndex176 == 1) {
                 Object oldString176 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(176);
@@ -5637,6 +5814,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex177 = (decoder.readIndex());
         if (unionIndex177 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(177, null);
         } else {
             if (unionIndex177 == 1) {
                 Object oldString177 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(177);
@@ -5652,6 +5830,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex178 = (decoder.readIndex());
         if (unionIndex178 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(178, null);
         } else {
             if (unionIndex178 == 1) {
                 Object oldString178 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(178);
@@ -5672,6 +5851,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex179 = (decoder.readIndex());
         if (unionIndex179 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(179, null);
         } else {
             if (unionIndex179 == 1) {
                 Object oldString179 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(179);
@@ -5687,6 +5867,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex180 = (decoder.readIndex());
         if (unionIndex180 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(180, null);
         } else {
             if (unionIndex180 == 1) {
                 Object oldString180 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(180);
@@ -5707,6 +5888,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex181 = (decoder.readIndex());
         if (unionIndex181 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(181, null);
         } else {
             if (unionIndex181 == 1) {
                 Object oldString181 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(181);
@@ -5722,6 +5904,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex182 = (decoder.readIndex());
         if (unionIndex182 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(182, null);
         } else {
             if (unionIndex182 == 1) {
                 Object oldString182 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(182);
@@ -5742,6 +5925,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex183 = (decoder.readIndex());
         if (unionIndex183 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(183, null);
         } else {
             if (unionIndex183 == 1) {
                 Object oldString183 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(183);
@@ -5757,6 +5941,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex184 = (decoder.readIndex());
         if (unionIndex184 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(184, null);
         } else {
             if (unionIndex184 == 1) {
                 Object oldString184 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(184);
@@ -5777,6 +5962,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex185 = (decoder.readIndex());
         if (unionIndex185 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(185, null);
         } else {
             if (unionIndex185 == 1) {
                 Object oldString185 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(185);
@@ -5792,6 +5978,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex186 = (decoder.readIndex());
         if (unionIndex186 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(186, null);
         } else {
             if (unionIndex186 == 1) {
                 Object oldString186 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(186);
@@ -5812,6 +5999,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex187 = (decoder.readIndex());
         if (unionIndex187 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(187, null);
         } else {
             if (unionIndex187 == 1) {
                 Object oldString187 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(187);
@@ -5827,6 +6015,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex188 = (decoder.readIndex());
         if (unionIndex188 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(188, null);
         } else {
             if (unionIndex188 == 1) {
                 Object oldString188 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(188);
@@ -5847,6 +6036,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex189 = (decoder.readIndex());
         if (unionIndex189 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(189, null);
         } else {
             if (unionIndex189 == 1) {
                 Object oldString189 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(189);
@@ -5862,6 +6052,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex190 = (decoder.readIndex());
         if (unionIndex190 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(190, null);
         } else {
             if (unionIndex190 == 1) {
                 Object oldString190 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(190);
@@ -5882,6 +6073,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex191 = (decoder.readIndex());
         if (unionIndex191 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(191, null);
         } else {
             if (unionIndex191 == 1) {
                 Object oldString191 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(191);
@@ -5897,6 +6089,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex192 = (decoder.readIndex());
         if (unionIndex192 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(192, null);
         } else {
             if (unionIndex192 == 1) {
                 Object oldString192 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(192);
@@ -5917,6 +6110,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex193 = (decoder.readIndex());
         if (unionIndex193 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(193, null);
         } else {
             if (unionIndex193 == 1) {
                 Object oldString193 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(193);
@@ -5932,6 +6126,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex194 = (decoder.readIndex());
         if (unionIndex194 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(194, null);
         } else {
             if (unionIndex194 == 1) {
                 Object oldString194 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(194);
@@ -5952,6 +6147,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex195 = (decoder.readIndex());
         if (unionIndex195 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(195, null);
         } else {
             if (unionIndex195 == 1) {
                 Object oldString195 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(195);
@@ -5967,6 +6163,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex196 = (decoder.readIndex());
         if (unionIndex196 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(196, null);
         } else {
             if (unionIndex196 == 1) {
                 Object oldString196 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(196);
@@ -5987,6 +6184,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex197 = (decoder.readIndex());
         if (unionIndex197 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(197, null);
         } else {
             if (unionIndex197 == 1) {
                 Object oldString197 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(197);
@@ -6002,6 +6200,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex198 = (decoder.readIndex());
         if (unionIndex198 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(198, null);
         } else {
             if (unionIndex198 == 1) {
                 Object oldString198 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(198);
@@ -6022,6 +6221,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex199 = (decoder.readIndex());
         if (unionIndex199 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(199, null);
         } else {
             if (unionIndex199 == 1) {
                 Object oldString199 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(199);
@@ -6037,6 +6237,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex200 = (decoder.readIndex());
         if (unionIndex200 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(200, null);
         } else {
             if (unionIndex200 == 1) {
                 Object oldString200 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(200);
@@ -6057,6 +6258,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex201 = (decoder.readIndex());
         if (unionIndex201 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(201, null);
         } else {
             if (unionIndex201 == 1) {
                 Object oldString201 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(201);
@@ -6072,6 +6274,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex202 = (decoder.readIndex());
         if (unionIndex202 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(202, null);
         } else {
             if (unionIndex202 == 1) {
                 Object oldString202 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(202);
@@ -6092,6 +6295,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex203 = (decoder.readIndex());
         if (unionIndex203 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(203, null);
         } else {
             if (unionIndex203 == 1) {
                 Object oldString203 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(203);
@@ -6107,6 +6311,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex204 = (decoder.readIndex());
         if (unionIndex204 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(204, null);
         } else {
             if (unionIndex204 == 1) {
                 Object oldString204 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(204);
@@ -6127,6 +6332,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex205 = (decoder.readIndex());
         if (unionIndex205 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(205, null);
         } else {
             if (unionIndex205 == 1) {
                 Object oldString205 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(205);
@@ -6142,6 +6348,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex206 = (decoder.readIndex());
         if (unionIndex206 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(206, null);
         } else {
             if (unionIndex206 == 1) {
                 Object oldString206 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(206);
@@ -6162,6 +6369,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex207 = (decoder.readIndex());
         if (unionIndex207 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(207, null);
         } else {
             if (unionIndex207 == 1) {
                 Object oldString207 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(207);
@@ -6177,6 +6385,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex208 = (decoder.readIndex());
         if (unionIndex208 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(208, null);
         } else {
             if (unionIndex208 == 1) {
                 Object oldString208 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(208);
@@ -6197,6 +6406,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex209 = (decoder.readIndex());
         if (unionIndex209 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(209, null);
         } else {
             if (unionIndex209 == 1) {
                 Object oldString209 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(209);
@@ -6212,6 +6422,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex210 = (decoder.readIndex());
         if (unionIndex210 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(210, null);
         } else {
             if (unionIndex210 == 1) {
                 Object oldString210 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(210);
@@ -6232,6 +6443,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex211 = (decoder.readIndex());
         if (unionIndex211 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(211, null);
         } else {
             if (unionIndex211 == 1) {
                 Object oldString211 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(211);
@@ -6247,6 +6459,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex212 = (decoder.readIndex());
         if (unionIndex212 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(212, null);
         } else {
             if (unionIndex212 == 1) {
                 Object oldString212 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(212);
@@ -6267,6 +6480,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex213 = (decoder.readIndex());
         if (unionIndex213 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(213, null);
         } else {
             if (unionIndex213 == 1) {
                 Object oldString213 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(213);
@@ -6282,6 +6496,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex214 = (decoder.readIndex());
         if (unionIndex214 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(214, null);
         } else {
             if (unionIndex214 == 1) {
                 Object oldString214 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(214);
@@ -6302,6 +6517,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex215 = (decoder.readIndex());
         if (unionIndex215 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(215, null);
         } else {
             if (unionIndex215 == 1) {
                 Object oldString215 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(215);
@@ -6317,6 +6533,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex216 = (decoder.readIndex());
         if (unionIndex216 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(216, null);
         } else {
             if (unionIndex216 == 1) {
                 Object oldString216 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(216);
@@ -6337,6 +6554,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex217 = (decoder.readIndex());
         if (unionIndex217 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(217, null);
         } else {
             if (unionIndex217 == 1) {
                 Object oldString217 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(217);
@@ -6352,6 +6570,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex218 = (decoder.readIndex());
         if (unionIndex218 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(218, null);
         } else {
             if (unionIndex218 == 1) {
                 Object oldString218 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(218);
@@ -6372,6 +6591,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex219 = (decoder.readIndex());
         if (unionIndex219 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(219, null);
         } else {
             if (unionIndex219 == 1) {
                 Object oldString219 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(219);
@@ -6387,6 +6607,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex220 = (decoder.readIndex());
         if (unionIndex220 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(220, null);
         } else {
             if (unionIndex220 == 1) {
                 Object oldString220 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(220);
@@ -6407,6 +6628,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex221 = (decoder.readIndex());
         if (unionIndex221 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(221, null);
         } else {
             if (unionIndex221 == 1) {
                 Object oldString221 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(221);
@@ -6422,6 +6644,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex222 = (decoder.readIndex());
         if (unionIndex222 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(222, null);
         } else {
             if (unionIndex222 == 1) {
                 Object oldString222 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(222);
@@ -6442,6 +6665,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex223 = (decoder.readIndex());
         if (unionIndex223 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(223, null);
         } else {
             if (unionIndex223 == 1) {
                 Object oldString223 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(223);
@@ -6457,6 +6681,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex224 = (decoder.readIndex());
         if (unionIndex224 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(224, null);
         } else {
             if (unionIndex224 == 1) {
                 Object oldString224 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(224);
@@ -6477,6 +6702,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex225 = (decoder.readIndex());
         if (unionIndex225 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(225, null);
         } else {
             if (unionIndex225 == 1) {
                 Object oldString225 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(225);
@@ -6492,6 +6718,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex226 = (decoder.readIndex());
         if (unionIndex226 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(226, null);
         } else {
             if (unionIndex226 == 1) {
                 Object oldString226 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(226);
@@ -6512,6 +6739,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex227 = (decoder.readIndex());
         if (unionIndex227 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(227, null);
         } else {
             if (unionIndex227 == 1) {
                 Object oldString227 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(227);
@@ -6527,6 +6755,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex228 = (decoder.readIndex());
         if (unionIndex228 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(228, null);
         } else {
             if (unionIndex228 == 1) {
                 Object oldString228 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(228);
@@ -6547,6 +6776,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex229 = (decoder.readIndex());
         if (unionIndex229 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(229, null);
         } else {
             if (unionIndex229 == 1) {
                 Object oldString229 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(229);
@@ -6562,6 +6792,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex230 = (decoder.readIndex());
         if (unionIndex230 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(230, null);
         } else {
             if (unionIndex230 == 1) {
                 Object oldString230 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(230);
@@ -6582,6 +6813,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex231 = (decoder.readIndex());
         if (unionIndex231 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(231, null);
         } else {
             if (unionIndex231 == 1) {
                 Object oldString231 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(231);
@@ -6597,6 +6829,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex232 = (decoder.readIndex());
         if (unionIndex232 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(232, null);
         } else {
             if (unionIndex232 == 1) {
                 Object oldString232 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(232);
@@ -6617,6 +6850,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex233 = (decoder.readIndex());
         if (unionIndex233 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(233, null);
         } else {
             if (unionIndex233 == 1) {
                 Object oldString233 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(233);
@@ -6632,6 +6866,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex234 = (decoder.readIndex());
         if (unionIndex234 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(234, null);
         } else {
             if (unionIndex234 == 1) {
                 Object oldString234 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(234);
@@ -6652,6 +6887,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex235 = (decoder.readIndex());
         if (unionIndex235 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(235, null);
         } else {
             if (unionIndex235 == 1) {
                 Object oldString235 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(235);
@@ -6667,6 +6903,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex236 = (decoder.readIndex());
         if (unionIndex236 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(236, null);
         } else {
             if (unionIndex236 == 1) {
                 Object oldString236 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(236);
@@ -6687,6 +6924,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex237 = (decoder.readIndex());
         if (unionIndex237 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(237, null);
         } else {
             if (unionIndex237 == 1) {
                 Object oldString237 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(237);
@@ -6702,6 +6940,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex238 = (decoder.readIndex());
         if (unionIndex238 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(238, null);
         } else {
             if (unionIndex238 == 1) {
                 Object oldString238 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(238);
@@ -6722,6 +6961,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex239 = (decoder.readIndex());
         if (unionIndex239 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(239, null);
         } else {
             if (unionIndex239 == 1) {
                 Object oldString239 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(239);
@@ -6737,6 +6977,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex240 = (decoder.readIndex());
         if (unionIndex240 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(240, null);
         } else {
             if (unionIndex240 == 1) {
                 Object oldString240 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(240);
@@ -6757,6 +6998,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex241 = (decoder.readIndex());
         if (unionIndex241 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(241, null);
         } else {
             if (unionIndex241 == 1) {
                 Object oldString241 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(241);
@@ -6772,6 +7014,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex242 = (decoder.readIndex());
         if (unionIndex242 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(242, null);
         } else {
             if (unionIndex242 == 1) {
                 Object oldString242 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(242);
@@ -6792,6 +7035,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex243 = (decoder.readIndex());
         if (unionIndex243 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(243, null);
         } else {
             if (unionIndex243 == 1) {
                 Object oldString243 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(243);
@@ -6807,6 +7051,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex244 = (decoder.readIndex());
         if (unionIndex244 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(244, null);
         } else {
             if (unionIndex244 == 1) {
                 Object oldString244 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(244);
@@ -6827,6 +7072,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex245 = (decoder.readIndex());
         if (unionIndex245 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(245, null);
         } else {
             if (unionIndex245 == 1) {
                 Object oldString245 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(245);
@@ -6842,6 +7088,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex246 = (decoder.readIndex());
         if (unionIndex246 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(246, null);
         } else {
             if (unionIndex246 == 1) {
                 Object oldString246 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(246);
@@ -6862,6 +7109,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex247 = (decoder.readIndex());
         if (unionIndex247 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(247, null);
         } else {
             if (unionIndex247 == 1) {
                 Object oldString247 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(247);
@@ -6877,6 +7125,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex248 = (decoder.readIndex());
         if (unionIndex248 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(248, null);
         } else {
             if (unionIndex248 == 1) {
                 Object oldString248 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(248);
@@ -6897,6 +7146,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex249 = (decoder.readIndex());
         if (unionIndex249 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(249, null);
         } else {
             if (unionIndex249 == 1) {
                 Object oldString249 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(249);
@@ -6912,6 +7162,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex250 = (decoder.readIndex());
         if (unionIndex250 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(250, null);
         } else {
             if (unionIndex250 == 1) {
                 Object oldString250 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(250);
@@ -6932,6 +7183,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex251 = (decoder.readIndex());
         if (unionIndex251 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(251, null);
         } else {
             if (unionIndex251 == 1) {
                 Object oldString251 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(251);
@@ -6947,6 +7199,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex252 = (decoder.readIndex());
         if (unionIndex252 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(252, null);
         } else {
             if (unionIndex252 == 1) {
                 Object oldString252 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(252);
@@ -6967,6 +7220,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex253 = (decoder.readIndex());
         if (unionIndex253 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(253, null);
         } else {
             if (unionIndex253 == 1) {
                 Object oldString253 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(253);
@@ -6982,6 +7236,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex254 = (decoder.readIndex());
         if (unionIndex254 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(254, null);
         } else {
             if (unionIndex254 == 1) {
                 Object oldString254 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(254);
@@ -7002,6 +7257,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex255 = (decoder.readIndex());
         if (unionIndex255 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(255, null);
         } else {
             if (unionIndex255 == 1) {
                 Object oldString255 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(255);
@@ -7017,6 +7273,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex256 = (decoder.readIndex());
         if (unionIndex256 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(256, null);
         } else {
             if (unionIndex256 == 1) {
                 Object oldString256 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(256);
@@ -7037,6 +7294,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex257 = (decoder.readIndex());
         if (unionIndex257 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(257, null);
         } else {
             if (unionIndex257 == 1) {
                 Object oldString257 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(257);
@@ -7052,6 +7310,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex258 = (decoder.readIndex());
         if (unionIndex258 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(258, null);
         } else {
             if (unionIndex258 == 1) {
                 Object oldString258 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(258);
@@ -7072,6 +7331,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex259 = (decoder.readIndex());
         if (unionIndex259 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(259, null);
         } else {
             if (unionIndex259 == 1) {
                 Object oldString259 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(259);
@@ -7087,6 +7347,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex260 = (decoder.readIndex());
         if (unionIndex260 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(260, null);
         } else {
             if (unionIndex260 == 1) {
                 Object oldString260 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(260);
@@ -7107,6 +7368,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex261 = (decoder.readIndex());
         if (unionIndex261 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(261, null);
         } else {
             if (unionIndex261 == 1) {
                 Object oldString261 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(261);
@@ -7122,6 +7384,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex262 = (decoder.readIndex());
         if (unionIndex262 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(262, null);
         } else {
             if (unionIndex262 == 1) {
                 Object oldString262 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(262);
@@ -7142,6 +7405,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex263 = (decoder.readIndex());
         if (unionIndex263 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(263, null);
         } else {
             if (unionIndex263 == 1) {
                 Object oldString263 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(263);
@@ -7157,6 +7421,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex264 = (decoder.readIndex());
         if (unionIndex264 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(264, null);
         } else {
             if (unionIndex264 == 1) {
                 Object oldString264 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(264);
@@ -7177,6 +7442,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex265 = (decoder.readIndex());
         if (unionIndex265 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(265, null);
         } else {
             if (unionIndex265 == 1) {
                 Object oldString265 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(265);
@@ -7192,6 +7458,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex266 = (decoder.readIndex());
         if (unionIndex266 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(266, null);
         } else {
             if (unionIndex266 == 1) {
                 Object oldString266 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(266);
@@ -7212,6 +7479,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex267 = (decoder.readIndex());
         if (unionIndex267 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(267, null);
         } else {
             if (unionIndex267 == 1) {
                 Object oldString267 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(267);
@@ -7227,6 +7495,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex268 = (decoder.readIndex());
         if (unionIndex268 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(268, null);
         } else {
             if (unionIndex268 == 1) {
                 Object oldString268 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(268);
@@ -7247,6 +7516,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex269 = (decoder.readIndex());
         if (unionIndex269 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(269, null);
         } else {
             if (unionIndex269 == 1) {
                 Object oldString269 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(269);
@@ -7262,6 +7532,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex270 = (decoder.readIndex());
         if (unionIndex270 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(270, null);
         } else {
             if (unionIndex270 == 1) {
                 Object oldString270 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(270);
@@ -7282,6 +7553,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex271 = (decoder.readIndex());
         if (unionIndex271 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(271, null);
         } else {
             if (unionIndex271 == 1) {
                 Object oldString271 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(271);
@@ -7297,6 +7569,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex272 = (decoder.readIndex());
         if (unionIndex272 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(272, null);
         } else {
             if (unionIndex272 == 1) {
                 Object oldString272 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(272);
@@ -7317,6 +7590,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex273 = (decoder.readIndex());
         if (unionIndex273 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(273, null);
         } else {
             if (unionIndex273 == 1) {
                 Object oldString273 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(273);
@@ -7332,6 +7606,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex274 = (decoder.readIndex());
         if (unionIndex274 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(274, null);
         } else {
             if (unionIndex274 == 1) {
                 Object oldString274 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(274);
@@ -7352,6 +7627,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex275 = (decoder.readIndex());
         if (unionIndex275 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(275, null);
         } else {
             if (unionIndex275 == 1) {
                 Object oldString275 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(275);
@@ -7367,6 +7643,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex276 = (decoder.readIndex());
         if (unionIndex276 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(276, null);
         } else {
             if (unionIndex276 == 1) {
                 Object oldString276 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(276);
@@ -7387,6 +7664,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex277 = (decoder.readIndex());
         if (unionIndex277 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(277, null);
         } else {
             if (unionIndex277 == 1) {
                 Object oldString277 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(277);
@@ -7402,6 +7680,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex278 = (decoder.readIndex());
         if (unionIndex278 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(278, null);
         } else {
             if (unionIndex278 == 1) {
                 Object oldString278 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(278);
@@ -7422,6 +7701,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex279 = (decoder.readIndex());
         if (unionIndex279 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(279, null);
         } else {
             if (unionIndex279 == 1) {
                 Object oldString279 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(279);
@@ -7437,6 +7717,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex280 = (decoder.readIndex());
         if (unionIndex280 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(280, null);
         } else {
             if (unionIndex280 == 1) {
                 Object oldString280 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(280);
@@ -7457,6 +7738,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex281 = (decoder.readIndex());
         if (unionIndex281 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(281, null);
         } else {
             if (unionIndex281 == 1) {
                 Object oldString281 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(281);
@@ -7472,6 +7754,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex282 = (decoder.readIndex());
         if (unionIndex282 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(282, null);
         } else {
             if (unionIndex282 == 1) {
                 Object oldString282 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(282);
@@ -7492,6 +7775,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex283 = (decoder.readIndex());
         if (unionIndex283 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(283, null);
         } else {
             if (unionIndex283 == 1) {
                 Object oldString283 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(283);
@@ -7507,6 +7791,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex284 = (decoder.readIndex());
         if (unionIndex284 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(284, null);
         } else {
             if (unionIndex284 == 1) {
                 Object oldString284 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(284);
@@ -7527,6 +7812,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex285 = (decoder.readIndex());
         if (unionIndex285 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(285, null);
         } else {
             if (unionIndex285 == 1) {
                 Object oldString285 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(285);
@@ -7542,6 +7828,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex286 = (decoder.readIndex());
         if (unionIndex286 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(286, null);
         } else {
             if (unionIndex286 == 1) {
                 Object oldString286 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(286);
@@ -7562,6 +7849,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex287 = (decoder.readIndex());
         if (unionIndex287 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(287, null);
         } else {
             if (unionIndex287 == 1) {
                 Object oldString287 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(287);
@@ -7577,6 +7865,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex288 = (decoder.readIndex());
         if (unionIndex288 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(288, null);
         } else {
             if (unionIndex288 == 1) {
                 Object oldString288 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(288);
@@ -7597,6 +7886,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex289 = (decoder.readIndex());
         if (unionIndex289 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(289, null);
         } else {
             if (unionIndex289 == 1) {
                 Object oldString289 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(289);
@@ -7612,6 +7902,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex290 = (decoder.readIndex());
         if (unionIndex290 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(290, null);
         } else {
             if (unionIndex290 == 1) {
                 Object oldString290 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(290);
@@ -7632,6 +7923,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex291 = (decoder.readIndex());
         if (unionIndex291 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(291, null);
         } else {
             if (unionIndex291 == 1) {
                 Object oldString291 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(291);
@@ -7647,6 +7939,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex292 = (decoder.readIndex());
         if (unionIndex292 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(292, null);
         } else {
             if (unionIndex292 == 1) {
                 Object oldString292 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(292);
@@ -7667,6 +7960,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex293 = (decoder.readIndex());
         if (unionIndex293 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(293, null);
         } else {
             if (unionIndex293 == 1) {
                 Object oldString293 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(293);
@@ -7682,6 +7976,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex294 = (decoder.readIndex());
         if (unionIndex294 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(294, null);
         } else {
             if (unionIndex294 == 1) {
                 Object oldString294 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(294);
@@ -7702,6 +7997,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex295 = (decoder.readIndex());
         if (unionIndex295 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(295, null);
         } else {
             if (unionIndex295 == 1) {
                 Object oldString295 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(295);
@@ -7717,6 +8013,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex296 = (decoder.readIndex());
         if (unionIndex296 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(296, null);
         } else {
             if (unionIndex296 == 1) {
                 Object oldString296 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(296);
@@ -7737,6 +8034,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex297 = (decoder.readIndex());
         if (unionIndex297 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(297, null);
         } else {
             if (unionIndex297 == 1) {
                 Object oldString297 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(297);
@@ -7752,6 +8050,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex298 = (decoder.readIndex());
         if (unionIndex298 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(298, null);
         } else {
             if (unionIndex298 == 1) {
                 Object oldString298 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(298);
@@ -7772,6 +8071,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex299 = (decoder.readIndex());
         if (unionIndex299 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(299, null);
         } else {
             if (unionIndex299 == 1) {
                 Object oldString299 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(299);
@@ -7787,6 +8087,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex300 = (decoder.readIndex());
         if (unionIndex300 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(300, null);
         } else {
             if (unionIndex300 == 1) {
                 Object oldString300 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(300);
@@ -7807,6 +8108,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex301 = (decoder.readIndex());
         if (unionIndex301 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(301, null);
         } else {
             if (unionIndex301 == 1) {
                 Object oldString301 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(301);
@@ -7822,6 +8124,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex302 = (decoder.readIndex());
         if (unionIndex302 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(302, null);
         } else {
             if (unionIndex302 == 1) {
                 Object oldString302 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(302);
@@ -7842,6 +8145,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex303 = (decoder.readIndex());
         if (unionIndex303 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(303, null);
         } else {
             if (unionIndex303 == 1) {
                 Object oldString303 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(303);
@@ -7857,6 +8161,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex304 = (decoder.readIndex());
         if (unionIndex304 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(304, null);
         } else {
             if (unionIndex304 == 1) {
                 Object oldString304 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(304);
@@ -7877,6 +8182,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex305 = (decoder.readIndex());
         if (unionIndex305 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(305, null);
         } else {
             if (unionIndex305 == 1) {
                 Object oldString305 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(305);
@@ -7892,6 +8198,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex306 = (decoder.readIndex());
         if (unionIndex306 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(306, null);
         } else {
             if (unionIndex306 == 1) {
                 Object oldString306 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(306);
@@ -7912,6 +8219,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex307 = (decoder.readIndex());
         if (unionIndex307 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(307, null);
         } else {
             if (unionIndex307 == 1) {
                 Object oldString307 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(307);
@@ -7927,6 +8235,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex308 = (decoder.readIndex());
         if (unionIndex308 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(308, null);
         } else {
             if (unionIndex308 == 1) {
                 Object oldString308 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(308);
@@ -7947,6 +8256,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex309 = (decoder.readIndex());
         if (unionIndex309 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(309, null);
         } else {
             if (unionIndex309 == 1) {
                 Object oldString309 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(309);
@@ -7962,6 +8272,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex310 = (decoder.readIndex());
         if (unionIndex310 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(310, null);
         } else {
             if (unionIndex310 == 1) {
                 Object oldString310 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(310);
@@ -7982,6 +8293,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex311 = (decoder.readIndex());
         if (unionIndex311 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(311, null);
         } else {
             if (unionIndex311 == 1) {
                 Object oldString311 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(311);
@@ -7997,6 +8309,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex312 = (decoder.readIndex());
         if (unionIndex312 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(312, null);
         } else {
             if (unionIndex312 == 1) {
                 Object oldString312 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(312);
@@ -8017,6 +8330,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex313 = (decoder.readIndex());
         if (unionIndex313 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(313, null);
         } else {
             if (unionIndex313 == 1) {
                 Object oldString313 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(313);
@@ -8032,6 +8346,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex314 = (decoder.readIndex());
         if (unionIndex314 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(314, null);
         } else {
             if (unionIndex314 == 1) {
                 Object oldString314 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(314);
@@ -8052,6 +8367,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex315 = (decoder.readIndex());
         if (unionIndex315 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(315, null);
         } else {
             if (unionIndex315 == 1) {
                 Object oldString315 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(315);
@@ -8067,6 +8383,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex316 = (decoder.readIndex());
         if (unionIndex316 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(316, null);
         } else {
             if (unionIndex316 == 1) {
                 Object oldString316 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(316);
@@ -8087,6 +8404,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex317 = (decoder.readIndex());
         if (unionIndex317 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(317, null);
         } else {
             if (unionIndex317 == 1) {
                 Object oldString317 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(317);
@@ -8102,6 +8420,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex318 = (decoder.readIndex());
         if (unionIndex318 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(318, null);
         } else {
             if (unionIndex318 == 1) {
                 Object oldString318 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(318);
@@ -8122,6 +8441,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex319 = (decoder.readIndex());
         if (unionIndex319 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(319, null);
         } else {
             if (unionIndex319 == 1) {
                 Object oldString319 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(319);
@@ -8137,6 +8457,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex320 = (decoder.readIndex());
         if (unionIndex320 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(320, null);
         } else {
             if (unionIndex320 == 1) {
                 Object oldString320 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(320);
@@ -8157,6 +8478,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex321 = (decoder.readIndex());
         if (unionIndex321 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(321, null);
         } else {
             if (unionIndex321 == 1) {
                 Object oldString321 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(321);
@@ -8172,6 +8494,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex322 = (decoder.readIndex());
         if (unionIndex322 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(322, null);
         } else {
             if (unionIndex322 == 1) {
                 Object oldString322 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(322);
@@ -8192,6 +8515,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex323 = (decoder.readIndex());
         if (unionIndex323 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(323, null);
         } else {
             if (unionIndex323 == 1) {
                 Object oldString323 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(323);
@@ -8207,6 +8531,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex324 = (decoder.readIndex());
         if (unionIndex324 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(324, null);
         } else {
             if (unionIndex324 == 1) {
                 Object oldString324 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(324);
@@ -8227,6 +8552,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex325 = (decoder.readIndex());
         if (unionIndex325 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(325, null);
         } else {
             if (unionIndex325 == 1) {
                 Object oldString325 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(325);
@@ -8242,6 +8568,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex326 = (decoder.readIndex());
         if (unionIndex326 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(326, null);
         } else {
             if (unionIndex326 == 1) {
                 Object oldString326 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(326);
@@ -8262,6 +8589,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex327 = (decoder.readIndex());
         if (unionIndex327 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(327, null);
         } else {
             if (unionIndex327 == 1) {
                 Object oldString327 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(327);
@@ -8277,6 +8605,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex328 = (decoder.readIndex());
         if (unionIndex328 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(328, null);
         } else {
             if (unionIndex328 == 1) {
                 Object oldString328 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(328);
@@ -8297,6 +8626,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex329 = (decoder.readIndex());
         if (unionIndex329 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(329, null);
         } else {
             if (unionIndex329 == 1) {
                 Object oldString329 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(329);
@@ -8312,6 +8642,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex330 = (decoder.readIndex());
         if (unionIndex330 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(330, null);
         } else {
             if (unionIndex330 == 1) {
                 Object oldString330 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(330);
@@ -8332,6 +8663,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex331 = (decoder.readIndex());
         if (unionIndex331 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(331, null);
         } else {
             if (unionIndex331 == 1) {
                 Object oldString331 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(331);
@@ -8347,6 +8679,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex332 = (decoder.readIndex());
         if (unionIndex332 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(332, null);
         } else {
             if (unionIndex332 == 1) {
                 Object oldString332 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(332);
@@ -8367,6 +8700,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex333 = (decoder.readIndex());
         if (unionIndex333 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(333, null);
         } else {
             if (unionIndex333 == 1) {
                 Object oldString333 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(333);
@@ -8382,6 +8716,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex334 = (decoder.readIndex());
         if (unionIndex334 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(334, null);
         } else {
             if (unionIndex334 == 1) {
                 Object oldString334 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(334);
@@ -8402,6 +8737,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex335 = (decoder.readIndex());
         if (unionIndex335 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(335, null);
         } else {
             if (unionIndex335 == 1) {
                 Object oldString335 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(335);
@@ -8417,6 +8753,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex336 = (decoder.readIndex());
         if (unionIndex336 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(336, null);
         } else {
             if (unionIndex336 == 1) {
                 Object oldString336 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(336);
@@ -8437,6 +8774,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex337 = (decoder.readIndex());
         if (unionIndex337 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(337, null);
         } else {
             if (unionIndex337 == 1) {
                 Object oldString337 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(337);
@@ -8452,6 +8790,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex338 = (decoder.readIndex());
         if (unionIndex338 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(338, null);
         } else {
             if (unionIndex338 == 1) {
                 Object oldString338 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(338);
@@ -8472,6 +8811,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex339 = (decoder.readIndex());
         if (unionIndex339 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(339, null);
         } else {
             if (unionIndex339 == 1) {
                 Object oldString339 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(339);
@@ -8487,6 +8827,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex340 = (decoder.readIndex());
         if (unionIndex340 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(340, null);
         } else {
             if (unionIndex340 == 1) {
                 Object oldString340 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(340);
@@ -8507,6 +8848,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex341 = (decoder.readIndex());
         if (unionIndex341 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(341, null);
         } else {
             if (unionIndex341 == 1) {
                 Object oldString341 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(341);
@@ -8522,6 +8864,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex342 = (decoder.readIndex());
         if (unionIndex342 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(342, null);
         } else {
             if (unionIndex342 == 1) {
                 Object oldString342 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(342);
@@ -8542,6 +8885,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex343 = (decoder.readIndex());
         if (unionIndex343 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(343, null);
         } else {
             if (unionIndex343 == 1) {
                 Object oldString343 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(343);
@@ -8557,6 +8901,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex344 = (decoder.readIndex());
         if (unionIndex344 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(344, null);
         } else {
             if (unionIndex344 == 1) {
                 Object oldString344 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(344);
@@ -8577,6 +8922,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex345 = (decoder.readIndex());
         if (unionIndex345 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(345, null);
         } else {
             if (unionIndex345 == 1) {
                 Object oldString345 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(345);
@@ -8592,6 +8938,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex346 = (decoder.readIndex());
         if (unionIndex346 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(346, null);
         } else {
             if (unionIndex346 == 1) {
                 Object oldString346 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(346);
@@ -8612,6 +8959,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex347 = (decoder.readIndex());
         if (unionIndex347 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(347, null);
         } else {
             if (unionIndex347 == 1) {
                 Object oldString347 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(347);
@@ -8627,6 +8975,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex348 = (decoder.readIndex());
         if (unionIndex348 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(348, null);
         } else {
             if (unionIndex348 == 1) {
                 Object oldString348 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(348);
@@ -8647,6 +8996,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex349 = (decoder.readIndex());
         if (unionIndex349 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(349, null);
         } else {
             if (unionIndex349 == 1) {
                 Object oldString349 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(349);
@@ -8662,6 +9012,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex350 = (decoder.readIndex());
         if (unionIndex350 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(350, null);
         } else {
             if (unionIndex350 == 1) {
                 Object oldString350 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(350);
@@ -8682,6 +9033,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex351 = (decoder.readIndex());
         if (unionIndex351 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(351, null);
         } else {
             if (unionIndex351 == 1) {
                 Object oldString351 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(351);
@@ -8697,6 +9049,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex352 = (decoder.readIndex());
         if (unionIndex352 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(352, null);
         } else {
             if (unionIndex352 == 1) {
                 Object oldString352 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(352);
@@ -8717,6 +9070,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex353 = (decoder.readIndex());
         if (unionIndex353 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(353, null);
         } else {
             if (unionIndex353 == 1) {
                 Object oldString353 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(353);
@@ -8732,6 +9086,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex354 = (decoder.readIndex());
         if (unionIndex354 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(354, null);
         } else {
             if (unionIndex354 == 1) {
                 Object oldString354 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(354);
@@ -8752,6 +9107,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex355 = (decoder.readIndex());
         if (unionIndex355 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(355, null);
         } else {
             if (unionIndex355 == 1) {
                 Object oldString355 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(355);
@@ -8767,6 +9123,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex356 = (decoder.readIndex());
         if (unionIndex356 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(356, null);
         } else {
             if (unionIndex356 == 1) {
                 Object oldString356 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(356);
@@ -8787,6 +9144,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex357 = (decoder.readIndex());
         if (unionIndex357 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(357, null);
         } else {
             if (unionIndex357 == 1) {
                 Object oldString357 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(357);
@@ -8802,6 +9160,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex358 = (decoder.readIndex());
         if (unionIndex358 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(358, null);
         } else {
             if (unionIndex358 == 1) {
                 Object oldString358 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(358);
@@ -8822,6 +9181,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex359 = (decoder.readIndex());
         if (unionIndex359 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(359, null);
         } else {
             if (unionIndex359 == 1) {
                 Object oldString359 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(359);
@@ -8837,6 +9197,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex360 = (decoder.readIndex());
         if (unionIndex360 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(360, null);
         } else {
             if (unionIndex360 == 1) {
                 Object oldString360 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(360);
@@ -8857,6 +9218,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex361 = (decoder.readIndex());
         if (unionIndex361 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(361, null);
         } else {
             if (unionIndex361 == 1) {
                 Object oldString361 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(361);
@@ -8872,6 +9234,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex362 = (decoder.readIndex());
         if (unionIndex362 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(362, null);
         } else {
             if (unionIndex362 == 1) {
                 Object oldString362 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(362);
@@ -8892,6 +9255,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex363 = (decoder.readIndex());
         if (unionIndex363 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(363, null);
         } else {
             if (unionIndex363 == 1) {
                 Object oldString363 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(363);
@@ -8907,6 +9271,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex364 = (decoder.readIndex());
         if (unionIndex364 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(364, null);
         } else {
             if (unionIndex364 == 1) {
                 Object oldString364 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(364);
@@ -8927,6 +9292,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex365 = (decoder.readIndex());
         if (unionIndex365 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(365, null);
         } else {
             if (unionIndex365 == 1) {
                 Object oldString365 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(365);
@@ -8942,6 +9308,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex366 = (decoder.readIndex());
         if (unionIndex366 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(366, null);
         } else {
             if (unionIndex366 == 1) {
                 Object oldString366 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(366);
@@ -8962,6 +9329,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex367 = (decoder.readIndex());
         if (unionIndex367 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(367, null);
         } else {
             if (unionIndex367 == 1) {
                 Object oldString367 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(367);
@@ -8977,6 +9345,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex368 = (decoder.readIndex());
         if (unionIndex368 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(368, null);
         } else {
             if (unionIndex368 == 1) {
                 Object oldString368 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(368);
@@ -8997,6 +9366,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex369 = (decoder.readIndex());
         if (unionIndex369 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(369, null);
         } else {
             if (unionIndex369 == 1) {
                 Object oldString369 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(369);
@@ -9012,6 +9382,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex370 = (decoder.readIndex());
         if (unionIndex370 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(370, null);
         } else {
             if (unionIndex370 == 1) {
                 Object oldString370 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(370);
@@ -9032,6 +9403,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex371 = (decoder.readIndex());
         if (unionIndex371 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(371, null);
         } else {
             if (unionIndex371 == 1) {
                 Object oldString371 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(371);
@@ -9047,6 +9419,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex372 = (decoder.readIndex());
         if (unionIndex372 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(372, null);
         } else {
             if (unionIndex372 == 1) {
                 Object oldString372 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(372);
@@ -9067,6 +9440,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex373 = (decoder.readIndex());
         if (unionIndex373 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(373, null);
         } else {
             if (unionIndex373 == 1) {
                 Object oldString373 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(373);
@@ -9082,6 +9456,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex374 = (decoder.readIndex());
         if (unionIndex374 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(374, null);
         } else {
             if (unionIndex374 == 1) {
                 Object oldString374 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(374);
@@ -9102,6 +9477,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex375 = (decoder.readIndex());
         if (unionIndex375 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(375, null);
         } else {
             if (unionIndex375 == 1) {
                 Object oldString375 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(375);
@@ -9117,6 +9493,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex376 = (decoder.readIndex());
         if (unionIndex376 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(376, null);
         } else {
             if (unionIndex376 == 1) {
                 Object oldString376 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(376);
@@ -9137,6 +9514,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex377 = (decoder.readIndex());
         if (unionIndex377 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(377, null);
         } else {
             if (unionIndex377 == 1) {
                 Object oldString377 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(377);
@@ -9152,6 +9530,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex378 = (decoder.readIndex());
         if (unionIndex378 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(378, null);
         } else {
             if (unionIndex378 == 1) {
                 Object oldString378 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(378);
@@ -9172,6 +9551,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex379 = (decoder.readIndex());
         if (unionIndex379 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(379, null);
         } else {
             if (unionIndex379 == 1) {
                 Object oldString379 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(379);
@@ -9187,6 +9567,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex380 = (decoder.readIndex());
         if (unionIndex380 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(380, null);
         } else {
             if (unionIndex380 == 1) {
                 Object oldString380 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(380);
@@ -9207,6 +9588,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex381 = (decoder.readIndex());
         if (unionIndex381 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(381, null);
         } else {
             if (unionIndex381 == 1) {
                 Object oldString381 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(381);
@@ -9222,6 +9604,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex382 = (decoder.readIndex());
         if (unionIndex382 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(382, null);
         } else {
             if (unionIndex382 == 1) {
                 Object oldString382 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(382);
@@ -9242,6 +9625,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex383 = (decoder.readIndex());
         if (unionIndex383 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(383, null);
         } else {
             if (unionIndex383 == 1) {
                 Object oldString383 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(383);
@@ -9257,6 +9641,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex384 = (decoder.readIndex());
         if (unionIndex384 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(384, null);
         } else {
             if (unionIndex384 == 1) {
                 Object oldString384 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(384);
@@ -9277,6 +9662,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex385 = (decoder.readIndex());
         if (unionIndex385 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(385, null);
         } else {
             if (unionIndex385 == 1) {
                 Object oldString385 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(385);
@@ -9292,6 +9678,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex386 = (decoder.readIndex());
         if (unionIndex386 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(386, null);
         } else {
             if (unionIndex386 == 1) {
                 Object oldString386 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(386);
@@ -9312,6 +9699,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex387 = (decoder.readIndex());
         if (unionIndex387 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(387, null);
         } else {
             if (unionIndex387 == 1) {
                 Object oldString387 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(387);
@@ -9327,6 +9715,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex388 = (decoder.readIndex());
         if (unionIndex388 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(388, null);
         } else {
             if (unionIndex388 == 1) {
                 Object oldString388 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(388);
@@ -9347,6 +9736,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex389 = (decoder.readIndex());
         if (unionIndex389 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(389, null);
         } else {
             if (unionIndex389 == 1) {
                 Object oldString389 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(389);
@@ -9362,6 +9752,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex390 = (decoder.readIndex());
         if (unionIndex390 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(390, null);
         } else {
             if (unionIndex390 == 1) {
                 Object oldString390 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(390);
@@ -9382,6 +9773,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex391 = (decoder.readIndex());
         if (unionIndex391 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(391, null);
         } else {
             if (unionIndex391 == 1) {
                 Object oldString391 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(391);
@@ -9397,6 +9789,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex392 = (decoder.readIndex());
         if (unionIndex392 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(392, null);
         } else {
             if (unionIndex392 == 1) {
                 Object oldString392 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(392);
@@ -9417,6 +9810,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex393 = (decoder.readIndex());
         if (unionIndex393 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(393, null);
         } else {
             if (unionIndex393 == 1) {
                 Object oldString393 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(393);
@@ -9432,6 +9826,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex394 = (decoder.readIndex());
         if (unionIndex394 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(394, null);
         } else {
             if (unionIndex394 == 1) {
                 Object oldString394 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(394);
@@ -9452,6 +9847,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex395 = (decoder.readIndex());
         if (unionIndex395 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(395, null);
         } else {
             if (unionIndex395 == 1) {
                 Object oldString395 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(395);
@@ -9467,6 +9863,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex396 = (decoder.readIndex());
         if (unionIndex396 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(396, null);
         } else {
             if (unionIndex396 == 1) {
                 Object oldString396 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(396);
@@ -9487,6 +9884,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex397 = (decoder.readIndex());
         if (unionIndex397 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(397, null);
         } else {
             if (unionIndex397 == 1) {
                 Object oldString397 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(397);
@@ -9502,6 +9900,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex398 = (decoder.readIndex());
         if (unionIndex398 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(398, null);
         } else {
             if (unionIndex398 == 1) {
                 Object oldString398 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(398);
@@ -9522,6 +9921,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex399 = (decoder.readIndex());
         if (unionIndex399 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(399, null);
         } else {
             if (unionIndex399 == 1) {
                 Object oldString399 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(399);
@@ -9537,6 +9937,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex400 = (decoder.readIndex());
         if (unionIndex400 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(400, null);
         } else {
             if (unionIndex400 == 1) {
                 Object oldString400 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(400);
@@ -9557,6 +9958,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex401 = (decoder.readIndex());
         if (unionIndex401 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(401, null);
         } else {
             if (unionIndex401 == 1) {
                 Object oldString401 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(401);
@@ -9572,6 +9974,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex402 = (decoder.readIndex());
         if (unionIndex402 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(402, null);
         } else {
             if (unionIndex402 == 1) {
                 Object oldString402 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(402);
@@ -9592,6 +9995,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex403 = (decoder.readIndex());
         if (unionIndex403 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(403, null);
         } else {
             if (unionIndex403 == 1) {
                 Object oldString403 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(403);
@@ -9607,6 +10011,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex404 = (decoder.readIndex());
         if (unionIndex404 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(404, null);
         } else {
             if (unionIndex404 == 1) {
                 Object oldString404 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(404);
@@ -9627,6 +10032,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex405 = (decoder.readIndex());
         if (unionIndex405 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(405, null);
         } else {
             if (unionIndex405 == 1) {
                 Object oldString405 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(405);
@@ -9642,6 +10048,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex406 = (decoder.readIndex());
         if (unionIndex406 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(406, null);
         } else {
             if (unionIndex406 == 1) {
                 Object oldString406 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(406);
@@ -9662,6 +10069,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex407 = (decoder.readIndex());
         if (unionIndex407 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(407, null);
         } else {
             if (unionIndex407 == 1) {
                 Object oldString407 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(407);
@@ -9677,6 +10085,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex408 = (decoder.readIndex());
         if (unionIndex408 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(408, null);
         } else {
             if (unionIndex408 == 1) {
                 Object oldString408 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(408);
@@ -9697,6 +10106,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex409 = (decoder.readIndex());
         if (unionIndex409 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(409, null);
         } else {
             if (unionIndex409 == 1) {
                 Object oldString409 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(409);
@@ -9712,6 +10122,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex410 = (decoder.readIndex());
         if (unionIndex410 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(410, null);
         } else {
             if (unionIndex410 == 1) {
                 Object oldString410 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(410);
@@ -9732,6 +10143,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex411 = (decoder.readIndex());
         if (unionIndex411 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(411, null);
         } else {
             if (unionIndex411 == 1) {
                 Object oldString411 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(411);
@@ -9747,6 +10159,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex412 = (decoder.readIndex());
         if (unionIndex412 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(412, null);
         } else {
             if (unionIndex412 == 1) {
                 Object oldString412 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(412);
@@ -9767,6 +10180,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex413 = (decoder.readIndex());
         if (unionIndex413 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(413, null);
         } else {
             if (unionIndex413 == 1) {
                 Object oldString413 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(413);
@@ -9782,6 +10196,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex414 = (decoder.readIndex());
         if (unionIndex414 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(414, null);
         } else {
             if (unionIndex414 == 1) {
                 Object oldString414 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(414);
@@ -9802,6 +10217,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex415 = (decoder.readIndex());
         if (unionIndex415 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(415, null);
         } else {
             if (unionIndex415 == 1) {
                 Object oldString415 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(415);
@@ -9817,6 +10233,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex416 = (decoder.readIndex());
         if (unionIndex416 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(416, null);
         } else {
             if (unionIndex416 == 1) {
                 Object oldString416 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(416);
@@ -9837,6 +10254,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex417 = (decoder.readIndex());
         if (unionIndex417 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(417, null);
         } else {
             if (unionIndex417 == 1) {
                 Object oldString417 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(417);
@@ -9852,6 +10270,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex418 = (decoder.readIndex());
         if (unionIndex418 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(418, null);
         } else {
             if (unionIndex418 == 1) {
                 Object oldString418 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(418);
@@ -9872,6 +10291,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex419 = (decoder.readIndex());
         if (unionIndex419 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(419, null);
         } else {
             if (unionIndex419 == 1) {
                 Object oldString419 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(419);
@@ -9887,6 +10307,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex420 = (decoder.readIndex());
         if (unionIndex420 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(420, null);
         } else {
             if (unionIndex420 == 1) {
                 Object oldString420 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(420);
@@ -9907,6 +10328,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex421 = (decoder.readIndex());
         if (unionIndex421 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(421, null);
         } else {
             if (unionIndex421 == 1) {
                 Object oldString421 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(421);
@@ -9922,6 +10344,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex422 = (decoder.readIndex());
         if (unionIndex422 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(422, null);
         } else {
             if (unionIndex422 == 1) {
                 Object oldString422 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(422);
@@ -9942,6 +10365,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex423 = (decoder.readIndex());
         if (unionIndex423 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(423, null);
         } else {
             if (unionIndex423 == 1) {
                 Object oldString423 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(423);
@@ -9957,6 +10381,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex424 = (decoder.readIndex());
         if (unionIndex424 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(424, null);
         } else {
             if (unionIndex424 == 1) {
                 Object oldString424 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(424);
@@ -9977,6 +10402,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex425 = (decoder.readIndex());
         if (unionIndex425 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(425, null);
         } else {
             if (unionIndex425 == 1) {
                 Object oldString425 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(425);
@@ -9992,6 +10418,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex426 = (decoder.readIndex());
         if (unionIndex426 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(426, null);
         } else {
             if (unionIndex426 == 1) {
                 Object oldString426 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(426);
@@ -10012,6 +10439,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex427 = (decoder.readIndex());
         if (unionIndex427 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(427, null);
         } else {
             if (unionIndex427 == 1) {
                 Object oldString427 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(427);
@@ -10027,6 +10455,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex428 = (decoder.readIndex());
         if (unionIndex428 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(428, null);
         } else {
             if (unionIndex428 == 1) {
                 Object oldString428 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(428);
@@ -10047,6 +10476,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex429 = (decoder.readIndex());
         if (unionIndex429 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(429, null);
         } else {
             if (unionIndex429 == 1) {
                 Object oldString429 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(429);
@@ -10062,6 +10492,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex430 = (decoder.readIndex());
         if (unionIndex430 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(430, null);
         } else {
             if (unionIndex430 == 1) {
                 Object oldString430 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(430);
@@ -10082,6 +10513,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex431 = (decoder.readIndex());
         if (unionIndex431 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(431, null);
         } else {
             if (unionIndex431 == 1) {
                 Object oldString431 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(431);
@@ -10097,6 +10529,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex432 = (decoder.readIndex());
         if (unionIndex432 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(432, null);
         } else {
             if (unionIndex432 == 1) {
                 Object oldString432 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(432);
@@ -10117,6 +10550,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex433 = (decoder.readIndex());
         if (unionIndex433 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(433, null);
         } else {
             if (unionIndex433 == 1) {
                 Object oldString433 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(433);
@@ -10132,6 +10566,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex434 = (decoder.readIndex());
         if (unionIndex434 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(434, null);
         } else {
             if (unionIndex434 == 1) {
                 Object oldString434 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(434);
@@ -10152,6 +10587,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex435 = (decoder.readIndex());
         if (unionIndex435 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(435, null);
         } else {
             if (unionIndex435 == 1) {
                 Object oldString435 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(435);
@@ -10167,6 +10603,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex436 = (decoder.readIndex());
         if (unionIndex436 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(436, null);
         } else {
             if (unionIndex436 == 1) {
                 Object oldString436 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(436);
@@ -10187,6 +10624,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex437 = (decoder.readIndex());
         if (unionIndex437 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(437, null);
         } else {
             if (unionIndex437 == 1) {
                 Object oldString437 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(437);
@@ -10202,6 +10640,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex438 = (decoder.readIndex());
         if (unionIndex438 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(438, null);
         } else {
             if (unionIndex438 == 1) {
                 Object oldString438 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(438);
@@ -10222,6 +10661,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex439 = (decoder.readIndex());
         if (unionIndex439 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(439, null);
         } else {
             if (unionIndex439 == 1) {
                 Object oldString439 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(439);
@@ -10237,6 +10677,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex440 = (decoder.readIndex());
         if (unionIndex440 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(440, null);
         } else {
             if (unionIndex440 == 1) {
                 Object oldString440 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(440);
@@ -10257,6 +10698,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex441 = (decoder.readIndex());
         if (unionIndex441 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(441, null);
         } else {
             if (unionIndex441 == 1) {
                 Object oldString441 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(441);
@@ -10272,6 +10714,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex442 = (decoder.readIndex());
         if (unionIndex442 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(442, null);
         } else {
             if (unionIndex442 == 1) {
                 Object oldString442 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(442);
@@ -10292,6 +10735,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex443 = (decoder.readIndex());
         if (unionIndex443 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(443, null);
         } else {
             if (unionIndex443 == 1) {
                 Object oldString443 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(443);
@@ -10307,6 +10751,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex444 = (decoder.readIndex());
         if (unionIndex444 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(444, null);
         } else {
             if (unionIndex444 == 1) {
                 Object oldString444 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(444);
@@ -10327,6 +10772,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex445 = (decoder.readIndex());
         if (unionIndex445 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(445, null);
         } else {
             if (unionIndex445 == 1) {
                 Object oldString445 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(445);
@@ -10342,6 +10788,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex446 = (decoder.readIndex());
         if (unionIndex446 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(446, null);
         } else {
             if (unionIndex446 == 1) {
                 Object oldString446 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(446);
@@ -10362,6 +10809,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex447 = (decoder.readIndex());
         if (unionIndex447 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(447, null);
         } else {
             if (unionIndex447 == 1) {
                 Object oldString447 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(447);
@@ -10377,6 +10825,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex448 = (decoder.readIndex());
         if (unionIndex448 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(448, null);
         } else {
             if (unionIndex448 == 1) {
                 Object oldString448 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(448);
@@ -10397,6 +10846,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex449 = (decoder.readIndex());
         if (unionIndex449 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(449, null);
         } else {
             if (unionIndex449 == 1) {
                 Object oldString449 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(449);
@@ -10412,6 +10862,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex450 = (decoder.readIndex());
         if (unionIndex450 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(450, null);
         } else {
             if (unionIndex450 == 1) {
                 Object oldString450 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(450);
@@ -10432,6 +10883,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex451 = (decoder.readIndex());
         if (unionIndex451 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(451, null);
         } else {
             if (unionIndex451 == 1) {
                 Object oldString451 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(451);
@@ -10447,6 +10899,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex452 = (decoder.readIndex());
         if (unionIndex452 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(452, null);
         } else {
             if (unionIndex452 == 1) {
                 Object oldString452 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(452);
@@ -10467,6 +10920,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex453 = (decoder.readIndex());
         if (unionIndex453 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(453, null);
         } else {
             if (unionIndex453 == 1) {
                 Object oldString453 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(453);
@@ -10482,6 +10936,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex454 = (decoder.readIndex());
         if (unionIndex454 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(454, null);
         } else {
             if (unionIndex454 == 1) {
                 Object oldString454 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(454);
@@ -10502,6 +10957,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex455 = (decoder.readIndex());
         if (unionIndex455 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(455, null);
         } else {
             if (unionIndex455 == 1) {
                 Object oldString455 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(455);
@@ -10517,6 +10973,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex456 = (decoder.readIndex());
         if (unionIndex456 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(456, null);
         } else {
             if (unionIndex456 == 1) {
                 Object oldString456 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(456);
@@ -10537,6 +10994,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex457 = (decoder.readIndex());
         if (unionIndex457 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(457, null);
         } else {
             if (unionIndex457 == 1) {
                 Object oldString457 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(457);
@@ -10552,6 +11010,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex458 = (decoder.readIndex());
         if (unionIndex458 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(458, null);
         } else {
             if (unionIndex458 == 1) {
                 Object oldString458 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(458);
@@ -10572,6 +11031,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex459 = (decoder.readIndex());
         if (unionIndex459 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(459, null);
         } else {
             if (unionIndex459 == 1) {
                 Object oldString459 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(459);
@@ -10587,6 +11047,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex460 = (decoder.readIndex());
         if (unionIndex460 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(460, null);
         } else {
             if (unionIndex460 == 1) {
                 Object oldString460 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(460);
@@ -10607,6 +11068,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex461 = (decoder.readIndex());
         if (unionIndex461 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(461, null);
         } else {
             if (unionIndex461 == 1) {
                 Object oldString461 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(461);
@@ -10622,6 +11084,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex462 = (decoder.readIndex());
         if (unionIndex462 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(462, null);
         } else {
             if (unionIndex462 == 1) {
                 Object oldString462 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(462);
@@ -10642,6 +11105,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex463 = (decoder.readIndex());
         if (unionIndex463 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(463, null);
         } else {
             if (unionIndex463 == 1) {
                 Object oldString463 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(463);
@@ -10657,6 +11121,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex464 = (decoder.readIndex());
         if (unionIndex464 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(464, null);
         } else {
             if (unionIndex464 == 1) {
                 Object oldString464 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(464);
@@ -10677,6 +11142,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex465 = (decoder.readIndex());
         if (unionIndex465 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(465, null);
         } else {
             if (unionIndex465 == 1) {
                 Object oldString465 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(465);
@@ -10692,6 +11158,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex466 = (decoder.readIndex());
         if (unionIndex466 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(466, null);
         } else {
             if (unionIndex466 == 1) {
                 Object oldString466 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(466);
@@ -10712,6 +11179,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex467 = (decoder.readIndex());
         if (unionIndex467 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(467, null);
         } else {
             if (unionIndex467 == 1) {
                 Object oldString467 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(467);
@@ -10727,6 +11195,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex468 = (decoder.readIndex());
         if (unionIndex468 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(468, null);
         } else {
             if (unionIndex468 == 1) {
                 Object oldString468 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(468);
@@ -10747,6 +11216,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex469 = (decoder.readIndex());
         if (unionIndex469 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(469, null);
         } else {
             if (unionIndex469 == 1) {
                 Object oldString469 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(469);
@@ -10762,6 +11232,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex470 = (decoder.readIndex());
         if (unionIndex470 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(470, null);
         } else {
             if (unionIndex470 == 1) {
                 Object oldString470 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(470);
@@ -10782,6 +11253,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex471 = (decoder.readIndex());
         if (unionIndex471 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(471, null);
         } else {
             if (unionIndex471 == 1) {
                 Object oldString471 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(471);
@@ -10797,6 +11269,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex472 = (decoder.readIndex());
         if (unionIndex472 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(472, null);
         } else {
             if (unionIndex472 == 1) {
                 Object oldString472 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(472);
@@ -10817,6 +11290,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex473 = (decoder.readIndex());
         if (unionIndex473 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(473, null);
         } else {
             if (unionIndex473 == 1) {
                 Object oldString473 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(473);
@@ -10832,6 +11306,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex474 = (decoder.readIndex());
         if (unionIndex474 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(474, null);
         } else {
             if (unionIndex474 == 1) {
                 Object oldString474 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(474);
@@ -10852,6 +11327,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex475 = (decoder.readIndex());
         if (unionIndex475 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(475, null);
         } else {
             if (unionIndex475 == 1) {
                 Object oldString475 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(475);
@@ -10867,6 +11343,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex476 = (decoder.readIndex());
         if (unionIndex476 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(476, null);
         } else {
             if (unionIndex476 == 1) {
                 Object oldString476 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(476);
@@ -10887,6 +11364,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex477 = (decoder.readIndex());
         if (unionIndex477 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(477, null);
         } else {
             if (unionIndex477 == 1) {
                 Object oldString477 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(477);
@@ -10902,6 +11380,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex478 = (decoder.readIndex());
         if (unionIndex478 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(478, null);
         } else {
             if (unionIndex478 == 1) {
                 Object oldString478 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(478);
@@ -10922,6 +11401,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex479 = (decoder.readIndex());
         if (unionIndex479 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(479, null);
         } else {
             if (unionIndex479 == 1) {
                 Object oldString479 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(479);
@@ -10937,6 +11417,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex480 = (decoder.readIndex());
         if (unionIndex480 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(480, null);
         } else {
             if (unionIndex480 == 1) {
                 Object oldString480 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(480);
@@ -10957,6 +11438,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex481 = (decoder.readIndex());
         if (unionIndex481 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(481, null);
         } else {
             if (unionIndex481 == 1) {
                 Object oldString481 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(481);
@@ -10972,6 +11454,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex482 = (decoder.readIndex());
         if (unionIndex482 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(482, null);
         } else {
             if (unionIndex482 == 1) {
                 Object oldString482 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(482);
@@ -10992,6 +11475,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex483 = (decoder.readIndex());
         if (unionIndex483 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(483, null);
         } else {
             if (unionIndex483 == 1) {
                 Object oldString483 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(483);
@@ -11007,6 +11491,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex484 = (decoder.readIndex());
         if (unionIndex484 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(484, null);
         } else {
             if (unionIndex484 == 1) {
                 Object oldString484 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(484);
@@ -11027,6 +11512,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex485 = (decoder.readIndex());
         if (unionIndex485 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(485, null);
         } else {
             if (unionIndex485 == 1) {
                 Object oldString485 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(485);
@@ -11042,6 +11528,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex486 = (decoder.readIndex());
         if (unionIndex486 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(486, null);
         } else {
             if (unionIndex486 == 1) {
                 Object oldString486 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(486);
@@ -11062,6 +11549,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex487 = (decoder.readIndex());
         if (unionIndex487 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(487, null);
         } else {
             if (unionIndex487 == 1) {
                 Object oldString487 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(487);
@@ -11077,6 +11565,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex488 = (decoder.readIndex());
         if (unionIndex488 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(488, null);
         } else {
             if (unionIndex488 == 1) {
                 Object oldString488 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(488);
@@ -11097,6 +11586,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex489 = (decoder.readIndex());
         if (unionIndex489 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(489, null);
         } else {
             if (unionIndex489 == 1) {
                 Object oldString489 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(489);
@@ -11112,6 +11602,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex490 = (decoder.readIndex());
         if (unionIndex490 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(490, null);
         } else {
             if (unionIndex490 == 1) {
                 Object oldString490 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(490);
@@ -11132,6 +11623,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex491 = (decoder.readIndex());
         if (unionIndex491 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(491, null);
         } else {
             if (unionIndex491 == 1) {
                 Object oldString491 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(491);
@@ -11147,6 +11639,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex492 = (decoder.readIndex());
         if (unionIndex492 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(492, null);
         } else {
             if (unionIndex492 == 1) {
                 Object oldString492 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(492);
@@ -11167,6 +11660,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex493 = (decoder.readIndex());
         if (unionIndex493 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(493, null);
         } else {
             if (unionIndex493 == 1) {
                 Object oldString493 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(493);
@@ -11182,6 +11676,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex494 = (decoder.readIndex());
         if (unionIndex494 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(494, null);
         } else {
             if (unionIndex494 == 1) {
                 Object oldString494 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(494);
@@ -11202,6 +11697,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex495 = (decoder.readIndex());
         if (unionIndex495 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(495, null);
         } else {
             if (unionIndex495 == 1) {
                 Object oldString495 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(495);
@@ -11217,6 +11713,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex496 = (decoder.readIndex());
         if (unionIndex496 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(496, null);
         } else {
             if (unionIndex496 == 1) {
                 Object oldString496 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(496);
@@ -11237,6 +11734,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex497 = (decoder.readIndex());
         if (unionIndex497 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(497, null);
         } else {
             if (unionIndex497 == 1) {
                 Object oldString497 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(497);
@@ -11252,6 +11750,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex498 = (decoder.readIndex());
         if (unionIndex498 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(498, null);
         } else {
             if (unionIndex498 == 1) {
                 Object oldString498 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(498);
@@ -11272,6 +11771,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex499 = (decoder.readIndex());
         if (unionIndex499 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(499, null);
         } else {
             if (unionIndex499 == 1) {
                 Object oldString499 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(499);
@@ -11287,6 +11787,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex500 = (decoder.readIndex());
         if (unionIndex500 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(500, null);
         } else {
             if (unionIndex500 == 1) {
                 Object oldString500 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(500);
@@ -11307,6 +11808,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex501 = (decoder.readIndex());
         if (unionIndex501 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(501, null);
         } else {
             if (unionIndex501 == 1) {
                 Object oldString501 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(501);
@@ -11322,6 +11824,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex502 = (decoder.readIndex());
         if (unionIndex502 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(502, null);
         } else {
             if (unionIndex502 == 1) {
                 Object oldString502 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(502);
@@ -11342,6 +11845,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex503 = (decoder.readIndex());
         if (unionIndex503 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(503, null);
         } else {
             if (unionIndex503 == 1) {
                 Object oldString503 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(503);
@@ -11357,6 +11861,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex504 = (decoder.readIndex());
         if (unionIndex504 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(504, null);
         } else {
             if (unionIndex504 == 1) {
                 Object oldString504 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(504);
@@ -11377,6 +11882,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex505 = (decoder.readIndex());
         if (unionIndex505 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(505, null);
         } else {
             if (unionIndex505 == 1) {
                 Object oldString505 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(505);
@@ -11392,6 +11898,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex506 = (decoder.readIndex());
         if (unionIndex506 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(506, null);
         } else {
             if (unionIndex506 == 1) {
                 Object oldString506 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(506);
@@ -11412,6 +11919,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex507 = (decoder.readIndex());
         if (unionIndex507 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(507, null);
         } else {
             if (unionIndex507 == 1) {
                 Object oldString507 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(507);
@@ -11427,6 +11935,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex508 = (decoder.readIndex());
         if (unionIndex508 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(508, null);
         } else {
             if (unionIndex508 == 1) {
                 Object oldString508 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(508);
@@ -11447,6 +11956,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex509 = (decoder.readIndex());
         if (unionIndex509 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(509, null);
         } else {
             if (unionIndex509 == 1) {
                 Object oldString509 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(509);
@@ -11462,6 +11972,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex510 = (decoder.readIndex());
         if (unionIndex510 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(510, null);
         } else {
             if (unionIndex510 == 1) {
                 Object oldString510 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(510);
@@ -11482,6 +11993,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex511 = (decoder.readIndex());
         if (unionIndex511 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(511, null);
         } else {
             if (unionIndex511 == 1) {
                 Object oldString511 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(511);
@@ -11497,6 +12009,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex512 = (decoder.readIndex());
         if (unionIndex512 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(512, null);
         } else {
             if (unionIndex512 == 1) {
                 Object oldString512 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(512);
@@ -11517,6 +12030,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex513 = (decoder.readIndex());
         if (unionIndex513 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(513, null);
         } else {
             if (unionIndex513 == 1) {
                 Object oldString513 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(513);
@@ -11532,6 +12046,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex514 = (decoder.readIndex());
         if (unionIndex514 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(514, null);
         } else {
             if (unionIndex514 == 1) {
                 Object oldString514 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(514);
@@ -11552,6 +12067,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex515 = (decoder.readIndex());
         if (unionIndex515 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(515, null);
         } else {
             if (unionIndex515 == 1) {
                 Object oldString515 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(515);
@@ -11567,6 +12083,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex516 = (decoder.readIndex());
         if (unionIndex516 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(516, null);
         } else {
             if (unionIndex516 == 1) {
                 Object oldString516 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(516);
@@ -11587,6 +12104,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex517 = (decoder.readIndex());
         if (unionIndex517 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(517, null);
         } else {
             if (unionIndex517 == 1) {
                 Object oldString517 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(517);
@@ -11602,6 +12120,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex518 = (decoder.readIndex());
         if (unionIndex518 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(518, null);
         } else {
             if (unionIndex518 == 1) {
                 Object oldString518 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(518);
@@ -11622,6 +12141,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex519 = (decoder.readIndex());
         if (unionIndex519 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(519, null);
         } else {
             if (unionIndex519 == 1) {
                 Object oldString519 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(519);
@@ -11637,6 +12157,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex520 = (decoder.readIndex());
         if (unionIndex520 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(520, null);
         } else {
             if (unionIndex520 == 1) {
                 Object oldString520 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(520);
@@ -11657,6 +12178,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex521 = (decoder.readIndex());
         if (unionIndex521 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(521, null);
         } else {
             if (unionIndex521 == 1) {
                 Object oldString521 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(521);
@@ -11672,6 +12194,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex522 = (decoder.readIndex());
         if (unionIndex522 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(522, null);
         } else {
             if (unionIndex522 == 1) {
                 Object oldString522 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(522);
@@ -11692,6 +12215,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex523 = (decoder.readIndex());
         if (unionIndex523 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(523, null);
         } else {
             if (unionIndex523 == 1) {
                 Object oldString523 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(523);
@@ -11707,6 +12231,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex524 = (decoder.readIndex());
         if (unionIndex524 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(524, null);
         } else {
             if (unionIndex524 == 1) {
                 Object oldString524 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(524);
@@ -11727,6 +12252,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex525 = (decoder.readIndex());
         if (unionIndex525 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(525, null);
         } else {
             if (unionIndex525 == 1) {
                 Object oldString525 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(525);
@@ -11742,6 +12268,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex526 = (decoder.readIndex());
         if (unionIndex526 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(526, null);
         } else {
             if (unionIndex526 == 1) {
                 Object oldString526 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(526);
@@ -11762,6 +12289,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex527 = (decoder.readIndex());
         if (unionIndex527 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(527, null);
         } else {
             if (unionIndex527 == 1) {
                 Object oldString527 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(527);
@@ -11777,6 +12305,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex528 = (decoder.readIndex());
         if (unionIndex528 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(528, null);
         } else {
             if (unionIndex528 == 1) {
                 Object oldString528 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(528);
@@ -11797,6 +12326,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex529 = (decoder.readIndex());
         if (unionIndex529 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(529, null);
         } else {
             if (unionIndex529 == 1) {
                 Object oldString529 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(529);
@@ -11812,6 +12342,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex530 = (decoder.readIndex());
         if (unionIndex530 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(530, null);
         } else {
             if (unionIndex530 == 1) {
                 Object oldString530 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(530);
@@ -11832,6 +12363,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex531 = (decoder.readIndex());
         if (unionIndex531 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(531, null);
         } else {
             if (unionIndex531 == 1) {
                 Object oldString531 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(531);
@@ -11847,6 +12379,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex532 = (decoder.readIndex());
         if (unionIndex532 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(532, null);
         } else {
             if (unionIndex532 == 1) {
                 Object oldString532 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(532);
@@ -11867,6 +12400,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex533 = (decoder.readIndex());
         if (unionIndex533 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(533, null);
         } else {
             if (unionIndex533 == 1) {
                 Object oldString533 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(533);
@@ -11882,6 +12416,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex534 = (decoder.readIndex());
         if (unionIndex534 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(534, null);
         } else {
             if (unionIndex534 == 1) {
                 Object oldString534 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(534);
@@ -11902,6 +12437,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex535 = (decoder.readIndex());
         if (unionIndex535 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(535, null);
         } else {
             if (unionIndex535 == 1) {
                 Object oldString535 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(535);
@@ -11917,6 +12453,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex536 = (decoder.readIndex());
         if (unionIndex536 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(536, null);
         } else {
             if (unionIndex536 == 1) {
                 Object oldString536 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(536);
@@ -11937,6 +12474,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex537 = (decoder.readIndex());
         if (unionIndex537 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(537, null);
         } else {
             if (unionIndex537 == 1) {
                 Object oldString537 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(537);
@@ -11952,6 +12490,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex538 = (decoder.readIndex());
         if (unionIndex538 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(538, null);
         } else {
             if (unionIndex538 == 1) {
                 Object oldString538 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(538);
@@ -11972,6 +12511,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex539 = (decoder.readIndex());
         if (unionIndex539 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(539, null);
         } else {
             if (unionIndex539 == 1) {
                 Object oldString539 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(539);
@@ -11987,6 +12527,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex540 = (decoder.readIndex());
         if (unionIndex540 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(540, null);
         } else {
             if (unionIndex540 == 1) {
                 Object oldString540 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(540);
@@ -12007,6 +12548,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex541 = (decoder.readIndex());
         if (unionIndex541 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(541, null);
         } else {
             if (unionIndex541 == 1) {
                 Object oldString541 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(541);
@@ -12022,6 +12564,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex542 = (decoder.readIndex());
         if (unionIndex542 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(542, null);
         } else {
             if (unionIndex542 == 1) {
                 Object oldString542 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(542);
@@ -12042,6 +12585,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex543 = (decoder.readIndex());
         if (unionIndex543 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(543, null);
         } else {
             if (unionIndex543 == 1) {
                 Object oldString543 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(543);
@@ -12057,6 +12601,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex544 = (decoder.readIndex());
         if (unionIndex544 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(544, null);
         } else {
             if (unionIndex544 == 1) {
                 Object oldString544 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(544);
@@ -12077,6 +12622,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex545 = (decoder.readIndex());
         if (unionIndex545 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(545, null);
         } else {
             if (unionIndex545 == 1) {
                 Object oldString545 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(545);
@@ -12092,6 +12638,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex546 = (decoder.readIndex());
         if (unionIndex546 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(546, null);
         } else {
             if (unionIndex546 == 1) {
                 Object oldString546 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(546);
@@ -12112,6 +12659,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex547 = (decoder.readIndex());
         if (unionIndex547 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(547, null);
         } else {
             if (unionIndex547 == 1) {
                 Object oldString547 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(547);
@@ -12127,6 +12675,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex548 = (decoder.readIndex());
         if (unionIndex548 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(548, null);
         } else {
             if (unionIndex548 == 1) {
                 Object oldString548 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(548);
@@ -12147,6 +12696,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex549 = (decoder.readIndex());
         if (unionIndex549 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(549, null);
         } else {
             if (unionIndex549 == 1) {
                 Object oldString549 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(549);
@@ -12162,6 +12712,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex550 = (decoder.readIndex());
         if (unionIndex550 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(550, null);
         } else {
             if (unionIndex550 == 1) {
                 Object oldString550 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(550);
@@ -12182,6 +12733,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex551 = (decoder.readIndex());
         if (unionIndex551 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(551, null);
         } else {
             if (unionIndex551 == 1) {
                 Object oldString551 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(551);
@@ -12197,6 +12749,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex552 = (decoder.readIndex());
         if (unionIndex552 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(552, null);
         } else {
             if (unionIndex552 == 1) {
                 Object oldString552 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(552);
@@ -12217,6 +12770,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex553 = (decoder.readIndex());
         if (unionIndex553 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(553, null);
         } else {
             if (unionIndex553 == 1) {
                 Object oldString553 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(553);
@@ -12232,6 +12786,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex554 = (decoder.readIndex());
         if (unionIndex554 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(554, null);
         } else {
             if (unionIndex554 == 1) {
                 Object oldString554 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(554);
@@ -12252,6 +12807,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex555 = (decoder.readIndex());
         if (unionIndex555 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(555, null);
         } else {
             if (unionIndex555 == 1) {
                 Object oldString555 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(555);
@@ -12267,6 +12823,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex556 = (decoder.readIndex());
         if (unionIndex556 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(556, null);
         } else {
             if (unionIndex556 == 1) {
                 Object oldString556 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(556);
@@ -12287,6 +12844,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex557 = (decoder.readIndex());
         if (unionIndex557 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(557, null);
         } else {
             if (unionIndex557 == 1) {
                 Object oldString557 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(557);
@@ -12302,6 +12860,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex558 = (decoder.readIndex());
         if (unionIndex558 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(558, null);
         } else {
             if (unionIndex558 == 1) {
                 Object oldString558 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(558);
@@ -12322,6 +12881,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex559 = (decoder.readIndex());
         if (unionIndex559 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(559, null);
         } else {
             if (unionIndex559 == 1) {
                 Object oldString559 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(559);
@@ -12337,6 +12897,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex560 = (decoder.readIndex());
         if (unionIndex560 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(560, null);
         } else {
             if (unionIndex560 == 1) {
                 Object oldString560 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(560);
@@ -12357,6 +12918,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex561 = (decoder.readIndex());
         if (unionIndex561 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(561, null);
         } else {
             if (unionIndex561 == 1) {
                 Object oldString561 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(561);
@@ -12372,6 +12934,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex562 = (decoder.readIndex());
         if (unionIndex562 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(562, null);
         } else {
             if (unionIndex562 == 1) {
                 Object oldString562 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(562);
@@ -12392,6 +12955,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex563 = (decoder.readIndex());
         if (unionIndex563 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(563, null);
         } else {
             if (unionIndex563 == 1) {
                 Object oldString563 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(563);
@@ -12407,6 +12971,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex564 = (decoder.readIndex());
         if (unionIndex564 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(564, null);
         } else {
             if (unionIndex564 == 1) {
                 Object oldString564 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(564);
@@ -12427,6 +12992,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex565 = (decoder.readIndex());
         if (unionIndex565 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(565, null);
         } else {
             if (unionIndex565 == 1) {
                 Object oldString565 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(565);
@@ -12442,6 +13008,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex566 = (decoder.readIndex());
         if (unionIndex566 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(566, null);
         } else {
             if (unionIndex566 == 1) {
                 Object oldString566 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(566);
@@ -12462,6 +13029,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex567 = (decoder.readIndex());
         if (unionIndex567 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(567, null);
         } else {
             if (unionIndex567 == 1) {
                 Object oldString567 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(567);
@@ -12477,6 +13045,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex568 = (decoder.readIndex());
         if (unionIndex568 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(568, null);
         } else {
             if (unionIndex568 == 1) {
                 Object oldString568 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(568);
@@ -12497,6 +13066,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex569 = (decoder.readIndex());
         if (unionIndex569 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(569, null);
         } else {
             if (unionIndex569 == 1) {
                 Object oldString569 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(569);
@@ -12512,6 +13082,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex570 = (decoder.readIndex());
         if (unionIndex570 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(570, null);
         } else {
             if (unionIndex570 == 1) {
                 Object oldString570 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(570);
@@ -12532,6 +13103,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex571 = (decoder.readIndex());
         if (unionIndex571 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(571, null);
         } else {
             if (unionIndex571 == 1) {
                 Object oldString571 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(571);
@@ -12547,6 +13119,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex572 = (decoder.readIndex());
         if (unionIndex572 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(572, null);
         } else {
             if (unionIndex572 == 1) {
                 Object oldString572 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(572);
@@ -12567,6 +13140,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex573 = (decoder.readIndex());
         if (unionIndex573 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(573, null);
         } else {
             if (unionIndex573 == 1) {
                 Object oldString573 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(573);
@@ -12582,6 +13156,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex574 = (decoder.readIndex());
         if (unionIndex574 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(574, null);
         } else {
             if (unionIndex574 == 1) {
                 Object oldString574 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(574);
@@ -12602,6 +13177,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex575 = (decoder.readIndex());
         if (unionIndex575 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(575, null);
         } else {
             if (unionIndex575 == 1) {
                 Object oldString575 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(575);
@@ -12617,6 +13193,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex576 = (decoder.readIndex());
         if (unionIndex576 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(576, null);
         } else {
             if (unionIndex576 == 1) {
                 Object oldString576 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(576);
@@ -12637,6 +13214,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex577 = (decoder.readIndex());
         if (unionIndex577 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(577, null);
         } else {
             if (unionIndex577 == 1) {
                 Object oldString577 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(577);
@@ -12652,6 +13230,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex578 = (decoder.readIndex());
         if (unionIndex578 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(578, null);
         } else {
             if (unionIndex578 == 1) {
                 Object oldString578 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(578);
@@ -12672,6 +13251,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex579 = (decoder.readIndex());
         if (unionIndex579 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(579, null);
         } else {
             if (unionIndex579 == 1) {
                 Object oldString579 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(579);
@@ -12687,6 +13267,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex580 = (decoder.readIndex());
         if (unionIndex580 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(580, null);
         } else {
             if (unionIndex580 == 1) {
                 Object oldString580 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(580);
@@ -12707,6 +13288,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex581 = (decoder.readIndex());
         if (unionIndex581 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(581, null);
         } else {
             if (unionIndex581 == 1) {
                 Object oldString581 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(581);
@@ -12722,6 +13304,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex582 = (decoder.readIndex());
         if (unionIndex582 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(582, null);
         } else {
             if (unionIndex582 == 1) {
                 Object oldString582 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(582);
@@ -12742,6 +13325,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex583 = (decoder.readIndex());
         if (unionIndex583 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(583, null);
         } else {
             if (unionIndex583 == 1) {
                 Object oldString583 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(583);
@@ -12757,6 +13341,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex584 = (decoder.readIndex());
         if (unionIndex584 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(584, null);
         } else {
             if (unionIndex584 == 1) {
                 Object oldString584 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(584);
@@ -12777,6 +13362,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex585 = (decoder.readIndex());
         if (unionIndex585 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(585, null);
         } else {
             if (unionIndex585 == 1) {
                 Object oldString585 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(585);
@@ -12792,6 +13378,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex586 = (decoder.readIndex());
         if (unionIndex586 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(586, null);
         } else {
             if (unionIndex586 == 1) {
                 Object oldString586 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(586);
@@ -12812,6 +13399,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex587 = (decoder.readIndex());
         if (unionIndex587 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(587, null);
         } else {
             if (unionIndex587 == 1) {
                 Object oldString587 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(587);
@@ -12827,6 +13415,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex588 = (decoder.readIndex());
         if (unionIndex588 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(588, null);
         } else {
             if (unionIndex588 == 1) {
                 Object oldString588 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(588);
@@ -12847,6 +13436,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex589 = (decoder.readIndex());
         if (unionIndex589 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(589, null);
         } else {
             if (unionIndex589 == 1) {
                 Object oldString589 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(589);
@@ -12862,6 +13452,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex590 = (decoder.readIndex());
         if (unionIndex590 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(590, null);
         } else {
             if (unionIndex590 == 1) {
                 Object oldString590 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(590);
@@ -12882,6 +13473,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex591 = (decoder.readIndex());
         if (unionIndex591 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(591, null);
         } else {
             if (unionIndex591 == 1) {
                 Object oldString591 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(591);
@@ -12897,6 +13489,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex592 = (decoder.readIndex());
         if (unionIndex592 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(592, null);
         } else {
             if (unionIndex592 == 1) {
                 Object oldString592 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(592);
@@ -12917,6 +13510,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex593 = (decoder.readIndex());
         if (unionIndex593 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(593, null);
         } else {
             if (unionIndex593 == 1) {
                 Object oldString593 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(593);
@@ -12932,6 +13526,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex594 = (decoder.readIndex());
         if (unionIndex594 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(594, null);
         } else {
             if (unionIndex594 == 1) {
                 Object oldString594 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(594);
@@ -12952,6 +13547,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex595 = (decoder.readIndex());
         if (unionIndex595 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(595, null);
         } else {
             if (unionIndex595 == 1) {
                 Object oldString595 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(595);
@@ -12967,6 +13563,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex596 = (decoder.readIndex());
         if (unionIndex596 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(596, null);
         } else {
             if (unionIndex596 == 1) {
                 Object oldString596 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(596);
@@ -12987,6 +13584,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex597 = (decoder.readIndex());
         if (unionIndex597 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(597, null);
         } else {
             if (unionIndex597 == 1) {
                 Object oldString597 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(597);
@@ -13002,6 +13600,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex598 = (decoder.readIndex());
         if (unionIndex598 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(598, null);
         } else {
             if (unionIndex598 == 1) {
                 Object oldString598 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(598);
@@ -13022,6 +13621,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex599 = (decoder.readIndex());
         if (unionIndex599 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(599, null);
         } else {
             if (unionIndex599 == 1) {
                 Object oldString599 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(599);
@@ -13037,6 +13637,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex600 = (decoder.readIndex());
         if (unionIndex600 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(600, null);
         } else {
             if (unionIndex600 == 1) {
                 Object oldString600 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(600);
@@ -13057,6 +13658,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex601 = (decoder.readIndex());
         if (unionIndex601 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(601, null);
         } else {
             if (unionIndex601 == 1) {
                 Object oldString601 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(601);
@@ -13072,6 +13674,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex602 = (decoder.readIndex());
         if (unionIndex602 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(602, null);
         } else {
             if (unionIndex602 == 1) {
                 Object oldString602 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(602);
@@ -13092,6 +13695,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex603 = (decoder.readIndex());
         if (unionIndex603 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(603, null);
         } else {
             if (unionIndex603 == 1) {
                 Object oldString603 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(603);
@@ -13107,6 +13711,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex604 = (decoder.readIndex());
         if (unionIndex604 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(604, null);
         } else {
             if (unionIndex604 == 1) {
                 Object oldString604 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(604);
@@ -13127,6 +13732,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex605 = (decoder.readIndex());
         if (unionIndex605 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(605, null);
         } else {
             if (unionIndex605 == 1) {
                 Object oldString605 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(605);
@@ -13142,6 +13748,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex606 = (decoder.readIndex());
         if (unionIndex606 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(606, null);
         } else {
             if (unionIndex606 == 1) {
                 Object oldString606 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(606);
@@ -13162,6 +13769,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex607 = (decoder.readIndex());
         if (unionIndex607 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(607, null);
         } else {
             if (unionIndex607 == 1) {
                 Object oldString607 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(607);
@@ -13177,6 +13785,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex608 = (decoder.readIndex());
         if (unionIndex608 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(608, null);
         } else {
             if (unionIndex608 == 1) {
                 Object oldString608 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(608);
@@ -13197,6 +13806,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex609 = (decoder.readIndex());
         if (unionIndex609 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(609, null);
         } else {
             if (unionIndex609 == 1) {
                 Object oldString609 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(609);
@@ -13212,6 +13822,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex610 = (decoder.readIndex());
         if (unionIndex610 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(610, null);
         } else {
             if (unionIndex610 == 1) {
                 Object oldString610 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(610);
@@ -13232,6 +13843,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex611 = (decoder.readIndex());
         if (unionIndex611 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(611, null);
         } else {
             if (unionIndex611 == 1) {
                 Object oldString611 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(611);
@@ -13247,6 +13859,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex612 = (decoder.readIndex());
         if (unionIndex612 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(612, null);
         } else {
             if (unionIndex612 == 1) {
                 Object oldString612 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(612);
@@ -13267,6 +13880,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex613 = (decoder.readIndex());
         if (unionIndex613 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(613, null);
         } else {
             if (unionIndex613 == 1) {
                 Object oldString613 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(613);
@@ -13282,6 +13896,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex614 = (decoder.readIndex());
         if (unionIndex614 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(614, null);
         } else {
             if (unionIndex614 == 1) {
                 Object oldString614 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(614);
@@ -13302,6 +13917,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex615 = (decoder.readIndex());
         if (unionIndex615 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(615, null);
         } else {
             if (unionIndex615 == 1) {
                 Object oldString615 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(615);
@@ -13317,6 +13933,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex616 = (decoder.readIndex());
         if (unionIndex616 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(616, null);
         } else {
             if (unionIndex616 == 1) {
                 Object oldString616 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(616);
@@ -13337,6 +13954,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex617 = (decoder.readIndex());
         if (unionIndex617 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(617, null);
         } else {
             if (unionIndex617 == 1) {
                 Object oldString617 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(617);
@@ -13352,6 +13970,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex618 = (decoder.readIndex());
         if (unionIndex618 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(618, null);
         } else {
             if (unionIndex618 == 1) {
                 Object oldString618 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(618);
@@ -13372,6 +13991,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex619 = (decoder.readIndex());
         if (unionIndex619 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(619, null);
         } else {
             if (unionIndex619 == 1) {
                 Object oldString619 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(619);
@@ -13387,6 +14007,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex620 = (decoder.readIndex());
         if (unionIndex620 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(620, null);
         } else {
             if (unionIndex620 == 1) {
                 Object oldString620 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(620);
@@ -13407,6 +14028,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex621 = (decoder.readIndex());
         if (unionIndex621 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(621, null);
         } else {
             if (unionIndex621 == 1) {
                 Object oldString621 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(621);
@@ -13422,6 +14044,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex622 = (decoder.readIndex());
         if (unionIndex622 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(622, null);
         } else {
             if (unionIndex622 == 1) {
                 Object oldString622 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(622);
@@ -13442,6 +14065,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex623 = (decoder.readIndex());
         if (unionIndex623 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(623, null);
         } else {
             if (unionIndex623 == 1) {
                 Object oldString623 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(623);
@@ -13457,6 +14081,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex624 = (decoder.readIndex());
         if (unionIndex624 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(624, null);
         } else {
             if (unionIndex624 == 1) {
                 Object oldString624 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(624);
@@ -13477,6 +14102,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex625 = (decoder.readIndex());
         if (unionIndex625 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(625, null);
         } else {
             if (unionIndex625 == 1) {
                 Object oldString625 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(625);
@@ -13492,6 +14118,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex626 = (decoder.readIndex());
         if (unionIndex626 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(626, null);
         } else {
             if (unionIndex626 == 1) {
                 Object oldString626 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(626);
@@ -13512,6 +14139,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex627 = (decoder.readIndex());
         if (unionIndex627 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(627, null);
         } else {
             if (unionIndex627 == 1) {
                 Object oldString627 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(627);
@@ -13527,6 +14155,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex628 = (decoder.readIndex());
         if (unionIndex628 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(628, null);
         } else {
             if (unionIndex628 == 1) {
                 Object oldString628 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(628);
@@ -13547,6 +14176,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex629 = (decoder.readIndex());
         if (unionIndex629 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(629, null);
         } else {
             if (unionIndex629 == 1) {
                 Object oldString629 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(629);
@@ -13562,6 +14192,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex630 = (decoder.readIndex());
         if (unionIndex630 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(630, null);
         } else {
             if (unionIndex630 == 1) {
                 Object oldString630 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(630);
@@ -13582,6 +14213,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex631 = (decoder.readIndex());
         if (unionIndex631 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(631, null);
         } else {
             if (unionIndex631 == 1) {
                 Object oldString631 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(631);
@@ -13597,6 +14229,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex632 = (decoder.readIndex());
         if (unionIndex632 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(632, null);
         } else {
             if (unionIndex632 == 1) {
                 Object oldString632 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(632);
@@ -13617,6 +14250,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex633 = (decoder.readIndex());
         if (unionIndex633 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(633, null);
         } else {
             if (unionIndex633 == 1) {
                 Object oldString633 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(633);
@@ -13632,6 +14266,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex634 = (decoder.readIndex());
         if (unionIndex634 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(634, null);
         } else {
             if (unionIndex634 == 1) {
                 Object oldString634 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(634);
@@ -13652,6 +14287,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex635 = (decoder.readIndex());
         if (unionIndex635 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(635, null);
         } else {
             if (unionIndex635 == 1) {
                 Object oldString635 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(635);
@@ -13667,6 +14303,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex636 = (decoder.readIndex());
         if (unionIndex636 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(636, null);
         } else {
             if (unionIndex636 == 1) {
                 Object oldString636 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(636);
@@ -13687,6 +14324,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex637 = (decoder.readIndex());
         if (unionIndex637 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(637, null);
         } else {
             if (unionIndex637 == 1) {
                 Object oldString637 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(637);
@@ -13702,6 +14340,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex638 = (decoder.readIndex());
         if (unionIndex638 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(638, null);
         } else {
             if (unionIndex638 == 1) {
                 Object oldString638 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(638);
@@ -13722,6 +14361,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex639 = (decoder.readIndex());
         if (unionIndex639 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(639, null);
         } else {
             if (unionIndex639 == 1) {
                 Object oldString639 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(639);
@@ -13737,6 +14377,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex640 = (decoder.readIndex());
         if (unionIndex640 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(640, null);
         } else {
             if (unionIndex640 == 1) {
                 Object oldString640 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(640);
@@ -13757,6 +14398,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex641 = (decoder.readIndex());
         if (unionIndex641 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(641, null);
         } else {
             if (unionIndex641 == 1) {
                 Object oldString641 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(641);
@@ -13772,6 +14414,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex642 = (decoder.readIndex());
         if (unionIndex642 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(642, null);
         } else {
             if (unionIndex642 == 1) {
                 Object oldString642 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(642);
@@ -13792,6 +14435,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex643 = (decoder.readIndex());
         if (unionIndex643 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(643, null);
         } else {
             if (unionIndex643 == 1) {
                 Object oldString643 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(643);
@@ -13807,6 +14451,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex644 = (decoder.readIndex());
         if (unionIndex644 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(644, null);
         } else {
             if (unionIndex644 == 1) {
                 Object oldString644 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(644);
@@ -13827,6 +14472,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex645 = (decoder.readIndex());
         if (unionIndex645 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(645, null);
         } else {
             if (unionIndex645 == 1) {
                 Object oldString645 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(645);
@@ -13842,6 +14488,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex646 = (decoder.readIndex());
         if (unionIndex646 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(646, null);
         } else {
             if (unionIndex646 == 1) {
                 Object oldString646 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(646);
@@ -13862,6 +14509,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex647 = (decoder.readIndex());
         if (unionIndex647 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(647, null);
         } else {
             if (unionIndex647 == 1) {
                 Object oldString647 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(647);
@@ -13877,6 +14525,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex648 = (decoder.readIndex());
         if (unionIndex648 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(648, null);
         } else {
             if (unionIndex648 == 1) {
                 Object oldString648 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(648);
@@ -13897,6 +14546,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex649 = (decoder.readIndex());
         if (unionIndex649 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(649, null);
         } else {
             if (unionIndex649 == 1) {
                 Object oldString649 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(649);
@@ -13912,6 +14562,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex650 = (decoder.readIndex());
         if (unionIndex650 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(650, null);
         } else {
             if (unionIndex650 == 1) {
                 Object oldString650 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(650);
@@ -13932,6 +14583,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex651 = (decoder.readIndex());
         if (unionIndex651 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(651, null);
         } else {
             if (unionIndex651 == 1) {
                 Object oldString651 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(651);
@@ -13947,6 +14599,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex652 = (decoder.readIndex());
         if (unionIndex652 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(652, null);
         } else {
             if (unionIndex652 == 1) {
                 Object oldString652 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(652);
@@ -13967,6 +14620,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex653 = (decoder.readIndex());
         if (unionIndex653 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(653, null);
         } else {
             if (unionIndex653 == 1) {
                 Object oldString653 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(653);
@@ -13982,6 +14636,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex654 = (decoder.readIndex());
         if (unionIndex654 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(654, null);
         } else {
             if (unionIndex654 == 1) {
                 Object oldString654 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(654);
@@ -14002,6 +14657,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex655 = (decoder.readIndex());
         if (unionIndex655 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(655, null);
         } else {
             if (unionIndex655 == 1) {
                 Object oldString655 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(655);
@@ -14017,6 +14673,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex656 = (decoder.readIndex());
         if (unionIndex656 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(656, null);
         } else {
             if (unionIndex656 == 1) {
                 Object oldString656 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(656);
@@ -14037,6 +14694,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex657 = (decoder.readIndex());
         if (unionIndex657 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(657, null);
         } else {
             if (unionIndex657 == 1) {
                 Object oldString657 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(657);
@@ -14052,6 +14710,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex658 = (decoder.readIndex());
         if (unionIndex658 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(658, null);
         } else {
             if (unionIndex658 == 1) {
                 Object oldString658 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(658);
@@ -14072,6 +14731,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex659 = (decoder.readIndex());
         if (unionIndex659 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(659, null);
         } else {
             if (unionIndex659 == 1) {
                 Object oldString659 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(659);
@@ -14087,6 +14747,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex660 = (decoder.readIndex());
         if (unionIndex660 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(660, null);
         } else {
             if (unionIndex660 == 1) {
                 Object oldString660 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(660);
@@ -14107,6 +14768,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex661 = (decoder.readIndex());
         if (unionIndex661 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(661, null);
         } else {
             if (unionIndex661 == 1) {
                 Object oldString661 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(661);
@@ -14122,6 +14784,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex662 = (decoder.readIndex());
         if (unionIndex662 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(662, null);
         } else {
             if (unionIndex662 == 1) {
                 Object oldString662 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(662);
@@ -14142,6 +14805,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex663 = (decoder.readIndex());
         if (unionIndex663 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(663, null);
         } else {
             if (unionIndex663 == 1) {
                 Object oldString663 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(663);
@@ -14157,6 +14821,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex664 = (decoder.readIndex());
         if (unionIndex664 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(664, null);
         } else {
             if (unionIndex664 == 1) {
                 Object oldString664 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(664);
@@ -14177,6 +14842,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex665 = (decoder.readIndex());
         if (unionIndex665 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(665, null);
         } else {
             if (unionIndex665 == 1) {
                 Object oldString665 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(665);
@@ -14192,6 +14858,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex666 = (decoder.readIndex());
         if (unionIndex666 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(666, null);
         } else {
             if (unionIndex666 == 1) {
                 Object oldString666 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(666);
@@ -14212,6 +14879,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex667 = (decoder.readIndex());
         if (unionIndex667 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(667, null);
         } else {
             if (unionIndex667 == 1) {
                 Object oldString667 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(667);
@@ -14227,6 +14895,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex668 = (decoder.readIndex());
         if (unionIndex668 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(668, null);
         } else {
             if (unionIndex668 == 1) {
                 Object oldString668 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(668);
@@ -14247,6 +14916,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex669 = (decoder.readIndex());
         if (unionIndex669 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(669, null);
         } else {
             if (unionIndex669 == 1) {
                 Object oldString669 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(669);
@@ -14262,6 +14932,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex670 = (decoder.readIndex());
         if (unionIndex670 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(670, null);
         } else {
             if (unionIndex670 == 1) {
                 Object oldString670 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(670);
@@ -14282,6 +14953,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex671 = (decoder.readIndex());
         if (unionIndex671 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(671, null);
         } else {
             if (unionIndex671 == 1) {
                 Object oldString671 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(671);
@@ -14297,6 +14969,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex672 = (decoder.readIndex());
         if (unionIndex672 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(672, null);
         } else {
             if (unionIndex672 == 1) {
                 Object oldString672 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(672);
@@ -14317,6 +14990,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex673 = (decoder.readIndex());
         if (unionIndex673 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(673, null);
         } else {
             if (unionIndex673 == 1) {
                 Object oldString673 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(673);
@@ -14332,6 +15006,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex674 = (decoder.readIndex());
         if (unionIndex674 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(674, null);
         } else {
             if (unionIndex674 == 1) {
                 Object oldString674 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(674);
@@ -14352,6 +15027,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex675 = (decoder.readIndex());
         if (unionIndex675 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(675, null);
         } else {
             if (unionIndex675 == 1) {
                 Object oldString675 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(675);
@@ -14367,6 +15043,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex676 = (decoder.readIndex());
         if (unionIndex676 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(676, null);
         } else {
             if (unionIndex676 == 1) {
                 Object oldString676 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(676);
@@ -14387,6 +15064,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex677 = (decoder.readIndex());
         if (unionIndex677 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(677, null);
         } else {
             if (unionIndex677 == 1) {
                 Object oldString677 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(677);
@@ -14402,6 +15080,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex678 = (decoder.readIndex());
         if (unionIndex678 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(678, null);
         } else {
             if (unionIndex678 == 1) {
                 Object oldString678 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(678);
@@ -14422,6 +15101,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex679 = (decoder.readIndex());
         if (unionIndex679 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(679, null);
         } else {
             if (unionIndex679 == 1) {
                 Object oldString679 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(679);
@@ -14437,6 +15117,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex680 = (decoder.readIndex());
         if (unionIndex680 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(680, null);
         } else {
             if (unionIndex680 == 1) {
                 Object oldString680 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(680);
@@ -14457,6 +15138,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex681 = (decoder.readIndex());
         if (unionIndex681 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(681, null);
         } else {
             if (unionIndex681 == 1) {
                 Object oldString681 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(681);
@@ -14472,6 +15154,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex682 = (decoder.readIndex());
         if (unionIndex682 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(682, null);
         } else {
             if (unionIndex682 == 1) {
                 Object oldString682 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(682);
@@ -14492,6 +15175,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex683 = (decoder.readIndex());
         if (unionIndex683 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(683, null);
         } else {
             if (unionIndex683 == 1) {
                 Object oldString683 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(683);
@@ -14507,6 +15191,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex684 = (decoder.readIndex());
         if (unionIndex684 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(684, null);
         } else {
             if (unionIndex684 == 1) {
                 Object oldString684 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(684);
@@ -14527,6 +15212,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex685 = (decoder.readIndex());
         if (unionIndex685 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(685, null);
         } else {
             if (unionIndex685 == 1) {
                 Object oldString685 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(685);
@@ -14542,6 +15228,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex686 = (decoder.readIndex());
         if (unionIndex686 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(686, null);
         } else {
             if (unionIndex686 == 1) {
                 Object oldString686 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(686);
@@ -14562,6 +15249,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex687 = (decoder.readIndex());
         if (unionIndex687 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(687, null);
         } else {
             if (unionIndex687 == 1) {
                 Object oldString687 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(687);
@@ -14577,6 +15265,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex688 = (decoder.readIndex());
         if (unionIndex688 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(688, null);
         } else {
             if (unionIndex688 == 1) {
                 Object oldString688 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(688);
@@ -14597,6 +15286,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex689 = (decoder.readIndex());
         if (unionIndex689 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(689, null);
         } else {
             if (unionIndex689 == 1) {
                 Object oldString689 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(689);
@@ -14612,6 +15302,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex690 = (decoder.readIndex());
         if (unionIndex690 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(690, null);
         } else {
             if (unionIndex690 == 1) {
                 Object oldString690 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(690);
@@ -14632,6 +15323,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex691 = (decoder.readIndex());
         if (unionIndex691 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(691, null);
         } else {
             if (unionIndex691 == 1) {
                 Object oldString691 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(691);
@@ -14647,6 +15339,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex692 = (decoder.readIndex());
         if (unionIndex692 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(692, null);
         } else {
             if (unionIndex692 == 1) {
                 Object oldString692 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(692);
@@ -14667,6 +15360,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex693 = (decoder.readIndex());
         if (unionIndex693 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(693, null);
         } else {
             if (unionIndex693 == 1) {
                 Object oldString693 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(693);
@@ -14682,6 +15376,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex694 = (decoder.readIndex());
         if (unionIndex694 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(694, null);
         } else {
             if (unionIndex694 == 1) {
                 Object oldString694 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(694);
@@ -14702,6 +15397,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex695 = (decoder.readIndex());
         if (unionIndex695 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(695, null);
         } else {
             if (unionIndex695 == 1) {
                 Object oldString695 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(695);
@@ -14717,6 +15413,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex696 = (decoder.readIndex());
         if (unionIndex696 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(696, null);
         } else {
             if (unionIndex696 == 1) {
                 Object oldString696 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(696);
@@ -14737,6 +15434,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex697 = (decoder.readIndex());
         if (unionIndex697 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(697, null);
         } else {
             if (unionIndex697 == 1) {
                 Object oldString697 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(697);
@@ -14752,6 +15450,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex698 = (decoder.readIndex());
         if (unionIndex698 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(698, null);
         } else {
             if (unionIndex698 == 1) {
                 Object oldString698 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(698);
@@ -14772,6 +15471,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex699 = (decoder.readIndex());
         if (unionIndex699 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(699, null);
         } else {
             if (unionIndex699 == 1) {
                 Object oldString699 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(699);
@@ -14787,6 +15487,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex700 = (decoder.readIndex());
         if (unionIndex700 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(700, null);
         } else {
             if (unionIndex700 == 1) {
                 Object oldString700 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(700);
@@ -14807,6 +15508,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex701 = (decoder.readIndex());
         if (unionIndex701 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(701, null);
         } else {
             if (unionIndex701 == 1) {
                 Object oldString701 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(701);
@@ -14822,6 +15524,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex702 = (decoder.readIndex());
         if (unionIndex702 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(702, null);
         } else {
             if (unionIndex702 == 1) {
                 Object oldString702 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(702);
@@ -14842,6 +15545,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex703 = (decoder.readIndex());
         if (unionIndex703 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(703, null);
         } else {
             if (unionIndex703 == 1) {
                 Object oldString703 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(703);
@@ -14857,6 +15561,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex704 = (decoder.readIndex());
         if (unionIndex704 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(704, null);
         } else {
             if (unionIndex704 == 1) {
                 Object oldString704 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(704);
@@ -14877,6 +15582,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex705 = (decoder.readIndex());
         if (unionIndex705 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(705, null);
         } else {
             if (unionIndex705 == 1) {
                 Object oldString705 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(705);
@@ -14892,6 +15598,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex706 = (decoder.readIndex());
         if (unionIndex706 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(706, null);
         } else {
             if (unionIndex706 == 1) {
                 Object oldString706 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(706);
@@ -14912,6 +15619,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex707 = (decoder.readIndex());
         if (unionIndex707 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(707, null);
         } else {
             if (unionIndex707 == 1) {
                 Object oldString707 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(707);
@@ -14927,6 +15635,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex708 = (decoder.readIndex());
         if (unionIndex708 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(708, null);
         } else {
             if (unionIndex708 == 1) {
                 Object oldString708 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(708);
@@ -14947,6 +15656,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex709 = (decoder.readIndex());
         if (unionIndex709 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(709, null);
         } else {
             if (unionIndex709 == 1) {
                 Object oldString709 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(709);
@@ -14962,6 +15672,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex710 = (decoder.readIndex());
         if (unionIndex710 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(710, null);
         } else {
             if (unionIndex710 == 1) {
                 Object oldString710 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(710);
@@ -14982,6 +15693,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex711 = (decoder.readIndex());
         if (unionIndex711 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(711, null);
         } else {
             if (unionIndex711 == 1) {
                 Object oldString711 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(711);
@@ -14997,6 +15709,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex712 = (decoder.readIndex());
         if (unionIndex712 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(712, null);
         } else {
             if (unionIndex712 == 1) {
                 Object oldString712 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(712);
@@ -15017,6 +15730,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex713 = (decoder.readIndex());
         if (unionIndex713 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(713, null);
         } else {
             if (unionIndex713 == 1) {
                 Object oldString713 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(713);
@@ -15032,6 +15746,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex714 = (decoder.readIndex());
         if (unionIndex714 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(714, null);
         } else {
             if (unionIndex714 == 1) {
                 Object oldString714 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(714);
@@ -15052,6 +15767,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex715 = (decoder.readIndex());
         if (unionIndex715 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(715, null);
         } else {
             if (unionIndex715 == 1) {
                 Object oldString715 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(715);
@@ -15067,6 +15783,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex716 = (decoder.readIndex());
         if (unionIndex716 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(716, null);
         } else {
             if (unionIndex716 == 1) {
                 Object oldString716 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(716);
@@ -15087,6 +15804,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex717 = (decoder.readIndex());
         if (unionIndex717 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(717, null);
         } else {
             if (unionIndex717 == 1) {
                 Object oldString717 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(717);
@@ -15102,6 +15820,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex718 = (decoder.readIndex());
         if (unionIndex718 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(718, null);
         } else {
             if (unionIndex718 == 1) {
                 Object oldString718 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(718);
@@ -15122,6 +15841,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex719 = (decoder.readIndex());
         if (unionIndex719 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(719, null);
         } else {
             if (unionIndex719 == 1) {
                 Object oldString719 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(719);
@@ -15137,6 +15857,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex720 = (decoder.readIndex());
         if (unionIndex720 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(720, null);
         } else {
             if (unionIndex720 == 1) {
                 Object oldString720 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(720);
@@ -15157,6 +15878,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex721 = (decoder.readIndex());
         if (unionIndex721 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(721, null);
         } else {
             if (unionIndex721 == 1) {
                 Object oldString721 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(721);
@@ -15172,6 +15894,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex722 = (decoder.readIndex());
         if (unionIndex722 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(722, null);
         } else {
             if (unionIndex722 == 1) {
                 Object oldString722 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(722);
@@ -15192,6 +15915,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex723 = (decoder.readIndex());
         if (unionIndex723 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(723, null);
         } else {
             if (unionIndex723 == 1) {
                 Object oldString723 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(723);
@@ -15207,6 +15931,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex724 = (decoder.readIndex());
         if (unionIndex724 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(724, null);
         } else {
             if (unionIndex724 == 1) {
                 Object oldString724 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(724);
@@ -15227,6 +15952,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex725 = (decoder.readIndex());
         if (unionIndex725 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(725, null);
         } else {
             if (unionIndex725 == 1) {
                 Object oldString725 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(725);
@@ -15242,6 +15968,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex726 = (decoder.readIndex());
         if (unionIndex726 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(726, null);
         } else {
             if (unionIndex726 == 1) {
                 Object oldString726 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(726);
@@ -15262,6 +15989,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex727 = (decoder.readIndex());
         if (unionIndex727 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(727, null);
         } else {
             if (unionIndex727 == 1) {
                 Object oldString727 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(727);
@@ -15277,6 +16005,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex728 = (decoder.readIndex());
         if (unionIndex728 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(728, null);
         } else {
             if (unionIndex728 == 1) {
                 Object oldString728 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(728);
@@ -15297,6 +16026,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex729 = (decoder.readIndex());
         if (unionIndex729 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(729, null);
         } else {
             if (unionIndex729 == 1) {
                 Object oldString729 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(729);
@@ -15312,6 +16042,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex730 = (decoder.readIndex());
         if (unionIndex730 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(730, null);
         } else {
             if (unionIndex730 == 1) {
                 Object oldString730 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(730);
@@ -15332,6 +16063,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex731 = (decoder.readIndex());
         if (unionIndex731 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(731, null);
         } else {
             if (unionIndex731 == 1) {
                 Object oldString731 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(731);
@@ -15347,6 +16079,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex732 = (decoder.readIndex());
         if (unionIndex732 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(732, null);
         } else {
             if (unionIndex732 == 1) {
                 Object oldString732 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(732);
@@ -15367,6 +16100,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex733 = (decoder.readIndex());
         if (unionIndex733 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(733, null);
         } else {
             if (unionIndex733 == 1) {
                 Object oldString733 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(733);
@@ -15382,6 +16116,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex734 = (decoder.readIndex());
         if (unionIndex734 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(734, null);
         } else {
             if (unionIndex734 == 1) {
                 Object oldString734 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(734);
@@ -15402,6 +16137,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex735 = (decoder.readIndex());
         if (unionIndex735 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(735, null);
         } else {
             if (unionIndex735 == 1) {
                 Object oldString735 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(735);
@@ -15417,6 +16153,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex736 = (decoder.readIndex());
         if (unionIndex736 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(736, null);
         } else {
             if (unionIndex736 == 1) {
                 Object oldString736 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(736);
@@ -15437,6 +16174,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex737 = (decoder.readIndex());
         if (unionIndex737 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(737, null);
         } else {
             if (unionIndex737 == 1) {
                 Object oldString737 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(737);
@@ -15452,6 +16190,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex738 = (decoder.readIndex());
         if (unionIndex738 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(738, null);
         } else {
             if (unionIndex738 == 1) {
                 Object oldString738 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(738);
@@ -15472,6 +16211,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex739 = (decoder.readIndex());
         if (unionIndex739 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(739, null);
         } else {
             if (unionIndex739 == 1) {
                 Object oldString739 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(739);
@@ -15487,6 +16227,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex740 = (decoder.readIndex());
         if (unionIndex740 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(740, null);
         } else {
             if (unionIndex740 == 1) {
                 Object oldString740 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(740);
@@ -15507,6 +16248,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex741 = (decoder.readIndex());
         if (unionIndex741 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(741, null);
         } else {
             if (unionIndex741 == 1) {
                 Object oldString741 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(741);
@@ -15522,6 +16264,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex742 = (decoder.readIndex());
         if (unionIndex742 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(742, null);
         } else {
             if (unionIndex742 == 1) {
                 Object oldString742 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(742);
@@ -15542,6 +16285,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex743 = (decoder.readIndex());
         if (unionIndex743 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(743, null);
         } else {
             if (unionIndex743 == 1) {
                 Object oldString743 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(743);
@@ -15557,6 +16301,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex744 = (decoder.readIndex());
         if (unionIndex744 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(744, null);
         } else {
             if (unionIndex744 == 1) {
                 Object oldString744 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(744);
@@ -15577,6 +16322,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex745 = (decoder.readIndex());
         if (unionIndex745 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(745, null);
         } else {
             if (unionIndex745 == 1) {
                 Object oldString745 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(745);
@@ -15592,6 +16338,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex746 = (decoder.readIndex());
         if (unionIndex746 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(746, null);
         } else {
             if (unionIndex746 == 1) {
                 Object oldString746 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(746);
@@ -15612,6 +16359,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex747 = (decoder.readIndex());
         if (unionIndex747 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(747, null);
         } else {
             if (unionIndex747 == 1) {
                 Object oldString747 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(747);
@@ -15627,6 +16375,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex748 = (decoder.readIndex());
         if (unionIndex748 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(748, null);
         } else {
             if (unionIndex748 == 1) {
                 Object oldString748 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(748);
@@ -15647,6 +16396,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex749 = (decoder.readIndex());
         if (unionIndex749 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(749, null);
         } else {
             if (unionIndex749 == 1) {
                 Object oldString749 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(749);
@@ -15662,6 +16412,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex750 = (decoder.readIndex());
         if (unionIndex750 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(750, null);
         } else {
             if (unionIndex750 == 1) {
                 Object oldString750 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(750);
@@ -15682,6 +16433,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex751 = (decoder.readIndex());
         if (unionIndex751 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(751, null);
         } else {
             if (unionIndex751 == 1) {
                 Object oldString751 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(751);
@@ -15697,6 +16449,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex752 = (decoder.readIndex());
         if (unionIndex752 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(752, null);
         } else {
             if (unionIndex752 == 1) {
                 Object oldString752 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(752);
@@ -15717,6 +16470,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex753 = (decoder.readIndex());
         if (unionIndex753 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(753, null);
         } else {
             if (unionIndex753 == 1) {
                 Object oldString753 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(753);
@@ -15732,6 +16486,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex754 = (decoder.readIndex());
         if (unionIndex754 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(754, null);
         } else {
             if (unionIndex754 == 1) {
                 Object oldString754 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(754);
@@ -15752,6 +16507,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex755 = (decoder.readIndex());
         if (unionIndex755 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(755, null);
         } else {
             if (unionIndex755 == 1) {
                 Object oldString755 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(755);
@@ -15767,6 +16523,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex756 = (decoder.readIndex());
         if (unionIndex756 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(756, null);
         } else {
             if (unionIndex756 == 1) {
                 Object oldString756 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(756);
@@ -15787,6 +16544,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex757 = (decoder.readIndex());
         if (unionIndex757 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(757, null);
         } else {
             if (unionIndex757 == 1) {
                 Object oldString757 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(757);
@@ -15802,6 +16560,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex758 = (decoder.readIndex());
         if (unionIndex758 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(758, null);
         } else {
             if (unionIndex758 == 1) {
                 Object oldString758 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(758);
@@ -15822,6 +16581,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex759 = (decoder.readIndex());
         if (unionIndex759 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(759, null);
         } else {
             if (unionIndex759 == 1) {
                 Object oldString759 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(759);
@@ -15837,6 +16597,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex760 = (decoder.readIndex());
         if (unionIndex760 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(760, null);
         } else {
             if (unionIndex760 == 1) {
                 Object oldString760 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(760);
@@ -15857,6 +16618,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex761 = (decoder.readIndex());
         if (unionIndex761 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(761, null);
         } else {
             if (unionIndex761 == 1) {
                 Object oldString761 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(761);
@@ -15872,6 +16634,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex762 = (decoder.readIndex());
         if (unionIndex762 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(762, null);
         } else {
             if (unionIndex762 == 1) {
                 Object oldString762 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(762);
@@ -15892,6 +16655,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex763 = (decoder.readIndex());
         if (unionIndex763 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(763, null);
         } else {
             if (unionIndex763 == 1) {
                 Object oldString763 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(763);
@@ -15907,6 +16671,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex764 = (decoder.readIndex());
         if (unionIndex764 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(764, null);
         } else {
             if (unionIndex764 == 1) {
                 Object oldString764 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(764);
@@ -15927,6 +16692,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex765 = (decoder.readIndex());
         if (unionIndex765 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(765, null);
         } else {
             if (unionIndex765 == 1) {
                 Object oldString765 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(765);
@@ -15942,6 +16708,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex766 = (decoder.readIndex());
         if (unionIndex766 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(766, null);
         } else {
             if (unionIndex766 == 1) {
                 Object oldString766 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(766);
@@ -15962,6 +16729,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex767 = (decoder.readIndex());
         if (unionIndex767 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(767, null);
         } else {
             if (unionIndex767 == 1) {
                 Object oldString767 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(767);
@@ -15977,6 +16745,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex768 = (decoder.readIndex());
         if (unionIndex768 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(768, null);
         } else {
             if (unionIndex768 == 1) {
                 Object oldString768 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(768);
@@ -15997,6 +16766,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex769 = (decoder.readIndex());
         if (unionIndex769 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(769, null);
         } else {
             if (unionIndex769 == 1) {
                 Object oldString769 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(769);
@@ -16012,6 +16782,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex770 = (decoder.readIndex());
         if (unionIndex770 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(770, null);
         } else {
             if (unionIndex770 == 1) {
                 Object oldString770 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(770);
@@ -16032,6 +16803,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex771 = (decoder.readIndex());
         if (unionIndex771 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(771, null);
         } else {
             if (unionIndex771 == 1) {
                 Object oldString771 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(771);
@@ -16047,6 +16819,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex772 = (decoder.readIndex());
         if (unionIndex772 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(772, null);
         } else {
             if (unionIndex772 == 1) {
                 Object oldString772 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(772);
@@ -16067,6 +16840,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex773 = (decoder.readIndex());
         if (unionIndex773 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(773, null);
         } else {
             if (unionIndex773 == 1) {
                 Object oldString773 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(773);
@@ -16082,6 +16856,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex774 = (decoder.readIndex());
         if (unionIndex774 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(774, null);
         } else {
             if (unionIndex774 == 1) {
                 Object oldString774 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(774);
@@ -16102,6 +16877,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex775 = (decoder.readIndex());
         if (unionIndex775 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(775, null);
         } else {
             if (unionIndex775 == 1) {
                 Object oldString775 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(775);
@@ -16117,6 +16893,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex776 = (decoder.readIndex());
         if (unionIndex776 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(776, null);
         } else {
             if (unionIndex776 == 1) {
                 Object oldString776 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(776);
@@ -16137,6 +16914,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex777 = (decoder.readIndex());
         if (unionIndex777 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(777, null);
         } else {
             if (unionIndex777 == 1) {
                 Object oldString777 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(777);
@@ -16152,6 +16930,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex778 = (decoder.readIndex());
         if (unionIndex778 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(778, null);
         } else {
             if (unionIndex778 == 1) {
                 Object oldString778 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(778);
@@ -16172,6 +16951,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex779 = (decoder.readIndex());
         if (unionIndex779 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(779, null);
         } else {
             if (unionIndex779 == 1) {
                 Object oldString779 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(779);
@@ -16187,6 +16967,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex780 = (decoder.readIndex());
         if (unionIndex780 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(780, null);
         } else {
             if (unionIndex780 == 1) {
                 Object oldString780 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(780);
@@ -16207,6 +16988,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex781 = (decoder.readIndex());
         if (unionIndex781 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(781, null);
         } else {
             if (unionIndex781 == 1) {
                 Object oldString781 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(781);
@@ -16222,6 +17004,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex782 = (decoder.readIndex());
         if (unionIndex782 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(782, null);
         } else {
             if (unionIndex782 == 1) {
                 Object oldString782 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(782);
@@ -16242,6 +17025,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex783 = (decoder.readIndex());
         if (unionIndex783 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(783, null);
         } else {
             if (unionIndex783 == 1) {
                 Object oldString783 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(783);
@@ -16257,6 +17041,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex784 = (decoder.readIndex());
         if (unionIndex784 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(784, null);
         } else {
             if (unionIndex784 == 1) {
                 Object oldString784 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(784);
@@ -16277,6 +17062,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex785 = (decoder.readIndex());
         if (unionIndex785 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(785, null);
         } else {
             if (unionIndex785 == 1) {
                 Object oldString785 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(785);
@@ -16292,6 +17078,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex786 = (decoder.readIndex());
         if (unionIndex786 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(786, null);
         } else {
             if (unionIndex786 == 1) {
                 Object oldString786 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(786);
@@ -16312,6 +17099,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex787 = (decoder.readIndex());
         if (unionIndex787 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(787, null);
         } else {
             if (unionIndex787 == 1) {
                 Object oldString787 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(787);
@@ -16327,6 +17115,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex788 = (decoder.readIndex());
         if (unionIndex788 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(788, null);
         } else {
             if (unionIndex788 == 1) {
                 Object oldString788 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(788);
@@ -16347,6 +17136,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex789 = (decoder.readIndex());
         if (unionIndex789 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(789, null);
         } else {
             if (unionIndex789 == 1) {
                 Object oldString789 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(789);
@@ -16362,6 +17152,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex790 = (decoder.readIndex());
         if (unionIndex790 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(790, null);
         } else {
             if (unionIndex790 == 1) {
                 Object oldString790 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(790);
@@ -16382,6 +17173,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex791 = (decoder.readIndex());
         if (unionIndex791 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(791, null);
         } else {
             if (unionIndex791 == 1) {
                 Object oldString791 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(791);
@@ -16397,6 +17189,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex792 = (decoder.readIndex());
         if (unionIndex792 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(792, null);
         } else {
             if (unionIndex792 == 1) {
                 Object oldString792 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(792);
@@ -16417,6 +17210,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex793 = (decoder.readIndex());
         if (unionIndex793 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(793, null);
         } else {
             if (unionIndex793 == 1) {
                 Object oldString793 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(793);
@@ -16432,6 +17226,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex794 = (decoder.readIndex());
         if (unionIndex794 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(794, null);
         } else {
             if (unionIndex794 == 1) {
                 Object oldString794 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(794);
@@ -16452,6 +17247,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex795 = (decoder.readIndex());
         if (unionIndex795 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(795, null);
         } else {
             if (unionIndex795 == 1) {
                 Object oldString795 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(795);
@@ -16467,6 +17263,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex796 = (decoder.readIndex());
         if (unionIndex796 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(796, null);
         } else {
             if (unionIndex796 == 1) {
                 Object oldString796 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(796);
@@ -16487,6 +17284,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex797 = (decoder.readIndex());
         if (unionIndex797 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(797, null);
         } else {
             if (unionIndex797 == 1) {
                 Object oldString797 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(797);
@@ -16502,6 +17300,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex798 = (decoder.readIndex());
         if (unionIndex798 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(798, null);
         } else {
             if (unionIndex798 == 1) {
                 Object oldString798 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(798);
@@ -16522,6 +17321,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex799 = (decoder.readIndex());
         if (unionIndex799 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(799, null);
         } else {
             if (unionIndex799 == 1) {
                 Object oldString799 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(799);
@@ -16537,6 +17337,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex800 = (decoder.readIndex());
         if (unionIndex800 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(800, null);
         } else {
             if (unionIndex800 == 1) {
                 Object oldString800 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(800);
@@ -16557,6 +17358,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex801 = (decoder.readIndex());
         if (unionIndex801 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(801, null);
         } else {
             if (unionIndex801 == 1) {
                 Object oldString801 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(801);
@@ -16572,6 +17374,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex802 = (decoder.readIndex());
         if (unionIndex802 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(802, null);
         } else {
             if (unionIndex802 == 1) {
                 Object oldString802 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(802);
@@ -16592,6 +17395,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex803 = (decoder.readIndex());
         if (unionIndex803 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(803, null);
         } else {
             if (unionIndex803 == 1) {
                 Object oldString803 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(803);
@@ -16607,6 +17411,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex804 = (decoder.readIndex());
         if (unionIndex804 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(804, null);
         } else {
             if (unionIndex804 == 1) {
                 Object oldString804 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(804);
@@ -16627,6 +17432,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex805 = (decoder.readIndex());
         if (unionIndex805 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(805, null);
         } else {
             if (unionIndex805 == 1) {
                 Object oldString805 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(805);
@@ -16642,6 +17448,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex806 = (decoder.readIndex());
         if (unionIndex806 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(806, null);
         } else {
             if (unionIndex806 == 1) {
                 Object oldString806 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(806);
@@ -16662,6 +17469,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex807 = (decoder.readIndex());
         if (unionIndex807 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(807, null);
         } else {
             if (unionIndex807 == 1) {
                 Object oldString807 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(807);
@@ -16677,6 +17485,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex808 = (decoder.readIndex());
         if (unionIndex808 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(808, null);
         } else {
             if (unionIndex808 == 1) {
                 Object oldString808 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(808);
@@ -16697,6 +17506,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex809 = (decoder.readIndex());
         if (unionIndex809 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(809, null);
         } else {
             if (unionIndex809 == 1) {
                 Object oldString809 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(809);
@@ -16712,6 +17522,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex810 = (decoder.readIndex());
         if (unionIndex810 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(810, null);
         } else {
             if (unionIndex810 == 1) {
                 Object oldString810 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(810);
@@ -16732,6 +17543,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex811 = (decoder.readIndex());
         if (unionIndex811 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(811, null);
         } else {
             if (unionIndex811 == 1) {
                 Object oldString811 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(811);
@@ -16747,6 +17559,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex812 = (decoder.readIndex());
         if (unionIndex812 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(812, null);
         } else {
             if (unionIndex812 == 1) {
                 Object oldString812 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(812);
@@ -16767,6 +17580,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex813 = (decoder.readIndex());
         if (unionIndex813 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(813, null);
         } else {
             if (unionIndex813 == 1) {
                 Object oldString813 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(813);
@@ -16782,6 +17596,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex814 = (decoder.readIndex());
         if (unionIndex814 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(814, null);
         } else {
             if (unionIndex814 == 1) {
                 Object oldString814 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(814);
@@ -16802,6 +17617,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex815 = (decoder.readIndex());
         if (unionIndex815 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(815, null);
         } else {
             if (unionIndex815 == 1) {
                 Object oldString815 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(815);
@@ -16817,6 +17633,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex816 = (decoder.readIndex());
         if (unionIndex816 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(816, null);
         } else {
             if (unionIndex816 == 1) {
                 Object oldString816 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(816);
@@ -16837,6 +17654,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex817 = (decoder.readIndex());
         if (unionIndex817 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(817, null);
         } else {
             if (unionIndex817 == 1) {
                 Object oldString817 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(817);
@@ -16852,6 +17670,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex818 = (decoder.readIndex());
         if (unionIndex818 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(818, null);
         } else {
             if (unionIndex818 == 1) {
                 Object oldString818 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(818);
@@ -16872,6 +17691,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex819 = (decoder.readIndex());
         if (unionIndex819 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(819, null);
         } else {
             if (unionIndex819 == 1) {
                 Object oldString819 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(819);
@@ -16887,6 +17707,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex820 = (decoder.readIndex());
         if (unionIndex820 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(820, null);
         } else {
             if (unionIndex820 == 1) {
                 Object oldString820 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(820);
@@ -16907,6 +17728,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex821 = (decoder.readIndex());
         if (unionIndex821 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(821, null);
         } else {
             if (unionIndex821 == 1) {
                 Object oldString821 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(821);
@@ -16922,6 +17744,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex822 = (decoder.readIndex());
         if (unionIndex822 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(822, null);
         } else {
             if (unionIndex822 == 1) {
                 Object oldString822 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(822);
@@ -16942,6 +17765,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex823 = (decoder.readIndex());
         if (unionIndex823 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(823, null);
         } else {
             if (unionIndex823 == 1) {
                 Object oldString823 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(823);
@@ -16957,6 +17781,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex824 = (decoder.readIndex());
         if (unionIndex824 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(824, null);
         } else {
             if (unionIndex824 == 1) {
                 Object oldString824 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(824);
@@ -16977,6 +17802,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex825 = (decoder.readIndex());
         if (unionIndex825 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(825, null);
         } else {
             if (unionIndex825 == 1) {
                 Object oldString825 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(825);
@@ -16992,6 +17818,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex826 = (decoder.readIndex());
         if (unionIndex826 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(826, null);
         } else {
             if (unionIndex826 == 1) {
                 Object oldString826 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(826);
@@ -17012,6 +17839,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex827 = (decoder.readIndex());
         if (unionIndex827 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(827, null);
         } else {
             if (unionIndex827 == 1) {
                 Object oldString827 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(827);
@@ -17027,6 +17855,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex828 = (decoder.readIndex());
         if (unionIndex828 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(828, null);
         } else {
             if (unionIndex828 == 1) {
                 Object oldString828 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(828);
@@ -17047,6 +17876,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex829 = (decoder.readIndex());
         if (unionIndex829 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(829, null);
         } else {
             if (unionIndex829 == 1) {
                 Object oldString829 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(829);
@@ -17062,6 +17892,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex830 = (decoder.readIndex());
         if (unionIndex830 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(830, null);
         } else {
             if (unionIndex830 == 1) {
                 Object oldString830 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(830);
@@ -17082,6 +17913,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex831 = (decoder.readIndex());
         if (unionIndex831 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(831, null);
         } else {
             if (unionIndex831 == 1) {
                 Object oldString831 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(831);
@@ -17097,6 +17929,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex832 = (decoder.readIndex());
         if (unionIndex832 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(832, null);
         } else {
             if (unionIndex832 == 1) {
                 Object oldString832 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(832);
@@ -17117,6 +17950,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex833 = (decoder.readIndex());
         if (unionIndex833 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(833, null);
         } else {
             if (unionIndex833 == 1) {
                 Object oldString833 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(833);
@@ -17132,6 +17966,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex834 = (decoder.readIndex());
         if (unionIndex834 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(834, null);
         } else {
             if (unionIndex834 == 1) {
                 Object oldString834 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(834);
@@ -17152,6 +17987,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex835 = (decoder.readIndex());
         if (unionIndex835 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(835, null);
         } else {
             if (unionIndex835 == 1) {
                 Object oldString835 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(835);
@@ -17167,6 +18003,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex836 = (decoder.readIndex());
         if (unionIndex836 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(836, null);
         } else {
             if (unionIndex836 == 1) {
                 Object oldString836 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(836);
@@ -17187,6 +18024,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex837 = (decoder.readIndex());
         if (unionIndex837 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(837, null);
         } else {
             if (unionIndex837 == 1) {
                 Object oldString837 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(837);
@@ -17202,6 +18040,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex838 = (decoder.readIndex());
         if (unionIndex838 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(838, null);
         } else {
             if (unionIndex838 == 1) {
                 Object oldString838 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(838);
@@ -17222,6 +18061,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex839 = (decoder.readIndex());
         if (unionIndex839 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(839, null);
         } else {
             if (unionIndex839 == 1) {
                 Object oldString839 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(839);
@@ -17237,6 +18077,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex840 = (decoder.readIndex());
         if (unionIndex840 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(840, null);
         } else {
             if (unionIndex840 == 1) {
                 Object oldString840 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(840);
@@ -17257,6 +18098,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex841 = (decoder.readIndex());
         if (unionIndex841 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(841, null);
         } else {
             if (unionIndex841 == 1) {
                 Object oldString841 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(841);
@@ -17272,6 +18114,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex842 = (decoder.readIndex());
         if (unionIndex842 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(842, null);
         } else {
             if (unionIndex842 == 1) {
                 Object oldString842 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(842);
@@ -17292,6 +18135,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex843 = (decoder.readIndex());
         if (unionIndex843 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(843, null);
         } else {
             if (unionIndex843 == 1) {
                 Object oldString843 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(843);
@@ -17307,6 +18151,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex844 = (decoder.readIndex());
         if (unionIndex844 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(844, null);
         } else {
             if (unionIndex844 == 1) {
                 Object oldString844 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(844);
@@ -17327,6 +18172,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex845 = (decoder.readIndex());
         if (unionIndex845 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(845, null);
         } else {
             if (unionIndex845 == 1) {
                 Object oldString845 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(845);
@@ -17342,6 +18188,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex846 = (decoder.readIndex());
         if (unionIndex846 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(846, null);
         } else {
             if (unionIndex846 == 1) {
                 Object oldString846 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(846);
@@ -17362,6 +18209,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex847 = (decoder.readIndex());
         if (unionIndex847 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(847, null);
         } else {
             if (unionIndex847 == 1) {
                 Object oldString847 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(847);
@@ -17377,6 +18225,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex848 = (decoder.readIndex());
         if (unionIndex848 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(848, null);
         } else {
             if (unionIndex848 == 1) {
                 Object oldString848 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(848);
@@ -17397,6 +18246,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex849 = (decoder.readIndex());
         if (unionIndex849 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(849, null);
         } else {
             if (unionIndex849 == 1) {
                 Object oldString849 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(849);
@@ -17412,6 +18262,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex850 = (decoder.readIndex());
         if (unionIndex850 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(850, null);
         } else {
             if (unionIndex850 == 1) {
                 Object oldString850 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(850);
@@ -17432,6 +18283,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex851 = (decoder.readIndex());
         if (unionIndex851 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(851, null);
         } else {
             if (unionIndex851 == 1) {
                 Object oldString851 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(851);
@@ -17447,6 +18299,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex852 = (decoder.readIndex());
         if (unionIndex852 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(852, null);
         } else {
             if (unionIndex852 == 1) {
                 Object oldString852 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(852);
@@ -17467,6 +18320,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex853 = (decoder.readIndex());
         if (unionIndex853 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(853, null);
         } else {
             if (unionIndex853 == 1) {
                 Object oldString853 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(853);
@@ -17482,6 +18336,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex854 = (decoder.readIndex());
         if (unionIndex854 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(854, null);
         } else {
             if (unionIndex854 == 1) {
                 Object oldString854 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(854);
@@ -17502,6 +18357,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex855 = (decoder.readIndex());
         if (unionIndex855 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(855, null);
         } else {
             if (unionIndex855 == 1) {
                 Object oldString855 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(855);
@@ -17517,6 +18373,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex856 = (decoder.readIndex());
         if (unionIndex856 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(856, null);
         } else {
             if (unionIndex856 == 1) {
                 Object oldString856 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(856);
@@ -17537,6 +18394,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex857 = (decoder.readIndex());
         if (unionIndex857 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(857, null);
         } else {
             if (unionIndex857 == 1) {
                 Object oldString857 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(857);
@@ -17552,6 +18410,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex858 = (decoder.readIndex());
         if (unionIndex858 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(858, null);
         } else {
             if (unionIndex858 == 1) {
                 Object oldString858 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(858);
@@ -17572,6 +18431,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex859 = (decoder.readIndex());
         if (unionIndex859 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(859, null);
         } else {
             if (unionIndex859 == 1) {
                 Object oldString859 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(859);
@@ -17587,6 +18447,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex860 = (decoder.readIndex());
         if (unionIndex860 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(860, null);
         } else {
             if (unionIndex860 == 1) {
                 Object oldString860 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(860);
@@ -17607,6 +18468,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex861 = (decoder.readIndex());
         if (unionIndex861 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(861, null);
         } else {
             if (unionIndex861 == 1) {
                 Object oldString861 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(861);
@@ -17622,6 +18484,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex862 = (decoder.readIndex());
         if (unionIndex862 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(862, null);
         } else {
             if (unionIndex862 == 1) {
                 Object oldString862 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(862);
@@ -17642,6 +18505,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex863 = (decoder.readIndex());
         if (unionIndex863 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(863, null);
         } else {
             if (unionIndex863 == 1) {
                 Object oldString863 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(863);
@@ -17657,6 +18521,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex864 = (decoder.readIndex());
         if (unionIndex864 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(864, null);
         } else {
             if (unionIndex864 == 1) {
                 Object oldString864 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(864);
@@ -17677,6 +18542,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex865 = (decoder.readIndex());
         if (unionIndex865 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(865, null);
         } else {
             if (unionIndex865 == 1) {
                 Object oldString865 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(865);
@@ -17692,6 +18558,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex866 = (decoder.readIndex());
         if (unionIndex866 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(866, null);
         } else {
             if (unionIndex866 == 1) {
                 Object oldString866 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(866);
@@ -17712,6 +18579,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex867 = (decoder.readIndex());
         if (unionIndex867 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(867, null);
         } else {
             if (unionIndex867 == 1) {
                 Object oldString867 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(867);
@@ -17727,6 +18595,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex868 = (decoder.readIndex());
         if (unionIndex868 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(868, null);
         } else {
             if (unionIndex868 == 1) {
                 Object oldString868 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(868);
@@ -17747,6 +18616,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex869 = (decoder.readIndex());
         if (unionIndex869 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(869, null);
         } else {
             if (unionIndex869 == 1) {
                 Object oldString869 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(869);
@@ -17762,6 +18632,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex870 = (decoder.readIndex());
         if (unionIndex870 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(870, null);
         } else {
             if (unionIndex870 == 1) {
                 Object oldString870 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(870);
@@ -17782,6 +18653,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex871 = (decoder.readIndex());
         if (unionIndex871 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(871, null);
         } else {
             if (unionIndex871 == 1) {
                 Object oldString871 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(871);
@@ -17797,6 +18669,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex872 = (decoder.readIndex());
         if (unionIndex872 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(872, null);
         } else {
             if (unionIndex872 == 1) {
                 Object oldString872 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(872);
@@ -17817,6 +18690,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex873 = (decoder.readIndex());
         if (unionIndex873 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(873, null);
         } else {
             if (unionIndex873 == 1) {
                 Object oldString873 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(873);
@@ -17832,6 +18706,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex874 = (decoder.readIndex());
         if (unionIndex874 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(874, null);
         } else {
             if (unionIndex874 == 1) {
                 Object oldString874 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(874);
@@ -17852,6 +18727,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex875 = (decoder.readIndex());
         if (unionIndex875 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(875, null);
         } else {
             if (unionIndex875 == 1) {
                 Object oldString875 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(875);
@@ -17867,6 +18743,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex876 = (decoder.readIndex());
         if (unionIndex876 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(876, null);
         } else {
             if (unionIndex876 == 1) {
                 Object oldString876 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(876);
@@ -17887,6 +18764,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex877 = (decoder.readIndex());
         if (unionIndex877 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(877, null);
         } else {
             if (unionIndex877 == 1) {
                 Object oldString877 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(877);
@@ -17902,6 +18780,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex878 = (decoder.readIndex());
         if (unionIndex878 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(878, null);
         } else {
             if (unionIndex878 == 1) {
                 Object oldString878 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(878);
@@ -17922,6 +18801,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex879 = (decoder.readIndex());
         if (unionIndex879 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(879, null);
         } else {
             if (unionIndex879 == 1) {
                 Object oldString879 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(879);
@@ -17937,6 +18817,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex880 = (decoder.readIndex());
         if (unionIndex880 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(880, null);
         } else {
             if (unionIndex880 == 1) {
                 Object oldString880 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(880);
@@ -17957,6 +18838,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex881 = (decoder.readIndex());
         if (unionIndex881 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(881, null);
         } else {
             if (unionIndex881 == 1) {
                 Object oldString881 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(881);
@@ -17972,6 +18854,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex882 = (decoder.readIndex());
         if (unionIndex882 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(882, null);
         } else {
             if (unionIndex882 == 1) {
                 Object oldString882 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(882);
@@ -17992,6 +18875,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex883 = (decoder.readIndex());
         if (unionIndex883 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(883, null);
         } else {
             if (unionIndex883 == 1) {
                 Object oldString883 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(883);
@@ -18007,6 +18891,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex884 = (decoder.readIndex());
         if (unionIndex884 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(884, null);
         } else {
             if (unionIndex884 == 1) {
                 Object oldString884 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(884);
@@ -18027,6 +18912,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex885 = (decoder.readIndex());
         if (unionIndex885 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(885, null);
         } else {
             if (unionIndex885 == 1) {
                 Object oldString885 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(885);
@@ -18042,6 +18928,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex886 = (decoder.readIndex());
         if (unionIndex886 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(886, null);
         } else {
             if (unionIndex886 == 1) {
                 Object oldString886 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(886);
@@ -18062,6 +18949,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex887 = (decoder.readIndex());
         if (unionIndex887 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(887, null);
         } else {
             if (unionIndex887 == 1) {
                 Object oldString887 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(887);
@@ -18077,6 +18965,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex888 = (decoder.readIndex());
         if (unionIndex888 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(888, null);
         } else {
             if (unionIndex888 == 1) {
                 Object oldString888 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(888);
@@ -18097,6 +18986,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex889 = (decoder.readIndex());
         if (unionIndex889 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(889, null);
         } else {
             if (unionIndex889 == 1) {
                 Object oldString889 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(889);
@@ -18112,6 +19002,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex890 = (decoder.readIndex());
         if (unionIndex890 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(890, null);
         } else {
             if (unionIndex890 == 1) {
                 Object oldString890 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(890);
@@ -18132,6 +19023,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex891 = (decoder.readIndex());
         if (unionIndex891 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(891, null);
         } else {
             if (unionIndex891 == 1) {
                 Object oldString891 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(891);
@@ -18147,6 +19039,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex892 = (decoder.readIndex());
         if (unionIndex892 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(892, null);
         } else {
             if (unionIndex892 == 1) {
                 Object oldString892 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(892);
@@ -18167,6 +19060,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex893 = (decoder.readIndex());
         if (unionIndex893 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(893, null);
         } else {
             if (unionIndex893 == 1) {
                 Object oldString893 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(893);
@@ -18182,6 +19076,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex894 = (decoder.readIndex());
         if (unionIndex894 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(894, null);
         } else {
             if (unionIndex894 == 1) {
                 Object oldString894 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(894);
@@ -18202,6 +19097,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex895 = (decoder.readIndex());
         if (unionIndex895 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(895, null);
         } else {
             if (unionIndex895 == 1) {
                 Object oldString895 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(895);
@@ -18217,6 +19113,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex896 = (decoder.readIndex());
         if (unionIndex896 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(896, null);
         } else {
             if (unionIndex896 == 1) {
                 Object oldString896 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(896);
@@ -18237,6 +19134,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex897 = (decoder.readIndex());
         if (unionIndex897 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(897, null);
         } else {
             if (unionIndex897 == 1) {
                 Object oldString897 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(897);
@@ -18252,6 +19150,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex898 = (decoder.readIndex());
         if (unionIndex898 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(898, null);
         } else {
             if (unionIndex898 == 1) {
                 Object oldString898 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(898);
@@ -18272,6 +19171,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex899 = (decoder.readIndex());
         if (unionIndex899 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(899, null);
         } else {
             if (unionIndex899 == 1) {
                 Object oldString899 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(899);
@@ -18287,6 +19187,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex900 = (decoder.readIndex());
         if (unionIndex900 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(900, null);
         } else {
             if (unionIndex900 == 1) {
                 Object oldString900 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(900);
@@ -18307,6 +19208,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex901 = (decoder.readIndex());
         if (unionIndex901 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(901, null);
         } else {
             if (unionIndex901 == 1) {
                 Object oldString901 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(901);
@@ -18322,6 +19224,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex902 = (decoder.readIndex());
         if (unionIndex902 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(902, null);
         } else {
             if (unionIndex902 == 1) {
                 Object oldString902 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(902);
@@ -18342,6 +19245,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex903 = (decoder.readIndex());
         if (unionIndex903 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(903, null);
         } else {
             if (unionIndex903 == 1) {
                 Object oldString903 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(903);
@@ -18357,6 +19261,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex904 = (decoder.readIndex());
         if (unionIndex904 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(904, null);
         } else {
             if (unionIndex904 == 1) {
                 Object oldString904 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(904);
@@ -18377,6 +19282,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex905 = (decoder.readIndex());
         if (unionIndex905 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(905, null);
         } else {
             if (unionIndex905 == 1) {
                 Object oldString905 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(905);
@@ -18392,6 +19298,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex906 = (decoder.readIndex());
         if (unionIndex906 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(906, null);
         } else {
             if (unionIndex906 == 1) {
                 Object oldString906 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(906);
@@ -18412,6 +19319,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex907 = (decoder.readIndex());
         if (unionIndex907 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(907, null);
         } else {
             if (unionIndex907 == 1) {
                 Object oldString907 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(907);
@@ -18427,6 +19335,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex908 = (decoder.readIndex());
         if (unionIndex908 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(908, null);
         } else {
             if (unionIndex908 == 1) {
                 Object oldString908 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(908);
@@ -18447,6 +19356,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex909 = (decoder.readIndex());
         if (unionIndex909 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(909, null);
         } else {
             if (unionIndex909 == 1) {
                 Object oldString909 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(909);
@@ -18462,6 +19372,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex910 = (decoder.readIndex());
         if (unionIndex910 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(910, null);
         } else {
             if (unionIndex910 == 1) {
                 Object oldString910 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(910);
@@ -18482,6 +19393,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex911 = (decoder.readIndex());
         if (unionIndex911 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(911, null);
         } else {
             if (unionIndex911 == 1) {
                 Object oldString911 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(911);
@@ -18497,6 +19409,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex912 = (decoder.readIndex());
         if (unionIndex912 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(912, null);
         } else {
             if (unionIndex912 == 1) {
                 Object oldString912 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(912);
@@ -18517,6 +19430,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex913 = (decoder.readIndex());
         if (unionIndex913 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(913, null);
         } else {
             if (unionIndex913 == 1) {
                 Object oldString913 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(913);
@@ -18532,6 +19446,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex914 = (decoder.readIndex());
         if (unionIndex914 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(914, null);
         } else {
             if (unionIndex914 == 1) {
                 Object oldString914 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(914);
@@ -18552,6 +19467,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex915 = (decoder.readIndex());
         if (unionIndex915 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(915, null);
         } else {
             if (unionIndex915 == 1) {
                 Object oldString915 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(915);
@@ -18567,6 +19483,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex916 = (decoder.readIndex());
         if (unionIndex916 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(916, null);
         } else {
             if (unionIndex916 == 1) {
                 Object oldString916 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(916);
@@ -18587,6 +19504,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex917 = (decoder.readIndex());
         if (unionIndex917 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(917, null);
         } else {
             if (unionIndex917 == 1) {
                 Object oldString917 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(917);
@@ -18602,6 +19520,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex918 = (decoder.readIndex());
         if (unionIndex918 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(918, null);
         } else {
             if (unionIndex918 == 1) {
                 Object oldString918 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(918);
@@ -18622,6 +19541,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex919 = (decoder.readIndex());
         if (unionIndex919 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(919, null);
         } else {
             if (unionIndex919 == 1) {
                 Object oldString919 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(919);
@@ -18637,6 +19557,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex920 = (decoder.readIndex());
         if (unionIndex920 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(920, null);
         } else {
             if (unionIndex920 == 1) {
                 Object oldString920 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(920);
@@ -18657,6 +19578,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex921 = (decoder.readIndex());
         if (unionIndex921 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(921, null);
         } else {
             if (unionIndex921 == 1) {
                 Object oldString921 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(921);
@@ -18672,6 +19594,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex922 = (decoder.readIndex());
         if (unionIndex922 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(922, null);
         } else {
             if (unionIndex922 == 1) {
                 Object oldString922 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(922);
@@ -18692,6 +19615,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex923 = (decoder.readIndex());
         if (unionIndex923 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(923, null);
         } else {
             if (unionIndex923 == 1) {
                 Object oldString923 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(923);
@@ -18707,6 +19631,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex924 = (decoder.readIndex());
         if (unionIndex924 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(924, null);
         } else {
             if (unionIndex924 == 1) {
                 Object oldString924 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(924);
@@ -18727,6 +19652,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex925 = (decoder.readIndex());
         if (unionIndex925 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(925, null);
         } else {
             if (unionIndex925 == 1) {
                 Object oldString925 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(925);
@@ -18742,6 +19668,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex926 = (decoder.readIndex());
         if (unionIndex926 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(926, null);
         } else {
             if (unionIndex926 == 1) {
                 Object oldString926 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(926);
@@ -18762,6 +19689,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex927 = (decoder.readIndex());
         if (unionIndex927 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(927, null);
         } else {
             if (unionIndex927 == 1) {
                 Object oldString927 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(927);
@@ -18777,6 +19705,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex928 = (decoder.readIndex());
         if (unionIndex928 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(928, null);
         } else {
             if (unionIndex928 == 1) {
                 Object oldString928 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(928);
@@ -18797,6 +19726,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex929 = (decoder.readIndex());
         if (unionIndex929 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(929, null);
         } else {
             if (unionIndex929 == 1) {
                 Object oldString929 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(929);
@@ -18812,6 +19742,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex930 = (decoder.readIndex());
         if (unionIndex930 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(930, null);
         } else {
             if (unionIndex930 == 1) {
                 Object oldString930 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(930);
@@ -18832,6 +19763,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex931 = (decoder.readIndex());
         if (unionIndex931 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(931, null);
         } else {
             if (unionIndex931 == 1) {
                 Object oldString931 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(931);
@@ -18847,6 +19779,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex932 = (decoder.readIndex());
         if (unionIndex932 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(932, null);
         } else {
             if (unionIndex932 == 1) {
                 Object oldString932 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(932);
@@ -18867,6 +19800,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex933 = (decoder.readIndex());
         if (unionIndex933 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(933, null);
         } else {
             if (unionIndex933 == 1) {
                 Object oldString933 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(933);
@@ -18882,6 +19816,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex934 = (decoder.readIndex());
         if (unionIndex934 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(934, null);
         } else {
             if (unionIndex934 == 1) {
                 Object oldString934 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(934);
@@ -18902,6 +19837,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex935 = (decoder.readIndex());
         if (unionIndex935 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(935, null);
         } else {
             if (unionIndex935 == 1) {
                 Object oldString935 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(935);
@@ -18917,6 +19853,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex936 = (decoder.readIndex());
         if (unionIndex936 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(936, null);
         } else {
             if (unionIndex936 == 1) {
                 Object oldString936 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(936);
@@ -18937,6 +19874,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex937 = (decoder.readIndex());
         if (unionIndex937 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(937, null);
         } else {
             if (unionIndex937 == 1) {
                 Object oldString937 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(937);
@@ -18952,6 +19890,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex938 = (decoder.readIndex());
         if (unionIndex938 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(938, null);
         } else {
             if (unionIndex938 == 1) {
                 Object oldString938 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(938);
@@ -18972,6 +19911,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex939 = (decoder.readIndex());
         if (unionIndex939 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(939, null);
         } else {
             if (unionIndex939 == 1) {
                 Object oldString939 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(939);
@@ -18987,6 +19927,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex940 = (decoder.readIndex());
         if (unionIndex940 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(940, null);
         } else {
             if (unionIndex940 == 1) {
                 Object oldString940 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(940);
@@ -19007,6 +19948,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex941 = (decoder.readIndex());
         if (unionIndex941 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(941, null);
         } else {
             if (unionIndex941 == 1) {
                 Object oldString941 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(941);
@@ -19022,6 +19964,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex942 = (decoder.readIndex());
         if (unionIndex942 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(942, null);
         } else {
             if (unionIndex942 == 1) {
                 Object oldString942 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(942);
@@ -19042,6 +19985,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex943 = (decoder.readIndex());
         if (unionIndex943 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(943, null);
         } else {
             if (unionIndex943 == 1) {
                 Object oldString943 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(943);
@@ -19057,6 +20001,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex944 = (decoder.readIndex());
         if (unionIndex944 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(944, null);
         } else {
             if (unionIndex944 == 1) {
                 Object oldString944 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(944);
@@ -19077,6 +20022,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex945 = (decoder.readIndex());
         if (unionIndex945 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(945, null);
         } else {
             if (unionIndex945 == 1) {
                 Object oldString945 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(945);
@@ -19092,6 +20038,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex946 = (decoder.readIndex());
         if (unionIndex946 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(946, null);
         } else {
             if (unionIndex946 == 1) {
                 Object oldString946 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(946);
@@ -19112,6 +20059,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex947 = (decoder.readIndex());
         if (unionIndex947 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(947, null);
         } else {
             if (unionIndex947 == 1) {
                 Object oldString947 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(947);
@@ -19127,6 +20075,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex948 = (decoder.readIndex());
         if (unionIndex948 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(948, null);
         } else {
             if (unionIndex948 == 1) {
                 Object oldString948 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(948);
@@ -19147,6 +20096,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex949 = (decoder.readIndex());
         if (unionIndex949 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(949, null);
         } else {
             if (unionIndex949 == 1) {
                 Object oldString949 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(949);
@@ -19162,6 +20112,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex950 = (decoder.readIndex());
         if (unionIndex950 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(950, null);
         } else {
             if (unionIndex950 == 1) {
                 Object oldString950 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(950);
@@ -19182,6 +20133,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex951 = (decoder.readIndex());
         if (unionIndex951 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(951, null);
         } else {
             if (unionIndex951 == 1) {
                 Object oldString951 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(951);
@@ -19197,6 +20149,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex952 = (decoder.readIndex());
         if (unionIndex952 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(952, null);
         } else {
             if (unionIndex952 == 1) {
                 Object oldString952 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(952);
@@ -19217,6 +20170,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex953 = (decoder.readIndex());
         if (unionIndex953 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(953, null);
         } else {
             if (unionIndex953 == 1) {
                 Object oldString953 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(953);
@@ -19232,6 +20186,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex954 = (decoder.readIndex());
         if (unionIndex954 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(954, null);
         } else {
             if (unionIndex954 == 1) {
                 Object oldString954 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(954);
@@ -19252,6 +20207,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex955 = (decoder.readIndex());
         if (unionIndex955 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(955, null);
         } else {
             if (unionIndex955 == 1) {
                 Object oldString955 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(955);
@@ -19267,6 +20223,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex956 = (decoder.readIndex());
         if (unionIndex956 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(956, null);
         } else {
             if (unionIndex956 == 1) {
                 Object oldString956 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(956);
@@ -19287,6 +20244,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex957 = (decoder.readIndex());
         if (unionIndex957 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(957, null);
         } else {
             if (unionIndex957 == 1) {
                 Object oldString957 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(957);
@@ -19302,6 +20260,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex958 = (decoder.readIndex());
         if (unionIndex958 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(958, null);
         } else {
             if (unionIndex958 == 1) {
                 Object oldString958 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(958);
@@ -19322,6 +20281,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex959 = (decoder.readIndex());
         if (unionIndex959 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(959, null);
         } else {
             if (unionIndex959 == 1) {
                 Object oldString959 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(959);
@@ -19337,6 +20297,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex960 = (decoder.readIndex());
         if (unionIndex960 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(960, null);
         } else {
             if (unionIndex960 == 1) {
                 Object oldString960 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(960);
@@ -19357,6 +20318,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex961 = (decoder.readIndex());
         if (unionIndex961 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(961, null);
         } else {
             if (unionIndex961 == 1) {
                 Object oldString961 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(961);
@@ -19372,6 +20334,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex962 = (decoder.readIndex());
         if (unionIndex962 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(962, null);
         } else {
             if (unionIndex962 == 1) {
                 Object oldString962 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(962);
@@ -19392,6 +20355,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex963 = (decoder.readIndex());
         if (unionIndex963 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(963, null);
         } else {
             if (unionIndex963 == 1) {
                 Object oldString963 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(963);
@@ -19407,6 +20371,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex964 = (decoder.readIndex());
         if (unionIndex964 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(964, null);
         } else {
             if (unionIndex964 == 1) {
                 Object oldString964 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(964);
@@ -19427,6 +20392,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex965 = (decoder.readIndex());
         if (unionIndex965 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(965, null);
         } else {
             if (unionIndex965 == 1) {
                 Object oldString965 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(965);
@@ -19442,6 +20408,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex966 = (decoder.readIndex());
         if (unionIndex966 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(966, null);
         } else {
             if (unionIndex966 == 1) {
                 Object oldString966 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(966);
@@ -19462,6 +20429,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex967 = (decoder.readIndex());
         if (unionIndex967 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(967, null);
         } else {
             if (unionIndex967 == 1) {
                 Object oldString967 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(967);
@@ -19477,6 +20445,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex968 = (decoder.readIndex());
         if (unionIndex968 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(968, null);
         } else {
             if (unionIndex968 == 1) {
                 Object oldString968 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(968);
@@ -19497,6 +20466,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex969 = (decoder.readIndex());
         if (unionIndex969 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(969, null);
         } else {
             if (unionIndex969 == 1) {
                 Object oldString969 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(969);
@@ -19512,6 +20482,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex970 = (decoder.readIndex());
         if (unionIndex970 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(970, null);
         } else {
             if (unionIndex970 == 1) {
                 Object oldString970 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(970);
@@ -19532,6 +20503,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex971 = (decoder.readIndex());
         if (unionIndex971 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(971, null);
         } else {
             if (unionIndex971 == 1) {
                 Object oldString971 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(971);
@@ -19547,6 +20519,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex972 = (decoder.readIndex());
         if (unionIndex972 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(972, null);
         } else {
             if (unionIndex972 == 1) {
                 Object oldString972 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(972);
@@ -19567,6 +20540,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex973 = (decoder.readIndex());
         if (unionIndex973 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(973, null);
         } else {
             if (unionIndex973 == 1) {
                 Object oldString973 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(973);
@@ -19582,6 +20556,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex974 = (decoder.readIndex());
         if (unionIndex974 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(974, null);
         } else {
             if (unionIndex974 == 1) {
                 Object oldString974 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(974);
@@ -19602,6 +20577,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex975 = (decoder.readIndex());
         if (unionIndex975 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(975, null);
         } else {
             if (unionIndex975 == 1) {
                 Object oldString975 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(975);
@@ -19617,6 +20593,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex976 = (decoder.readIndex());
         if (unionIndex976 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(976, null);
         } else {
             if (unionIndex976 == 1) {
                 Object oldString976 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(976);
@@ -19637,6 +20614,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex977 = (decoder.readIndex());
         if (unionIndex977 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(977, null);
         } else {
             if (unionIndex977 == 1) {
                 Object oldString977 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(977);
@@ -19652,6 +20630,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex978 = (decoder.readIndex());
         if (unionIndex978 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(978, null);
         } else {
             if (unionIndex978 == 1) {
                 Object oldString978 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(978);
@@ -19672,6 +20651,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex979 = (decoder.readIndex());
         if (unionIndex979 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(979, null);
         } else {
             if (unionIndex979 == 1) {
                 Object oldString979 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(979);
@@ -19687,6 +20667,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex980 = (decoder.readIndex());
         if (unionIndex980 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(980, null);
         } else {
             if (unionIndex980 == 1) {
                 Object oldString980 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(980);
@@ -19707,6 +20688,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex981 = (decoder.readIndex());
         if (unionIndex981 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(981, null);
         } else {
             if (unionIndex981 == 1) {
                 Object oldString981 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(981);
@@ -19722,6 +20704,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex982 = (decoder.readIndex());
         if (unionIndex982 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(982, null);
         } else {
             if (unionIndex982 == 1) {
                 Object oldString982 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(982);
@@ -19742,6 +20725,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex983 = (decoder.readIndex());
         if (unionIndex983 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(983, null);
         } else {
             if (unionIndex983 == 1) {
                 Object oldString983 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(983);
@@ -19757,6 +20741,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex984 = (decoder.readIndex());
         if (unionIndex984 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(984, null);
         } else {
             if (unionIndex984 == 1) {
                 Object oldString984 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(984);
@@ -19777,6 +20762,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex985 = (decoder.readIndex());
         if (unionIndex985 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(985, null);
         } else {
             if (unionIndex985 == 1) {
                 Object oldString985 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(985);
@@ -19792,6 +20778,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex986 = (decoder.readIndex());
         if (unionIndex986 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(986, null);
         } else {
             if (unionIndex986 == 1) {
                 Object oldString986 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(986);
@@ -19812,6 +20799,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex987 = (decoder.readIndex());
         if (unionIndex987 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(987, null);
         } else {
             if (unionIndex987 == 1) {
                 Object oldString987 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(987);
@@ -19827,6 +20815,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex988 = (decoder.readIndex());
         if (unionIndex988 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(988, null);
         } else {
             if (unionIndex988 == 1) {
                 Object oldString988 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(988);
@@ -19847,6 +20836,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex989 = (decoder.readIndex());
         if (unionIndex989 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(989, null);
         } else {
             if (unionIndex989 == 1) {
                 Object oldString989 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(989);
@@ -19862,6 +20852,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex990 = (decoder.readIndex());
         if (unionIndex990 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(990, null);
         } else {
             if (unionIndex990 == 1) {
                 Object oldString990 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(990);
@@ -19882,6 +20873,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex991 = (decoder.readIndex());
         if (unionIndex991 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(991, null);
         } else {
             if (unionIndex991 == 1) {
                 Object oldString991 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(991);
@@ -19897,6 +20889,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex992 = (decoder.readIndex());
         if (unionIndex992 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(992, null);
         } else {
             if (unionIndex992 == 1) {
                 Object oldString992 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(992);
@@ -19917,6 +20910,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex993 = (decoder.readIndex());
         if (unionIndex993 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(993, null);
         } else {
             if (unionIndex993 == 1) {
                 Object oldString993 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(993);
@@ -19932,6 +20926,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex994 = (decoder.readIndex());
         if (unionIndex994 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(994, null);
         } else {
             if (unionIndex994 == 1) {
                 Object oldString994 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(994);
@@ -19952,6 +20947,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex995 = (decoder.readIndex());
         if (unionIndex995 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(995, null);
         } else {
             if (unionIndex995 == 1) {
                 Object oldString995 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(995);
@@ -19967,6 +20963,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex996 = (decoder.readIndex());
         if (unionIndex996 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(996, null);
         } else {
             if (unionIndex996 == 1) {
                 Object oldString996 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(996);
@@ -19987,6 +20984,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex997 = (decoder.readIndex());
         if (unionIndex997 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(997, null);
         } else {
             if (unionIndex997 == 1) {
                 Object oldString997 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(997);
@@ -20002,6 +21000,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex998 = (decoder.readIndex());
         if (unionIndex998 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(998, null);
         } else {
             if (unionIndex998 == 1) {
                 Object oldString998 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(998);
@@ -20022,6 +21021,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         int unionIndex999 = (decoder.readIndex());
         if (unionIndex999 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.put(999, null);
         } else {
             if (unionIndex999 == 1) {
                 Object oldString999 = FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema.get(999);

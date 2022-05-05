@@ -56,6 +56,7 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(0, null);
         } else {
             if (unionIndex0 == 1) {
                 Object oldString0 = FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(0);
@@ -90,6 +91,7 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
         int unionIndex2 = (decoder.readIndex());
         if (unionIndex2 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(1, null);
         } else {
             if (unionIndex2 == 1) {
                 Object oldString1 = FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(1);
@@ -110,6 +112,7 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
         int unionIndex3 = (decoder.readIndex());
         if (unionIndex3 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(2, null);
         } else {
             if (unionIndex3 == 1) {
                 FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(2, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(2), (decoder)));
@@ -156,6 +159,7 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
         int unionIndex4 = (decoder.readIndex());
         if (unionIndex4 == 0) {
             decoder.readNull();
+            subRecord.put(0, null);
         } else {
             if (unionIndex4 == 1) {
                 Object oldString2 = subRecord.get(0);
@@ -188,6 +192,7 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
         int unionIndex6 = (decoder.readIndex());
         if (unionIndex6 == 0) {
             decoder.readNull();
+            subRecord.put(1, null);
         } else {
             if (unionIndex6 == 1) {
                 Object oldString3 = subRecord.get(1);

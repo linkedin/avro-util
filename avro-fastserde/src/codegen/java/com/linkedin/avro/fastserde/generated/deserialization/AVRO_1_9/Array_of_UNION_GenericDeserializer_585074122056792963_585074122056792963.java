@@ -46,6 +46,7 @@ public class Array_of_UNION_GenericDeserializer_585074122056792963_5850741220567
                 int unionIndex0 = (decoder.readIndex());
                 if (unionIndex0 == 0) {
                     decoder.readNull();
+                    array0 .add(null);
                 } else {
                     if (unionIndex0 == 1) {
                         array0 .add(deserializerecord0(arrayArrayElementReuseVar0, (decoder)));
@@ -71,6 +72,7 @@ public class Array_of_UNION_GenericDeserializer_585074122056792963_5850741220567
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
+            record.put(0, null);
         } else {
             if (unionIndex1 == 1) {
                 Object oldString0 = record.get(0);

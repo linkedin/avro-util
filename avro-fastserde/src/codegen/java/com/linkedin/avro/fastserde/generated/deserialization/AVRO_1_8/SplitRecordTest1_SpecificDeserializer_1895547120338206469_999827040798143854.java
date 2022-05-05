@@ -52,6 +52,7 @@ public class SplitRecordTest1_SpecificDeserializer_1895547120338206469_999827040
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
+            FullRecord.put(0, null);
         } else {
             if (unionIndex0 == 1) {
                 Object oldString0 = FullRecord.get(0);
@@ -106,6 +107,7 @@ public class SplitRecordTest1_SpecificDeserializer_1895547120338206469_999827040
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
+            FullRecord.put(1, null);
         } else {
             if (unionIndex1 == 1) {
                 FullRecord.put(1, (decoder.readInt()));
@@ -129,6 +131,7 @@ public class SplitRecordTest1_SpecificDeserializer_1895547120338206469_999827040
         int unionIndex2 = (decoder.readIndex());
         if (unionIndex2 == 0) {
             decoder.readNull();
+            FullRecord.put(0, null);
         } else {
             if (unionIndex2 == 1) {
                 Object oldString1 = FullRecord.get(0);
@@ -151,6 +154,7 @@ public class SplitRecordTest1_SpecificDeserializer_1895547120338206469_999827040
         int unionIndex3 = (decoder.readIndex());
         if (unionIndex3 == 0) {
             decoder.readNull();
+            FullRecord.put(1, null);
         } else {
             if (unionIndex3 == 1) {
                 FullRecord.put(1, (decoder.readInt()));
