@@ -81,6 +81,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSu
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
+            aliasedSubRecord.put(0, null);
         } else {
             if (unionIndex1 == 1) {
                 Object oldString0 = aliasedSubRecord.get(0);
@@ -133,6 +134,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSu
         int unionIndex2 = (decoder.readIndex());
         if (unionIndex2 == 0) {
             decoder.readNull();
+            aliasedSubRecord.put(0, null);
         } else {
             if (unionIndex2 == 1) {
                 aliasedSubRecord.put(0, (decoder.readInt()));
@@ -150,6 +152,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSu
         int unionIndex3 = (decoder.readIndex());
         if (unionIndex3 == 0) {
             decoder.readNull();
+            aliasedSubRecord.put(1, null);
         } else {
             if (unionIndex3 == 1) {
                 Object oldString1 = aliasedSubRecord.get(1);

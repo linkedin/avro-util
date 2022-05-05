@@ -51,6 +51,7 @@ public class recordName_GenericDeserializer_6897301803194779359_6897301803194779
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
+            recordName.put(1, null);
         } else {
             if (unionIndex0 == 1) {
                 recordName.put(1, deserializerecordName0(recordName.get(1), (decoder)));

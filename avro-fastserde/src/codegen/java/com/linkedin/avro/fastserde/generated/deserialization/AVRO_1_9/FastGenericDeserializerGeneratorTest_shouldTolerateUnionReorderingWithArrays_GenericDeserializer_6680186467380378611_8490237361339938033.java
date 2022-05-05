@@ -41,6 +41,7 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingW
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithArrays.put(0, null);
         } else {
             if (unionIndex0 == 1) {
                 PrimitiveIntList testOption0 = null;

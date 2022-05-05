@@ -60,6 +60,7 @@ public class FastStringableTest_javaStringPropertyTest_GenericDeserializer_91033
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
+            FastStringableTest_javaStringPropertyTest.put(1, null);
         } else {
             if (unionIndex0 == 1) {
                 Object oldString1 = FastStringableTest_javaStringPropertyTest.get(1);

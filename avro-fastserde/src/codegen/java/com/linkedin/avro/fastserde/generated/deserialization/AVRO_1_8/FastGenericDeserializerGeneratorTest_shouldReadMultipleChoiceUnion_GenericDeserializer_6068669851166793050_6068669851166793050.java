@@ -42,6 +42,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion_
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.put(0, null);
         } else {
             if (unionIndex0 == 1) {
                 FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.put(0, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.get(0), (decoder)));
@@ -77,6 +78,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion_
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
+            subRecord.put(0, null);
         } else {
             if (unionIndex1 == 1) {
                 Object oldString0 = subRecord.get(0);

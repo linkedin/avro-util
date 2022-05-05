@@ -94,6 +94,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
+            subRecord.put(0, null);
         } else {
             if (unionIndex0 == 1) {
                 Object oldString0 = subRecord.get(0);
@@ -140,6 +141,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.put(2, null);
         } else {
             if (unionIndex1 == 1) {
                 List<IndexedRecord> recordsArrayUnionOption0 = null;
@@ -160,6 +162,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
                         int unionIndex2 = (decoder.readIndex());
                         if (unionIndex2 == 0) {
                             decoder.readNull();
+                            recordsArrayUnionOption0 .add(null);
                         } else {
                             if (unionIndex2 == 1) {
                                 recordsArrayUnionOption0 .add(deserializesubRecord0(recordsArrayUnionOptionArrayElementReuseVar0, (decoder)));
@@ -183,6 +186,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
         int unionIndex3 = (decoder.readIndex());
         if (unionIndex3 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField.put(3, null);
         } else {
             if (unionIndex3 == 1) {
                 Map<Utf8, IndexedRecord> recordsMapUnionOption0 = null;
@@ -205,6 +209,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
                             int unionIndex4 = (decoder.readIndex());
                             if (unionIndex4 == 0) {
                                 decoder.readNull();
+                                recordsMapUnionOption0 .put(key1, null);
                             } else {
                                 if (unionIndex4 == 1) {
                                     recordsMapUnionOption0 .put(key1, deserializesubRecord0(null, (decoder)));

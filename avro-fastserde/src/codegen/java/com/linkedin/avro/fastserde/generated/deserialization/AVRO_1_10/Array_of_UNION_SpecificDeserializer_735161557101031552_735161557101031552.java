@@ -56,6 +56,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
                 int unionIndex0 = (decoder.readIndex());
                 if (unionIndex0 == 0) {
                     decoder.readNull();
+                    array0 .add(null);
                 } else {
                     if (unionIndex0 == 1) {
                         array0 .add(deserializeTestRecord0(arrayArrayElementReuseVar0, (decoder)));
@@ -107,6 +108,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
+            TestRecord.put(1, null);
         } else {
             if (unionIndex1 == 1) {
                 TestRecord.put(1, (decoder.readInt()));
@@ -123,6 +125,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
         int unionIndex2 = (decoder.readIndex());
         if (unionIndex2 == 0) {
             decoder.readNull();
+            TestRecord.put(3, null);
         } else {
             if (unionIndex2 == 1) {
                 TestRecord.put(3, (decoder.readLong()));
@@ -139,6 +142,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
         int unionIndex3 = (decoder.readIndex());
         if (unionIndex3 == 0) {
             decoder.readNull();
+            TestRecord.put(5, null);
         } else {
             if (unionIndex3 == 1) {
                 TestRecord.put(5, (decoder.readDouble()));
@@ -155,6 +159,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
         int unionIndex4 = (decoder.readIndex());
         if (unionIndex4 == 0) {
             decoder.readNull();
+            TestRecord.put(7, null);
         } else {
             if (unionIndex4 == 1) {
                 TestRecord.put(7, (decoder.readFloat()));
@@ -171,6 +176,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
         int unionIndex5 = (decoder.readIndex());
         if (unionIndex5 == 0) {
             decoder.readNull();
+            TestRecord.put(9, null);
         } else {
             if (unionIndex5 == 1) {
                 TestRecord.put(9, (decoder.readBoolean()));
@@ -192,6 +198,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
         int unionIndex6 = (decoder.readIndex());
         if (unionIndex6 == 0) {
             decoder.readNull();
+            TestRecord.put(11, null);
         } else {
             if (unionIndex6 == 1) {
                 Object oldBytes1 = TestRecord.get(11);
@@ -218,6 +225,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
         int unionIndex7 = (decoder.readIndex());
         if (unionIndex7 == 0) {
             decoder.readNull();
+            TestRecord.put(13, null);
         } else {
             if (unionIndex7 == 1) {
                 Object oldString1 = TestRecord.get(13);
@@ -250,6 +258,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
         int unionIndex8 = (decoder.readIndex());
         if (unionIndex8 == 0) {
             decoder.readNull();
+            TestRecord.put(15, null);
         } else {
             if (unionIndex8 == 1) {
                 byte[] testFixed2;
@@ -322,6 +331,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
                 int unionIndex9 = (decoder.readIndex());
                 if (unionIndex9 == 0) {
                     decoder.readNull();
+                    testFixedUnionArray0 .add(null);
                 } else {
                     if (unionIndex9 == 1) {
                         byte[] testFixed6;
@@ -353,6 +363,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
         int unionIndex10 = (decoder.readIndex());
         if (unionIndex10 == 0) {
             decoder.readNull();
+            TestRecord.put(19, null);
         } else {
             if (unionIndex10 == 1) {
                 TestRecord.put(19, TestEnum.values()[(decoder.readEnum())]);
@@ -399,6 +410,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
                 int unionIndex11 = (decoder.readIndex());
                 if (unionIndex11 == 0) {
                     decoder.readNull();
+                    testEnumUnionArray0 .add(null);
                 } else {
                     if (unionIndex11 == 1) {
                         testEnumUnionArray0 .add(TestEnum.values()[(decoder.readEnum())]);
@@ -413,6 +425,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
         int unionIndex12 = (decoder.readIndex());
         if (unionIndex12 == 0) {
             decoder.readNull();
+            TestRecord.put(22, null);
         } else {
             if (unionIndex12 == 1) {
                 TestRecord.put(22, deserializeSubRecord0(TestRecord.get(22), (decoder)));
@@ -434,6 +447,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
         int unionIndex13 = (decoder.readIndex());
         if (unionIndex13 == 0) {
             decoder.readNull();
+            SubRecord.put(0, null);
         } else {
             if (unionIndex13 == 1) {
                 Object oldString2 = SubRecord.get(0);
@@ -456,6 +470,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
         int unionIndex14 = (decoder.readIndex());
         if (unionIndex14 == 0) {
             decoder.readNull();
+            SubRecord.put(1, null);
         } else {
             if (unionIndex14 == 1) {
                 Object oldString3 = SubRecord.get(1);
@@ -527,6 +542,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
         int unionIndex15 = (decoder.readIndex());
         if (unionIndex15 == 0) {
             decoder.readNull();
+            TestRecord.put(26, null);
         } else {
             if (unionIndex15 == 1) {
                 List<com.linkedin.avro.fastserde.generated.avro.SubRecord> recordsArrayUnionOption0 = null;
@@ -547,6 +563,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
                         int unionIndex16 = (decoder.readIndex());
                         if (unionIndex16 == 0) {
                             decoder.readNull();
+                            recordsArrayUnionOption0 .add(null);
                         } else {
                             if (unionIndex16 == 1) {
                                 recordsArrayUnionOption0 .add(deserializeSubRecord0(recordsArrayUnionOptionArrayElementReuseVar0, (decoder)));
@@ -570,6 +587,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
         int unionIndex17 = (decoder.readIndex());
         if (unionIndex17 == 0) {
             decoder.readNull();
+            TestRecord.put(27, null);
         } else {
             if (unionIndex17 == 1) {
                 Map<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord> recordsMapUnionOption0 = null;
@@ -592,6 +610,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
                             int unionIndex18 = (decoder.readIndex());
                             if (unionIndex18 == 0) {
                                 decoder.readNull();
+                                recordsMapUnionOption0 .put(key1, null);
                             } else {
                                 if (unionIndex18 == 1) {
                                     recordsMapUnionOption0 .put(key1, deserializeSubRecord0(null, (decoder)));
@@ -644,6 +663,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
                             int unionIndex19 = (decoder.readIndex());
                             if (unionIndex19 == 0) {
                                 decoder.readNull();
+                                recordsArrayMapElem0 .put(key2, null);
                             } else {
                                 if (unionIndex19 == 1) {
                                     recordsArrayMapElem0 .put(key2, deserializeSubRecord0(null, (decoder)));
@@ -701,6 +721,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
                             int unionIndex20 = (decoder.readIndex());
                             if (unionIndex20 == 0) {
                                 decoder.readNull();
+                                recordsMapArrayValue0 .add(null);
                             } else {
                                 if (unionIndex20 == 1) {
                                     recordsMapArrayValue0 .add(deserializeSubRecord0(recordsMapArrayValueArrayElementReuseVar0, (decoder)));
@@ -722,6 +743,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
         int unionIndex21 = (decoder.readIndex());
         if (unionIndex21 == 0) {
             decoder.readNull();
+            TestRecord.put(30, null);
         } else {
             if (unionIndex21 == 1) {
                 List<Map<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>> recordsArrayMapUnionOption0 = null;
@@ -758,6 +780,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
                                     int unionIndex22 = (decoder.readIndex());
                                     if (unionIndex22 == 0) {
                                         decoder.readNull();
+                                        recordsArrayMapUnionOptionElem0 .put(key4, null);
                                     } else {
                                         if (unionIndex22 == 1) {
                                             recordsArrayMapUnionOptionElem0 .put(key4, deserializeSubRecord0(null, (decoder)));
@@ -788,6 +811,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
         int unionIndex23 = (decoder.readIndex());
         if (unionIndex23 == 0) {
             decoder.readNull();
+            TestRecord.put(31, null);
         } else {
             if (unionIndex23 == 1) {
                 Map<Utf8, List<com.linkedin.avro.fastserde.generated.avro.SubRecord>> recordsMapArrayUnionOption0 = null;
@@ -824,6 +848,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
                                     int unionIndex24 = (decoder.readIndex());
                                     if (unionIndex24 == 0) {
                                         decoder.readNull();
+                                        recordsMapArrayUnionOptionValue0 .add(null);
                                     } else {
                                         if (unionIndex24 == 1) {
                                             recordsMapArrayUnionOptionValue0 .add(deserializeSubRecord0(recordsMapArrayUnionOptionValueArrayElementReuseVar0, (decoder)));
@@ -849,6 +874,7 @@ public class Array_of_UNION_SpecificDeserializer_735161557101031552_735161557101
         int unionIndex25 = (decoder.readIndex());
         if (unionIndex25 == 0) {
             decoder.readNull();
+            TestRecord.put(32, null);
         } else {
             if (unionIndex25 == 1) {
                 TestRecord.put(32, deserializeSubRecord0(TestRecord.get(32), (decoder)));
