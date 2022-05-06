@@ -1,0 +1,16 @@
+{
+  "type": "record",
+  "namespace": "much.namespace",
+  "name": "RecordWithAliasesToNullNamespace",
+  "fields": [
+    {
+      "name" : "enumField",
+      "type" : {
+        "type" : "enum",
+        "name" : "InnerEnum",
+        "symbols" : [ "THE", "SPEC", "IS", "A", "LIE" ],
+        "doc" : "inherits namespace so is much.namespace.InnerEnum"
+      }
+    }
+  ]
+}
