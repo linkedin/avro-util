@@ -69,6 +69,7 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingW
         } else {
             if (unionIndex0 == 1) {
                 decoder.readNull();
+                FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps.put(0, null);
             } else {
                 throw new RuntimeException(("Illegal union index for 'test': "+ unionIndex0));
             }

@@ -182,6 +182,7 @@ public class StringableRecord_SpecificDeserializer_6010214235595501953_601021423
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
+            StringableSubRecord.put(1, null);
         } else {
             if (unionIndex0 == 1) {
                 Object oldString6 = StringableSubRecord.get(1);
@@ -219,6 +220,7 @@ public class StringableRecord_SpecificDeserializer_6010214235595501953_601021423
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
+            StringableRecord.put(9, null);
         } else {
             if (unionIndex1 == 1) {
                 StringableRecord.put(9, (decoder).readString());

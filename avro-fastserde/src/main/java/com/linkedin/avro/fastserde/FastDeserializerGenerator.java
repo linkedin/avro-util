@@ -560,6 +560,9 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
 
       if (Schema.Type.NULL.equals(optionSchema.getType())) {
         thenBlock.directStatement(DECODER + ".readNull();");
+        if (action.getShouldRead()) {
+          putValueIntoParent.accept(thenBlock, JExpr._null());
+        }
         continue;
       }
 

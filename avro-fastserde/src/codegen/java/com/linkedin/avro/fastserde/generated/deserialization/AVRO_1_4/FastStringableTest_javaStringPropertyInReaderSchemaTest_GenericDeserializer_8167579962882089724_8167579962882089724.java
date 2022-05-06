@@ -60,6 +60,7 @@ public class FastStringableTest_javaStringPropertyInReaderSchemaTest_GenericDese
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
+            FastStringableTest_javaStringPropertyInReaderSchemaTest.put(1, null);
         } else {
             if (unionIndex0 == 1) {
                 Object oldString1 = FastStringableTest_javaStringPropertyInReaderSchemaTest.get(1);

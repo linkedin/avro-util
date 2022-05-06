@@ -60,6 +60,7 @@ public class Array_of_record_GenericDeserializer_1629046702287533603_16290467022
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
+            record.put(0, null);
         } else {
             if (unionIndex0 == 1) {
                 Object oldString0 = record.get(0);

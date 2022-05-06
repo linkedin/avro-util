@@ -42,6 +42,7 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingW
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps.put(0, null);
         } else {
             if (unionIndex0 == 1) {
                 Map<Utf8, Integer> testOption0 = null;
