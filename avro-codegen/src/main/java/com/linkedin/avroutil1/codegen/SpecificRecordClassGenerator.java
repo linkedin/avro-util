@@ -9,6 +9,7 @@ package com.linkedin.avroutil1.codegen;
 import com.linkedin.avroutil1.compatibility.HelperConsts;
 import com.linkedin.avroutil1.compatibility.SourceCodeUtils;
 import com.linkedin.avroutil1.model.AvroEnumSchema;
+import com.linkedin.avroutil1.model.AvroFixedSchema;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
 import com.linkedin.avroutil1.model.AvroType;
 import com.linkedin.avroutil1.writer.avsc.AvscSchemaWriter;
@@ -29,6 +30,8 @@ import java.util.StringJoiner;
  */
 public class SpecificRecordClassGenerator {
 
+  private static final String AVRO_GEN_COMMENT = "GENERATED CODE by avro-util";
+
   public JavaFileObject generateSpecificRecordClass(AvroNamedSchema topLevelSchema, SpecificRecordGenerationConfig config) {
     if (topLevelSchema == null) {
       throw new IllegalArgumentException("topLevelSchema required");
@@ -38,6 +41,7 @@ public class SpecificRecordClassGenerator {
       case ENUM:
         return generateSpecificEnum((AvroEnumSchema) topLevelSchema, config);
       case FIXED:
+        return generateSpecificFixed((AvroFixedSchema) topLevelSchema, config);
       case RECORD:
         throw new UnsupportedOperationException("generation of " + type + "s not implemented");
       default:
@@ -69,10 +73,47 @@ public class SpecificRecordClassGenerator {
     TypeSpec classSpec = classBuilder.build();
     JavaFile javaFile = JavaFile.builder(enumSchema.getNamespace(), classSpec)
         .skipJavaLangImports(false) //no imports
-        .addFileComment("GENERATED CODE by avro-util")
+        .addFileComment(AVRO_GEN_COMMENT)
         .build();
 
     return javaFile.toJavaFileObject();
+  }
+
+
+  protected JavaFileObject generateSpecificFixed(AvroFixedSchema fixedSchema, SpecificRecordGenerationConfig config) {
+    //public enum
+    TypeSpec.Builder classBuilder = TypeSpec.classBuilder(fixedSchema.getSimpleName());
+    classBuilder.addModifiers(Modifier.PUBLIC);
+
+    //add class-level doc from schema doc
+    //file-level (top of file) comment is added to the file object later
+    String doc = fixedSchema.getDoc();
+    if (doc != null && !doc.isEmpty()) {
+      classBuilder.addJavadoc(doc);
+    }
+
+    //add public final static SCHEMA$
+    addSchema$ToGeneratedClass(classBuilder, fixedSchema);
+
+
+    //add public size to class
+    addAndInitializeSizeFieldToClass(classBuilder, fixedSchema);
+
+    //create file object
+    TypeSpec classSpec = classBuilder.build();
+    JavaFile javaFile = JavaFile.builder(fixedSchema.getNamespace(), classSpec)
+        .skipJavaLangImports(false) //no imports
+        .addFileComment(AVRO_GEN_COMMENT)
+        .build();
+
+    return javaFile.toJavaFileObject();
+  }
+
+  private void addAndInitializeSizeFieldToClass(TypeSpec.Builder classBuilder, AvroFixedSchema fixedSchema) {
+    classBuilder.addField(FieldSpec
+        .builder(ClassName.get("java.lang", "Integer"), "size", Modifier.PUBLIC)
+        .initializer(String.valueOf(fixedSchema.getSize()))
+        .build());
   }
 
   /**
