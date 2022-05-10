@@ -32,7 +32,7 @@ repositories {
 //does not include "helper" as that module has its own publishing section (because fat jar)
 //does not include "avro-fastserde" as that module has its own publishing section (because we want it to depend on the fat jar)
 //does not include "avro-codegen" as that module has its own publishing section (because we want it to depend on the fat jar)
-Set<String> projectsToPublish = new HashSet<>(Arrays.asList("spotbugs-plugin"))
+Set<String> projectsToPublish = new HashSet<>(Arrays.asList("spotbugs-plugin", "parser"))
 Set<String> projectsToRecordGitInfoFor = new HashSet<>(projectsToPublish)
 projectsToRecordGitInfoFor.add("helper")
 
