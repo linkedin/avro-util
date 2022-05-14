@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "RecordWithAliasesToNullNamespace",
+  "fields": [
+    {
+      "name" : "enumField",
+      "type" : {
+        "type" : "enum",
+        "name" : "InnerEnum",
+        "symbols" : [ "THE", "SPEC", "IS", "A", "LIE" ],
+        "doc" : "inherits no namespace so is InnerEnum"
+      }
+    }
+  ]
+}
