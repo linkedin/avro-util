@@ -1,0 +1,86 @@
+plugins {
+    id "java-library"
+    id "checkstyle"
+    id "com.github.johnrengelman.shadow"
+}
+
+task buildJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'com.linkedin.avro.builder.SchemaBuilder',
+        'Implementation-Title': ' Avro builder',
+                'Implementation-Version': version
+    }
+    baseName = project.name
+    from { configurations.implementation
+            .filter {!it.absolutePath.endsWith(".xml")}
+            .collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+}
+
+shadowJar {
+    dependencies {
+        //do not pack slf4j
+        exclude(dependency("org.slf4j:slf4j-api:.*"))
+    }
+
+    //relocate commons-text to not conflict with anything that might be on a user's classpath
+    relocate 'org.apache.commons', 'com.linkedin.avroutil1.compatibility.shaded.org.apache.commons'
+}
+
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': ' Avro builder',
+                'Implementation-Version': version
+    }
+}
+
+dependencies {
+    implementation project(":helper:helper")
+
+    api "org.apache.avro:avro-compiler:1.9.2"
+    implementation "org.apache.avro:avro:1.9.2"
+    api "net.sf.jopt-simple:jopt-simple:5.0.4"
+    api 'org.json:json:20220320'
+    api "org.codehaus.jackson:jackson-core-asl:1.9.13"
+    implementation "org.apache.logging.log4j:log4j-api:2.17.2"
+    implementation "commons-io:commons-io:2.11.0"
+    api "jakarta.json:jakarta.json-api:2.0.1"
+    testImplementation "org.apache.avro:avro:1.10.2"
+
+}
+
+publishing {
+    publications {
+        "$project.name-all"(MavenPublication) {
+            groupId project.group
+            artifactId "$project.name-all"
+            version project.version
+
+            //stripping away the classifier to publish as its own top-level artifact
+            artifact source: shadowJar, classifier: ''
+            artifact sourceJar
+            artifact javadocJar
+
+            pom {
+                name = 'Avro Util'
+                description = 'utilities for writing code that works across major avro versions'
+                url = 'https://github.com/linkedin/avro-util'
+
+                scm {
+                    connection = 'scm:git:git://github.com:linkedin/avro-util.git'
+                    developerConnection = 'scm:git:ssh://github.com:linkedin/avro-util.git'
+                    url = 'https://github.com/linkedin/avro-util'
+                }
+            }
+        }
+
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+
