@@ -10,7 +10,6 @@ import com.linkedin.avroutil1.compatibility.HelperConsts;
 import com.linkedin.avroutil1.compatibility.SourceCodeUtils;
 import com.linkedin.avroutil1.model.AvroEnumSchema;
 import com.linkedin.avroutil1.model.AvroFixedSchema;
-import com.linkedin.avroutil1.model.AvroFixedSize;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
 import com.linkedin.avroutil1.model.AvroType;
 import com.linkedin.avroutil1.writer.avsc.AvscSchemaWriter;
@@ -25,6 +24,7 @@ import javax.tools.JavaFileObject;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.StringJoiner;
+import org.apache.avro.specific.FixedSize;
 
 
 /**
@@ -112,7 +112,7 @@ public class SpecificRecordClassGenerator {
   }
 
   private void addAndInitializeSizeFieldToClass(TypeSpec.Builder classBuilder, AvroFixedSchema fixedSchema) {
-    classBuilder.addAnnotation(AnnotationSpec.builder(AvroFixedSize.class)
+    classBuilder.addAnnotation(AnnotationSpec.builder(FixedSize.class)
         .addMember("value", CodeBlock.of(String.valueOf(fixedSchema.getSize())))
         .build());
   }
