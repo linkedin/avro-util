@@ -98,7 +98,7 @@ public class SpecificRecordClassGenerator {
     addSchema$ToGeneratedClass(classBuilder, fixedSchema);
 
 
-    //add public size to class
+    //add size annotation to class
     addAndInitializeSizeFieldToClass(classBuilder, fixedSchema);
 
     //create file object
