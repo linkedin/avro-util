@@ -13,6 +13,8 @@ jar {
 }
 
 shadowJar {
+    classifier = "all"
+
     //manifests is inherited from "normal" jar above
 
     dependencies {

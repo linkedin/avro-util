@@ -764,6 +764,7 @@ public class AvroCompatibilityHelper {
     Class<?> schemaClass;
     try {
       schemaClass = Class.forName("org.apache.avro.Schema");
+      VersionDetectionUtil.markUsedForCoreAvro(schemaClass);
     } catch (ClassNotFoundException unexpected) {
       return null; //no avro on the classpath at all
     }
@@ -771,6 +772,7 @@ public class AvroCompatibilityHelper {
     //BinaryEncoder was made abstract for 1.5.0 as part of AVRO-753
     try {
       Class<?> binaryEncoderClass = Class.forName("org.apache.avro.io.BinaryEncoder");
+      VersionDetectionUtil.markUsedForCoreAvro(binaryEncoderClass);
       if (!Modifier.isAbstract(binaryEncoderClass.getModifiers())) {
         return AvroVersion.AVRO_1_4;
       }
@@ -780,14 +782,16 @@ public class AvroCompatibilityHelper {
 
     //GenericData.StringType was added for 1.6.0 as part of AVRO-803
     try {
-      Class.forName("org.apache.avro.generic.GenericData$StringType");
+      Class<?> StringTypeClass = Class.forName("org.apache.avro.generic.GenericData$StringType");
+      VersionDetectionUtil.markUsedForCoreAvro(StringTypeClass);
     } catch (ClassNotFoundException expected) {
       return AvroVersion.AVRO_1_5;
     }
 
     //SchemaNormalization was added for 1.7.0 as part of AVRO-1006
     try {
-      Class.forName("org.apache.avro.SchemaNormalization");
+      Class<?> schemaNormalizationClass = Class.forName("org.apache.avro.SchemaNormalization");
+      VersionDetectionUtil.markUsedForCoreAvro(schemaNormalizationClass);
     } catch (ClassNotFoundException expected) {
       return AvroVersion.AVRO_1_6;
     }
@@ -795,6 +799,7 @@ public class AvroCompatibilityHelper {
     //extra constructor added to EnumSymbol for 1.8.0 as part of AVRO-997
     try {
       Class<?> enumSymbolClass = Class.forName("org.apache.avro.generic.GenericData$EnumSymbol");
+      VersionDetectionUtil.markUsedForCoreAvro(enumSymbolClass);
       enumSymbolClass.getConstructor(schemaClass, Object.class);
     } catch (NoSuchMethodException expected) {
       return AvroVersion.AVRO_1_7;
@@ -805,6 +810,7 @@ public class AvroCompatibilityHelper {
     //method added for 1.9.0 as part of AVRO-2360
     try {
       Class<?> conversionClass = Class.forName("org.apache.avro.Conversion");
+      VersionDetectionUtil.markUsedForCoreAvro(conversionClass);
       conversionClass.getMethod("adjustAndSetValue", String.class, String.class);
     } catch (NoSuchMethodException expected) {
       return AvroVersion.AVRO_1_8;
@@ -845,11 +851,13 @@ public class AvroCompatibilityHelper {
 
     try {
       oldCompilerClass = Class.forName("org.apache.avro.specific.SpecificCompiler");
+      VersionDetectionUtil.markUsedForAvroCompiler(oldCompilerClass);
     } catch (Throwable ignored) {
       //empty
     }
     try {
       newCompilerClass = Class.forName("org.apache.avro.compiler.specific.SpecificCompiler");
+      VersionDetectionUtil.markUsedForAvroCompiler(newCompilerClass);
     } catch (Throwable ignored) {
       //empty
     }
@@ -932,6 +940,7 @@ public class AvroCompatibilityHelper {
 
       // Without reflection, this would be ```velocityEngine.getProperty("file.resource.loader.class");```
       Class<?> velocityEngineClass = Class.forName("org.apache.velocity.app.VelocityEngine");
+      VersionDetectionUtil.markUsedForAvroCompiler(velocityEngineClass);
       Method velocityEngineGetPropertyMethod = velocityEngineClass.getMethod("getProperty", String.class);
       Object fileResourceLoaderClassProperty =
           velocityEngineGetPropertyMethod.invoke(velocityEngine, "file.resource.loader.class");
