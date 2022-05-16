@@ -11,3 +11,6 @@ avro-fastserde/src/test/java/com/linkedin/avro/fastserde/generated/
 out/
 .idea/
 *.iml
+
+#macos stuff
+**/.DS_Store

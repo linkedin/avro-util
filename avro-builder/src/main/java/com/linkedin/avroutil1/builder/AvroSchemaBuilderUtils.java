@@ -116,15 +116,6 @@ public class AvroSchemaBuilderUtils {
     }
   }
 
-  public static void croak(String message) {
-    croak(message, 1);
-  }
-
-  public static void croak(String message, int exitCode) {
-    System.err.println(message);
-    System.exit(exitCode);
-  }
-
   public static boolean equals(Object x, Object y) {
     if (x == y) {
       return true;
