@@ -7,6 +7,7 @@
 package com.linkedin.avroutil1.builder;
 
 import com.linkedin.avroutil1.compatibility.Avro702Checker;
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
 import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
 import com.linkedin.avroutil1.compatibility.CodeGenerationConfig;
@@ -52,6 +53,7 @@ public class SchemaBuilder {
   private SchemaBuilder() { }
 
   public static void main(String[] args) throws Exception {
+    makeSureAvroCompilerExists();
     OptionParser parser = new OptionParser();
     OptionSpec<String> expandedSchemas = parser.accepts("expandedSchemas", "Directory for dumping expanded schemas")
         .withOptionalArg()
@@ -84,16 +86,12 @@ public class SchemaBuilder {
             + "example: com.linkedin.package.MyClass,com.linkedin.package2.YourClass")
         .withOptionalArg()
         .withValuesSeparatedBy(',');
-
     OptionSpec<String> enableAvro702Handling = parser.accepts(
             "enableAvro702Handling",
             "enable handling of avro702 when generating classes (will have correct AVSC with aliases to the impacted fullnames)")
         .withOptionalArg()
         .defaultsTo("false")
         .describedAs("true/false");
-    OptionSpec<File> schemasToGenerateBadlyOpt = parser.accepts("schemasToGenerateBadly")
-        .withOptionalArg().ofType(File.class)
-        .describedAs("control FQCNs for which to generate avro-702-afflicted avsc in SCHEMA$. avro702 handling needs to be enabled");
 
     OptionSet options = null;
     try {
@@ -114,10 +112,10 @@ public class SchemaBuilder {
     List<File> inputs = AvroSchemaBuilderUtils.toFiles(options.valuesOf(inputOpt));
     File outputDir = new File(options.valueOf(outputOpt));
     if (outputDir.exists() && (!outputDir.isDirectory() || !outputDir.canWrite())) {
-      AvroSchemaBuilderUtils.croak("output folder " + outputDir + " either isnt a folder or is not writable");
+      croak("output folder " + outputDir + " either isnt a folder or is not writable");
     }
     if (!outputDir.exists() && !outputDir.mkdirs()) {
-      AvroSchemaBuilderUtils.croak("output folder " + outputDir + " does not exist and we failed to create it");
+      croak("output folder " + outputDir + " does not exist and we failed to create it");
     }
 
     AvroVersion minAvroVer = AvroVersion.AVRO_1_4;
@@ -125,7 +123,7 @@ public class SchemaBuilder {
       try {
         minAvroVer = AvroVersion.fromSemanticVersion(options.valueOf(minAvroVerOpt));
       } catch (IllegalArgumentException e) {
-        AvroSchemaBuilderUtils.croak("unhandled major avro version " + options.valueOf(minAvroVerOpt));
+        croak("unhandled major avro version " + options.valueOf(minAvroVerOpt));
       }
     }
 
@@ -143,7 +141,7 @@ public class SchemaBuilder {
             continue;
           }
           if (AvroSchemaBuilderUtils.isParentOf(anyOtherFile, anyFile)) { //other direction will be covered later in the loop
-            AvroSchemaBuilderUtils.croak("input/include paths " + anyFile + " and " + anyOtherFile + " overlap");
+            croak("input/include paths " + anyFile + " and " + anyOtherFile + " overlap");
           }
         }
       }
@@ -158,7 +156,7 @@ public class SchemaBuilder {
       try {
         stringRepresentation = StringRepresentation.valueOf(stringRepStr);
       } catch (IllegalArgumentException e) {
-        AvroSchemaBuilderUtils.croak("unhandled string representation " + options.valueOf(stringRepStr));
+        croak("unhandled string representation " + options.valueOf(stringRepStr));
       }
     }
 
@@ -177,7 +175,7 @@ public class SchemaBuilder {
       try {
         dupBehaviour = DuplicateSchemaBehaviour.valueOf(value);
       } catch (IllegalArgumentException e) {
-        AvroSchemaBuilderUtils.croak("unknown value for DuplicateSchemaBehaviour - " + value
+        croak("unknown value for DuplicateSchemaBehaviour - " + value
             + ". known values are " + Arrays.toString(DuplicateSchemaBehaviour.values()));
       }
     }
@@ -196,9 +194,6 @@ public class SchemaBuilder {
     AvscGenerationConfig avscConfig = AvscGenerationConfig.VANILLA_ONELINE;
     Set<String> schemasToGenerateBadly = Collections.emptySet(); //by default
     if (handleAvro702) {
-      if (options.has(schemasToGenerateBadlyOpt)) {
-        throw new IllegalArgumentException("schemasToGenerateBadly no longer supported. please stop using it");
-      }
       avscConfig = AvscGenerationConfig.CORRECT_MITIGATED_ONELINE;
     }
 
@@ -323,12 +318,19 @@ public class SchemaBuilder {
 
   private static void printHelpAndCroak(OptionParser parser, String message) throws IOException {
     parser.printHelpOn(System.err);
-    AvroSchemaBuilderUtils.croak(message);
+    croak(message);
   }
 
   private static void makeSureExists(File dir) {
     if (!dir.exists() && !dir.mkdirs()) {
       throw new IllegalStateException("unable to create destination folder " + dir);
+    }
+  }
+
+  private static void makeSureAvroCompilerExists() {
+    AvroVersion compilerVersion = AvroCompatibilityHelper.getRuntimeAvroCompilerVersion();
+    if (compilerVersion == null) {
+      croak("no avro-compiler on the classpath. please add some version of avro-compiler.jar to the classpath");
     }
   }
 
@@ -340,5 +342,14 @@ public class SchemaBuilder {
     } catch (Exception e) {
       throw new IllegalStateException("trying to read " + filePath, e);
     }
+  }
+
+  private static void croak(String message) {
+    croak(message, 1);
+  }
+
+  private static void croak(String message, int exitCode) {
+    System.err.println(message);
+    System.exit(exitCode);
   }
 }
