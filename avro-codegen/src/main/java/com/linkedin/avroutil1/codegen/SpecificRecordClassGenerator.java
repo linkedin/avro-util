@@ -10,9 +10,11 @@ import com.linkedin.avroutil1.compatibility.HelperConsts;
 import com.linkedin.avroutil1.compatibility.SourceCodeUtils;
 import com.linkedin.avroutil1.model.AvroEnumSchema;
 import com.linkedin.avroutil1.model.AvroFixedSchema;
+import com.linkedin.avroutil1.model.AvroFixedSize;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
 import com.linkedin.avroutil1.model.AvroType;
 import com.linkedin.avroutil1.writer.avsc.AvscSchemaWriter;
+import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
@@ -81,7 +83,7 @@ public class SpecificRecordClassGenerator {
 
 
   protected JavaFileObject generateSpecificFixed(AvroFixedSchema fixedSchema, SpecificRecordGenerationConfig config) {
-    //public enum
+    //public class
     TypeSpec.Builder classBuilder = TypeSpec.classBuilder(fixedSchema.getSimpleName());
     classBuilder.addModifiers(Modifier.PUBLIC);
 
@@ -110,9 +112,8 @@ public class SpecificRecordClassGenerator {
   }
 
   private void addAndInitializeSizeFieldToClass(TypeSpec.Builder classBuilder, AvroFixedSchema fixedSchema) {
-    classBuilder.addField(FieldSpec
-        .builder(ClassName.get("java.lang", "Integer"), "size", Modifier.PUBLIC)
-        .initializer(String.valueOf(fixedSchema.getSize()))
+    classBuilder.addAnnotation(AnnotationSpec.builder(AvroFixedSize.class)
+        .addMember("value", CodeBlock.of(String.valueOf(fixedSchema.getSize())))
         .build());
   }
 
