@@ -6,8 +6,10 @@
 
 package com.linkedin.avroutil1.compatibility.avro17;
 
+import com.linkedin.avroutil1.compatibility.ClassLoaderUtil;
 import com.linkedin.avroutil1.compatibility.Jackson1Utils;
 import com.linkedin.avroutil1.compatibility.StringPropertyUtils;
+import com.linkedin.avroutil1.compatibility.VersionDetectionUtil;
 import org.apache.avro.Schema;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.TextNode;
@@ -15,17 +17,54 @@ import org.codehaus.jackson.node.TextNode;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * utility code specific to avro 1.7
  */
 public class Avro17Utils {
-    private final static boolean IS_AT_LEAST_1_7_3 = isIsAtLeast173();
+    private final static Logger LOG = LoggerFactory.getLogger(Avro17Utils.class);
+
+    private final static boolean IS_AT_LEAST_1_7_3;
+    private final static Class<?> JSONPROPERTIES_CLASS;
     private final static Method GET_JSON_PROPS_METHOD;
     private final static Method GET_JSON_PROP_METHOD;
     private final static Method ADD_JSON_PROP_METHOD;
 
     static {
+        //class org.apache.avro.JsonProperties was created as part of AVRO-1157 for 1.7.3
+        //however, if we naively just test for its existence we risk finding it in some extra
+        //avro jar at the end of the classpath, with the "dominant" avro being an older jar
+        //at the beginning of the classpath (this is horrible, but such is life).
+        //as such a safer approach is to look up class org.apache.avro.Schema (which exists
+        //in all supported avro versions and so we assume originates from the "dominant" jar)
+        //and see if it extends org.apache.avro.JsonProperties
+        Class<? super Schema> parentOfSchema = Schema.class.getSuperclass();
+        if ("org.apache.avro.JsonProperties".equals(parentOfSchema.getName())) {
+            JSONPROPERTIES_CLASS = parentOfSchema;
+            VersionDetectionUtil.markUsedForCoreAvro(JSONPROPERTIES_CLASS);
+            IS_AT_LEAST_1_7_3 = true;
+        } else {
+            JSONPROPERTIES_CLASS = null;
+            IS_AT_LEAST_1_7_3 = false; //presumably the parent is "java.lang.Object"
+        }
+
+        //print warning about avro 1.7 soup if we find it
+        try {
+            Class<?> jsonPropertiesClass = ClassLoaderUtil.forName("org.apache.avro.JsonProperties");
+            VersionDetectionUtil.markUsedForCoreAvro(jsonPropertiesClass);
+            if (jsonPropertiesClass != JSONPROPERTIES_CLASS) {
+                LOG.warn(
+                    "multiple versions of avro 1.7 found on the classpath. sources of avro: {}",
+                    VersionDetectionUtil.uniqueSourcesForCoreAvro()
+                );
+            }
+        } catch (Exception ignored) {
+            //ignored
+        }
+
         if (IS_AT_LEAST_1_7_3) {
             GET_JSON_PROPS_METHOD = findNewerGetPropsMethod();
             GET_JSON_PROP_METHOD = findNewerGetPropMethod();
@@ -37,46 +76,37 @@ public class Avro17Utils {
         }
     }
 
-    static boolean isIsAtLeast173() {
-        //class org.apache.avro.JsonProperties was created as part of AVRO-1157 for 1.7.3
-        //however, if we naively just test for its existence we risk finding it in some extra
-        //avro jar at the end of the classpath, with the "dominant" avro being an older jar
-        //at the beginning of the classpath (this is horrible, but such is life).
-        //as such a safer approach is to look up class org.apache.avro.Schema (which exists
-        //in all supported avro versions and so we assume originates from the "dominant" jar)
-        //and see if it extends org.apache.avro.JsonProperties
-        Class<? super Schema> parentOfSchema = Schema.class.getSuperclass();
-        //noinspection RedundantIfStatement
-        if ("org.apache.avro.JsonProperties".equals(parentOfSchema.getName())) {
-            return true;
-        }
-        return false; //presumably the parent is "java.lang.Object"
+    public static boolean isIsAtLeast173() {
+        return IS_AT_LEAST_1_7_3;
     }
 
     static Method findNewerGetPropsMethod() {
         try {
-            Class<?> jsonPropertiesClass = Class.forName("org.apache.avro.JsonProperties");
-            return jsonPropertiesClass.getDeclaredMethod("getJsonProps");
+            return JSONPROPERTIES_CLASS.getDeclaredMethod("getJsonProps");
         } catch (Exception e) {
-            throw new IllegalStateException(e);
+            String msg = "unable to locate expected method org.apache.avro.JsonProperties.getJsonProps(). "
+                + "sources of avro classes are " + VersionDetectionUtil.uniqueSourcesForCoreAvro();
+            throw new IllegalStateException(msg, e);
         }
     }
 
     static Method findNewerGetPropMethod() {
         try {
-            Class<?> jsonPropertiesClass = Class.forName("org.apache.avro.JsonProperties");
-            return jsonPropertiesClass.getDeclaredMethod("getJsonProp", String.class);
+            return JSONPROPERTIES_CLASS.getDeclaredMethod("getJsonProp", String.class);
         } catch (Exception e) {
-            throw new IllegalStateException(e);
+            String msg = "unable to locate expected method org.apache.avro.JsonProperties.getJsonProp(). "
+                + "sources of avro classes are " + VersionDetectionUtil.uniqueSourcesForCoreAvro();
+            throw new IllegalStateException(msg, e);
         }
     }
 
     static Method findNewerAddPropMethod() {
         try {
-            Class<?> jsonPropertiesClass = Class.forName("org.apache.avro.JsonProperties");
-            return jsonPropertiesClass.getDeclaredMethod("addProp", String.class, JsonNode.class);
+            return JSONPROPERTIES_CLASS.getDeclaredMethod("addProp", String.class, JsonNode.class);
         } catch (Exception e) {
-            throw new IllegalStateException(e);
+            String msg = "unable to locate expected method org.apache.avro.JsonProperties.addProp(). "
+                + "sources of avro classes are " + VersionDetectionUtil.uniqueSourcesForCoreAvro();
+            throw new IllegalStateException(msg, e);
         }
     }
 
