@@ -6,10 +6,10 @@
 
 package com.linkedin.avroutil1.parser.jsonpext;
 
-import jakarta.json.JsonReader;
+import javax.json.JsonReader;
 
 /**
- * an extended version of {@link jakarta.json.JsonReader}
+ * an extended version of {@link javax.json.JsonReader}
  * that returns extended json objects (extensions of the
  * "regular" json-p interfaces)
  */
