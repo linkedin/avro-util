@@ -73,12 +73,6 @@ public class AvroCompatibilityHelper {
     if (DETECTED_VERSION == null) {
       ADAPTER = null;
     } else {
-      if (DETECTED_COMPILER_VERSION != null && DETECTED_VERSION != DETECTED_COMPILER_VERSION) {
-        throw new IllegalStateException(
-            String.format("avro and avro-compiler version mismatch! avro version: %s. avro-compiler version: %s",
-                DETECTED_VERSION, DETECTED_COMPILER_VERSION));
-      }
-
       try {
         switch (DETECTED_VERSION) {
           case AVRO_1_4:
@@ -761,12 +755,14 @@ public class AvroCompatibilityHelper {
 
   private static void assertCompilerMatchesAvro() {
     assertNoCompilerDetectionIssues();
+
     if (DETECTED_COMPILER_VERSION != null && DETECTED_VERSION != DETECTED_COMPILER_VERSION) {
-      throw new IllegalStateException(
-                "version of avro (" + DETECTED_VERSION +") does not match version of avro-compiler ("
-              + DETECTED_COMPILER_VERSION + "). sources used to detect avro: " + VersionDetectionUtil.uniqueSourcesForCoreAvro()
-              + ". sources used to detect avro-compiler: " + VersionDetectionUtil.uniqueSourcesForAvroCompiler()
-      );
+      String msg = "ERROR: version of avro (" + DETECTED_VERSION +") does not match version of avro-compiler ("
+          + DETECTED_COMPILER_VERSION + "). sources used to detect avro: " + VersionDetectionUtil.uniqueSourcesForCoreAvro()
+          + ". sources used to detect avro-compiler: " + VersionDetectionUtil.uniqueSourcesForAvroCompiler()
+          + ". THIS WILL BECOME A FATAL ERROR SOON";
+      System.err.println(msg);
+      //TODO - throw in the future
     }
   }
 
