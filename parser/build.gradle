@@ -19,8 +19,6 @@ dependencies {
     api 'javax.json:javax.json-api:1.1'
     implementation 'org.glassfish:javax.json:1.1'
 
-    implementation project(path: ':helper:helper', configuration: 'shadow')
-
     testImplementation project(":test-common")
     testImplementation project(path: ':helper:helper', configuration: 'shadow')
     testImplementation "org.apache.avro:avro:1.10.2"
