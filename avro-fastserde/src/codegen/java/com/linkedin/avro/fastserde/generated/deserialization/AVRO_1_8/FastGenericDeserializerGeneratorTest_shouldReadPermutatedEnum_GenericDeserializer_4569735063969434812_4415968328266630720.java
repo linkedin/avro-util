@@ -104,6 +104,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum_Gener
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum.put(1, null);
         } else {
             if (unionIndex0 == 1) {
                 int enumIndex1 = (decoder.readEnum());
@@ -174,6 +175,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum_Gener
                 int unionIndex1 = (decoder.readIndex());
                 if (unionIndex1 == 0) {
                     decoder.readNull();
+                    testEnumUnionArray1 .add(null);
                 } else {
                     if (unionIndex1 == 1) {
                         int enumIndex3 = (decoder.readEnum());

@@ -6,10 +6,10 @@
 
 package com.linkedin.avroutil1.parser.jsonpext;
 
-import jakarta.json.Json;
-import jakarta.json.JsonException;
-import jakarta.json.stream.JsonLocation;
-import jakarta.json.stream.JsonParser;
+import javax.json.Json;
+import javax.json.JsonException;
+import javax.json.stream.JsonLocation;
+import javax.json.stream.JsonParser;
 
 import java.io.Reader;
 import java.nio.file.Path;
@@ -139,7 +139,7 @@ public class JsonReaderWithLocations implements JsonReaderExt {
 
     /**
      * ensures this class can only be used once to read a single top-level json value
-     * as per the docs on {@link jakarta.json.JsonReader}
+     * as per the docs on {@link javax.json.JsonReader}
      */
     protected void ensureSingleUse() {
         if (readDone) {

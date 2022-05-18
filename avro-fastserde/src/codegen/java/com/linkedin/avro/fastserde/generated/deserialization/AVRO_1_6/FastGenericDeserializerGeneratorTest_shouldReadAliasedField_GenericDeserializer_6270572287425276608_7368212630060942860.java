@@ -40,6 +40,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadAliasedField_Generic
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(0, null);
         } else {
             if (unionIndex0 == 1) {
                 Object oldString0 = FastGenericDeserializerGeneratorTest_shouldReadAliasedField.get(0);
@@ -62,6 +63,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadAliasedField_Generic
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(1, null);
         } else {
             if (unionIndex1 == 1) {
                 Object oldString1 = FastGenericDeserializerGeneratorTest_shouldReadAliasedField.get(1);

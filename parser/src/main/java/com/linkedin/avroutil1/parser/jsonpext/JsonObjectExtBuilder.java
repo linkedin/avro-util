@@ -6,7 +6,7 @@
 
 package com.linkedin.avroutil1.parser.jsonpext;
 
-import jakarta.json.JsonException;
+import javax.json.JsonException;
 
 import java.util.LinkedHashMap;
 

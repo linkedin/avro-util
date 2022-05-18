@@ -10,7 +10,7 @@ import java.util.regex.Pattern
 buildscript {
   repositories {
     mavenLocal()
-    jcenter()
+    mavenCentral()
   }
 }
 
@@ -26,13 +26,13 @@ group = 'com.linkedin.avroutil1'
 
 repositories {
   mavenLocal()
-  jcenter()
+  mavenCentral()
 }
 
 //does not include "helper" as that module has its own publishing section (because fat jar)
 //does not include "avro-fastserde" as that module has its own publishing section (because we want it to depend on the fat jar)
 //does not include "avro-codegen" as that module has its own publishing section (because we want it to depend on the fat jar)
-Set<String> projectsToPublish = new HashSet<>(Arrays.asList("spotbugs-plugin"))
+Set<String> projectsToPublish = new HashSet<>(Arrays.asList("spotbugs-plugin", "parser"))
 Set<String> projectsToRecordGitInfoFor = new HashSet<>(projectsToPublish)
 projectsToRecordGitInfoFor.add("helper")
 
@@ -51,7 +51,7 @@ subprojects {
 
     repositories {
       mavenLocal()
-      jcenter()
+      mavenCentral()
     }
 
     dependencies {
@@ -252,6 +252,14 @@ subprojects {
       }
     }
   }
+}
+
+tasks.withType(GenerateModuleMetadata) {
+  //we ship helper as a fat helper-all jar, which means we modify the
+  //pom.xml for most of our artifacts. gradle's now module metadata publication
+  //leaks "internal" dependencies on the regular helper module (which we dont
+  //publish) and causes issues. so we disable it
+  enabled = false
 }
 
 //generates an aggregate coverage report for the entire project

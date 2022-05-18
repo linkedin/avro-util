@@ -65,6 +65,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(1, null);
         } else {
             if (unionIndex0 == 1) {
                 FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(1, (decoder.readInt()));
@@ -86,6 +87,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(3, null);
         } else {
             if (unionIndex1 == 1) {
                 Object oldString1 = FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(3);
@@ -107,6 +109,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
         int unionIndex2 = (decoder.readIndex());
         if (unionIndex2 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(5, null);
         } else {
             if (unionIndex2 == 1) {
                 FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(5, (decoder.readLong()));
@@ -123,6 +126,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
         int unionIndex3 = (decoder.readIndex());
         if (unionIndex3 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(7, null);
         } else {
             if (unionIndex3 == 1) {
                 FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(7, (decoder.readDouble()));
@@ -139,6 +143,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
         int unionIndex4 = (decoder.readIndex());
         if (unionIndex4 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(9, null);
         } else {
             if (unionIndex4 == 1) {
                 FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(9, (decoder.readFloat()));
@@ -155,6 +160,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
         int unionIndex5 = (decoder.readIndex());
         if (unionIndex5 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(11, null);
         } else {
             if (unionIndex5 == 1) {
                 FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(11, (decoder.readBoolean()));
@@ -176,6 +182,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
         int unionIndex6 = (decoder.readIndex());
         if (unionIndex6 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(13, null);
         } else {
             if (unionIndex6 == 1) {
                 Object oldBytes1 = FastGenericDeserializerGeneratorTest_shouldReadPrimitives.get(13);

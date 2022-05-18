@@ -1,0 +1,70 @@
+plugins {
+    id "java-library"
+    id "checkstyle"
+    id "com.github.johnrengelman.shadow"
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.linkedin.avroutil1.builder.SchemaBuilder',
+            'Implementation-Title': ' Avro builder',
+            'Implementation-Version': version
+    }
+}
+
+shadowJar {
+    classifier = "all"
+
+    //manifests is inherited from "normal" jar above
+
+    dependencies {
+        //do not pack any avro (user should bring their own)
+        exclude(dependency("org.apache.avro:.*"))
+    }
+}
+
+//produce fat jar as part of normal build
+tasks.build.dependsOn tasks.shadowJar
+
+dependencies {
+    implementation project(":helper:helper")
+
+    implementation "org.apache.avro:avro-compiler:1.9.2"
+    implementation "org.apache.avro:avro:1.9.2"
+    implementation "net.sf.jopt-simple:jopt-simple:5.0.4"
+    implementation 'org.json:json:20220320'
+    implementation "org.codehaus.jackson:jackson-core-asl:1.9.13"
+    implementation "org.apache.logging.log4j:log4j-api:2.17.2"
+    implementation "commons-io:commons-io:2.11.0"
+    implementation "jakarta.json:jakarta.json-api:2.0.1"
+
+    testImplementation "org.apache.avro:avro:1.9.2"
+}
+
+publishing {
+    publications {
+        "$project.name-all"(MavenPublication) {
+            groupId project.group
+            artifactId "$project.name-all"
+            version project.version
+
+            //stripping away the classifier to publish as its own top-level artifact
+            artifact source: shadowJar, classifier: ''
+            artifact sourceJar
+            artifact javadocJar
+
+            pom {
+                name = 'Avro Util Builder'
+                description = 'Utility for generating specific record classes out of avro schema files'
+                url = 'https://github.com/linkedin/avro-util'
+
+                scm {
+                    connection = 'scm:git:git://github.com:linkedin/avro-util.git'
+                    developerConnection = 'scm:git:ssh://github.com:linkedin/avro-util.git'
+                    url = 'https://github.com/linkedin/avro-util'
+                }
+            }
+        }
+
+    }
+}

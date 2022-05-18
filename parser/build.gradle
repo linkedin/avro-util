@@ -12,8 +12,12 @@ plugins {
 dependencies {
 
     //json-p under its new home @ https://projects.eclipse.org/projects/ee4j.jsonp
-    api "jakarta.json:jakarta.json-api:2.0.1"
-    implementation "org.glassfish:jakarta.json:2.0.1"
+    //api "jakarta.json:jakarta.json-api:2.0.1"
+    //implementation "org.glassfish:jakarta.json:2.0.1"
+
+    //old location of json-p
+    api 'javax.json:javax.json-api:1.1'
+    implementation 'org.glassfish:javax.json:1.1'
 
     testImplementation project(":test-common")
     testImplementation "org.apache.avro:avro:1.10.2"

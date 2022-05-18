@@ -49,17 +49,27 @@ import org.apache.avro.specific.SpecificRecord;
 public class AvroCompatibilityHelper {
 
   private static final AvroVersion DETECTED_VERSION;
-  private static final AvroVersion DETECTED_COMPILER_VERSION;
+  private static volatile AvroVersion DETECTED_COMPILER_VERSION;
+  private static volatile Exception COMPILER_DETECTION_ISSUE;
   private static final AvroAdapter ADAPTER;
 
   static {
+    //noinspection ConstantConditions
     if (!AvroCompatibilityHelper.class.getCanonicalName().equals(HelperConsts.HELPER_FQCN)) {
       //protect against partial refactors
       throw new IllegalStateException("helper fqcn (" + AvroCompatibilityHelper.class.getCanonicalName() + ")"
           + " differs from constant (" + HelperConsts.HELPER_FQCN + ")");
     }
+
     DETECTED_VERSION = detectAvroVersion();
-    DETECTED_COMPILER_VERSION = detectAvroCompilerVersion();
+    try {
+      DETECTED_COMPILER_VERSION = detectAvroCompilerVersion();
+      COMPILER_DETECTION_ISSUE = null;
+    } catch (Exception compilerDetectionIssue) {
+      DETECTED_COMPILER_VERSION = null;
+      COMPILER_DETECTION_ISSUE = compilerDetectionIssue;
+    }
+
     if (DETECTED_VERSION == null) {
       ADAPTER = null;
     } else {
@@ -117,6 +127,7 @@ public class AvroCompatibilityHelper {
    * @return the version of avro-compiler detected on the runtime classpath, or null if no avro-compiler found
    */
   public static AvroVersion getRuntimeAvroCompilerVersion() {
+    assertNoCompilerDetectionIssues();
     return DETECTED_COMPILER_VERSION;
   }
 
@@ -720,6 +731,7 @@ public class AvroCompatibilityHelper {
       CodeGenerationConfig config
   ) {
     assertAvroAvailable(); //in this case it still doesnt guarantee the (separate) compiler jar is present for avro 1.5+
+    assertCompilerMatchesAvro();
     return ADAPTER.compile(toCompile, minSupportedVersion, maxSupportedVersion, config);
   }
 
@@ -738,6 +750,23 @@ public class AvroCompatibilityHelper {
   private static void assertAvroAvailable() {
     if (DETECTED_VERSION == null) {
       throw new IllegalStateException("no version of avro found on the classpath");
+    }
+  }
+
+  private static void assertNoCompilerDetectionIssues() {
+    if (COMPILER_DETECTION_ISSUE != null) {
+      throw new IllegalStateException("unable to detect runtime version of avro-compiler jar", COMPILER_DETECTION_ISSUE);
+    }
+  }
+
+  private static void assertCompilerMatchesAvro() {
+    assertNoCompilerDetectionIssues();
+    if (DETECTED_COMPILER_VERSION != null && DETECTED_VERSION != DETECTED_COMPILER_VERSION) {
+      throw new IllegalStateException(
+                "version of avro (" + DETECTED_VERSION +") does not match version of avro-compiler ("
+              + DETECTED_COMPILER_VERSION + "). sources used to detect avro: " + VersionDetectionUtil.uniqueSourcesForCoreAvro()
+              + ". sources used to detect avro-compiler: " + VersionDetectionUtil.uniqueSourcesForAvroCompiler()
+      );
     }
   }
 
@@ -764,6 +793,7 @@ public class AvroCompatibilityHelper {
     Class<?> schemaClass;
     try {
       schemaClass = Class.forName("org.apache.avro.Schema");
+      VersionDetectionUtil.markUsedForCoreAvro(schemaClass);
     } catch (ClassNotFoundException unexpected) {
       return null; //no avro on the classpath at all
     }
@@ -771,6 +801,7 @@ public class AvroCompatibilityHelper {
     //BinaryEncoder was made abstract for 1.5.0 as part of AVRO-753
     try {
       Class<?> binaryEncoderClass = Class.forName("org.apache.avro.io.BinaryEncoder");
+      VersionDetectionUtil.markUsedForCoreAvro(binaryEncoderClass);
       if (!Modifier.isAbstract(binaryEncoderClass.getModifiers())) {
         return AvroVersion.AVRO_1_4;
       }
@@ -780,14 +811,16 @@ public class AvroCompatibilityHelper {
 
     //GenericData.StringType was added for 1.6.0 as part of AVRO-803
     try {
-      Class.forName("org.apache.avro.generic.GenericData$StringType");
+      Class<?> StringTypeClass = Class.forName("org.apache.avro.generic.GenericData$StringType");
+      VersionDetectionUtil.markUsedForCoreAvro(StringTypeClass);
     } catch (ClassNotFoundException expected) {
       return AvroVersion.AVRO_1_5;
     }
 
     //SchemaNormalization was added for 1.7.0 as part of AVRO-1006
     try {
-      Class.forName("org.apache.avro.SchemaNormalization");
+      Class<?> schemaNormalizationClass = Class.forName("org.apache.avro.SchemaNormalization");
+      VersionDetectionUtil.markUsedForCoreAvro(schemaNormalizationClass);
     } catch (ClassNotFoundException expected) {
       return AvroVersion.AVRO_1_6;
     }
@@ -795,6 +828,7 @@ public class AvroCompatibilityHelper {
     //extra constructor added to EnumSymbol for 1.8.0 as part of AVRO-997
     try {
       Class<?> enumSymbolClass = Class.forName("org.apache.avro.generic.GenericData$EnumSymbol");
+      VersionDetectionUtil.markUsedForCoreAvro(enumSymbolClass);
       enumSymbolClass.getConstructor(schemaClass, Object.class);
     } catch (NoSuchMethodException expected) {
       return AvroVersion.AVRO_1_7;
@@ -805,6 +839,7 @@ public class AvroCompatibilityHelper {
     //method added for 1.9.0 as part of AVRO-2360
     try {
       Class<?> conversionClass = Class.forName("org.apache.avro.Conversion");
+      VersionDetectionUtil.markUsedForCoreAvro(conversionClass);
       conversionClass.getMethod("adjustAndSetValue", String.class, String.class);
     } catch (NoSuchMethodException expected) {
       return AvroVersion.AVRO_1_8;
@@ -839,28 +874,39 @@ public class AvroCompatibilityHelper {
     return AvroVersion.AVRO_1_11;
   }
 
-  private static AvroVersion detectAvroCompilerVersion() {
-    Class<?> specificCompilerClass;
+  private static AvroVersion detectAvroCompilerVersion() throws Exception {
+    Class<?> oldCompilerClass = null;
+    Class<?> newCompilerClass = null;
 
-    // In Avro 1.5.0+, SpecificCompiler is part of the org.apache.avro.compiler.specific package.
     try {
-      specificCompilerClass = Class.forName("org.apache.avro.compiler.specific.SpecificCompiler");
-    } catch (ClassNotFoundException expected) {
-      try {
-        // In Avro 1.4, SpecificCompiler was a class of org.apache.avro.specific. In 1.5.0, SpecificCompiler was moved
-        // to its own package.
-        Class.forName("org.apache.avro.specific.SpecificCompiler");
-        return AvroVersion.AVRO_1_4;
-
-        // In the case that SpecificCompiler doesn't exist in the ClassPath at all (only possible in 1.5+).
-      } catch (ClassNotFoundException ignored) {
-        return null;
-      }
+      oldCompilerClass = Class.forName("org.apache.avro.specific.SpecificCompiler");
+      VersionDetectionUtil.markUsedForAvroCompiler(oldCompilerClass);
+    } catch (Throwable ignored) {
+      //empty
     }
+    try {
+      newCompilerClass = Class.forName("org.apache.avro.compiler.specific.SpecificCompiler");
+      VersionDetectionUtil.markUsedForAvroCompiler(newCompilerClass);
+    } catch (Throwable ignored) {
+      //empty
+    }
+
+    if (oldCompilerClass != null && newCompilerClass != null) {
+      throw new IllegalStateException("found both old (1.4) and modern avro compiler classes on the classpath");
+    }
+    if (oldCompilerClass == null && newCompilerClass == null) {
+      return null;
+    }
+
+    if (oldCompilerClass != null) {
+      return AvroVersion.AVRO_1_4;
+    }
+
+    //dealing with avro 1.5+ from now on
 
     // SpecificCompiler.isUnboxedJavaTypeNullable(Schema s) method was added to 1.6.0.
     try {
-      specificCompilerClass.getMethod("isUnboxedJavaTypeNullable", Schema.class);
+      newCompilerClass.getMethod("isUnboxedJavaTypeNullable", Schema.class);
     } catch (NoSuchMethodException expected) {
       return AvroVersion.AVRO_1_5;
     }
@@ -873,9 +919,9 @@ public class AvroCompatibilityHelper {
 
     // SpecificCompiler.hasBuilder(Schema s) method was added in 1.8.0
     try {
-      specificCompilerClass.getMethod("hasBuilder", Schema.class);
+      newCompilerClass.getMethod("hasBuilder", Schema.class);
     } catch (NoSuchMethodException expected) {
-      if (checkIfVelocityEngineFileResourceLoaderClassExists(specificCompilerClass)) {
+      if (checkIfVelocityEngineFileResourceLoaderClassExists(newCompilerClass)) {
         return AvroVersion.AVRO_1_7;
       } else {
         return AvroVersion.AVRO_1_6;
@@ -884,21 +930,21 @@ public class AvroCompatibilityHelper {
 
     //SpecificCompiler.isGettersReturnOptional() method was added in 1.9.0.
     try {
-      specificCompilerClass.getMethod("isGettersReturnOptional");
+      newCompilerClass.getMethod("isGettersReturnOptional");
     } catch (NoSuchMethodException expected) {
       return AvroVersion.AVRO_1_8;
     }
 
     //SpecificCompiler.isOptionalGettersForNullableFieldsOnly() method was added in 1.10.0.
     try {
-      specificCompilerClass.getMethod("isOptionalGettersForNullableFieldsOnly");
+      newCompilerClass.getMethod("isOptionalGettersForNullableFieldsOnly");
     } catch (NoSuchMethodException expected) {
       return AvroVersion.AVRO_1_9;
     }
 
     // SpecificCompiler.getUsedCustomLogicalTypeFactories() method was added in 1.11.0.
     try {
-      specificCompilerClass.getMethod("getUsedCustomLogicalTypeFactories", Schema.class);
+      newCompilerClass.getMethod("getUsedCustomLogicalTypeFactories", Schema.class);
     } catch (NoSuchMethodException expected) {
       return AvroVersion.AVRO_1_10;
     }
@@ -908,32 +954,25 @@ public class AvroCompatibilityHelper {
 
   // We are fishing for the ```file.resource.loader.class``` property in the private field `velocityEngine` of
   // a SpecificCompiler class.
-  private static boolean checkIfVelocityEngineFileResourceLoaderClassExists(Class<?> specificCompilerClass)
-      throws IllegalStateException {
-    try {
-      // If `velocityEngine` were public, we could simplify this reflection to be
-      // ```VelocityEngine velocityEngine = (new SpecificCompiler()).velocityEngine;````
-      Field velocityEngineField = specificCompilerClass.getDeclaredField("velocityEngine");
-      velocityEngineField.setAccessible(true);
-      // SpecificCompiler's default constructor is also private.
-      Constructor constructor = specificCompilerClass.getDeclaredConstructor();
-      constructor.setAccessible(true);
-      constructor.newInstance();
-      Object velocityEngine = velocityEngineField.get(constructor.newInstance());
+  private static boolean checkIfVelocityEngineFileResourceLoaderClassExists(Class<?> specificCompilerClass) throws Exception {
+    // If `velocityEngine` were public, we could simplify this reflection to be
+    // ```VelocityEngine velocityEngine = (new SpecificCompiler()).velocityEngine;````
+    Field velocityEngineField = specificCompilerClass.getDeclaredField("velocityEngine");
+    velocityEngineField.setAccessible(true);
+    // SpecificCompiler's default constructor is also private.
+    Constructor<?> constructor = specificCompilerClass.getDeclaredConstructor();
+    constructor.setAccessible(true);
+    constructor.newInstance();
+    Object velocityEngine = velocityEngineField.get(constructor.newInstance());
 
-      // Without reflection, this would be ```velocityEngine.getProperty("file.resource.loader.class");```
-      Class<?> velocityEngineClass = Class.forName("org.apache.velocity.app.VelocityEngine");
-      Method velocityEngineGetPropertyMethod = velocityEngineClass.getMethod("getProperty", String.class);
-      Object fileResourceLoaderClassProperty =
-          velocityEngineGetPropertyMethod.invoke(velocityEngine, "file.resource.loader.class");
+    // Without reflection, this would be ```velocityEngine.getProperty("file.resource.loader.class");```
+    Class<?> velocityEngineClass = Class.forName("org.apache.velocity.app.VelocityEngine");
+    VersionDetectionUtil.markUsedForAvroCompiler(velocityEngineClass);
+    Method velocityEngineGetPropertyMethod = velocityEngineClass.getMethod("getProperty", String.class);
+    Object fileResourceLoaderClassProperty =
+        velocityEngineGetPropertyMethod.invoke(velocityEngine, "file.resource.loader.class");
 
-      return fileResourceLoaderClassProperty != null;
-
-      // We should never reach these exceptions
-    } catch (Exception expected) {
-      throw new IllegalStateException("unexpected exception while retrieving velocity engine config",
-          expected.fillInStackTrace());
-    }
+    return fileResourceLoaderClassProperty != null;
   }
 
   /**
