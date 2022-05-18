@@ -6,8 +6,8 @@
 
 package com.linkedin.avroutil1.writer.avsc;
 
-import com.linkedin.avroutil1.compatibility.HelperConsts;
 import com.linkedin.avroutil1.model.AvroSchema;
+import com.linkedin.avroutil1.parser.HelperConsts;
 import com.linkedin.avroutil1.parser.avsc.AvscIssue;
 import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
 import com.linkedin.avroutil1.parser.avsc.AvscParser;
