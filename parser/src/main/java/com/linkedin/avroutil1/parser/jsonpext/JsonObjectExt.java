@@ -6,7 +6,7 @@
 
 package com.linkedin.avroutil1.parser.jsonpext;
 
-import jakarta.json.JsonObject;
+import javax.json.JsonObject;
 
 public interface JsonObjectExt extends JsonObject, JsonStructureExt {
 

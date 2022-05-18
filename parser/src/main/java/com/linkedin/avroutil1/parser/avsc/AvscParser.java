@@ -50,8 +50,8 @@ import com.linkedin.avroutil1.parser.jsonpext.JsonStringExt;
 import com.linkedin.avroutil1.parser.jsonpext.JsonValueExt;
 import com.linkedin.avroutil1.util.Util;
 import com.linkedin.avroutil1.model.AvroName;
-import jakarta.json.JsonValue;
-import jakarta.json.stream.JsonParsingException;
+import javax.json.JsonValue;
+import javax.json.stream.JsonParsingException;
 
 import java.io.StringReader;
 import java.math.BigDecimal;

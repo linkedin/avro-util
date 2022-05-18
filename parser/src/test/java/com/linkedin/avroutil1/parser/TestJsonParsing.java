@@ -11,10 +11,10 @@ import com.linkedin.avroutil1.parser.jsonpext.JsonReaderExt;
 import com.linkedin.avroutil1.parser.jsonpext.JsonReaderWithLocations;
 import com.linkedin.avroutil1.parser.jsonpext.JsonValueExt;
 import com.linkedin.avroutil1.testcommon.TestUtil;
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonReader;
-import jakarta.json.stream.JsonLocation;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.stream.JsonLocation;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

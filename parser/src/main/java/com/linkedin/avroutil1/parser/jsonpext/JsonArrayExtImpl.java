@@ -6,9 +6,9 @@
 
 package com.linkedin.avroutil1.parser.jsonpext;
 
-import jakarta.json.JsonArray;
-import jakarta.json.JsonValue;
-import jakarta.json.stream.JsonLocation;
+import javax.json.JsonArray;
+import javax.json.JsonValue;
+import javax.json.stream.JsonLocation;
 
 import java.nio.file.Path;
 import java.util.AbstractList;

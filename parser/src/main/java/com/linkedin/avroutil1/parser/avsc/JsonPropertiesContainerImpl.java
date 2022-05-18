@@ -9,11 +9,11 @@ package com.linkedin.avroutil1.parser.avsc;
 import com.linkedin.avroutil1.model.JsonPropertiesContainer;
 import com.linkedin.avroutil1.parser.jsonpext.JsonValueExt;
 import com.linkedin.avroutil1.util.Util;
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonObjectBuilder;
-import jakarta.json.JsonWriter;
-import jakarta.json.JsonWriterFactory;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonWriter;
+import javax.json.JsonWriterFactory;
 
 import java.io.StringWriter;
 import java.util.HashMap;
