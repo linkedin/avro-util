@@ -172,6 +172,7 @@ public class AvscParser {
             case STRING: //primitive or ref
                 SchemaOrRef schemaOrRef = parseSimplePrimitiveOrRef((JsonStringExt) node, context, topLevel);
 
+                // Handles the case where the Ref's namespace is inferred from the outer schema.
                 boolean isSchemaRefNamespaceEmpty =
                     !schemaOrRef.isResolved() && getNamespace(schemaOrRef.getRef()).isEmpty();
                 String currentNamespace = context.getCurrentNamespace();
