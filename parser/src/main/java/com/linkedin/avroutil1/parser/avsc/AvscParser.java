@@ -23,6 +23,7 @@ import com.linkedin.avroutil1.model.AvroLiteral;
 import com.linkedin.avroutil1.model.AvroLogicalType;
 import com.linkedin.avroutil1.model.AvroLongLiteral;
 import com.linkedin.avroutil1.model.AvroMapSchema;
+import com.linkedin.avroutil1.model.AvroName;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
 import com.linkedin.avroutil1.model.AvroNullLiteral;
 import com.linkedin.avroutil1.model.AvroPrimitiveSchema;
@@ -49,10 +50,8 @@ import com.linkedin.avroutil1.parser.jsonpext.JsonReaderWithLocations;
 import com.linkedin.avroutil1.parser.jsonpext.JsonStringExt;
 import com.linkedin.avroutil1.parser.jsonpext.JsonValueExt;
 import com.linkedin.avroutil1.util.Util;
-import com.linkedin.avroutil1.model.AvroName;
 import jakarta.json.JsonValue;
 import jakarta.json.stream.JsonParsingException;
-
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -166,23 +165,37 @@ public class AvscParser {
      * @return the schema defined by the input json node (which may be a reference)
      * @throws ParseException
      */
-    private SchemaOrRef parseSchemaDeclOrRef (
-            JsonValueExt node,
-            AvscFileParseContext context,
-            boolean topLevel
-    ) throws ParseException {
+    private SchemaOrRef parseSchemaDeclOrRef(JsonValueExt node, AvscFileParseContext context, boolean topLevel)
+        throws ParseException {
         JsonValue.ValueType nodeType = node.getValueType();
         switch (nodeType) {
             case STRING: //primitive or ref
-                return parseSimplePrimitiveOrRef((JsonStringExt) node, context, topLevel);
+                SchemaOrRef schemaOrRef = parseSimplePrimitiveOrRef((JsonStringExt) node, context, topLevel);
+
+                boolean isSchemaRefNamespaceEmpty =
+                    !schemaOrRef.isResolved() && getNamespace(schemaOrRef.getRef()).isEmpty();
+                String currentNamespace = context.getCurrentNamespace();
+                if (isSchemaRefNamespaceEmpty && !currentNamespace.isEmpty()) {
+                    String newFqn = context.getCurrentNamespace() + "." + schemaOrRef.getRef();
+                    return new SchemaOrRef(schemaOrRef.getCodeLocation(), newFqn);
+                }
+                return schemaOrRef;
             case OBJECT: //record/enum/fixed/array/map/error or a simpler type with extra props thrown-in
                 return parseComplexSchema((JsonObjectExt) node, context, topLevel);
             case ARRAY:  //union
                 return parseUnionSchema((JsonArrayExt) node, context, topLevel);
             default:
-                throw new IllegalArgumentException("dont know how to parse a schema out of " + nodeType
-                        + " at " + locationOf(context.getUri(), node));
+                throw new IllegalArgumentException(
+                    "dont know how to parse a schema out of " + nodeType + " at " + locationOf(context.getUri(), node));
         }
+    }
+
+    private static String getNamespace(String fqn) {
+        int index = fqn.lastIndexOf(".");
+        if (index < 0) {
+            return "";
+        }
+        return fqn.substring(0, index);
     }
 
     private SchemaOrRef parseSimplePrimitiveOrRef(
