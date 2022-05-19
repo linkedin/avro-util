@@ -6,8 +6,8 @@
 
 package com.linkedin.avroutil1.parser.jsonpext;
 
-import jakarta.json.JsonValue;
-import jakarta.json.stream.JsonLocation;
+import javax.json.JsonValue;
+import javax.json.stream.JsonLocation;
 
 public class JsonPUtil {
     private JsonPUtil() {

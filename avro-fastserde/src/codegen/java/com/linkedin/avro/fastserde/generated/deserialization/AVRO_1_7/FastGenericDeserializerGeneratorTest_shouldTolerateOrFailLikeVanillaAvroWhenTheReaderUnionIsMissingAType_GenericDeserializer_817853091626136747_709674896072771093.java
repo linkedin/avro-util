@@ -39,6 +39,7 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanill
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType.put(0, null);
         } else {
             if (unionIndex0 == 1) {
                 Object oldString0 = FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType.get(0);

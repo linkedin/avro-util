@@ -6,7 +6,7 @@
 
 package com.linkedin.avroutil1.parser.jsonpext;
 
-import jakarta.json.JsonNumber;
+import javax.json.JsonNumber;
 
 public interface JsonNumberExt extends JsonNumber, JsonValueExt {
 }

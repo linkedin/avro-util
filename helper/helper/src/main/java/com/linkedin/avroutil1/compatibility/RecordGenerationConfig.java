@@ -27,6 +27,12 @@ public class RecordGenerationConfig {
      * property values and map keys
      */
     private final StringRepresentation preferredStringRepresentation;
+    /**
+     * probability that a self-reference (loop in the schema) would be generated
+     * this is evaluated every time a loop might be generated so the overall chance
+     * would depend on the structure of the schema (how many loops). must be [0, 1.0)
+     */
+    private final double selfReferenceProbability;
 
     private final Random randomToUse;
 
@@ -34,12 +40,17 @@ public class RecordGenerationConfig {
         long seed,
         Random random,
         boolean avoidNulls,
-        StringRepresentation preferredStringRepresentation
+        StringRepresentation preferredStringRepresentation,
+        double selfReferenceProbability
         ) {
         this.seed = seed;
         this.random = random;
         this.avoidNulls = avoidNulls;
         this.preferredStringRepresentation = validate(preferredStringRepresentation, "preferredStringRepresentation");
+        if (selfReferenceProbability < 0 || selfReferenceProbability >= 1.0) {
+            throw new IllegalArgumentException("selfReferenceProbability  must be [0, 1.0) and not " + selfReferenceProbability);
+        }
+        this.selfReferenceProbability = selfReferenceProbability;
 
         this.randomToUse = this.random != null ? this.random : new Random(this.seed);
     }
@@ -52,6 +63,7 @@ public class RecordGenerationConfig {
         this.random = toCopy.random;
         this.avoidNulls = toCopy.avoidNulls;
         this.preferredStringRepresentation = toCopy.preferredStringRepresentation;
+        this.selfReferenceProbability = toCopy.selfReferenceProbability;
 
         this.randomToUse = this.random != null ? this.random : new Random(this.seed);
     }
@@ -62,6 +74,10 @@ public class RecordGenerationConfig {
 
     public StringRepresentation preferredStringRepresentation() {
         return preferredStringRepresentation;
+    }
+
+    public double selfReferenceProbability() {
+        return selfReferenceProbability;
     }
 
     /**
@@ -77,7 +93,7 @@ public class RecordGenerationConfig {
     public static RecordGenerationConfig newConfig() {
         //we provide seed and not Random so that copies of this config get their own random
         //instances. this is done so the defaults produce consistent behaviour even under MT use
-        return new RecordGenerationConfig(System.currentTimeMillis(), null, false, StringRepresentation.Utf8);
+        return new RecordGenerationConfig(System.currentTimeMillis(), null, false, StringRepresentation.Utf8, 0.2);
     }
 
     public RecordGenerationConfig withSeed(long seed) {
@@ -85,7 +101,8 @@ public class RecordGenerationConfig {
                 seed,
                 this.random,
                 this.avoidNulls,
-                this.preferredStringRepresentation
+                this.preferredStringRepresentation,
+                this.selfReferenceProbability
         );
     }
 
@@ -94,7 +111,8 @@ public class RecordGenerationConfig {
                 this.seed,
                 random,
                 this.avoidNulls,
-                this.preferredStringRepresentation
+                this.preferredStringRepresentation,
+                this.selfReferenceProbability
         );
     }
 
@@ -103,7 +121,8 @@ public class RecordGenerationConfig {
                 this.seed,
                 this.random,
                 avoidNulls,
-                this.preferredStringRepresentation
+                this.preferredStringRepresentation,
+                this.selfReferenceProbability
         );
     }
 
@@ -112,7 +131,18 @@ public class RecordGenerationConfig {
             this.seed,
             this.random,
             this.avoidNulls,
-            preferredStringRepresentation
+            preferredStringRepresentation,
+            this.selfReferenceProbability
+        );
+    }
+
+    public RecordGenerationConfig withSelfReferenceProbability(double selfReferenceProbability) {
+        return new RecordGenerationConfig(
+            this.seed,
+            this.random,
+            this.avoidNulls,
+            this.preferredStringRepresentation,
+            selfReferenceProbability
         );
     }
 

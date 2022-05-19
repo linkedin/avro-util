@@ -48,6 +48,7 @@ public class Map_of_UNION_GenericDeserializer_2087096002965517991_20870960029655
                     int unionIndex0 = (decoder.readIndex());
                     if (unionIndex0 == 0) {
                         decoder.readNull();
+                        map0 .put(key0, null);
                     } else {
                         if (unionIndex0 == 1) {
                             map0 .put(key0, deserializerecord0(null, (decoder)));
@@ -76,6 +77,7 @@ public class Map_of_UNION_GenericDeserializer_2087096002965517991_20870960029655
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
+            record.put(0, null);
         } else {
             if (unionIndex1 == 1) {
                 Object oldString0 = record.get(0);

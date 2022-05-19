@@ -13,8 +13,8 @@ import com.linkedin.avroutil1.parser.jsonpext.JsonNumberExt;
 import com.linkedin.avroutil1.parser.jsonpext.JsonObjectExt;
 import com.linkedin.avroutil1.parser.jsonpext.JsonStringExt;
 import com.linkedin.avroutil1.parser.jsonpext.JsonValueExt;
-import jakarta.json.JsonValue;
-import jakarta.json.stream.JsonLocation;
+import javax.json.JsonValue;
+import javax.json.stream.JsonLocation;
 
 import java.io.File;
 import java.io.FileInputStream;

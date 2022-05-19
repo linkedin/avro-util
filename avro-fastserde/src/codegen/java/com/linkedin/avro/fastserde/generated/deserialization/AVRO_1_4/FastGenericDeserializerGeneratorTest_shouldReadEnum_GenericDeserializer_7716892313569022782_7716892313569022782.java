@@ -56,6 +56,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadEnum_GenericDeserial
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldReadEnum.put(1, null);
         } else {
             if (unionIndex0 == 1) {
                 FastGenericDeserializerGeneratorTest_shouldReadEnum.put(1, new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0 .getEnumSymbols().get((decoder.readEnum()))));
@@ -102,6 +103,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadEnum_GenericDeserial
                 int unionIndex1 = (decoder.readIndex());
                 if (unionIndex1 == 0) {
                     decoder.readNull();
+                    testEnumUnionArray1 .add(null);
                 } else {
                     if (unionIndex1 == 1) {
                         testEnumUnionArray1 .add(new org.apache.avro.generic.GenericData.EnumSymbol(testEnum0 .getEnumSymbols().get((decoder.readEnum()))));

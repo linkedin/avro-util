@@ -65,6 +65,7 @@ public class Map_of_record_GenericDeserializer_2141121767969292399_2141121767969
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
+            record.put(0, null);
         } else {
             if (unionIndex0 == 1) {
                 Object oldString0 = record.get(0);

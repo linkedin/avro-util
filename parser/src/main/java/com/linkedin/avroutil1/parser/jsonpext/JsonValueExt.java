@@ -6,13 +6,13 @@
 
 package com.linkedin.avroutil1.parser.jsonpext;
 
-import jakarta.json.JsonValue;
-import jakarta.json.stream.JsonLocation;
+import javax.json.JsonValue;
+import javax.json.stream.JsonLocation;
 
 import java.nio.file.Path;
 
 /**
- * extends {@link jakarta.json.JsonValue} with its start (inclusive)
+ * extends {@link javax.json.JsonValue} with its start (inclusive)
  * and end (inclusive?) locations in a file.
  */
 public interface JsonValueExt extends JsonValue {

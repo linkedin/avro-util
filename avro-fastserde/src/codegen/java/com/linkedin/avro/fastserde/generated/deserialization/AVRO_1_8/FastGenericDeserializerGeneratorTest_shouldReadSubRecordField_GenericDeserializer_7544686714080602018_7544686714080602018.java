@@ -44,6 +44,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordField_Gener
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(0, null);
         } else {
             if (unionIndex0 == 1) {
                 FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(0, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(0), (decoder)));
@@ -67,6 +68,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordField_Gener
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
+            subRecord.put(0, null);
         } else {
             if (unionIndex1 == 1) {
                 Object oldString0 = subRecord.get(0);
@@ -89,6 +91,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordField_Gener
         int unionIndex2 = (decoder.readIndex());
         if (unionIndex2 == 0) {
             decoder.readNull();
+            FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(2, null);
         } else {
             if (unionIndex2 == 1) {
                 Object oldString1 = FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(2);
