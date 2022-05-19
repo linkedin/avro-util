@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "namespace": "allavro",
+  "name": "OuterRecord",
+  "fields": [
+    {
+      "name": "f",
+      "type":[
+        "null",
+        "InnerRecord"
+      ],
+      "default": null
+    }
+  ]
+}
