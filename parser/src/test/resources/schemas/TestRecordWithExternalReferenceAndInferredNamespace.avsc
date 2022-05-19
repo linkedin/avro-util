@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "TestRecordWithExternalReference",
+  "doc": "uses com.acme.TestRecord with no namespace",
+  "fields": [
+    {
+      "name": "testRecordField",
+      "type": "TestRecord"
+    }
+  ]
+}

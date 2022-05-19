@@ -459,6 +459,34 @@ public class AvscParserTest {
     }
 
     @Test
+    public void testParsingExternalReferencesWithNoNamespace() throws Exception {
+        String referencingAvsc = TestUtil.load("schemas/TestRecordWithExternalReferenceAndInferredNamespace.avsc");
+        String referencedAvsc = TestUtil.load("schemas/TestRecord.avsc");
+
+        AvscParser parser = new AvscParser();
+
+        AvscParseResult result1 = parser.parse(referencingAvsc);
+        AvroRecordSchema outerSchema = (AvroRecordSchema) result1.getTopLevelSchema();
+        try {
+            outerSchema.getField("testRecordField").getSchema();
+            Assert.fail("accessing unresolved ref expected to fail");
+        } catch (UnresolvedReferenceException expected) {
+            Assert.assertTrue(expected.getMessage().contains("unresolved"));
+            Assert.assertTrue(expected.getMessage().contains("TestRecord"));
+        }
+
+        AvscParseResult result2 = parser.parse(referencedAvsc);
+
+        AvroParseContext overall = new AvroParseContext();
+        overall.add(result1);
+        overall.add(result2);
+        overall.resolveReferences();
+
+        //now reference is resolved just fine
+        Assert.assertNotNull(outerSchema.getField("testRecordField").getSchema());
+    }
+
+        @Test
     public void validateTestSchemas() throws Exception {
         //this test acts as a sanity check of test schemas by parsing them with the latest
         //version of avro (the reference impl)
