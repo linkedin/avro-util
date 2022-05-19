@@ -170,17 +170,7 @@ public class AvscParser {
         JsonValue.ValueType nodeType = node.getValueType();
         switch (nodeType) {
             case STRING: //primitive or ref
-                SchemaOrRef schemaOrRef = parseSimplePrimitiveOrRef((JsonStringExt) node, context, topLevel);
-
-                // Handles the case where the Ref's namespace is inferred from the outer schema.
-                boolean isSchemaRefNamespaceEmpty =
-                    !schemaOrRef.isResolved() && getNamespace(schemaOrRef.getRef()).isEmpty();
-                String currentNamespace = context.getCurrentNamespace();
-                if (isSchemaRefNamespaceEmpty && !currentNamespace.isEmpty()) {
-                    String newFqn = context.getCurrentNamespace() + "." + schemaOrRef.getRef();
-                    return new SchemaOrRef(schemaOrRef.getCodeLocation(), newFqn);
-                }
-                return schemaOrRef;
+                return parseSimplePrimitiveOrRef((JsonStringExt) node, context, topLevel);
             case OBJECT: //record/enum/fixed/array/map/error or a simpler type with extra props thrown-in
                 return parseComplexSchema((JsonObjectExt) node, context, topLevel);
             case ARRAY:  //union
@@ -208,8 +198,16 @@ public class AvscParser {
         String typeString = stringNode.getString();
         AvroType avroType = AvroType.fromTypeName(typeString);
         //TODO - screen for reserved words??
+
+        //assume it's a ref
         if (avroType == null) {
-            //assume it's a ref
+            // Handles the case where the Ref's namespace is inferred from the outer schema.
+            boolean isSchemaRefNamespaceEmpty = getNamespace(typeString).isEmpty();
+            String currentNamespace = context.getCurrentNamespace();
+            if (isSchemaRefNamespaceEmpty && !currentNamespace.isEmpty()) {
+                typeString = context.getCurrentNamespace() + "." + typeString;
+            }
+
             return new SchemaOrRef(codeLocation, typeString);
         }
         if (avroType.isPrimitive()) {
