@@ -23,6 +23,7 @@ import com.linkedin.avroutil1.model.AvroLiteral;
 import com.linkedin.avroutil1.model.AvroLogicalType;
 import com.linkedin.avroutil1.model.AvroLongLiteral;
 import com.linkedin.avroutil1.model.AvroMapSchema;
+import com.linkedin.avroutil1.model.AvroName;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
 import com.linkedin.avroutil1.model.AvroNullLiteral;
 import com.linkedin.avroutil1.model.AvroPrimitiveSchema;
@@ -49,10 +50,8 @@ import com.linkedin.avroutil1.parser.jsonpext.JsonReaderWithLocations;
 import com.linkedin.avroutil1.parser.jsonpext.JsonStringExt;
 import com.linkedin.avroutil1.parser.jsonpext.JsonValueExt;
 import com.linkedin.avroutil1.util.Util;
-import com.linkedin.avroutil1.model.AvroName;
 import javax.json.JsonValue;
 import javax.json.stream.JsonParsingException;
-
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -166,11 +165,8 @@ public class AvscParser {
      * @return the schema defined by the input json node (which may be a reference)
      * @throws ParseException
      */
-    private SchemaOrRef parseSchemaDeclOrRef (
-            JsonValueExt node,
-            AvscFileParseContext context,
-            boolean topLevel
-    ) throws ParseException {
+    private SchemaOrRef parseSchemaDeclOrRef(JsonValueExt node, AvscFileParseContext context, boolean topLevel)
+        throws ParseException {
         JsonValue.ValueType nodeType = node.getValueType();
         switch (nodeType) {
             case STRING: //primitive or ref
@@ -180,8 +176,8 @@ public class AvscParser {
             case ARRAY:  //union
                 return parseUnionSchema((JsonArrayExt) node, context, topLevel);
             default:
-                throw new IllegalArgumentException("dont know how to parse a schema out of " + nodeType
-                        + " at " + locationOf(context.getUri(), node));
+                throw new IllegalArgumentException(
+                    "dont know how to parse a schema out of " + nodeType + " at " + locationOf(context.getUri(), node));
         }
     }
 
@@ -194,9 +190,10 @@ public class AvscParser {
         String typeString = stringNode.getString();
         AvroType avroType = AvroType.fromTypeName(typeString);
         //TODO - screen for reserved words??
+
         if (avroType == null) {
             //assume it's a ref
-            return new SchemaOrRef(codeLocation, typeString);
+            return new SchemaOrRef(codeLocation, typeString, context.getCurrentNamespace());
         }
         if (avroType.isPrimitive()) {
             //no logical type information, string representation or props in the schema if we got here

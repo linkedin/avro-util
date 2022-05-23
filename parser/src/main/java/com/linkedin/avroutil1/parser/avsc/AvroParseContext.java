@@ -28,7 +28,7 @@ public class AvroParseContext {
     private boolean sealed = false;
     private Map<String, AvscParseResult> knownNamedSchemas = null;
     private Map<String, List<AvscParseResult>> duplicates = null;
-    private Map<String, List<SchemaOrRef>> externalReferences = null;
+    private List<SchemaOrRef> externalReferences = null;
 
     public void add(AvscParseResult singleResult) {
         if (singleResult == null) {
@@ -71,19 +71,38 @@ public class AvroParseContext {
         //TODO - add context-level issues for dups
 
         //resolve any unresolved references in individual file results from other files
-        externalReferences = new HashMap<>(1);
+        externalReferences = new ArrayList<>();
         for (AvscParseResult singleFile : individualResults) {
-            Map<String, List<SchemaOrRef>> externalRefs = singleFile.getExternalReferences();
-            externalRefs.forEach((fqcn, refs) -> {
-                AvscParseResult otherFile = knownNamedSchemas.get(fqcn);
-                if (otherFile == null) {
-                    //fqcn is unresolved in this context
-                    externalRefs.computeIfAbsent(fqcn, s -> new ArrayList<>(1)).addAll(refs);
-                    return;
+            List<SchemaOrRef> externalRefs = singleFile.getExternalReferences();
+            for (SchemaOrRef ref : externalRefs) {
+                String simpleName = ref.getRef();
+                AvscParseResult simpleNameResolution = knownNamedSchemas.get(simpleName);
+                AvscParseResult inheritedNameResolution = null;
+
+                String inheritedName = ref.getInheritedName();
+                if (inheritedName != null) {
+                    inheritedNameResolution = knownNamedSchemas.get(inheritedName);
                 }
-                AvroSchema definition = otherFile.getDefinedNamedSchemas().get(fqcn);
-                refs.forEach(ref -> ref.setResolvedTo(definition));
-            });
+
+                // The namespace may be inherited from the parent schema's context or may already be defined in the
+                // name. There may be multiple resolutions for a simple name (either from the null namespace or from
+                // the inherited namespace).
+                if (inheritedNameResolution != null) {
+                    ref.setResolvedTo(inheritedNameResolution.getDefinedNamedSchemas().get(inheritedName));
+                    if (simpleNameResolution != null) {
+                        String msg =
+                            "ERROR: Two different schemas found for reference " + simpleName + " with inherited name "
+                                + inheritedName + ". Only one should exist.";
+                        singleFile.addIssue(new AvscIssue(ref.getCodeLocation(), IssueSeverity.WARNING, msg,
+                            new IllegalStateException(msg)));
+                    }
+                } else if (simpleNameResolution != null) {
+                    ref.setResolvedTo(simpleNameResolution.getDefinedNamedSchemas().get(simpleName));
+                } else {
+                    //fqcn is unresolved in this context
+                    externalReferences.add(ref);
+                }
+            }
         }
     }
 

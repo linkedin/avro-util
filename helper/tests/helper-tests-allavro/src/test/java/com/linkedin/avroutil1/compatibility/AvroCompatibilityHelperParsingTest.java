@@ -7,7 +7,6 @@
 package com.linkedin.avroutil1.compatibility;
 
 import com.linkedin.avroutil1.testcommon.TestUtil;
-
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -161,7 +160,24 @@ public class AvroCompatibilityHelperParsingTest {
     String innerAvsc = TestUtil.load("allavro/InnerRecord.avsc");
     String outerAvsc = TestUtil.load("allavro/OuterRecord.avsc");
     Schema innerSchema = AvroCompatibilityHelper.parse(innerAvsc);
-    SchemaParseResult result = AvroCompatibilityHelper.parse(outerAvsc, SchemaParseConfiguration.STRICT, Arrays.asList(innerSchema));
+    SchemaParseResult result =
+        AvroCompatibilityHelper.parse(outerAvsc, SchemaParseConfiguration.STRICT, Arrays.asList(innerSchema));
+    Assert.assertNotNull(result);
+    Assert.assertEquals(2, result.getAllSchemas().size());
+    Schema outerSchema = result.getMainSchema();
+    Assert.assertEquals(outerSchema.getFullName(), "allavro.OuterRecord");
+    Assert.assertEquals(outerSchema.getField("f").schema().getTypes().get(1).getFullName(), "allavro.InnerRecord");
+    Assert.assertTrue(result.getAllSchemas().containsKey("allavro.InnerRecord"));
+    Assert.assertEquals(result.getAllSchemas().get("allavro.InnerRecord"), innerSchema);
+  }
+
+  @Test
+  public void testParseWithExternalRefAndInferredNamespace() throws Exception {
+    String innerAvsc = TestUtil.load("allavro/InnerRecord.avsc");
+    String outerAvsc = TestUtil.load("allavro/OuterRecordWithInferredInnerRecordNamespace.avsc");
+    Schema innerSchema = AvroCompatibilityHelper.parse(innerAvsc);
+    SchemaParseResult result =
+        AvroCompatibilityHelper.parse(outerAvsc, SchemaParseConfiguration.STRICT, Arrays.asList(innerSchema));
     Assert.assertNotNull(result);
     Assert.assertEquals(2, result.getAllSchemas().size());
     Schema outerSchema = result.getMainSchema();
