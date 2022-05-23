@@ -191,8 +191,8 @@ public class AvscParser {
         AvroType avroType = AvroType.fromTypeName(typeString);
         //TODO - screen for reserved words??
 
-        //assume it's a ref
         if (avroType == null) {
+            //assume it's a ref
             return new SchemaOrRef(codeLocation, typeString, context.getCurrentNamespace());
         }
         if (avroType.isPrimitive()) {

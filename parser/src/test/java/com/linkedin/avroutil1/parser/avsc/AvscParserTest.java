@@ -24,6 +24,7 @@ import com.linkedin.avroutil1.parser.exceptions.AvroSyntaxException;
 import com.linkedin.avroutil1.parser.exceptions.JsonParseException;
 import com.linkedin.avroutil1.parser.exceptions.UnresolvedReferenceException;
 import com.linkedin.avroutil1.testcommon.TestUtil;
+import java.io.IOException;
 import java.util.stream.Collectors;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -459,6 +460,28 @@ public class AvscParserTest {
 
         //now reference is resolved just fine
         Assert.assertNotNull(outerSchema.getField("testRecordField").getSchema());
+    }
+
+    @Test
+    public void testResolveReferencesWithNullNamespace() throws IOException {
+        String referencingAvsc = TestUtil.load("schemas/TestRecordWithInternalNullNamespaceReference.avsc");
+
+        AvscParser parser = new AvscParser();
+
+        AvscParseResult result1 = parser.parse(referencingAvsc);
+        AvroRecordSchema schema = (AvroRecordSchema) result1.getTopLevelSchema();
+        Assert.assertNotNull(schema.getField("testField").getSchema());
+    }
+
+    @Test
+    public void testResolveReferencesWithNonNullNamespace() throws IOException {
+        String referencingAvsc = TestUtil.load("schemas/TestRecordWithInternalNonNullNamespaceReference.avsc");
+
+        AvscParser parser = new AvscParser();
+
+        AvscParseResult result1 = parser.parse(referencingAvsc);
+        AvroRecordSchema schema = (AvroRecordSchema) result1.getTopLevelSchema();
+        Assert.assertNotNull(schema.getField("testField").getSchema());
     }
 
     @Test
