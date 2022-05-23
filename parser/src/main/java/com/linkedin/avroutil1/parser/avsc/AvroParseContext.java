@@ -91,8 +91,8 @@ public class AvroParseContext {
                     ref.setResolvedTo(inheritedNameResolution.getDefinedNamedSchemas().get(inheritedName));
                     if (simpleNameResolution != null) {
                         String msg =
-                            "ERROR: Two different schemas found for reference " + simpleName + " with parent namespace "
-                                + ref.getParentNamespace() + ". Only one should exist.";
+                            "ERROR: Two different schemas found for reference " + simpleName + " with inherited name "
+                                + inheritedName + ". Only one should exist.";
                         System.err.println(msg);
                     }
                 } else if (simpleNameResolution != null) {
@@ -103,14 +103,6 @@ public class AvroParseContext {
                 }
             }
         }
-    }
-
-    // Will return an empty list if references have not yet been resolved.
-    public List<SchemaOrRef> getUnresolvedReferences() {
-        if (sealed) {
-            return this.externalReferences;
-        }
-        return new ArrayList<>();
     }
 
     private void assertMutable() {

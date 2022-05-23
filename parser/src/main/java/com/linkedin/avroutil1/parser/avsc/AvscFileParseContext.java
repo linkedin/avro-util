@@ -217,8 +217,8 @@ public class AvscFileParseContext {
                 possiblyRef.setResolvedTo(inheritedNameResolution);
                 if (simpleNameResolution != null) {
                     String msg =
-                        "ERROR: Two different schemas found for reference " + simpleName + " with parent namespace "
-                            + possiblyRef.getParentNamespace() + ". Only one should exist.";
+                        "ERROR: Two different schemas found for reference " + simpleName + " with inherited name "
+                            + inheritedName + ". Only one should exist.";
                     System.err.println(msg);
                 }
             } else if (simpleNameResolution != null) {

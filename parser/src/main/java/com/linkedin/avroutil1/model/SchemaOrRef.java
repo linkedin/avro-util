@@ -68,17 +68,13 @@ public class SchemaOrRef implements LocatedCode {
         return ref;
     }
 
-    public String getParentNamespace() {
-        return this.parentNamespace;
-    }
-
     // null if ref already is a FQN or if there is no parent namespace.
     public String getInheritedName() {
         boolean parentNamespaceIsNonEmpty =
-            !(this.getParentNamespace() == null) && !this.getParentNamespace().isEmpty();
-        boolean refHasNoNamespace = getNamespace(this.getRef()).isEmpty();
+            !(this.parentNamespace == null) && !this.parentNamespace.isEmpty();
+        boolean refHasNoNamespace = this.ref != null && getNamespace(this.ref).isEmpty();
         if (refHasNoNamespace && parentNamespaceIsNonEmpty) {
-            return this.getParentNamespace() + "." + this.getRef();
+            return this.parentNamespace + "." + this.ref;
         }
         return null;
     }
