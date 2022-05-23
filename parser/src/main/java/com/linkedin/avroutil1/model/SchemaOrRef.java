@@ -23,7 +23,7 @@ public class SchemaOrRef implements LocatedCode {
      */
     private final String ref;
     /**
-     * the namespace of the parent schema, which is necessary for reference resolution
+     * the namespace of the parent schema, which might be necessary for reference resolution if the ref is not a fullname
      */
     private final String parentNamespace;
     /**
@@ -70,21 +70,13 @@ public class SchemaOrRef implements LocatedCode {
 
     // null if ref already is a FQN or if there is no parent namespace.
     public String getInheritedName() {
-        boolean parentNamespaceIsNonEmpty =
-            !(this.parentNamespace == null) && !this.parentNamespace.isEmpty();
-        boolean refHasNoNamespace = this.ref != null && getNamespace(this.ref).isEmpty();
+        // parent namespace can be empty (refers to the null namespace).
+        boolean parentNamespaceIsNonEmpty = !(this.parentNamespace == null);
+        boolean refHasNoNamespace = this.ref != null && !this.ref.contains(".");
         if (refHasNoNamespace && parentNamespaceIsNonEmpty) {
             return this.parentNamespace + "." + this.ref;
         }
         return null;
-    }
-
-    private static String getNamespace(String fqn) {
-        int index = fqn.lastIndexOf(".");
-        if (index < 0) {
-            return "";
-        }
-        return fqn.substring(0, index);
     }
 
     /**

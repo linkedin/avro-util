@@ -98,6 +98,10 @@ public class AvscFileParseContext {
     }
 
     public void pushNamespace(String newNamespace) {
+        // empty namespace ("") refers to the global namespace.
+        if (newNamespace == null) {
+            throw new IllegalArgumentException("new namespace cannot be null");
+        }
         if (newNamespace.equals(getCurrentNamespace())) {
             throw new IllegalArgumentException("new namespace " + newNamespace + " same as current namespace");
         }
@@ -216,10 +220,11 @@ public class AvscFileParseContext {
             if (inheritedNameResolution != null) {
                 possiblyRef.setResolvedTo(inheritedNameResolution);
                 if (simpleNameResolution != null) {
-                    String msg =
-                        "ERROR: Two different schemas found for reference " + simpleName + " with inherited name "
-                            + inheritedName + ". Only one should exist.";
-                    System.err.println(msg);
+                    String msg = "Two different schemas found for reference " + simpleName + " with inherited name "
+                        + inheritedName + ". Only one should exist.";
+                    AvscIssue issue = new AvscIssue(possiblyRef.getCodeLocation(), IssueSeverity.WARNING, msg,
+                        new IllegalStateException(msg));
+                    issues.add(issue);
                 }
             } else if (simpleNameResolution != null) {
                 possiblyRef.setResolvedTo(simpleNameResolution);
