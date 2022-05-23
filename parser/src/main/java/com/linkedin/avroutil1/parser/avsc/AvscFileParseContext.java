@@ -64,9 +64,9 @@ public class AvscFileParseContext {
      */
     protected List<AvscIssue> issues = new ArrayList<>();
     /**
-     * references in this avsc to FQCNs that are not in this avsc (to be resolved by a wider context)
+     * references in this avsc that are not in this avsc (to be resolved by a wider context)
      */
-    protected Map<String, List<SchemaOrRef>> externalReferences = new HashMap<>(1);
+    protected List<SchemaOrRef> externalReferences = new ArrayList<>();
 
     public AvscFileParseContext(String avsc) {
         try {
@@ -98,9 +98,6 @@ public class AvscFileParseContext {
     }
 
     public void pushNamespace(String newNamespace) {
-        if (newNamespace == null || newNamespace.isEmpty()) {
-            throw new IllegalArgumentException("new namespace cannot be null or empty");
-        }
         if (newNamespace.equals(getCurrentNamespace())) {
             throw new IllegalArgumentException("new namespace " + newNamespace + " same as current namespace");
         }
@@ -206,12 +203,28 @@ public class AvscFileParseContext {
             }
         } else {
             //unresolved (and so must be a) reference
-            String fullName = possiblyRef.getRef();
-            AvroSchema resolved = definedNamedSchemas.get(fullName);
-            if (resolved != null) {
-                possiblyRef.setResolvedTo(resolved);
+
+            String simpleName = possiblyRef.getRef();
+            AvroSchema simpleNameResolution = definedNamedSchemas.get(simpleName);
+            AvroSchema inheritedNameResolution = null;
+
+            String inheritedName = possiblyRef.getInheritedName();
+            if (inheritedName != null) {
+                inheritedNameResolution = definedNamedSchemas.get(inheritedName);
+            }
+
+            if (inheritedNameResolution != null) {
+                possiblyRef.setResolvedTo(inheritedNameResolution);
+                if (simpleNameResolution != null) {
+                    String msg =
+                        "ERROR: Two different schemas found for reference " + simpleName + " with parent namespace "
+                            + possiblyRef.getParentNamespace() + ". Only one should exist.";
+                    System.err.println(msg);
+                }
+            } else if (simpleNameResolution != null) {
+                possiblyRef.setResolvedTo(simpleNameResolution);
             } else {
-                externalReferences.computeIfAbsent(fullName, s -> new ArrayList<>(1)).add(possiblyRef);
+                externalReferences.add(possiblyRef);
             }
         }
     }
@@ -232,7 +245,7 @@ public class AvscFileParseContext {
         return issues;
     }
 
-    public Map<String, List<SchemaOrRef>> getExternalReferences() {
+    public List<SchemaOrRef> getExternalReferences() {
         return externalReferences;
     }
 }

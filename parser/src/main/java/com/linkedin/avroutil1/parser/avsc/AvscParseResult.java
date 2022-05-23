@@ -63,7 +63,7 @@ public class AvscParseResult {
         return context.getDefinedNamedSchemas();
     }
 
-    public Map<String, List<SchemaOrRef>> getExternalReferences() {
+    public List<SchemaOrRef> getExternalReferences() {
         assertSuccess();
         return context.getExternalReferences();
     }
@@ -97,10 +97,14 @@ public class AvscParseResult {
         if (!issues.isEmpty()) {
             sb.append(" and ").append(issues.size()).append(" issues");
         }
-        Map<String, List<SchemaOrRef>> unresolved = context.getExternalReferences();
+        List<SchemaOrRef> unresolved = context.getExternalReferences();
         if (!unresolved.isEmpty()) {
-            int total = unresolved.values().stream().mapToInt(List::size).sum();
-            sb.append(" and ").append(total).append(" unresolved references to ").append(unresolved.size()).append(" FQCNs");
+            int total = unresolved.size();
+            sb.append(" and ")
+                .append(total)
+                .append(" unresolved references to ")
+                .append(unresolved.size())
+                .append(" FQCNs");
         }
         return sb.toString();
     }

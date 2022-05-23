@@ -50,7 +50,6 @@ import com.linkedin.avroutil1.parser.jsonpext.JsonReaderWithLocations;
 import com.linkedin.avroutil1.parser.jsonpext.JsonStringExt;
 import com.linkedin.avroutil1.parser.jsonpext.JsonValueExt;
 import com.linkedin.avroutil1.util.Util;
-import com.linkedin.avroutil1.model.AvroName;
 import javax.json.JsonValue;
 import javax.json.stream.JsonParsingException;
 import java.io.StringReader;
@@ -182,14 +181,6 @@ public class AvscParser {
         }
     }
 
-    private static String getNamespace(String fqn) {
-        int index = fqn.lastIndexOf(".");
-        if (index < 0) {
-            return "";
-        }
-        return fqn.substring(0, index);
-    }
-
     private SchemaOrRef parseSimplePrimitiveOrRef(
             JsonStringExt stringNode,
             AvscFileParseContext context,
@@ -202,14 +193,7 @@ public class AvscParser {
 
         //assume it's a ref
         if (avroType == null) {
-            // Handles the case where the Ref's namespace is inferred from the outer schema.
-            boolean isSchemaRefNamespaceEmpty = getNamespace(typeString).isEmpty();
-            String currentNamespace = context.getCurrentNamespace();
-            if (isSchemaRefNamespaceEmpty && !currentNamespace.isEmpty()) {
-                typeString = context.getCurrentNamespace() + "." + typeString;
-            }
-
-            return new SchemaOrRef(codeLocation, typeString);
+            return new SchemaOrRef(codeLocation, typeString, context.getCurrentNamespace());
         }
         if (avroType.isPrimitive()) {
             //no logical type information, string representation or props in the schema if we got here

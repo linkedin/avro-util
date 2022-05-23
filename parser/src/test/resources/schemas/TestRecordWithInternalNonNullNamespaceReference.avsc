@@ -1,0 +1,26 @@
+{
+  "type": "record",
+  "name": "TestRecordWithInternalNullNamespaceReference",
+  "namespace": "outer",
+  "fields": [
+    {
+      "name": "f2",
+      "type": {
+        "type": "record",
+        "name": "InnerRecord1",
+        "doc": "resets namespace to be just InnerRecord1",
+        "fields": [
+          {
+            "name": "f3",
+            "type": "int"
+          }
+        ]
+      }
+    },
+    {
+      "name": "testField",
+      "type": "InnerRecord1",
+      "doc": "should resolve to InnerRecord1 with no namespace"
+    }
+  ]
+}

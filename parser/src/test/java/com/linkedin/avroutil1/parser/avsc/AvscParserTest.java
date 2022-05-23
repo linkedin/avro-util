@@ -24,6 +24,7 @@ import com.linkedin.avroutil1.parser.exceptions.AvroSyntaxException;
 import com.linkedin.avroutil1.parser.exceptions.JsonParseException;
 import com.linkedin.avroutil1.parser.exceptions.UnresolvedReferenceException;
 import com.linkedin.avroutil1.testcommon.TestUtil;
+import java.util.stream.Collectors;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -437,7 +438,9 @@ public class AvscParserTest {
         AvscParser parser = new AvscParser();
 
         AvscParseResult result1 = parser.parse(referencingAvsc);
-        Assert.assertEquals(result1.getExternalReferences().keySet(), Collections.singletonList("com.acme.TestRecord"));
+        Assert.assertEquals(
+            result1.getExternalReferences().stream().map(SchemaOrRef::getRef).collect(Collectors.toList()),
+            Collections.singletonList("com.acme.TestRecord"));
         AvroRecordSchema outerSchema = (AvroRecordSchema) result1.getTopLevelSchema();
         try {
             outerSchema.getField("testRecordField").getSchema();
