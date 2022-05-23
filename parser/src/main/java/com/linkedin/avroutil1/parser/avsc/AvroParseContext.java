@@ -93,7 +93,8 @@ public class AvroParseContext {
                         String msg =
                             "ERROR: Two different schemas found for reference " + simpleName + " with inherited name "
                                 + inheritedName + ". Only one should exist.";
-                        System.err.println(msg);
+                        singleFile.addIssue(new AvscIssue(ref.getCodeLocation(), IssueSeverity.WARNING, msg,
+                            new IllegalStateException(msg)));
                     }
                 } else if (simpleNameResolution != null) {
                     ref.setResolvedTo(simpleNameResolution.getDefinedNamedSchemas().get(simpleName));

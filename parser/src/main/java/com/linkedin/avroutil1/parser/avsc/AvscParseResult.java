@@ -68,6 +68,10 @@ public class AvscParseResult {
         return context.getExternalReferences();
     }
 
+    public void addIssue(AvscIssue issue) {
+        context.addIssue(issue);
+    }
+
     public List<AvscIssue> getIssues() {
         return context.getIssues();
     }
