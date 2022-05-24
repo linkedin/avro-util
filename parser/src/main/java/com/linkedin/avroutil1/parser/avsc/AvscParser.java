@@ -348,6 +348,8 @@ public class AvscParser {
                     JsonObjectExt fieldDecl = (JsonObjectExt) fieldDeclNode;
                     Located<String> fieldName = getRequiredString(fieldDecl, "name", () -> "all record fields must have a name");
                     JsonValueExt fieldTypeNode = getRequiredNode(fieldDecl, "type", () -> "all record fields must have a type");
+                    Located<String> locatedDocField = getOptionalString(fieldDecl, "doc");
+                    String docField = locatedDocField == null ? null : locatedDocField.getValue();
                     SchemaOrRef fieldSchema = parseSchemaDeclOrRef(fieldTypeNode, context, false);
                     JsonValueExt fieldDefaultValueNode = fieldDecl.get("default");
                     AvroLiteral defaultValue = null;
@@ -366,7 +368,9 @@ public class AvscParser {
                     }
                     LinkedHashMap<String, JsonValueExt> props = parseExtraProps(fieldDecl, CORE_FIELD_PROPERTIES);
                     JsonPropertiesContainer propsContainer = props.isEmpty() ? JsonPropertiesContainer.EMPTY : new JsonPropertiesContainerImpl(props);
-                    AvroSchemaField field = new AvroSchemaField(fieldCodeLocation, fieldName.getValue(), null, fieldSchema, defaultValue, propsContainer);
+                    AvroSchemaField field =
+                        new AvroSchemaField(fieldCodeLocation, fieldName.getValue(), docField, fieldSchema,
+                            defaultValue, propsContainer);
                     fields.add(field);
                 }
                 recordSchema.setFields(fields);
