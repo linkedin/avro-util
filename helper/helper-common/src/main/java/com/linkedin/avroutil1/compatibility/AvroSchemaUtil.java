@@ -7,6 +7,7 @@
 package com.linkedin.avroutil1.compatibility;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericContainer;
@@ -179,6 +180,49 @@ public class AvroSchemaUtil {
           nonNullBranches.size()));
     }
     return nonNullBranches.get(0);
+  }
+
+  /**
+   * given a root schema (which may contain more named schemas defined inline)
+   * returns the set of all named schemas defined by the root schema (including the
+   * root schema itself, if it is a named schema) keyed by their full name
+   * @param root root schema
+   * @return map of all schemas defined inside root, possibly including root
+   */
+  public static Map<String, Schema> getAllDefinedSchemas(Schema root) {
+    if (root == null) {
+      throw new IllegalArgumentException("argument must not be null");
+    }
+    final Map<String, Schema> results = new HashMap<>(3);
+    SchemaVisitor visitor = new SchemaVisitor() {
+      @Override
+      public void visitSchema(Schema schema) {
+        if (HelperConsts.NAMED_TYPES.contains(schema.getType())) {
+          results.put(schema.getFullName(), schema);
+        }
+      }
+    };
+    AvroSchemaUtil.traverseSchema(root, visitor);
+    return results;
+  }
+
+  /**
+   * given a set of root names schemas (which may contain more named schemas defined inline)
+   * returns the set of all named schemas defined by the root schemas (including the
+   * root schemas themselves) keyed by their full name
+   * @param roots root named schemas
+   * @return map of all schemas defined inside root, including root
+   */
+  public static Map<String, Schema> getAllDefinedSchemas(Collection<Schema> roots) {
+    if (roots == null) {
+      throw new IllegalArgumentException("argument must not be null");
+    }
+    Map<String, Schema> results = new HashMap<>(roots.size());
+    for (Schema root : roots) {
+      Map<String, Schema> definedByRoot = getAllDefinedSchemas(root);
+      results.putAll(definedByRoot);
+    }
+    return results;
   }
 
   /**
