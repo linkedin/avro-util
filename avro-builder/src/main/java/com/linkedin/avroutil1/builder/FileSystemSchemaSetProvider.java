@@ -6,6 +6,8 @@
 
 package com.linkedin.avroutil1.builder;
 
+import com.linkedin.avroutil1.compatibility.AvroSchemaUtil;
+import com.linkedin.avroutil1.compatibility.SchemaVisitor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -98,10 +100,15 @@ public class FileSystemSchemaSetProvider implements SchemaSetProvider {
   public SchemaSet loadSchemas(boolean topLevelOnly) {
     try {
       // Retry on parse errors so that types in common may reference other types also defined in common.
-      SchemaSet commonSchemas = new SimpleSchemaSet();
-      loadSchemas(buildFileList(common), commonSchemas, true, new ArrayList<>(), ParseErrorHandling.Retry);
-      List<Schema> allRootCommonSchemas = commonSchemas.getAll(); //dup-free
-      Collection<Schema> allCommonSchemas = AvroSchemaBuilderUtils.getAllDefinedSchemas(allRootCommonSchemas).values(); //dup-free
+      Collection<Schema> allCommonSchemas;
+      if (common != null && !common.isEmpty()) {
+        SchemaSet commonSchemas = new SimpleSchemaSet();
+        loadSchemas(buildFileList(common), commonSchemas, true, new ArrayList<>(), ParseErrorHandling.Retry);
+        List<Schema> allRootCommonSchemas = commonSchemas.getAll(); //dup-free
+        allCommonSchemas = AvroSchemaUtil.getAllDefinedSchemas(allRootCommonSchemas).values(); //dup-free
+      } else {
+        allCommonSchemas = Collections.emptySet();
+      }
 
       // Retry on parse errors so that types in dirs may reference other types also defined in dirs.
       SchemaSet schemas = new SimpleSchemaSet();
@@ -113,7 +120,7 @@ public class FileSystemSchemaSetProvider implements SchemaSetProvider {
   }
 
   /**
-   * loads schemas from a a given set of input avsc files, given a set of known common schemas, into
+   * loads schemas from a given set of input avsc files, given a set of known common schemas, into
    * the given SchemaSet
    * @param inputFiles input avsc files
    * @param schemas output schema set
@@ -222,7 +229,7 @@ public class FileSystemSchemaSetProvider implements SchemaSetProvider {
         //find (recursively) all schemas "rooted" (included) in this schema we just found
         //this is so we wont generate code for any transitives (for example, if we find
         //"EventHeader" on the classpath, we also want to avoid generating Guid.java)
-        AvroSchemaBuilderUtils.traverseSchema(found, new SchemaVisitor() {
+        AvroSchemaUtil.traverseSchema(found, new SchemaVisitor() {
           @Override
           public void visitSchema(Schema schema) {
             Schema.Type type = schema.getType();
@@ -293,7 +300,7 @@ public class FileSystemSchemaSetProvider implements SchemaSetProvider {
       if (topLevelOnly) {
         schemas.add(parsedSchema);
       } else {
-        Collection<Schema> allContainedTherein = AvroSchemaBuilderUtils.getAllDefinedSchemas(parsedSchema).values();
+        Collection<Schema> allContainedTherein = AvroSchemaUtil.getAllDefinedSchemas(parsedSchema).values();
         for (Schema contained : allContainedTherein) {
           schemas.add(contained);
         }

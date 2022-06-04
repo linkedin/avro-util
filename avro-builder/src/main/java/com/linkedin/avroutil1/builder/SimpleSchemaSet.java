@@ -14,17 +14,15 @@ import org.apache.avro.Schema;
 
 
 public class SimpleSchemaSet implements SchemaSet {
-  private final Map<SchemaId, Schema> idToSchema;
   private final Map<String, Schema> nameToSchemas;
 
   public SimpleSchemaSet() {
-    this.idToSchema = new HashMap<>();
     this.nameToSchemas = new HashMap<>();
   }
 
   @Override
   public synchronized int size() {
-    return idToSchema.size();
+    return nameToSchemas.size();
   }
 
   @Override
@@ -39,8 +37,6 @@ public class SimpleSchemaSet implements SchemaSet {
 
   @Override
   public synchronized void add(Schema schema) {
-    SchemaId id = SchemaId.forSchema(schema);
-    idToSchema.put(id, schema);
     nameToSchemas.put(schema.getFullName(), schema);
   }
 
