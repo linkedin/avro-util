@@ -85,6 +85,16 @@ public class AvroRecordUtilTest {
     convertRoundTrip(genericInstance);
   }
 
+  @Test
+  public void testGenericToSpecificComplexCollections() throws Exception {
+    RandomRecordGenerator gen = new RandomRecordGenerator();
+    RecordGenerationConfig genConfig = RecordGenerationConfig.newConfig().withAvoidNulls(true);
+
+    Schema schema = under14.RecordWithCollectionsOfUnions.SCHEMA$;
+    GenericRecord genericInstance = (GenericRecord) gen.randomGeneric(schema, genConfig);
+    convertRoundTrip(genericInstance);
+  }
+
   private void convertRoundTrip(GenericRecord original) {
     Assert.assertNotNull(original);
     SpecificRecord converted = AvroRecordUtil.genericRecordToSpecificRecord(original, null, RecordConversionConfig.ALLOW_ALL);

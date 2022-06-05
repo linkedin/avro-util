@@ -1,0 +1,27 @@
+{
+  "type": "record",
+  "namespace": "under14",
+  "name": "RecordWithCollectionsOfUnions",
+  "fields": [
+    {
+      "name": "mapField",
+      "type": [
+        "null",
+        {
+          "type": "map",
+          "values" : [ "boolean", "int", "long", "float", "double", "bytes", "string", "null" ]
+        }
+      ]
+    },
+    {
+      "name": "arrayField",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": [ "boolean", "int", "long", "float", "double", "bytes", "string", "null" ]
+        }
+      ]
+    }
+  ]
+}
