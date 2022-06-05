@@ -106,6 +106,22 @@ public class AvroParseContext {
         }
     }
 
+    public boolean hasExternalReferences() {
+        assertSealed();
+        return externalReferences != null && !externalReferences.isEmpty();
+    }
+
+    public List<SchemaOrRef> getExternalReferences() {
+        assertSealed();
+        return externalReferences;
+    }
+
+    private void assertSealed() {
+        if (!sealed) {
+            throw new IllegalStateException("this context has not yet been sealed");
+        }
+    }
+
     private void assertMutable() {
         if (sealed) {
             throw new IllegalStateException("this context has already been sealed");

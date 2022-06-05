@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
  */
 public class VanillaProcessedCodeGenOp implements CodeGenOp {
   private static final Logger LOGGER = LoggerFactory.getLogger(VanillaProcessedCodeGenOp.class);
-  private static final String AVRO_EXTENSION = "avsc";
 
   private final CodeGenOpConfig config;
 
@@ -86,7 +85,7 @@ public class VanillaProcessedCodeGenOp implements CodeGenOp {
     }
 
     Set<File> avroFiles = new HashSet<>();
-    String[] extensions = new String[]{AVRO_EXTENSION};
+    String[] extensions = new String[]{BuilderConsts.AVSC_EXTENSION};
     if (config.includeRoots != null) {
       for (File include : config.includeRoots) {
         avroFiles.addAll(FileUtils.listFiles(include, extensions, true));

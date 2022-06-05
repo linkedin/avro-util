@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.io.FileUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -19,12 +20,37 @@ import org.testng.annotations.Test;
 public class SchemaBuilderTest {
 
   @Test
-  public void testSimpleProject() throws Exception {
+  public void testSimpleProjectUsingVanilla() throws Exception {
     File simpleProjectRoot = new File(locateTestProjectsRoot(), "simple-project");
     File inputFolder = new File(simpleProjectRoot, "input");
     File outputFolder = new File(simpleProjectRoot, "output");
+    if (outputFolder.exists()) { //clear output
+      FileUtils.deleteDirectory(outputFolder);
+    }
     //run the builder
     SchemaBuilder.main(new String[] {"--input", inputFolder.getAbsolutePath(), "--output", outputFolder.getAbsolutePath()});
+    //see output was generated
+    List<Path> javaFiles = Files.find(outputFolder.toPath(), 5,
+        (path, basicFileAttributes) -> path.getFileName().toString().endsWith(".java")
+    ).collect(Collectors.toList());
+    Assert.assertEquals(javaFiles.size(), 1);
+  }
+
+  //TODO - complete this
+  //@Test
+  public void testSimpleProjectUsingOwnCodegen() throws Exception {
+    File simpleProjectRoot = new File(locateTestProjectsRoot(), "simple-project");
+    File inputFolder = new File(simpleProjectRoot, "input");
+    File outputFolder = new File(simpleProjectRoot, "output");
+    if (outputFolder.exists()) { //clear output
+      FileUtils.deleteDirectory(outputFolder);
+    }
+    //run the builder
+    SchemaBuilder.main(new String[] {
+        "--input", inputFolder.getAbsolutePath(),
+        "--output", outputFolder.getAbsolutePath(),
+        "--generator", CodeGenerator.AVRO_UTIL.name()
+    });
     //see output was generated
     List<Path> javaFiles = Files.find(outputFolder.toPath(), 5,
         (path, basicFileAttributes) -> path.getFileName().toString().endsWith(".java")
