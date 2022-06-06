@@ -50,6 +50,11 @@ import com.linkedin.avroutil1.parser.jsonpext.JsonReaderWithLocations;
 import com.linkedin.avroutil1.parser.jsonpext.JsonStringExt;
 import com.linkedin.avroutil1.parser.jsonpext.JsonValueExt;
 import com.linkedin.avroutil1.util.Util;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.Reader;
+import java.nio.file.Path;
 import javax.json.JsonValue;
 import javax.json.stream.JsonParsingException;
 import java.io.StringReader;
@@ -123,9 +128,30 @@ public class AvscParser {
     )));
 
     public AvscParseResult parse(String avsc) {
-        JsonReaderExt jsonReader = new JsonReaderWithLocations(new StringReader(avsc), null);
-        JsonValueExt root;
         AvscFileParseContext context = new AvscFileParseContext(avsc);
+        Reader reader = new StringReader(avsc);
+
+        return parse(context, reader);
+    }
+
+    public AvscParseResult parse(Path avscFile) {
+        return parse(avscFile.toFile());
+    }
+
+    public AvscParseResult parse(File avscFile) {
+        AvscFileParseContext context = new AvscFileParseContext(avscFile);
+        Reader reader;
+        try {
+            reader = new FileReader(avscFile);
+        } catch (FileNotFoundException e) {
+            throw new IllegalStateException("input file " + avscFile.getAbsolutePath() + " not found", e);
+        }
+        return parse(context, reader);
+    }
+
+    private AvscParseResult parse(AvscFileParseContext context, Reader reader) {
+        JsonReaderExt jsonReader = new JsonReaderWithLocations(reader, null);
+        JsonValueExt root;
         AvscParseResult result = new AvscParseResult();
         try {
             root = jsonReader.readValue();
