@@ -4,9 +4,8 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1.builder;
+package com.linkedin.avroutil1.builder.operations;
 
-public interface CodeGenOp {
-
-  void run() throws Exception;
+public interface Operation {
+  void run(OperationContext opContext) throws Exception;
 }

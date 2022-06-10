@@ -4,9 +4,12 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1.builder;
+package com.linkedin.avroutil1.builder.operations.codegen.vanilla;
 
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvroSchemaUtil;
+import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
+import com.linkedin.avroutil1.compatibility.SchemaParseResult;
 import com.linkedin.avroutil1.compatibility.SchemaVisitor;
 import java.io.File;
 import java.io.FileInputStream;
@@ -295,7 +298,8 @@ public class FileSystemSchemaSetProvider implements SchemaSetProvider {
 
     try (InputStream input = new FileInputStream(f)) {
       String schemaJson = IOUtils.toString(input, StandardCharsets.UTF_8);
-      Schema parsedSchema = SchemaHelper.parse(schemaJson, known);
+      SchemaParseResult result = AvroCompatibilityHelper.parse(schemaJson, SchemaParseConfiguration.STRICT, known);
+      Schema parsedSchema = result.getMainSchema();
       //add successfully parsed schema (and maybe all nested schemas as well)
       if (topLevelOnly) {
         schemas.add(parsedSchema);

@@ -4,8 +4,12 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1.builder;
+package com.linkedin.avroutil1.builder.operations.codegen.vanilla;
 
+import com.linkedin.avroutil1.builder.BuilderConsts;
+import com.linkedin.avroutil1.builder.operations.codegen.CodeGenOpConfig;
+import com.linkedin.avroutil1.builder.operations.Operation;
+import com.linkedin.avroutil1.builder.operations.OperationContext;
 import com.linkedin.avroutil1.compatibility.Avro702Checker;
 import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
 import com.linkedin.avroutil1.compatibility.CodeGenerationConfig;
@@ -33,7 +37,7 @@ import org.slf4j.LoggerFactory;
 /**
  * a code generation operation using vanilla avro-compiler + helper post-processing
  */
-public class VanillaProcessedCodeGenOp implements CodeGenOp {
+public class VanillaProcessedCodeGenOp implements Operation {
   private static final Logger LOGGER = LoggerFactory.getLogger(VanillaProcessedCodeGenOp.class);
 
   private final CodeGenOpConfig config;
@@ -43,31 +47,31 @@ public class VanillaProcessedCodeGenOp implements CodeGenOp {
   }
 
   @Override
-  public void run() throws Exception {
+  public void run(OperationContext opContext) throws Exception {
     //mkdir any output folders that dont exist
-    if (!config.outputSpecificRecordClassesRoot.exists() && !config.outputSpecificRecordClassesRoot.mkdirs()) {
-      throw new IllegalStateException("unable to create destination folder " + config.outputSpecificRecordClassesRoot);
+    if (!config.getOutputSpecificRecordClassesRoot().exists() && !config.getOutputSpecificRecordClassesRoot().mkdirs()) {
+      throw new IllegalStateException("unable to create destination folder " + config.getOutputSpecificRecordClassesRoot());
     }
-    if (config.outputExpandedSchemasRoot != null) {
-      if (!config.outputExpandedSchemasRoot.exists() && !config.outputExpandedSchemasRoot.mkdirs()) {
-        throw new IllegalStateException("unable to create destination folder " + config.outputExpandedSchemasRoot);
+    if (config.getOutputExpandedSchemasRoot() != null) {
+      if (!config.getOutputExpandedSchemasRoot().exists() && !config.getOutputExpandedSchemasRoot().mkdirs()) {
+        throw new IllegalStateException("unable to create destination folder " + config.getOutputExpandedSchemasRoot());
       }
     }
 
     AvscGenerationConfig avscConfig = AvscGenerationConfig.VANILLA_ONELINE;
-    if (config.avro702Handling) {
+    if (config.isAvro702Handling()) {
       avscConfig = AvscGenerationConfig.CORRECT_MITIGATED_ONELINE;
     }
 
     //build a classpath SchemaSet if classpath (cp) lookup is turned on
     ClasspathSchemaSet cpLookup = null;
-    if (config.includeClasspath) {
+    if (config.isIncludeClasspath()) {
       cpLookup = new ClasspathSchemaSet();
     }
 
     FileSystemSchemaSetProvider provider = new FileSystemSchemaSetProvider(
-        config.inputRoots,
-        config.includeRoots,
+        config.getInputRoots(),
+        config.getIncludeRoots(),
         FileSystemSchemaSetProvider.DEFAULT_SCHEMA_SUFFIX,
         cpLookup
     );
@@ -80,18 +84,18 @@ public class VanillaProcessedCodeGenOp implements CodeGenOp {
       for (Schema onCP : schemasFoundOnClasspath) {
         csv.add(onCP.getFullName());
       }
-      LOGGER.info("the following schemas were found on the classpath and will not be generated: " + csv.toString());
+      LOGGER.info("the following schemas were found on the classpath and will not be generated: " + csv);
       schemas.removeAll(schemasFoundOnClasspath);
     }
 
     Set<File> avroFiles = new HashSet<>();
     String[] extensions = new String[]{BuilderConsts.AVSC_EXTENSION};
-    if (config.includeRoots != null) {
-      for (File include : config.includeRoots) {
+    if (config.getIncludeRoots() != null) {
+      for (File include : config.getIncludeRoots()) {
         avroFiles.addAll(FileUtils.listFiles(include, extensions, true));
       }
     }
-    for (File file : config.inputRoots) {
+    for (File file : config.getInputRoots()) {
       if (file.isDirectory()) {
         avroFiles.addAll(FileUtils.listFiles(file, extensions, true));
       } else {
@@ -113,9 +117,9 @@ public class VanillaProcessedCodeGenOp implements CodeGenOp {
         } catch (Exception e) {
           throw new IllegalStateException("caught exception parsing " + filePath, e);
         }
-        if (schemaNameToFilepath.containsKey(fqcn) && !config.duplicateSchemasToIgnore.contains(fqcn)) {
+        if (schemaNameToFilepath.containsKey(fqcn) && !config.getDuplicateSchemasToIgnore().contains(fqcn)) {
           String otherPath = schemaNameToFilepath.get(fqcn);
-          switch (config.dupBehaviour) {
+          switch (config.getDupBehaviour()) {
             case FAIL:
               throw new RuntimeException("ERROR: schema " + fqcn + " found in 2+ places: " + otherPath + " and " + filePath);
             case WARN:
@@ -131,7 +135,7 @@ public class VanillaProcessedCodeGenOp implements CodeGenOp {
               }
               break;
             default:
-              throw new IllegalStateException("unhandled: " + config.dupBehaviour);
+              throw new IllegalStateException("unhandled: " + config.getDupBehaviour());
           }
         }
         schemaNameToFilepath.put(fqcn, filePath);
@@ -141,21 +145,21 @@ public class VanillaProcessedCodeGenOp implements CodeGenOp {
     LOGGER.info("Compiling {} schemas in project with {} schemas found on classpath...", schemas.size(), schemasFoundOnClasspath.size());
     Set<String> fqcnsFoundOnClasspath = schemasFoundOnClasspath.stream().map(Schema::getFullName).collect(Collectors.toSet());
     CodeGenerationConfig codeGenerationConfig = new CodeGenerationConfig(
-        config.stringRepresentation, config.avro702Handling, avscConfig
+        config.getStringRepresentation(), config.isAvro702Handling(), avscConfig
     );
     SpecificCompilerHelper.compile(
         schemas,
-        config.outputSpecificRecordClassesRoot,
-        config.minAvroVersion,
+        config.getOutputSpecificRecordClassesRoot(),
+        config.getMinAvroVersion(),
         fqcnsFoundOnClasspath,
-        config.duplicateSchemasToIgnore,
-        config.dupBehaviour,
+        config.getDuplicateSchemasToIgnore(),
+        config.getDupBehaviour(),
         codeGenerationConfig
     );
 
     for (Schema schema : schemas) {
       if (schema.getType() == Schema.Type.RECORD && Avro702Checker.isSusceptible(schema)) {
-        if (config.avro702Handling) {
+        if (config.isAvro702Handling()) {
           LOGGER.warn("schema " + schema.getFullName() + " is susceptible to avro-702 and was fixed");
         } else {
           LOGGER.warn("schema " + schema.getFullName() + " is susceptible to avro-702 (avro702 handling disabled)");
@@ -163,11 +167,11 @@ public class VanillaProcessedCodeGenOp implements CodeGenOp {
       }
     }
 
-    if (config.outputExpandedSchemasRoot != null) {
+    if (config.getOutputExpandedSchemasRoot() != null) {
       LOGGER.info("writing {} expanded schemas", schemas.size());
       for (Schema schema : schemas) {
         FileUtils.writeStringToFile(
-            new File(config.outputExpandedSchemasRoot, schema.getFullName() + ".txt"),
+            new File(config.getOutputExpandedSchemasRoot(), schema.getFullName() + ".txt"),
             schema.toString(true),
             StandardCharsets.UTF_8
         );
