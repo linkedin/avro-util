@@ -4,7 +4,7 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1.builder;
+package com.linkedin.avroutil1.builder.operations.codegen.vanilla;
 
 
 import java.util.List;

@@ -4,8 +4,10 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1.builder;
+package com.linkedin.avroutil1.builder.operations.codegen;
 
+import com.linkedin.avroutil1.builder.AvroSchemaBuilderUtils;
+import com.linkedin.avroutil1.builder.DuplicateSchemaBehaviour;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
 import com.linkedin.avroutil1.compatibility.StringRepresentation;
@@ -117,6 +119,50 @@ public class CodeGenOpConfig {
         throw new IllegalStateException("unable to find org.apache.avro:avro-compiler on the classpath");
       }
     }
+  }
+
+  public List<File> getInputRoots() {
+    return inputRoots;
+  }
+
+  public List<File> getIncludeRoots() {
+    return includeRoots;
+  }
+
+  public boolean isIncludeClasspath() {
+    return includeClasspath;
+  }
+
+  public File getOutputSpecificRecordClassesRoot() {
+    return outputSpecificRecordClassesRoot;
+  }
+
+  public File getOutputExpandedSchemasRoot() {
+    return outputExpandedSchemasRoot;
+  }
+
+  public CodeGenerator getGeneratorType() {
+    return generatorType;
+  }
+
+  public DuplicateSchemaBehaviour getDupBehaviour() {
+    return dupBehaviour;
+  }
+
+  public List<String> getDuplicateSchemasToIgnore() {
+    return duplicateSchemasToIgnore;
+  }
+
+  public StringRepresentation getStringRepresentation() {
+    return stringRepresentation;
+  }
+
+  public AvroVersion getMinAvroVersion() {
+    return minAvroVersion;
+  }
+
+  public boolean isAvro702Handling() {
+    return avro702Handling;
   }
 
   private void validateInput(Collection<File> files, String desc) {

@@ -6,13 +6,24 @@
 
 package com.linkedin.avroutil1.builder;
 
+import com.linkedin.avroutil1.builder.operations.codegen.CodeGenerator;
+import com.linkedin.avroutil1.builder.operations.codegen.own.AvroUtilCodeGenOp;
+import com.linkedin.avroutil1.builder.operations.codegen.CodeGenOpConfig;
+import com.linkedin.avroutil1.builder.operations.Operation;
+import com.linkedin.avroutil1.builder.operations.OperationContext;
+import com.linkedin.avroutil1.builder.operations.codegen.vanilla.VanillaProcessedCodeGenOp;
+import com.linkedin.avroutil1.builder.plugins.BuilderPlugin;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
 import com.linkedin.avroutil1.compatibility.StringRepresentation;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ServiceLoader;
+import java.util.Set;
+
 import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -27,6 +38,8 @@ public class SchemaBuilder {
   private SchemaBuilder() { }
 
   public static void main(String[] args) throws Exception {
+    List<BuilderPlugin> plugins = loadPlugins(1);
+
     OptionParser parser = new OptionParser();
 
     OptionSpec<String> inputOpt = parser.accepts("input", "Schema or directory of schemas to compile [REQUIRED]")
@@ -70,6 +83,11 @@ public class SchemaBuilder {
         .withOptionalArg()
         .defaultsTo("false")
         .describedAs("true/false");
+
+    //allow plugins to add CLI options
+    for (BuilderPlugin plugin : plugins) {
+      plugin.customizeCLI(parser);
+    }
 
     if (args.length == 0) {
       printHelpAndCroak(parser, "no arguments provided");
@@ -159,6 +177,13 @@ public class SchemaBuilder {
       handleAvro702 = Boolean.TRUE.equals(Boolean.parseBoolean(value));
     }
 
+    //allow plugins to parse and validate their own added options
+    for (BuilderPlugin plugin : plugins) {
+      plugin.parseAndValidateOptions(options);
+    }
+
+    OperationContext context = new OperationContext();
+
     CodeGenOpConfig opConfig = new CodeGenOpConfig(
         inputs,
         includes,
@@ -175,8 +200,8 @@ public class SchemaBuilder {
 
     opConfig.validateParameters();
 
-    CodeGenOp op;
-    switch (opConfig.generatorType) {
+    Operation op;
+    switch (opConfig.getGeneratorType()) {
       case AVRO_UTIL:
         op = new AvroUtilCodeGenOp(opConfig);
         break;
@@ -184,10 +209,33 @@ public class SchemaBuilder {
         op = new VanillaProcessedCodeGenOp(opConfig);
         break;
       default:
-        throw new IllegalStateException("unhandled: " + opConfig.generatorType);
+        throw new IllegalStateException("unhandled: " + opConfig.getGeneratorType());
+    }
+    context.add(op);
+
+    //allow plugins to add operations
+    for (BuilderPlugin plugin : plugins) {
+      plugin.createOperations(context);
     }
 
-    op.run();
+    context.run();
+  }
+
+  private static List<BuilderPlugin> loadPlugins(@SuppressWarnings("SameParameterValue") int currentApiVersion) {
+    List<BuilderPlugin> plugins = new ArrayList<>(1);
+    ServiceLoader<BuilderPlugin> loader = ServiceLoader.load(BuilderPlugin.class);
+    Iterator<BuilderPlugin> iterator = loader.iterator();
+    while (iterator.hasNext()) {
+      BuilderPlugin plugin = iterator.next();
+      Set<Integer> pluginSupportedVersions = plugin.supportedApiVersions();
+      if (!pluginSupportedVersions.contains(currentApiVersion)) {
+        System.err.println("plugin " + plugin.name() + " does not support current API version " + currentApiVersion + " and will not be loaded");
+        continue;
+      }
+      plugins.add(plugin);
+    }
+    //TODO - add a mechanism to allow users to disable any plugins found via CLI options
+    return plugins;
   }
 
   private static void printHelpAndCroak(OptionParser parser, String message) throws IOException {

@@ -4,8 +4,12 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1.builder;
+package com.linkedin.avroutil1.builder.operations.codegen.own;
 
+import com.linkedin.avroutil1.builder.BuilderConsts;
+import com.linkedin.avroutil1.builder.operations.codegen.CodeGenOpConfig;
+import com.linkedin.avroutil1.builder.operations.Operation;
+import com.linkedin.avroutil1.builder.operations.OperationContext;
 import com.linkedin.avroutil1.parser.avsc.AvroParseContext;
 import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
 import com.linkedin.avroutil1.parser.avsc.AvscParser;
@@ -21,7 +25,7 @@ import org.slf4j.LoggerFactory;
 /**
  * a code generation operation using the avro-codegen module of avro-util
  */
-public class AvroUtilCodeGenOp implements CodeGenOp {
+public class AvroUtilCodeGenOp implements Operation {
   private static final Logger LOGGER = LoggerFactory.getLogger(AvroUtilCodeGenOp.class);
 
   private final CodeGenOpConfig config;
@@ -31,20 +35,20 @@ public class AvroUtilCodeGenOp implements CodeGenOp {
   }
 
   @Override
-  public void run() throws Exception {
+  public void run(OperationContext opContext) throws Exception {
     //mkdir any output folders that dont exist
-    if (!config.outputSpecificRecordClassesRoot.exists() && !config.outputSpecificRecordClassesRoot.mkdirs()) {
-      throw new IllegalStateException("unable to create destination folder " + config.outputSpecificRecordClassesRoot);
+    if (!config.getOutputSpecificRecordClassesRoot().exists() && !config.getOutputSpecificRecordClassesRoot().mkdirs()) {
+      throw new IllegalStateException("unable to create destination folder " + config.getOutputSpecificRecordClassesRoot());
     }
 
     List<Path> avscFiles = new ArrayList<>();
-    for (File inputRoot : config.inputRoots) {
+    for (File inputRoot : config.getInputRoots()) {
       Files.walk(inputRoot.toPath())
           .filter(path -> path.getFileName().toString().endsWith("." + BuilderConsts.AVSC_EXTENSION))
           .forEach(avscFiles::add);
     }
     if (avscFiles.isEmpty()) {
-      LOGGER.warn("no input schema files were found under roots " + config.inputRoots);
+      LOGGER.warn("no input schema files were found under roots " + config.getInputRoots());
       return;
     }
     LOGGER.info("found " + avscFiles.size() + " avsc schema files");

@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.builder;
 
+import com.linkedin.avroutil1.builder.operations.codegen.CodeGenerator;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Files;
@@ -34,6 +35,27 @@ public class SchemaBuilderTest {
         (path, basicFileAttributes) -> path.getFileName().toString().endsWith(".java")
     ).collect(Collectors.toList());
     Assert.assertEquals(javaFiles.size(), 1);
+  }
+
+  @Test
+  public void testSimpleProjectWithPlugin() throws Exception {
+    File simpleProjectRoot = new File(locateTestProjectsRoot(), "simple-project");
+    File inputFolder = new File(simpleProjectRoot, "input");
+    File outputFolder = new File(simpleProjectRoot, "output");
+    if (outputFolder.exists()) { //clear output
+      FileUtils.deleteDirectory(outputFolder);
+    }
+    //run the builder
+    SchemaBuilder.main(new String[] {
+        "--input", inputFolder.getAbsolutePath(),
+        "--output", outputFolder.getAbsolutePath(),
+        "--extraFileName", new File(outputFolder, "dummy.txt").getAbsolutePath()
+    });
+    //see output was generated
+    List<Path> txtFiles = Files.find(outputFolder.toPath(), 5,
+        (path, basicFileAttributes) -> path.getFileName().toString().equals("dummy.txt")
+    ).collect(Collectors.toList());
+    Assert.assertEquals(txtFiles.size(), 1);
   }
 
   //TODO - complete this
