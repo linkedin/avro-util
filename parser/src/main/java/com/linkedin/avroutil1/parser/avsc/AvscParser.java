@@ -381,8 +381,14 @@ public class AvscParser {
                     AvroLiteral defaultValue = null;
                     if (fieldDefaultValueNode != null) {
                         if (fieldSchema.isResolved()) {
-                            LiteralOrIssue defaultValurOrIssue = parseLiteral(fieldDefaultValueNode, fieldSchema.getSchema(), fieldName.getValue(), context);
+                            AvroSchema defaultValueExpectedSchema = fieldSchema.getSchema();
+                            if (defaultValueExpectedSchema.type() == AvroType.UNION) {
+                                //(legal) default values are expected to match the 1st union branch
+                                defaultValueExpectedSchema = ((AvroUnionSchema) defaultValueExpectedSchema).getTypes().get(0).getSchema();
+                            }
+                            LiteralOrIssue defaultValurOrIssue = parseLiteral(fieldDefaultValueNode, defaultValueExpectedSchema, fieldName.getValue(), context);
                             if (defaultValurOrIssue.getIssue() == null) {
+                                //TODO - allow parsing default values that are branch != 0 (and add an issue)
                                 defaultValue = defaultValurOrIssue.getLiteral();
                             }
                             //TODO - handle issues
