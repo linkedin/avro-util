@@ -391,9 +391,7 @@ public class AvscParser {
                                 //TODO - allow parsing default values that are branch != 0 (and add an issue)
                                 defaultValue = defaultValueOrIssue.getLiteral();
                             } else {
-                                throw new AvroSyntaxException("Default value in schema " + schemaName.getSimpleName()
-                                    + " should be " + defaultValueExpectedSchema.type().toTypeName() + " at " +
-                                    fieldDefaultValueNode.getStartLocation());
+                                context.addIssue(defaultValueOrIssue.getIssue());
                             }
                             //TODO - handle issues
                         } else {
