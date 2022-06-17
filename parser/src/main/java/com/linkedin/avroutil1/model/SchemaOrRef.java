@@ -79,6 +79,10 @@ public class SchemaOrRef implements LocatedCode {
         return null;
     }
 
+    public String getParentNamespace() {
+        return parentNamespace;
+    }
+
     /**
      * @return true if this is declared inline or a resolved reference
      */
