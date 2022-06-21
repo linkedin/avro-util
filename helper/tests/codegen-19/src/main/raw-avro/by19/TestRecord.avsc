@@ -79,6 +79,22 @@
       "doc": "this is silly, but legal"
     },
     {
+      "name": "stringMapField",
+      "type": {
+        "type": "map",
+        "values": ["null", "string"]
+      },
+      "doc": "back-ref to a schema defined earlier in the same file"
+    },
+    {
+      "name": "fixedMapField",
+      "type": {
+        "type": "map",
+        "values": "by19.SimpleFixed"
+      },
+      "doc": "back-ref to a schema defined earlier in the same file"
+    },
+    {
       "name": "enumMapField",
       "type": {
         "type": "map",

@@ -56,7 +56,7 @@
     },
     {
       "name": "unionField",
-      "type": ["int", "string"],
+      "type": ["int", "null"],
 
       "doc": "this is silly, but legal"
     },
@@ -66,7 +66,7 @@
         "type": "array",
         "items": "null"
       },
-      "default": [null, null, null],
+
       "doc": "this is silly, but legal"
     },
     {
@@ -77,6 +77,22 @@
       },
       "default": [""],
       "doc": "this is silly, but legal"
+    },
+    {
+      "name": "stringMapField",
+      "type": {
+        "type": "map",
+        "values": ["null", "string"]
+      },
+      "doc": "back-ref to a schema defined earlier in the same file"
+    },
+    {
+      "name": "fixedMapField",
+      "type": {
+        "type": "map",
+        "values": "by19.SimpleFixed"
+      },
+      "doc": "back-ref to a schema defined earlier in the same file"
     },
     {
       "name": "enumMapField",

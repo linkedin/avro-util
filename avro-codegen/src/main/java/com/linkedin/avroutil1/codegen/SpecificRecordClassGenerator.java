@@ -38,6 +38,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,7 @@ import javax.tools.JavaFileObject;
 import org.apache.avro.io.DatumReader;
 import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.Encoder;
+import org.apache.avro.io.ResolvingDecoder;
 import org.apache.avro.specific.FixedSize;
 import org.apache.avro.specific.SpecificData;
 import org.apache.avro.specific.SpecificDatumReader;
@@ -55,6 +57,8 @@ import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.avro.specific.SpecificRecord;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.avro.util.Utf8;
+
+import static com.linkedin.avroutil1.model.AvroType.*;
 
 
 /**
@@ -83,7 +87,11 @@ public class SpecificRecordClassGenerator {
       SpecificRecordBase.class,
       Object.class,
       Encoder.class,
-      ConcurrentModificationException.class
+      ConcurrentModificationException.class,
+      ResolvingDecoder.class,
+      IllegalArgumentException.class,
+      IndexOutOfBoundsException.class,
+      HashMap.class
   ));
 
   public JavaFileObject generateSpecificRecordClass(AvroNamedSchema topLevelSchema, SpecificRecordGenerationConfig config) {
@@ -301,6 +309,15 @@ public class SpecificRecordClassGenerator {
           .addModifiers(Modifier.PUBLIC);
       addCustomEncodeMethod(customEncodeBuilder, recordSchema, config);
       classBuilder.addMethod(customEncodeBuilder.build());
+
+      //customDecode
+      MethodSpec.Builder customDecodeBuilder = MethodSpec
+          .methodBuilder("customDecode")
+          .addParameter(ResolvingDecoder.class, "in")
+          .addException(IOException.class)
+          .addModifiers(Modifier.PUBLIC);
+      addCustomDecodeMethod(customDecodeBuilder, recordSchema, config);
+      classBuilder.addMethod(customDecodeBuilder.build());
     }
 
 
@@ -316,21 +333,203 @@ public class SpecificRecordClassGenerator {
     return javaFile.toJavaFileObject();
   }
 
+  private void addCustomDecodeMethod(MethodSpec.Builder customDecodeBuilder, AvroRecordSchema recordSchema,
+      SpecificRecordGenerationConfig config) {
+    // reset var counter
+    sizeValCounter = 0;
+    customDecodeBuilder.addStatement("org.apache.avro.Schema.Field[] fieldOrder = in.readFieldOrderIfDiff()")
+        .beginControlFlow("if (fieldOrder == null)");
+    for(AvroSchemaField field : recordSchema.getFields()) {
+      customDecodeBuilder.addStatement(
+          getSerializedCustomDecodeBlock(config, field.getSchemaOrRef().getDecl(), field.getSchemaOrRef().getDecl().type(),
+              "this." + field.getName()));
+    }
+    // reset var counter
+    sizeValCounter = 0;
+    int fieldIndex = 0;
+    customDecodeBuilder.endControlFlow()
+        .beginControlFlow("else")
+        .beginControlFlow("for( int i = 0; i< $L; i++)", recordSchema.getFields().size())
+        .beginControlFlow("switch(fieldOrder[i].pos())");
+    for(AvroSchemaField field : recordSchema.getFields()) {
+      customDecodeBuilder
+          .addStatement(String.format("case %s: ",fieldIndex++)+
+          getSerializedCustomDecodeBlock(config, field.getSchemaOrRef().getDecl(), field.getSchemaOrRef().getDecl().type(),
+              "this." + field.getName()))
+      .addStatement("break");
+    }
+    customDecodeBuilder
+        //switch
+        .endControlFlow()
+        //for
+        .endControlFlow()
+        //else
+        .endControlFlow();
+
+  }
+
+
+  private String getSerializedCustomDecodeBlock(SpecificRecordGenerationConfig config,
+      AvroSchema fieldSchema, AvroType fieldType, String fieldName) {
+    String serializedCodeBlock = "";
+    CodeBlock.Builder codeBlockBuilder  = CodeBlock.builder();
+    switch (fieldType) {
+
+      case NULL:
+        serializedCodeBlock = "in.readNull()";
+        break;
+      case BOOLEAN:
+        serializedCodeBlock = String.format("%s = in.readBoolean()", fieldName);
+        break;
+      case INT:
+        serializedCodeBlock = String.format("%s = in.readInt()", fieldName);
+        break;
+      case FLOAT:
+        serializedCodeBlock = String.format("%s = in.readFloat()", fieldName);
+        break;
+      case LONG:
+        serializedCodeBlock = String.format("%s = in.readLong()", fieldName);
+        break;
+      case DOUBLE:
+        serializedCodeBlock = String.format("%s = in.readDouble()", fieldName);
+        break;
+      case BYTES:
+        serializedCodeBlock = String.format("%s = in.readBytes()", fieldName);
+        break;
+      case STRING:
+        serializedCodeBlock =
+            String.format("%s = in.readString(%s instanceof Utf8 ? (Utf8)%s : null)", fieldName, fieldName, fieldName);
+        break;
+      case ENUM:
+        ClassName enumClassName = getClassName(fieldSchema, ENUM);
+        serializedCodeBlock =
+            String.format("%s = %s.values()[in.readEnum()]", fieldName, enumClassName.canonicalName());
+        break;
+      case FIXED:
+        codeBlockBuilder.beginControlFlow("if ($L == null)", fieldName)
+            .addStatement("$L = new $L()", fieldName,
+                getClassName(fieldSchema, AvroType.FIXED).canonicalName())
+            .endControlFlow().addStatement("in.readFixed($L.bytes(), 0, $L)", fieldName,
+            ((AvroFixedSchema) fieldSchema).getSize());
+
+        serializedCodeBlock = codeBlockBuilder.build().toString();
+        break;
+      case ARRAY:
+
+        String arrayVarName = getArrayVarName();
+        String gArrayVarName = getGArrayVarName();
+        AvroType arrayItemAvroType = ((AvroArraySchema) fieldSchema).getValueSchema().type();
+        Class<?> arrayItemClass = avroTypeToJavaClass(arrayItemAvroType);
+
+        codeBlockBuilder
+            .addStatement("long $L = in.readArrayStart()", getSizeVarName())
+            .addStatement("$T<$T> $L = $L", List.class,arrayItemClass, arrayItemClass, fieldName)
+            .beginControlFlow("if($L == null)", arrayVarName)
+            .addStatement("$L = new SpecificData.Array<$T>((int)$L, $L.getField(\"nullArrayField\").schema())",
+                arrayVarName, arrayItemClass, getSizeVarName(), "SCHEMA$$")
+            .addStatement("$L = $L", fieldName, arrayVarName)
+            .endControlFlow()
+            .beginControlFlow("else")
+            .addStatement("$L.clear()", arrayVarName)
+            .endControlFlow();
+
+        codeBlockBuilder.addStatement(
+            "SpecificData.Array<$T> $L = ($L instanceof SpecificData.Array ? (SpecificData.Array<$T>)$L : null",
+            arrayItemClass, gArrayVarName, arrayVarName, arrayItemClass, arrayVarName);
+        codeBlockBuilder.beginControlFlow("for (; 0 < $L; $L = in.arrayNext())", getSizeVarName(), getSizeVarName())
+            .beginControlFlow("for(; $L != 0; $L--)", getSizeVarName(), getSizeVarName())
+            .addStatement("$T $L = ($L != null ? $L.peek() : null)", arrayItemClass, getElementVarName(), gArrayVarName, gArrayVarName);
+
+        codeBlockBuilder.addStatement(
+            getSerializedCustomDecodeBlock(config, ((AvroArraySchema) fieldSchema).getValueSchema(), arrayItemAvroType, fieldName));
+        codeBlockBuilder.addStatement("$L.add($L)", arrayVarName, getElementVarName())
+            .endControlFlow()
+            .endControlFlow();
+
+        serializedCodeBlock = codeBlockBuilder.build().toString();
+
+        sizeValCounter++;
+
+        break;
+      case MAP:
+
+        String mapVarName = getMapVarName();
+        AvroType mapItemAvroType = ((AvroMapSchema) fieldSchema).getValueSchema().type();
+        Class<?> mapItemClass = avroTypeToJavaClass(mapItemAvroType);
+        ClassName mapItemClassName = getClassName(((AvroMapSchema) fieldSchema).getValueSchema(), mapItemAvroType);
+
+        codeBlockBuilder
+            .addStatement("long $L = in.readMapStart()", getSizeVarName());
+
+        codeBlockBuilder.addStatement("$T<$T,$T> $L = $L", Map.class, CharSequence.class,
+            ((mapItemClass != null) ? mapItemClass : mapItemClassName), mapVarName, fieldName);
+
+        codeBlockBuilder.beginControlFlow("if($L == null)", mapVarName)
+          .addStatement("$L = new $T<$T,$T>((int)$L)", mapVarName, HashMap.class, CharSequence.class,
+              ((mapItemClass != null) ? mapItemClass : mapItemClassName), getSizeVarName())
+          .addStatement("$L = $L", fieldName, mapVarName)
+          .endControlFlow()
+          .beginControlFlow("else")
+          .addStatement("$L.clear()", mapVarName)
+          .endControlFlow();
+
+        codeBlockBuilder.beginControlFlow("for (; 0 < $L; $L = in.mapNext())", getSizeVarName(), getSizeVarName())
+            .beginControlFlow("for(; $L != 0; $L--)", getSizeVarName(), getSizeVarName())
+            .addStatement("$T $L = null", CharSequence.class, getKeyVarName())
+            .addStatement(getSerializedCustomDecodeBlock(config, ((AvroMapSchema) fieldSchema).getValueSchema(), STRING, getKeyVarName()))
+            .addStatement("$T $L = null", ((mapItemClass != null) ? mapItemClass : mapItemClassName), getValueVarName())
+            .addStatement(
+                getSerializedCustomDecodeBlock(config, ((AvroMapSchema) fieldSchema).getValueSchema(),
+                    ((AvroMapSchema) fieldSchema).getValueSchema().type(), getValueVarName()));
+
+        codeBlockBuilder.addStatement("$L.put($L,$L)", mapVarName, getKeyVarName(), getValueVarName())
+            .endControlFlow()
+            .endControlFlow();
+
+        serializedCodeBlock = codeBlockBuilder.build().toString();
+        sizeValCounter++;
+
+        break;
+
+      case UNION:
+        int numberOfUnionMembers = ((AvroUnionSchema) fieldSchema).getTypes().size();
+        for (int i = 0; i < numberOfUnionMembers; i++) {
+
+          SchemaOrRef unionMember = ((AvroUnionSchema) fieldSchema).getTypes().get(i);
+          if (i == 0) {
+            codeBlockBuilder.beginControlFlow("if (in.readIndex() == $L) ", i);
+          } else {
+            codeBlockBuilder.beginControlFlow(" else if (in.readIndex() == $L) ", i);
+          }
+          codeBlockBuilder.addStatement(
+              getSerializedCustomDecodeBlock(config, fieldSchema, unionMember.getSchema().type(), fieldName));
+          if (unionMember.getDecl().type().equals(AvroType.NULL)) {
+            codeBlockBuilder.addStatement("$L = null", fieldName);
+          }
+          codeBlockBuilder.endControlFlow();
+        }
+        codeBlockBuilder.beginControlFlow("else")
+            .addStatement("throw new $T($S)", IndexOutOfBoundsException.class, "Union IndexOutOfBounds")
+            .endControlFlow();
+
+        serializedCodeBlock = codeBlockBuilder.build().toString();
+        break;
+      case RECORD:
+        ClassName className = getClassName(fieldSchema, fieldType);
+
+        codeBlockBuilder.beginControlFlow("this.$L == null", fieldName)
+        .addStatement("this.$L = new $T()", fieldName, className)
+        .endControlFlow()
+        .addStatement("this.$L.customDecode(in)", fieldName);
+
+        serializedCodeBlock = codeBlockBuilder.build().toString();
+        break;
+    }
+    return serializedCodeBlock;
+  }
+
+
   private boolean hasCustomCoders(AvroRecordSchema recordSchema) {
-//    for(AvroSchemaField field : recordSchema.getFields()) {
-//      if(AvroType.UNION.equals(field.getSchemaOrRef().getDecl().type())) {
-//        List<SchemaOrRef> unionComponents = ((AvroUnionSchema) field.getSchemaOrRef().getDecl()).getTypes();
-//        if(unionComponents.size() > 2) {
-//          return false;
-//        }
-//        if(unionComponents.get(0).getDecl().type().equals(AvroType.NULL)) {
-//          return unionComponents.get(1).getDecl().type().isPrimitive();
-//        } else if (unionComponents.get(1).getDecl().type().equals(AvroType.NULL)) {
-//          return unionComponents.get(0).getDecl().type().isPrimitive();
-//        }
-//        return false;
-//      }
-//    }
     return true;
   }
 
@@ -338,165 +537,166 @@ public class SpecificRecordClassGenerator {
       SpecificRecordGenerationConfig config) {
 
     for(AvroSchemaField field : recordSchema.getFields()) {
-      populateCustomEncode(customEncodeBuilder, config, field, field.getSchemaOrRef().getDecl().type(), field.getName());
+      customEncodeBuilder.addStatement(
+      getSerializedCustomEncodeBlock(config, field.getSchemaOrRef().getDecl(), field.getSchemaOrRef().getDecl().type(), field.getName()));
     }
   }
 
-  private void populateCustomEncode(MethodSpec.Builder customEncodeBuilder, SpecificRecordGenerationConfig config,
-      AvroSchemaField field, AvroType fieldType, String fieldName) {
-
-//    if(field.getSchemaOrRef().getDecl().type().isPrimitive()) {
-//      populateCustomEncodePrimitive(customEncodeBuilder, field.getSchemaOrRef().getDecl().type(), field.getName());
-//    }
-
-
+  private String getSerializedCustomEncodeBlock(SpecificRecordGenerationConfig config,
+      AvroSchema fieldSchema, AvroType fieldType, String fieldName) {
+    String serializedCodeBlock = "";
+    CodeBlock.Builder codeBlockBuilder  = CodeBlock.builder();
     switch (fieldType) {
-        // Array and Map are placeholders at this point. To be enhanced
 
       case NULL:
-        customEncodeBuilder.addStatement("out.writeNull()");
+        serializedCodeBlock = "out.writeNull()";
         break;
       case BOOLEAN:
-        customEncodeBuilder.addStatement("out.writeBoolean(this.$L)", fieldName);
+        serializedCodeBlock = String.format("out.writeBoolean(this.%s)", fieldName);
         break;
       case INT:
-        customEncodeBuilder.addStatement("out.writeInt(this.$L)", fieldName);
+        serializedCodeBlock = String.format("out.writeInt(this.%s)", fieldName);
         break;
       case LONG:
-        customEncodeBuilder.addStatement("out.writeLong(this.$L)", fieldName);
+        serializedCodeBlock = String.format("out.writeLong(this.%s)", fieldName);
         break;
       case FLOAT:
-        customEncodeBuilder.addStatement("out.writeFloat(this.$L)", fieldName);
+        serializedCodeBlock = String.format("out.writeFloat(this.%s)", fieldName);
         break;
       case STRING:
-        customEncodeBuilder.addStatement("out.writeString(this.$L)", fieldName);
+        serializedCodeBlock = String.format("out.writeString(this.%s)", fieldName);
         break;
       case DOUBLE:
-        customEncodeBuilder.addStatement("out.writeDouble(this.$L)", fieldName);
+        serializedCodeBlock = String.format("out.writeDouble(this.%s)", fieldName);
         break;
       case BYTES:
-        customEncodeBuilder.addStatement("out.writeBytes(this.$L)", fieldName);
+        serializedCodeBlock = String.format("out.writeBytes(this.%s)", fieldName);
         break;
       case ENUM:
-        customEncodeBuilder.addStatement("out.writeEnum(this.$L.ordinal())", fieldName);
+        serializedCodeBlock = String.format("out.writeEnum(this.%s.ordinal())", fieldName);
         break;
       case FIXED:
-        customEncodeBuilder.addStatement("out.writeFixed(this.$L.bytes(), 0, $L)", fieldName,
-            ((AvroFixedSchema) field.getSchema()).getSize());
+        serializedCodeBlock = String.format("out.writeFixed(this.%s.bytes(), 0, %s)", fieldName,
+            ((AvroFixedSchema) fieldSchema).getSize());
         break;
       case ARRAY:
-        String lengthVarName = getLengthVarName();
+        String lengthVarName = getSizeVarName();
         String actualSizeVarName = getActualSizeVarName();
-        AvroType arrayItemAvroType = ((AvroArraySchema) field.getSchemaOrRef().getDecl()).getValueSchema().type();
+        AvroType arrayItemAvroType = ((AvroArraySchema) fieldSchema).getValueSchema().type();
         Class<?> arrayItemClass = avroTypeToJavaClass(arrayItemAvroType);
         fullyQualifiedClassesInRecord.add(arrayItemClass);
 
-        customEncodeBuilder.addStatement("long $L = this.$L.size()", lengthVarName, fieldName);
-
-        customEncodeBuilder.addStatement("out.writeArrayStart()");
-        customEncodeBuilder.addStatement("out.setItemCount($L)", lengthVarName);
-        customEncodeBuilder.addStatement("long $L = 0", actualSizeVarName);
-        customEncodeBuilder
-            .beginControlFlow("for ($T e0: this.$L)", arrayItemClass, field.getName())
+        codeBlockBuilder.addStatement("long $L = this.$L.size()", lengthVarName, fieldName)
+            .addStatement("out.writeArrayStart()")
+            .addStatement("out.setItemCount($L)", lengthVarName)
+            .addStatement("long $L = 0", actualSizeVarName)
+            .beginControlFlow("for ($T $L: this.$L)", arrayItemClass, getElementVarName(), fieldName)
             .addStatement("$L++", actualSizeVarName)
-            .addStatement("out.startItem()");
-        populateCustomEncode(customEncodeBuilder, config, field, arrayItemAvroType, field.getName());
-        customEncodeBuilder.endControlFlow();
+            .addStatement("out.startItem()")
+            .addStatement(getSerializedCustomEncodeBlock(config, ((AvroArraySchema) fieldSchema).getValueSchema(),
+                arrayItemAvroType, fieldName))
+            .endControlFlow();
 
-        customEncodeBuilder.addStatement("out.writeArrayEnd()");
-        customEncodeBuilder.beginControlFlow("if ($L != $L)", actualSizeVarName, lengthVarName);
-        customEncodeBuilder.addStatement("throw new $T(\"Array-size written was \" + $L + \", but element count was \" + $L + \".\")",
+        codeBlockBuilder
+            .addStatement("out.writeArrayEnd()")
+            .beginControlFlow("if ($L != $L)", actualSizeVarName, lengthVarName)
+            .addStatement("throw new $T(\"Array-size written was \" + $L + \", but element count was \" + $L + \".\")",
             ConcurrentModificationException.class, lengthVarName, actualSizeVarName);
-        customEncodeBuilder.endControlFlow();
+        codeBlockBuilder.endControlFlow();
+
+        serializedCodeBlock = codeBlockBuilder.build().toString();
         sizeValCounter++;
         break;
       case MAP:
-        lengthVarName = getLengthVarName();
+        lengthVarName = getSizeVarName();
         actualSizeVarName = getActualSizeVarName();
         String elementVarName = getElementVarName();
         String valueVarName = getValueVarName();
-        customEncodeBuilder.addStatement("long $L = this.$L.size()", lengthVarName, field.getName());
-        customEncodeBuilder.addStatement("out.writeMapStart()");
-        customEncodeBuilder.addStatement("long $L = 0", actualSizeVarName);
-        AvroType mapItemAvroType = ((AvroMapSchema) field.getSchemaOrRef().getDecl()).getValueSchema().type();
+
+        codeBlockBuilder
+            .addStatement("long $L = this.$L.size()", lengthVarName, fieldName)
+            .addStatement("out.writeMapStart()")
+            .addStatement("long $L = 0", actualSizeVarName);
+
+        AvroType mapItemAvroType = ((AvroMapSchema) fieldSchema).getValueSchema().type();
         Class<?> mapItemClass = avroTypeToJavaClass(mapItemAvroType);
 
         if (mapItemClass != null) {
-          customEncodeBuilder.beginControlFlow(
+          codeBlockBuilder.beginControlFlow(
               "for (java.util.Map.Entry<java.lang.CharSequence, $T> $L: this.$L.entrySet())", mapItemClass,
-              elementVarName, field.getName());
+              elementVarName, fieldName);
         } else {
-          ClassName mapItemClassName = getClassName(((AvroMapSchema) field.getSchemaOrRef().getDecl()).getValueSchema(), mapItemAvroType);
-          customEncodeBuilder.beginControlFlow(
+          ClassName mapItemClassName = getClassName(((AvroMapSchema) fieldSchema).getValueSchema(), mapItemAvroType);
+          codeBlockBuilder.beginControlFlow(
               "for (java.util.Map.Entry<java.lang.CharSequence, $T> $L: this.$L.entrySet())", mapItemClassName,
-              elementVarName, field.getName());
+              elementVarName, fieldName);
         }
-        customEncodeBuilder.addStatement("$L++", actualSizeVarName)
-            .addStatement("out.startItem()");
-        customEncodeBuilder.addStatement("out.writeString($L.getKey())", elementVarName);
+        codeBlockBuilder
+            .addStatement("$L++", actualSizeVarName)
+            .addStatement("out.startItem()")
+            .addStatement("out.writeString($L.getKey())", elementVarName);
 
 
         if (mapItemClass != null) {
-          customEncodeBuilder.addStatement("$T v2 = $L.getValue()", mapItemClass, elementVarName);
+          codeBlockBuilder.addStatement("$T $L = $L.getValue()", mapItemClass, valueVarName, elementVarName);
         } else {
-          ClassName mapItemClassName = getClassName(((AvroMapSchema) field.getSchemaOrRef().getDecl()).getValueSchema(), mapItemAvroType);
-          customEncodeBuilder.addStatement("$T v2 = $L.getValue()", mapItemClassName, elementVarName);
+          ClassName mapItemClassName = getClassName(((AvroMapSchema) fieldSchema).getValueSchema(), mapItemAvroType);
+          codeBlockBuilder.addStatement("$T $L = $L.getValue()", mapItemClassName, valueVarName, elementVarName);
         }
-        populateCustomEncode(customEncodeBuilder, config, field, mapItemAvroType, valueVarName);
-        customEncodeBuilder.endControlFlow();
-        customEncodeBuilder.addStatement("out.writeMapEnd()");
-        customEncodeBuilder.beginControlFlow("if ($L != $L)", actualSizeVarName, lengthVarName);
-        customEncodeBuilder.addStatement("throw new $T(\"Map-size written was \" + $L + \", but element count was \" + $L + \".\")",
-            ConcurrentModificationException.class, lengthVarName, actualSizeVarName);
-        customEncodeBuilder.endControlFlow();
+        codeBlockBuilder.addStatement(
+            getSerializedCustomEncodeBlock(config, ((AvroMapSchema) fieldSchema).getValueSchema(), mapItemAvroType,
+                valueVarName))
+            .endControlFlow()
+            .addStatement("out.writeMapEnd()")
+            .beginControlFlow("if ($L != $L)", actualSizeVarName, lengthVarName)
+            .addStatement("throw new $T(\"Map-size written was \" + $L + \", but element count was \" + $L + \".\")",
+            ConcurrentModificationException.class, lengthVarName, actualSizeVarName)
+            .endControlFlow();
+
+        serializedCodeBlock = codeBlockBuilder.build().toString();
         sizeValCounter++;
         break;
       case UNION:
-        int nullIndex = -1;
-        int numberOfUnionMembers = ((AvroUnionSchema) field.getSchemaOrRef().getDecl()).getTypes().size();
-        for (int i = 0; i < numberOfUnionMembers; i++) {
-          SchemaOrRef unionMember  = ((AvroUnionSchema) field.getSchemaOrRef().getDecl()).getTypes().get(i);
-          if(unionMember.getDecl().type().equals(AvroType.NULL)) {
-            nullIndex = i;
-          }
-        }
-        if(nullIndex != -1) {
-          customEncodeBuilder
-              .beginControlFlow("if (this.$L == null) ", field.getName())
-              .addStatement("out.writeIndex($L)", nullIndex)
-              .addStatement("out.writeNull()")
-              .endControlFlow();
-          if(numberOfUnionMembers > 1 ){
-            customEncodeBuilder
-                .beginControlFlow("else")
-                .addStatement("out.writeIndex($L)", (nullIndex == 0) ? 1: 0);
-            populateCustomEncodePrimitive(customEncodeBuilder,
-                ((AvroUnionSchema) field.getSchemaOrRef().getDecl()).getTypes().get((nullIndex == 0) ? 1: 0).getDecl().type(), field.getName());
-          }
-          customEncodeBuilder.endControlFlow();
-        } else {
+        int numberOfUnionMembers = ((AvroUnionSchema) fieldSchema).getTypes().size();
 
-          for(int i = 0; i < numberOfUnionMembers; i++) {
-            SchemaOrRef unionMember  = ((AvroUnionSchema) field.getSchemaOrRef().getDecl()).getTypes().get(i);
-            if (i == 0) {
-              customEncodeBuilder.beginControlFlow("if (this.$L instanceof $T) ", fieldName,
-                  avroTypeToJavaClass(unionMember.getSchema().type()));
+        for (int i = 0; i < numberOfUnionMembers; i++) {
+          SchemaOrRef unionMember = ((AvroUnionSchema) fieldSchema).getTypes().get(i);
+          if (i == 0) {
+            if (unionMember.getDecl().type().equals(AvroType.NULL)) {
+              codeBlockBuilder.beginControlFlow("if (this.$L == null) ", fieldName);
             } else {
-              customEncodeBuilder.endControlFlow();
-              customEncodeBuilder.beginControlFlow(" else if (this.$L instanceof $T) ", fieldName,
+              codeBlockBuilder.beginControlFlow("if (this.$L instanceof $T) ", fieldName,
                   avroTypeToJavaClass(unionMember.getSchema().type()));
             }
-            populateCustomEncode(customEncodeBuilder, config, field, unionMember.getSchema().type(), fieldName);
+          } else {
+            codeBlockBuilder.endControlFlow();
+            if (unionMember.getDecl().type().equals(AvroType.NULL)) {
+              codeBlockBuilder.beginControlFlow(" else if (this.$L == null) ", fieldName);
+            } else {
+              codeBlockBuilder.beginControlFlow(" else if (this.$L instanceof $T) ", fieldName,
+                  avroTypeToJavaClass(unionMember.getSchema().type()));
+            }
           }
-          customEncodeBuilder.endControlFlow();
+          codeBlockBuilder.addStatement("out.writeIndex($L)", i)
+              .addStatement(
+                  getSerializedCustomEncodeBlock(config, fieldSchema, unionMember.getSchema().type(), fieldName));
         }
+        codeBlockBuilder.endControlFlow()
+            .beginControlFlow("else")
+            .addStatement("throw new $T($S)", IllegalArgumentException.class, "Value does not match any union member")
+            .endControlFlow();
+
+        serializedCodeBlock = codeBlockBuilder.build().toString();
         break;
       case RECORD:
-        customEncodeBuilder.addStatement("this.$L.customEncode(out)", field.getName());
+        serializedCodeBlock = String.format("this.%s.customEncode(out)", fieldName);
         break;
-      default:
-        System.out.println("Unknown");
     }
+    return serializedCodeBlock;
+  }
+
+  private String getKeyVarName() {
+    return "k" + sizeValCounter;
   }
 
   private String getValueVarName() {
@@ -507,12 +707,24 @@ public class SpecificRecordClassGenerator {
     return "e" + sizeValCounter;
   }
 
-  private String getLengthVarName() {
+  private String getSizeVarName() {
     return "size" + sizeValCounter;
   }
 
   private String getActualSizeVarName() {
     return "actualSize" + sizeValCounter;
+  }
+
+  private String getArrayVarName() {
+    return "a" + sizeValCounter;
+  }
+
+  private String getGArrayVarName() {
+    return "ga" + sizeValCounter;
+  }
+
+  private String getMapVarName() {
+    return "m" + sizeValCounter;
   }
 
   private void populateCustomEncodePrimitive(MethodSpec.Builder customEncodeBuilder, AvroType type, String fieldName) {
@@ -597,7 +809,7 @@ public class SpecificRecordClassGenerator {
             getClassName(field.getSchemaOrRef().getDecl(), field.getSchemaOrRef().getDecl().type()));
       }
     }
-    switchBuilder.addStatement("default: throw new org.apache.avro.AvroRuntimeException(\"Bad index\");")
+    switchBuilder.addStatement("default: throw new org.apache.avro.AvroRuntimeException(\"Bad index\")")
         .endControlFlow();
 
     classBuilder.addMethod(methodSpecBuilder.addCode(switchBuilder.build()).build());
@@ -614,7 +826,7 @@ public class SpecificRecordClassGenerator {
     for (AvroSchemaField field : recordSchema.getFields()) {
       switchBuilder.addStatement("case $L: return $L", fieldIndex++, field.getName());
     }
-    switchBuilder.addStatement("default: throw new org.apache.avro.AvroRuntimeException(\"Bad index\");")
+    switchBuilder.addStatement("default: throw new org.apache.avro.AvroRuntimeException(\"Bad index\")")
         .endControlFlow();
 
     classBuilder.addMethod(methodSpecBuilder.addCode(switchBuilder.build()).build());
@@ -745,6 +957,11 @@ public class SpecificRecordClassGenerator {
       case FIXED:
         AvroName fixedName = ((AvroFixedSchema) fieldSchema).getName();
         className = ClassName.get(fixedName.getNamespace(), fixedName.getSimpleName());
+        break;
+      case RECORD:
+        AvroName recordName = ((AvroRecordSchema) fieldSchema).getName();
+        className = ClassName.get(recordName.getNamespace(), recordName.getSimpleName());
+
     }
     return className;
   }
