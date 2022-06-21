@@ -111,6 +111,16 @@
           {"name": "f", "type": "int"}
         ]
       }
+    },
+    {
+      "name": "recordField2",
+      "type": {
+        "type": "record",
+        "name": "InnerUnionRecord2",
+        "fields" : [
+          {"name": "f", "type": "int"}
+        ]
+      }
     }
   ]
 }
