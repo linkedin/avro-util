@@ -59,6 +59,13 @@ publishing {
                 description = 'Utility for generating specific record classes out of avro schema files'
                 url = 'https://github.com/linkedin/avro-util'
 
+        	licenses {
+                    license {
+                        name = 'BSD 2-Clause'
+                        url = 'https://raw.githubusercontent.com/linkedin/avro-util/master/LICENSE'
+                    }
+                }
+
                 scm {
                     connection = 'scm:git:git://github.com:linkedin/avro-util.git'
                     developerConnection = 'scm:git:ssh://github.com:linkedin/avro-util.git'
