@@ -265,12 +265,16 @@ public class AvroRecordUtil {
         if (readerSchema.getType() == Schema.Type.STRING) {
           if (context.isUseSpecifics()) {
             List<StringRepresentation> fieldPrefs = stringRepForSpecificField((SpecificRecord) output, outField);
-            if (config.isUseStringRepresentationHints()) {
-              stringRepresentation = fieldPrefs.get(0);
-            } else {
-              if (!fieldPrefs.contains(stringRepresentation)) {
-                //only use field prefs if its physically impossible to use the config pref
+            if (fieldPrefs != null && !fieldPrefs.isEmpty()) {
+              //are we able to determine what string representation the generated class "prefers" ?
+              //TODO - complain if we cant determine string type used by generated code
+              if (config.isUseStringRepresentationHints()) {
                 stringRepresentation = fieldPrefs.get(0);
+              } else {
+                if (!fieldPrefs.contains(stringRepresentation)) {
+                  //only use field prefs if its physically impossible to use the config pref
+                  stringRepresentation = fieldPrefs.get(0);
+                }
               }
             }
           } else {
@@ -329,6 +333,12 @@ public class AvroRecordUtil {
   ) {
     Schema.Type inputType = inputSchema.getType();
     Schema.Type outputType = outputSchema.getType();
+
+    boolean inputIsUnion;
+    boolean outputIsUnion;
+    Schema inputValueActualSchema;
+    Schema outputValueActualSchema;
+
     switch (outputType) {
 
       //primitives
@@ -465,18 +475,28 @@ public class AvroRecordUtil {
         }
         //TODO - add support for collections of unions
         Schema inputElementDeclaredSchema = inputSchema.getElementType();
-        if (inputElementDeclaredSchema.getType() == Schema.Type.UNION) {
-          throw new UnsupportedOperationException("collections of unions TBD");
-        }
+        inputIsUnion = inputElementDeclaredSchema.getType() == Schema.Type.UNION;
         Schema outputElementDeclaredSchema = outputSchema.getElementType();
-        if (outputElementDeclaredSchema.getType() == Schema.Type.UNION) {
-          throw new UnsupportedOperationException("collections of unions TBD");
-        }
+        outputIsUnion = outputElementDeclaredSchema.getType() == Schema.Type.UNION;
         for (Object inputElement : inputList) {
+
+          inputValueActualSchema = inputElementDeclaredSchema;
+          if (inputIsUnion) {
+            inputValueActualSchema = AvroSchemaUtil.resolveUnionBranchOf(inputElement, inputElementDeclaredSchema);
+          }
+          outputValueActualSchema = outputElementDeclaredSchema;
+          if (outputIsUnion) {
+            SchemaResolutionResult resolution = AvroSchemaUtil.resolveReaderVsWriter(inputValueActualSchema, outputElementDeclaredSchema, true, true);
+            outputValueActualSchema = resolution.getReaderMatch();
+            if (outputValueActualSchema == null) {
+              throw new UnsupportedOperationException("dont know how to resolve a " + inputValueActualSchema.getType() + " to " + outputElementDeclaredSchema);
+            }
+          }
+
           Object outputElement = deepConvert(
               inputElement,
-              inputElementDeclaredSchema,
-              outputElementDeclaredSchema,
+              inputValueActualSchema,
+              outputValueActualSchema,
               context,
               stringRepresentation
           );
@@ -490,20 +510,30 @@ public class AvroRecordUtil {
         Map<CharSequence, Object> outputMap = new HashMap<>(inputMap.size()); //for both generic and specific output
         //TODO - add support for collections of unions
         Schema inputValueDeclaredSchema = inputSchema.getValueType();
-        if (inputValueDeclaredSchema.getType() == Schema.Type.UNION) {
-          throw new UnsupportedOperationException("collections of unions TBD");
-        }
+        inputIsUnion = inputValueDeclaredSchema.getType() == Schema.Type.UNION;
         Schema outputValueDeclaredSchema = outputSchema.getValueType();
-        if (outputValueDeclaredSchema.getType() == Schema.Type.UNION) {
-          throw new UnsupportedOperationException("collections of unions TBD");
-        }
+        outputIsUnion = outputValueDeclaredSchema.getType() == Schema.Type.UNION;
         for (Map.Entry<? extends CharSequence, ?> entry : inputMap.entrySet()) {
           CharSequence key = entry.getKey();
           Object inputElement = entry.getValue();
+
+          inputValueActualSchema = inputValueDeclaredSchema;
+          if (inputIsUnion) {
+            inputValueActualSchema = AvroSchemaUtil.resolveUnionBranchOf(inputElement, inputValueDeclaredSchema);
+          }
+          outputValueActualSchema = outputValueDeclaredSchema;
+          if (outputIsUnion) {
+            SchemaResolutionResult resolution = AvroSchemaUtil.resolveReaderVsWriter(inputValueActualSchema, outputValueDeclaredSchema, true, true);
+            outputValueActualSchema = resolution.getReaderMatch();
+            if (outputValueActualSchema == null) {
+              throw new UnsupportedOperationException("dont know how to resolve a " + inputValueActualSchema.getType() + " to " + outputValueDeclaredSchema);
+            }
+          }
+
           Object outputElement = deepConvert(
               inputElement,
-              inputValueDeclaredSchema,
-              outputValueDeclaredSchema,
+              inputValueActualSchema,
+              outputValueActualSchema,
               context,
               stringRepresentation
           );
@@ -518,25 +548,47 @@ public class AvroRecordUtil {
   }
 
   /**
-   *
    * @param record record
    * @param field (string) field of record
    * @return possible string representations field can accept, in order of preference
    */
   private static List<StringRepresentation> stringRepForSpecificField(SpecificRecord record, Schema.Field field) {
+    Class<? extends SpecificRecord> srClass = record.getClass();
     try {
-      Field actualField = record.getClass().getDeclaredField(field.name());
-      Class<?> type = actualField.getType();
-      if (String.class.equals(type)) {
-        return STRING_ONLY;
+      Field actualField = srClass.getDeclaredField(field.name());
+      List<StringRepresentation> classification = classifyStringField(actualField);
+      if (classification != null) {
+        return classification;
       }
-      if (!CharSequence.class.equals(type)) {
-        throw new IllegalStateException("dont know what string representation to use for " + type.getName());
+      //its possible the field is a union containing string, in which case the java type will be Object.
+      //in this case we try and look for other string fields
+      for (Schema.Field otherField : record.getSchema().getFields()) {
+        if (otherField == field || otherField.schema().getType() != Schema.Type.STRING) {
+          continue;
+        }
+        Field otherClassField = srClass.getDeclaredField(otherField.name());
+        classification = classifyStringField(otherClassField);
+        if (classification != null) {
+          return classification;
+        }
       }
-      return UTF8_PREFERRED;
+
+      //no luck, cant determine
+      return null;
     } catch (Exception e) {
-      throw new IllegalStateException("unable to access " + record.getClass().getName() + "." + field.name(), e);
+      throw new IllegalStateException("unable to access " + srClass.getName() + "." + field.name(), e);
     }
+  }
+
+  private static List<StringRepresentation> classifyStringField(Field classField) {
+    Class<?> type = classField.getType();
+    if (String.class.equals(type)) {
+      return STRING_ONLY;
+    }
+    if (CharSequence.class.equals(type)) {
+      return UTF8_PREFERRED;
+    }
+    return null;
   }
 
   private static StringRepresentation stringRepForGenericField(Schema schema, Schema.Field field) {

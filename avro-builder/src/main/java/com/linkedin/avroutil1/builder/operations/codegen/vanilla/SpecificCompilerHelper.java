@@ -4,8 +4,9 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1.builder;
+package com.linkedin.avroutil1.builder.operations.codegen.vanilla;
 
+import com.linkedin.avroutil1.builder.DuplicateSchemaBehaviour;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvroGeneratedSourceCode;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
@@ -24,24 +25,6 @@ import org.apache.avro.Schema;
 public class SpecificCompilerHelper {
 
   private SpecificCompilerHelper() { }
-
-  public static List<File> compile(List<Schema> schemas, File outputDir) {
-    return compile(schemas, outputDir, AvroVersion.AVRO_1_4, Collections.emptyList(), Collections.emptyList(), CodeGenerationConfig.COMPATIBLE_DEFAULTS);
-  }
-
-  public static List<File> compile(List<Schema> schemas, File outputDir, AvroVersion minTargetVersion) {
-    return compile(schemas, outputDir, minTargetVersion, Collections.emptyList(), Collections.emptyList(), CodeGenerationConfig.COMPATIBLE_DEFAULTS);
-  }
-
-  public static List<File> compile(
-      List<Schema> schemas,
-      File outputDir,
-      AvroVersion minTargetVersion,
-      Collection<String> toSkip,
-      Collection<String> ignoreDups
-  ) {
-    return compile(schemas, outputDir, minTargetVersion, toSkip, ignoreDups, CodeGenerationConfig.COMPATIBLE_DEFAULTS);
-  }
 
   public static List<File> compile(
       List<Schema> schemas,

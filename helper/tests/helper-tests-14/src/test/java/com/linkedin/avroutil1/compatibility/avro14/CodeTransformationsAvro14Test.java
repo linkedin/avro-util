@@ -6,7 +6,7 @@
 
 package com.linkedin.avroutil1.compatibility.avro14;
 
-import com.linkedin.avroutil1.compatibility.AvroSchemaUtil;
+import com.linkedin.avroutil1.compatibility.Avro702Checker;
 import com.linkedin.avroutil1.testcommon.TestUtil;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
@@ -101,7 +101,7 @@ public class CodeTransformationsAvro14Test {
     @SuppressWarnings("UnnecessaryLocalVariable")
     String altAvsc = avsc; //swap in the "good" (original) avsc
     Schema schema = AvroCompatibilityHelper.parse(avsc);
-    Assert.assertTrue(AvroSchemaUtil.isImpactedByAvro702(schema)); //make sure its still bad
+    Assert.assertTrue(Avro702Checker.isSusceptible(schema)); //make sure its still bad
     File outputRoot = Files.createTempDirectory(null).toFile();
 
     //the schema in question is complicated and generates 3 classes

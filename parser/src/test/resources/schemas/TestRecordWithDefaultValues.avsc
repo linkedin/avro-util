@@ -45,6 +45,11 @@
       "default": "yes please"
     },
     {
+      "name": "simpleUnionField",
+      "type": ["null", "int", "string"],
+      "default": null
+    },
+    {
       "name": "enumField",
       "type": {
         "type": "enum",
