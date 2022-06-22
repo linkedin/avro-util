@@ -20,7 +20,7 @@ dependencies {
     implementation "com.beust:jcommander:1.78"
     implementation "org.apache.ant:ant:1.10.7"
 
-    compileOnly ("org.apache.avro:avro:1.4.1") {
+    compileOnly ("org.apache.avro:avro:1.6.3") {
         exclude group: "org.mortbay.jetty"
         exclude group: "org.apache.velocity"
         exclude group: "commons-lang"
@@ -30,7 +30,7 @@ dependencies {
     }
 
     testImplementation project(":test-common")
-    testImplementation ("org.apache.avro:avro:1.4.1") {
+    testImplementation ("org.apache.avro:avro:1.6.3") {
         exclude group: "org.mortbay.jetty"
         exclude group: "org.apache.velocity"
         exclude group: "commons-lang"

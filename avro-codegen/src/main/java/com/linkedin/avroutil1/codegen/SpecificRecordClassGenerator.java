@@ -363,6 +363,21 @@ public class SpecificRecordClassGenerator {
 
     }
 
+    MethodSpec
+        .methodBuilder("isValidValue")
+        .returns(boolean.class)
+        .addCode(CodeBlock.of(""
+            + "if (value != null) {\n" + "      return true;\n" + "    }\n" + "\n"
+            + "    Schema schema = f.schema();\n" + "    Type type = schema.getType();\n" + "\n"
+            + "    // If the type is null, any value is valid\n" + "    if (type == Type.NULL) {\n"
+            + "      return true;\n" + "    }\n" + "\n"
+            + "    // If the type is a union that allows nulls, any value is valid\n"
+            + "    if (type == Type.UNION) {\n" + "      for (Schema s : schema.getTypes()) {\n"
+            + "        if (s.getType() == Type.NULL) {\n" + "          return true;\n" + "        }\n" + "      }\n"
+            + "    }\n" + "\n" + "    // The value is null but the type does not allow nulls\n" + "    return false;"))
+        .addModifiers(Modifier.PROTECTED, Modifier.STATIC)
+        .build();
+
     List<MethodSpec> accessorMethodSpecs = new ArrayList<>();
     int fieldIndex = 0;
     // All private fields
