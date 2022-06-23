@@ -324,7 +324,7 @@ public class AvroRecordUtil {
     return inField;
   }
 
-  private static Object deepConvert(
+  protected static Object deepConvert(
           Object inputValue,
           Schema inputSchema,
           Schema outputSchema,

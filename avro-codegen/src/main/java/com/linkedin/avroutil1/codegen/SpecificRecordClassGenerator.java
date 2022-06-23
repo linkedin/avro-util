@@ -7,6 +7,7 @@
 package com.linkedin.avroutil1.codegen;
 
 import com.linkedin.avroutil1.compatibility.AvroVersion;
+import com.linkedin.avroutil1.compatibility.CompatibleSpecificRecordBuilderBase;
 import com.linkedin.avroutil1.compatibility.HelperConsts;
 import com.linkedin.avroutil1.compatibility.SourceCodeUtils;
 import com.linkedin.avroutil1.model.AvroArraySchema;
@@ -36,7 +37,6 @@ import com.squareup.javapoet.TypeSpec;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -50,6 +50,7 @@ import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import javax.lang.model.element.Modifier;
 import javax.tools.JavaFileObject;
+import org.apache.avro.Schema;
 import org.apache.avro.io.DatumReader;
 import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.Encoder;
@@ -60,10 +61,7 @@ import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.avro.specific.SpecificRecord;
 import org.apache.avro.specific.SpecificRecordBase;
-import org.apache.avro.util.Utf8;
-import org.apache.avro.specific.SpecificRecordBuilderBase;
 
-import static com.linkedin.avroutil1.model.AvroType.*;
 
 
 /**
@@ -95,7 +93,8 @@ public class SpecificRecordClassGenerator {
       ResolvingDecoder.class,
       IllegalArgumentException.class,
       IndexOutOfBoundsException.class,
-      HashMap.class
+      HashMap.class,
+      CompatibleSpecificRecordBuilderBase.class
   ));
 
   public JavaFileObject generateSpecificRecordClass(AvroNamedSchema topLevelSchema, SpecificRecordGenerationConfig config)
@@ -135,6 +134,7 @@ public class SpecificRecordClassGenerator {
 
     //add public final static SCHEMA$
     addSchema$ToGeneratedClass(classBuilder, enumSchema);
+
 
     //create file object
     TypeSpec classSpec = classBuilder.build();
@@ -220,39 +220,51 @@ public class SpecificRecordClassGenerator {
             .initializer("1L")
             .build());
 
-    // read external
-    classBuilder.addField(
-        FieldSpec.builder(DatumReader.class, "READER$", Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
-            .initializer(CodeBlock.of("new $T($L)", SpecificDatumReader.class, "SCHEMA$"))
-            .build());
-
-    classBuilder.addMethod(MethodSpec
-        .methodBuilder("readExternal")
-        .addException(IOException.class)
-        .addParameter(java.io.ObjectInput.class, "in")
+    //add public final static SCHEMA$
+    addSchema$ToGeneratedClass(classBuilder, recordSchema);
+    classBuilder.addMethod(MethodSpec.methodBuilder("getSchema")
         .addModifiers(Modifier.PUBLIC)
-        .addCode(CodeBlock
-            .builder()
-            .addStatement("$L.read(this, SpecificData.getDecoder(in))", "READER$")
-            .build())
+        .addAnnotation(Override.class)
+        .returns(Schema.class)
+        .addStatement("return $L", "SCHEMA$")
         .build());
 
-    // write external
-    classBuilder.addField(
-        FieldSpec.builder(DatumWriter.class, "WRITER$", Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
-            .initializer(CodeBlock.of("new $T($L)", SpecificDatumWriter.class, "SCHEMA$"))
-            .build());
 
-    classBuilder.addMethod(MethodSpec
-        .methodBuilder("writeExternal")
-        .addException(IOException.class)
-        .addParameter(java.io.ObjectOutput.class, "out")
-        .addModifiers(Modifier.PUBLIC)
-        .addCode(CodeBlock
-            .builder()
-            .addStatement("$L.write(this, SpecificData.getEncoder(out))", "WRITER$")
-            .build())
-        .build());
+    if(config.getMinimumSupportedAvroVersion().laterThan(AvroVersion.AVRO_1_7)) {
+      // read external
+      classBuilder.addField(
+          FieldSpec.builder(DatumReader.class, "READER$", Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
+              .initializer(CodeBlock.of("new $T($L)", SpecificDatumReader.class, "SCHEMA$"))
+              .build());
+
+      MethodSpec.Builder readExternalBuilder = MethodSpec.methodBuilder("readExternal")
+          .addException(IOException.class)
+          .addParameter(java.io.ObjectInput.class, "in")
+          .addModifiers(Modifier.PUBLIC)
+          .addCode(CodeBlock.builder().addStatement("$L.read(this, $T.getDecoder(in))", "READER$", SpecificData.class).build());
+
+      // write external
+      classBuilder.addField(
+          FieldSpec.builder(DatumWriter.class, "WRITER$", Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
+              .initializer(CodeBlock.of("new $T($L)", SpecificDatumWriter.class, "SCHEMA$"))
+              .build());
+
+      MethodSpec.Builder writeExternalBuilder = MethodSpec
+          .methodBuilder("writeExternal")
+          .addException(IOException.class)
+          .addParameter(java.io.ObjectOutput.class, "out")
+          .addModifiers(Modifier.PUBLIC)
+          .addCode(CodeBlock
+              .builder()
+              .addStatement("$L.write(this, $T.getEncoder(out))", "WRITER$", SpecificData.class)
+              .build());
+      readExternalBuilder.addAnnotation(Override.class);
+      writeExternalBuilder.addAnnotation(Override.class);
+
+      classBuilder.addMethod(readExternalBuilder.build());
+      classBuilder.addMethod(writeExternalBuilder.build());
+    }
+
 
     // add no arg constructor
     classBuilder.addMethod(MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC).build());
@@ -273,7 +285,7 @@ public class SpecificRecordClassGenerator {
       }
 
       // Add public/private fields
-      Modifier accessModifier = (config == null || config.hasPublicFields())? Modifier.PUBLIC : Modifier.PRIVATE;
+      Modifier accessModifier = (config.hasPublicFields())? Modifier.PUBLIC : Modifier.PRIVATE;
       for (AvroSchemaField field : recordSchema.getFields()) {
         classBuilder.addField(getFieldSpecBuilder(field, config).addModifiers(accessModifier).build());
 
@@ -287,9 +299,6 @@ public class SpecificRecordClassGenerator {
         classBuilder.addMethod(getSetterMethodSpec(field, config));
       }
     }
-
-    //add public final static SCHEMA$
-    addSchema$ToGeneratedClass(classBuilder, recordSchema);
 
 
     // Add get method by index
@@ -350,33 +359,12 @@ public class SpecificRecordClassGenerator {
 
   private void populateBuilderClassBuilder(TypeSpec.Builder recordBuilder, AvroRecordSchema recordSchema,
       SpecificRecordGenerationConfig config) throws ClassNotFoundException {
-    CodeBlock.Builder otherBuilderConstructorBlockBuilder = CodeBlock.builder();
+    recordBuilder.superclass(ClassName.get(CompatibleSpecificRecordBuilderBase.class));
+    CodeBlock.Builder otherBuilderConstructorFromRecordBlockBuilder = CodeBlock.builder();
+    CodeBlock.Builder otherBuilderConstructorFromOtherBuilderBlockBuilder = CodeBlock.builder();
     CodeBlock.Builder buildMethodCodeBlockBuilder = CodeBlock.builder()
         .beginControlFlow("try")
         .addStatement("$1L record = new $1L()", recordSchema.getName().getSimpleName());
-
-
-    if (config.getMinimumSupportedAvroVersion().laterThan(AvroVersion.AVRO_1_6)) {
-      recordBuilder.superclass((ParameterizedTypeName.get(ClassName.get(SpecificRecordBuilderBase.class))
-          .nestedClass(recordSchema.getFullName())));
-    } else {
-
-    }
-
-    MethodSpec
-        .methodBuilder("isValidValue")
-        .returns(boolean.class)
-        .addCode(CodeBlock.of(""
-            + "if (value != null) {\n" + "      return true;\n" + "    }\n" + "\n"
-            + "    Schema schema = f.schema();\n" + "    Type type = schema.getType();\n" + "\n"
-            + "    // If the type is null, any value is valid\n" + "    if (type == Type.NULL) {\n"
-            + "      return true;\n" + "    }\n" + "\n"
-            + "    // If the type is a union that allows nulls, any value is valid\n"
-            + "    if (type == Type.UNION) {\n" + "      for (Schema s : schema.getTypes()) {\n"
-            + "        if (s.getType() == Type.NULL) {\n" + "          return true;\n" + "        }\n" + "      }\n"
-            + "    }\n" + "\n" + "    // The value is null but the type does not allow nulls\n" + "    return false;"))
-        .addModifiers(Modifier.PROTECTED, Modifier.STATIC)
-        .build();
 
     List<MethodSpec> accessorMethodSpecs = new ArrayList<>();
     int fieldIndex = 0;
@@ -389,13 +377,13 @@ public class SpecificRecordClassGenerator {
       if (fieldClass != null) {
         fieldBuilder = FieldSpec.builder(fieldClass, field.getName(), Modifier.PRIVATE);
         buildMethodCodeBlockBuilder.addStatement(
-            "record.$1L = fieldSetFlags()[$2L] ? this.$1L : ($3L) defaultValue(fields()[$2L])",
+            "record.$1L = fieldSetFlags()[$2L] ? this.$1L : ($3T) com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.getSpecificDefaultValue(fields()[$2L])",
             field.getName(), fieldIndex, fieldClass);
       } else {
         fieldBuilder = FieldSpec.builder(fieldType, field.getName(), Modifier.PRIVATE);
-        if(!RECORD.equals(fieldAvroType)) {
+        if(!AvroType.RECORD.equals(fieldAvroType)) {
           buildMethodCodeBlockBuilder.addStatement(
-              "record.$1L = fieldSetFlags()[$2L] ? this.$1L : ($3L) defaultValue(fields()[$2L])",
+              "record.$1L = fieldSetFlags()[$2L] ? this.$1L : ($3L) com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.getSpecificDefaultValue(fields()[$2L])",
               field.getName(), fieldIndex, fieldType);
         } else {
           buildMethodCodeBlockBuilder
@@ -410,7 +398,7 @@ public class SpecificRecordClassGenerator {
               .endControlFlow()
               .beginControlFlow("else")
               .addStatement(
-              "record.$1L = fieldSetFlags()[$2L] ? this.$1L : ($3L) defaultValue(fields()[$2L])",
+              "record.$1L = fieldSetFlags()[$2L] ? this.$1L : ($3L) com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.getSpecificDefaultValue(fields()[$2L])",
               field.getName(), fieldIndex, fieldType)
           .endControlFlow();
         }
@@ -420,17 +408,35 @@ public class SpecificRecordClassGenerator {
       }
       recordBuilder.addField(fieldBuilder.build());
 
-      otherBuilderConstructorBlockBuilder.beginControlFlow("if (isValidValue(fields()[$L], other.$L))", fieldIndex,
-          "field.getName()")
-          .addStatement("this.$L = data().deepCopy(fields()[$L].schema(), other.$L)", field.getName(), fieldIndex, field.getName())
+      otherBuilderConstructorFromRecordBlockBuilder.beginControlFlow("if (isValidValue(fields()[$L], other.$L))", fieldIndex,
+          field.getName())
+          .addStatement("this.$1L = deepCopyField(other.$1L, fields()[$2L].schema(), $3S)", field.getName(), fieldIndex,
+              config.getDefaultFieldStringRepresentation().getJsonValue())
           .addStatement("fieldSetFlags()[$L] = true", fieldIndex)
           .endControlFlow();
 
-      if (RECORD.equals(fieldAvroType)) {
+      otherBuilderConstructorFromOtherBuilderBlockBuilder.beginControlFlow("if (isValidValue(fields()[$L], other.$L))", fieldIndex,
+          field.getName())
+          .addStatement("this.$1L = deepCopyField(other.$1L, fields()[$2L].schema(), $3S)", field.getName(), fieldIndex,
+              config.getDefaultFieldStringRepresentation().getJsonValue())
+          .addStatement("fieldSetFlags()[$1L] = other.fieldSetFlags()[$1L]", fieldIndex)
+          .endControlFlow();
+
+      if (AvroType.RECORD.equals(fieldAvroType)) {
         recordBuilder.addField(
-            FieldSpec.builder(ClassName.get(recordSchema.getFullName(), "Builder"), field.getName() + "Builder")
-                .build());
-        otherBuilderConstructorBlockBuilder.addStatement("this.$L = null", field.getName()+"Builder");
+            FieldSpec.builder(ClassName.get(((AvroRecordSchema) field.getSchema()).getFullName(), "Builder"),
+                field.getName() + "Builder").build());
+
+        populateRecordBuilderAccessor(accessorMethodSpecs, field.getName(), recordSchema.getFullName(), field);
+
+        otherBuilderConstructorFromRecordBlockBuilder.addStatement("this.$L = null", field.getName()+"Builder");
+        otherBuilderConstructorFromOtherBuilderBlockBuilder.beginControlFlow("if (other.$L())",
+            getMethodNameForFieldWithPrefix("has", field.getName() + "Builder"))
+            .addStatement("this.$L = $L.newBuilder(other.$L())", field.getName() + "Builder",
+                ((AvroRecordSchema) field.getSchema()).getFullName(),
+                getMethodNameForFieldWithPrefix("get", field.getName() + "Builder"))
+        .endControlFlow();
+
       }
 
       // get, set, has, clear methods
@@ -448,19 +454,32 @@ public class SpecificRecordClassGenerator {
         .addJavadoc("Creates a new Builder")
         .build());
 
-    // private constructor from other builder
+    // private constructor from record
     recordBuilder.addMethod(MethodSpec.constructorBuilder()
         .addStatement("super($L)", "SCHEMA$")
-        .addParameter(ClassName.get(recordSchema.getFullName(), "Builder"), "out")
+        .addParameter(ClassName.get(recordSchema.getNamespace(), recordSchema.getSimpleName()), "other")
         .addModifiers(Modifier.PRIVATE)
         .addJavadoc("Creates a Builder by copying an existing Builder.\n")
         .addJavadoc("@param other The existing Builder to copy.")
-        .addCode(otherBuilderConstructorBlockBuilder.build())
+        .addCode(otherBuilderConstructorFromRecordBlockBuilder.build())
+        .build());
+
+    // private constructor from other builder
+    recordBuilder.addMethod(MethodSpec.constructorBuilder()
+        .addStatement("super($L)", "other.schema()")
+        .addParameter(ClassName.get(recordSchema.getFullName(), "Builder"), "other")
+        .addModifiers(Modifier.PRIVATE)
+        .addJavadoc("Creates a Builder by copying an existing Builder.\n")
+        .addJavadoc("@param other The existing Builder to copy.")
+        .addCode(otherBuilderConstructorFromOtherBuilderBlockBuilder.build())
         .build());
 
 
     // Accessor methods
     recordBuilder.addMethods(accessorMethodSpecs);
+
+    //new Builder methods
+    recordBuilder.addMethods(getNewBuilderMethods(recordSchema));
 
     //Build method
     //try
@@ -480,6 +499,97 @@ public class SpecificRecordClassGenerator {
             .returns(ClassName.get(recordSchema.getNamespace(), recordSchema.getSimpleName()))
             .addCode(buildMethodCodeBlockBuilder.build())
             .build());
+  }
+
+  private List<MethodSpec> getNewBuilderMethods(AvroRecordSchema recordSchema) {
+    MethodSpec noArgNewBuilderSpec = MethodSpec.methodBuilder("newBuilder")
+        .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+        .returns(ClassName.get(recordSchema.getFullName(), "Builder"))
+        .addJavadoc("Creates a new $1L RecordBuilder.\n@return A new $1L RecordBuilder\n", recordSchema.getSimpleName())
+        .addStatement("return new $T.Builder()", ClassName.get(recordSchema.getNamespace(), recordSchema.getSimpleName()))
+        .build();
+
+    MethodSpec otherBuilderNewBuilderSpec = MethodSpec.methodBuilder("newBuilder")
+        .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+        .addParameter(ClassName.get(recordSchema.getFullName(), "Builder"), "other")
+        .returns(ClassName.get(recordSchema.getFullName(), "Builder"))
+        .addJavadoc(
+            "Creates a new $1L RecordBuilder by copying an existing Builder.\n"
+                + "@param other The existing builder to copy.\n@return A new $1L RecordBuilder",
+            recordSchema.getSimpleName())
+        .beginControlFlow("if(other == null)")
+        .addStatement("return new $T.Builder()", ClassName.get(recordSchema.getNamespace(), recordSchema.getSimpleName()))
+        .endControlFlow()
+        .beginControlFlow("else")
+        .addStatement("return new $T.Builder(other)", ClassName.get(recordSchema.getNamespace(), recordSchema.getSimpleName()))
+        .endControlFlow()
+        .build();
+
+
+    MethodSpec otherInstanceNewBuilderSpec = MethodSpec.methodBuilder("newBuilder")
+        .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+        .addParameter(ClassName.get(recordSchema.getNamespace(), recordSchema.getSimpleName()), "other")
+        .returns(ClassName.get(recordSchema.getFullName(), "Builder"))
+        .addJavadoc(
+            "Creates a new $1L RecordBuilder by copying an existing $1L instance.\n"
+                + "@param other The existing instance to copy.\n@return A new $1L RecordBuilder",
+            recordSchema.getSimpleName())
+        .beginControlFlow("if(other == null)")
+        .addStatement("return new $T.Builder()", ClassName.get(recordSchema.getNamespace(), recordSchema.getSimpleName()))
+        .endControlFlow()
+        .beginControlFlow("else")
+        .addStatement("return new $T.Builder(other)", ClassName.get(recordSchema.getNamespace(), recordSchema.getSimpleName()))
+        .endControlFlow()
+        .build();
+
+    return Arrays.asList(noArgNewBuilderSpec, otherBuilderNewBuilderSpec, otherInstanceNewBuilderSpec);
+  }
+
+  private void populateRecordBuilderAccessor(List<MethodSpec> accessorMethodSpecs, String fieldName,
+      String recordFullName, AvroSchemaField field) {
+
+    String builderName = fieldName+"Builder";
+    String fieldParentNamespace = ((AvroRecordSchema)field.getSchema()).getFullName();
+    // Getter
+    MethodSpec.Builder getMethodBuilder = MethodSpec.methodBuilder(getMethodNameForFieldWithPrefix("get", builderName))
+        .addModifiers(Modifier.PUBLIC)
+        .returns(ClassName.get(fieldParentNamespace, "Builder"))
+        .addJavadoc("Gets the Builder instance for the '$L' field and creates one if it doesn't exist yet.\n@return This builder.", fieldName)
+        .beginControlFlow("if ($L == null )", builderName)
+        .beginControlFlow("if($L())", getMethodNameForFieldWithPrefix("has", fieldName))
+        .addStatement("$L($L.newBuilder($L))", getMethodNameForFieldWithPrefix("set", builderName),
+            fieldParentNamespace, fieldName)
+        .endControlFlow()
+        .beginControlFlow("else")
+        .addStatement("$L($L.newBuilder())", getMethodNameForFieldWithPrefix("set", builderName),
+            fieldParentNamespace)
+        .endControlFlow()
+        .endControlFlow()
+        .addStatement("return $L", builderName);
+
+    // Setter
+    MethodSpec.Builder setMethodBuilder = MethodSpec.methodBuilder(getMethodNameForFieldWithPrefix("set", builderName))
+        .addModifiers(Modifier.PUBLIC)
+        .returns(ClassName.get(recordFullName, "Builder"))
+        .addJavadoc("Sets the Builder instance for the '$L' field\n "
+            + "@param value The builder instance that must be set."
+            + "\n@return This builder.", fieldName)
+        .addParameter(ClassName.get(fieldParentNamespace, "Builder"), "value")
+        .addStatement("$L()", getMethodNameForFieldWithPrefix("clear", fieldName))
+        .addStatement("$L = value", builderName)
+        .addStatement("return this");
+
+    // Has
+    MethodSpec.Builder hasMethodBuilder = MethodSpec.methodBuilder(getMethodNameForFieldWithPrefix("has", builderName))
+        .addModifiers(Modifier.PUBLIC)
+        .returns(boolean.class)
+        .addJavadoc("Checks whether the '$1L' field has an active Builder instance\n"
+            + "@return True if the '$1L' field has an active Builder instance", fieldName)
+        .addStatement("return $L != null", builderName);
+
+    accessorMethodSpecs.add(getMethodBuilder.build());
+    accessorMethodSpecs.add(setMethodBuilder.build());
+    accessorMethodSpecs.add(hasMethodBuilder.build());
   }
 
   private void populateAccessorMethodsBlock(List<MethodSpec> accessorMethodSpecs, AvroSchemaField field,
@@ -523,11 +633,10 @@ public class SpecificRecordClassGenerator {
             .addJavadoc("Checks whether the '$L' field has been set.$L"
                     + "@return True if the '$L' field has been set, false otherwise.", field.getName(),
                 getFieldJavaDoc(field), field.getName())
-            .addStatement("fieldSetFlags()[$L]", fieldIndex)
+            .addStatement("return fieldSetFlags()[$L]", fieldIndex)
             .returns(boolean.class);
 
     // Clear
-    //Setter
     MethodSpec.Builder clearMethodBuilder =
         MethodSpec.methodBuilder(getMethodNameForFieldWithPrefix("clear", field.getName()))
             .addModifiers(Modifier.PUBLIC)
@@ -564,9 +673,8 @@ public class SpecificRecordClassGenerator {
     customDecodeBuilder.addStatement("org.apache.avro.Schema.Field[] fieldOrder = in.readFieldOrderIfDiff()")
         .beginControlFlow("if (fieldOrder == null)");
     for(AvroSchemaField field : recordSchema.getFields()) {
-      customDecodeBuilder.addStatement(
-          getSerializedCustomDecodeBlock(config, field.getSchemaOrRef().getDecl(), field.getSchemaOrRef().getDecl().type(),
-              "this." + field.getName()));
+      customDecodeBuilder.addStatement(getSerializedCustomDecodeBlock(config, field.getSchemaOrRef().getDecl(),
+          field.getSchemaOrRef().getDecl().type(), field.getName()));
     }
     // reset var counter
     sizeValCounter = 0;
@@ -577,9 +685,8 @@ public class SpecificRecordClassGenerator {
         .beginControlFlow("switch(fieldOrder[i].pos())");
     for(AvroSchemaField field : recordSchema.getFields()) {
       customDecodeBuilder
-          .addStatement(String.format("case %s: ",fieldIndex++)+
-          getSerializedCustomDecodeBlock(config, field.getSchemaOrRef().getDecl(), field.getSchemaOrRef().getDecl().type(),
-              "this." + field.getName()))
+          .addStatement(String.format("case %s: ",fieldIndex++)+ getSerializedCustomDecodeBlock(config,
+              field.getSchemaOrRef().getDecl(), field.getSchemaOrRef().getDecl().type(), field.getName()))
       .addStatement("break");
     }
     customDecodeBuilder
@@ -618,14 +725,14 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = String.format("%s = in.readDouble()", fieldName);
         break;
       case BYTES:
-        serializedCodeBlock = String.format("%s = in.readBytes()", fieldName);
+        serializedCodeBlock = String.format("%s = in.readBytes(this.%s)", fieldName, fieldName);
         break;
       case STRING:
         serializedCodeBlock =
-            String.format("%s = in.readString(%s instanceof Utf8 ? (Utf8)%s : null)", fieldName, fieldName, fieldName);
+            String.format("%s = in.readString(%s instanceof org.apache.avro.util.Utf8 ? (org.apache.avro.util.Utf8)%s : null)", fieldName, fieldName, fieldName);
         break;
       case ENUM:
-        TypeName enumClassName = getTypeName(fieldSchema, ENUM);
+        TypeName enumClassName = getTypeName(fieldSchema, AvroType.ENUM);
         serializedCodeBlock =
             String.format("%s = %s.values()[in.readEnum()]", fieldName, enumClassName.toString());
         break;
@@ -647,9 +754,9 @@ public class SpecificRecordClassGenerator {
 
         codeBlockBuilder
             .addStatement("long $L = in.readArrayStart()", getSizeVarName())
-            .addStatement("$T<$T> $L = $L", List.class,arrayItemClass, arrayItemClass, fieldName)
+            .addStatement("$T<$T> $L = $L", List.class, arrayItemClass, arrayVarName, fieldName)
             .beginControlFlow("if($L == null)", arrayVarName)
-            .addStatement("$L = new SpecificData.Array<$T>((int)$L, $L.getField(\"nullArrayField\").schema())",
+            .addStatement("$L = new org.apache.avro.specific.SpecificData.Array<$T>((int)$L, $L.getField(\"nullArrayField\").schema())",
                 arrayVarName, arrayItemClass, getSizeVarName(), "SCHEMA$$")
             .addStatement("$L = $L", fieldName, arrayVarName)
             .endControlFlow()
@@ -658,14 +765,14 @@ public class SpecificRecordClassGenerator {
             .endControlFlow();
 
         codeBlockBuilder.addStatement(
-            "SpecificData.Array<$T> $L = ($L instanceof SpecificData.Array ? (SpecificData.Array<$T>)$L : null",
+            "org.apache.avro.specific.SpecificData.Array<$T> $L = ($L instanceof org.apache.avro.specific.SpecificData.Array ? (org.apache.avro.specific.SpecificData.Array<$T>)$L : null)",
             arrayItemClass, gArrayVarName, arrayVarName, arrayItemClass, arrayVarName);
         codeBlockBuilder.beginControlFlow("for (; 0 < $L; $L = in.arrayNext())", getSizeVarName(), getSizeVarName())
             .beginControlFlow("for(; $L != 0; $L--)", getSizeVarName(), getSizeVarName())
             .addStatement("$T $L = ($L != null ? $L.peek() : null)", arrayItemClass, getElementVarName(), gArrayVarName, gArrayVarName);
 
         codeBlockBuilder.addStatement(
-            getSerializedCustomDecodeBlock(config, ((AvroArraySchema) fieldSchema).getValueSchema(), arrayItemAvroType, fieldName));
+            getSerializedCustomDecodeBlock(config, ((AvroArraySchema) fieldSchema).getValueSchema(), arrayItemAvroType, getElementVarName()));
         codeBlockBuilder.addStatement("$L.add($L)", arrayVarName, getElementVarName())
             .endControlFlow()
             .endControlFlow();
@@ -700,7 +807,7 @@ public class SpecificRecordClassGenerator {
         codeBlockBuilder.beginControlFlow("for (; 0 < $L; $L = in.mapNext())", getSizeVarName(), getSizeVarName())
             .beginControlFlow("for(; $L != 0; $L--)", getSizeVarName(), getSizeVarName())
             .addStatement("$T $L = null", CharSequence.class, getKeyVarName())
-            .addStatement(getSerializedCustomDecodeBlock(config, ((AvroMapSchema) fieldSchema).getValueSchema(), STRING, getKeyVarName()))
+            .addStatement(getSerializedCustomDecodeBlock(config, ((AvroMapSchema) fieldSchema).getValueSchema(), AvroType.STRING, getKeyVarName()))
             .addStatement("$T $L = null", ((mapItemClass != null) ? mapItemClass : mapItemClassName), getValueVarName())
             .addStatement(
                 getSerializedCustomDecodeBlock(config, ((AvroMapSchema) fieldSchema).getValueSchema(),
@@ -741,7 +848,7 @@ public class SpecificRecordClassGenerator {
       case RECORD:
         TypeName className = getTypeName(fieldSchema, fieldType);
 
-        codeBlockBuilder.beginControlFlow("this.$L == null", fieldName)
+        codeBlockBuilder.beginControlFlow("if(this.$L == null)", fieldName)
         .addStatement("this.$L = new $T()", fieldName, className)
         .endControlFlow()
         .addStatement("this.$L.customDecode(in)", fieldName);
@@ -761,8 +868,8 @@ public class SpecificRecordClassGenerator {
       SpecificRecordGenerationConfig config) {
 
     for(AvroSchemaField field : recordSchema.getFields()) {
-      customEncodeBuilder.addStatement(
-      getSerializedCustomEncodeBlock(config, field.getSchemaOrRef().getDecl(), field.getSchemaOrRef().getDecl().type(), field.getName()));
+      customEncodeBuilder.addStatement(getSerializedCustomEncodeBlock(config, field.getSchemaOrRef().getDecl(),
+          field.getSchemaOrRef().getDecl().type(), field.getName()));
     }
   }
 
@@ -776,31 +883,31 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = "out.writeNull()";
         break;
       case BOOLEAN:
-        serializedCodeBlock = String.format("out.writeBoolean(this.%s)", fieldName);
+        serializedCodeBlock = String.format("out.writeBoolean(%s)", fieldName);
         break;
       case INT:
-        serializedCodeBlock = String.format("out.writeInt(this.%s)", fieldName);
+        serializedCodeBlock = String.format("out.writeInt(%s)", fieldName);
         break;
       case LONG:
-        serializedCodeBlock = String.format("out.writeLong(this.%s)", fieldName);
+        serializedCodeBlock = String.format("out.writeLong(%s)", fieldName);
         break;
       case FLOAT:
-        serializedCodeBlock = String.format("out.writeFloat(this.%s)", fieldName);
+        serializedCodeBlock = String.format("out.writeFloat(%s)", fieldName);
         break;
       case STRING:
-        serializedCodeBlock = String.format("out.writeString(this.%s)", fieldName);
+        serializedCodeBlock = String.format("out.writeString(%s)", fieldName);
         break;
       case DOUBLE:
-        serializedCodeBlock = String.format("out.writeDouble(this.%s)", fieldName);
+        serializedCodeBlock = String.format("out.writeDouble(%s)", fieldName);
         break;
       case BYTES:
-        serializedCodeBlock = String.format("out.writeBytes(this.%s)", fieldName);
+        serializedCodeBlock = String.format("out.writeBytes(%s)", fieldName);
         break;
       case ENUM:
-        serializedCodeBlock = String.format("out.writeEnum(this.%s.ordinal())", fieldName);
+        serializedCodeBlock = String.format("out.writeEnum(%s.ordinal())", fieldName);
         break;
       case FIXED:
-        serializedCodeBlock = String.format("out.writeFixed(this.%s.bytes(), 0, %s)", fieldName,
+        serializedCodeBlock = String.format("out.writeFixed(%s.bytes(), 0, %s)", fieldName,
             ((AvroFixedSchema) fieldSchema).getSize());
         break;
       case ARRAY:
@@ -810,15 +917,15 @@ public class SpecificRecordClassGenerator {
         Class<?> arrayItemClass = avroTypeToJavaClass(arrayItemAvroType);
         fullyQualifiedClassesInRecord.add(arrayItemClass);
 
-        codeBlockBuilder.addStatement("long $L = this.$L.size()", lengthVarName, fieldName)
+        codeBlockBuilder.addStatement("long $L = $L.size()", lengthVarName, fieldName)
             .addStatement("out.writeArrayStart()")
             .addStatement("out.setItemCount($L)", lengthVarName)
             .addStatement("long $L = 0", actualSizeVarName)
-            .beginControlFlow("for ($T $L: this.$L)", arrayItemClass, getElementVarName(), fieldName)
+            .beginControlFlow("for ($T $L: $L)", arrayItemClass, getElementVarName(), fieldName)
             .addStatement("$L++", actualSizeVarName)
             .addStatement("out.startItem()")
             .addStatement(getSerializedCustomEncodeBlock(config, ((AvroArraySchema) fieldSchema).getValueSchema(),
-                arrayItemAvroType, fieldName))
+                arrayItemAvroType, getElementVarName()))
             .endControlFlow();
 
         codeBlockBuilder
@@ -838,7 +945,7 @@ public class SpecificRecordClassGenerator {
         String valueVarName = getValueVarName();
 
         codeBlockBuilder
-            .addStatement("long $L = this.$L.size()", lengthVarName, fieldName)
+            .addStatement("long $L = $L.size()", lengthVarName, fieldName)
             .addStatement("out.writeMapStart()")
             .addStatement("long $L = 0", actualSizeVarName);
 
@@ -847,12 +954,12 @@ public class SpecificRecordClassGenerator {
 
         if (mapItemClass != null) {
           codeBlockBuilder.beginControlFlow(
-              "for (java.util.Map.Entry<java.lang.CharSequence, $T> $L: this.$L.entrySet())", mapItemClass,
+              "for (java.util.Map.Entry<java.lang.CharSequence, $T> $L: $L.entrySet())", mapItemClass,
               elementVarName, fieldName);
         } else {
           TypeName mapItemClassName = getTypeName(((AvroMapSchema) fieldSchema).getValueSchema(), mapItemAvroType);
           codeBlockBuilder.beginControlFlow(
-              "for (java.util.Map.Entry<java.lang.CharSequence, $T> $L: this.$L.entrySet())", mapItemClassName,
+              "for (java.util.Map.Entry<java.lang.CharSequence, $T> $L: $L.entrySet())", mapItemClassName,
               elementVarName, fieldName);
         }
         codeBlockBuilder
@@ -887,23 +994,23 @@ public class SpecificRecordClassGenerator {
           SchemaOrRef unionMember = ((AvroUnionSchema) fieldSchema).getTypes().get(i);
           if (i == 0) {
             if (unionMember.getDecl().type().equals(AvroType.NULL)) {
-              codeBlockBuilder.beginControlFlow("if (this.$L == null) ", fieldName);
+              codeBlockBuilder.beginControlFlow("if ($L == null) ", fieldName);
             } else {
-              codeBlockBuilder.beginControlFlow("if (this.$L instanceof $T) ", fieldName,
+              codeBlockBuilder.beginControlFlow("if ($L instanceof $T) ", fieldName,
                   avroTypeToJavaClass(unionMember.getSchema().type()));
             }
           } else {
             codeBlockBuilder.endControlFlow();
             if (unionMember.getDecl().type().equals(AvroType.NULL)) {
-              codeBlockBuilder.beginControlFlow(" else if (this.$L == null) ", fieldName);
+              codeBlockBuilder.beginControlFlow(" else if ($L == null) ", fieldName);
             } else {
-              codeBlockBuilder.beginControlFlow(" else if (this.$L instanceof $T) ", fieldName,
+              codeBlockBuilder.beginControlFlow(" else if ($L instanceof $T) ", fieldName,
                   avroTypeToJavaClass(unionMember.getSchema().type()));
             }
           }
           codeBlockBuilder.addStatement("out.writeIndex($L)", i)
-              .addStatement(
-                  getSerializedCustomEncodeBlock(config, fieldSchema, unionMember.getSchema().type(), fieldName));
+              .addStatement(getSerializedCustomEncodeBlock(config, fieldSchema, unionMember.getSchema().type(),
+                   fieldName));
         }
         codeBlockBuilder.endControlFlow()
             .beginControlFlow("else")
@@ -913,7 +1020,7 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = codeBlockBuilder.build().toString();
         break;
       case RECORD:
-        serializedCodeBlock = String.format("this.%s.customEncode(out)", fieldName);
+        serializedCodeBlock = String.format("%s.customEncode(out)", fieldName);
         break;
     }
     return serializedCodeBlock;
@@ -973,7 +1080,7 @@ public class SpecificRecordClassGenerator {
         cls = java.lang.Double.class;
         break;
       case STRING:
-        cls = java.lang.String.class;
+        cls = java.lang.CharSequence.class;
         break;
       case BYTES:
         cls = ByteBuffer.class;
@@ -986,8 +1093,8 @@ public class SpecificRecordClassGenerator {
       SpecificRecordGenerationConfig config) {
     int fieldIndex = 0;
     MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("put")
-        .returns(Object.class)
-        .addParameter(Integer.class, "field")
+        .addParameter(int.class, "field")
+        .addAnnotation(Override.class)
         .addParameter(Object.class, "value")
         .addModifiers(Modifier.PUBLIC);
     CodeBlock.Builder switchBuilder = CodeBlock.builder();
@@ -1013,7 +1120,8 @@ public class SpecificRecordClassGenerator {
     int fieldIndex = 0;
     MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder("get")
         .returns(Object.class)
-        .addParameter(Integer.class, "field")
+        .addParameter(int.class, "field")
+        .addAnnotation(Override.class)
         .addModifiers(Modifier.PUBLIC);
     CodeBlock.Builder switchBuilder = CodeBlock.builder();
     switchBuilder.beginControlFlow("switch (field)");
@@ -1063,15 +1171,14 @@ public class SpecificRecordClassGenerator {
   private MethodSpec getSetterMethodSpec(AvroSchemaField field, SpecificRecordGenerationConfig config) {
 
     MethodSpec.Builder methodSpecBuilder = MethodSpec
-        .methodBuilder("set"+field.getName())
-        .addStatement("this.$L = $L", field.getName(), field.getName())
+        .methodBuilder(getMethodNameForFieldWithPrefix("set", field.getName()))
+        .addStatement("this.$1L = $1L", field.getName())
         .addModifiers(Modifier.PUBLIC);
 
     if(field.getSchemaOrRef().getDecl() != null) {
       Class<?> fieldClass = getFieldClass(field.getSchemaOrRef().getDecl().type(), config.getDefaultFieldStringRepresentation());
       if (fieldClass != null) {
         methodSpecBuilder.addParameter(fieldClass, field.getName())
-            .addStatement("this.$L = $L", field.getName(), field.getName())
             .addModifiers(Modifier.PUBLIC);
       } else {
         TypeName className = getTypeName(field.getSchemaOrRef().getDecl(), field.getSchemaOrRef().getDecl().type());
@@ -1089,8 +1196,8 @@ public class SpecificRecordClassGenerator {
   private MethodSpec getGetterMethodSpec(AvroSchemaField field, SpecificRecordGenerationConfig config) {
 
     MethodSpec.Builder methodSpecBuilder = MethodSpec
-        .methodBuilder("get"+field.getName())
-        .addStatement("return this.$L()", field.getName()).addModifiers(Modifier.PUBLIC);
+        .methodBuilder(getMethodNameForFieldWithPrefix("get", field.getName()))
+        .addStatement("return this.$L", field.getName()).addModifiers(Modifier.PUBLIC);
 
     if(field.getSchemaOrRef().getDecl() != null) {
       Class<?> fieldClass = getFieldClass(field.getSchemaOrRef().getDecl().type(), config.getDefaultMethodStringRepresentation());
@@ -1167,7 +1274,7 @@ public class SpecificRecordClassGenerator {
 
         if(isSingleTypeNullableUnionSchema(unionSchema)) {
           SchemaOrRef unionMemberSchemaOrRef = (unionSchema.getTypes().size() == 1) ? unionSchema.getTypes().get(0)
-              : (unionSchema.getTypes().get(0).getDecl().type().equals(NULL) ? unionSchema.getTypes().get(1)
+              : (unionSchema.getTypes().get(0).getDecl().type().equals(AvroType.NULL) ? unionSchema.getTypes().get(1)
                   : unionSchema.getTypes().get(0));
 
           className = ClassName.get(avroTypeToJavaClass(unionMemberSchemaOrRef.getDecl().type()));
@@ -1183,7 +1290,7 @@ public class SpecificRecordClassGenerator {
         Class<?> mapValueClass = avroTypeToJavaClass(mapSchema.getValueSchema().type());
         //complex map is allowed
         if(mapValueClass == null) {
-          className = ParameterizedTypeName.get(ClassName.get(Map.class),
+          className = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(CharSequence.class),
               getTypeName(mapSchema.getValueSchema(), mapSchema.getValueSchema().type()));
         } else {
           className = ParameterizedTypeName.get(Map.class, mapValueClass);
@@ -1226,17 +1333,19 @@ public class SpecificRecordClassGenerator {
         fieldClass =  Float.class;
         break;
       case STRING:
-        switch (defaultFieldStringRepresentation) {
-          case STRING:
-            fieldClass = String.class;
-            break;
-          case UTF8:
-            fieldClass = Utf8.class;
-            break;
-          case CHAR_SEQUENCE:
-            fieldClass = CharSequence.class;
-            break;
-        }
+//        switch (defaultFieldStringRepresentation) {
+//          case STRING:
+//            fieldClass = String.class;
+//            break;
+//          case UTF8:
+//            fieldClass = Utf8.class;
+//            break;
+//          case CHAR_SEQUENCE:
+//            fieldClass = CharSequence.class;
+//            break;
+//        }
+
+        fieldClass = CharSequence.class;
         break;
       case DOUBLE:
         fieldClass = Double.class;

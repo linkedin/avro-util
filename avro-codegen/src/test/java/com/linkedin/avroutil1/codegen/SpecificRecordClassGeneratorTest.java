@@ -87,7 +87,6 @@ public class SpecificRecordClassGeneratorTest {
     Assert.assertNotNull(recordSchema);
     JavaFileObject javaSourceFile = generator.generateSpecificRecordClass(recordSchema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
 
-    CompilerHelper.assertCompiles(javaSourceFile);
   }
 
 }
