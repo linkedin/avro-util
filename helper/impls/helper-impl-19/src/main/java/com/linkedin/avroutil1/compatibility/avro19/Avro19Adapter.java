@@ -220,9 +220,11 @@ public class Avro19Adapter implements AvroAdapter {
     Schema.Parser parser = new Schema.Parser();
     boolean validateNames = true;
     boolean validateDefaults = true;
+    boolean validateNumericDefaultValueTypes = false;
     if (desiredConf != null) {
       validateNames = desiredConf.validateNames();
       validateDefaults = desiredConf.validateDefaultValues();
+      validateNumericDefaultValueTypes = desiredConf.validateNumericDefaultValueTypes();
     }
     parser.setValidate(validateNames);
     parser.setValidateDefaults(validateDefaults);
@@ -235,7 +237,7 @@ public class Avro19Adapter implements AvroAdapter {
     }
     Schema mainSchema = parser.parse(schemaJson);
     Map<String, Schema> knownByFullName = parser.getTypes();
-    SchemaParseConfiguration configUsed = new SchemaParseConfiguration(validateNames, validateDefaults);
+    SchemaParseConfiguration configUsed = new SchemaParseConfiguration(validateNames, validateDefaults, validateNumericDefaultValueTypes);
     if (configUsed.validateDefaultValues()) {
       //dont trust avro, also run our own
       Avro19SchemaValidator validator = new Avro19SchemaValidator(configUsed, known);

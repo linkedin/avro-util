@@ -218,9 +218,11 @@ public class Avro18Adapter implements AvroAdapter {
     Schema.Parser parser = new Schema.Parser();
     boolean validateNames = true;
     boolean validateDefaults = true;
+    boolean validateNumericDefaultValueTypes = false;
     if (desiredConf != null) {
       validateNames = desiredConf.validateNames();
       validateDefaults = desiredConf.validateDefaultValues();
+      validateNumericDefaultValueTypes = desiredConf.validateNumericDefaultValueTypes();
     }
     parser.setValidate(validateNames);
     parser.setValidateDefaults(validateDefaults);
@@ -233,13 +235,13 @@ public class Avro18Adapter implements AvroAdapter {
     }
     Schema mainSchema = parser.parse(schemaJson);
     Map<String, Schema> knownByFullName = parser.getTypes();
-    SchemaParseConfiguration configUsed = new SchemaParseConfiguration(validateNames, validateDefaults);
+    SchemaParseConfiguration configUsed = new SchemaParseConfiguration(validateNames, validateDefaults, validateNumericDefaultValueTypes);
     if (configUsed.validateDefaultValues()) {
       //dont trust avro, also run our own
       Avro18SchemaValidator validator = new Avro18SchemaValidator(configUsed, known);
       AvroSchemaUtil.traverseSchema(mainSchema, validator);
     }
-    return new SchemaParseResult(mainSchema, knownByFullName, new SchemaParseConfiguration(validateNames, validateDefaults));
+    return new SchemaParseResult(mainSchema, knownByFullName, configUsed);
   }
 
   @Override

@@ -10,6 +10,7 @@ import com.linkedin.avroutil1.testcommon.TestUtil;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
@@ -185,5 +186,50 @@ public class AvroCompatibilityHelperParsingTest {
     Assert.assertEquals(outerSchema.getField("f").schema().getTypes().get(1).getFullName(), "allavro.InnerRecord");
     Assert.assertTrue(result.getAllSchemas().containsKey("allavro.InnerRecord"));
     Assert.assertEquals(result.getAllSchemas().get("allavro.InnerRecord"), innerSchema);
+  }
+
+  @Test
+  public void testParsingLooseNumericDefaults() throws Exception {
+    String badFloatAvsc = "{\"type\": \"record\", \"name\": \"Rec\", \"fields\": [{\"name\": \"f\", \"type\": \"float\", \"default\": 0}]}";
+    String badDoubleAvsc = "{\"type\": \"record\", \"name\": \"Rec\", \"fields\": [{\"name\": \"f\", \"type\": \"double\", \"default\": 0}]}";
+    String badIntAvsc = "{\"type\": \"record\", \"name\": \"Rec\", \"fields\": [{\"name\": \"f\", \"type\": \"int\", \"default\": 0.0}]}";
+    String badLongAvsc = "{\"type\": \"record\", \"name\": \"Rec\", \"fields\": [{\"name\": \"f\", \"type\": \"long\", \"default\": 0.0}]}";
+
+    List<String> allSchemas = Arrays.asList(badFloatAvsc, badDoubleAvsc, badIntAvsc, badLongAvsc);
+
+    for (String avsc : allSchemas) {
+
+      //doesnt parse as strict
+      try {
+        //noinspection ResultOfMethodCallIgnored
+        AvroCompatibilityHelper.parse(avsc, SchemaParseConfiguration.STRICT, null).getMainSchema();
+        Assert.fail("was not supposed to parse");
+      } catch (AvroTypeException expected) {
+        //expected
+      }
+
+      //parses under loose_numerics
+      Schema parsed = AvroCompatibilityHelper.parse(avsc, SchemaParseConfiguration.LOOSE_NUMERICS, null).getMainSchema();
+      Assert.assertNotNull(parsed);
+    }
+  }
+
+  @Test
+  public void testParsingHorribleLooseNumericDefaults() throws Exception {
+    String horribleIntAvsc = "{\"type\": \"record\", \"name\": \"Rec\", \"fields\": [{\"name\": \"f\", \"type\": \"int\", \"default\": 1.5}]}";
+    String horribleLongAvsc = "{\"type\": \"record\", \"name\": \"Rec\", \"fields\": [{\"name\": \"f\", \"type\": \"long\", \"default\": 3.14}]}";
+
+    List<String> allSchemas = Arrays.asList(horribleIntAvsc, horribleLongAvsc);
+    for (String avsc : allSchemas) {
+
+      //doesnt parse as loose
+      try {
+        //noinspection ResultOfMethodCallIgnored
+        AvroCompatibilityHelper.parse(avsc, SchemaParseConfiguration.LOOSE_NUMERICS, null).getMainSchema();
+        Assert.fail("was not supposed to parse");
+      } catch (AvroTypeException expected) {
+        //expected
+      }
+    }
   }
 }

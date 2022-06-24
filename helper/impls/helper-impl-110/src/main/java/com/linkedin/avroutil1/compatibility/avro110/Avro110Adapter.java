@@ -216,12 +216,20 @@ public class Avro110Adapter implements AvroAdapter {
         Schema.Parser parser = new Schema.Parser();
         boolean validateNames = true;
         boolean validateDefaults = true;
+        boolean validateNumericDefaultValueTypes = false;
         if (desiredConf != null) {
             validateNames = desiredConf.validateNames();
             validateDefaults = desiredConf.validateDefaultValues();
+            validateNumericDefaultValueTypes = desiredConf.validateNumericDefaultValueTypes();
         }
         parser.setValidate(validateNames);
-        parser.setValidateDefaults(validateDefaults);
+        //avro 1.10 default validation also validates numeric types, so if we want to be
+        //more nuanced we cant use avro's default value validation
+        if (validateDefaults && validateNumericDefaultValueTypes) {
+            parser.setValidateDefaults(true);
+        } else {
+            parser.setValidateDefaults(false);
+        }
         if (known != null && !known.isEmpty()) {
             Map<String, Schema> knownByFullName = new HashMap<>(known.size());
             for (Schema s : known) {
@@ -231,9 +239,9 @@ public class Avro110Adapter implements AvroAdapter {
         }
         Schema mainSchema = parser.parse(schemaJson);
         Map<String, Schema> knownByFullName = parser.getTypes();
-        SchemaParseConfiguration configUsed = new SchemaParseConfiguration(validateNames, validateDefaults);
+        SchemaParseConfiguration configUsed = new SchemaParseConfiguration(validateNames, validateDefaults, validateNumericDefaultValueTypes);
         if (configUsed.validateDefaultValues()) {
-            //dont trust avro, also run our own
+            //dont trust avro, also run our own. also we might have told avro not to validate over numerics
             Avro110SchemaValidator validator = new Avro110SchemaValidator(configUsed, known);
             AvroSchemaUtil.traverseSchema(mainSchema, validator);
         }

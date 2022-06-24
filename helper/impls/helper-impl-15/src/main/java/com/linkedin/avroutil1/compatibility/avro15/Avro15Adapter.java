@@ -215,11 +215,13 @@ public class Avro15Adapter implements AvroAdapter {
     Schema.Parser parser = new Schema.Parser();
     boolean validateNames = true;
     boolean validateDefaults = false;
+    boolean validateNumericDefaultValueTypes = false;
     if (desiredConf != null) {
       validateNames = desiredConf.validateNames();
       validateDefaults = desiredConf.validateDefaultValues();
+      validateNumericDefaultValueTypes = desiredConf.validateNumericDefaultValueTypes();
     }
-    SchemaParseConfiguration configUsed = new SchemaParseConfiguration(validateNames, validateDefaults);
+    SchemaParseConfiguration configUsed = new SchemaParseConfiguration(validateNames, validateDefaults, validateNumericDefaultValueTypes);
 
     parser.setValidate(validateNames);
     if (known != null && !known.isEmpty()) {

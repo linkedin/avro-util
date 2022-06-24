@@ -71,7 +71,7 @@ public class Avro110DefaultValuesCache {
 
     //validate the default JsonNode vs the fieldSchema, because old avro doesnt validate
     //and applying the logic below to decode will return very weird results
-    if (!Avro110SchemaValidator.isValidDefault(schema, json)) {
+    if (!Avro110SchemaValidator.isValidDefault(schema, json, true)) {
       //throw ~the same exception modern avro would
       String message = "Invalid default for field " + field.name() + ": "
           + json + " (a " + json.getClass().getSimpleName() + ") is not a " + schema;
