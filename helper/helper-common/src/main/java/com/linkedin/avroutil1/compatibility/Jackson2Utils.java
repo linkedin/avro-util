@@ -75,10 +75,21 @@ public class Jackson2Utils {
     }
   }
 
+  public static boolean isRoundNumber(JsonNode node) {
+    if (node == null || !node.isNumber()) {
+      return false;
+    }
+    if (node.isIntegralNumber()) {
+      return true;
+    }
+    double actual = node.asDouble();
+    return Double.compare(Math.floor(actual), Math.ceil(actual)) == 0;
+  }
+
   /**
    *  Enforces uniform numeric default values across Avro versions
    */
-  static public JsonNode enforceUniformNumericDefaultValues(Schema.Field field, JsonNode genericDefaultValue) {
+  public static JsonNode enforceUniformNumericDefaultValues(Schema.Field field, JsonNode genericDefaultValue) {
     BigDecimal numericDefaultValue = genericDefaultValue.decimalValue();
     Schema schema = field.schema();
     // a default value for a union, must match the first element of the union
@@ -106,7 +117,7 @@ public class Jackson2Utils {
     }
   }
 
-  static private boolean isAMathematicalInteger(BigDecimal bigDecimal) {
+  private static boolean isAMathematicalInteger(BigDecimal bigDecimal) {
     return bigDecimal.stripTrailingZeros().scale() <= 0;
   }
 }

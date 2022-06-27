@@ -9,6 +9,7 @@ package com.linkedin.avroutil1.compatibility.avro19;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.linkedin.avroutil1.compatibility.HelperConsts;
+import com.linkedin.avroutil1.compatibility.Jackson2Utils;
 import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
 import com.linkedin.avroutil1.compatibility.SchemaVisitor;
 import java.util.Arrays;
@@ -25,18 +26,33 @@ import org.apache.avro.util.internal.Accessor;
 
 
 public class Avro19SchemaValidator implements SchemaVisitor {
-  private final static Map<Schema.Type, List<JsonParser.NumberType>> JSON_NUMERIC_TYPES_PER_AVRO_TYPE;
+  private final static Map<Schema.Type, List<JsonParser.NumberType>> STRICT_JSON_NUMERIC_TYPES_PER_AVRO_TYPE;
+  private final static Map<Schema.Type, List<JsonParser.NumberType>> LOOSE_JSON_NUMERIC_TYPES_PER_AVRO_TYPE;
 
   static {
-    Map<Schema.Type, List<JsonParser.NumberType>> temp = new HashMap<>();
-    //noinspection ArraysAsListWithZeroOrOneArgument
-    temp.put(Schema.Type.INT, Collections.unmodifiableList(Arrays.asList(JsonParser.NumberType.INT)));
-    temp.put(Schema.Type.LONG, Collections.unmodifiableList(Arrays.asList(JsonParser.NumberType.INT, JsonParser.NumberType.LONG)));
-    //jackson (used by avro) seems to like parsing everything as DoubleNode
-    temp.put(Schema.Type.FLOAT, Collections.unmodifiableList(Arrays.asList(JsonParser.NumberType.FLOAT, JsonParser.NumberType.DOUBLE)));
-    temp.put(Schema.Type.DOUBLE, Collections.unmodifiableList(Arrays.asList(JsonParser.NumberType.FLOAT, JsonParser.NumberType.DOUBLE)));
+    Map<Schema.Type, List<JsonParser.NumberType>> strict = new HashMap<>(4);
+    Map<Schema.Type, List<JsonParser.NumberType>> loose = new HashMap<>(4);
 
-    JSON_NUMERIC_TYPES_PER_AVRO_TYPE = Collections.unmodifiableMap(temp);
+    List<JsonParser.NumberType> allFloats = Collections.unmodifiableList(Arrays.asList(
+        JsonParser.NumberType.FLOAT, JsonParser.NumberType.DOUBLE
+    ));
+    List<JsonParser.NumberType> allNumerics = Collections.unmodifiableList(Arrays.asList(
+        JsonParser.NumberType.INT, JsonParser.NumberType.LONG, JsonParser.NumberType.FLOAT, JsonParser.NumberType.DOUBLE
+    ));
+
+    strict.put(Schema.Type.INT, Collections.singletonList(JsonParser.NumberType.INT));
+    strict.put(Schema.Type.LONG, Collections.unmodifiableList(Arrays.asList(JsonParser.NumberType.INT, JsonParser.NumberType.LONG)));
+    //jackson (used by avro) seems to like parsing everything as DoubleNode
+    strict.put(Schema.Type.FLOAT, allFloats);
+    strict.put(Schema.Type.DOUBLE, allFloats);
+
+    loose.put(Schema.Type.INT, Collections.unmodifiableList(Arrays.asList(JsonParser.NumberType.INT, JsonParser.NumberType.FLOAT, JsonParser.NumberType.DOUBLE)));
+    loose.put(Schema.Type.LONG, allNumerics);
+    loose.put(Schema.Type.FLOAT, allNumerics);
+    loose.put(Schema.Type.DOUBLE, allNumerics);
+
+    STRICT_JSON_NUMERIC_TYPES_PER_AVRO_TYPE = Collections.unmodifiableMap(strict);
+    LOOSE_JSON_NUMERIC_TYPES_PER_AVRO_TYPE = Collections.unmodifiableMap(loose);
   }
 
   private final SchemaParseConfiguration validationSpec;
@@ -91,7 +107,7 @@ public class Avro19SchemaValidator implements SchemaVisitor {
     JsonNode defaultValue = Accessor.defaultValue(field);
     if (validationSpec.validateDefaultValues() && defaultValue != null) {
       Schema fieldSchema = field.schema();
-      boolean validDefault = isValidDefault(fieldSchema, defaultValue);
+      boolean validDefault = isValidDefault(fieldSchema, defaultValue, validationSpec.validateNumericDefaultValueTypes());
       if (!validDefault) {
         //throw ~the same exception avro would
         String message = "Invalid default for field " + parent.getFullName() + "." + field.name() + ": "
@@ -127,10 +143,12 @@ public class Avro19SchemaValidator implements SchemaVisitor {
    * validation logic taken out of class {@link Schema} with adaptations
    * @param schema schema (type) of a field
    * @param defaultValue default value provided for said field in the parent schema
+   * @param validateNumericTypes true to use strict numeric type matching between value and schema
    * @throws SchemaParseException is name is invalid
    */
-  public static boolean isValidDefault(Schema schema, JsonNode defaultValue) {
+  public static boolean isValidDefault(Schema schema, JsonNode defaultValue, boolean validateNumericTypes) {
     if (defaultValue == null) {
+      //means no default value
       return false;
     }
     Schema.Type avroType = schema.getType();
@@ -144,8 +162,20 @@ public class Avro19SchemaValidator implements SchemaVisitor {
       case LONG:
       case FLOAT:
       case DOUBLE:
-        List<JsonParser.NumberType> jsonTypes = JSON_NUMERIC_TYPES_PER_AVRO_TYPE.get(avroType);
-        return jsonTypes != null && jsonTypes.contains(defaultValue.numberType());
+        Map<Schema.Type, List<JsonParser.NumberType>> lookupTable = validateNumericTypes ?
+            STRICT_JSON_NUMERIC_TYPES_PER_AVRO_TYPE : LOOSE_JSON_NUMERIC_TYPES_PER_AVRO_TYPE;
+        List<JsonParser.NumberType> allowedTypes = lookupTable.get(avroType);
+        if (allowedTypes == null || !allowedTypes.contains(defaultValue.numberType())) {
+          return false;
+        }
+        if (avroType == Schema.Type.INT || avroType == Schema.Type.LONG) {
+          //dont allow true non-round numbers for ints
+          if (!Jackson2Utils.isRoundNumber(defaultValue)) {
+            return false;
+          }
+        }
+        //TODO - check values out of range (like 5*MAX_INT for int field)
+        return true;
       case BOOLEAN:
         return defaultValue.isBoolean();
       case NULL:
@@ -154,18 +184,18 @@ public class Avro19SchemaValidator implements SchemaVisitor {
         if (!defaultValue.isArray())
           return false;
         for (JsonNode element : defaultValue)
-          if (!isValidDefault(schema.getElementType(), element))
+          if (!isValidDefault(schema.getElementType(), element, validateNumericTypes))
             return false;
         return true;
       case MAP:
         if (!defaultValue.isObject())
           return false;
         for (JsonNode value : defaultValue)
-          if (!isValidDefault(schema.getValueType(), value))
+          if (!isValidDefault(schema.getValueType(), value, validateNumericTypes))
             return false;
         return true;
       case UNION: // union default: first branch
-        return isValidDefault(schema.getTypes().get(0), defaultValue);
+        return isValidDefault(schema.getTypes().get(0), defaultValue, validateNumericTypes);
       case RECORD:
         if (!defaultValue.isObject())
           return false;
@@ -173,7 +203,8 @@ public class Avro19SchemaValidator implements SchemaVisitor {
           JsonNode fieldDefaultNode = Accessor.defaultValue(field);
           if (!isValidDefault(
               field.schema(),
-              defaultValue.has(field.name()) ? defaultValue.get(field.name()) : fieldDefaultNode
+              defaultValue.has(field.name()) ? defaultValue.get(field.name()) : fieldDefaultNode,
+              validateNumericTypes
           )) {
             return false;
           }
