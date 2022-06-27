@@ -75,5 +75,22 @@ public class SpecificRecordGenerationConfig {
     this.honorStringTypeHints = honorStringTypeHints;
     this.defaultFieldStringRepresentation = defaultFieldStringRepresentation;
     this.defaultMethodStringRepresentation = defaultMethodStringRepresentation;
+    this.minimumSupportedAvroVersion = minimumSupportedAvroVersion;
+  }
+
+  public AvroVersion getMinimumSupportedAvroVersion() {
+    return minimumSupportedAvroVersion;
+  }
+
+  public boolean hasPublicFields() {
+    return publicFields;
+  }
+
+  public AvroJavaStringRepresentation getDefaultFieldStringRepresentation() {
+    return defaultFieldStringRepresentation;
+  }
+
+  public AvroJavaStringRepresentation getDefaultMethodStringRepresentation() {
+    return defaultMethodStringRepresentation;
   }
 }
