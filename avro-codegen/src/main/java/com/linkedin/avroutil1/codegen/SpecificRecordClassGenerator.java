@@ -209,23 +209,22 @@ public class SpecificRecordClassGenerator {
       classBuilder.addJavadoc(doc);
     }
 
-    if(config != null) {
-      if(config.getMinimumSupportedAvroVersion().laterThan(AvroVersion.AVRO_1_7)) {
-        // MODEL$ as SpecificData()
-        classBuilder.addField(
-            FieldSpec.builder(CLASSNAME_SPECIFIC_DATA, "MODEL$", Modifier.PRIVATE,
-                Modifier.STATIC)
-                .initializer(CodeBlock.of("new $T()", CLASSNAME_SPECIFIC_DATA))
-                .build());
-      } else {
-        classBuilder.addField(
-            FieldSpec.builder(CLASSNAME_SPECIFIC_DATA, "MODEL$", Modifier.PRIVATE,
-                Modifier.STATIC)
-                .initializer(CodeBlock.of("$T.get()", CLASSNAME_SPECIFIC_DATA))
-                .build());
-      }
-
+    if(config != null && config.getMinimumSupportedAvroVersion().laterThan(AvroVersion.AVRO_1_7)) {
+      // MODEL$ as SpecificData()
+      classBuilder.addField(
+          FieldSpec.builder(CLASSNAME_SPECIFIC_DATA, "MODEL$", Modifier.PRIVATE,
+              Modifier.STATIC)
+              .initializer(CodeBlock.of("new $T()", CLASSNAME_SPECIFIC_DATA))
+              .build());
+    } else {
+      classBuilder.addField(
+          FieldSpec.builder(CLASSNAME_SPECIFIC_DATA, "MODEL$", Modifier.PRIVATE,
+              Modifier.STATIC)
+              .initializer(CodeBlock.of("$T.get()", CLASSNAME_SPECIFIC_DATA))
+              .build());
     }
+
+
 
     // serialVersionUID
     classBuilder.addField(
@@ -244,7 +243,7 @@ public class SpecificRecordClassGenerator {
         .build());
 
 
-    if(config.getMinimumSupportedAvroVersion().laterThan(AvroVersion.AVRO_1_7)) {
+    if(config != null && config.getMinimumSupportedAvroVersion().laterThan(AvroVersion.AVRO_1_7)) {
       // read external
       classBuilder.addField(
           FieldSpec.builder(CLASSNAME_DATUM_READER, "READER$", Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
