@@ -50,6 +50,7 @@ import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import javax.lang.model.element.Modifier;
 import javax.tools.JavaFileObject;
+import org.apache.avro.util.Utf8;
 //import org.apache.avro.Schema;
 //import org.apache.avro.io.DatumReader;
 //import org.apache.avro.io.DatumWriter;
@@ -1208,29 +1209,51 @@ public class SpecificRecordClassGenerator {
   }
 
   private MethodSpec getGetterMethodSpec(AvroSchemaField field, SpecificRecordGenerationConfig config) {
+    AvroType fieldType = field.getSchemaOrRef().getDecl().type();
 
     MethodSpec.Builder methodSpecBuilder = MethodSpec
-        .methodBuilder(getMethodNameForFieldWithPrefix("get", field.getName()))
-        .addStatement("return this.$L", field.getName()).addModifiers(Modifier.PUBLIC);
+        .methodBuilder(getMethodNameForFieldWithPrefix("get", field.getName())).addModifiers(Modifier.PUBLIC);
 
     if(field.getSchemaOrRef().getDecl() != null) {
-      Class<?> fieldClass = getFieldClass(field.getSchemaOrRef().getDecl().type(), config.getDefaultMethodStringRepresentation());
+      Class<?> fieldClass = getFieldClass(fieldType, config.getDefaultMethodStringRepresentation());
       if (fieldClass != null) {
         methodSpecBuilder.returns(fieldClass);
       } else {
-        TypeName className = getTypeName(field.getSchemaOrRef().getDecl(), field.getSchemaOrRef().getDecl().type());
+        TypeName className = getTypeName(field.getSchemaOrRef().getDecl(), fieldType);
         methodSpecBuilder.returns(className);
       }
     } else {
       ClassName className =  ClassName.get(field.getSchemaOrRef().getParentNamespace(), field.getSchemaOrRef().getRef());
       methodSpecBuilder.returns(className);
     }
+    // if fieldRepresentation != methodRepresentation for String field
+    if (AvroType.STRING.equals(fieldType) && config != null
+        && config.getDefaultFieldStringRepresentation() != config.getDefaultMethodStringRepresentation()) {
+      switch (config.getDefaultMethodStringRepresentation()) {
+        case STRING:
+          methodSpecBuilder.addStatement("return String.valueOf(this.$L)", field.getName());
+          break;
+
+        case CHAR_SEQUENCE:
+          methodSpecBuilder.addStatement("return this.$L", field.getName());
+          break;
+
+        case UTF8:
+          if (AvroJavaStringRepresentation.STRING.equals(config.getDefaultFieldStringRepresentation())) {
+            methodSpecBuilder.addStatement("return new Utf8(this.$L)", field.getName());
+          } else if (AvroJavaStringRepresentation.CHAR_SEQUENCE.equals(config.getDefaultFieldStringRepresentation())) {
+            methodSpecBuilder.addStatement("return new Utf8(String.valueOf(this.$L))", field.getName());
+          }
+      }
+    } else {
+      methodSpecBuilder.addStatement("return this.$L", field.getName());
+    }
 
     return methodSpecBuilder.build();
   }
 
   private FieldSpec.Builder getFieldSpecBuilder(AvroSchemaField field, SpecificRecordGenerationConfig config) {
-    FieldSpec.Builder fieldSpecBuilder = null;
+    FieldSpec.Builder fieldSpecBuilder;
     if(field.getSchemaOrRef().getDecl() != null) {
       Class<?> fieldClass = getFieldClass(field.getSchemaOrRef().getDecl().type(), config.getDefaultFieldStringRepresentation());
       if (fieldClass != null) {
@@ -1238,7 +1261,6 @@ public class SpecificRecordClassGenerator {
       } else {
         TypeName className = getTypeName(field.getSchemaOrRef().getDecl(), field.getSchemaOrRef().getDecl().type());
         fieldSpecBuilder = FieldSpec.builder(className, field.getName());
-        System.out.println(field.getSchemaOrRef().getDecl().type());
       }
     } else {
       ClassName className =  ClassName.get(field.getSchemaOrRef().getParentNamespace(), field.getSchemaOrRef().getRef());
@@ -1327,7 +1349,7 @@ public class SpecificRecordClassGenerator {
     return false;
   }
 
-  private Class<?> getFieldClass(AvroType fieldType, AvroJavaStringRepresentation defaultFieldStringRepresentation)
+  private Class<?> getFieldClass(AvroType fieldType, AvroJavaStringRepresentation defaultStringRepresentation)
        {
     Class<?> fieldClass = null;
     switch (fieldType) {
@@ -1347,19 +1369,17 @@ public class SpecificRecordClassGenerator {
         fieldClass =  Float.class;
         break;
       case STRING:
-//        switch (defaultFieldStringRepresentation) {
-//          case STRING:
-//            fieldClass = String.class;
-//            break;
-//          case UTF8:
-//            fieldClass = Utf8.class;
-//            break;
-//          case CHAR_SEQUENCE:
-//            fieldClass = CharSequence.class;
-//            break;
-//        }
-
-        fieldClass = CharSequence.class;
+        switch (defaultStringRepresentation) {
+          case STRING:
+            fieldClass = String.class;
+            break;
+          case UTF8:
+            fieldClass = Utf8.class;
+            break;
+          case CHAR_SEQUENCE:
+            fieldClass = CharSequence.class;
+            break;
+        }
         break;
       case DOUBLE:
         fieldClass = Double.class;
