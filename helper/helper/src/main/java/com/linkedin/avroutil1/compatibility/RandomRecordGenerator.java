@@ -9,19 +9,14 @@ package com.linkedin.avroutil1.compatibility;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
-import org.apache.avro.Schema;
-import org.apache.avro.generic.GenericData;
-
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
+import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.util.Utf8;
 
@@ -31,20 +26,6 @@ import org.apache.avro.util.Utf8;
  * useful for testing
  */
 public class RandomRecordGenerator {
-  /**
-   * field names that avro will avoid and instead append a "$" to.
-   * see {@link org.apache.avro.specific.SpecificCompiler}.RESERVED_WORDS and mangle()
-   */
-  private final static Set<String> AVRO_RESERVED_FIELD_NAMES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
-      "abstract", "assert", "boolean", "break", "byte", "case", "catch",
-      "char", "class", "const", "continue", "default", "do", "double",
-      "else", "enum", "extends", "false", "final", "finally", "float",
-      "for", "goto", "if", "implements", "import", "instanceof", "int",
-      "interface", "long", "native", "new", "null", "package", "private",
-      "protected", "public", "return", "short", "static", "strictfp",
-      "super", "switch", "synchronized", "this", "throw", "throws",
-      "transient", "true", "try", "void", "volatile", "while"
-  )));
 
   /**
    * creates a random (generic) instance of a schema
@@ -390,7 +371,7 @@ public class RandomRecordGenerator {
       return pojoField.getType();
     }
     //look for "mangled" field if field name is possibly reserved
-    if (AVRO_RESERVED_FIELD_NAMES.contains(fieldName.toLowerCase(Locale.ROOT))) {
+    if (AvroRecordUtil.AVRO_RESERVED_FIELD_NAMES.contains(fieldName.toLowerCase(Locale.ROOT))) {
       String mangled = fieldName + "$";
       try {
         pojoField = recordClass.getField(mangled);

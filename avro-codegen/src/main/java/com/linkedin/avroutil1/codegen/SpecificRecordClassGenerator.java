@@ -6,10 +6,12 @@
 
 package com.linkedin.avroutil1.codegen;
 
+import com.linkedin.avroutil1.compatibility.AvroRecordUtil;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
 import com.linkedin.avroutil1.compatibility.CompatibleSpecificRecordBuilderBase;
 import com.linkedin.avroutil1.compatibility.HelperConsts;
 import com.linkedin.avroutil1.compatibility.SourceCodeUtils;
+import com.linkedin.avroutil1.compatibility.StringUtils;
 import com.linkedin.avroutil1.model.AvroArraySchema;
 import com.linkedin.avroutil1.model.AvroEnumSchema;
 import com.linkedin.avroutil1.model.AvroFixedSchema;
@@ -192,6 +194,12 @@ public class SpecificRecordClassGenerator {
 
   protected JavaFileObject generateSpecificRecord(AvroRecordSchema recordSchema, SpecificRecordGenerationConfig config)
       throws ClassNotFoundException {
+
+    // Default to broad compatibility config if null
+    if(config == null) {
+      config = SpecificRecordGenerationConfig.BROAD_COMPATIBILITY;
+    }
+
     //public class
     TypeSpec.Builder classBuilder = TypeSpec.classBuilder(recordSchema.getSimpleName());
     classBuilder.addModifiers(Modifier.PUBLIC);
@@ -209,8 +217,8 @@ public class SpecificRecordClassGenerator {
       classBuilder.addJavadoc(doc);
     }
 
-    if(config != null && config.getMinimumSupportedAvroVersion().laterThan(AvroVersion.AVRO_1_7)) {
-      // MODEL$ as SpecificData()
+    if(config.getMinimumSupportedAvroVersion().laterThan(AvroVersion.AVRO_1_7)) {
+      // MODEL$ as new instance of SpecificData()
       classBuilder.addField(
           FieldSpec.builder(CLASSNAME_SPECIFIC_DATA, "MODEL$", Modifier.PRIVATE,
               Modifier.STATIC)
@@ -243,7 +251,7 @@ public class SpecificRecordClassGenerator {
         .build());
 
 
-    if(config != null && config.getMinimumSupportedAvroVersion().laterThan(AvroVersion.AVRO_1_7)) {
+    if(config.getMinimumSupportedAvroVersion().laterThan(AvroVersion.AVRO_1_7)) {
       // read external
       classBuilder.addField(
           FieldSpec.builder(CLASSNAME_DATUM_READER, "READER$", Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
@@ -676,7 +684,8 @@ public class SpecificRecordClassGenerator {
     if (fieldName.length() < 1) {
       throw new IllegalArgumentException("FieldName must be longer than 1");
     }
-    return prefix + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+    String suffix = (AvroRecordUtil.AVRO_RESERVED_FIELD_NAMES.contains(fieldName)) ? "$" : StringUtils.EMPTY_STRING;
+    return prefix + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1) + suffix;
 
   }
 
@@ -1226,7 +1235,7 @@ public class SpecificRecordClassGenerator {
       methodSpecBuilder.returns(className);
     }
     // if fieldRepresentation != methodRepresentation for String field
-    if (AvroType.STRING.equals(fieldType) && config != null
+    if (AvroType.STRING.equals(fieldType)
         && config.getDefaultFieldStringRepresentation() != config.getDefaultMethodStringRepresentation()) {
       switch (config.getDefaultMethodStringRepresentation()) {
         case STRING:

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,6 +36,21 @@ public class AvroRecordUtil {
   private static final List<StringRepresentation> UTF8_PREFERRED = Collections.unmodifiableList(Arrays.asList(
       StringRepresentation.Utf8, StringRepresentation.String
   ));
+
+  /**
+   * field names that avro will avoid and instead append a "$" to.
+   * see {@link org.apache.avro.specific.SpecificCompiler}.RESERVED_WORDS and mangle()
+   */
+  public final static Set<String> AVRO_RESERVED_FIELD_NAMES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
+      "abstract", "assert", "boolean", "break", "byte", "case", "catch",
+      "char", "class", "const", "continue", "default", "do", "double",
+      "else", "enum", "extends", "false", "final", "finally", "float",
+      "for", "goto", "if", "implements", "import", "instanceof", "int",
+      "interface", "long", "native", "new", "null", "package", "private",
+      "protected", "public", "return", "schema", "short", "static", "strictfp",
+      "super", "switch", "synchronized", "this", "throw", "throws",
+      "transient", "true", "try", "void", "volatile", "while"
+  )));
 
   private AvroRecordUtil() {
     //utility class
