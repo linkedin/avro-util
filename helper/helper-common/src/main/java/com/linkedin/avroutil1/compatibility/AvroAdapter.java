@@ -103,6 +103,8 @@ public interface AvroAdapter {
 
   boolean fieldHasDefault(Schema.Field field);
 
+  boolean defaultValuesEqual(Schema.Field a, Schema.Field b, boolean looseNumerics);
+
   Set<String> getFieldAliases(Schema.Field field);
 
   @Deprecated
@@ -134,9 +136,13 @@ public interface AvroAdapter {
 
   void setFieldPropFromJsonString(Schema.Field field, String propName, String valueAsJsonLiteral, boolean strict);
 
+  boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps, boolean compareNonStringProps);
+
   String getSchemaPropAsJsonString(Schema schema, String propName);
 
   void setSchemaPropFromJsonString(Schema field, String propName, String valueAsJsonLiteral, boolean strict);
+
+  boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps);
 
   String getEnumDefault(Schema s);
 

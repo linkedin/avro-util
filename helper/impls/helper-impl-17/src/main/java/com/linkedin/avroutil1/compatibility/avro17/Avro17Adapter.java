@@ -15,6 +15,7 @@ import com.linkedin.avroutil1.compatibility.CodeGenerationConfig;
 import com.linkedin.avroutil1.compatibility.CodeTransformations;
 import com.linkedin.avroutil1.compatibility.ExceptionUtils;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
+import com.linkedin.avroutil1.compatibility.Jackson1Utils;
 import com.linkedin.avroutil1.compatibility.SchemaBuilder;
 import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
 import com.linkedin.avroutil1.compatibility.SchemaParseResult;
@@ -343,6 +344,13 @@ public class Avro17Adapter implements AvroAdapter {
   }
 
   @Override
+  public boolean defaultValuesEqual(Schema.Field a, Schema.Field b, boolean looseNumerics) {
+    JsonNode aVal = a.defaultValue();
+    JsonNode bVal = b.defaultValue();
+    return Jackson1Utils.JsonNodesEqual(aVal, bVal, looseNumerics);
+  }
+
+  @Override
   public Set<String> getFieldAliases(Schema.Field field) {
     return field.aliases();
   }
@@ -368,6 +376,11 @@ public class Avro17Adapter implements AvroAdapter {
   }
 
   @Override
+  public boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps, boolean compareNonStringProps) {
+    return Avro17Utils.sameJsonProperties(a, b, compareStringProps, compareNonStringProps);
+  }
+
+  @Override
   public String getSchemaPropAsJsonString(Schema schema, String name) {
     return Avro17Utils.getJsonProp(schema, name);
   }
@@ -375,6 +388,11 @@ public class Avro17Adapter implements AvroAdapter {
   @Override
   public void setSchemaPropFromJsonString(Schema schema, String name, String value, boolean strict) {
     Avro17Utils.setJsonProp(schema, name, value, strict);
+  }
+
+  @Override
+  public boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps) {
+    return Avro17Utils.sameJsonProperties(a, b, compareStringProps, compareNonStringProps);
   }
 
   @Override
