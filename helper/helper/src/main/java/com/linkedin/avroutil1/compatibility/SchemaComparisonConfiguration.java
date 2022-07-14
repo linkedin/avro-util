@@ -70,6 +70,72 @@ public class SchemaComparisonConfiguration {
   public boolean isCompareFieldLogicalTypes() {
     return compareFieldLogicalTypes;
   }
+
+  public SchemaComparisonConfiguration compareStringJsonProps(boolean compare) {
+    return new SchemaComparisonConfiguration(
+        compare,
+        compareNonStringJsonProps,
+        compareAliases,
+        compareIntToFloatDefaults,
+        compareFieldOrder,
+        compareFieldLogicalTypes
+    );
+  }
+
+  public SchemaComparisonConfiguration compareNonStringJsonProps(boolean compare) {
+    return new SchemaComparisonConfiguration(
+        compareStringJsonProps,
+        compare,
+        compareAliases,
+        compareIntToFloatDefaults,
+        compareFieldOrder,
+        compareFieldLogicalTypes
+    );
+  }
+
+  public SchemaComparisonConfiguration compareAliases(boolean compare) {
+    return new SchemaComparisonConfiguration(
+        compareStringJsonProps,
+        compareNonStringJsonProps,
+        compare,
+        compareIntToFloatDefaults,
+        compareFieldOrder,
+        compareFieldLogicalTypes
+    );
+  }
+
+  public SchemaComparisonConfiguration compareIntToFloatDefaults(boolean compare) {
+    return new SchemaComparisonConfiguration(
+        compareStringJsonProps,
+        compareNonStringJsonProps,
+        compareAliases,
+        compare,
+        compareFieldOrder,
+        compareFieldLogicalTypes
+    );
+  }
+
+  public SchemaComparisonConfiguration compareFieldOrder(boolean compare) {
+    return new SchemaComparisonConfiguration(
+        compareStringJsonProps,
+        compareNonStringJsonProps,
+        compareAliases,
+        compareIntToFloatDefaults,
+        compare,
+        compareFieldLogicalTypes
+    );
+  }
+
+  public SchemaComparisonConfiguration compareFieldLogicalTypes(boolean compare) {
+    return new SchemaComparisonConfiguration(
+        compareStringJsonProps,
+        compareNonStringJsonProps,
+        compareAliases,
+        compareIntToFloatDefaults,
+        compareFieldOrder,
+        compare
+    );
+  }
 }
 
 

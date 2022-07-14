@@ -295,10 +295,10 @@ public class Avro18Adapter implements AvroAdapter {
   }
 
   @Override
-  public boolean defaultValuesEqual(Schema.Field a, Schema.Field b, boolean looseNumerics) {
+  public boolean defaultValuesEqual(Schema.Field a, Schema.Field b, boolean allowLooseNumerics) {
     JsonNode aVal = a.defaultValue();
     JsonNode bVal = b.defaultValue();
-    return Jackson1Utils.JsonNodesEqual(aVal, bVal, looseNumerics);
+    return Jackson1Utils.JsonNodesEqual(aVal, bVal, allowLooseNumerics);
   }
 
   @Override

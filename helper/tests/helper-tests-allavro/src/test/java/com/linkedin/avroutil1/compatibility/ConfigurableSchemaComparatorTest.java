@@ -172,4 +172,132 @@ public class ConfigurableSchemaComparatorTest {
     Assert.assertTrue(ConfigurableSchemaComparator.equals(a, b, SchemaComparisonConfiguration.LOOSE_NUMERICS));
     Assert.assertFalse(ConfigurableSchemaComparator.equals(a, b, SchemaComparisonConfiguration.STRICT));
   }
+
+  @Test
+  public void testCompareFieldAliases() throws Exception {
+    String avscA = "{\n"
+        + "  \"type\": \"record\",\n"
+        + "  \"name\": \"Bob\",\n"
+        + "  \"fields\": [\n"
+        + "    {\n"
+        + "      \"name\": \"f1\",\n"
+        + "      \"type\": \"int\",\n"
+        + "      \"aliases\": [\"f2\"]\n"
+        + "    }\n"
+        + "  ]\n"
+        + "}";
+    String avscB = "{\n"
+        + "  \"type\": \"record\",\n"
+        + "  \"name\": \"Bob\",\n"
+        + "  \"fields\": [\n"
+        + "    {\n"
+        + "      \"name\": \"f1\",\n"
+        + "      \"type\": \"int\"\n"
+        + "    }\n"
+        + "  ]\n"
+        + "}";
+    String avscC = "{\n"
+        + "  \"type\": \"record\",\n"
+        + "  \"name\": \"Bob\",\n"
+        + "  \"fields\": [\n"
+        + "    {\n"
+        + "      \"name\": \"f1\",\n"
+        + "      \"type\": \"int\",\n"
+        + "      \"aliases\": [\"f2\", \"f3\"]\n"
+        + "    }\n"
+        + "  ]\n"
+        + "}";
+    Schema a = AvroCompatibilityHelper.parse(avscA, SchemaParseConfiguration.STRICT, null).getMainSchema();
+    Schema b = AvroCompatibilityHelper.parse(avscB, SchemaParseConfiguration.STRICT, null).getMainSchema();
+    Schema c = AvroCompatibilityHelper.parse(avscC, SchemaParseConfiguration.STRICT, null).getMainSchema();
+
+    SchemaComparisonConfiguration strict = SchemaComparisonConfiguration.STRICT
+        .compareNonStringJsonProps(false); //required to work under old avro
+
+    SchemaComparisonConfiguration ignoreAliases = strict
+        .compareAliases(false); //purpose of this test
+
+    Assert.assertTrue(ConfigurableSchemaComparator.equals(a, b, ignoreAliases));
+    Assert.assertTrue(ConfigurableSchemaComparator.equals(a, c, ignoreAliases));
+    Assert.assertTrue(ConfigurableSchemaComparator.equals(b, c, ignoreAliases));
+
+    Assert.assertFalse(ConfigurableSchemaComparator.equals(a, b, strict));
+    Assert.assertFalse(ConfigurableSchemaComparator.equals(a, c, strict));
+    Assert.assertFalse(ConfigurableSchemaComparator.equals(b, c, strict));
+  }
+
+  @Test
+  public void testCompareSchemaAliases() throws Exception {
+    String avscA = "{\n"
+        + "  \"type\": \"record\",\n"
+        + "  \"namespace\": \"namespace\",\n"
+        + "  \"name\": \"Bob\",\n"
+        + "  \"aliases\": [\"OldBob\"],\n"
+        + "  \"fields\": [\n"
+        + "    {\n"
+        + "      \"name\": \"f1\",\n"
+        + "      \"type\": \"int\"\n"
+        + "    }\n"
+        + "  ]\n"
+        + "}";
+    String avscB = "{\n"
+        + "  \"type\": \"record\",\n"
+        + "  \"namespace\": \"namespace\",\n"
+        + "  \"name\": \"Bob\",\n"
+        + "  \"aliases\": [\"namespace.OldBob\"],\n"
+        + "  \"fields\": [\n"
+        + "    {\n"
+        + "      \"name\": \"f1\",\n"
+        + "      \"type\": \"int\"\n"
+        + "    }\n"
+        + "  ]\n"
+        + "}";
+    String avscC = "{\n"
+        + "  \"type\": \"record\",\n"
+        + "  \"namespace\": \"namespace\",\n"
+        + "  \"name\": \"Bob\",\n"
+        + "  \"aliases\": [\"oldspace.OldBob\"],\n"
+        + "  \"fields\": [\n"
+        + "    {\n"
+        + "      \"name\": \"f1\",\n"
+        + "      \"type\": \"int\"\n"
+        + "    }\n"
+        + "  ]\n"
+        + "}";
+    String avscD = "{\n"
+        + "  \"type\": \"record\",\n"
+        + "  \"namespace\": \"namespace\",\n"
+        + "  \"name\": \"Bob\",\n"
+        + "  \"fields\": [\n"
+        + "    {\n"
+        + "      \"name\": \"f1\",\n"
+        + "      \"type\": \"int\"\n"
+        + "    }\n"
+        + "  ]\n"
+        + "}";
+
+    Schema a = AvroCompatibilityHelper.parse(avscA, SchemaParseConfiguration.STRICT, null).getMainSchema();
+    Schema b = AvroCompatibilityHelper.parse(avscB, SchemaParseConfiguration.STRICT, null).getMainSchema();
+    Schema c = AvroCompatibilityHelper.parse(avscC, SchemaParseConfiguration.STRICT, null).getMainSchema();
+    Schema d = AvroCompatibilityHelper.parse(avscD, SchemaParseConfiguration.STRICT, null).getMainSchema();
+
+    SchemaComparisonConfiguration strict = SchemaComparisonConfiguration.STRICT
+        .compareNonStringJsonProps(false); //required to work under old avro
+
+    SchemaComparisonConfiguration ignoreAliases = strict
+        .compareAliases(false); //purpose of this test
+
+    Assert.assertTrue(ConfigurableSchemaComparator.equals(a, b, ignoreAliases));
+    Assert.assertTrue(ConfigurableSchemaComparator.equals(a, c, ignoreAliases));
+    Assert.assertTrue(ConfigurableSchemaComparator.equals(a, d, ignoreAliases));
+    Assert.assertTrue(ConfigurableSchemaComparator.equals(b, c, ignoreAliases));
+    Assert.assertTrue(ConfigurableSchemaComparator.equals(b, d, ignoreAliases));
+    Assert.assertTrue(ConfigurableSchemaComparator.equals(c, d, ignoreAliases));
+
+    //type aliases inherit namespace, see https://avro.apache.org/docs/current/spec.html#Aliases
+    Assert.assertTrue(ConfigurableSchemaComparator.equals(a, b, strict));
+
+    Assert.assertFalse(ConfigurableSchemaComparator.equals(a, c, strict));
+    Assert.assertFalse(ConfigurableSchemaComparator.equals(a, d, strict));
+  }
 }

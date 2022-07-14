@@ -76,6 +76,7 @@ public class ConfigurableSchemaComparator {
       case ENUM:
         return a.getFullName().equals(b.getFullName())
             && (!considerAliases || hasSameAliases(a, b))
+            //list comparison is sensitive to order
             && a.getEnumSymbols().equals(b.getEnumSymbols());
       case FIXED:
         return a.getFullName().equals(b.getFullName())
@@ -159,12 +160,13 @@ public class ConfigurableSchemaComparator {
           //means one field has a default value and the other does not
           return false;
         }
-
         if (!Objects.equals(aField.order(), bField.order())) {
           return false;
         }
-
         if (considerJsonProps && !hasSameObjectProps(aField, bField, considerJsonStringProps, considerJsonNonStringProps)) {
+          return false;
+        }
+        if (considerAliases && !hasSameAliases(aField, bField)) {
           return false;
         }
       }
@@ -175,7 +177,13 @@ public class ConfigurableSchemaComparator {
   }
 
   private static boolean hasSameAliases(Schema a, Schema b) {
-    return a.getAliases().equals(b.getAliases());
+    return Objects.equals(a.getAliases(), b.getAliases());
+  }
+
+  private static boolean hasSameAliases(Schema.Field a, Schema.Field b) {
+    Set<String> aAliases = AvroCompatibilityHelper.getFieldAliases(a);
+    Set<String> bAliases = AvroCompatibilityHelper.getFieldAliases(b);
+    return Objects.equals(aAliases, bAliases);
   }
 
   private static boolean hasSameObjectProps(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps) {
