@@ -37,6 +37,10 @@
       "type": "string"
     },
     {
+      "name": "schema",
+      "type": "string"
+    },
+    {
       "name": "enumField",
       "type": {
         "type": "enum",

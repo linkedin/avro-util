@@ -11,6 +11,8 @@ import org.apache.commons.text.StringEscapeUtils;
 
 public class StringUtils {
 
+  public static final String EMPTY_STRING = "";
+
   private StringUtils() {
     // Util class; should not be instantiated.
   }
