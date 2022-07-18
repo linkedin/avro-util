@@ -482,4 +482,22 @@ public class SchemaAssistant {
       return JExpr._new(defaultStringType()).arg(stringExpr);
     }
   }
+
+  // TODO: this code should support primitive type promotions
+  public int compatibleUnionSchemaIndex(Schema schema, Schema unionSchema) {
+    for (int i = 0; i < unionSchema.getTypes().size(); i++) {
+      Schema potentialCompatibleSchema = unionSchema.getTypes().get(i);
+      if (potentialCompatibleSchema.getType().equals(schema.getType()) &&
+              (!isNamedType(potentialCompatibleSchema) ||
+                      AvroCompatibilityHelper.getSchemaFullName(potentialCompatibleSchema).equals(AvroCompatibilityHelper.getSchemaFullName(schema)) ||
+                      potentialCompatibleSchema.getAliases().contains(AvroCompatibilityHelper.getSchemaFullName(schema)))) {
+        return i;
+      }
+    }
+    throw new SchemaAssistantException("No compatible schema found");
+  }
+
+  public Schema compatibleUnionSchema(Schema schema, Schema unionSchema) {
+    return unionSchema.getTypes().get(compatibleUnionSchemaIndex(schema, unionSchema));
+  }
 }

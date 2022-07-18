@@ -26,6 +26,7 @@ import com.sun.codemodel.JWhileLoop;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -127,6 +128,10 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
           processMap(readerSchemaVar, "map", aliasedWriterSchema, reader, topLevelDeserializeBlock, fieldAction,
               JBlock::_return, reuseSupplier);
           break;
+        case UNION:
+          processUnion(readerSchemaVar, "union", aliasedWriterSchema, reader, topLevelDeserializeBlock, fieldAction,
+                  JBlock::_return, reuseSupplier);
+          break;
         default:
           throw new FastDeserializerGeneratorException(
               "Incorrect top-level writer schema: " + aliasedWriterSchema.getType());
@@ -153,6 +158,8 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       return clazz.getConstructor(Schema.class).newInstance(reader);
     } catch (JClassAlreadyExistsException e) {
       throw new FastDeserializerGeneratorException("Class: " + className + " already exists");
+    } catch (FastDeserializerGeneratorException e) {
+      throw e;
     } catch (Exception e) {
       throw new FastDeserializerGeneratorException(e);
     }
@@ -207,10 +214,39 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       final Schema recordReaderSchema, JBlock parentBody, FieldAction recordAction,
       BiConsumer<JBlock, JExpression> putRecordIntoParent, Supplier<JExpression> reuseSupplier) {
 
+    Schema effectiveRecordReaderSchema = recordReaderSchema;
+    if (recordAction.getShouldRead()) {
+
+      // if reader schema is a union type then the compatible union type must be selected
+      // as effectiveRecordReaderSchema and recordAction needs to be adjusted.
+      if (Schema.Type.UNION.equals(recordReaderSchema.getType())) {
+        effectiveRecordReaderSchema = schemaAssistant.compatibleUnionSchema(recordWriterSchema, recordReaderSchema);
+        recordSchemaVar = declareSchemaVar(effectiveRecordReaderSchema, recordName + "RecordSchema",
+                recordSchemaVar.invoke("getTypes").invoke("get").arg(JExpr.lit(
+                        schemaAssistant.compatibleUnionSchemaIndex(recordWriterSchema, recordReaderSchema)
+                )));
+
+        Symbol symbol = null;
+        ListIterator<Symbol> symbolIterator = recordAction.getSymbolIterator() != null ? recordAction.getSymbolIterator()
+                : Arrays.asList(reverseSymbolArray(recordAction.getSymbol().production)).listIterator();
+        while (symbolIterator.hasNext()) {
+          symbol = symbolIterator.next();
+
+          if (symbol instanceof Symbol.UnionAdjustAction) {
+            break;
+          }
+        }
+        if (symbol == null) {
+          throw new FastDeserializerGeneratorException("Symbol.UnionAdjustAction is expected but was not found");
+        }
+        recordAction = FieldAction.fromValues(recordAction.getType(), recordAction.getShouldRead(),
+                ((Symbol.UnionAdjustAction) symbol).symToParse);
+      }
+    }
     ListIterator<Symbol> actionIterator = actionIterator(recordAction);
 
-    if (methodAlreadyDefined(recordWriterSchema, recordReaderSchema, recordAction.getShouldRead())) {
-      JMethod method = getMethod(recordWriterSchema, recordReaderSchema, recordAction.getShouldRead());
+    if (methodAlreadyDefined(recordWriterSchema, effectiveRecordReaderSchema, recordAction.getShouldRead())) {
+      JMethod method = getMethod(recordWriterSchema, effectiveRecordReaderSchema, recordAction.getShouldRead());
       updateActualExceptions(method);
       JExpression readingExpression = JExpr.invoke(method).arg(reuseSupplier.get()).arg(JExpr.direct(DECODER));
       if (recordAction.getShouldRead()) {
@@ -232,7 +268,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       // seek through actionIterator also for default values
       Set<String> fieldNamesSet =
           recordWriterSchema.getFields().stream().map(Schema.Field::name).collect(Collectors.toSet());
-      for (Schema.Field readerField : recordReaderSchema.getFields()) {
+      for (Schema.Field readerField : effectiveRecordReaderSchema.getFields()) {
         if (!fieldNamesSet.contains(readerField.name())) {
           forwardToExpectedDefault(actionIterator);
           seekFieldAction(true, readerField, actionIterator);
@@ -241,7 +277,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       return;
     }
 
-    JMethod method = createMethod(recordWriterSchema, recordReaderSchema, recordAction.getShouldRead());
+    JMethod method = createMethod(recordWriterSchema, effectiveRecordReaderSchema, recordAction.getShouldRead());
 
     Set<Class<? extends Exception>> exceptionsOnHigherLevel = schemaAssistant.getExceptionsFromStringable();
     schemaAssistant.resetExceptionsFromStringable();
@@ -257,14 +293,14 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     final JVar result;
     JClass recordClass = null;
     if (recordAction.getShouldRead()) {
-      recordClass = schemaAssistant.classFromSchema(recordReaderSchema);
+      recordClass = schemaAssistant.classFromSchema(effectiveRecordReaderSchema);
       result = methodBody.decl(recordClass, recordName);
 
       JExpression reuseVar = JExpr.direct(VAR_NAME_FOR_REUSE);
       JClass indexedRecordClass = codeModel.ref(IndexedRecord.class);
-      JInvocation newRecord = JExpr._new(schemaAssistant.classFromSchema(recordReaderSchema, false));
+      JInvocation newRecord = JExpr._new(schemaAssistant.classFromSchema(effectiveRecordReaderSchema, false));
       if (useGenericTypes) {
-        JExpression recordSchema = schemaVarMap.get(Utils.getSchemaFingerprint(recordReaderSchema));
+        JExpression recordSchema = schemaVarMap.get(Utils.getSchemaFingerprint(effectiveRecordReaderSchema));
         newRecord = newRecord.arg(recordSchema);
         JInvocation finalNewRecordInvocation = newRecord;
 
@@ -325,7 +361,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       BiConsumer<JBlock, JExpression> putExpressionInRecord = null;
       Supplier<JExpression> fieldReuseSupplier = EMPTY_SUPPLIER;
       if (action.getShouldRead()) {
-        Schema.Field readerField = recordReaderSchema.getField(field.name());
+        Schema.Field readerField = effectiveRecordReaderSchema.getField(field.name());
         readerFieldSchema = readerField.schema();
         final int readerFieldPos = readerField.pos();
         putExpressionInRecord =
@@ -354,7 +390,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     if (recordAction.getShouldRead()) {
       Set<String> fieldNamesSet =
           recordWriterSchema.getFields().stream().map(Schema.Field::name).collect(Collectors.toSet());
-      for (Schema.Field readerField : recordReaderSchema.getFields()) {
+      for (Schema.Field readerField : effectiveRecordReaderSchema.getFields()) {
         if (!fieldNamesSet.contains(readerField.name())) {
           forwardToExpectedDefault(actionIterator);
           seekFieldAction(true, readerField, actionIterator);
@@ -544,10 +580,15 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
   }
 
   private void processUnion(JVar unionSchemaVar, final String name, final Schema unionSchema,
-      final Schema readerUnionSchema, JBlock body, FieldAction action,
+      final Schema unionReaderSchema, JBlock body, FieldAction action,
       BiConsumer<JBlock, JExpression> putValueIntoParent, Supplier<JExpression> reuseSupplier) {
     JVar unionIndex = body.decl(codeModel.INT, getUniqueName("unionIndex"), JExpr.direct(DECODER + ".readIndex()"));
     JConditional ifBlock = null;
+
+    // Check if unionReaderSchema is really a union, if not then only the compatible writer union type can be deserialized
+    final boolean readerSchemaNotAUnion = unionReaderSchema != null && !Schema.Type.UNION.equals(unionReaderSchema.getType());
+    final int compatibleWriterSchema = readerSchemaNotAUnion ? schemaAssistant.compatibleUnionSchemaIndex(unionReaderSchema, unionSchema) : -1;
+
     for (int i = 0; i < unionSchema.getTypes().size(); i++) {
       Schema optionSchema = unionSchema.getTypes().get(i);
       Schema readerOptionSchema = null;
@@ -558,7 +599,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       ifBlock = ifBlock != null ? ifBlock._elseif(condition) : body._if(condition);
       final JBlock thenBlock = ifBlock._then();
 
-      if (Schema.Type.NULL.equals(optionSchema.getType())) {
+      if (!readerSchemaNotAUnion && Schema.Type.NULL.equals(optionSchema.getType())) {
         thenBlock.directStatement(DECODER + ".readNull();");
         if (action.getShouldRead()) {
           putValueIntoParent.accept(thenBlock, JExpr._null());
@@ -567,24 +608,34 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       }
 
       if (action.getShouldRead()) {
-        // The reader's union could be re-ordered, so we need to find the one that matches.
-        for (int j = 0; j < readerUnionSchema.getTypes().size(); j++) {
-          Schema potentialReaderSchema = readerUnionSchema.getTypes().get(j);
-          // Avro allows unnamed types to appear only once in a union, but named types may appear multiple times and
-          // thus need to be disambiguated via their full-name (including aliases).
-          if (potentialReaderSchema.getType().equals(optionSchema.getType()) &&
-              (!schemaAssistant.isNamedType(potentialReaderSchema) ||
-                  AvroCompatibilityHelper.getSchemaFullName(potentialReaderSchema).equals(AvroCompatibilityHelper.getSchemaFullName(optionSchema)) ||
-                  potentialReaderSchema.getAliases().contains(AvroCompatibilityHelper.getSchemaFullName(optionSchema)))) {
-            readerOptionSchema = potentialReaderSchema;
-            readerOptionUnionBranchIndex = j;
-            break;
+        // If unionReaderSchema is not a union then only compatible writer union schema type can be processed,
+        // otherwise the readerOptionSchema will be set to null what should result in AvroTypeException as
+        // in vanilla avro.
+        if (readerSchemaNotAUnion) {
+            readerOptionSchema = (i == compatibleWriterSchema) ? unionReaderSchema : null;
+        } else {
+          // The reader's union could be re-ordered, so we need to find the one that matches.
+          // TODO: this code should support primitive type promotions
+          for (int j = 0; j < unionReaderSchema.getTypes().size(); j++) {
+            Schema potentialReaderSchema = unionReaderSchema.getTypes().get(j);
+            // Avro allows unnamed types to appear only once in a union, but named types may appear multiple times and
+            // thus need to be disambiguated via their full-name (including aliases).
+            if (potentialReaderSchema.getType().equals(optionSchema.getType()) &&
+                (!schemaAssistant.isNamedType(potentialReaderSchema) ||
+                    AvroCompatibilityHelper.getSchemaFullName(potentialReaderSchema).equals(AvroCompatibilityHelper.getSchemaFullName(optionSchema)) ||
+                    potentialReaderSchema.getAliases().contains(AvroCompatibilityHelper.getSchemaFullName(optionSchema)))) {
+              readerOptionSchema = potentialReaderSchema;
+              readerOptionUnionBranchIndex = j;
+              break;
+            }
           }
         }
+
         if (null == readerOptionSchema) {
           // This is the same exception that vanilla Avro would throw in this circumstance
           thenBlock._throw(JExpr._new(codeModel.ref(AvroTypeException.class)).arg(
-              JExpr.lit("Found " + optionSchema + ", expecting " + readerUnionSchema.getTypes().toString())));
+              JExpr.lit("Found " + optionSchema + ", expecting " + (readerSchemaNotAUnion ? unionReaderSchema.toString()
+                      : unionReaderSchema.getTypes().toString()))));
           continue;
         }
         Symbol.Alternative alternative = null;
@@ -603,21 +654,29 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
           throw new FastDeserializerGeneratorException("Unable to determine action for field: " + name);
         }
 
-        Symbol.UnionAdjustAction unionAdjustAction = (Symbol.UnionAdjustAction) alternative.symbols[i].production[0];
-        unionAction =
-            FieldAction.fromValues(optionSchema.getType(), action.getShouldRead(), unionAdjustAction.symToParse);
+        if (readerSchemaNotAUnion) {
+          unionAction =
+                  FieldAction.fromValues(optionSchema.getType(), action.getShouldRead(), alternative.symbols[compatibleWriterSchema]);
+        } else {
+          Symbol.UnionAdjustAction unionAdjustAction = (Symbol.UnionAdjustAction) alternative.symbols[i].production[0];
+          unionAction =
+                  FieldAction.fromValues(optionSchema.getType(), action.getShouldRead(), unionAdjustAction.symToParse);
+        }
+
       } else {
         unionAction = FieldAction.fromValues(optionSchema.getType(), false, EMPTY_SYMBOL);
       }
 
       JVar optionSchemaVar = null;
-      if (useGenericTypes && unionAction.getShouldRead()) {
+      if (useGenericTypes && unionAction.getShouldRead() && !readerSchemaNotAUnion) {
         if (-1 == readerOptionUnionBranchIndex) {
           // TODO: Improve the flow of this code... it's messy needing to check for this here...
           throw new FastSerdeGeneratorException("Unexpected internal state. The readerOptionUnionBranchIndex should be defined if unionAction.getShouldRead() == true.");
         }
         JInvocation optionSchemaExpression = unionSchemaVar.invoke("getTypes").invoke("get").arg(JExpr.lit(readerOptionUnionBranchIndex));
         optionSchemaVar = declareSchemaVar(readerOptionSchema, name + "OptionSchema", optionSchemaExpression);
+      } else if (readerSchemaNotAUnion) {
+        optionSchemaVar = unionSchemaVar;
       }
 
       if (SchemaAssistant.isComplexType(optionSchema)) {
@@ -637,10 +696,37 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
   }
 
   private void processArray(JVar arraySchemaVar, final String name, final Schema arraySchema,
-      final Schema readerArraySchema, JBlock parentBody, FieldAction action,
+      final Schema arrayReaderSchema, JBlock parentBody, FieldAction action,
       BiConsumer<JBlock, JExpression> putArrayIntoParent, Supplier<JExpression> reuseSupplier) {
 
+    Schema effectiveArrayReaderSchema = arrayReaderSchema;
     if (action.getShouldRead()) {
+
+      // if reader schema is a union then the compatible union array type must be selected
+      // as effectiveArrayReaderSchema and action needs to be adjusted.
+      if (Schema.Type.UNION.equals(arrayReaderSchema.getType())) {
+        effectiveArrayReaderSchema = schemaAssistant.compatibleUnionSchema(arraySchema, arrayReaderSchema);
+        arraySchemaVar = declareSchemaVar(effectiveArrayReaderSchema, name + "ArraySchema",
+                arraySchemaVar.invoke("getTypes").invoke("get").arg(JExpr.lit(
+                        schemaAssistant.compatibleUnionSchemaIndex(arraySchema, arrayReaderSchema)
+                )));
+
+        Symbol symbol = action.getSymbol();
+        if (!(symbol instanceof Symbol.UnionAdjustAction)) {
+          for (Symbol aSymbol: symbol.production) {
+            if (aSymbol instanceof Symbol.UnionAdjustAction) {
+              symbol = aSymbol;
+              break;
+            }
+          }
+        }
+        if (symbol == null) {
+          throw new FastDeserializerGeneratorException("Symbol.UnionAdjustAction is expected but was not found");
+        }
+        action = FieldAction.fromValues(action.getType(), action.getShouldRead(),
+                ((Symbol.UnionAdjustAction) symbol).symToParse);
+      }
+
       Symbol valuesActionSymbol = null;
       for (Symbol symbol : action.getSymbol().production) {
         if (Symbol.Kind.REPEATER.equals(symbol.kind) && "array-end".equals(
@@ -660,7 +746,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       action = FieldAction.fromValues(arraySchema.getElementType().getType(), false, EMPTY_SYMBOL);
     }
 
-    final JVar arrayVar = action.getShouldRead() ? declareValueVar(name, readerArraySchema, parentBody, true, false, true) : null;
+    final JVar arrayVar = action.getShouldRead() ? declareValueVar(name, effectiveArrayReaderSchema, parentBody, true, false, true) : null;
     /**
      * Special optimization for float array by leveraging {@link ByteBufferBackedPrimitiveFloatList}.
      *
@@ -686,16 +772,16 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     final Supplier<JExpression> finalReuseSupplier = potentiallyCacheInvocation(reuseSupplier, parentBody, "oldArray");
     if (finalAction.getShouldRead()) {
 
-      JClass arrayClass = schemaAssistant.classFromSchema(readerArraySchema, false, false, true);
-      JClass abstractErasedArrayClass = schemaAssistant.classFromSchema(readerArraySchema, true, false, true).erasure();
+      JClass arrayClass = schemaAssistant.classFromSchema(effectiveArrayReaderSchema, false, false, true);
+      JClass abstractErasedArrayClass = schemaAssistant.classFromSchema(effectiveArrayReaderSchema, true, false, true).erasure();
 
       JInvocation newArrayExp = JExpr._new(arrayClass).arg(JExpr.cast(codeModel.INT, chunkLen));
-      if (useGenericTypes && !SchemaAssistant.isPrimitive(arraySchema.getElementType())) {
+      if (useGenericTypes && !SchemaAssistant.isPrimitive(effectiveArrayReaderSchema.getElementType())) {
         /**
          * N.B.: The ColdPrimitiveXList implementations do not take the schema as a constructor param,
          * but the {@link org.apache.avro.generic.GenericData.Array} does.
          */
-        newArrayExp = newArrayExp.arg(getSchemaExpr(readerArraySchema));
+        newArrayExp = newArrayExp.arg(getSchemaExpr(effectiveArrayReaderSchema));
       }
       JInvocation finalNewArrayExp = newArrayExp;
 
@@ -720,12 +806,12 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     JVar elementSchemaVar = null;
     BiConsumer<JBlock, JExpression> putValueInArray = null;
     if (finalAction.getShouldRead()) {
-      String addMethod = SchemaAssistant.isPrimitive(arraySchema.getElementType())
+      String addMethod = SchemaAssistant.isPrimitive(effectiveArrayReaderSchema.getElementType())
           ? "addPrimitive"
           : "add";
       putValueInArray = (block, expression) -> block.invoke(arrayVar, addMethod).arg(expression);
       if (useGenericTypes) {
-        elementSchemaVar = declareSchemaVar(readerArraySchema.getElementType(), name + "ArrayElemSchema",
+        elementSchemaVar = declareSchemaVar(effectiveArrayReaderSchema.getElementType(), name + "ArrayElemSchema",
             arraySchemaVar.invoke("getElementType"));
       }
     }
@@ -742,7 +828,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
 
     Schema readerArrayElementSchema = null;
     if (finalAction.getShouldRead()) {
-      readerArrayElementSchema = readerArraySchema.getElementType();
+      readerArrayElementSchema = effectiveArrayReaderSchema.getElementType();
     }
 
     if (SchemaAssistant.isComplexType(arraySchema.getElementType())) {
@@ -780,7 +866,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     return JExpr._new(stringbleClass).arg(stringableArgExpr);
   }
 
-  private void processMap(JVar mapSchemaVar, final String name, final Schema mapSchema, final Schema readerMapSchema,
+  private void processMap(JVar mapSchemaVar, final String name, final Schema mapSchema, final Schema mapReaderSchema,
       JBlock parentBody, FieldAction action, BiConsumer<JBlock, JExpression> putMapIntoParent,
       Supplier<JExpression> reuseSupplier) {
 
@@ -794,7 +880,33 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
      * left-to-right traversal of the schema. So for a nested Map, we need to iterate production list
      * in reverse order to get the correct "map-end" symbol of internal Maps.
      */
+    Schema effectiveMapReaderSchema = mapReaderSchema;
     if (action.getShouldRead()) {
+      // if reader schema is a union then the compatible union map type must be selected
+      // as effectiveMapReaderSchema and action needs to be adjusted.
+      if (Schema.Type.UNION.equals(mapReaderSchema.getType())) {
+        effectiveMapReaderSchema = schemaAssistant.compatibleUnionSchema(mapSchema, mapReaderSchema);
+        mapSchemaVar = declareSchemaVar(effectiveMapReaderSchema, name + "MapSchema",
+                mapSchemaVar.invoke("getTypes").invoke("get").arg(JExpr.lit(
+                        schemaAssistant.compatibleUnionSchemaIndex(mapSchema, mapReaderSchema)
+                )));
+
+        Symbol symbol = action.getSymbol();
+        if (!(symbol instanceof Symbol.UnionAdjustAction)) {
+          for (Symbol aSymbol: symbol.production) {
+            if (aSymbol instanceof Symbol.UnionAdjustAction) {
+              symbol = aSymbol;
+              break;
+            }
+          }
+        }
+        if (symbol == null) {
+          throw new FastDeserializerGeneratorException("Symbol.UnionAdjustAction is expected but was not found");
+        }
+        action = FieldAction.fromValues(action.getType(), action.getShouldRead(),
+                ((Symbol.UnionAdjustAction) symbol).symToParse);
+      }
+
       Symbol valuesActionSymbol = null;
       for (int i = action.getSymbol().production.length - 1; i >= 0; --i) {
         Symbol symbol = action.getSymbol().production[i];
@@ -814,7 +926,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       action = FieldAction.fromValues(mapSchema.getValueType().getType(), false, EMPTY_SYMBOL);
     }
 
-    final JVar mapVar = action.getShouldRead() ? declareValueVar(name, readerMapSchema, parentBody) : null;
+    final JVar mapVar = action.getShouldRead() ? declareValueVar(name, effectiveMapReaderSchema, parentBody) : null;
     JVar chunkLen =
         parentBody.decl(codeModel.LONG, getUniqueName("chunkLen"), JExpr.direct(DECODER + ".readMapStart()"));
 
@@ -822,7 +934,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     JBlock ifBlockForChunkLenCheck = conditional._then();
 
     if (action.getShouldRead()) {
-      JVar reuse = declareValueVar(name + "Reuse", readerMapSchema, ifBlockForChunkLenCheck);
+      JVar reuse = declareValueVar(name + "Reuse", effectiveMapReaderSchema, ifBlockForChunkLenCheck);
 
       // Check whether the reuse is a Map or not
       final Supplier<JExpression> finalReuseSupplier = potentiallyCacheInvocation(reuseSupplier, ifBlockForChunkLenCheck, "oldMap");
@@ -831,6 +943,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
           thenBlock -> thenBlock.assign(reuse, JExpr.cast(codeModel.ref(Map.class), finalReuseSupplier.get())));
 
       // Check whether the reuse is null or not
+      final Schema finalEffectiveMapReaderSchema = effectiveMapReaderSchema;
       ifCodeGen(ifBlockForChunkLenCheck,
           reuse.ne(JExpr.direct("null")),
           thenBlock -> {
@@ -839,12 +952,12 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
           },
           // Pure integer arithmetic equivalent of (int) Math.ceil(expectedSize / 0.75).
           // The default load factor of HashMap is 0.75 and HashMap internally ensures size is always a power of two.
-          elseBlock -> elseBlock.assign(mapVar, JExpr._new(schemaAssistant.classFromSchema(readerMapSchema, false))
+          elseBlock -> elseBlock.assign(mapVar, JExpr._new(schemaAssistant.classFromSchema(finalEffectiveMapReaderSchema, false))
               .arg(JExpr.cast(codeModel.INT, chunkLen.mul(JExpr.lit(4)).plus(JExpr.lit(2)).div(JExpr.lit(3)))))
       );
 
       JBlock elseBlock = conditional._else();
-      elseBlock.assign(mapVar, JExpr._new(schemaAssistant.classFromSchema(readerMapSchema, false))
+      elseBlock.assign(mapVar, JExpr._new(schemaAssistant.classFromSchema(effectiveMapReaderSchema, false))
           .arg(JExpr.lit(0)));
     }
 
@@ -855,7 +968,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     forLoop.update(counter.incr());
     JBlock forBody = forLoop.body();
 
-    JClass keyClass = schemaAssistant.findStringClass(action.getShouldRead() ? readerMapSchema : mapSchema);
+    JClass keyClass = schemaAssistant.findStringClass(action.getShouldRead() ? effectiveMapReaderSchema : mapSchema);
     JExpression keyValueExpression;
     if (SchemaAssistant.hasStringableKey(mapSchema)) {
       keyValueExpression = readStringableExpression(keyClass);
@@ -869,14 +982,14 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     JVar mapValueSchemaVar = null;
     if (action.getShouldRead() && useGenericTypes) {
       mapValueSchemaVar =
-          declareSchemaVar(readerMapSchema.getValueType(), name + "MapValueSchema", mapSchemaVar.invoke("getValueType"));
+          declareSchemaVar(effectiveMapReaderSchema.getValueType(), name + "MapValueSchema", mapSchemaVar.invoke("getValueType"));
     }
 
     BiConsumer<JBlock, JExpression> putValueInMap = null;
     Schema readerMapValueSchema = null;
     if (action.getShouldRead()) {
       putValueInMap = (block, expression) -> block.invoke(mapVar, "put").arg(key).arg(expression);
-      readerMapValueSchema = readerMapSchema.getValueType();
+      readerMapValueSchema = effectiveMapReaderSchema.getValueType();
     }
 
     if (SchemaAssistant.isComplexType(mapSchema.getValueType())) {
