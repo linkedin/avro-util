@@ -10,6 +10,7 @@ import com.linkedin.avroutil1.compatibility.ClassLoaderUtil;
 import com.linkedin.avroutil1.compatibility.Jackson1Utils;
 import com.linkedin.avroutil1.compatibility.StringPropertyUtils;
 import com.linkedin.avroutil1.compatibility.VersionDetectionUtil;
+import java.util.Objects;
 import org.apache.avro.Schema;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.TextNode;
@@ -209,7 +210,7 @@ public class Avro17Utils {
     }
 
     static void setProps(Schema.Field field, Map<String, JsonNode> jsonProps) {
-        if (ADD_JSON_PROP_METHOD != null) {
+        if (IS_AT_LEAST_1_7_3) {
             try {
                 for (Map.Entry<String, JsonNode> entry : jsonProps.entrySet()) {
                     ADD_JSON_PROP_METHOD.invoke(field, entry.getKey(), entry.getValue());
@@ -218,33 +219,92 @@ public class Avro17Utils {
             } catch (Exception e) {
                 throw new IllegalStateException(e);
             }
-        }
-        //this must be < 1.7.3
-        for (Map.Entry<String, JsonNode> entry : jsonProps.entrySet()) {
-            JsonNode jsonValue = entry.getValue();
-            if (jsonValue.isTextual()) {
-                field.addProp(entry.getKey(), jsonValue.getTextValue());
+        } else {
+            //this must be < 1.7.3
+            for (Map.Entry<String, JsonNode> entry : jsonProps.entrySet()) {
+                JsonNode jsonValue = entry.getValue();
+                if (jsonValue.isTextual()) {
+                    field.addProp(entry.getKey(), jsonValue.getTextValue());
+                }
             }
         }
     }
 
     static void setProps(Schema schema, Map<String, JsonNode> jsonProps) {
-        if (ADD_JSON_PROP_METHOD != null) {
+        if (IS_AT_LEAST_1_7_3) {
             try {
                 for (Map.Entry<String, JsonNode> entry : jsonProps.entrySet()) {
                     ADD_JSON_PROP_METHOD.invoke(schema, entry.getKey(), entry.getValue());
                 }
-                return;
             } catch (Exception e) {
                 throw new IllegalStateException(e);
             }
-        }
-        //this must be < 1.7.3
-        for (Map.Entry<String, JsonNode> entry : jsonProps.entrySet()) {
-            JsonNode jsonValue = entry.getValue();
-            if (jsonValue.isTextual()) {
-                schema.addProp(entry.getKey(), jsonValue.getTextValue());
+        } else {
+            for (Map.Entry<String, JsonNode> entry : jsonProps.entrySet()) {
+                JsonNode jsonValue = entry.getValue();
+                if (jsonValue.isTextual()) {
+                    schema.addProp(entry.getKey(), jsonValue.getTextValue());
+                }
             }
         }
+    }
+
+    static boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps, boolean compareNonStringProps) {
+        if (IS_AT_LEAST_1_7_3) {
+            return sameJsonPropertiesNewer17(a, b, compareStringProps, compareNonStringProps);
+        } else {
+            //older avro 1.7
+            if (compareNonStringProps) {
+                throw new IllegalArgumentException("older avro 1.7 does not preserve non-string props and so cannot compare them");
+            }
+            if (a == null || b == null) {
+                return false;
+            }
+            if (!compareStringProps) {
+                return true;
+            }
+            Map<String, String> jsonPropsA = a.props();
+            Map<String, String> jsonPropsB = a.props();
+            return Objects.equals(jsonPropsA, jsonPropsB);
+        }
+    }
+
+    static boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps) {
+        if (IS_AT_LEAST_1_7_3) {
+            return sameJsonPropertiesNewer17(a, b, compareStringProps, compareNonStringProps);
+        } else {
+            //older avro 1.7
+            if (compareNonStringProps) {
+                throw new IllegalArgumentException("older avro 1.7 does not preserve non-string props and so cannot compare them");
+            }
+            if (a == null || b == null) {
+                return false;
+            }
+            if (!compareStringProps) {
+                return true;
+            }
+            Map<String, String> jsonPropsA = a.getProps();
+            Map<String, String> jsonPropsB = a.getProps();
+            return Objects.equals(jsonPropsA, jsonPropsB);
+        }
+    }
+
+    private static boolean sameJsonPropertiesNewer17(
+        Object jsonPropertiesA,
+        Object jsonPropertiesB,
+        boolean compareStringProps,
+        boolean compareNonStringProps
+    ) {
+        Map<String, JsonNode> jsonPropsA;
+        Map<String, JsonNode> jsonPropsB;
+        try {
+            //noinspection unchecked
+            jsonPropsA = (Map<String, JsonNode>) GET_JSON_PROPS_METHOD.invoke(jsonPropertiesA);
+            //noinspection unchecked
+            jsonPropsB = (Map<String, JsonNode>) GET_JSON_PROPS_METHOD.invoke(jsonPropertiesB);
+        } catch (Exception e) {
+            throw new IllegalStateException("unable to access JsonProperties", e);
+        }
+        return Jackson1Utils.compareJsonProperties(jsonPropsA, jsonPropsB, compareStringProps, compareNonStringProps);
     }
 }

@@ -295,6 +295,13 @@ public class Avro18Adapter implements AvroAdapter {
   }
 
   @Override
+  public boolean defaultValuesEqual(Schema.Field a, Schema.Field b, boolean allowLooseNumerics) {
+    JsonNode aVal = a.defaultValue();
+    JsonNode bVal = b.defaultValue();
+    return Jackson1Utils.JsonNodesEqual(aVal, bVal, allowLooseNumerics);
+  }
+
+  @Override
   public Set<String> getFieldAliases(Schema.Field field) {
     return field.aliases();
   }
@@ -324,6 +331,16 @@ public class Avro18Adapter implements AvroAdapter {
   }
 
   @Override
+  public boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps, boolean compareNonStringProps) {
+    if (a == null || b == null) {
+      return false;
+    }
+    Map<String, JsonNode> propsA = a.getJsonProps();
+    Map<String, JsonNode> propsB = b.getJsonProps();
+    return Jackson1Utils.compareJsonProperties(propsA, propsB, compareStringProps, compareNonStringProps);
+  }
+
+  @Override
   public String getSchemaPropAsJsonString(Schema schema, String name) {
     @SuppressWarnings("deprecation") //this is faster
     JsonNode node = schema.getJsonProp(name);
@@ -335,6 +352,16 @@ public class Avro18Adapter implements AvroAdapter {
     JsonNode node = Jackson1Utils.toJsonNode(value, strict);
     //noinspection deprecation this is faster
     schema.addProp(name, node);
+  }
+
+  @Override
+  public boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps) {
+    if (a == null || b == null) {
+      return false;
+    }
+    Map<String, JsonNode> propsA = a.getJsonProps();
+    Map<String, JsonNode> propsB = b.getJsonProps();
+    return Jackson1Utils.compareJsonProperties(propsA, propsB, compareStringProps, compareNonStringProps);
   }
 
   @Override

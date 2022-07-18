@@ -30,6 +30,7 @@ import com.linkedin.avroutil1.compatibility.avro110.codec.CompatibleJsonDecoder;
 import com.linkedin.avroutil1.compatibility.avro110.codec.CompatibleJsonEncoder;
 import com.linkedin.avroutil1.compatibility.backports.ObjectInputToInputStreamAdapter;
 import org.apache.avro.AvroRuntimeException;
+import org.apache.avro.JsonProperties;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaNormalization;
 import org.apache.avro.generic.GenericData;
@@ -67,6 +68,7 @@ import java.util.Set;
 
 public class Avro110Adapter implements AvroAdapter {
 
+    private final Field jsonPropertiesPropsField;
     private boolean compilerSupported;
     private Throwable compilerSupportIssue;
     private String compilerSupportMessage;
@@ -83,6 +85,12 @@ public class Avro110Adapter implements AvroAdapter {
     private Method setStringTypeMethod;
 
     public Avro110Adapter() {
+        try {
+            jsonPropertiesPropsField = JsonProperties.class.getDeclaredField("props");
+            jsonPropertiesPropsField.setAccessible(true);
+        } catch (Exception e) {
+            throw new IllegalStateException("error initializing adapter", e);
+        }
         tryInitializeCompilerFields();
     }
 
@@ -300,6 +308,13 @@ public class Avro110Adapter implements AvroAdapter {
     }
 
     @Override
+    public boolean defaultValuesEqual(Schema.Field a, Schema.Field b, boolean allowLooseNumerics) {
+        JsonNode aVal = Accessor.defaultValue(a);
+        JsonNode bVal = Accessor.defaultValue(b);
+        return Jackson2Utils.JsonNodesEqual(aVal, bVal, allowLooseNumerics);
+    }
+
+    @Override
     public Set<String> getFieldAliases(Schema.Field field) {
         return field.aliases();
     }
@@ -329,6 +344,24 @@ public class Avro110Adapter implements AvroAdapter {
     }
 
     @Override
+    public boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps, boolean compareNonStringProps) {
+        if (a == null || b == null) {
+            return false;
+        }
+        Map<String, JsonNode> propsA;
+        Map<String, JsonNode> propsB;
+        try {
+            //noinspection unchecked
+            propsA = (Map<String, JsonNode>) jsonPropertiesPropsField.get(a);
+            //noinspection unchecked
+            propsB = (Map<String, JsonNode>) jsonPropertiesPropsField.get(b);
+        } catch (Exception e) {
+            throw new IllegalStateException("unable to access JsonProperties.props", e);
+        }
+        return Jackson2Utils.compareJsonProperties(propsA, propsB, compareStringProps, compareNonStringProps);
+    }
+
+    @Override
     public String getSchemaPropAsJsonString(Schema schema, String name) {
         // Goes from JsonNode to Object to JsonNode (again) to String. Painful, but suffices until somebody complains.
         JsonNode node = JacksonUtils.toJsonNode(schema.getObjectProp(name));
@@ -340,6 +373,24 @@ public class Avro110Adapter implements AvroAdapter {
         // Goes from String to JsonNode to Object to JsonNode (again). Painful, but suffices until somebody complains.
         JsonNode node = Jackson2Utils.toJsonNode(value, strict);
         schema.addProp(name, JacksonUtils.toObject(node));
+    }
+
+    @Override
+    public boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps) {
+        if (a == null || b == null) {
+            return false;
+        }
+        Map<String, JsonNode> propsA;
+        Map<String, JsonNode> propsB;
+        try {
+            //noinspection unchecked
+            propsA = (Map<String, JsonNode>) jsonPropertiesPropsField.get(a);
+            //noinspection unchecked
+            propsB = (Map<String, JsonNode>) jsonPropertiesPropsField.get(b);
+        } catch (Exception e) {
+            throw new IllegalStateException("unable to access JsonProperties.props", e);
+        }
+        return Jackson2Utils.compareJsonProperties(propsA, propsB, compareStringProps, compareNonStringProps);
     }
 
     @Override

@@ -103,6 +103,8 @@ public interface AvroAdapter {
 
   boolean fieldHasDefault(Schema.Field field);
 
+  boolean defaultValuesEqual(Schema.Field a, Schema.Field b, boolean allowLooseNumerics);
+
   Set<String> getFieldAliases(Schema.Field field);
 
   @Deprecated
@@ -134,9 +136,31 @@ public interface AvroAdapter {
 
   void setFieldPropFromJsonString(Schema.Field field, String propName, String valueAsJsonLiteral, boolean strict);
 
+  /**
+   * compare json properties on 2 schema fields for equality.
+   * @param a a field
+   * @param b another field
+   * @param compareStringProps true to compare string properties (otherwise ignored)
+   * @param compareNonStringProps true to compare all other properties (otherwise ignored). this exists because avro 1.4
+   *                              doesnt handle non-string props at all and we want to be able to match that behaviour under any avro
+   * @return if field properties are equal, under the configuration parameters above
+   */
+  boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps, boolean compareNonStringProps);
+
   String getSchemaPropAsJsonString(Schema schema, String propName);
 
   void setSchemaPropFromJsonString(Schema field, String propName, String valueAsJsonLiteral, boolean strict);
+
+  /**
+   * compare json properties on 2 schemas for equality.
+   * @param a a schema
+   * @param b another schema
+   * @param compareStringProps true to compare string properties (otherwise ignored)
+   * @param compareNonStringProps true to compare all other properties (otherwise ignored). this exists because avro 1.4
+   *                              doesnt handle non-string props at all and we want to be able to match that behaviour under any avro
+   * @return if schema properties are equal, under the configuration parameters above
+   */
+  boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps);
 
   String getEnumDefault(Schema s);
 

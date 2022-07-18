@@ -609,6 +609,11 @@ public class AvroCompatibilityHelper {
     return ADAPTER.fieldHasDefault(field);
   }
 
+  public static boolean defaultValuesEqual(Schema.Field a, Schema.Field b, boolean looseNumerics) {
+    assertAvroAvailable();
+    return ADAPTER.defaultValuesEqual(a, b, looseNumerics);
+  }
+
   public static Set<String> getFieldAliases(Schema.Field field) {
     assertAvroAvailable();
     return ADAPTER.getFieldAliases(field);
@@ -1068,6 +1073,11 @@ public class AvroCompatibilityHelper {
     ADAPTER.setFieldPropFromJsonString(field, propName, valueAsJsonLiteral, strict);
   }
 
+  public static boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps, boolean compareNonStringProps) {
+    assertAvroAvailable();
+    return ADAPTER.sameJsonProperties(a, b, compareStringProps, compareNonStringProps);
+  }
+
   /**
    * returns the value of the specified schema prop as a json literal.
    * returns null if the schema has no such property.
@@ -1123,6 +1133,11 @@ public class AvroCompatibilityHelper {
   public static void setSchemaPropFromJsonString(Schema schema, String propName, String valueAsJsonLiteral, boolean strict) {
     assertAvroAvailable();
     ADAPTER.setSchemaPropFromJsonString(schema, propName, valueAsJsonLiteral, strict);
+  }
+
+  public static boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps) {
+    assertAvroAvailable();
+    return ADAPTER.sameJsonProperties(a, b, compareStringProps, compareNonStringProps);
   }
 
   /**

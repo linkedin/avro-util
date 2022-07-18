@@ -15,6 +15,7 @@ import com.linkedin.avroutil1.compatibility.CodeGenerationConfig;
 import com.linkedin.avroutil1.compatibility.CodeTransformations;
 import com.linkedin.avroutil1.compatibility.ExceptionUtils;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
+import com.linkedin.avroutil1.compatibility.Jackson1Utils;
 import com.linkedin.avroutil1.compatibility.SchemaBuilder;
 import com.linkedin.avroutil1.compatibility.SchemaNormalization;
 import com.linkedin.avroutil1.compatibility.SchemaParseConfiguration;
@@ -30,6 +31,7 @@ import com.linkedin.avroutil1.compatibility.avro16.codec.CompatibleJsonDecoder;
 import com.linkedin.avroutil1.compatibility.avro16.codec.CompatibleJsonEncoder;
 import com.linkedin.avroutil1.compatibility.backports.ObjectInputToInputStreamAdapter;
 import com.linkedin.avroutil1.compatibility.backports.ObjectOutputToOutputStreamAdapter;
+import java.util.Objects;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -296,6 +298,13 @@ public class Avro16Adapter implements AvroAdapter {
   }
 
   @Override
+  public boolean defaultValuesEqual(Schema.Field a, Schema.Field b, boolean allowLooseNumerics) {
+    JsonNode aVal = a.defaultValue();
+    JsonNode bVal = b.defaultValue();
+    return Jackson1Utils.JsonNodesEqual(aVal, bVal, allowLooseNumerics);
+  }
+
+  @Override
   public Set<String> getFieldAliases(Schema.Field field) {
     return field.aliases();
   }
@@ -321,6 +330,23 @@ public class Avro16Adapter implements AvroAdapter {
   }
 
   @Override
+  public boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps, boolean compareNonStringProps) {
+    if (compareNonStringProps) {
+      throw new IllegalArgumentException("avro " + supportedMajorVersion()
+          + " does not preserve non-string props and so cannot compare them");
+    }
+    if (a == null || b == null) {
+      return false;
+    }
+    if (!compareStringProps) {
+      return true;
+    }
+    Map<String, String> aProps = a.props();
+    Map<String, String> bProps = b.props();
+    return Objects.equals(aProps, bProps);
+  }
+
+  @Override
   public String getSchemaPropAsJsonString(Schema schema, String name) {
     return StringPropertyUtils.getSchemaPropAsJsonString(schema, name);
   }
@@ -328,6 +354,23 @@ public class Avro16Adapter implements AvroAdapter {
   @Override
   public void setSchemaPropFromJsonString(Schema schema, String name, String value, boolean strict) {
     StringPropertyUtils.setSchemaPropFromJsonString(schema, name, value, strict);
+  }
+
+  @Override
+  public boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps) {
+    if (compareNonStringProps) {
+      throw new IllegalArgumentException("avro " + supportedMajorVersion()
+          + " does not preserve non-string props and so cannot compare them");
+    }
+    if (a == null || b == null) {
+      return false;
+    }
+    if (!compareStringProps) {
+      return true;
+    }
+    Map<String, String> aProps = a.getProps();
+    Map<String, String> bProps = b.getProps();
+    return Objects.equals(aProps, bProps);
   }
 
   @Override

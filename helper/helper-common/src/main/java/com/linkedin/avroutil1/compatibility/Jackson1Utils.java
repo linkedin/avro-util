@@ -10,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -142,6 +143,42 @@ public class Jackson1Utils {
     }
   }
 
+  /**
+   * compares 2 JsonNodes for equality, potentially allowing comparison of round floating point numbers and integers
+   * of different types.
+   * this implementation treats null as equals to null.
+   * @param aVal a {@link JsonNode}, or null
+   * @param bVal a {@link JsonNode}, or null
+   * @param looseNumerics allow "loose" numeric comparisons (int node to long node, int nodes to round floating points etc)
+   * @return true if both nodes are null or otherwise equal
+   */
+  public static boolean JsonNodesEqual(JsonNode aVal, JsonNode bVal, boolean looseNumerics) {
+    if (aVal == null || bVal == null) {
+      return aVal == null && bVal == null;
+    }
+    boolean numerics = aVal.isNumber() && bVal.isNumber(); //any cross-type comparison is going to be false anyway
+    if (!numerics || !looseNumerics) {
+      return Objects.equals(aVal, bVal);
+    }
+    //loose numerics
+    if (aVal.isIntegralNumber()) {
+      if (bVal.isIntegralNumber() || Jackson1Utils.isRoundNumber(bVal)) {
+        //we dont care about numbers larger than 64 bit
+        return aVal.getLongValue() == bVal.getLongValue();
+      }
+      return false; //b isnt round
+    } else {
+      //a is float
+      if (!bVal.isIntegralNumber()) {
+        //a and b are floats
+        //this has issues with rounding and precision, but i'd rather stick to this until someone complains
+        return aVal.getDoubleValue() == bVal.getDoubleValue();
+      }
+      //b is integral
+      return Jackson1Utils.isRoundNumber(aVal) && (aVal.getLongValue() == bVal.getLongValue());
+    }
+  }
+
   public static boolean isRoundNumber(JsonNode node) {
     if (node == null || !node.isNumber()) {
       return false;
@@ -183,6 +220,48 @@ public class Jackson1Utils {
       default:
         return defaultValue;
     }
+  }
+
+  public static boolean compareJsonProperties(
+      Map<String, JsonNode> jsonPropsA,
+      Map<String, JsonNode> jsonPropsB,
+      boolean compareStringProps,
+      boolean compareNonStringProps
+  ) {
+    if (compareStringProps && compareNonStringProps) {
+      return Objects.equals(jsonPropsA, jsonPropsB);
+    }
+    //compare all entries in A to B
+    for (Map.Entry<String, JsonNode> aEnt : jsonPropsA.entrySet()) {
+      String key = aEnt.getKey();
+      JsonNode valueA = aEnt.getValue(); // != null
+      JsonNode valueB = jsonPropsB.get(key); // might be null
+      if (valueA.isTextual()) {
+        if (compareStringProps && ! valueA.equals(valueB)) {
+          return false;
+        }
+      } else {
+        if (compareNonStringProps && !valueA.equals(valueB)) {
+          return false;
+        }
+      }
+    }
+    //go over B looking for keys not in A, fail if any found.
+    for (Map.Entry<String, JsonNode> bEnt : jsonPropsB.entrySet()) {
+      String key = bEnt.getKey();
+      JsonNode valueA = jsonPropsA.get(key); // null if no such key in A
+      JsonNode valueB = bEnt.getValue(); // != null
+      if (valueB.isTextual()) {
+        if (compareStringProps && valueA == null) {
+          return false;
+        }
+      } else {
+        if (compareNonStringProps && valueA == null) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   private static boolean isAMathematicalInteger(BigDecimal bigDecimal) {
