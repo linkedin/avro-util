@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.compatibility;
 
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -17,6 +18,7 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericFixed;
 import org.apache.avro.generic.IndexedRecord;
 import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonLocation;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
@@ -35,10 +37,23 @@ import static org.apache.avro.Schema.Type.UNION;
 
 public class Jackson1Utils {
   private static final String BYTES_CHARSET = "ISO-8859-1";
-  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-  private static final JsonFactory JSON_FACTORY = new JsonFactory();
+  private static final JsonFactory JSON_FACTORY;
+  private static final JsonFactory PERMISSIVE_JSON_FACTORY;
+  private static final ObjectMapper OBJECT_MAPPER;
+  private static final ObjectMapper PERMISSIVE_OBJECT_MAPPER;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Jackson1Utils.class);
+
+  static {
+    JSON_FACTORY = new JsonFactory();
+    OBJECT_MAPPER = new ObjectMapper(JSON_FACTORY);
+    JSON_FACTORY.setCodec(OBJECT_MAPPER);
+
+    PERMISSIVE_JSON_FACTORY = new JsonFactory(); //match that used by vanilla avro
+    PERMISSIVE_OBJECT_MAPPER = new ObjectMapper(PERMISSIVE_JSON_FACTORY);
+    PERMISSIVE_JSON_FACTORY.enable(JsonParser.Feature.ALLOW_COMMENTS);
+    PERMISSIVE_JSON_FACTORY.setCodec(PERMISSIVE_OBJECT_MAPPER);
+  }
 
   private Jackson1Utils() {
     // Util class; should not be instantiated.
@@ -262,6 +277,28 @@ public class Jackson1Utils {
       }
     }
     return true;
+  }
+
+  public static void assertNoTrailingContent(String json) {
+    String dangling;
+    JsonLocation endOfSchemaLocation;
+    try {
+      StringReader reader = new StringReader(json);
+      JsonParser parser = PERMISSIVE_JSON_FACTORY.createJsonParser(reader);
+      PERMISSIVE_OBJECT_MAPPER.readTree(parser); //consume everything avro would
+      endOfSchemaLocation = parser.getCurrentLocation();
+      int charOffset = (int) endOfSchemaLocation.getCharOffset();
+      if (charOffset >= json.length() - 1) {
+        return;
+      }
+      dangling = json.substring(charOffset + 1).trim();
+    } catch (Exception e) {
+      throw new IllegalStateException("error parsing json out of " + json, e);
+    }
+    if (!dangling.isEmpty()) {
+      throw new IllegalArgumentException("dangling content beyond the end of a schema at line: "
+          + endOfSchemaLocation.getLineNr() + " column: " + endOfSchemaLocation.getColumnNr() + ": " + dangling);
+    }
   }
 
   private static boolean isAMathematicalInteger(BigDecimal bigDecimal) {

@@ -7,6 +7,7 @@
 package com.linkedin.avroutil1.compatibility;
 
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonLocation;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,6 +17,7 @@ import com.fasterxml.jackson.databind.node.FloatNode;
 import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.LongNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Objects;
@@ -27,10 +29,23 @@ import static org.apache.avro.Schema.Type.UNION;
 
 
 public class Jackson2Utils {
-  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-  private static final JsonFactory JSON_FACTORY = new JsonFactory();
+  private static final JsonFactory JSON_FACTORY;
+  private static final JsonFactory PERMISSIVE_JSON_FACTORY;
+  private static final ObjectMapper OBJECT_MAPPER;
+  private static final ObjectMapper PERMISSIVE_OBJECT_MAPPER;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Jackson2Utils.class);
+
+  static {
+    JSON_FACTORY = new JsonFactory();
+    OBJECT_MAPPER = new ObjectMapper(JSON_FACTORY); //matches that used by avro
+    JSON_FACTORY.setCodec(OBJECT_MAPPER);
+
+    PERMISSIVE_JSON_FACTORY = new JsonFactory();
+    PERMISSIVE_OBJECT_MAPPER = new ObjectMapper(PERMISSIVE_JSON_FACTORY);
+    PERMISSIVE_JSON_FACTORY.enable(JsonParser.Feature.ALLOW_COMMENTS);
+    PERMISSIVE_JSON_FACTORY.setCodec(PERMISSIVE_OBJECT_MAPPER);
+  }
 
   private Jackson2Utils() {
     // Util class; should not be instantiated.
@@ -195,6 +210,28 @@ public class Jackson2Utils {
       }
     }
     return true;
+  }
+
+  public static void assertNoTrailingContent(String json) {
+    String dangling;
+    JsonLocation endOfSchemaLocation;
+    try {
+      StringReader reader = new StringReader(json);
+      JsonParser parser = PERMISSIVE_JSON_FACTORY.createParser(reader);
+      PERMISSIVE_OBJECT_MAPPER.readTree(parser); //consume everything avro would
+      endOfSchemaLocation = parser.getCurrentLocation();
+      int charOffset = (int) endOfSchemaLocation.getCharOffset();
+      if (charOffset >= json.length()) {
+        return;
+      }
+      dangling = json.substring(charOffset).trim();
+    } catch (Exception e) {
+      throw new IllegalStateException("error parsing json out of " + json, e);
+    }
+    if (!dangling.isEmpty()) {
+      throw new IllegalArgumentException("dangling content beyond the end of a schema at line: "
+          + endOfSchemaLocation.getLineNr() + " column: " + endOfSchemaLocation.getColumnNr() + ": " + dangling);
+    }
   }
 
   private static boolean isAMathematicalInteger(BigDecimal bigDecimal) {

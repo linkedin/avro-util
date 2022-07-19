@@ -223,12 +223,19 @@ public class Avro16Adapter implements AvroAdapter {
     boolean validateNames = true;
     boolean validateDefaults = false;
     boolean validateNumericDefaultValueTypes = false;
+    boolean validateNoDanglingContent = false;
     if (desiredConf != null) {
       validateNames = desiredConf.validateNames();
       validateDefaults = desiredConf.validateDefaultValues();
       validateNumericDefaultValueTypes = desiredConf.validateNumericDefaultValueTypes();
+      validateNoDanglingContent = desiredConf.validateNoDanglingContent();
     }
-    SchemaParseConfiguration configUsed = new SchemaParseConfiguration(validateNames, validateDefaults, validateNumericDefaultValueTypes);
+    SchemaParseConfiguration configUsed = new SchemaParseConfiguration(
+        validateNames,
+        validateDefaults,
+        validateNumericDefaultValueTypes,
+        validateNoDanglingContent
+    );
 
     parser.setValidate(validateNames);
     if (known != null && !known.isEmpty()) {
@@ -244,6 +251,9 @@ public class Avro16Adapter implements AvroAdapter {
       //avro 1.6 doesnt properly validate default values, so we have to do it ourselves
       Avro16SchemaValidator validator = new Avro16SchemaValidator(configUsed, known);
       AvroSchemaUtil.traverseSchema(mainSchema, validator); //will throw on issues
+    }
+    if (configUsed.validateNoDanglingContent()) {
+      Jackson1Utils.assertNoTrailingContent(schemaJson);
     }
     return new SchemaParseResult(mainSchema, knownByFullName, configUsed);
   }
