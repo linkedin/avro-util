@@ -56,11 +56,11 @@ public class CodeGenerator {
     private final static String ENUM_SCHEMA_NO_NAMESPACE_TEMPLATE = TemplateUtil.loadTemplate("EnumSchemaNoNamespace.template");
 
     //either files or folders
-    private Set<File> inputs;
+    private Collection<File> inputs;
     //patterns out of inputs to consider
-    private Set<String> includes = new HashSet<>(Collections.singletonList("**/*.avsc"));
+    private Collection<String> includes = new HashSet<>(Collections.singletonList("**/*.avsc"));
     //patterns for determining which schemas (after applying inputs+includes above) are importable into other schemas
-    private Set<String> importablePatterns = new HashSet<>(Collections.singletonList("**/*.*"));
+    private Collection<String> importablePatterns = new HashSet<>(Collections.singletonList("**/*.*"));
     //if true will go fishing on the classpath for generated specific record classes of missing schemas
     private boolean allowClasspathLookup = true;
     //if true, and we find a SpecificFixed or Enum class on the classpath (see allowClasspathLookup above)
@@ -81,11 +81,11 @@ public class CodeGenerator {
         setInputs(new HashSet<>(Arrays.asList(inputs)));
     }
 
-    public void setInputs(Set<File> inputs) {
+    public void setInputs(Collection<File> inputs) {
         this.inputs = inputs;
     }
 
-    public void setIncludes(Set<String> includes) {
+    public void setIncludes(Collection<String> includes) {
         this.includes = includes;
     }
 
@@ -93,7 +93,7 @@ public class CodeGenerator {
         this.outputFolder = outputFolder;
     }
 
-    public void setImportablePatterns(Set<String> importablePatterns) {
+    public void setImportablePatterns(Collection<String> importablePatterns) {
         this.importablePatterns = importablePatterns;
     }
 
@@ -253,7 +253,7 @@ public class CodeGenerator {
     }
 
     private Map<String, SchemaDetails> parseSchemas(
-            Set<File> toParse,
+            Collection<File> toParse,
             Map<String, SchemaDetails> importableSchemas,
             Map<String, SchemaDetails> externalSchemas
     ) {

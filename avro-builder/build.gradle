@@ -29,6 +29,7 @@ tasks.build.dependsOn tasks.shadowJar
 dependencies {
     implementation project(":helper:helper")
     implementation project(":parser")
+    implementation project(":avro-codegen")
 
     implementation "org.apache.avro:avro-compiler:1.9.2"
     implementation "org.apache.avro:avro:1.9.2"
