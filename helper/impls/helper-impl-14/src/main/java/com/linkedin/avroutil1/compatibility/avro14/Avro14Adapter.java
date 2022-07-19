@@ -216,6 +216,9 @@ public class Avro14Adapter implements AvroAdapter {
       Schema schema = result.getMainSchema();
       Avro14SchemaValidator validator = new Avro14SchemaValidator(desiredConf, known);
       AvroSchemaUtil.traverseSchema(schema, validator); //will throw on issues
+      if (desiredConf.validateNoDanglingContent()) {
+        Jackson1Utils.assertNoTrailingContent(schemaJson);
+      }
       return new SchemaParseResult(result.getMainSchema(), result.getAllSchemas(), desiredConf);
     } else {
       return result;

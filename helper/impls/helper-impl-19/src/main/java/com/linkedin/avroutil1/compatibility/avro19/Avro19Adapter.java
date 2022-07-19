@@ -229,11 +229,19 @@ public class Avro19Adapter implements AvroAdapter {
     boolean validateNames = true;
     boolean validateDefaults = true;
     boolean validateNumericDefaultValueTypes = false;
+    boolean validateNoDanglingContent = false;
     if (desiredConf != null) {
       validateNames = desiredConf.validateNames();
       validateDefaults = desiredConf.validateDefaultValues();
       validateNumericDefaultValueTypes = desiredConf.validateNumericDefaultValueTypes();
+      validateNoDanglingContent = desiredConf.validateNoDanglingContent();
     }
+    SchemaParseConfiguration configUsed = new SchemaParseConfiguration(
+        validateNames,
+        validateDefaults,
+        validateNumericDefaultValueTypes,
+        validateNoDanglingContent
+    );
     parser.setValidate(validateNames);
     parser.setValidateDefaults(validateDefaults);
     if (known != null && !known.isEmpty()) {
@@ -245,11 +253,13 @@ public class Avro19Adapter implements AvroAdapter {
     }
     Schema mainSchema = parser.parse(schemaJson);
     Map<String, Schema> knownByFullName = parser.getTypes();
-    SchemaParseConfiguration configUsed = new SchemaParseConfiguration(validateNames, validateDefaults, validateNumericDefaultValueTypes);
     if (configUsed.validateDefaultValues()) {
       //dont trust avro, also run our own
       Avro19SchemaValidator validator = new Avro19SchemaValidator(configUsed, known);
       AvroSchemaUtil.traverseSchema(mainSchema, validator);
+    }
+    if (configUsed.validateNoDanglingContent()) {
+      Jackson2Utils.assertNoTrailingContent(schemaJson);
     }
     return new SchemaParseResult(mainSchema, knownByFullName, configUsed);
   }

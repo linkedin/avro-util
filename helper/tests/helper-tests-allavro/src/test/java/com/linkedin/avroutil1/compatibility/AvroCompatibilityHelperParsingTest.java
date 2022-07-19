@@ -232,4 +232,27 @@ public class AvroCompatibilityHelperParsingTest {
       }
     }
   }
+
+  @Test
+  public void testParseTrailingContent() throws Exception {
+    String innocent = "{\"type\": \"string\"}";
+    Assert.assertNotNull(AvroCompatibilityHelper.parse(innocent, SchemaParseConfiguration.STRICT, null).getMainSchema());
+    Assert.assertNotNull(AvroCompatibilityHelper.parse(innocent + "  \n \t \r  ", SchemaParseConfiguration.STRICT, null).getMainSchema());
+    try {
+      AvroCompatibilityHelper.parse(innocent + "?", SchemaParseConfiguration.STRICT, null);
+      Assert.fail("expected to fail");
+    } catch (IllegalArgumentException expected) {
+      Assert.assertTrue(expected.getMessage().contains("?"));
+    }
+    Assert.assertNotNull(AvroCompatibilityHelper.parse(innocent + "?", SchemaParseConfiguration.LOOSE, null).getMainSchema());
+    try {
+      AvroCompatibilityHelper.parse(innocent + "; DROP TABLE STUDENTS", SchemaParseConfiguration.STRICT, null);
+      Assert.fail("expected to fail");
+    } catch (IllegalArgumentException expected) {
+      Assert.assertTrue(expected.getMessage().contains("DROP TABLE STUDENTS"));
+    }
+    Assert.assertNotNull(
+        AvroCompatibilityHelper.parse(innocent + "; DROP TABLE STUDENTS", SchemaParseConfiguration.LOOSE, null).getMainSchema()
+    );
+  }
 }

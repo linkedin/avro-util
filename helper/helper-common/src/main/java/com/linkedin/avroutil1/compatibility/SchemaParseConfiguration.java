@@ -14,13 +14,13 @@ import java.util.Objects;
  */
 public class SchemaParseConfiguration {
   public final static SchemaParseConfiguration STRICT = new SchemaParseConfiguration(
-      true, true, true
+      true, true, true, true
   );
   public final static SchemaParseConfiguration LOOSE_NUMERICS = new SchemaParseConfiguration(
-      true, true, false
+      true, true, false, true
   );
   public final static SchemaParseConfiguration LOOSE = new SchemaParseConfiguration(
-      false, false, false
+      false, false, false, false
   );
 
   /**
@@ -43,11 +43,17 @@ public class SchemaParseConfiguration {
    * no version of avro currently natively supports this validation.
    */
   private final boolean validateNumericDefaultValueTypes;
+  /**
+   * validates no dangling contents in the avsc string past the end of the schema.
+   * see https://issues.apache.org/jira/browse/AVRO-3560
+   */
+  private final boolean validateNoDanglingContent;
 
   public SchemaParseConfiguration(
       boolean validateNames,
       boolean validateDefaultValues,
-      boolean validateNumericDefaultValueTypes
+      boolean validateNumericDefaultValueTypes,
+      boolean validateNoDanglingContent
   ) {
     if (validateNumericDefaultValueTypes && !validateDefaultValues) {
       throw new IllegalArgumentException("validateNumericDefaultValueTypes requires validateDefaultValues");
@@ -55,6 +61,15 @@ public class SchemaParseConfiguration {
     this.validateNames = validateNames;
     this.validateDefaultValues = validateDefaultValues;
     this.validateNumericDefaultValueTypes = validateNumericDefaultValueTypes;
+    this.validateNoDanglingContent = validateNoDanglingContent;
+  }
+
+  @Deprecated
+  public SchemaParseConfiguration(
+      boolean validateNames,
+      boolean validateDefaultValues,
+      boolean validateNumericDefaultValueTypes) {
+    this(validateNames, validateDefaultValues, validateNumericDefaultValueTypes, true);
   }
 
   @Deprecated
@@ -74,6 +89,10 @@ public class SchemaParseConfiguration {
     return validateNumericDefaultValueTypes;
   }
 
+  public boolean validateNoDanglingContent() {
+    return validateNoDanglingContent;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -84,11 +103,12 @@ public class SchemaParseConfiguration {
     }
     SchemaParseConfiguration that = (SchemaParseConfiguration) o;
     return validateNames == that.validateNames && validateDefaultValues == that.validateDefaultValues
-        && validateNumericDefaultValueTypes == that.validateNumericDefaultValueTypes;
+        && validateNumericDefaultValueTypes == that.validateNumericDefaultValueTypes
+        && validateNoDanglingContent == that.validateNoDanglingContent;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(validateNames, validateDefaultValues, validateNumericDefaultValueTypes);
+    return Objects.hash(validateNames, validateDefaultValues, validateNumericDefaultValueTypes, validateNoDanglingContent);
   }
 }

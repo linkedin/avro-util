@@ -225,11 +225,19 @@ public class Avro110Adapter implements AvroAdapter {
         boolean validateNames = true;
         boolean validateDefaults = true;
         boolean validateNumericDefaultValueTypes = false;
+        boolean validateNoDanglingContent = false;
         if (desiredConf != null) {
             validateNames = desiredConf.validateNames();
             validateDefaults = desiredConf.validateDefaultValues();
             validateNumericDefaultValueTypes = desiredConf.validateNumericDefaultValueTypes();
+            validateNoDanglingContent = desiredConf.validateNoDanglingContent();
         }
+        SchemaParseConfiguration configUsed = new SchemaParseConfiguration(
+            validateNames,
+            validateDefaults,
+            validateNumericDefaultValueTypes,
+            validateNoDanglingContent
+        );
         parser.setValidate(validateNames);
         //avro 1.10 default validation also validates numeric types, so if we want to be
         //more nuanced we cant use avro's default value validation
@@ -247,11 +255,14 @@ public class Avro110Adapter implements AvroAdapter {
         }
         Schema mainSchema = parser.parse(schemaJson);
         Map<String, Schema> knownByFullName = parser.getTypes();
-        SchemaParseConfiguration configUsed = new SchemaParseConfiguration(validateNames, validateDefaults, validateNumericDefaultValueTypes);
+
         if (configUsed.validateDefaultValues()) {
             //dont trust avro, also run our own. also we might have told avro not to validate over numerics
             Avro110SchemaValidator validator = new Avro110SchemaValidator(configUsed, known);
             AvroSchemaUtil.traverseSchema(mainSchema, validator);
+        }
+        if (configUsed.validateNoDanglingContent()) {
+            Jackson2Utils.assertNoTrailingContent(schemaJson);
         }
         //todo - depending on how https://issues.apache.org/jira/browse/AVRO-2742 is settled, may need to use our own validator here
         return new SchemaParseResult(mainSchema, knownByFullName, configUsed);

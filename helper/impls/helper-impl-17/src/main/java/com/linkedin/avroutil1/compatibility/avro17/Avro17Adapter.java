@@ -257,12 +257,19 @@ public class Avro17Adapter implements AvroAdapter {
     boolean validateNames = true;
     boolean validateDefaults = true;
     boolean validateNumericDefaultValueTypes = false;
+    boolean validateNoDanglingContent = false;
     if (desiredConf != null) {
       validateNames = desiredConf.validateNames();
       validateDefaults = desiredConf.validateDefaultValues();
       validateNumericDefaultValueTypes = desiredConf.validateNumericDefaultValueTypes();
+      validateNoDanglingContent = desiredConf.validateNoDanglingContent();
     }
-    SchemaParseConfiguration configUsed = new SchemaParseConfiguration(validateNames, validateDefaults, validateNumericDefaultValueTypes);
+    SchemaParseConfiguration configUsed = new SchemaParseConfiguration(
+        validateNames,
+        validateDefaults,
+        validateNumericDefaultValueTypes,
+        validateNoDanglingContent
+    );
 
     parser.setValidate(validateNames);
 
@@ -284,6 +291,9 @@ public class Avro17Adapter implements AvroAdapter {
       //dont trust avro, also run our own
       Avro17SchemaValidator validator = new Avro17SchemaValidator(configUsed, known);
       AvroSchemaUtil.traverseSchema(mainSchema, validator);
+    }
+    if (configUsed.validateNoDanglingContent()) {
+      Jackson1Utils.assertNoTrailingContent(schemaJson);
     }
     return new SchemaParseResult(mainSchema, knownByFullName, configUsed);
   }
