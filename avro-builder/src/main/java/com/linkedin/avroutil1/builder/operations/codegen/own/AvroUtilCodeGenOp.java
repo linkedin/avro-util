@@ -6,13 +6,11 @@
 
 package com.linkedin.avroutil1.builder.operations.codegen.own;
 
+import com.linkedin.avro.codegen.CodeGenerator;
 import com.linkedin.avroutil1.builder.BuilderConsts;
 import com.linkedin.avroutil1.builder.operations.codegen.CodeGenOpConfig;
 import com.linkedin.avroutil1.builder.operations.Operation;
 import com.linkedin.avroutil1.builder.operations.OperationContext;
-import com.linkedin.avroutil1.parser.avsc.AvroParseContext;
-import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
-import com.linkedin.avroutil1.parser.avsc.AvscParser;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,6 +27,7 @@ public class AvroUtilCodeGenOp implements Operation {
   private static final Logger LOGGER = LoggerFactory.getLogger(AvroUtilCodeGenOp.class);
 
   private final CodeGenOpConfig config;
+  private final CodeGenerator generator = new CodeGenerator();
 
   public AvroUtilCodeGenOp(CodeGenOpConfig config) {
     this.config = config;
@@ -52,29 +51,10 @@ public class AvroUtilCodeGenOp implements Operation {
       return;
     }
     LOGGER.info("found " + avscFiles.size() + " avsc schema files");
+    generator.setInputs(config.getInputRoots());
 
-    AvroParseContext context = new AvroParseContext();
-    AvscParser parser = new AvscParser();
+    generator.setOutputFolder(config.getOutputSpecificRecordClassesRoot());
 
-    for (Path p : avscFiles) {
-      AvscParseResult fileParseResult = parser.parse(p);
-      Throwable parseError = fileParseResult.getParseError();
-      if (parseError != null) {
-        throw new IllegalArgumentException("failed to parse file " + p.toAbsolutePath(), parseError);
-      }
-      context.add(fileParseResult);
-    }
-
-    //resolve any references across files that are part of this op (anything left would be external)
-    context.resolveReferences();
-
-    if (context.hasExternalReferences()) {
-      //TODO - better formatting
-      throw new UnsupportedOperationException("unresolved referenced to external schemas: " + context.getExternalReferences());
-    }
-
-    //TODO - look for dups
-
-    throw new UnsupportedOperationException("TBD");
+    generator.generateCode();
   }
 }

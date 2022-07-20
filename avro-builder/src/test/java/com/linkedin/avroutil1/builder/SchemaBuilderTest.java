@@ -59,7 +59,7 @@ public class SchemaBuilderTest {
   }
 
   //TODO - complete this
-  //@Test
+  @Test
   public void testSimpleProjectUsingOwnCodegen() throws Exception {
     File simpleProjectRoot = new File(locateTestProjectsRoot(), "simple-project");
     File inputFolder = new File(simpleProjectRoot, "input");
