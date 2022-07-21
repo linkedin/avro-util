@@ -97,7 +97,6 @@ public class SchemaBuilderTest {
     if (!file.isDirectory() || !file.canRead()) {
       throw new IllegalStateException("test-projects root folder " + file.getAbsolutePath() + " not a folder or is unreadable");
     }
-    System.err.println(file.getAbsolutePath());
     return file;
   }
 }
