@@ -7,24 +7,19 @@
 package com.linkedin.avroutil1.builder.operations.codegen.own;
 
 import com.linkedin.avroutil1.builder.BuilderConsts;
-import com.linkedin.avroutil1.builder.operations.codegen.CodeGenOpConfig;
 import com.linkedin.avroutil1.builder.operations.Operation;
 import com.linkedin.avroutil1.builder.operations.OperationContext;
+import com.linkedin.avroutil1.builder.operations.codegen.CodeGenOpConfig;
 import com.linkedin.avroutil1.codegen.SpecificRecordClassGenerator;
 import com.linkedin.avroutil1.codegen.SpecificRecordGenerationConfig;
-import com.linkedin.avroutil1.compatibility.AvroGeneratedSourceCode;
-import com.linkedin.avroutil1.model.AvroName;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
 import com.linkedin.avroutil1.parser.avsc.AvroParseContext;
 import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
 import com.linkedin.avroutil1.parser.avsc.AvscParser;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
