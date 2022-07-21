@@ -124,11 +124,9 @@ public class AvroUtilCodeGenOp implements Operation {
       }
 
       try (FileOutputStream fos = new FileOutputStream(outputFile, false);
-          OutputStreamWriter writer = new OutputStreamWriter(fos, StandardCharsets.UTF_8)) {
-        Reader reader = javaClass.openReader(true);
+          OutputStreamWriter writer = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+          Reader reader = javaClass.openReader(true)) {
         IOUtils.copy(reader, writer);
-        reader.close();
-
         writer.flush();
         fos.flush();
       } catch (Exception e) {
