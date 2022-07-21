@@ -115,7 +115,7 @@ public class AvroUtilCodeGenOp implements Operation {
 
       if (outputFile.exists()) {
         //TODO - make this behaviour configurable (overwite, ignore, ignore_if_identical, etc)
-        throw new IllegalStateException("output file " + outputFile + "already exists");
+        throw new IllegalStateException("output file " + outputFile + " already exists");
       } else {
         File parentFolder = outputFile.getParentFile();
         if (!parentFolder.exists() && !parentFolder.mkdirs()) {
