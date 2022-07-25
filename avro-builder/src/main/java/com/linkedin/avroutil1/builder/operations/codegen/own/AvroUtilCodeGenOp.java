@@ -6,16 +6,28 @@
 
 package com.linkedin.avroutil1.builder.operations.codegen.own;
 
-import com.linkedin.avro.codegen.CodeGenerator;
 import com.linkedin.avroutil1.builder.BuilderConsts;
-import com.linkedin.avroutil1.builder.operations.codegen.CodeGenOpConfig;
 import com.linkedin.avroutil1.builder.operations.Operation;
 import com.linkedin.avroutil1.builder.operations.OperationContext;
+import com.linkedin.avroutil1.builder.operations.codegen.CodeGenOpConfig;
+import com.linkedin.avroutil1.codegen.SpecificRecordClassGenerator;
+import com.linkedin.avroutil1.codegen.SpecificRecordGenerationConfig;
+import com.linkedin.avroutil1.model.AvroNamedSchema;
+import com.linkedin.avroutil1.parser.avsc.AvroParseContext;
+import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
+import com.linkedin.avroutil1.parser.avsc.AvscParser;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import javax.tools.JavaFileObject;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +39,6 @@ public class AvroUtilCodeGenOp implements Operation {
   private static final Logger LOGGER = LoggerFactory.getLogger(AvroUtilCodeGenOp.class);
 
   private final CodeGenOpConfig config;
-  private final CodeGenerator generator = new CodeGenerator();
 
   public AvroUtilCodeGenOp(CodeGenOpConfig config) {
     this.config = config;
@@ -36,8 +47,10 @@ public class AvroUtilCodeGenOp implements Operation {
   @Override
   public void run(OperationContext opContext) throws Exception {
     //mkdir any output folders that dont exist
-    if (!config.getOutputSpecificRecordClassesRoot().exists() && !config.getOutputSpecificRecordClassesRoot().mkdirs()) {
-      throw new IllegalStateException("unable to create destination folder " + config.getOutputSpecificRecordClassesRoot());
+    if (!config.getOutputSpecificRecordClassesRoot().exists() && !config.getOutputSpecificRecordClassesRoot()
+        .mkdirs()) {
+      throw new IllegalStateException(
+          "unable to create destination folder " + config.getOutputSpecificRecordClassesRoot());
     }
 
     List<Path> avscFiles = new ArrayList<>();
@@ -51,10 +64,74 @@ public class AvroUtilCodeGenOp implements Operation {
       return;
     }
     LOGGER.info("found " + avscFiles.size() + " avsc schema files");
-    generator.setInputs(config.getInputRoots());
 
-    generator.setOutputFolder(config.getOutputSpecificRecordClassesRoot());
+    AvroParseContext context = new AvroParseContext();
+    AvscParser parser = new AvscParser();
+    List<AvscParseResult> parsedFiles = new ArrayList<>();
 
-    generator.generateCode();
+    for (Path p : avscFiles) {
+      AvscParseResult fileParseResult = parser.parse(p);
+      Throwable parseError = fileParseResult.getParseError();
+      if (parseError != null) {
+        throw new IllegalArgumentException("failed to parse file " + p.toAbsolutePath(), parseError);
+      }
+      context.add(fileParseResult);
+      parsedFiles.add(fileParseResult);
+    }
+
+    //resolve any references across files that are part of this op (anything left would be external)
+    context.resolveReferences();
+
+    if (context.hasExternalReferences()) {
+      //TODO - better formatting
+      throw new UnsupportedOperationException(
+          "unresolved referenced to external schemas: " + context.getExternalReferences());
+    }
+
+    SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
+    List<JavaFileObject> specificRecords = new ArrayList<>();
+    for (AvscParseResult parsedFile : parsedFiles) {
+      JavaFileObject javaFileObject =
+          generator.generateSpecificRecordClass((AvroNamedSchema) parsedFile.getTopLevelSchema(),
+              SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
+      specificRecords.add(javaFileObject);
+    }
+
+    writeJavaFilesToDisk(specificRecords, config.getOutputSpecificRecordClassesRoot());
+
+    //TODO - look for dups
+
+  }
+
+  private void writeJavaFilesToDisk(Collection<JavaFileObject> javaClassFiles, File outputFolder) {
+    //make sure the output folder exists
+    if (!outputFolder.exists() && !outputFolder.mkdirs()) {
+      throw new IllegalStateException("unable to create output folder " + outputFolder);
+    }
+
+    //write out the files we generated
+    for (JavaFileObject javaClass : javaClassFiles) {
+      File outputFile = new File(outputFolder, javaClass.getName());
+
+      if (outputFile.exists()) {
+        //TODO - make this behaviour configurable (overwite, ignore, ignore_if_identical, etc)
+        throw new IllegalStateException("output file " + outputFile + " already exists");
+      } else {
+        File parentFolder = outputFile.getParentFile();
+        if (!parentFolder.exists() && !parentFolder.mkdirs()) {
+          throw new IllegalStateException("unable to create output folder " + outputFolder);
+        }
+      }
+
+      try (FileOutputStream fos = new FileOutputStream(outputFile, false);
+          OutputStreamWriter writer = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+          Reader reader = javaClass.openReader(true)) {
+        IOUtils.copy(reader, writer);
+        writer.flush();
+        fos.flush();
+      } catch (Exception e) {
+        throw new IllegalStateException("while writing file " + outputFile, e);
+      }
+    }
   }
 }
