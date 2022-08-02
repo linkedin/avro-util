@@ -25,8 +25,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.tools.JavaFileObject;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,38 +49,42 @@ public class AvroUtilCodeGenOp implements Operation {
 
   @Override
   public void run(OperationContext opContext) throws Exception {
-    //mkdir any output folders that dont exist
+    //mkdir any output folders that don't exist
     if (!config.getOutputSpecificRecordClassesRoot().exists() && !config.getOutputSpecificRecordClassesRoot()
         .mkdirs()) {
       throw new IllegalStateException(
           "unable to create destination folder " + config.getOutputSpecificRecordClassesRoot());
     }
 
-    List<Path> avscFiles = new ArrayList<>();
+    Set<File> avscFiles = new HashSet<>();
+    Set<File> importableFiles = new HashSet<>();
+    String[] extensions = new String[]{BuilderConsts.AVSC_EXTENSION};
+
+
     for (File inputRoot : config.getInputRoots()) {
-      Files.walk(inputRoot.toPath())
-          .filter(path -> path.getFileName().toString().endsWith("." + BuilderConsts.AVSC_EXTENSION))
-          .forEach(avscFiles::add);
+      avscFiles.addAll(FileUtils.listFiles(inputRoot, extensions, true));
     }
-    if (avscFiles.isEmpty()) {
+
+    if (config.getIncludeRoots() != null) {
+      for (File includeRoot : config.getIncludeRoots()) {
+        importableFiles.addAll(FileUtils.listFiles(includeRoot, extensions, true));
+      }
+    }
+
+    // If there are no importable files, then all of avscFiles should be marked as importable.
+    boolean areAvscFilesImportable = importableFiles.isEmpty();
+
+    if (avscFiles.isEmpty() && importableFiles.isEmpty()) {
       LOGGER.warn("no input schema files were found under roots " + config.getInputRoots());
       return;
     }
-    LOGGER.info("found " + avscFiles.size() + " avsc schema files");
+    LOGGER.info("found " + (avscFiles.size() + importableFiles.size()) + " avsc schema files");
 
     AvroParseContext context = new AvroParseContext();
-    AvscParser parser = new AvscParser();
     List<AvscParseResult> parsedFiles = new ArrayList<>();
 
-    for (Path p : avscFiles) {
-      AvscParseResult fileParseResult = parser.parse(p);
-      Throwable parseError = fileParseResult.getParseError();
-      if (parseError != null) {
-        throw new IllegalArgumentException("failed to parse file " + p.toAbsolutePath(), parseError);
-      }
-      context.add(fileParseResult);
-      parsedFiles.add(fileParseResult);
-    }
+    parseAvscFiles(importableFiles, true, context, parsedFiles);
+    parseAvscFiles(avscFiles, areAvscFilesImportable, context, parsedFiles);
 
     //resolve any references across files that are part of this op (anything left would be external)
     context.resolveReferences();
@@ -101,6 +108,20 @@ public class AvroUtilCodeGenOp implements Operation {
 
     //TODO - look for dups
 
+  }
+
+  private void parseAvscFiles(Set<File> avscFiles, boolean areFilesImportable, AvroParseContext context,
+      List<AvscParseResult> parsedFiles) {
+    AvscParser parser = new AvscParser();
+    for (File p : avscFiles) {
+      AvscParseResult fileParseResult = parser.parse(p);
+      Throwable parseError = fileParseResult.getParseError();
+      if (parseError != null) {
+        throw new IllegalArgumentException("failed to parse file " + p.getAbsolutePath(), parseError);
+      }
+      context.add(fileParseResult, areFilesImportable);
+      parsedFiles.add(fileParseResult);
+    }
   }
 
   private void writeJavaFilesToDisk(Collection<JavaFileObject> javaClassFiles, File outputFolder) {

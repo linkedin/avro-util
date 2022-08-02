@@ -21,38 +21,47 @@ import java.util.Map;
 public class AvroParseContext {
     // input
 
-    private List<AvscParseResult> individualResults = new ArrayList<>(1);
+    private final List<AvscStandaloneResult> individualResults = new ArrayList<>(1);
 
     // output/state/calculated - calculated once
 
     private boolean sealed = false;
-    private Map<String, AvscParseResult> knownNamedSchemas = null;
+    private Map<String, AvscParseResult> knownImportableSchemas = null;
     private Map<String, List<AvscParseResult>> duplicates = null;
     private List<SchemaOrRef> externalReferences = null;
 
+    @Deprecated
     public void add(AvscParseResult singleResult) {
+        add(singleResult, true);
+
+    }
+
+    public void add(AvscParseResult singleResult, boolean isImportable) {
         if (singleResult == null) {
             throw new IllegalArgumentException("argument cannot be null");
         }
         assertMutable();
-        individualResults.add(singleResult);
+        individualResults.add(new AvscStandaloneResult(singleResult, isImportable));
     }
 
     public void resolveReferences() {
         sealed = true;
 
         //build up an index of FQCNs (also find dups)
-        knownNamedSchemas = new HashMap<>(individualResults.size());
+        knownImportableSchemas = new HashMap<>(individualResults.size());
         duplicates = new HashMap<>(1);
-        for (AvscParseResult singleFile : individualResults) {
-            Throwable error = singleFile.getParseError();
+        for (AvscStandaloneResult singleFile : individualResults) {
+            Throwable error = singleFile.parseResult.getParseError();
             if (error != null) {
-                //dont touch files with outright failures
+                //don't touch files with outright failures
                 continue;
             }
-            Map<String, AvroSchema> namedInFile = singleFile.getDefinedNamedSchemas();
+            Map<String, AvroSchema> namedInFile = singleFile.parseResult.getDefinedNamedSchemas();
             namedInFile.forEach((fqcn, schema) -> {
-                AvscParseResult firstDefinition = knownNamedSchemas.putIfAbsent(fqcn, singleFile);
+                AvscParseResult firstDefinition = knownImportableSchemas.get(fqcn);
+                if (singleFile.isImportable) {
+                   knownImportableSchemas.putIfAbsent(fqcn, singleFile.parseResult);
+                }
                 if (firstDefinition != null) {
                     //TODO - find dups in aliases as well ?
                     //this is a dup
@@ -61,7 +70,7 @@ public class AvroParseContext {
                             dups = new ArrayList<>(2);
                             dups.add(firstDefinition);
                         }
-                        dups.add(singleFile);
+                        dups.add(singleFile.parseResult);
                         return dups;
                     });
                 }
@@ -72,16 +81,16 @@ public class AvroParseContext {
 
         //resolve any unresolved references in individual file results from other files
         externalReferences = new ArrayList<>();
-        for (AvscParseResult singleFile : individualResults) {
-            List<SchemaOrRef> externalRefs = singleFile.getExternalReferences();
+        for (AvscStandaloneResult singleFile : individualResults) {
+            List<SchemaOrRef> externalRefs = singleFile.parseResult.getExternalReferences();
             for (SchemaOrRef ref : externalRefs) {
                 String simpleName = ref.getRef();
-                AvscParseResult simpleNameResolution = knownNamedSchemas.get(simpleName);
+                AvscParseResult simpleNameResolution = knownImportableSchemas.get(simpleName);
                 AvscParseResult inheritedNameResolution = null;
 
                 String inheritedName = ref.getInheritedName();
                 if (inheritedName != null) {
-                    inheritedNameResolution = knownNamedSchemas.get(inheritedName);
+                    inheritedNameResolution = knownImportableSchemas.get(inheritedName);
                 }
 
                 // The namespace may be inherited from the parent schema's context or may already be defined in the
@@ -93,7 +102,7 @@ public class AvroParseContext {
                         String msg =
                             "ERROR: Two different schemas found for reference " + simpleName + " with inherited name "
                                 + inheritedName + ". Only one should exist.";
-                        singleFile.addIssue(new AvscIssue(ref.getCodeLocation(), IssueSeverity.WARNING, msg,
+                        singleFile.parseResult.addIssue(new AvscIssue(ref.getCodeLocation(), IssueSeverity.WARNING, msg,
                             new IllegalStateException(msg)));
                     }
                 } else if (simpleNameResolution != null) {
@@ -125,6 +134,15 @@ public class AvroParseContext {
     private void assertMutable() {
         if (sealed) {
             throw new IllegalStateException("this context has already been sealed");
+        }
+    }
+
+    private class AvscStandaloneResult {
+        AvscParseResult parseResult;
+        boolean isImportable;
+        AvscStandaloneResult(AvscParseResult parseResult, boolean isImportable) {
+            this.parseResult = parseResult;
+            this.isImportable = isImportable;
         }
     }
 }

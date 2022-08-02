@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "namespace": "testincludesoption",
+  "name": "SimpleRecord",
+  "fields": [
+    {
+      "name": "f",
+      "type": "int"
+    },
+    {
+      "name": "importedField",
+      "type": "testincludesoption.common.ImportableSchema"
+    }
+  ]
+}
