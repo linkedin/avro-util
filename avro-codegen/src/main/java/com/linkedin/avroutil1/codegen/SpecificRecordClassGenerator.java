@@ -393,7 +393,7 @@ public class SpecificRecordClassGenerator {
     // All private fields
     for (AvroSchemaField field : recordSchema.getFields()) {
       FieldSpec.Builder fieldBuilder;
-      AvroType fieldAvroType = field.getSchemaOrRef().getDecl().type();
+      AvroType fieldAvroType = field.getSchemaOrRef().getSchema().type();
       Class<?> fieldClass = avroTypeToJavaClass(fieldAvroType);
       TypeName fieldType = getTypeName(field.getSchema(), fieldAvroType);
       if (fieldClass != null) {
@@ -696,8 +696,8 @@ public class SpecificRecordClassGenerator {
     customDecodeBuilder.addStatement("org.apache.avro.Schema.Field[] fieldOrder = in.readFieldOrderIfDiff()")
         .beginControlFlow("if (fieldOrder == null)");
     for(AvroSchemaField field : recordSchema.getFields()) {
-      customDecodeBuilder.addStatement(getSerializedCustomDecodeBlock(config, field.getSchemaOrRef().getDecl(),
-          field.getSchemaOrRef().getDecl().type(), field.getName()));
+      customDecodeBuilder.addStatement(getSerializedCustomDecodeBlock(config, field.getSchemaOrRef().getSchema(),
+          field.getSchemaOrRef().getSchema().type(), field.getName()));
     }
     // reset var counter
     sizeValCounter = 0;
@@ -709,7 +709,7 @@ public class SpecificRecordClassGenerator {
     for(AvroSchemaField field : recordSchema.getFields()) {
       customDecodeBuilder
           .addStatement(String.format("case %s: ",fieldIndex++)+ getSerializedCustomDecodeBlock(config,
-              field.getSchemaOrRef().getDecl(), field.getSchemaOrRef().getDecl().type(), field.getName()))
+              field.getSchemaOrRef().getSchema(), field.getSchemaOrRef().getSchema().type(), field.getName()))
       .addStatement("break");
     }
     customDecodeBuilder
@@ -857,7 +857,7 @@ public class SpecificRecordClassGenerator {
           }
           codeBlockBuilder.addStatement(
               getSerializedCustomDecodeBlock(config, fieldSchema, unionMember.getSchema().type(), fieldName));
-          if (unionMember.getDecl().type().equals(AvroType.NULL)) {
+          if (unionMember.getSchema().type().equals(AvroType.NULL)) {
             codeBlockBuilder.addStatement("$L = null", fieldName);
           }
           codeBlockBuilder.endControlFlow();
@@ -891,8 +891,8 @@ public class SpecificRecordClassGenerator {
       SpecificRecordGenerationConfig config) {
 
     for(AvroSchemaField field : recordSchema.getFields()) {
-      customEncodeBuilder.addStatement(getSerializedCustomEncodeBlock(config, field.getSchemaOrRef().getDecl(),
-          field.getSchemaOrRef().getDecl().type(), field.getName()));
+      customEncodeBuilder.addStatement(getSerializedCustomEncodeBlock(config, field.getSchemaOrRef().getSchema(),
+          field.getSchemaOrRef().getSchema().type(), field.getName()));
     }
   }
 
@@ -1016,7 +1016,7 @@ public class SpecificRecordClassGenerator {
         for (int i = 0; i < numberOfUnionMembers; i++) {
           SchemaOrRef unionMember = ((AvroUnionSchema) fieldSchema).getTypes().get(i);
           if (i == 0) {
-            if (unionMember.getDecl().type().equals(AvroType.NULL)) {
+            if (unionMember.getSchema().type().equals(AvroType.NULL)) {
               codeBlockBuilder.beginControlFlow("if ($L == null) ", fieldName);
             } else {
               codeBlockBuilder.beginControlFlow("if ($L instanceof $T) ", fieldName,
@@ -1024,7 +1024,7 @@ public class SpecificRecordClassGenerator {
             }
           } else {
             codeBlockBuilder.endControlFlow();
-            if (unionMember.getDecl().type().equals(AvroType.NULL)) {
+            if (unionMember.getSchema().type().equals(AvroType.NULL)) {
               codeBlockBuilder.beginControlFlow(" else if ($L == null) ", fieldName);
             } else {
               codeBlockBuilder.beginControlFlow(" else if ($L instanceof $T) ", fieldName,
@@ -1124,13 +1124,13 @@ public class SpecificRecordClassGenerator {
     switchBuilder.beginControlFlow("switch (field)");
     for (AvroSchemaField field : recordSchema.getFields()) {
 
-      Class<?> fieldClass = getFieldClass(field.getSchemaOrRef().getDecl().type(), config.getDefaultMethodStringRepresentation());
+      Class<?> fieldClass = getFieldClass(field.getSchemaOrRef().getSchema().type(), config.getDefaultMethodStringRepresentation());
       if(fieldClass != null) {
         switchBuilder.addStatement("case $L: $L = ($T) value; break", fieldIndex++, field.getName(),
             fieldClass);
       } else {
         switchBuilder.addStatement("case $L: $L = ($T) value; break", fieldIndex++, field.getName(),
-            getTypeName(field.getSchemaOrRef().getDecl(), field.getSchemaOrRef().getDecl().type()));
+            getTypeName(field.getSchemaOrRef().getSchema(), field.getSchemaOrRef().getSchema().type()));
       }
     }
     switchBuilder.addStatement("default: throw new org.apache.avro.AvroRuntimeException(\"Bad index\")")
@@ -1180,13 +1180,13 @@ public class SpecificRecordClassGenerator {
   }
 
   private void addFullyQualified(AvroSchemaField field, SpecificRecordGenerationConfig config) {
-    if(field.getSchemaOrRef().getDecl() != null) {
-      Class<?> fieldClass = getFieldClass(field.getSchemaOrRef().getDecl().type(), config.getDefaultFieldStringRepresentation());
+    if(field.getSchemaOrRef().getSchema() != null) {
+      Class<?> fieldClass = getFieldClass(field.getSchemaOrRef().getSchema().type(), config.getDefaultFieldStringRepresentation());
       if (fieldClass != null) {
         fullyQualifiedClassesInRecord.add(fieldClass.getName());
       } else {
         fullyQualifiedClassNamesInRecord.add(
-            getTypeName(field.getSchemaOrRef().getDecl(), field.getSchemaOrRef().getDecl().type()));
+            getTypeName(field.getSchemaOrRef().getSchema(), field.getSchemaOrRef().getSchema().type()));
       }
     }
   }
@@ -1198,13 +1198,13 @@ public class SpecificRecordClassGenerator {
         .addStatement("this.$1L = $1L", field.getName())
         .addModifiers(Modifier.PUBLIC);
 
-    if(field.getSchemaOrRef().getDecl() != null) {
-      Class<?> fieldClass = getFieldClass(field.getSchemaOrRef().getDecl().type(), config.getDefaultFieldStringRepresentation());
+    if(field.getSchemaOrRef().getSchema() != null) {
+      Class<?> fieldClass = getFieldClass(field.getSchemaOrRef().getSchema().type(), config.getDefaultFieldStringRepresentation());
       if (fieldClass != null) {
         methodSpecBuilder.addParameter(fieldClass, field.getName())
             .addModifiers(Modifier.PUBLIC);
       } else {
-        TypeName className = getTypeName(field.getSchemaOrRef().getDecl(), field.getSchemaOrRef().getDecl().type());
+        TypeName className = getTypeName(field.getSchemaOrRef().getSchema(), field.getSchemaOrRef().getSchema().type());
         methodSpecBuilder.addParameter(className, field.getName());
       }
     } else {
@@ -1217,17 +1217,17 @@ public class SpecificRecordClassGenerator {
   }
 
   private MethodSpec getGetterMethodSpec(AvroSchemaField field, SpecificRecordGenerationConfig config) {
-    AvroType fieldType = field.getSchemaOrRef().getDecl().type();
+    AvroType fieldType = field.getSchemaOrRef().getSchema().type();
 
     MethodSpec.Builder methodSpecBuilder = MethodSpec
         .methodBuilder(getMethodNameForFieldWithPrefix("get", field.getName())).addModifiers(Modifier.PUBLIC);
 
-    if(field.getSchemaOrRef().getDecl() != null) {
+    if(field.getSchemaOrRef().getSchema() != null) {
       Class<?> fieldClass = getFieldClass(fieldType, config.getDefaultMethodStringRepresentation());
       if (fieldClass != null) {
         methodSpecBuilder.returns(fieldClass);
       } else {
-        TypeName className = getTypeName(field.getSchemaOrRef().getDecl(), fieldType);
+        TypeName className = getTypeName(field.getSchemaOrRef().getSchema(), fieldType);
         methodSpecBuilder.returns(className);
       }
     } else {
@@ -1262,12 +1262,12 @@ public class SpecificRecordClassGenerator {
 
   private FieldSpec.Builder getFieldSpecBuilder(AvroSchemaField field, SpecificRecordGenerationConfig config) {
     FieldSpec.Builder fieldSpecBuilder;
-    if(field.getSchemaOrRef().getDecl() != null) {
-      Class<?> fieldClass = getFieldClass(field.getSchemaOrRef().getDecl().type(), config.getDefaultFieldStringRepresentation());
+    if(field.getSchemaOrRef().getSchema() != null) {
+      Class<?> fieldClass = getFieldClass(field.getSchemaOrRef().getSchema().type(), config.getDefaultFieldStringRepresentation());
       if (fieldClass != null) {
         fieldSpecBuilder = FieldSpec.builder(fieldClass, field.getName());
       } else {
-        TypeName className = getTypeName(field.getSchemaOrRef().getDecl(), field.getSchemaOrRef().getDecl().type());
+        TypeName className = getTypeName(field.getSchemaOrRef().getSchema(), field.getSchemaOrRef().getSchema().type());
         fieldSpecBuilder = FieldSpec.builder(className, field.getName());
       }
     } else {
@@ -1279,12 +1279,12 @@ public class SpecificRecordClassGenerator {
 
   private ParameterSpec getParameterSpecForField(AvroSchemaField field, SpecificRecordGenerationConfig config) {
     ParameterSpec.Builder parameterSpecBuilder = null;
-    if(field.getSchemaOrRef().getDecl() != null) {
-      Class<?> fieldClass = getFieldClass(field.getSchemaOrRef().getDecl().type(), config.getDefaultFieldStringRepresentation());
+    if(field.getSchemaOrRef().getSchema() != null) {
+      Class<?> fieldClass = getFieldClass(field.getSchemaOrRef().getSchema().type(), config.getDefaultFieldStringRepresentation());
       if (fieldClass != null) {
           parameterSpecBuilder = ParameterSpec.builder(fieldClass, field.getName());
       } else {
-        TypeName typeName = getTypeName(field.getSchemaOrRef().getDecl(), field.getSchemaOrRef().getDecl().type());
+        TypeName typeName = getTypeName(field.getSchemaOrRef().getSchema(), field.getSchemaOrRef().getSchema().type());
         parameterSpecBuilder = ParameterSpec.builder(typeName, field.getName());
       }
     } else {
@@ -1318,10 +1318,10 @@ public class SpecificRecordClassGenerator {
 
         if(isSingleTypeNullableUnionSchema(unionSchema)) {
           SchemaOrRef unionMemberSchemaOrRef = (unionSchema.getTypes().size() == 1) ? unionSchema.getTypes().get(0)
-              : (unionSchema.getTypes().get(0).getDecl().type().equals(AvroType.NULL) ? unionSchema.getTypes().get(1)
+              : (unionSchema.getTypes().get(0).getSchema().type().equals(AvroType.NULL) ? unionSchema.getTypes().get(1)
                   : unionSchema.getTypes().get(0));
 
-          className = ClassName.get(avroTypeToJavaClass(unionMemberSchemaOrRef.getDecl().type()));
+          className = ClassName.get(avroTypeToJavaClass(unionMemberSchemaOrRef.getSchema().type()));
         }
         break;
       case ARRAY:
@@ -1349,7 +1349,7 @@ public class SpecificRecordClassGenerator {
     if(unionSchema.getTypes().size() == 1) return true;
     if(unionSchema.getTypes().size()  == 2) {
       for(SchemaOrRef unionMember : unionSchema.getTypes()) {
-        if(AvroType.NULL.equals(unionMember.getDecl().type())) {
+        if(AvroType.NULL.equals(unionMember.getSchema().type())) {
           return true;
         }
       }
