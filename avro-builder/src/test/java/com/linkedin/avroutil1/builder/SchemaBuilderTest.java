@@ -102,24 +102,6 @@ public class SchemaBuilderTest {
     Assert.assertEquals(javaFiles.size(), 2);
   }
 
-  @Test(expectedExceptions = java.lang.UnsupportedOperationException.class, expectedExceptionsMessageRegExp = ".*unresolved referenced.*")
-  public void testImportableSchemasWithBadImport() throws Exception {
-    File simpleProjectRoot = new File(locateTestProjectsRoot(), "bad-import");
-    File inputFolder = new File(simpleProjectRoot, "input");
-    File includesFolder = new File(simpleProjectRoot, "common");
-    File outputFolder = new File(simpleProjectRoot, "output");
-    if (outputFolder.exists()) { //clear output
-      FileUtils.deleteDirectory(outputFolder);
-    }
-    //run the builder
-    SchemaBuilder.main(new String[] {
-        "--input", inputFolder.getAbsolutePath(),
-        "--include", includesFolder.getAbsolutePath(),
-        "--output", outputFolder.getAbsolutePath(),
-        "--generator", CodeGenerator.AVRO_UTIL.name()
-    });
-  }
-
   private File locateTestProjectsRoot() {
     //the current working directory for test execution varies across gradle and IDEs.
     //as such, we need to get creative to locate the folder
