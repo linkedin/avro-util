@@ -70,15 +70,15 @@ public class FileSystemSchemaSetProvider implements SchemaSetProvider {
   private static final Pattern UNDEFINED_TYPE_PATTERN = Pattern.compile("\"([\\w.]+)\" is not a defined name");
   //this is the avro error that indicates the definition of some record type was not found inside a union
   private static final Pattern UNDEFINED_NAME_PATTERN = Pattern.compile("Undefined name: \"([\\w.]+)\"");
-  private static final Set<Schema.Type> AVRO_NAMED_TYPES = Collections.unmodifiableSet(new HashSet<>(
-      Arrays.asList(Schema.Type.ENUM, Schema.Type.FIXED, Schema.Type.RECORD)));
+  private static final Set<Schema.Type> AVRO_NAMED_TYPES = Collections.unmodifiableSet(
+      new HashSet<>(Arrays.asList(Schema.Type.ENUM, Schema.Type.FIXED, Schema.Type.RECORD)));
 
   private final String schemaSuffix;
-  private final List<File> common;
+  private final List<File> nonImportableRoots;
   private final List<File> dirs;
   private final SchemaSet fallbackSchemaSet; //any schemas not found (defined) anywhere else will be looked-up here
 
-  enum ParseErrorHandling { Fail, Retry }
+  enum ParseErrorHandling {Fail, Retry}
 
   public FileSystemSchemaSetProvider(List<File> dirs) {
     this(dirs, new ArrayList<>(), DEFAULT_SCHEMA_SUFFIX);
@@ -88,13 +88,14 @@ public class FileSystemSchemaSetProvider implements SchemaSetProvider {
     this(dirs, common, DEFAULT_SCHEMA_SUFFIX);
   }
 
-  public FileSystemSchemaSetProvider(List<File> dirs, List<File> common, String schemaSuffix) {
-    this(dirs, common, schemaSuffix, null);
+  public FileSystemSchemaSetProvider(List<File> dirs, List<File> nonImportableRoots, String schemaSuffix) {
+    this(dirs, nonImportableRoots, schemaSuffix, null);
   }
 
-  public FileSystemSchemaSetProvider(List<File> dirs, List<File> common, String schemaSuffix, SchemaSet fallbackSchemaSet) {
+  public FileSystemSchemaSetProvider(List<File> dirs, List<File> nonImportableRoots, String schemaSuffix,
+      SchemaSet fallbackSchemaSet) {
     this.dirs = dirs;
-    this.common = common;
+    this.nonImportableRoots = nonImportableRoots;
     this.schemaSuffix = schemaSuffix;
     this.fallbackSchemaSet = fallbackSchemaSet;
   }
@@ -104,18 +105,16 @@ public class FileSystemSchemaSetProvider implements SchemaSetProvider {
     try {
       // Retry on parse errors so that types in common may reference other types also defined in common.
       Collection<Schema> allCommonSchemas;
-      if (common != null && !common.isEmpty()) {
-        SchemaSet commonSchemas = new SimpleSchemaSet();
-        loadSchemas(buildFileList(common), commonSchemas, true, new ArrayList<>(), ParseErrorHandling.Retry);
-        List<Schema> allRootCommonSchemas = commonSchemas.getAll(); //dup-free
-        allCommonSchemas = AvroSchemaUtil.getAllDefinedSchemas(allRootCommonSchemas).values(); //dup-free
-      } else {
-        allCommonSchemas = Collections.emptySet();
-      }
-
-      // Retry on parse errors so that types in dirs may reference other types also defined in dirs.
       SchemaSet schemas = new SimpleSchemaSet();
-      loadSchemas(buildFileList(dirs), schemas, topLevelOnly, allCommonSchemas, ParseErrorHandling.Retry);
+      loadSchemas(buildFileList(dirs), schemas, true, new ArrayList<>(), ParseErrorHandling.Retry);
+      List<Schema> allRootCommonSchemas = schemas.getAll(); //dup-free
+      allCommonSchemas = AvroSchemaUtil.getAllDefinedSchemas(allRootCommonSchemas).values(); //dup-free
+
+      if (nonImportableRoots != null && !nonImportableRoots.isEmpty()) {
+        // Retry on parse errors so that types in dirs may reference other types also defined in dirs.
+        loadSchemas(buildFileList(nonImportableRoots), schemas, topLevelOnly, allCommonSchemas,
+            ParseErrorHandling.Retry);
+      }
       return schemas;
     } catch (IOException e) {
       throw new RuntimeException(e);
@@ -133,8 +132,8 @@ public class FileSystemSchemaSetProvider implements SchemaSetProvider {
    * @param option behavious on parse error
    * @throws IOException
    */
-  void loadSchemas(List<File> inputFiles, SchemaSet schemas, boolean topLevelOnly, Collection<Schema> common, ParseErrorHandling option)
-      throws IOException {
+  void loadSchemas(List<File> inputFiles, SchemaSet schemas, boolean topLevelOnly, Collection<Schema> common,
+      ParseErrorHandling option) throws IOException {
 
     //FQCNs of schemas that avro has not found during the pass
     Set<String> missingSchemaFQCNs = new HashSet<>();
@@ -144,7 +143,8 @@ public class FileSystemSchemaSetProvider implements SchemaSetProvider {
       missingSchemaFQCNs.clear();
       List<Exception> parseExceptions = new ArrayList<Exception>();
       List<File> failedFiles = new ArrayList<File>();
-      int successfullyParsed = 0; //avsc files we have successfully parsed this pass (meaning we had all their dependencies)
+      int successfullyParsed =
+          0; //avsc files we have successfully parsed this pass (meaning we had all their dependencies)
 
       // 'successfullyParsedSchemas' starts out having just the contents of 'common'.
       // It grows with each iteration of the while loop.
@@ -152,16 +152,18 @@ public class FileSystemSchemaSetProvider implements SchemaSetProvider {
       for (Schema commonSchema : common) {
         Schema other = successfullyParsedSchemas.put(commonSchema.getFullName(), commonSchema);
         if (other != null) {
-          throw new IllegalArgumentException("duplicate schema definition found for " + commonSchema.getFullName()
-              + ": " + other + " vs " + commonSchema);
+          throw new IllegalArgumentException(
+              "duplicate schema definition found for " + commonSchema.getFullName() + ": " + other + " vs "
+                  + commonSchema);
         }
       }
       for (Schema previouslyParsed : schemas.getAll()) {
         String fqcn = previouslyParsed.getFullName();
         Schema other = successfullyParsedSchemas.put(fqcn, previouslyParsed);
         if (other != null && !(identicalDupSchemaNames.contains(fqcn))) {
-          throw new IllegalArgumentException("duplicate parsed schema definition found for " + fqcn
-              + ": common " + other + " vs input " + previouslyParsed);
+          throw new IllegalArgumentException(
+              "duplicate parsed schema definition found for " + fqcn + ": common " + other + " vs input "
+                  + previouslyParsed);
         }
       }
 
@@ -179,8 +181,8 @@ public class FileSystemSchemaSetProvider implements SchemaSetProvider {
               identicalDupSchemaNames.add(fqcn);
               if (!parsedBefore.equals(newlyParsed)) {
                 throw new IllegalArgumentException(
-                    "duplicate DIFFERENT schema definitions found while parsing " + file.getAbsolutePath() + " for " + fqcn + ": "
-                        + newlyParsed + " vs " + parsedBefore);
+                    "duplicate DIFFERENT schema definitions found while parsing " + file.getAbsolutePath() + " for "
+                        + fqcn + ": " + newlyParsed + " vs " + parsedBefore);
               }
             }
           }
@@ -189,7 +191,8 @@ public class FileSystemSchemaSetProvider implements SchemaSetProvider {
           String message = e.getMessage();
           if (message != null && message.contains("Can't redefine:")) {
             //this exception indicates a duplicate definition. these are fatal
-            throw new IllegalArgumentException("duplicate schema definition found while parsing " + file.getAbsolutePath(), e);
+            throw new IllegalArgumentException(
+                "duplicate schema definition found while parsing " + file.getAbsolutePath(), e);
           }
           if (option == ParseErrorHandling.Retry) {
             // This exception could indicate that a type is referenced in the schema which is not yet
@@ -209,7 +212,8 @@ public class FileSystemSchemaSetProvider implements SchemaSetProvider {
         //did we still fail to make any progress ? throw the 1st exception encountered as the cause.
         Exception e = parseExceptions.get(0);
         File file = failedFiles.get(0);
-        throw new RuntimeException(String.format("Failed to load file %s: %s", file, e.getMessage()), parseExceptions.get(0));
+        throw new RuntimeException(String.format("Failed to load file %s: %s", file, e.getMessage()),
+            parseExceptions.get(0));
       }
 
       files = failedFiles;
@@ -285,7 +289,8 @@ public class FileSystemSchemaSetProvider implements SchemaSetProvider {
    * @param known set of previously successfully parsed schemas
    * @throws IOException on errors
    */
-  private void loadSchema(File f, SchemaSet schemas, boolean topLevelOnly, Collection<Schema> known) throws IOException {
+  private void loadSchema(File f, SchemaSet schemas, boolean topLevelOnly, Collection<Schema> known)
+      throws IOException {
     if (!f.exists() || !f.canRead()) {
       throw new IllegalArgumentException("File does not exist or cannot be read: " + f.getAbsolutePath());
     }
@@ -309,7 +314,7 @@ public class FileSystemSchemaSetProvider implements SchemaSetProvider {
           schemas.add(contained);
         }
       }
-    } catch ( JsonProcessingException e) {
+    } catch (JsonProcessingException e) {
       //this catches json processing exceptions (from jackson 1.* or 2.*, as different versions of avro use either)
       //this DOES NOT catch avro exceptions (that may happen after json parsing is done) as they are handled by the caller
       LOGGER.error("exception parsing avro file {}", f.getAbsolutePath(), e);

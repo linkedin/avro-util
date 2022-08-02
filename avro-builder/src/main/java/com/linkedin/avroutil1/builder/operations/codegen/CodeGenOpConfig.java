@@ -25,7 +25,7 @@ public class CodeGenOpConfig {
   //inputs
 
   List<File> inputRoots;
-  List<File> includeRoots;
+  List<File> nonImportableSourceRoots;
   boolean includeClasspath;
 
   //outputs
@@ -45,7 +45,7 @@ public class CodeGenOpConfig {
 
   public CodeGenOpConfig(
       List<File> inputRoots,
-      List<File> includeRoots,
+      List<File> nonImportableSourceRoots,
       boolean includeClasspath,
       File outputSpecificRecordClassesRoot,
       File outputExpandedSchemasRoot,
@@ -57,7 +57,7 @@ public class CodeGenOpConfig {
       boolean avro702Handling
   ) {
     this.inputRoots = inputRoots;
-    this.includeRoots = includeRoots;
+    this.nonImportableSourceRoots = nonImportableSourceRoots;
     this.includeClasspath = includeClasspath;
     this.outputSpecificRecordClassesRoot = outputSpecificRecordClassesRoot;
     this.outputExpandedSchemasRoot = outputExpandedSchemasRoot;
@@ -80,12 +80,12 @@ public class CodeGenOpConfig {
     validateInput(inputRoots, "input");
     List<File> inputsAndIncludes = new ArrayList<>(inputRoots);
 
-    if (includeRoots != null) {
-      if (includeRoots.isEmpty()) {
-        includeRoots = null;
+    if (nonImportableSourceRoots != null) {
+      if (nonImportableSourceRoots.isEmpty()) {
+        nonImportableSourceRoots = null;
       } else {
-        validateInput(includeRoots, "include");
-        inputsAndIncludes.addAll(includeRoots);
+        validateInput(nonImportableSourceRoots, "non-importable-source");
+        inputsAndIncludes.addAll(nonImportableSourceRoots);
       }
     }
 
@@ -125,8 +125,8 @@ public class CodeGenOpConfig {
     return inputRoots;
   }
 
-  public List<File> getIncludeRoots() {
-    return includeRoots;
+  public List<File> getNonImportableSourceRoots() {
+    return nonImportableSourceRoots;
   }
 
   public boolean isIncludeClasspath() {

@@ -55,33 +55,30 @@ public class AvroUtilCodeGenOp implements Operation {
     }
 
     Set<File> avscFiles = new HashSet<>();
-    Set<File> importableFiles = new HashSet<>();
+    Set<File> nonImportableFiles = new HashSet<>();
     String[] extensions = new String[]{BuilderConsts.AVSC_EXTENSION};
 
     for (File inputRoot : config.getInputRoots()) {
       avscFiles.addAll(FileUtils.listFiles(inputRoot, extensions, true));
     }
 
-    if (config.getIncludeRoots() != null) {
-      for (File includeRoot : config.getIncludeRoots()) {
-        importableFiles.addAll(FileUtils.listFiles(includeRoot, extensions, true));
+    if (config.getNonImportableSourceRoots() != null) {
+      for (File nonImportableRoot : config.getNonImportableSourceRoots()) {
+        nonImportableFiles.addAll(FileUtils.listFiles(nonImportableRoot, extensions, true));
       }
     }
 
-    // If there are no importable files, then all of avscFiles should be marked as importable.
-    boolean areAvscFilesImportable = importableFiles.isEmpty();
-
-    if (avscFiles.isEmpty() && importableFiles.isEmpty()) {
+    if (avscFiles.isEmpty() && nonImportableFiles.isEmpty()) {
       LOGGER.warn("no input schema files were found under roots " + config.getInputRoots());
       return;
     }
-    LOGGER.info("found " + (avscFiles.size() + importableFiles.size()) + " avsc schema files");
+    LOGGER.info("found " + (avscFiles.size() + nonImportableFiles.size()) + " avsc schema files");
 
     AvroParseContext context = new AvroParseContext();
     List<AvscParseResult> parsedFiles = new ArrayList<>();
 
-    parseAvscFiles(importableFiles, true, context, parsedFiles);
-    parseAvscFiles(avscFiles, areAvscFilesImportable, context, parsedFiles);
+    parseAvscFiles(avscFiles, true, context, parsedFiles);
+    parseAvscFiles(nonImportableFiles, false, context, parsedFiles);
 
     //resolve any references across files that are part of this op (anything left would be external)
     context.resolveReferences();

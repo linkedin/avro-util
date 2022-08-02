@@ -90,8 +90,8 @@ public class SchemaBuilderTest {
     }
     //run the builder
     SchemaBuilder.main(new String[] {
-        "--input", inputFolder.getAbsolutePath(),
-        "--include", includesFolder.getAbsolutePath(),
+        "--input", includesFolder.getAbsolutePath(),
+        "--non-importable-source", inputFolder.getAbsolutePath(),
         "--output", outputFolder.getAbsolutePath(),
         "--generator", CodeGenerator.AVRO_UTIL.name()
     });

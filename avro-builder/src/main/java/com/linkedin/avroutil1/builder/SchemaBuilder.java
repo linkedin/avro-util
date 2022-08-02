@@ -45,7 +45,7 @@ public class SchemaBuilder {
     OptionSpec<String> inputOpt = parser.accepts("input", "Schema or directory of schemas to compile [REQUIRED]")
         .withRequiredArg().required()
         .describedAs("file");
-    OptionSpec<String> includesOpt = parser.accepts("include", "Common schemas")
+    OptionSpec<String> nonImportableSourceOpt = parser.accepts("non-importable-source", "source schemas that cannot be used as imports by other schemas")
         .withOptionalArg()
         .describedAs("file")
         .withValuesSeparatedBy(File.pathSeparatorChar);
@@ -103,9 +103,9 @@ public class SchemaBuilder {
 
     List<File> inputs = AvroSchemaBuilderUtils.toFiles(options.valuesOf(inputOpt));
 
-    List<File> includes = null;
-    if (options.has(includesOpt)) {
-      includes = AvroSchemaBuilderUtils.toFiles(options.valuesOf(includesOpt));
+    List<File> nonImportableSources = null;
+    if (options.has(nonImportableSourceOpt)) {
+      nonImportableSources = AvroSchemaBuilderUtils.toFiles(options.valuesOf(nonImportableSourceOpt));
     }
 
     boolean includeFromClasspath = false;
@@ -186,7 +186,7 @@ public class SchemaBuilder {
 
     CodeGenOpConfig opConfig = new CodeGenOpConfig(
         inputs,
-        includes,
+        nonImportableSources,
         includeFromClasspath,
         outputDir,
         expandedSchemasDir,
