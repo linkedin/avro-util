@@ -21,8 +21,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -59,7 +57,6 @@ public class AvroUtilCodeGenOp implements Operation {
     Set<File> avscFiles = new HashSet<>();
     Set<File> importableFiles = new HashSet<>();
     String[] extensions = new String[]{BuilderConsts.AVSC_EXTENSION};
-
 
     for (File inputRoot : config.getInputRoots()) {
       avscFiles.addAll(FileUtils.listFiles(inputRoot, extensions, true));
