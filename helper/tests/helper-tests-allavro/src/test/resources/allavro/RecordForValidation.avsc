@@ -1,0 +1,14 @@
+{
+  "type": "record",
+  "namespace": "allavro",
+  "name": "RecordForValidation",
+  "fields": [
+    { "name": "nullField", "type": "null" },
+    { "name": "booleanField", "type": "boolean" },
+    { "name": "optionalBooleanField", "type": ["null","boolean"] },
+    { "name": "intField", "type": "int" },
+    { "name": "optionalIntField", "type": ["null","int"] },
+    { "name": "stringField", "type": "string" },
+    { "name": "optionalStringField", "type": ["null","string"] }
+  ]
+}
