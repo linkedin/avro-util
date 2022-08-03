@@ -1283,6 +1283,313 @@ public class FastGenericDeserializerGeneratorTest {
     Assert.assertEquals(subRecordSchema.hashCode(), ((GenericRecord) backwardRecord.get("record2")).getSchema().hashCode());
   }
 
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldFailLikeVanillaAvroWhenReadingUnionTypeWithIncompatibleNonUnionType(Implementation implementation) {
+    // given
+    Schema unionRecordSchema = createRecord("record", createUnionField("someField", Schema.create(Schema.Type.INT), Schema.create(Schema.Type.STRING)));
+    Schema recordSchema = createRecord("record", createField("someField", Schema.create(Schema.Type.INT)));
+
+    GenericData.Record record = new GenericData.Record(unionRecordSchema);
+    record.put("someField", "string");
+
+    // when & then
+    Assert.assertThrows(AvroTypeException.class, () -> implementation.decode(unionRecordSchema, recordSchema, genericDataAsDecoder(record)));
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadTopLevelNonUnionTypesWithUnionTypes(Implementation implementation) {
+    // given
+    Schema recordSchema = createRecord("record", createField("someInt", Schema.create(Schema.Type.INT)));
+    Schema unionRecordSchema = createUnionSchema(recordSchema);
+
+
+    GenericData.Record record = new GenericData.Record(recordSchema);
+    record.put("someInt", 1);
+
+    // when
+    GenericRecord recordA = implementation.decode(recordSchema, unionRecordSchema, genericDataAsDecoder(record));
+
+    // then
+    Assert.assertEquals(recordA.get("someInt"), 1);
+
+
+    // given
+    Schema arrayRecordSchema = Schema.createArray(recordSchema);
+    Schema unionArrayRecordSchema = createUnionSchema(arrayRecordSchema);
+
+    GenericData.Array<GenericData.Record> array = new GenericData.Array<>(2, arrayRecordSchema);
+    array.add(record);
+    array.add(record);
+
+    // when
+    GenericData.Array<GenericData.Record> arrayA = implementation.decode(arrayRecordSchema, unionArrayRecordSchema, genericDataAsDecoder(array));
+
+    // then
+    Assert.assertEquals(arrayA.size(), 2);
+    Assert.assertEquals(arrayA.get(0).get("someInt"), 1);
+    Assert.assertEquals(arrayA.get(1).get("someInt"), 1);
+
+    // given
+    Schema mapRecordSchema = Schema.createMap(recordSchema);
+    Schema unionMapRecordSchema = createUnionSchema(mapRecordSchema);
+
+    Map<String, GenericData.Record> map = new HashMap<>();
+    map.put("one", record);
+    map.put("two", record);
+
+    // when
+    Map<Utf8, GenericData.Record> mapA = implementation.decode(mapRecordSchema, unionMapRecordSchema, genericDataAsDecoder(map, mapRecordSchema));
+
+    // then
+    Assert.assertEquals(mapA.size(), 2);
+    Assert.assertEquals(mapA.get(new Utf8("one")).get("someInt"), 1);
+    Assert.assertEquals(mapA.get(new Utf8("two")).get("someInt"), 1);
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadTopLevelUnionTypesWithCompatibleNonUnionTypes(Implementation implementation) {
+    // given
+    Schema recordSchema = createRecord("record", createField("someInt", Schema.create(Schema.Type.INT)));
+    Schema unionRecordSchema = createUnionSchema(recordSchema);
+
+
+    GenericData.Record record = new GenericData.Record(recordSchema);
+    record.put("someInt", 1);
+
+    // when
+    GenericRecord recordA = implementation.decode(unionRecordSchema, recordSchema, genericDataAsDecoder(record, unionRecordSchema));
+
+    // then
+    Assert.assertEquals(recordA.get("someInt"), 1);
+
+
+    // given
+    Schema arrayRecordSchema = Schema.createArray(recordSchema);
+    Schema unionArrayRecordSchema = createUnionSchema(arrayRecordSchema);
+
+    GenericData.Array<GenericData.Record> array = new GenericData.Array<>(2, arrayRecordSchema);
+    array.add(record);
+    array.add(record);
+
+    // when
+    GenericData.Array<GenericData.Record> arrayA = implementation.decode(unionArrayRecordSchema, arrayRecordSchema, genericDataAsDecoder(array, unionArrayRecordSchema));
+
+    // then
+    Assert.assertEquals(arrayA.size(), 2);
+    Assert.assertEquals(arrayA.get(0).get("someInt"), 1);
+    Assert.assertEquals(arrayA.get(1).get("someInt"), 1);
+
+    // given
+    Schema mapRecordSchema = Schema.createMap(recordSchema);
+    Schema unionMapRecordSchema = createUnionSchema(mapRecordSchema);
+
+    Map<String, GenericData.Record> map = new HashMap<>();
+    map.put("one", record);
+    map.put("two", record);
+
+    // when
+    Map<Utf8, GenericData.Record> mapA = implementation.decode(unionMapRecordSchema, mapRecordSchema, genericDataAsDecoder(map, unionMapRecordSchema));
+
+    // then
+    Assert.assertEquals(mapA.size(), 2);
+    Assert.assertEquals(mapA.get(new Utf8("one")).get("someInt"), 1);
+    Assert.assertEquals(mapA.get(new Utf8("two")).get("someInt"), 1);
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldBidirectionallyReadPrimitiveWithUnionPrimitive(Implementation implementation) {
+    // given
+    Schema recordSchema1 = createRecord("record", createField("someInt", Schema.create(Schema.Type.INT)));
+    Schema recordSchema2 = createRecord("record", createUnionField("someInt", Schema.create(Schema.Type.INT)));
+
+    GenericData.Record record = new GenericData.Record(recordSchema1);
+    record.put("someInt", 1);
+
+    // when
+    GenericRecord recordA = implementation.decode(recordSchema1, recordSchema2, genericDataAsDecoder(record));
+
+    // then
+    Assert.assertEquals(recordA.get("someInt"), 1);
+
+    // given
+    record = new GenericData.Record(recordSchema2);
+    record.put("someInt", 1);
+
+    // when
+    GenericRecord recordB = implementation.decode(recordSchema2, recordSchema1, genericDataAsDecoder(record));
+
+    // then
+    Assert.assertEquals(recordB.get("someInt"), 1);
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldBidirectionallyReadRecordWithUnionRecord(Implementation implementation) {
+    // given
+    Schema subRecordSchema = createRecord("subRecord", createField("someInt1", Schema.create(Schema.Type.INT)),
+            createField("someInt2", Schema.create(Schema.Type.INT)));
+
+    Schema recordSchema = createRecord("record", createField("subRecord", subRecordSchema));
+    Schema recordSchemaWithUnion = createRecord("record", createField("subRecord", createUnionSchema(subRecordSchema)));
+
+    GenericData.Record subRecord = new GenericData.Record(subRecordSchema);
+    subRecord.put("someInt1", 1);
+    subRecord.put("someInt2", 2);
+
+    GenericData.Record record = new GenericData.Record(recordSchema);
+    record.put("subRecord", subRecord);
+
+    // when
+    GenericRecord recordA = implementation.decode(recordSchema, recordSchemaWithUnion, genericDataAsDecoder(record));
+
+    // then
+    Assert.assertNotNull(recordA.get("subRecord"));
+    Assert.assertEquals(((GenericData.Record) recordA.get("subRecord")).get("someInt1"), 1);
+    Assert.assertEquals(((GenericData.Record) recordA.get("subRecord")).get("someInt2"), 2);
+
+    // given
+    record = new GenericData.Record(recordSchemaWithUnion);
+    record.put("subRecord", subRecord);
+
+    // when
+    GenericRecord recordB = implementation.decode(recordSchemaWithUnion, recordSchema, genericDataAsDecoder(record));
+
+    // then
+    Assert.assertNotNull(recordB.get("subRecord"));
+    Assert.assertEquals(((GenericData.Record) recordB.get("subRecord")).get("someInt1"), 1);
+    Assert.assertEquals(((GenericData.Record) recordB.get("subRecord")).get("someInt2"), 2);
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldBidirectionallyReadArrayWithUnionArray(Implementation implementation) {
+    // given
+    Schema recordWithArraySchema = createRecord("record", createArrayFieldSchema("someInts", Schema.create(Schema.Type.INT)));
+    Schema recordWithUnionArraySchema = createRecord("record", createUnionField("someInts", Schema.create(Schema.Type.NULL), Schema.createArray(Schema.create(Schema.Type.INT))));
+
+    List<Integer> expected = Arrays.asList(1, 2, 3, 4, 5);
+    GenericData.Record record = new GenericData.Record(recordWithArraySchema);
+    record.put("someInts", expected);
+
+    // when
+    GenericRecord recordA = implementation.decode(recordWithArraySchema, recordWithUnionArraySchema, genericDataAsDecoder(record));
+
+    // then
+    for (int i = 0; i < expected.size(); i++) {
+      Assert.assertEquals(((List<Integer>) recordA.get("someInts")).get(i), expected.get(i));
+    }
+
+    record = new GenericData.Record(recordWithUnionArraySchema);
+    record.put("someInts", expected);
+
+    // when
+    GenericRecord recordB = implementation.decode(recordWithUnionArraySchema, recordWithArraySchema, genericDataAsDecoder(record));
+
+    // then
+    for (int i = 0; i < expected.size(); i++) {
+      Assert.assertEquals(((List<Integer>) recordB.get("someInts")).get(i), expected.get(i));
+    }
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldBidirectionallyReadArrayWithUnionArrayOfUnionValues(Implementation implementation) {
+    // given
+    Schema recordWithArraySchema = createRecord("record", createArrayFieldSchema("someInts", Schema.create(Schema.Type.INT)));
+    Schema recordWithUnionArrayOfUnionValuesSchema = createRecord("record", createUnionField("someInts", Schema.create(Schema.Type.NULL),
+            Schema.createArray(Schema.createUnion(Arrays.asList(Schema.create(Schema.Type.INT), Schema.create(Schema.Type.NULL))))));
+
+    List<Integer> expected = Arrays.asList(1, 2, 3, 4, 5);
+    GenericData.Record record = new GenericData.Record(recordWithArraySchema);
+    record.put("someInts", expected);
+
+    // when
+    GenericRecord recordA = implementation.decode(recordWithArraySchema, recordWithUnionArrayOfUnionValuesSchema, genericDataAsDecoder(record));
+
+    // then
+
+    for (int i = 0; i < expected.size(); i++) {
+      Assert.assertEquals(((List<Integer>) recordA.get("someInts")).get(i), expected.get(i));
+    }
+
+    // given
+    record = new GenericData.Record(recordWithUnionArrayOfUnionValuesSchema);
+    record.put("someInts", expected);
+
+    // when
+    GenericRecord recordB = implementation.decode(recordWithUnionArrayOfUnionValuesSchema, recordWithArraySchema, genericDataAsDecoder(record));
+
+    // then
+    for (int i = 0; i < expected.size(); i++) {
+      Assert.assertEquals(((List<Integer>) recordB.get("someInts")).get(i), expected.get(i));
+    }
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldBidirectionallyReadMapWithUnionMap(Implementation implementation) {
+    // given
+    Schema recordWithMapSchema = createRecord("record", createMapFieldSchema("someInts", Schema.create(Schema.Type.INT)));
+    Schema recordWithUnionMapSchema = createRecord("record", createUnionField("someInts", Schema.create(Schema.Type.NULL), Schema.createMap(Schema.create(Schema.Type.INT))));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("1", 1);
+    map.put("2", 2);
+    map.put("3", 3);
+    GenericData.Record record = new GenericData.Record(recordWithMapSchema);
+    record.put("someInts", map);
+
+    // when
+    GenericRecord recordA = implementation.decode(recordWithMapSchema, recordWithUnionMapSchema, genericDataAsDecoder(record));
+
+    // then
+    Assert.assertEquals(((Map<Utf8,Integer>) recordA.get("someInts")).get(new Utf8("1")), Integer.valueOf(1));
+    Assert.assertEquals(((Map<Utf8,Integer>) recordA.get("someInts")).get(new Utf8("2")), Integer.valueOf(2));
+    Assert.assertEquals(((Map<Utf8,Integer>) recordA.get("someInts")).get(new Utf8("3")), Integer.valueOf(3));
+
+    // given
+    record = new GenericData.Record(recordWithUnionMapSchema);
+    record.put("someInts", map);
+
+    // when
+    GenericRecord recordB = implementation.decode(recordWithUnionMapSchema, recordWithMapSchema, genericDataAsDecoder(record));
+
+    // then
+    Assert.assertEquals(((Map<Utf8,Integer>) recordB.get("someInts")).get(new Utf8("1")), Integer.valueOf(1));
+    Assert.assertEquals(((Map<Utf8,Integer>) recordB.get("someInts")).get(new Utf8("2")), Integer.valueOf(2));
+    Assert.assertEquals(((Map<Utf8,Integer>) recordB.get("someInts")).get(new Utf8("3")), Integer.valueOf(3));
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldBidirectionallyReadMapWithUnionMapOfUnionValues(Implementation implementation) {
+    // given
+    Schema recordWithMapSchema = createRecord("record", createMapFieldSchema("someInts", Schema.create(Schema.Type.INT)));
+    Schema recordWithUnionMapOfUnionValuesSchema = createRecord("record", createUnionField("someInts", Schema.create(Schema.Type.NULL),
+            Schema.createMap(Schema.createUnion(Arrays.asList(Schema.create(Schema.Type.NULL), Schema.create(Schema.Type.INT))))));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("1", 1);
+    map.put("2", 2);
+    map.put("3", 3);
+    GenericData.Record record = new GenericData.Record(recordWithMapSchema);
+    record.put("someInts", map);
+
+    // when
+    GenericRecord recordA = implementation.decode(recordWithMapSchema, recordWithUnionMapOfUnionValuesSchema, genericDataAsDecoder(record));
+
+    // then
+    Assert.assertEquals(((Map<Utf8,Integer>) recordA.get("someInts")).get(new Utf8("1")), Integer.valueOf(1));
+    Assert.assertEquals(((Map<Utf8,Integer>) recordA.get("someInts")).get(new Utf8("2")), Integer.valueOf(2));
+    Assert.assertEquals(((Map<Utf8,Integer>) recordA.get("someInts")).get(new Utf8("3")), Integer.valueOf(3));
+
+    record = new GenericData.Record(recordWithUnionMapOfUnionValuesSchema);
+    record.put("someInts", map);
+
+    // when
+    GenericRecord recordB = implementation.decode(recordWithUnionMapOfUnionValuesSchema, recordWithMapSchema, genericDataAsDecoder(record));
+
+    // then
+    Assert.assertEquals(((Map<Utf8,Integer>) recordB.get("someInts")).get(new Utf8("1")), Integer.valueOf(1));
+    Assert.assertEquals(((Map<Utf8,Integer>) recordB.get("someInts")).get(new Utf8("2")), Integer.valueOf(2));
+    Assert.assertEquals(((Map<Utf8,Integer>) recordB.get("someInts")).get(new Utf8("3")), Integer.valueOf(3));
+  }
+
   private static <T> T decodeRecordColdFast(Schema writerSchema, Schema readerSchema, Decoder decoder) {
     FastDeserializer<T> deserializer =
         new FastSerdeCache.FastDeserializerWithAvroGenericImpl<>(writerSchema, readerSchema);
