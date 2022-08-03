@@ -58,7 +58,6 @@ public class SchemaBuilderTest {
     Assert.assertEquals(txtFiles.size(), 1);
   }
 
-  //TODO - complete this
   @Test
   public void testSimpleProjectUsingOwnCodegen() throws Exception {
     File simpleProjectRoot = new File(locateTestProjectsRoot(), "simple-project");
@@ -78,6 +77,29 @@ public class SchemaBuilderTest {
         (path, basicFileAttributes) -> path.getFileName().toString().endsWith(".java")
     ).collect(Collectors.toList());
     Assert.assertEquals(javaFiles.size(), 1);
+  }
+
+  @Test
+  public void testImportableSchemasUsingOwnCodegen() throws Exception {
+    File simpleProjectRoot = new File(locateTestProjectsRoot(), "test-includes-option");
+    File inputFolder = new File(simpleProjectRoot, "input");
+    File includesFolder = new File(simpleProjectRoot, "common");
+    File outputFolder = new File(simpleProjectRoot, "output");
+    if (outputFolder.exists()) { //clear output
+      FileUtils.deleteDirectory(outputFolder);
+    }
+    //run the builder
+    SchemaBuilder.main(new String[] {
+        "--input", includesFolder.getAbsolutePath(),
+        "--non-importable-source", inputFolder.getAbsolutePath(),
+        "--output", outputFolder.getAbsolutePath(),
+        "--generator", CodeGenerator.AVRO_UTIL.name()
+    });
+    //see output was generated
+    List<Path> javaFiles = Files.find(outputFolder.toPath(), 5,
+        (path, basicFileAttributes) -> path.getFileName().toString().endsWith(".java")
+    ).collect(Collectors.toList());
+    Assert.assertEquals(javaFiles.size(), 2);
   }
 
   private File locateTestProjectsRoot() {

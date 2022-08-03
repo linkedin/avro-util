@@ -21,12 +21,13 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.tools.JavaFileObject;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,38 +47,38 @@ public class AvroUtilCodeGenOp implements Operation {
 
   @Override
   public void run(OperationContext opContext) throws Exception {
-    //mkdir any output folders that dont exist
+    //mkdir any output folders that don't exist
     if (!config.getOutputSpecificRecordClassesRoot().exists() && !config.getOutputSpecificRecordClassesRoot()
         .mkdirs()) {
       throw new IllegalStateException(
           "unable to create destination folder " + config.getOutputSpecificRecordClassesRoot());
     }
 
-    List<Path> avscFiles = new ArrayList<>();
+    Set<File> avscFiles = new HashSet<>();
+    Set<File> nonImportableFiles = new HashSet<>();
+    String[] extensions = new String[]{BuilderConsts.AVSC_EXTENSION};
+
     for (File inputRoot : config.getInputRoots()) {
-      Files.walk(inputRoot.toPath())
-          .filter(path -> path.getFileName().toString().endsWith("." + BuilderConsts.AVSC_EXTENSION))
-          .forEach(avscFiles::add);
+      avscFiles.addAll(FileUtils.listFiles(inputRoot, extensions, true));
     }
-    if (avscFiles.isEmpty()) {
+
+    if (config.getNonImportableSourceRoots() != null) {
+      for (File nonImportableRoot : config.getNonImportableSourceRoots()) {
+        nonImportableFiles.addAll(FileUtils.listFiles(nonImportableRoot, extensions, true));
+      }
+    }
+
+    if (avscFiles.isEmpty() && nonImportableFiles.isEmpty()) {
       LOGGER.warn("no input schema files were found under roots " + config.getInputRoots());
       return;
     }
-    LOGGER.info("found " + avscFiles.size() + " avsc schema files");
+    LOGGER.info("found " + (avscFiles.size() + nonImportableFiles.size()) + " avsc schema files");
 
     AvroParseContext context = new AvroParseContext();
-    AvscParser parser = new AvscParser();
-    List<AvscParseResult> parsedFiles = new ArrayList<>();
+    Set<AvscParseResult> parsedFiles = new HashSet<>();
 
-    for (Path p : avscFiles) {
-      AvscParseResult fileParseResult = parser.parse(p);
-      Throwable parseError = fileParseResult.getParseError();
-      if (parseError != null) {
-        throw new IllegalArgumentException("failed to parse file " + p.toAbsolutePath(), parseError);
-      }
-      context.add(fileParseResult);
-      parsedFiles.add(fileParseResult);
-    }
+    parsedFiles.addAll(parseAvscFiles(avscFiles, true, context));
+    parsedFiles.addAll(parseAvscFiles(nonImportableFiles, false, context));
 
     //resolve any references across files that are part of this op (anything left would be external)
     context.resolveReferences();
@@ -99,8 +100,32 @@ public class AvroUtilCodeGenOp implements Operation {
 
     writeJavaFilesToDisk(specificRecords, config.getOutputSpecificRecordClassesRoot());
 
-    //TODO - look for dups
+    // TODO - look for dups
 
+  }
+
+  /**
+   * A helper to parse avsc files.
+   *
+   * @param avscFiles Avsc files to parse
+   * @param areFilesImportable whether to allow other avsc files to import from this avsc file
+   * @param context the full parsing context for this "run".
+   * @return a set of all the parsed file results (a Set of AvscParseResult)
+   */
+  private Set<AvscParseResult> parseAvscFiles(Set<File> avscFiles, boolean areFilesImportable,
+      AvroParseContext context) {
+    AvscParser parser = new AvscParser();
+    HashSet<AvscParseResult> parsedFiles = new HashSet<>();
+    for (File p : avscFiles) {
+      AvscParseResult fileParseResult = parser.parse(p);
+      Throwable parseError = fileParseResult.getParseError();
+      if (parseError != null) {
+        throw new IllegalArgumentException("failed to parse file " + p.getAbsolutePath(), parseError);
+      }
+      context.add(fileParseResult, areFilesImportable);
+      parsedFiles.add(fileParseResult);
+    }
+    return parsedFiles;
   }
 
   private void writeJavaFilesToDisk(Collection<JavaFileObject> javaClassFiles, File outputFolder) {

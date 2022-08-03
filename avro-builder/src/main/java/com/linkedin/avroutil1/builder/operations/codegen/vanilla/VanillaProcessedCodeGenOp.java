@@ -71,7 +71,7 @@ public class VanillaProcessedCodeGenOp implements Operation {
 
     FileSystemSchemaSetProvider provider = new FileSystemSchemaSetProvider(
         config.getInputRoots(),
-        config.getIncludeRoots(),
+        config.getNonImportableSourceRoots(),
         FileSystemSchemaSetProvider.DEFAULT_SCHEMA_SUFFIX,
         cpLookup
     );
@@ -90,8 +90,8 @@ public class VanillaProcessedCodeGenOp implements Operation {
 
     Set<File> avroFiles = new HashSet<>();
     String[] extensions = new String[]{BuilderConsts.AVSC_EXTENSION};
-    if (config.getIncludeRoots() != null) {
-      for (File include : config.getIncludeRoots()) {
+    if (config.getNonImportableSourceRoots() != null) {
+      for (File include : config.getNonImportableSourceRoots()) {
         avroFiles.addAll(FileUtils.listFiles(include, extensions, true));
       }
     }

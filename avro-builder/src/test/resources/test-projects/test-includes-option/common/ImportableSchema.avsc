@@ -1,0 +1,8 @@
+{
+  "type": "record",
+  "namespace": "testincludesoption.common",
+  "name": "ImportableSchema",
+  "fields": [
+    {"name": "f", "type": "int"}
+  ]
+}
