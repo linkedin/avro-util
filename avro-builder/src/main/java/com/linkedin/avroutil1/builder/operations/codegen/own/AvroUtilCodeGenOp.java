@@ -75,10 +75,10 @@ public class AvroUtilCodeGenOp implements Operation {
     LOGGER.info("found " + (avscFiles.size() + nonImportableFiles.size()) + " avsc schema files");
 
     AvroParseContext context = new AvroParseContext();
-    List<AvscParseResult> parsedFiles = new ArrayList<>();
+    Set<AvscParseResult> parsedFiles = new HashSet<>();
 
-    parseAvscFiles(avscFiles, true, context, parsedFiles);
-    parseAvscFiles(nonImportableFiles, false, context, parsedFiles);
+    parsedFiles.addAll(parseAvscFiles(avscFiles, true, context));
+    parsedFiles.addAll(parseAvscFiles(nonImportableFiles, false, context));
 
     //resolve any references across files that are part of this op (anything left would be external)
     context.resolveReferences();
@@ -100,13 +100,22 @@ public class AvroUtilCodeGenOp implements Operation {
 
     writeJavaFilesToDisk(specificRecords, config.getOutputSpecificRecordClassesRoot());
 
-    //TODO - look for dups
+    // TODO - look for dups
 
   }
 
-  private void parseAvscFiles(Set<File> avscFiles, boolean areFilesImportable, AvroParseContext context,
-      List<AvscParseResult> parsedFiles) {
+  /**
+   * A helper to parse avsc files.
+   *
+   * @param avscFiles Avsc files to parse
+   * @param areFilesImportable whether to allow other avsc files to import from this avsc file
+   * @param context the full parsing context for this "run".
+   * @return a set of all the parsed file results (a Set of AvscParseResult)
+   */
+  private Set<AvscParseResult> parseAvscFiles(Set<File> avscFiles, boolean areFilesImportable,
+      AvroParseContext context) {
     AvscParser parser = new AvscParser();
+    HashSet<AvscParseResult> parsedFiles = new HashSet<>();
     for (File p : avscFiles) {
       AvscParseResult fileParseResult = parser.parse(p);
       Throwable parseError = fileParseResult.getParseError();
@@ -116,6 +125,7 @@ public class AvroUtilCodeGenOp implements Operation {
       context.add(fileParseResult, areFilesImportable);
       parsedFiles.add(fileParseResult);
     }
+    return parsedFiles;
   }
 
   private void writeJavaFilesToDisk(Collection<JavaFileObject> javaClassFiles, File outputFolder) {
