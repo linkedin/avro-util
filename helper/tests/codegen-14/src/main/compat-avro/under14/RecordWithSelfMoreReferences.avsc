@@ -1,0 +1,28 @@
+{
+  "type": "record",
+  "namespace": "under14",
+  "name": "RecordWithMoreSelfReferences",
+  "fields": [
+    {
+      "name": "selfRef",
+      "type": [
+        "null",
+        "under14.RecordWithMoreSelfReferences"
+      ]
+    },
+    {
+      "name": "arrayOfSelfRefs",
+      "type": {
+        "type": "array",
+        "items" : "under14.RecordWithMoreSelfReferences"
+      }
+    },
+    {
+      "name": "mapOfSelfRefs",
+      "type": {
+        "type": "map",
+        "values" : "under14.RecordWithMoreSelfReferences"
+      }
+    }
+  ]
+}
