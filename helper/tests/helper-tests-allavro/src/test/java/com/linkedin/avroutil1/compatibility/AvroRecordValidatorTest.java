@@ -13,8 +13,11 @@ import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.util.Utf8;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import under14.RecordWithMoreSelfReferences;
 import under14.RecordWithSelfReferences;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class AvroRecordValidatorTest {
@@ -79,6 +82,59 @@ public class AvroRecordValidatorTest {
         outer.put("selfRef", inner);
 
         List<AvroRecordValidationIssue> issues = AvroRecordValidator.validate(outer);
+        Assert.assertEquals(issues.size(), 1);
+    }
+
+    @Test
+    public void testNullMapKey() throws Exception {
+        RecordWithMoreSelfReferences record = new RecordWithMoreSelfReferences();
+        record.arrayOfSelfRefs = new ArrayList<>();
+        record.mapOfSelfRefs = new HashMap<>();
+        record.mapOfSelfRefs.put(null, new RecordWithMoreSelfReferences());
+
+        List<AvroRecordValidationIssue> issues = AvroRecordValidator.validate(record);
+        Assert.assertEquals(issues.size(), 1);
+    }
+    @Test
+    public void testSelfReference() throws Exception {
+        RecordWithSelfReferences record = new RecordWithSelfReferences();
+        record.selfRef = record;
+
+        List<AvroRecordValidationIssue> issues = AvroRecordValidator.validate(record);
+        Assert.assertEquals(issues.size(), 1);
+    }
+
+    @Test
+    public void testSelfReferenceViaArray() throws Exception {
+        RecordWithMoreSelfReferences record = new RecordWithMoreSelfReferences();
+        RecordWithMoreSelfReferences other = new RecordWithMoreSelfReferences();
+        other.arrayOfSelfRefs = new ArrayList<>();
+        other.mapOfSelfRefs = new HashMap<>();
+
+        record.arrayOfSelfRefs = new ArrayList<>();
+        record.arrayOfSelfRefs.add(other);
+        record.arrayOfSelfRefs.add(record);
+
+        record.mapOfSelfRefs = new HashMap<>();
+
+        List<AvroRecordValidationIssue> issues = AvroRecordValidator.validate(record);
+        Assert.assertEquals(issues.size(), 1);
+    }
+
+    @Test
+    public void testSelfReferenceViaMap() throws Exception {
+        RecordWithMoreSelfReferences record = new RecordWithMoreSelfReferences();
+        RecordWithMoreSelfReferences other = new RecordWithMoreSelfReferences();
+        other.arrayOfSelfRefs = new ArrayList<>();
+        other.mapOfSelfRefs = new HashMap<>();
+
+        record.arrayOfSelfRefs = new ArrayList<>();
+        record.arrayOfSelfRefs.add(other);
+
+        record.mapOfSelfRefs = new HashMap<>();
+        record.mapOfSelfRefs.put("whatever", record);
+
+        List<AvroRecordValidationIssue> issues = AvroRecordValidator.validate(record);
         Assert.assertEquals(issues.size(), 1);
     }
 }

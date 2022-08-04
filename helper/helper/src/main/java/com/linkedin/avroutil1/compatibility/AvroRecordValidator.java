@@ -149,56 +149,66 @@ public class AvroRecordValidator {
                     context.recordIssue(new AvroRecordValidationIssue("type should be a(n) " + schemaType + " but instead is " + describe(instance)));
                     break;
                 }
-                schemaFullname = schema.getFullName();
-                instanceDeclaredSchema = AvroSchemaUtil.getDeclaredSchema(instance); //!= null
-                //noinspection ConstantConditions
-                if (!schemaFullname.equals(instanceDeclaredSchema.getFullName())) {
-                    context.recordIssue(new AvroRecordValidationIssue("value should be a(n) " + schemaFullname + " but instead is "
-                            + instanceDeclaredSchema.getFullName()));
-                    break;
-                }
-                if (context.isSpecificRecord && !(instance instanceof SpecificRecord)) {
-                    context.recordIssue(new AvroRecordValidationIssue(
-                            "GenericRecord " + schemaFullname + " but root object is SpecificRecord",
-                            Severity.WARNING
-                    ));
-                } else if (!context.isSpecificRecord && (instance instanceof SpecificRecord)) {
-                    context.recordIssue(new AvroRecordValidationIssue(
-                            "SpecificRecord " + schemaFullname + " but root object is GenericRecord",
-                            Severity.WARNING
-                    ));
-                }
-                List<Schema.Field> schemaFields = schema.getFields();
-                List<Schema.Field> instanceFields = instanceDeclaredSchema.getFields();
                 IndexedRecord record = (IndexedRecord) instance;
 
-                int i = 0;
-                for (Schema.Field field : schemaFields) {
-                    String fieldName = field.name();
-                    Schema.Field instanceField;
-                    try {
-                        instanceField = instanceFields.get(i);
-                    } catch (IndexOutOfBoundsException e) {
-                        context.recordIssue(new AvroRecordValidationIssue("expected field " + fieldName + " not found on record"));
-                        break; //no more fields to validate
-                    }
-                    if (!fieldName.equals(instanceField.name())) {
-                        context.recordIssue(new AvroRecordValidationIssue("expected field at position " + field.pos() + " to be "
-                                + fieldName + " but record has field " + instanceField.name()));
-                        continue; //move to next field
-                    }
-                    //field positions match because thats the order they are listed in
-                    context.appendPath(new LocationStep(".", fieldName));
-                    try {
-                        Schema fieldSchema = field.schema();
-                        Object fieldValue = record.get(field.pos());
-                        traverse(fieldSchema, fieldValue, context);
-                    } finally {
-                        context.popPath();
-                    }
-                    i++;
+                //records are the only thing that can create loops in a graph
+                if (context.markRecordSeen(record)) {
+                    context.recordIssue(new AvroRecordValidationIssue("loop in data graph"));
+                    break; //no need to pop this record, as our caller(s) will.
                 }
-                break;
+                try {
+                    schemaFullname = schema.getFullName();
+                    instanceDeclaredSchema = AvroSchemaUtil.getDeclaredSchema(instance); //!= null
+                    //noinspection ConstantConditions
+                    if (!schemaFullname.equals(instanceDeclaredSchema.getFullName())) {
+                        context.recordIssue(new AvroRecordValidationIssue("value should be a(n) " + schemaFullname + " but instead is "
+                                + instanceDeclaredSchema.getFullName()));
+                        break;
+                    }
+                    if (context.isSpecificRecord && !(instance instanceof SpecificRecord)) {
+                        context.recordIssue(new AvroRecordValidationIssue(
+                                "GenericRecord " + schemaFullname + " but root object is SpecificRecord",
+                                Severity.WARNING
+                        ));
+                    } else if (!context.isSpecificRecord && (instance instanceof SpecificRecord)) {
+                        context.recordIssue(new AvroRecordValidationIssue(
+                                "SpecificRecord " + schemaFullname + " but root object is GenericRecord",
+                                Severity.WARNING
+                        ));
+                    }
+                    List<Schema.Field> schemaFields = schema.getFields();
+                    List<Schema.Field> instanceFields = instanceDeclaredSchema.getFields();
+
+                    int i = 0;
+                    for (Schema.Field field : schemaFields) {
+                        String fieldName = field.name();
+                        Schema.Field instanceField;
+                        try {
+                            instanceField = instanceFields.get(i);
+                        } catch (IndexOutOfBoundsException e) {
+                            context.recordIssue(new AvroRecordValidationIssue("expected field " + fieldName + " not found on record"));
+                            break; //no more fields to validate
+                        }
+                        if (!fieldName.equals(instanceField.name())) {
+                            context.recordIssue(new AvroRecordValidationIssue("expected field at position " + field.pos() + " to be "
+                                    + fieldName + " but record has field " + instanceField.name()));
+                            continue; //move to next field
+                        }
+                        //field positions match because thats the order they are listed in
+                        context.appendPath(new LocationStep(".", fieldName));
+                        try {
+                            Schema fieldSchema = field.schema();
+                            Object fieldValue = record.get(field.pos());
+                            traverse(fieldSchema, fieldValue, context);
+                        } finally {
+                            context.popPath();
+                        }
+                        i++;
+                    }
+                    break;
+                } finally {
+                    context.popRecordSeen(record);
+                }
             //collections
             case ARRAY:
                 if (!(instance instanceof List)) {
@@ -331,6 +341,7 @@ public class AvroRecordValidator {
             }
             this.root = root;
             this.isSpecificRecord = AvroCompatibilityHelper.isSpecificRecord(root);
+            //traversal will populate root into recordsSeen
         }
 
         public void appendPath(PathElement element) {
@@ -356,6 +367,20 @@ public class AvroRecordValidator {
 
         public Map<Class<? extends CharSequence>, AvroPath> stringTypesSeen() {
             return stringTypesSeen;
+        }
+
+        public boolean markRecordSeen(IndexedRecord record) {
+            if (seen.containsKey(record)) {
+                return true;
+            }
+            seen.put(record, Boolean.TRUE);
+            return false;
+        }
+
+        public void popRecordSeen(IndexedRecord record) {
+            if (seen.remove(record) == null) {
+                throw new IllegalStateException("record popped but never seen");
+            }
         }
 
         public void recordIssue(AvroRecordValidationIssue issue) {
