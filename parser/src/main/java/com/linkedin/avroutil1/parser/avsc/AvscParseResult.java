@@ -7,6 +7,7 @@
 package com.linkedin.avroutil1.parser.avsc;
 
 import com.linkedin.avroutil1.model.AvroSchema;
+import com.linkedin.avroutil1.model.AvroSchemaField;
 import com.linkedin.avroutil1.model.CodeLocation;
 import com.linkedin.avroutil1.model.LocatedCode;
 import com.linkedin.avroutil1.model.SchemaOrRef;
@@ -66,6 +67,15 @@ public class AvscParseResult {
     public List<SchemaOrRef> getExternalReferences() {
         assertSuccess();
         return context.getExternalReferences();
+    }
+
+    public List<AvroSchemaField> getFieldsWithUnparsedDefaults() {
+        assertSuccess();
+        return context.getFieldsWithUnparsedDefaults();
+    }
+
+    public AvscFileParseContext getContext() {
+        return context;
     }
 
     public void addIssue(AvscIssue issue) {

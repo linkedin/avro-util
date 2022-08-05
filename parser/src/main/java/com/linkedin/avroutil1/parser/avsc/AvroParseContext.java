@@ -7,6 +7,7 @@
 package com.linkedin.avroutil1.parser.avsc;
 
 import com.linkedin.avroutil1.model.AvroSchema;
+import com.linkedin.avroutil1.model.AvroSchemaField;
 import com.linkedin.avroutil1.model.SchemaOrRef;
 
 import java.util.ArrayList;
@@ -29,11 +30,11 @@ public class AvroParseContext {
     private Map<String, AvscParseResult> knownImportableSchemas = null;
     private Map<String, List<AvscParseResult>> duplicates = null;
     private List<SchemaOrRef> externalReferences = null;
+    private List<AvroSchemaField> fieldsWithUnparsedDefaults = null;
 
     @Deprecated
     public void add(AvscParseResult singleResult) {
         add(singleResult, true);
-
     }
 
     public void add(AvscParseResult singleResult, boolean isImportable) {
@@ -113,6 +114,21 @@ public class AvroParseContext {
                 }
             }
         }
+
+        //now with (hopefully some) external references resolved go over unparsed default values and parse them
+        fieldsWithUnparsedDefaults = new ArrayList<>();
+        for (AvscStandaloneResult singleFile : individualResults) {
+            AvscParseResult parseResult = singleFile.parseResult;
+            List<AvroSchemaField> incompleteFields = parseResult.getFieldsWithUnparsedDefaults();
+            for (AvroSchemaField field : incompleteFields) {
+                SchemaOrRef schemaOrRef = field.getSchemaOrRef();
+                if (!schemaOrRef.isResolved()) {
+                    fieldsWithUnparsedDefaults.add(field);
+                    continue;
+                }
+                AvscParseUtil.lateParseFieldDefault(field, parseResult.getContext());
+            }
+        }
     }
 
     public boolean hasExternalReferences() {
@@ -123,6 +139,11 @@ public class AvroParseContext {
     public List<SchemaOrRef> getExternalReferences() {
         assertSealed();
         return externalReferences;
+    }
+
+    public List<AvroSchemaField> getFieldsWithUnparsedDefaults() {
+        assertSealed();
+        return fieldsWithUnparsedDefaults;
     }
 
     private void assertSealed() {

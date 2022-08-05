@@ -128,7 +128,7 @@ public class AvscParser {
     )));
 
     public AvscParseResult parse(String avsc) {
-        AvscFileParseContext context = new AvscFileParseContext(avsc);
+        AvscFileParseContext context = new AvscFileParseContext(avsc, this);
         Reader reader = new StringReader(avsc);
 
         return parse(context, reader);
@@ -139,7 +139,7 @@ public class AvscParser {
     }
 
     public AvscParseResult parse(File avscFile) {
-        AvscFileParseContext context = new AvscFileParseContext(avscFile);
+        AvscFileParseContext context = new AvscFileParseContext(avscFile, this);
         Reader reader;
         try {
             reader = new FileReader(avscFile);
@@ -396,8 +396,7 @@ public class AvscParser {
                             //TODO - handle issues
                         } else {
                             //we cant parse the default value yet since we dont have the schema to decode it with
-                            //TODO - implement delayed default value parsing
-                            throw new UnsupportedOperationException("delayed parsing of default value for " + fieldName.getValue() + " TBD");
+                            defaultValue = new AvscUnparsedLiteral(fieldDefaultValueNode, locationOf(context.getUri(), fieldDefaultValueNode));
                         }
                     }
                     LinkedHashMap<String, JsonValueExt> props = parseExtraProps(fieldDecl, CORE_FIELD_PROPERTIES);
@@ -588,7 +587,8 @@ public class AvscParser {
         return aliases;
     }
 
-    private LiteralOrIssue parseLiteral(
+    //protected ON-PURPOSE
+    LiteralOrIssue parseLiteral(
             JsonValueExt literalNode,
             AvroSchema schema,
             String fieldName,

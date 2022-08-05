@@ -36,6 +36,8 @@ public class AvscFileParseContext {
      * represents the resource being parsed (typically an avsc file or a raw avsc string)
      */
     protected final URI uri;
+
+    protected final AvscParser parser;
     /**
      * current (closest-defined) namespace. changes during parsing - pushed when a new
      * namespace is defined, popped when leaving the scope of a defined namespace.
@@ -67,18 +69,25 @@ public class AvscFileParseContext {
      * references in this avsc that are not in this avsc (to be resolved by a wider context)
      */
     protected List<SchemaOrRef> externalReferences = new ArrayList<>();
+    /**
+     * fields (of records) in this avsc who's default value cannot be parsed because their schema
+     * is not in this avsc (and should be parsed after the schema is resolved)
+     */
+    protected List<AvroSchemaField> fieldsWithUnparsedDefaults = new ArrayList<>();
 
-    public AvscFileParseContext(String avsc) {
+    public AvscFileParseContext(String avsc, AvscParser parser) {
         try {
-            uri = new URI("avsc://" + avsc.hashCode());
+            this.uri = new URI("avsc://" + avsc.hashCode());
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
+        this.parser = parser;
         initializeNamespace();
     }
 
-    public AvscFileParseContext(File avsc) {
-        uri = avsc.toURI();
+    public AvscFileParseContext(File avsc, AvscParser parser) {
+        this.uri = avsc.toURI();
+        this.parser = parser;
         initializeNamespace();
     }
 
@@ -91,6 +100,10 @@ public class AvscFileParseContext {
 
     public URI getUri() {
         return uri;
+    }
+
+    public AvscParser getParser() {
+        return parser;
     }
 
     public String getCurrentNamespace() {
@@ -173,7 +186,21 @@ public class AvscFileParseContext {
                 List<AvroSchemaField> fields = recordSchema.getFields();
                 for (AvroSchemaField field : fields) {
                     SchemaOrRef fieldSchema = field.getSchemaOrRef();
+                    boolean hasDefault = field.hasDefaultValue();
+                    boolean wasResolvedBefore = fieldSchema.isResolved();
+                    if (wasResolvedBefore) {
+                        continue;
+                    }
                     resolveReferences(fieldSchema);
+                    if (!hasDefault) {
+                        continue;
+                    }
+                    boolean isResolvedNow = fieldSchema.isResolved();
+                    if (!isResolvedNow) {
+                        fieldsWithUnparsedDefaults.add(field);
+                        continue;
+                    }
+                    AvscParseUtil.lateParseFieldDefault(field, this);
                 }
                 break;
             case UNION:
@@ -252,5 +279,9 @@ public class AvscFileParseContext {
 
     public List<SchemaOrRef> getExternalReferences() {
         return externalReferences;
+    }
+
+    public List<AvroSchemaField> getFieldsWithUnparsedDefaults() {
+        return fieldsWithUnparsedDefaults;
     }
 }
