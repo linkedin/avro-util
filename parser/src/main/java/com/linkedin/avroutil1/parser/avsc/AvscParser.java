@@ -22,6 +22,7 @@ import com.linkedin.avroutil1.model.AvroJavaStringRepresentation;
 import com.linkedin.avroutil1.model.AvroLiteral;
 import com.linkedin.avroutil1.model.AvroLogicalType;
 import com.linkedin.avroutil1.model.AvroLongLiteral;
+import com.linkedin.avroutil1.model.AvroMapLiteral;
 import com.linkedin.avroutil1.model.AvroMapSchema;
 import com.linkedin.avroutil1.model.AvroName;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
@@ -55,6 +56,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
 import java.nio.file.Path;
+import java.util.HashMap;
 import javax.json.JsonValue;
 import javax.json.stream.JsonParsingException;
 import java.io.StringReader;
@@ -380,7 +382,7 @@ public class AvscParser {
                     JsonValueExt fieldDefaultValueNode = fieldDecl.get("default");
                     AvroLiteral defaultValue = null;
                     if (fieldDefaultValueNode != null) {
-                        if (fieldSchema.isResolved()) {
+                        if (fieldSchema.isFullyDefined()) {
                             AvroSchema defaultValueExpectedSchema = fieldSchema.getSchema();
                             if (defaultValueExpectedSchema.type() == AvroType.UNION) {
                                 //(legal) default values are expected to match the 1st union branch
@@ -600,6 +602,7 @@ public class AvscParser {
         BigInteger bigIntegerValue;
         BigDecimal bigDecimalValue;
         byte[] bytes;
+        AvroSchema valueSchema;
         switch (avroType) {
             case NULL:
                 if (jsonType != JsonValue.ValueType.NULL) {
@@ -785,7 +788,7 @@ public class AvscParser {
                     return new LiteralOrIssue(issue);
                 }
                 AvroArraySchema arraySchema = (AvroArraySchema) schema;
-                AvroSchema valueSchema = arraySchema.getValueSchema();
+                valueSchema = arraySchema.getValueSchema();
                 JsonArrayExt arrayNode = (JsonArrayExt) literalNode;
                 ArrayList<AvroLiteral> values = new ArrayList<>(arrayNode.size());
                 for (int i = 0; i < arrayNode.size(); i++) {
@@ -805,6 +808,34 @@ public class AvscParser {
                 }
                 return new LiteralOrIssue(new AvroArrayLiteral(
                         arraySchema, locationOf(context.getUri(), literalNode), values
+                ));
+            case MAP:
+                if (jsonType != JsonValue.ValueType.OBJECT) {
+                    issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                        literalNode.toString(), avroType, fieldName);
+                    context.addIssue(issue);
+                    return new LiteralOrIssue(issue);
+                }
+                AvroMapSchema mapSchema = (AvroMapSchema) schema;
+                valueSchema = mapSchema.getValueSchema(); //keys are always strings
+                JsonObjectExt objectNode = (JsonObjectExt) literalNode;
+                Map<String, AvroLiteral> map = new HashMap<>(objectNode.size());
+                for (Map.Entry<String, JsonValue> entry : objectNode.entrySet()) {
+                    JsonValueExt valueNode = (JsonValueExt) entry.getValue();
+                    LiteralOrIssue value = parseLiteral(valueNode, valueSchema, fieldName, context);
+                    if (value.getIssue() != null) {
+                        //TODO - be more specific about this error (unparsable map key k)
+                        //TODO - add "causedBy" to AvscIssue and use it here
+                        issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                            literalNode.toString(), avroType, fieldName);
+
+                        context.addIssue(issue);
+                        return new LiteralOrIssue(issue);
+                    }
+                    map.put(entry.getKey(), value.getLiteral());
+                }
+                return new LiteralOrIssue(new AvroMapLiteral(
+                    mapSchema, locationOf(context.getUri(), literalNode), map
                 ));
             default:
                 throw new UnsupportedOperationException("dont know how to parse a " + avroType + " at " + literalNode.getStartLocation()

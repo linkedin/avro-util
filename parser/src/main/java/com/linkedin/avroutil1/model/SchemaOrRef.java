@@ -90,6 +90,39 @@ public class SchemaOrRef implements LocatedCode {
         return schema != null;
     }
 
+    /**
+     * true if this schema is fully defined - meaning all external references contained anywhere within are resolved
+     * and this schema can be used
+     * @return
+     */
+    public boolean isFullyDefined() {
+        if (!isResolved()) {
+            return false;
+        }
+        switch (schema.type()) {
+            case ARRAY:
+                return ((AvroArraySchema) schema).getValueSchemaOrRef().isFullyDefined();
+            case MAP:
+                return ((AvroMapSchema) schema).getValueSchemaOrRef().isFullyDefined();
+            case UNION:
+                for (SchemaOrRef branch : ((AvroUnionSchema) schema).getTypes()) {
+                    if (!branch.isFullyDefined()) {
+                        return false;
+                    }
+                }
+                return true;
+            case RECORD:
+                for (AvroSchemaField field : ((AvroRecordSchema) schema).getFields()) {
+                    if (!field.getSchemaOrRef().isFullyDefined()) {
+                        return false;
+                    }
+                }
+                return true;
+            default:
+                return true;
+        }
+    }
+
     public AvroSchema getSchema() {
         if (!isResolved()) {
             throw new UnresolvedReferenceException("unresolved ref to " + ref);

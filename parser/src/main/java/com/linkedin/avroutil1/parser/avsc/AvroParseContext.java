@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * maintains state for a "long" parse operation, involving
@@ -83,7 +84,7 @@ public class AvroParseContext {
         //resolve any unresolved references in individual file results from other files
         externalReferences = new ArrayList<>();
         for (AvscStandaloneResult singleFile : individualResults) {
-            List<SchemaOrRef> externalRefs = singleFile.parseResult.getExternalReferences();
+            Set<SchemaOrRef> externalRefs = singleFile.parseResult.getExternalReferences();
             for (SchemaOrRef ref : externalRefs) {
                 String simpleName = ref.getRef();
                 AvscParseResult simpleNameResolution = knownImportableSchemas.get(simpleName);

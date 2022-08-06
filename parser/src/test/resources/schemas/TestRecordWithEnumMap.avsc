@@ -1,0 +1,17 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "TestRecordWithEnumMap",
+  "fields": [
+    {
+      "name": "enumMapField",
+      "type": {
+        "type": "map",
+        "values": "com.acme.TestEnum"
+      },
+      "default": {
+        "str-1" : "SYMBOL_A"
+      }
+    }
+  ]
+}

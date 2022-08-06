@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "TestRecordWithEnumArray",
+  "fields": [
+    {
+      "name": "enumArrayField",
+      "type": {
+        "type": "array",
+        "items": "com.acme.TestEnum"
+      },
+      "default": ["SYMBOL_B", "SYMBOL_A"]
+    }
+  ]
+}

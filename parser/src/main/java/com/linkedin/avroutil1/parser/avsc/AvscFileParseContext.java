@@ -24,8 +24,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * maintains state for parse operations in progress for a single avsc source
@@ -68,7 +70,7 @@ public class AvscFileParseContext {
     /**
      * references in this avsc that are not in this avsc (to be resolved by a wider context)
      */
-    protected List<SchemaOrRef> externalReferences = new ArrayList<>();
+    protected HashSet<SchemaOrRef> externalReferences = new HashSet<>();
     /**
      * fields (of records) in this avsc who's default value cannot be parsed because their schema
      * is not in this avsc (and should be parsed after the schema is resolved)
@@ -187,16 +189,16 @@ public class AvscFileParseContext {
                 for (AvroSchemaField field : fields) {
                     SchemaOrRef fieldSchema = field.getSchemaOrRef();
                     boolean hasDefault = field.hasDefaultValue();
-                    boolean wasResolvedBefore = fieldSchema.isResolved();
-                    if (wasResolvedBefore) {
+                    boolean wasDefinedBefore = fieldSchema.isFullyDefined();
+                    if (wasDefinedBefore) {
                         continue;
                     }
                     resolveReferences(fieldSchema);
                     if (!hasDefault) {
                         continue;
                     }
-                    boolean isResolvedNow = fieldSchema.isResolved();
-                    if (!isResolvedNow) {
+                    boolean isDefinedNow = fieldSchema.isFullyDefined();
+                    if (!isDefinedNow) {
                         fieldsWithUnparsedDefaults.add(field);
                         continue;
                     }
@@ -277,7 +279,7 @@ public class AvscFileParseContext {
         return issues;
     }
 
-    public List<SchemaOrRef> getExternalReferences() {
+    public Set<SchemaOrRef> getExternalReferences() {
         return externalReferences;
     }
 

@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.parser.avsc;
 
+import com.linkedin.avroutil1.model.AvroArrayLiteral;
 import com.linkedin.avroutil1.model.AvroArraySchema;
 import com.linkedin.avroutil1.model.AvroEnumLiteral;
 import com.linkedin.avroutil1.model.AvroEnumSchema;
@@ -13,6 +14,7 @@ import com.linkedin.avroutil1.model.AvroFixedSchema;
 import com.linkedin.avroutil1.model.AvroJavaStringRepresentation;
 import com.linkedin.avroutil1.model.AvroLiteral;
 import com.linkedin.avroutil1.model.AvroLogicalType;
+import com.linkedin.avroutil1.model.AvroMapLiteral;
 import com.linkedin.avroutil1.model.AvroMapSchema;
 import com.linkedin.avroutil1.model.AvroPrimitiveSchema;
 import com.linkedin.avroutil1.model.AvroRecordSchema;
@@ -538,6 +540,62 @@ public class AvscParserTest {
         AvroLiteral defaultValue = recordSchema.getField("enumField").getDefaultValue();
         Assert.assertTrue(defaultValue instanceof AvroEnumLiteral);
         Assert.assertEquals(((AvroEnumLiteral) defaultValue).getValue(), "SYMBOL_B");
+    }
+
+    @Test
+    public void testExternalReferenceInArrayDecl() throws Exception {
+        String recordAvsc = TestUtil.load("schemas/TestRecordWithEnumArray.avsc");
+        String enumAvsc = TestUtil.load("schemas/TestEnum.avsc");
+
+        AvscParser parser = new AvscParser();
+
+        AvscParseResult recordParseResult = parser.parse(recordAvsc);
+        Assert.assertEquals(recordParseResult.getExternalReferences().size(), 1); //enum not defined in same file
+        Assert.assertEquals(recordParseResult.getFieldsWithUnparsedDefaults().size(), 1); //cant parse the default value
+
+        AvroRecordSchema recordSchema = (AvroRecordSchema) recordParseResult.getTopLevelSchema();
+        AvroSchemaField enumArrayField = recordSchema.getField("enumArrayField");
+        Assert.assertFalse(enumArrayField.getSchemaOrRef().isFullyDefined());
+        Assert.assertTrue(enumArrayField.getDefaultValue() instanceof AvscUnparsedLiteral);
+
+        AvscParseResult enumParseResult = parser.parse(enumAvsc);
+
+        AvroParseContext overall = new AvroParseContext();
+        overall.add(recordParseResult, true);
+        overall.add(enumParseResult, true);
+        overall.resolveReferences();
+
+        Assert.assertTrue(enumArrayField.getSchemaOrRef().isFullyDefined()); //after parsing enum and resolving cross-references
+        AvroArrayLiteral defaultValue = (AvroArrayLiteral) enumArrayField.getDefaultValue();
+        Assert.assertEquals(defaultValue.getValue().size(), 2);
+    }
+
+    @Test
+    public void testExternalReferenceInMapDecl() throws Exception {
+        String recordAvsc = TestUtil.load("schemas/TestRecordWithEnumMap.avsc");
+        String enumAvsc = TestUtil.load("schemas/TestEnum.avsc");
+
+        AvscParser parser = new AvscParser();
+
+        AvscParseResult recordParseResult = parser.parse(recordAvsc);
+        Assert.assertEquals(recordParseResult.getExternalReferences().size(), 1); //enum not defined in same file
+        Assert.assertEquals(recordParseResult.getFieldsWithUnparsedDefaults().size(), 1); //cant parse the default value
+
+        AvroRecordSchema recordSchema = (AvroRecordSchema) recordParseResult.getTopLevelSchema();
+        AvroSchemaField enumMapField = recordSchema.getField("enumMapField");
+        Assert.assertFalse(enumMapField.getSchemaOrRef().isFullyDefined());
+        Assert.assertTrue(enumMapField.getDefaultValue() instanceof AvscUnparsedLiteral);
+
+        AvscParseResult enumParseResult = parser.parse(enumAvsc);
+
+        AvroParseContext overall = new AvroParseContext();
+        overall.add(recordParseResult, true);
+        overall.add(enumParseResult, true);
+        overall.resolveReferences();
+
+        Assert.assertTrue(enumMapField.getSchemaOrRef().isFullyDefined()); //after parsing enum and resolving cross-references
+        AvroMapLiteral defaultValue = (AvroMapLiteral) enumMapField.getDefaultValue();
+        Assert.assertEquals(defaultValue.getValue().size(), 1);
     }
 
     @Test
