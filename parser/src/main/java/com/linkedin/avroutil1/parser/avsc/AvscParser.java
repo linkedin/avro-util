@@ -603,6 +603,7 @@ public class AvscParser {
         BigDecimal bigDecimalValue;
         byte[] bytes;
         AvroSchema valueSchema;
+        JsonObjectExt objectNode;
         switch (avroType) {
             case NULL:
                 if (jsonType != JsonValue.ValueType.NULL) {
@@ -818,7 +819,7 @@ public class AvscParser {
                 }
                 AvroMapSchema mapSchema = (AvroMapSchema) schema;
                 valueSchema = mapSchema.getValueSchema(); //keys are always strings
-                JsonObjectExt objectNode = (JsonObjectExt) literalNode;
+                objectNode = (JsonObjectExt) literalNode;
                 Map<String, AvroLiteral> map = new HashMap<>(objectNode.size());
                 for (Map.Entry<String, JsonValue> entry : objectNode.entrySet()) {
                     JsonValueExt valueNode = (JsonValueExt) entry.getValue();
@@ -837,6 +838,24 @@ public class AvscParser {
                 return new LiteralOrIssue(new AvroMapLiteral(
                     mapSchema, locationOf(context.getUri(), literalNode), map
                 ));
+            case RECORD:
+                if (jsonType != JsonValue.ValueType.OBJECT) {
+                    issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                        literalNode.toString(), avroType, fieldName);
+                    context.addIssue(issue);
+                    return new LiteralOrIssue(issue);
+                }
+                AvroRecordSchema recordSchema = (AvroRecordSchema) schema;
+                objectNode = (JsonObjectExt) literalNode;
+                List<AvroSchemaField> fields = recordSchema.getFields();
+                for (AvroSchemaField field : fields) {
+                    String fn = field.getName();
+                    AvroSchema fieldSchema = field.getSchema();
+                    if (fieldSchema.type() == AvroType.UNION) {
+                        
+                    }
+                    JsonValueExt fieldLiteral = objectNode.get(fn);
+                }
             default:
                 throw new UnsupportedOperationException("dont know how to parse a " + avroType + " at " + literalNode.getStartLocation()
                         + " out of a " + literalNode.getValueType() + " (" + literalNode + ")");

@@ -16,6 +16,7 @@ import com.linkedin.avroutil1.model.AvroLiteral;
 import com.linkedin.avroutil1.model.AvroLogicalType;
 import com.linkedin.avroutil1.model.AvroMapLiteral;
 import com.linkedin.avroutil1.model.AvroMapSchema;
+import com.linkedin.avroutil1.model.AvroNullLiteral;
 import com.linkedin.avroutil1.model.AvroPrimitiveSchema;
 import com.linkedin.avroutil1.model.AvroRecordSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
@@ -596,6 +597,19 @@ public class AvscParserTest {
         Assert.assertTrue(enumMapField.getSchemaOrRef().isFullyDefined()); //after parsing enum and resolving cross-references
         AvroMapLiteral defaultValue = (AvroMapLiteral) enumMapField.getDefaultValue();
         Assert.assertEquals(defaultValue.getValue().size(), 1);
+    }
+
+    @Test
+    public void testCircularReference() throws Exception {
+        String recordAvsc = TestUtil.load("schemas/TestTreeNode.avsc");
+        AvscParser parser = new AvscParser();
+
+        AvscParseResult recordParseResult = parser.parse(recordAvsc);
+
+        AvroRecordSchema nodeSchema = (AvroRecordSchema) recordParseResult.getTopLevelSchema();
+        AvroSchemaField childrenField = nodeSchema.getField("children");
+        Assert.assertTrue(childrenField.getSchemaOrRef().isFullyDefined());
+        Assert.assertEquals(childrenField.getDefaultValue().type(), AvroType.NULL);
     }
 
     @Test

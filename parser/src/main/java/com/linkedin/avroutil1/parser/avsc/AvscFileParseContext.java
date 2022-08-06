@@ -190,19 +190,22 @@ public class AvscFileParseContext {
                     SchemaOrRef fieldSchema = field.getSchemaOrRef();
                     boolean hasDefault = field.hasDefaultValue();
                     boolean wasDefinedBefore = fieldSchema.isFullyDefined();
-                    if (wasDefinedBefore) {
-                        continue;
+                    if (!wasDefinedBefore) {
+                        resolveReferences(fieldSchema);
+                        if (!fieldSchema.isFullyDefined()) {
+                            if (hasDefault) {
+                                fieldsWithUnparsedDefaults.add(field);
+                            }
+                            continue;
+                        }
                     }
-                    resolveReferences(fieldSchema);
+                    //fully defined if we're here
                     if (!hasDefault) {
                         continue;
                     }
-                    boolean isDefinedNow = fieldSchema.isFullyDefined();
-                    if (!isDefinedNow) {
-                        fieldsWithUnparsedDefaults.add(field);
-                        continue;
+                    if (field.getDefaultValue() instanceof AvscUnparsedLiteral) {
+                        AvscParseUtil.lateParseFieldDefault(field, this);
                     }
-                    AvscParseUtil.lateParseFieldDefault(field, this);
                 }
                 break;
             case UNION:

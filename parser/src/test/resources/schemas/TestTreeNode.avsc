@@ -1,0 +1,18 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "TestTreeNode",
+  "fields": [
+    {
+      "name": "children",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": "TestTreeNode"
+        }
+      ],
+      "default": null
+    }
+  ]
+}
