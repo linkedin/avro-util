@@ -70,7 +70,7 @@ public class AvscParseResult {
         return context.getExternalReferences();
     }
 
-    public List<AvroSchemaField> getFieldsWithUnparsedDefaults() {
+    public Set<AvroSchemaField> getFieldsWithUnparsedDefaults() {
         assertSuccess();
         return context.getFieldsWithUnparsedDefaults();
     }

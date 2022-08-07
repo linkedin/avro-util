@@ -75,7 +75,7 @@ public class AvscFileParseContext {
      * fields (of records) in this avsc who's default value cannot be parsed because their schema
      * is not in this avsc (and should be parsed after the schema is resolved)
      */
-    protected List<AvroSchemaField> fieldsWithUnparsedDefaults = new ArrayList<>();
+    protected HashSet<AvroSchemaField> fieldsWithUnparsedDefaults = new HashSet<>();
 
     public AvscFileParseContext(String avsc, AvscParser parser) {
         try {
@@ -286,7 +286,7 @@ public class AvscFileParseContext {
         return externalReferences;
     }
 
-    public List<AvroSchemaField> getFieldsWithUnparsedDefaults() {
+    public Set<AvroSchemaField> getFieldsWithUnparsedDefaults() {
         return fieldsWithUnparsedDefaults;
     }
 }

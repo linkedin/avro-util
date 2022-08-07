@@ -28,6 +28,7 @@ import com.linkedin.avroutil1.model.AvroName;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
 import com.linkedin.avroutil1.model.AvroNullLiteral;
 import com.linkedin.avroutil1.model.AvroPrimitiveSchema;
+import com.linkedin.avroutil1.model.AvroRecordLiteral;
 import com.linkedin.avroutil1.model.AvroRecordSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
 import com.linkedin.avroutil1.model.AvroSchemaField;
@@ -604,6 +605,7 @@ public class AvscParser {
         byte[] bytes;
         AvroSchema valueSchema;
         JsonObjectExt objectNode;
+        Map<String, AvroLiteral> map;
         switch (avroType) {
             case NULL:
                 if (jsonType != JsonValue.ValueType.NULL) {
@@ -820,7 +822,7 @@ public class AvscParser {
                 AvroMapSchema mapSchema = (AvroMapSchema) schema;
                 valueSchema = mapSchema.getValueSchema(); //keys are always strings
                 objectNode = (JsonObjectExt) literalNode;
-                Map<String, AvroLiteral> map = new HashMap<>(objectNode.size());
+                map = new HashMap<>(objectNode.size());
                 for (Map.Entry<String, JsonValue> entry : objectNode.entrySet()) {
                     JsonValueExt valueNode = (JsonValueExt) entry.getValue();
                     LiteralOrIssue value = parseLiteral(valueNode, valueSchema, fieldName, context);
@@ -848,14 +850,72 @@ public class AvscParser {
                 AvroRecordSchema recordSchema = (AvroRecordSchema) schema;
                 objectNode = (JsonObjectExt) literalNode;
                 List<AvroSchemaField> fields = recordSchema.getFields();
+                map = new HashMap<>(fields.size());
                 for (AvroSchemaField field : fields) {
                     String fn = field.getName();
                     AvroSchema fieldSchema = field.getSchema();
-                    if (fieldSchema.type() == AvroType.UNION) {
-                        
-                    }
+                    AvroSchema literalSchema = fieldSchema; //except for unions, see below.
                     JsonValueExt fieldLiteral = objectNode.get(fn);
+                    JsonValueExt literal = fieldLiteral; //except if union
+                    if (fieldSchema.type() == AvroType.UNION) {
+                        AvroUnionSchema unionSchema = (AvroUnionSchema) fieldSchema;
+                        //union values are encoded as a json object {"<branch>" : <value>}
+                        //except for null
+                        JsonValue.ValueType valueType = fieldLiteral.getValueType();
+                        int branchNumber;
+                        switch (valueType) {
+                            case NULL:
+                                branchNumber = unionSchema.resolve(AvroType.NULL);
+                                literal = fieldLiteral;
+                                break;
+                            case OBJECT:
+                                Set<Map.Entry<String, JsonValue>> unionObjectProps = ((JsonObjectExt) fieldLiteral).entrySet();
+                                if (unionObjectProps.size() != 1) {
+                                    //TODO - provide more details (union object expected to only have a single prop)
+                                    issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                                        literalNode.toString(), avroType, fieldName);
+                                    context.addIssue(issue);
+                                    return new LiteralOrIssue(issue);
+                                }
+                                Map.Entry<String, JsonValue> discriminatorEntry = unionObjectProps.iterator().next();
+                                String discriminator = discriminatorEntry.getKey();
+                                literal = (JsonValueExt) discriminatorEntry.getValue();
+                                AvroType literalType = AvroType.fromTypeName(discriminator);
+                                if (literalType != null) {
+                                    branchNumber = unionSchema.resolve(literalType);
+                                } else {
+                                    //assume fullname then
+                                    branchNumber = unionSchema.resolve(discriminator);
+                                }
+                                break;
+                            default:
+                                issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                                    literalNode.toString(), avroType, fieldName);
+                                context.addIssue(issue);
+                                return new LiteralOrIssue(issue);
+
+                        }
+                        if (branchNumber < 0) {
+                            issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                                literalNode.toString(), avroType, fieldName);
+                            context.addIssue(issue);
+                            return new LiteralOrIssue(issue);
+                        }
+                        literalSchema = unionSchema.getTypes().get(branchNumber).getSchema();
+                    }
+                    LiteralOrIssue fieldValueOrIssue = parseLiteral(literal, literalSchema, fieldName, context);
+                    if (fieldValueOrIssue.getIssue() != null) {
+                        //TODO - be more specific (what avropath did we have the issue with?)
+                        issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
+                            literalNode.toString(), avroType, fieldName);
+                        context.addIssue(issue);
+                        return new LiteralOrIssue(issue);
+                    }
+                    map.put(fn, fieldValueOrIssue.getLiteral());
                 }
+                return new LiteralOrIssue(new AvroRecordLiteral(
+                    recordSchema, locationOf(context.getUri(), literalNode), map
+                ));
             default:
                 throw new UnsupportedOperationException("dont know how to parse a " + avroType + " at " + literalNode.getStartLocation()
                         + " out of a " + literalNode.getValueType() + " (" + literalNode + ")");

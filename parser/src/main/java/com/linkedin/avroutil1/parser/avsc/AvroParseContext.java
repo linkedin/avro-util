@@ -120,7 +120,7 @@ public class AvroParseContext {
         fieldsWithUnparsedDefaults = new ArrayList<>();
         for (AvscStandaloneResult singleFile : individualResults) {
             AvscParseResult parseResult = singleFile.parseResult;
-            List<AvroSchemaField> incompleteFields = parseResult.getFieldsWithUnparsedDefaults();
+            Set<AvroSchemaField> incompleteFields = parseResult.getFieldsWithUnparsedDefaults();
             for (AvroSchemaField field : incompleteFields) {
                 SchemaOrRef schemaOrRef = field.getSchemaOrRef();
                 if (!schemaOrRef.isResolved()) {

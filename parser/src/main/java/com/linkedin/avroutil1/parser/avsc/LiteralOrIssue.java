@@ -36,4 +36,12 @@ public class LiteralOrIssue {
     public AvscIssue getIssue() {
         return issue;
     }
+
+    @Override
+    public String toString() {
+        if (issue != null) {
+            return issue.getMessage();
+        }
+        return String.valueOf(literal);
+    }
 }

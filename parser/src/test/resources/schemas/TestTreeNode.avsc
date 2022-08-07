@@ -6,13 +6,16 @@
     {
       "name": "children",
       "type": [
-        "null",
         {
           "type": "array",
           "items": "TestTreeNode"
-        }
+        },
+        "null"
       ],
-      "default": null
+      "default": [
+        {"children" : {"array": []}},
+        {"children" : null}
+      ]
     }
   ]
 }
