@@ -8,8 +8,8 @@ package com.linkedin.avroutil1.builder.operations.codegen.own;
 
 import com.linkedin.avroutil1.builder.BuilderConsts;
 import com.linkedin.avroutil1.builder.operations.Operation;
-import com.linkedin.avroutil1.builder.operations.OperationContext;
 import com.linkedin.avroutil1.builder.operations.codegen.CodeGenOpConfig;
+import com.linkedin.avroutil1.builder.operations.codegen.OperationContext;
 import com.linkedin.avroutil1.codegen.SpecificRecordClassGenerator;
 import com.linkedin.avroutil1.codegen.SpecificRecordGenerationConfig;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
@@ -99,6 +99,10 @@ public class AvroUtilCodeGenOp implements Operation {
     }
 
     writeJavaFilesToDisk(specificRecords, config.getOutputSpecificRecordClassesRoot());
+
+    Set<File> allAvroFiles = new HashSet<>(avscFiles);
+    allAvroFiles.addAll(nonImportableFiles);
+    opContext.setAvroFiles(allAvroFiles);
 
     // TODO - look for dups
 

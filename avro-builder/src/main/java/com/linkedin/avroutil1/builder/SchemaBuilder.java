@@ -10,7 +10,7 @@ import com.linkedin.avroutil1.builder.operations.codegen.CodeGenerator;
 import com.linkedin.avroutil1.builder.operations.codegen.own.AvroUtilCodeGenOp;
 import com.linkedin.avroutil1.builder.operations.codegen.CodeGenOpConfig;
 import com.linkedin.avroutil1.builder.operations.Operation;
-import com.linkedin.avroutil1.builder.operations.OperationContext;
+import com.linkedin.avroutil1.builder.operations.BuilderPluginContext;
 import com.linkedin.avroutil1.builder.operations.codegen.vanilla.VanillaProcessedCodeGenOp;
 import com.linkedin.avroutil1.builder.plugins.BuilderPlugin;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
@@ -182,7 +182,7 @@ public class SchemaBuilder {
       plugin.parseAndValidateOptions(options);
     }
 
-    OperationContext context = new OperationContext();
+    BuilderPluginContext context = new BuilderPluginContext();
 
     CodeGenOpConfig opConfig = new CodeGenOpConfig(
         inputs,

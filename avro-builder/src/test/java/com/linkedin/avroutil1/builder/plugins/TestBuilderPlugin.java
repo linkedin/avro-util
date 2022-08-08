@@ -7,7 +7,8 @@
 package com.linkedin.avroutil1.builder.plugins;
 
 import com.linkedin.avroutil1.builder.operations.Operation;
-import com.linkedin.avroutil1.builder.operations.OperationContext;
+import com.linkedin.avroutil1.builder.operations.BuilderPluginContext;
+import com.linkedin.avroutil1.builder.operations.codegen.OperationContext;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.Collections;
@@ -53,7 +54,7 @@ public class TestBuilderPlugin implements BuilderPlugin {
   }
 
   @Override
-  public void createOperations(OperationContext context) {
+  public void createOperations(BuilderPluginContext context) {
     if (extraFile != null) {
       context.add(new CreateDummyFileOperation(extraFile));
     }

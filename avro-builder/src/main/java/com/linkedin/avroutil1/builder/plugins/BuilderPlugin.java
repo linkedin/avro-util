@@ -6,7 +6,7 @@
 
 package com.linkedin.avroutil1.builder.plugins;
 
-import com.linkedin.avroutil1.builder.operations.OperationContext;
+import com.linkedin.avroutil1.builder.operations.BuilderPluginContext;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 
@@ -50,7 +50,7 @@ public interface BuilderPlugin {
     //nop
   }
 
-  default void createOperations(OperationContext context) {
+  default void createOperations(BuilderPluginContext context) {
     //nop
   }
 }

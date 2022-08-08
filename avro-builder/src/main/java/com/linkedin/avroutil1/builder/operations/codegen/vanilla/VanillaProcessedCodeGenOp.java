@@ -9,7 +9,7 @@ package com.linkedin.avroutil1.builder.operations.codegen.vanilla;
 import com.linkedin.avroutil1.builder.BuilderConsts;
 import com.linkedin.avroutil1.builder.operations.codegen.CodeGenOpConfig;
 import com.linkedin.avroutil1.builder.operations.Operation;
-import com.linkedin.avroutil1.builder.operations.OperationContext;
+import com.linkedin.avroutil1.builder.operations.codegen.OperationContext;
 import com.linkedin.avroutil1.compatibility.Avro702Checker;
 import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
 import com.linkedin.avroutil1.compatibility.CodeGenerationConfig;
@@ -177,6 +177,8 @@ public class VanillaProcessedCodeGenOp implements Operation {
         );
       }
     }
+
+    opContext.setAvroFiles(avroFiles);
 
     LOGGER.info("Compilation complete.");
   }
