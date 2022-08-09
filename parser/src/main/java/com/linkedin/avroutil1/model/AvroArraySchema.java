@@ -22,6 +22,6 @@ public class AvroArraySchema extends AvroCollectionSchema {
 
     @Override
     public String toString() {
-        return getValueSchema() + "[]";
+        return getValueSchemaOrRef() + "[]";
     }
 }

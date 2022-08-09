@@ -26,6 +26,15 @@ public abstract class AvroLiteral implements LocatedCode {
         this.codeLocation = codeLocation;
     }
 
+    /**
+     * for use in corner cases where a literal has to (temporarily) exist without a schema
+     * @param codeLocation
+     */
+    protected AvroLiteral(CodeLocation codeLocation) {
+        this.schema = null;
+        this.codeLocation = codeLocation;
+    }
+
     public AvroSchema getSchema() {
         return schema;
     }

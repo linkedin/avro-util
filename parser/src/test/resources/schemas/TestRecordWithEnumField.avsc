@@ -1,0 +1,13 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "TestRecordWithEnumField",
+  "doc": "nothing fancy",
+  "fields": [
+    {
+      "name": "enumField",
+      "type": "TestEnum",
+      "default": "SYMBOL_B"
+    }
+  ]
+}

@@ -51,6 +51,46 @@ public class AvroUnionSchema extends AvroSchema {
         this.types = Collections.unmodifiableList(copy);
     }
 
+    /**
+     * find a branch of this union that matches a given (non-named) type
+     * @param type type to match
+     * @return the (0-based) index of the desired branch, or -1 if no such branch found
+     */
+    public int resolve (AvroType type) {
+        if (type == null || type.isNamed()) {
+            throw new IllegalArgumentException("type is required and must not be a named type");
+        }
+        for (int i = 0; i < types.size(); i++) {
+            AvroSchema branch = types.get(i).getSchema();
+            if (branch.type() == type) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * find a branch of this union that matches a given fullname
+     * @param fullname desired fullname
+     * @return the (0-based) index of the desired branch, or -1 if no such branch found
+     */
+    public int resolve (String fullname) {
+        if (fullname == null) {
+            throw new IllegalArgumentException("fullname argument required");
+        }
+        for (int i = 0; i < types.size(); i++) {
+            AvroSchema branch = types.get(i).getSchema();
+            if (!(branch instanceof AvroNamedSchema)) {
+                continue;
+            }
+            AvroNamedSchema namedBranch = (AvroNamedSchema) branch;
+            if (fullname.equals(namedBranch.getFullName())) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     @Override
     public boolean isNullable() {
         if (types == null) {

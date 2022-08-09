@@ -7,12 +7,14 @@
 package com.linkedin.avroutil1.parser.avsc;
 
 import com.linkedin.avroutil1.model.AvroSchema;
+import com.linkedin.avroutil1.model.AvroSchemaField;
 import com.linkedin.avroutil1.model.CodeLocation;
 import com.linkedin.avroutil1.model.LocatedCode;
 import com.linkedin.avroutil1.model.SchemaOrRef;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class AvscParseResult {
@@ -63,9 +65,18 @@ public class AvscParseResult {
         return context.getDefinedNamedSchemas();
     }
 
-    public List<SchemaOrRef> getExternalReferences() {
+    public Set<SchemaOrRef> getExternalReferences() {
         assertSuccess();
         return context.getExternalReferences();
+    }
+
+    public Set<AvroSchemaField> getFieldsWithUnparsedDefaults() {
+        assertSuccess();
+        return context.getFieldsWithUnparsedDefaults();
+    }
+
+    public AvscFileParseContext getContext() {
+        return context;
     }
 
     public void addIssue(AvscIssue issue) {
@@ -101,7 +112,7 @@ public class AvscParseResult {
         if (!issues.isEmpty()) {
             sb.append(" and ").append(issues.size()).append(" issues");
         }
-        List<SchemaOrRef> unresolved = context.getExternalReferences();
+        Set<SchemaOrRef> unresolved = context.getExternalReferences();
         if (!unresolved.isEmpty()) {
             int total = unresolved.size();
             sb.append(" and ")

@@ -1,0 +1,9 @@
+{
+  "type": "enum",
+  "namespace": "com.acme",
+  "name": "TestEnum",
+  "symbols": [
+    "UNKNOWN","SYMBOL_A", "SYMBOL_B"
+  ],
+  "default": "UNKNOWN"
+}

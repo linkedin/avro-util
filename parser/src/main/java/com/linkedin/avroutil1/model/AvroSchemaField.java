@@ -114,6 +114,10 @@ public class AvroSchemaField implements LocatedCode, JsonPropertiesContainer {
         return defaultValue;
     }
 
+    public void setDefaultValue(AvroLiteral defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
     @Override
     public Set<String> propertyNames() {
         return props.propertyNames();

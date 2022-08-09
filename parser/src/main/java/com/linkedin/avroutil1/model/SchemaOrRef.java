@@ -7,6 +7,8 @@
 package com.linkedin.avroutil1.model;
 
 import com.linkedin.avroutil1.parser.exceptions.UnresolvedReferenceException;
+import java.util.IdentityHashMap;
+
 
 /**
  * represents either a declared avro schema (which may or may not be a named type)
@@ -88,6 +90,59 @@ public class SchemaOrRef implements LocatedCode {
      */
     public boolean isResolved() {
         return schema != null;
+    }
+
+    /**
+     * true if this schema is fully defined - meaning all external references contained anywhere within are resolved
+     * and this schema can be used
+     * @return
+     */
+    public boolean isFullyDefined() {
+        IdentityHashMap<SchemaOrRef, Boolean> seen = new IdentityHashMap<>(3);
+        return isFullyDefined(seen);
+    }
+
+    /**
+     * true if this schema is fully defined - meaning all external references contained anywhere within are resolved
+     * and this schema can be used
+     * @return
+     */
+    protected boolean isFullyDefined(IdentityHashMap<SchemaOrRef, Boolean> seen) {
+        if (!isResolved()) {
+            return false;
+        }
+        if (seen.containsKey(this)) {
+            return true; //loop in schema DAG
+        }
+        seen.put(this, Boolean.TRUE);
+        try {
+            switch (schema.type()) {
+                case ARRAY:
+                    return ((AvroArraySchema) schema).getValueSchemaOrRef().isFullyDefined(seen);
+                case MAP:
+                    return ((AvroMapSchema) schema).getValueSchemaOrRef().isFullyDefined(seen);
+                case UNION:
+                    for (SchemaOrRef branch : ((AvroUnionSchema) schema).getTypes()) {
+                        if (!branch.isFullyDefined(seen)) {
+                            return false;
+                        }
+                    }
+                    return true;
+                case RECORD:
+                    for (AvroSchemaField field : ((AvroRecordSchema) schema).getFields()) {
+                        if (!field.getSchemaOrRef().isFullyDefined(seen)) {
+                            return false;
+                        }
+                    }
+                    return true;
+                default:
+                    return true;
+            }
+        } finally {
+            if (!Boolean.TRUE.equals(seen.remove(this))) {
+                throw new IllegalStateException("removed element never seen?");
+            }
+        }
     }
 
     public AvroSchema getSchema() {
