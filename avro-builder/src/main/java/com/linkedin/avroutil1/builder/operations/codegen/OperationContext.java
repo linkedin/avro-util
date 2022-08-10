@@ -11,7 +11,6 @@ import com.linkedin.avroutil1.model.AvroSchema;
 import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 import org.apache.avro.Schema;
 

@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.management.remote.rmi._RMIConnection_Stub;
 import javax.tools.JavaFileObject;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
