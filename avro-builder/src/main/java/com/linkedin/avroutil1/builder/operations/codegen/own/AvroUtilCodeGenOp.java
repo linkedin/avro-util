@@ -13,6 +13,7 @@ import com.linkedin.avroutil1.builder.operations.codegen.OperationContext;
 import com.linkedin.avroutil1.codegen.SpecificRecordClassGenerator;
 import com.linkedin.avroutil1.codegen.SpecificRecordGenerationConfig;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
+import com.linkedin.avroutil1.model.AvroSchema;
 import com.linkedin.avroutil1.parser.avsc.AvroParseContext;
 import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
 import com.linkedin.avroutil1.parser.avsc.AvscParser;
@@ -26,6 +27,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.management.remote.rmi._RMIConnection_Stub;
 import javax.tools.JavaFileObject;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -91,7 +93,9 @@ public class AvroUtilCodeGenOp implements Operation {
 
     SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
     List<JavaFileObject> specificRecords = new ArrayList<>();
+    Set<AvroSchema> avroSchemas = new HashSet<>();
     for (AvscParseResult parsedFile : parsedFiles) {
+      avroSchemas.add(parsedFile.getTopLevelSchema());
       JavaFileObject javaFileObject =
           generator.generateSpecificRecordClass((AvroNamedSchema) parsedFile.getTopLevelSchema(),
               SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
@@ -102,7 +106,7 @@ public class AvroUtilCodeGenOp implements Operation {
 
     Set<File> allAvroFiles = new HashSet<>(avscFiles);
     allAvroFiles.addAll(nonImportableFiles);
-    opContext.setAvroFiles(allAvroFiles);
+    opContext.addParsedSchemas(avroSchemas, allAvroFiles);
 
     // TODO - look for dups
 

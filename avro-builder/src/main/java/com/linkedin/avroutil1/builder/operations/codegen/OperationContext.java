@@ -6,35 +6,60 @@
 
 package com.linkedin.avroutil1.builder.operations.codegen;
 
+import com.linkedin.avroutil1.builder.operations.AvroSchemaUtils;
+import com.linkedin.avroutil1.model.AvroSchema;
 import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
+import org.apache.avro.Schema;
 
 
 /**
  * common context to all {@link com.linkedin.avroutil1.builder.operations.Operation}s run during an execution
  */
 public class OperationContext {
-  private Set<File> avroFiles;
   private final HashMap<String, Object> context;
+  private Set<File> avroFiles;
+  private Set<AvroSchema> avroSchemas;
 
   public OperationContext() {
     this.context = new HashMap<>();
   }
 
-  public void setAvroFiles(Set<File> avroFiles) {
-    if (this.avroFiles != null) {
+  public void addParsedSchemas(Set<AvroSchema> avroSchemas, Set<File> avroFiles) {
+    if (this.avroFiles != null || this.avroSchemas != null) {
       throw new IllegalStateException("Cannot initialize avro files twice");
     }
-    this.avroFiles = avroFiles;
+
+    this.avroFiles = Collections.unmodifiableSet(avroFiles);
+    this.avroSchemas = Collections.unmodifiableSet(avroSchemas);
   }
 
+  public void addVanillaSchemas(Set<Schema> schemas, Set<File> avroFiles) {
+    addParsedSchemas(AvroSchemaUtils.schemasToAvroSchemas(schemas), avroFiles);
+  }
+
+  /**
+   * Returns an unmodifiable set of all input avro files.
+   */
   public Set<File> getAvroFiles() {
-    if (avroFiles == null) {
-      throw new IllegalStateException("Avro files are undefined");
+    if (this.avroFiles == null) {
+      throw new IllegalStateException("Avro files haven't been added yet.");
+    }
+    return this.avroFiles;
+  }
+
+  /**
+   * Returns an unmodifiable set of all parsed avro schemas.
+   */
+  public Set<AvroSchema> getAvroSchemas() {
+    if (this.avroSchemas == null) {
+      throw new IllegalStateException("Avro schemas haven't been added yet.");
     }
 
-    return this.avroFiles;
+    return this.avroSchemas;
   }
 
   public void setConfigValue(String key, Object value) {

@@ -178,7 +178,7 @@ public class VanillaProcessedCodeGenOp implements Operation {
       }
     }
 
-    opContext.setAvroFiles(avroFiles);
+    opContext.addVanillaSchemas(new HashSet<>(schemas), avroFiles);
 
     LOGGER.info("Compilation complete.");
   }
