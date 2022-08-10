@@ -6,6 +6,9 @@
 
 package com.linkedin.avroutil1.builder.operations;
 
+import com.linkedin.avroutil1.builder.operations.codegen.OperationContext;
+
+
 public interface Operation {
   void run(OperationContext opContext) throws Exception;
 }

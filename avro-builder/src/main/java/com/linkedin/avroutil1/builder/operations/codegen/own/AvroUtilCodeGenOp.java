@@ -8,11 +8,12 @@ package com.linkedin.avroutil1.builder.operations.codegen.own;
 
 import com.linkedin.avroutil1.builder.BuilderConsts;
 import com.linkedin.avroutil1.builder.operations.Operation;
-import com.linkedin.avroutil1.builder.operations.OperationContext;
 import com.linkedin.avroutil1.builder.operations.codegen.CodeGenOpConfig;
+import com.linkedin.avroutil1.builder.operations.codegen.OperationContext;
 import com.linkedin.avroutil1.codegen.SpecificRecordClassGenerator;
 import com.linkedin.avroutil1.codegen.SpecificRecordGenerationConfig;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
+import com.linkedin.avroutil1.model.AvroSchema;
 import com.linkedin.avroutil1.parser.avsc.AvroParseContext;
 import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
 import com.linkedin.avroutil1.parser.avsc.AvscParser;
@@ -91,7 +92,9 @@ public class AvroUtilCodeGenOp implements Operation {
 
     SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
     List<JavaFileObject> specificRecords = new ArrayList<>();
+    Set<AvroSchema> avroSchemas = new HashSet<>();
     for (AvscParseResult parsedFile : parsedFiles) {
+      avroSchemas.add(parsedFile.getTopLevelSchema());
       JavaFileObject javaFileObject =
           generator.generateSpecificRecordClass((AvroNamedSchema) parsedFile.getTopLevelSchema(),
               SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
@@ -99,6 +102,10 @@ public class AvroUtilCodeGenOp implements Operation {
     }
 
     writeJavaFilesToDisk(specificRecords, config.getOutputSpecificRecordClassesRoot());
+
+    Set<File> allAvroFiles = new HashSet<>(avscFiles);
+    allAvroFiles.addAll(nonImportableFiles);
+    opContext.addParsedSchemas(avroSchemas, allAvroFiles);
 
     // TODO - look for dups
 
