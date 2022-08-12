@@ -32,7 +32,7 @@ public class JsonPropertiesContainerImpl implements JsonPropertiesContainer {
 
     private final LinkedHashMap<String, JsonValueExt> props;
 
-    JsonPropertiesContainerImpl(LinkedHashMap<String, JsonValueExt> props) {
+    public JsonPropertiesContainerImpl(LinkedHashMap<String, JsonValueExt> props) {
         this.props = props;
     }
 

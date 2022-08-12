@@ -55,6 +55,10 @@ public abstract class AvroSchema implements LocatedCode, JsonPropertiesContainer
         return props.getPropertyAsJsonLiteral(key);
     }
 
+    public JsonPropertiesContainer getAllProps() {
+        return props;
+    }
+
     @Override
     public String toString() {
         String typeName = type().name().toLowerCase(Locale.ROOT);
