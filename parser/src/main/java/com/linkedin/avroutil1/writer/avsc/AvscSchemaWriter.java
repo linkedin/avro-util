@@ -86,7 +86,7 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
     return Paths.get(parts[0], pathParts);
   }
 
-  protected String generateAvsc(AvroSchema schema, AvscWriterConfig config) {
+  public String generateAvsc(AvroSchema schema, AvscWriterConfig config) {
     AvscWriterContext context = new AvscWriterContext();
     Map<String, String> jsonConfig = new HashMap<>();
     if (config.isPretty()) {
