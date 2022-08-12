@@ -158,24 +158,10 @@ public final class FastSerdeCache {
           } else if (classPath != null) {
             _INSTANCE = new FastSerdeCache(classPath);
           } else {
-            // Infer class path if no classpath specified.
-            classPath = System.getProperty("java.class.path");
-            String avroSchemaClassName = "org.apache.avro.Schema";
-            try {
-              Class avroSchemaClass = Class.forName(avroSchemaClassName);
-              String avroLibLocation = avroSchemaClass.getProtectionDomain().getCodeSource().getLocation().getFile();
-              // find all other libs
-              File avroLibFile = new File(avroLibLocation).getParentFile();
-              for (File lib : avroLibFile.listFiles()) {
-                if (lib.getName().endsWith(".jar")) {
-                  classPath += ":" + lib.getAbsolutePath();
-                }
-              }
-              LOGGER.debug("Inferred class path: {}", classPath);
-            } catch (ClassNotFoundException e) {
-              throw new RuntimeException("Failed to find class: " + avroSchemaClassName);
-            }
-            _INSTANCE = new FastSerdeCache(classPath);
+            /**
+             * The fast-class generator will figure out the compile dependencies during fast-class generation.
+             */
+            _INSTANCE = new FastSerdeCache("");
           }
         }
       }
