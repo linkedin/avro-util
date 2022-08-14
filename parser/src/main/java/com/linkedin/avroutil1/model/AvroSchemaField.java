@@ -133,6 +133,10 @@ public class AvroSchemaField implements LocatedCode, JsonPropertiesContainer {
         return props.getPropertyAsJsonLiteral(key);
     }
 
+    public JsonPropertiesContainer getAllProps() {
+        return props;
+    }
+
     void assignTo(AvroRecordSchema recordSchema, int position) {
 
         if (recordSchema == null) {
