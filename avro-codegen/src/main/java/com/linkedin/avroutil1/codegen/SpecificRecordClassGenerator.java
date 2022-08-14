@@ -393,7 +393,8 @@ public class SpecificRecordClassGenerator {
     // All private fields
     for (AvroSchemaField field : recordSchema.getFields()) {
       FieldSpec.Builder fieldBuilder;
-      AvroType fieldAvroType = field.getSchemaOrRef().getSchema().type();
+      AvroSchema fieldSchema = field.getSchemaOrRef().getSchema();
+      AvroType fieldAvroType = fieldSchema.type();
       Class<?> fieldClass = avroTypeToJavaClass(fieldAvroType);
       TypeName fieldType = getTypeName(field.getSchema(), fieldAvroType);
       if (fieldClass != null) {
@@ -1317,12 +1318,20 @@ public class SpecificRecordClassGenerator {
         AvroUnionSchema unionSchema = (AvroUnionSchema) fieldSchema;
 
         if(isSingleTypeNullableUnionSchema(unionSchema)) {
-          SchemaOrRef unionMemberSchemaOrRef = (unionSchema.getTypes().size() == 1) ? unionSchema.getTypes().get(0)
-              : (unionSchema.getTypes().get(0).getSchema().type().equals(AvroType.NULL) ? unionSchema.getTypes().get(1)
-                  : unionSchema.getTypes().get(0));
+          List<SchemaOrRef> branches = unionSchema.getTypes();
+          SchemaOrRef unionMemberSchemaOrRef = (branches.size() == 1) ? branches.get(0)
+              : (branches.get(0).getSchema().type().equals(AvroType.NULL) ? branches.get(1)
+                  : branches.get(0));
 
-          className = ClassName.get(avroTypeToJavaClass(unionMemberSchemaOrRef.getSchema().type()));
-        }
+          AvroSchema branchSchema = unionMemberSchemaOrRef.getSchema();
+          AvroType branchSchemaType = branchSchema.type();
+          Class<?> simpleClass = avroTypeToJavaClass(branchSchemaType);
+          if (simpleClass != null) {
+            className = ClassName.get(simpleClass);
+          } else {
+            className = getTypeName(branchSchema, branchSchemaType);
+          }
+        } //otherwise Object
         break;
       case ARRAY:
         AvroArraySchema arraySchema = ((AvroArraySchema) fieldSchema);
@@ -1340,14 +1349,15 @@ public class SpecificRecordClassGenerator {
           className = ParameterizedTypeName.get(Map.class, mapValueClass);
         }
         break;
-
+      default:
+        break;
     }
     return className;
   }
 
   private boolean isSingleTypeNullableUnionSchema(AvroUnionSchema unionSchema) {
     if(unionSchema.getTypes().size() == 1) return true;
-    if(unionSchema.getTypes().size()  == 2) {
+    if(unionSchema.getTypes().size() == 2) {
       for(SchemaOrRef unionMember : unionSchema.getTypes()) {
         if(AvroType.NULL.equals(unionMember.getSchema().type())) {
           return true;
@@ -1357,8 +1367,7 @@ public class SpecificRecordClassGenerator {
     return false;
   }
 
-  private Class<?> getFieldClass(AvroType fieldType, AvroJavaStringRepresentation defaultStringRepresentation)
-       {
+  private Class<?> getFieldClass(AvroType fieldType, AvroJavaStringRepresentation defaultStringRepresentation) {
     Class<?> fieldClass = null;
     switch (fieldType) {
       case NULL:

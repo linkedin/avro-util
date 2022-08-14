@@ -6,12 +6,14 @@
 
 package com.linkedin.avroutil1.parser.avsc;
 
+import com.linkedin.avroutil1.model.AvroNamedSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
 import com.linkedin.avroutil1.model.AvroSchemaField;
 import com.linkedin.avroutil1.model.SchemaOrRef;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,10 +29,34 @@ public class AvroParseContext {
 
     // output/state/calculated - calculated once
 
+    /**
+     * resolving references seales this context and prevents the addition of any more
+     * individual file parse results
+     */
     private boolean sealed = false;
-    private Map<String, AvscParseResult> knownImportableSchemas = null;
+    /**
+     * all named (record, enum, fixed) schemas defined in any importable source file
+     */
+    private Map<String, AvscParseResult> importableNamedSchemas = null;
+    /**
+     * all named (record, enum, fixed) schemas defined in any source file
+     */
+    private Map<String, AvscParseResult> allNamedSchemas = null;
+    /**
+     * these are the top-level (outermost) schemas defined, one per file
+     */
+    private Set<AvroSchema> topLevelSchemas = null;
     private Map<String, List<AvscParseResult>> duplicates = null;
+    /**
+     * remaining unresolved references after all references across files that
+     * are part of this context have been handled.
+     */
     private List<SchemaOrRef> externalReferences = null;
+    /**
+     * remaining fields who's default values cannot be parsed after resolving all
+     * references within this parse context (due to remaining unresolved references
+     * in the field type)
+     */
     private List<AvroSchemaField> fieldsWithUnparsedDefaults = null;
 
     @Deprecated
@@ -46,38 +72,50 @@ public class AvroParseContext {
         individualResults.add(new AvscStandaloneResult(singleResult, isImportable));
     }
 
+    /**
+     * expected to be called once after all individual file parsing results have been added.
+     * this method resolves any cross-file references in schemas and populates
+     * the index datastructures.
+     * no file parsing results can be added to this context once this method is called.
+     */
     public void resolveReferences() {
+        assertMutable();
         sealed = true;
 
         //build up an index of FQCNs (also find dups)
-        knownImportableSchemas = new HashMap<>(individualResults.size());
+        importableNamedSchemas = new HashMap<>(individualResults.size());
+        allNamedSchemas = new HashMap<>(individualResults.size());
+        topLevelSchemas = new HashSet<>(individualResults.size());
         duplicates = new HashMap<>(1);
-        for (AvscStandaloneResult singleFile : individualResults) {
-            Throwable error = singleFile.parseResult.getParseError();
+        for (AvscStandaloneResult fileResult : individualResults) {
+            AvscParseResult parseResult = fileResult.parseResult;
+            Throwable error = parseResult.getParseError();
             if (error != null) {
                 //don't touch files with outright failures
+                //TODO - add an issue here
                 continue;
             }
-            Map<String, AvroSchema> namedInFile = singleFile.parseResult.getDefinedNamedSchemas();
+            Map<String, AvroNamedSchema> namedInFile = parseResult.getDefinedNamedSchemas();
             namedInFile.forEach((fqcn, schema) -> {
-                AvscParseResult firstDefinition = knownImportableSchemas.get(fqcn);
-                if (singleFile.isImportable) {
-                   knownImportableSchemas.putIfAbsent(fqcn, singleFile.parseResult);
-                }
-                if (firstDefinition != null) {
+                AvscParseResult prior = allNamedSchemas.putIfAbsent(fqcn, parseResult);
+                if (prior != null) {
                     //TODO - find dups in aliases as well ?
                     //this is a dup
                     duplicates.compute(fqcn, (k, dups) -> {
                         if (dups == null) {
                             dups = new ArrayList<>(2);
-                            dups.add(firstDefinition);
+                            dups.add(prior);
                         }
-                        dups.add(singleFile.parseResult);
+                        dups.add(parseResult);
                         return dups;
                     });
                 }
-
+                if (fileResult.isImportable) {
+                    //dont care about return value since we handled dups above
+                    importableNamedSchemas.putIfAbsent(fqcn, parseResult);
+                }
             });
+            topLevelSchemas.add(parseResult.getTopLevelSchema());
         }
         //TODO - add context-level issues for dups
 
@@ -87,12 +125,12 @@ public class AvroParseContext {
             Set<SchemaOrRef> externalRefs = singleFile.parseResult.getExternalReferences();
             for (SchemaOrRef ref : externalRefs) {
                 String simpleName = ref.getRef();
-                AvscParseResult simpleNameResolution = knownImportableSchemas.get(simpleName);
+                AvscParseResult simpleNameResolution = importableNamedSchemas.get(simpleName);
                 AvscParseResult inheritedNameResolution = null;
 
                 String inheritedName = ref.getInheritedName();
                 if (inheritedName != null) {
-                    inheritedNameResolution = knownImportableSchemas.get(inheritedName);
+                    inheritedNameResolution = importableNamedSchemas.get(inheritedName);
                 }
 
                 // The namespace may be inherited from the parent schema's context or may already be defined in the
@@ -101,9 +139,8 @@ public class AvroParseContext {
                 if (inheritedNameResolution != null) {
                     ref.setResolvedTo(inheritedNameResolution.getDefinedNamedSchemas().get(inheritedName));
                     if (simpleNameResolution != null) {
-                        String msg =
-                            "ERROR: Two different schemas found for reference " + simpleName + " with inherited name "
-                                + inheritedName + ". Only one should exist.";
+                        String msg = "ERROR: Two different schemas found for reference " + simpleName
+                            + " with inherited name " + inheritedName + ". Only one should exist.";
                         singleFile.parseResult.addIssue(new AvscIssue(ref.getCodeLocation(), IssueSeverity.WARNING, msg,
                             new IllegalStateException(msg)));
                     }
@@ -130,6 +167,18 @@ public class AvroParseContext {
                 AvscParseUtil.lateParseFieldDefault(field, parseResult.getContext());
             }
         }
+    }
+
+    public Map<String, AvscParseResult> getAllNamedSchemas() {
+        return allNamedSchemas;
+    }
+
+    public Set<AvroSchema> getTopLevelSchemas() {
+        return topLevelSchemas;
+    }
+
+    public Map<String, List<AvscParseResult>> getDuplicates() {
+        return duplicates;
     }
 
     public boolean hasExternalReferences() {

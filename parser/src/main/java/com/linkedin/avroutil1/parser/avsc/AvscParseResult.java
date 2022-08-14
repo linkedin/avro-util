@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.parser.avsc;
 
+import com.linkedin.avroutil1.model.AvroNamedSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
 import com.linkedin.avroutil1.model.AvroSchemaField;
 import com.linkedin.avroutil1.model.CodeLocation;
@@ -60,7 +61,12 @@ public class AvscParseResult {
         return context.getTopLevelSchema();
     }
 
-    public Map<String, AvroSchema> getDefinedNamedSchemas() {
+    public AvroNamedSchema getDefinedSchema(String fullname) {
+        assertSuccess();
+        return context.definedNamedSchemas.get(fullname);
+    }
+
+    public Map<String, AvroNamedSchema> getDefinedNamedSchemas() {
         assertSuccess();
         return context.getDefinedNamedSchemas();
     }

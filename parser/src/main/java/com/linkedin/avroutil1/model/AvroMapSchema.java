@@ -22,6 +22,6 @@ public class AvroMapSchema extends AvroCollectionSchema {
 
     @Override
     public String toString() {
-        return "Map<String, " + getValueSchema() + ">";
+        return "Map<string, " + getValueSchema() + ">";
     }
 }
