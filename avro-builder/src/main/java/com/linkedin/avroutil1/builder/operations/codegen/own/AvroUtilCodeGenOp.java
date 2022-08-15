@@ -13,7 +13,6 @@ import com.linkedin.avroutil1.builder.operations.codegen.OperationContext;
 import com.linkedin.avroutil1.codegen.SpecificRecordClassGenerator;
 import com.linkedin.avroutil1.codegen.SpecificRecordGenerationConfig;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
-import com.linkedin.avroutil1.model.AvroSchema;
 import com.linkedin.avroutil1.parser.avsc.AvroParseContext;
 import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
 import com.linkedin.avroutil1.parser.avsc.AvscParser;
@@ -26,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.tools.JavaFileObject;
 import org.apache.commons.io.FileUtils;
@@ -58,6 +58,7 @@ public class AvroUtilCodeGenOp implements Operation {
     Set<File> avscFiles = new HashSet<>();
     Set<File> nonImportableFiles = new HashSet<>();
     String[] extensions = new String[]{BuilderConsts.AVSC_EXTENSION};
+    long scanStart = System.currentTimeMillis();
 
     for (File inputRoot : config.getInputRoots()) {
       avscFiles.addAll(FileUtils.listFiles(inputRoot, extensions, true));
@@ -69,11 +70,14 @@ public class AvroUtilCodeGenOp implements Operation {
       }
     }
 
-    if (avscFiles.isEmpty() && nonImportableFiles.isEmpty()) {
+    long scanEnd = System.currentTimeMillis();
+
+    int numFiles = avscFiles.size() + nonImportableFiles.size();
+    if (numFiles == 0) {
       LOGGER.warn("no input schema files were found under roots " + config.getInputRoots());
       return;
     }
-    LOGGER.info("found " + (avscFiles.size() + nonImportableFiles.size()) + " avsc schema files");
+    LOGGER.info("found " + numFiles + " avsc schema files in " + (scanEnd - scanStart) + " millis");
 
     AvroParseContext context = new AvroParseContext();
     Set<AvscParseResult> parsedFiles = new HashSet<>();
@@ -84,6 +88,15 @@ public class AvroUtilCodeGenOp implements Operation {
     //resolve any references across files that are part of this op (anything left would be external)
     context.resolveReferences();
 
+    long parseEnd = System.currentTimeMillis();
+
+    Map<String, AvscParseResult> allNamedSchemas = context.getAllNamedSchemas();
+    Map<String, List<AvscParseResult>> duplicates = context.getDuplicates();
+
+    LOGGER.info("parsed {} named schemas in {} millis, {} of which have duplicates",
+        allNamedSchemas.size(), parseEnd - scanEnd, duplicates.size());
+
+    //TODO fail if any errors or dups (depending on config) are found
     if (context.hasExternalReferences()) {
       //TODO - better formatting
       throw new UnsupportedOperationException(
@@ -91,24 +104,45 @@ public class AvroUtilCodeGenOp implements Operation {
     }
 
     SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
-    List<JavaFileObject> specificRecords = new ArrayList<>();
-    Set<AvroSchema> avroSchemas = new HashSet<>();
-    for (AvscParseResult parsedFile : parsedFiles) {
-      avroSchemas.add(parsedFile.getTopLevelSchema());
-      JavaFileObject javaFileObject =
-          generator.generateSpecificRecordClass((AvroNamedSchema) parsedFile.getTopLevelSchema(),
-              SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
-      specificRecords.add(javaFileObject);
+    List<JavaFileObject> specificRecords = new ArrayList<>(allNamedSchemas.size());
+
+    long genStart = System.currentTimeMillis();
+    long errorCount = 0;
+    for (Map.Entry<String, AvscParseResult> namedSchemaEntry : allNamedSchemas.entrySet()) {
+      String fullname = namedSchemaEntry.getKey();
+      AvscParseResult fileParseResult = namedSchemaEntry.getValue();
+      AvroNamedSchema namedSchema = fileParseResult.getDefinedSchema(fullname);
+
+      try {
+        JavaFileObject javaFileObject = generator.generateSpecificRecordClass(
+            namedSchema,
+            SpecificRecordGenerationConfig.BROAD_COMPATIBILITY
+        );
+        specificRecords.add(javaFileObject);
+      } catch (Exception e) {
+        errorCount++;
+        //TODO - error-out
+        LOGGER.error("failed to generate class for " + fullname + " defined in " + fileParseResult.getContext().getUri(), e);
+      }
+    }
+    long genEnd = System.currentTimeMillis();
+
+    if (errorCount > 0) {
+      LOGGER.info("failed to generate {} java source files ({} generated successfully) in {} millis",
+          errorCount, specificRecords.size(), genEnd - genStart);
+    } else {
+      LOGGER.info("generated {} java source files in {} millis", specificRecords.size(), genEnd - genStart);
     }
 
     writeJavaFilesToDisk(specificRecords, config.getOutputSpecificRecordClassesRoot());
 
+    long writeEnd = System.currentTimeMillis();
+    LOGGER.info("wrote out {} generated java source files under {} in {} millis",
+        specificRecords.size(), config.getOutputSpecificRecordClassesRoot(), writeEnd - genEnd);
+
     Set<File> allAvroFiles = new HashSet<>(avscFiles);
     allAvroFiles.addAll(nonImportableFiles);
-    opContext.addParsedSchemas(avroSchemas, allAvroFiles);
-
-    // TODO - look for dups
-
+    opContext.addParsedSchemas(context.getTopLevelSchemas(), allAvroFiles);
   }
 
   /**
@@ -155,9 +189,11 @@ public class AvroUtilCodeGenOp implements Operation {
         }
       }
 
-      try (FileOutputStream fos = new FileOutputStream(outputFile, false);
+      try (
+          FileOutputStream fos = new FileOutputStream(outputFile, false);
           OutputStreamWriter writer = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
-          Reader reader = javaClass.openReader(true)) {
+          Reader reader = javaClass.openReader(true)
+      ) {
         IOUtils.copy(reader, writer);
         writer.flush();
         fos.flush();

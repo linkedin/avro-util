@@ -56,7 +56,7 @@ public class AvscFileParseContext {
     /**
      * schemas out of the above collection that have a name, by their full name
      */
-    protected final Map<String, AvroSchema> definedNamedSchemas = new HashMap<>();
+    protected final Map<String, AvroNamedSchema> definedNamedSchemas = new HashMap<>();
     /**
      * the top level (root, outer-most) schema in the avsc being parsed.
      * avsc sources typically have a single top level schema, though it may be
@@ -149,7 +149,7 @@ public class AvscFileParseContext {
         definedSchemas.add(schema);
         if (schema.type().isNamed()) {
             AvroNamedSchema namedSchema = (AvroNamedSchema) schema;
-            AvroSchema other = definedNamedSchemas.putIfAbsent(namedSchema.getFullName(), schema);
+            AvroSchema other = definedNamedSchemas.putIfAbsent(namedSchema.getFullName(), namedSchema);
             if (other != null) {
                 throw new AvroSyntaxException(schema + " defined in " + schema.getCodeLocation() + " conflicts with " + other);
             }
@@ -274,7 +274,7 @@ public class AvscFileParseContext {
         return definedSchemas;
     }
 
-    public Map<String, AvroSchema> getDefinedNamedSchemas() {
+    public Map<String, AvroNamedSchema> getDefinedNamedSchemas() {
         return definedNamedSchemas;
     }
 

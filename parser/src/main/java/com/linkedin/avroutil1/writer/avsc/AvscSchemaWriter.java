@@ -19,6 +19,7 @@ import com.linkedin.avroutil1.model.AvroFloatLiteral;
 import com.linkedin.avroutil1.model.AvroIntegerLiteral;
 import com.linkedin.avroutil1.model.AvroLiteral;
 import com.linkedin.avroutil1.model.AvroLongLiteral;
+import com.linkedin.avroutil1.model.AvroMapLiteral;
 import com.linkedin.avroutil1.model.AvroMapSchema;
 import com.linkedin.avroutil1.model.AvroName;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
@@ -332,6 +333,7 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
   protected JsonValue writeDefaultValue(AvroSchema fieldSchema, AvroLiteral literal) {
     AvroType type = fieldSchema.type();
     String temp;
+    AvroSchema valueSchema;
     switch (type) {
       case NULL:
         //noinspection unused (kept as a sanity check)
@@ -374,11 +376,29 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
         AvroArrayLiteral arrayLiteral = (AvroArrayLiteral) literal;
         List<AvroLiteral> array = arrayLiteral.getValue();
         AvroArraySchema arraySchema = (AvroArraySchema) arrayLiteral.getSchema();
+        valueSchema = arraySchema.getValueSchema();
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         for  (AvroLiteral element : array) {
-          arrayBuilder.add(writeDefaultValue(arraySchema.getValueSchema(), element));
+          JsonValue serializedElement = writeDefaultValue(valueSchema, element);
+          arrayBuilder.add(serializedElement);
         }
         return arrayBuilder.build();
+      case MAP:
+        AvroMapLiteral mapLiteral = (AvroMapLiteral) literal;
+        Map<String, AvroLiteral> map = mapLiteral.getValue();
+        AvroMapSchema mapSchema = (AvroMapSchema) mapLiteral.getSchema();
+        valueSchema = mapSchema.getValueSchema();
+        JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+        for (Map.Entry<String, AvroLiteral> entry : map.entrySet()) {
+          JsonValue serializedValue = writeDefaultValue(valueSchema, entry.getValue());
+          objectBuilder.add(entry.getKey(), serializedValue);
+        }
+        return objectBuilder.build();
+      case UNION:
+        //default values for unions must be of the 1st type in the union
+        AvroUnionSchema unionSchema = (AvroUnionSchema) fieldSchema;
+        AvroSchema firstBranchSchema = unionSchema.getTypes().get(0).getSchema();
+        return writeDefaultValue(firstBranchSchema, literal);
       default:
         throw new UnsupportedOperationException("writing default values for " + type + " not implemented yet");
     }
