@@ -1,7 +1,0 @@
-{
-  "namespace": "${namespace}",
-  "type": "fixed",
-  "name": "${name}",
-  "size": ${size},
-  "doc": "this schema was reverse-engineered"
-}
