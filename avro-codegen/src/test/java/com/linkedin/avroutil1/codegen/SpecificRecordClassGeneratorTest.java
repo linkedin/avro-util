@@ -6,7 +6,7 @@
 
 package com.linkedin.avroutil1.codegen;
 
-import com.linkedin.avro.codegen.testutil.CompilerHelper;
+import com.linkedin.avroutil1.testutil.CompilerHelper;
 import com.linkedin.avroutil1.model.AvroEnumSchema;
 import com.linkedin.avroutil1.model.AvroFixedSchema;
 import com.linkedin.avroutil1.model.AvroRecordSchema;

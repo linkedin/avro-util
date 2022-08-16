@@ -20,12 +20,9 @@ apply plugin: 'net.vivin.gradle-semantic-build-versioning'
 //otherwise it defaults to the folder name
 rootProject.name = 'avro-util'
 
-include 'avro-builder'
 include 'test-common'
-include 'parser'
-include 'avro-codegen'
-include 'avro-fastserde'
 
+//compatibility helper
 include 'helper:helper-common'
 include 'helper:impls:helper-impl-14'
 include 'helper:impls:helper-impl-15'
@@ -56,6 +53,20 @@ include 'helper:tests:helper-tests-19'
 include 'helper:tests:helper-tests-110'
 include 'helper:tests:helper-tests-111'
 
+//fast avro
+include 'avro-fastserde'
+
+//spotbugs plugin
 include 'spotbugs-plugin'
+
+//avro (schema) parser
+include 'parser'
+
+//code (specific record) generator
+include 'avro-codegen'
+
+//code-generation utility
+include 'avro-builder:builder-spi'
+include 'avro-builder:builder'
 
 include 'demos:spotbugs-demo'

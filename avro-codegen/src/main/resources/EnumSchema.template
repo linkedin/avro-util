@@ -1,7 +1,0 @@
-{
-  "namespace": "${namespace}",
-  "type": "enum",
-  "name": "${name}",
-  "symbols" : [${symbols}],
-  "doc": "this schema was reverse-engineered"
-}

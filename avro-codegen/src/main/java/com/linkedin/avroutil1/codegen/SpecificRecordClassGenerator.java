@@ -53,17 +53,6 @@ import java.util.stream.Collectors;
 import javax.lang.model.element.Modifier;
 import javax.tools.JavaFileObject;
 import org.apache.avro.util.Utf8;
-//import org.apache.avro.Schema;
-//import org.apache.avro.io.DatumReader;
-//import org.apache.avro.io.DatumWriter;
-//import org.apache.avro.io.Encoder;
-//import org.apache.avro.io.ResolvingDecoder;
-//import org.apache.avro.specific.FixedSize;
-//import org.apache.avro.specific.SpecificData;
-//import org.apache.avro.specific.SpecificDatumReader;
-//import org.apache.avro.specific.SpecificDatumWriter;
-//import org.apache.avro.specific.SpecificRecord;
-//import org.apache.avro.specific.SpecificRecordBase;
 
 
 
