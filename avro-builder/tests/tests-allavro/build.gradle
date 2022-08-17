@@ -1,0 +1,166 @@
+/*
+ * Copyright 2020 LinkedIn Corp.
+ * Licensed under the BSD 2-Clause License (the "License").
+ * See License in the project root for license information.
+ */
+
+plugins {
+  id "java-library"
+  id "jacoco"
+  id "checkstyle"
+}
+
+configurations {
+  avro14
+  avro15
+  avro16
+  avro17
+  avro17Old
+  avro18
+  avro19
+  avro110
+  avro111
+}
+
+test {
+  //we run test multiple times with different avro versions
+  //(see below)), so dont use the default test task
+  enabled = false
+}
+
+jacocoTestReport {
+  executionData.setFrom(files(fileTree("${buildDir}/jacoco").include("*.exec")))
+  //by default this task would skip because we've disabled the default test task.
+  //we enable it (in case any developer wants to run it. its still not included by "build")
+  setOnlyIf {
+    true
+  }
+}
+
+dependencies {
+  testCompileOnly ('org.apache.avro:avro:1.4.1') {
+    exclude group: "org.mortbay.jetty"
+    exclude group: "org.apache.velocity"
+    exclude group: "commons-lang"
+    exclude group: "org.jboss.netty"
+    exclude group: "com.thoughtworks.paranamer", module: "paranamer-ant"
+  }
+
+  testCompile "net.javacrumbs.json-unit:json-unit-assertj:2.19.0"
+
+  testImplementation project(":helper:helper")
+
+  testImplementation (project(":avro-builder:tests:codegen-14")) {
+    exclude group: "org.apache.avro"
+  }
+
+
+  testImplementation "com.google.guava:guava:28.2-jre"
+  testImplementation "org.mockito:mockito-core:3.2.4"
+  //required for json-unit
+  testImplementation "com.fasterxml.jackson.core:jackson-databind:2.11.3"
+  testImplementation "org.apache.commons:commons-text:1.9"
+  testImplementation 'org.skyscreamer:jsonassert:1.5.0'
+
+  avro14 ("org.apache.avro:avro:1.4.1") {
+    exclude group: "org.mortbay.jetty"
+    exclude group: "org.apache.velocity"
+    exclude group: "commons-lang"
+    exclude group: "org.jboss.netty"
+    exclude group: "com.thoughtworks.paranamer", module: "paranamer-ant"
+    exclude group: "org.slf4j"
+  }
+
+  avro15 "org.apache.avro:avro:1.5.4"
+  avro15 "org.apache.avro:avro-compiler:1.5.4"
+
+  avro16 "org.apache.avro:avro:1.6.3"
+  avro16 "org.apache.avro:avro-compiler:1.6.3"
+
+  avro17 ("org.apache.avro:avro:1.7.7") {
+    exclude group: "org.slf4j"
+  }
+  avro17 ("org.apache.avro:avro-compiler:1.7.7") {
+    exclude group: "org.slf4j"
+  }
+
+  avro17Old ("org.apache.avro:avro:1.7.0") {
+    exclude group: "org.slf4j"
+  }
+  avro17Old ("org.apache.avro:avro-compiler:1.7.0") {
+    exclude group: "org.slf4j"
+  }
+
+  avro18 ("org.apache.avro:avro:1.8.2") {
+    exclude group: "org.slf4j"
+  }
+  avro18 ("org.apache.avro:avro-compiler:1.8.2") {
+    exclude group: "org.slf4j"
+  }
+
+  avro19 ("org.apache.avro:avro:1.9.2") {
+    exclude group: "org.slf4j"
+  }
+  avro19 ("org.apache.avro:avro-compiler:1.9.2") {
+    exclude group: "org.slf4j"
+  }
+
+  avro110 ("org.apache.avro:avro:1.10.2") {
+    exclude group: "org.slf4j"
+  }
+  avro110 ("org.apache.avro:avro-compiler:1.10.2") {
+    exclude group: "org.slf4j"
+  }
+
+  avro111 ("org.apache.avro:avro:1.11.0") {
+    exclude group: "org.slf4j"
+  }
+  avro111 ("org.apache.avro:avro-compiler:1.11.0") {
+    exclude group: "org.slf4j"
+  }
+}
+
+def avroVersions = [
+        "14",
+        "15",
+        "16",
+        "17",
+        "17Old",
+        "18",
+        "19",
+        "110",
+        "111"
+]
+
+for (String avroVersion : avroVersions) {
+
+  //noinspection GroovyAssignabilityCheck
+  task "testAvro${avroVersion}" (type: Test, group: "Verification", description: "runs unit tests with avro ${avroVersion}") {
+    useTestNG()
+
+    systemProperty 'runtime.avro.version', avroVersion
+
+    testLogging {
+      showStandardStreams = true
+      showExceptions = true
+      showStackTraces = true
+      exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+      events "started", "passed", "skipped", "failed"
+    }
+
+    classpath = project.sourceSets.test.runtimeClasspath.filter {
+      File file -> !file.name.contains("avro")
+    }.plus (configurations."avro${avroVersion}")
+
+    project.tasks.getByName("build").dependsOn("testAvro${avroVersion}")
+
+    //useful for debug, so left here
+    //def gradleIsFun = avroVersion
+    //doFirst {
+    //  System.out.println("classpath for avro " + gradleIsFun + " is:")
+    //  classpath.each { System.out.println(it) }
+    //}
+    //outputs.upToDateWhen { false }
+  }
+
+}
