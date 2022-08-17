@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "namespace": "vs14",
+  "name": "SimpleRecord",
+  "fields": [
+    {
+      "name": "stringField",
+      "type": "string"
+    }
+  ]
+}

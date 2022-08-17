@@ -68,5 +68,7 @@ include 'avro-codegen'
 //code-generation utility
 include 'avro-builder:builder-spi'
 include 'avro-builder:builder'
+include 'avro-builder:tests:codegen-14'
+include 'avro-builder:tests:tests-allavro'
 
 include 'demos:spotbugs-demo'
