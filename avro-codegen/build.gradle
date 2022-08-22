@@ -42,7 +42,7 @@ dependencies {
 
 publishing {
     publications {
-        maven(MavenPublication) {
+        "$project.name"(MavenPublication) {
             groupId project.group
             artifactId project.name
             version project.version
