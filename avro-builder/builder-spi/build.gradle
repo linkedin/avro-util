@@ -22,18 +22,14 @@ dependencies {
 
 publishing {
     publications {
-        maven(MavenPublication) {
+        "$project.name"(MavenPublication) {
             groupId project.group
             artifactId project.name
             version project.version
 
-//            from project.components.java
-//            artifact jar {
-//                classifier ""
-//            }
-//            artifact sourceJar
-//            artifact javadocJar
-//            artifact testJar
+            from project.components.java
+            artifact sourceJar
+            artifact javadocJar
 
             //we strive to meet https://central.sonatype.org/pages/requirements.html
             pom {
