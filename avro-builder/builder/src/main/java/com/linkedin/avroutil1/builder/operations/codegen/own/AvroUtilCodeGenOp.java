@@ -8,14 +8,16 @@ package com.linkedin.avroutil1.builder.operations.codegen.own;
 
 import com.linkedin.avroutil1.builder.BuilderConsts;
 import com.linkedin.avroutil1.builder.operations.Operation;
-import com.linkedin.avroutil1.builder.operations.codegen.CodeGenOpConfig;
 import com.linkedin.avroutil1.builder.operations.OperationContext;
+import com.linkedin.avroutil1.builder.operations.codegen.CodeGenOpConfig;
 import com.linkedin.avroutil1.codegen.SpecificRecordClassGenerator;
 import com.linkedin.avroutil1.codegen.SpecificRecordGenerationConfig;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
 import com.linkedin.avroutil1.parser.avsc.AvroParseContext;
 import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
 import com.linkedin.avroutil1.parser.avsc.AvscParser;
+import com.linkedin.avroutil1.writer.avsc.AvscSchemaWriter;
+import com.linkedin.avroutil1.writer.avsc.AvscWriterConfig;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
@@ -27,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringJoiner;
 import javax.tools.JavaFileObject;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -91,10 +94,57 @@ public class AvroUtilCodeGenOp implements Operation {
     long parseEnd = System.currentTimeMillis();
 
     Map<String, AvscParseResult> allNamedSchemas = context.getAllNamedSchemas();
-    Map<String, List<AvscParseResult>> duplicates = context.getDuplicates();
 
-    LOGGER.info("parsed {} named schemas in {} millis, {} of which have duplicates",
-        allNamedSchemas.size(), parseEnd - scanEnd, duplicates.size());
+    // Handle duplicate schemas
+    Map<String, List<AvscParseResult>> duplicates = context.getDuplicates();
+    for (Map.Entry<String, List<AvscParseResult>> duplicateEntry : duplicates.entrySet()) {
+      String fqcn = duplicateEntry.getKey();
+      StringJoiner allFilesString = new StringJoiner(",", "", ".");
+      for (AvscParseResult avscParseResult : duplicateEntry.getValue()) {
+        long lineNumber = avscParseResult.getDefinedSchema(fqcn).getCodeLocation().getStart().getLineNumber();
+        allFilesString.add(avscParseResult.getURI().toString() + "#L" + lineNumber);
+      }
+      if (!config.getDuplicateSchemasToIgnore().contains(fqcn)) {
+        switch (config.getDupBehaviour()) {
+          case FAIL:
+            throw new RuntimeException("ERROR: schema " + fqcn + " found in 2+ places: " + allFilesString);
+          case WARN:
+            System.err.println("WARNING: schema " + fqcn + " found in 2+ places: " + allFilesString);
+            break;
+          case FAIL_IF_DIFFERENT:
+            String baseSchema = null;
+            AvscParseResult baseSchemaResult = null;
+            for (AvscParseResult duplicateParseResult : duplicateEntry.getValue()) {
+              if (baseSchema == null) {
+                baseSchema = new AvscSchemaWriter().generateAvsc(duplicateParseResult.getDefinedSchema(fqcn),
+                    AvscWriterConfig.CORRECT_MITIGATED);
+                baseSchemaResult = duplicateParseResult;
+                continue;
+              }
+              String currSchema = new AvscSchemaWriter().generateAvsc(duplicateParseResult.getDefinedSchema(fqcn),
+                  AvscWriterConfig.CORRECT_MITIGATED);
+
+              // TODO: compare canonical forms when canonicalization work is complete
+              long baseLineNumber = baseSchemaResult.getDefinedSchema(fqcn).getCodeLocation().getEnd().getLineNumber();
+              long duplicateLineNumber =
+                  duplicateParseResult.getDefinedSchema(fqcn).getCodeLocation().getEnd().getLineNumber();
+              String errorMsg = "schema " + fqcn + " found DIFFERENT in 2+ places: " + baseSchemaResult.getURI() + "#L"
+                  + baseLineNumber + " and " + duplicateParseResult.getURI() + "#L" + duplicateLineNumber;
+              if (!baseSchema.equals(currSchema)) {
+                throw new RuntimeException("ERROR: " + errorMsg);
+              } else {
+                System.err.println("WARNING: " + errorMsg);
+              }
+            }
+            break;
+          default:
+            throw new IllegalStateException("unhandled: " + config.getDupBehaviour());
+        }
+      }
+    }
+
+    LOGGER.info("parsed {} named schemas in {} millis, {} of which have duplicates", allNamedSchemas.size(),
+        parseEnd - scanEnd, duplicates.size());
 
     //TODO fail if any errors or dups (depending on config) are found
     if (context.hasExternalReferences()) {
@@ -179,14 +229,11 @@ public class AvroUtilCodeGenOp implements Operation {
     for (JavaFileObject javaClass : javaClassFiles) {
       File outputFile = new File(outputFolder, javaClass.getName());
 
-      if (outputFile.exists()) {
-        //TODO - make this behaviour configurable (overwite, ignore, ignore_if_identical, etc)
-        throw new IllegalStateException("output file " + outputFile + " already exists");
-      } else {
-        File parentFolder = outputFile.getParentFile();
-        if (!parentFolder.exists() && !parentFolder.mkdirs()) {
-          throw new IllegalStateException("unable to create output folder " + outputFolder);
-        }
+      //TODO - handle case where file already exists and make behaviour configurable (overwite, ignore, ignore_if_identical, etc)
+
+      File parentFolder = outputFile.getParentFile();
+      if (!parentFolder.exists() && !parentFolder.mkdirs()) {
+        throw new IllegalStateException("unable to create output folder " + outputFolder);
       }
 
       try (

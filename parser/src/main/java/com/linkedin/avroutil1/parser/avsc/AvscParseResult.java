@@ -13,6 +13,7 @@ import com.linkedin.avroutil1.model.CodeLocation;
 import com.linkedin.avroutil1.model.LocatedCode;
 import com.linkedin.avroutil1.model.SchemaOrRef;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -96,6 +97,10 @@ public class AvscParseResult {
     public List<AvscIssue> getIssues(LocatedCode relatedTo) {
         CodeLocation span = relatedTo.getCodeLocation();
         return getIssues().stream().filter(issue -> issue.getLocation().overlaps(span)).collect(Collectors.toList());
+    }
+
+    public URI getURI() {
+        return context.getUri();
     }
 
     protected void assertSuccess() {
