@@ -1,0 +1,22 @@
+{
+  "type" : "record",
+  "name" : "RecordWithRecordOfEnum",
+  "namespace" : "by19",
+  "doc" : "Record With Record of enum.",
+  "fields" : [ {
+    "name" : "state",
+    "type" : [ "null", {
+      "type" : "enum",
+      "name" : "NativeApplicationState",
+      "symbols" : [ "ACTIVE", "INACTIVE", "APPLICATION_BACKGROUND" ],
+      "symbolDocs" : {
+        "ACTIVE" : "Application is active",
+        "INACTIVE" : "Application is not in background, but not active.",
+        "APPLICATION_BACKGROUND" : "Application is in background"
+      },
+      "doc" : "Enum that represents state"
+    } ],
+    "default" : null,
+    "doc" : "State of the app when this event was queued."
+  }]
+}

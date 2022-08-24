@@ -13,8 +13,10 @@ import com.linkedin.avroutil1.model.AvroRecordSchema;
 import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
 import com.linkedin.avroutil1.parser.avsc.AvscParser;
 import com.linkedin.avroutil1.testcommon.TestUtil;
+import java.util.List;
 import javax.tools.JavaFileObject;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 
@@ -29,9 +31,10 @@ public class SpecificRecordClassGeneratorTest {
     Assert.assertNull(result.getParseError());
     AvroEnumSchema enumSchema = (AvroEnumSchema) result.getTopLevelSchema();
     Assert.assertNotNull(enumSchema);
-    JavaFileObject javaSourceFile = generator.generateSpecificRecordClass(enumSchema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
-
-    CompilerHelper.assertCompiles(javaSourceFile);
+    for (JavaFileObject javaFileObject : generator.generateSpecificClass(enumSchema,
+        SpecificRecordGenerationConfig.BROAD_COMPATIBILITY)) {
+      CompilerHelper.assertCompiles(javaFileObject);
+    }
   }
 
   @Test
@@ -43,9 +46,11 @@ public class SpecificRecordClassGeneratorTest {
     Assert.assertNull(result.getParseError());
     AvroEnumSchema enumSchema = (AvroEnumSchema) result.getTopLevelSchema();
     Assert.assertNotNull(enumSchema);
-    JavaFileObject javaSourceFile = generator.generateSpecificRecordClass(enumSchema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
+    for (JavaFileObject javaFileObject : generator.generateSpecificClass(enumSchema,
+        SpecificRecordGenerationConfig.BROAD_COMPATIBILITY)) {
+      CompilerHelper.assertCompiles(javaFileObject);
+    }
 
-    CompilerHelper.assertCompiles(javaSourceFile);
   }
 
   @Test
@@ -57,9 +62,10 @@ public class SpecificRecordClassGeneratorTest {
     Assert.assertNull(result.getParseError());
     AvroFixedSchema fixedSchema = (AvroFixedSchema) result.getTopLevelSchema();
     Assert.assertNotNull(fixedSchema);
-    JavaFileObject javaSourceFile = generator.generateSpecificRecordClass(fixedSchema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
-
-    CompilerHelper.assertCompiles(javaSourceFile);
+    for (JavaFileObject javaFileObject : generator.generateSpecificClass(fixedSchema,
+        SpecificRecordGenerationConfig.BROAD_COMPATIBILITY)) {
+      CompilerHelper.assertCompiles(javaFileObject);
+    }
   }
 
   @Test
@@ -71,22 +77,31 @@ public class SpecificRecordClassGeneratorTest {
     Assert.assertNull(result.getParseError());
     AvroFixedSchema fixedSchema = (AvroFixedSchema) result.getTopLevelSchema();
     Assert.assertNotNull(fixedSchema);
-    JavaFileObject javaSourceFile = generator.generateSpecificRecordClass(fixedSchema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
-
-    CompilerHelper.assertCompiles(javaSourceFile);
+    for (JavaFileObject javaFileObject : generator.generateSpecificClass(fixedSchema,
+        SpecificRecordGenerationConfig.BROAD_COMPATIBILITY)) {
+      CompilerHelper.assertCompiles(javaFileObject);
+    }
   }
 
-  @Test
-  public void testSpecific() throws Exception {
-    String avsc = TestUtil.load("schemas/TestRecord.avsc");
+  @DataProvider
+  Object[][] TestSpecificProvider() {
+    return new Object[][]{
+        {"schemas/RecordWithRecordOfEnum.avsc"},
+        {"schemas/RecordWithRecordOfRecord.avsc"},
+        {"schemas/TestRecord.avsc"}
+    };
+  }
+
+  @Test(dataProvider = "TestSpecificProvider")
+  public void testSpecific(String filePath) throws Exception {
+    String avsc = TestUtil.load(filePath);
     SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
     AvscParser parser = new AvscParser();
     AvscParseResult result = parser.parse(avsc);
     Assert.assertNull(result.getParseError());
     AvroRecordSchema recordSchema = (AvroRecordSchema) result.getTopLevelSchema();
     Assert.assertNotNull(recordSchema);
-    JavaFileObject javaSourceFile = generator.generateSpecificRecordClass(recordSchema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
-
+    List<JavaFileObject> javaSourceFile = generator.generateSpecificClass(recordSchema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
   }
 
 }

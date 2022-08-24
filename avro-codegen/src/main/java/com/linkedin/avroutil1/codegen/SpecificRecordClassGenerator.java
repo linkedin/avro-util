@@ -46,8 +46,10 @@ import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import javax.lang.model.element.Modifier;
@@ -101,21 +103,62 @@ public class SpecificRecordClassGenerator {
       CompatibleSpecificRecordBuilderBase.class.getName()
   ));
 
-  public JavaFileObject generateSpecificRecordClass(AvroNamedSchema topLevelSchema, SpecificRecordGenerationConfig config)
+  public List<JavaFileObject> generateSpecificClass(AvroNamedSchema topLevelSchema, SpecificRecordGenerationConfig config)
       throws ClassNotFoundException {
-    if (topLevelSchema == null) {
-      throw new IllegalArgumentException("topLevelSchema required");
-    }
+
     AvroType type = topLevelSchema.type();
     switch (type) {
       case ENUM:
-        return generateSpecificEnum((AvroEnumSchema) topLevelSchema, config);
+        return Arrays.asList(generateSpecificEnum((AvroEnumSchema) topLevelSchema, config));
       case FIXED:
-        return generateSpecificFixed((AvroFixedSchema) topLevelSchema, config);
+        return Arrays.asList(generateSpecificFixed((AvroFixedSchema) topLevelSchema, config));
       case RECORD:
-        return generateSpecificRecord((AvroRecordSchema) topLevelSchema, config);
+        List<JavaFileObject> namedSchemaFiles = new ArrayList<>();
+        populateJavaFilesOfInnerNamedSchemasFromRecord((AvroRecordSchema) topLevelSchema, config, namedSchemaFiles);
+        namedSchemaFiles.add(generateSpecificRecord((AvroRecordSchema) topLevelSchema, config));
+        return namedSchemaFiles;
       default:
         throw new IllegalArgumentException("cant generate java class for " + type);
+    }
+  }
+
+  private void populateJavaFilesOfInnerNamedSchemasFromRecord(AvroRecordSchema recordSchema, SpecificRecordGenerationConfig config, List<JavaFileObject> namedSchemaFiles)
+      throws ClassNotFoundException {
+
+    Queue<AvroSchema> schemaQueue = recordSchema.getFields()
+        .stream()
+        .map(AvroSchemaField::getSchema)
+        .collect(Collectors.toCollection(LinkedList::new));
+
+    while(!schemaQueue.isEmpty()) {
+      AvroSchema fieldSchema = schemaQueue.poll();
+
+      switch (fieldSchema.type()) {
+        case RECORD:
+          // record's inner fields can also be named types. Add them to the queue
+          schemaQueue.addAll(((AvroRecordSchema)fieldSchema).getFields().stream().map(AvroSchemaField::getSchema).collect(
+              Collectors.toList()));
+          namedSchemaFiles.add(generateSpecificRecord((AvroRecordSchema) fieldSchema, config));
+          break;
+        case FIXED:
+          namedSchemaFiles.add(generateSpecificFixed((AvroFixedSchema) fieldSchema, config));
+          break;
+        case UNION:
+          // add union members to fields queue
+
+          ((AvroUnionSchema)fieldSchema).getTypes().forEach(unionMember -> {
+            if(AvroType.NULL != unionMember.getSchema().type()) {
+              schemaQueue.add(unionMember.getSchema());
+            }
+          });
+          break;
+        case ENUM:
+          namedSchemaFiles.add(generateSpecificEnum((AvroEnumSchema) fieldSchema, config));
+          break;
+        case MAP:
+          schemaQueue.add(((AvroMapSchema) fieldSchema).getValueSchema());
+          break;
+      }
     }
   }
 
@@ -846,7 +889,7 @@ public class SpecificRecordClassGenerator {
             codeBlockBuilder.beginControlFlow(" else if (in.readIndex() == $L) ", i);
           }
           codeBlockBuilder.addStatement(
-              getSerializedCustomDecodeBlock(config, fieldSchema, unionMember.getSchema().type(), fieldName));
+              getSerializedCustomDecodeBlock(config, unionMember.getSchema(), unionMember.getSchema().type(), fieldName));
           if (unionMember.getSchema().type().equals(AvroType.NULL)) {
             codeBlockBuilder.addStatement("$L = null", fieldName);
           }
@@ -1077,6 +1120,9 @@ public class SpecificRecordClassGenerator {
       case NULL:
         cls = java.lang.Void.class;
         break;
+      case ENUM:
+        cls = java.lang.Enum.class;
+        break;
       case BOOLEAN:
         cls = java.lang.Boolean.class;
         break;
@@ -1098,6 +1144,8 @@ public class SpecificRecordClassGenerator {
       case BYTES:
         cls = ByteBuffer.class;
         break;
+      case RECORD:
+        cls = Object.class;
     }
     return cls;
   }
