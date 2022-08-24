@@ -127,6 +127,7 @@ public class SpecificRecordClassGenerator {
 
     Queue<AvroSchema> schemaQueue = recordSchema.getFields()
         .stream()
+        .filter(field -> field.getSchemaOrRef().getRef() == null)
         .map(AvroSchemaField::getSchema)
         .collect(Collectors.toCollection(LinkedList::new));
 
@@ -136,7 +137,7 @@ public class SpecificRecordClassGenerator {
       switch (fieldSchema.type()) {
         case RECORD:
           // record's inner fields can also be named types. Add them to the queue
-          schemaQueue.addAll(((AvroRecordSchema)fieldSchema).getFields().stream().map(AvroSchemaField::getSchema).collect(
+          schemaQueue.addAll(((AvroRecordSchema)fieldSchema).getFields().stream().filter(field -> field.getSchemaOrRef().getRef() == null).map(AvroSchemaField::getSchema).collect(
               Collectors.toList()));
           namedSchemaFiles.add(generateSpecificRecord((AvroRecordSchema) fieldSchema, config));
           break;
@@ -147,7 +148,7 @@ public class SpecificRecordClassGenerator {
           // add union members to fields queue
 
           ((AvroUnionSchema)fieldSchema).getTypes().forEach(unionMember -> {
-            if(AvroType.NULL != unionMember.getSchema().type()) {
+            if(AvroType.NULL != unionMember.getSchema().type() && unionMember.getRef() == null) {
               schemaQueue.add(unionMember.getSchema());
             }
           });
