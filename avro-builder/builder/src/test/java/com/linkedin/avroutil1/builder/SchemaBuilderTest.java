@@ -79,6 +79,24 @@ public class SchemaBuilderTest {
     Assert.assertEquals(javaFiles.size(), 1);
   }
 
+  @Test(expectedExceptions = java.lang.RuntimeException.class)
+  public void testSimpleProjectWithFailOnDupsOption() throws Exception {
+    File simpleProjectRoot = new File(locateTestProjectsRoot(), "dups-project");
+    File inputFolder = new File(simpleProjectRoot, "input");
+    File outputFolder = new File(simpleProjectRoot, "output");
+    if (outputFolder.exists()) { //clear output
+      FileUtils.deleteDirectory(outputFolder);
+    }
+    //run the builder
+    SchemaBuilder.main(new String[] {
+        "--input", inputFolder.getAbsolutePath(),
+        "--output", outputFolder.getAbsolutePath(),
+        "--generator", CodeGenerator.AVRO_UTIL.name(),
+        "--onDups", DuplicateSchemaBehaviour.FAIL.name()
+    });
+  }
+
+
   @Test
   public void testImportableSchemasUsingOwnCodegen() throws Exception {
     File simpleProjectRoot = new File(locateTestProjectsRoot(), "test-includes-option");
