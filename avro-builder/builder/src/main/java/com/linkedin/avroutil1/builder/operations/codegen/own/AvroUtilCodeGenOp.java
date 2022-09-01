@@ -164,11 +164,11 @@ public class AvroUtilCodeGenOp implements Operation {
       AvroNamedSchema namedSchema = fileParseResult.getDefinedSchema(fullname);
 
       try {
-        JavaFileObject javaFileObject = generator.generateSpecificRecordClass(
+        List<JavaFileObject> javaFileObjects = generator.generateSpecificClassWithInternalTypes(
             namedSchema,
             SpecificRecordGenerationConfig.BROAD_COMPATIBILITY
         );
-        specificRecords.add(javaFileObject);
+        specificRecords.addAll(javaFileObjects);
       } catch (Exception e) {
         errorCount++;
         //TODO - error-out
