@@ -114,7 +114,7 @@ public class AvroUtilCodeGenOp implements Operation {
       AvroNamedSchema namedSchema = fileParseResult.getDefinedSchema(fullname);
 
       try {
-        List<JavaFileObject> javaFileObjects = generator.generateSpecificClass(
+        List<JavaFileObject> javaFileObjects = generator.generateSpecificClassWithInternalTypes(
             namedSchema,
             SpecificRecordGenerationConfig.BROAD_COMPATIBILITY
         );

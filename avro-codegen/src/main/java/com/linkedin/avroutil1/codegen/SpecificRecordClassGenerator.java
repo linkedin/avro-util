@@ -103,15 +103,48 @@ public class SpecificRecordClassGenerator {
       CompatibleSpecificRecordBuilderBase.class.getName()
   ));
 
-  public List<JavaFileObject> generateSpecificClass(AvroNamedSchema topLevelSchema, SpecificRecordGenerationConfig config)
-      throws ClassNotFoundException {
+  /***
+   * Generates Java class for top level schema.
+   *
+   * @param topLevelSchema
+   * @param config
+   * @return Java class of top level schema
+   * @throws ClassNotFoundException
+   */
+  public JavaFileObject generateSpecificClass(AvroNamedSchema topLevelSchema,
+      SpecificRecordGenerationConfig config) throws ClassNotFoundException {
+    if (topLevelSchema == null) {
+      throw new IllegalArgumentException("topLevelSchema required");
+    }
+    AvroType type = topLevelSchema.type();
+    switch (type) {
+      case ENUM:
+        return generateSpecificEnum((AvroEnumSchema) topLevelSchema, config);
+      case FIXED:
+        return generateSpecificFixed((AvroFixedSchema) topLevelSchema, config);
+      case RECORD:
+        return generateSpecificRecord((AvroRecordSchema) topLevelSchema, config);
+      default:
+        throw new IllegalArgumentException("cant generate java class for " + type);
+    }
+  }
+
+  /***
+   * Generates Java classes for top level schemas and all internally defined types, excludes references.
+   *
+   * @param topLevelSchema
+   * @param config
+   * @return List of Java files
+   * @throws ClassNotFoundException
+   */
+  public List<JavaFileObject> generateSpecificClassWithInternalTypes(AvroNamedSchema topLevelSchema,
+      SpecificRecordGenerationConfig config) throws ClassNotFoundException {
 
     AvroType type = topLevelSchema.type();
     switch (type) {
       case ENUM:
-        return Arrays.asList(generateSpecificEnum((AvroEnumSchema) topLevelSchema, config));
       case FIXED:
-        return Arrays.asList(generateSpecificFixed((AvroFixedSchema) topLevelSchema, config));
+        return Arrays.asList(generateSpecificClass(topLevelSchema, config));
       case RECORD:
         List<JavaFileObject> namedSchemaFiles = new ArrayList<>();
         populateJavaFilesOfInnerNamedSchemasFromRecord((AvroRecordSchema) topLevelSchema, config, namedSchemaFiles);
@@ -122,8 +155,12 @@ public class SpecificRecordClassGenerator {
     }
   }
 
-  private void populateJavaFilesOfInnerNamedSchemasFromRecord(AvroRecordSchema recordSchema, SpecificRecordGenerationConfig config, List<JavaFileObject> namedSchemaFiles)
-      throws ClassNotFoundException {
+  /***
+   * Runs through internally defined schemas and generates their file objects
+   *
+   */
+  private void populateJavaFilesOfInnerNamedSchemasFromRecord(AvroRecordSchema recordSchema,
+      SpecificRecordGenerationConfig config, List<JavaFileObject> namedSchemaFiles) throws ClassNotFoundException {
 
     Queue<AvroSchema> schemaQueue = recordSchema.getFields()
         .stream()
@@ -131,14 +168,17 @@ public class SpecificRecordClassGenerator {
         .map(AvroSchemaField::getSchema)
         .collect(Collectors.toCollection(LinkedList::new));
 
-    while(!schemaQueue.isEmpty()) {
+    while (!schemaQueue.isEmpty()) {
       AvroSchema fieldSchema = schemaQueue.poll();
 
       switch (fieldSchema.type()) {
         case RECORD:
           // record's inner fields can also be named types. Add them to the queue
-          schemaQueue.addAll(((AvroRecordSchema)fieldSchema).getFields().stream().filter(field -> field.getSchemaOrRef().getRef() == null).map(AvroSchemaField::getSchema).collect(
-              Collectors.toList()));
+          schemaQueue.addAll(((AvroRecordSchema) fieldSchema).getFields()
+              .stream()
+              .filter(field -> field.getSchemaOrRef().getRef() == null)
+              .map(AvroSchemaField::getSchema)
+              .collect(Collectors.toList()));
           namedSchemaFiles.add(generateSpecificRecord((AvroRecordSchema) fieldSchema, config));
           break;
         case FIXED:
@@ -146,9 +186,8 @@ public class SpecificRecordClassGenerator {
           break;
         case UNION:
           // add union members to fields queue
-
-          ((AvroUnionSchema)fieldSchema).getTypes().forEach(unionMember -> {
-            if(AvroType.NULL != unionMember.getSchema().type() && unionMember.getRef() == null) {
+          ((AvroUnionSchema) fieldSchema).getTypes().forEach(unionMember -> {
+            if (AvroType.NULL != unionMember.getSchema().type() && unionMember.getRef() == null) {
               schemaQueue.add(unionMember.getSchema());
             }
           });

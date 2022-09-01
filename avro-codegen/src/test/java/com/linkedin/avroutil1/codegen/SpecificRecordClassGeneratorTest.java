@@ -31,7 +31,7 @@ public class SpecificRecordClassGeneratorTest {
     Assert.assertNull(result.getParseError());
     AvroEnumSchema enumSchema = (AvroEnumSchema) result.getTopLevelSchema();
     Assert.assertNotNull(enumSchema);
-    for (JavaFileObject javaFileObject : generator.generateSpecificClass(enumSchema,
+    for (JavaFileObject javaFileObject : generator.generateSpecificClassWithInternalTypes(enumSchema,
         SpecificRecordGenerationConfig.BROAD_COMPATIBILITY)) {
       CompilerHelper.assertCompiles(javaFileObject);
     }
@@ -46,7 +46,7 @@ public class SpecificRecordClassGeneratorTest {
     Assert.assertNull(result.getParseError());
     AvroEnumSchema enumSchema = (AvroEnumSchema) result.getTopLevelSchema();
     Assert.assertNotNull(enumSchema);
-    for (JavaFileObject javaFileObject : generator.generateSpecificClass(enumSchema,
+    for (JavaFileObject javaFileObject : generator.generateSpecificClassWithInternalTypes(enumSchema,
         SpecificRecordGenerationConfig.BROAD_COMPATIBILITY)) {
       CompilerHelper.assertCompiles(javaFileObject);
     }
@@ -62,7 +62,7 @@ public class SpecificRecordClassGeneratorTest {
     Assert.assertNull(result.getParseError());
     AvroFixedSchema fixedSchema = (AvroFixedSchema) result.getTopLevelSchema();
     Assert.assertNotNull(fixedSchema);
-    for (JavaFileObject javaFileObject : generator.generateSpecificClass(fixedSchema,
+    for (JavaFileObject javaFileObject : generator.generateSpecificClassWithInternalTypes(fixedSchema,
         SpecificRecordGenerationConfig.BROAD_COMPATIBILITY)) {
       CompilerHelper.assertCompiles(javaFileObject);
     }
@@ -77,7 +77,7 @@ public class SpecificRecordClassGeneratorTest {
     Assert.assertNull(result.getParseError());
     AvroFixedSchema fixedSchema = (AvroFixedSchema) result.getTopLevelSchema();
     Assert.assertNotNull(fixedSchema);
-    for (JavaFileObject javaFileObject : generator.generateSpecificClass(fixedSchema,
+    for (JavaFileObject javaFileObject : generator.generateSpecificClassWithInternalTypes(fixedSchema,
         SpecificRecordGenerationConfig.BROAD_COMPATIBILITY)) {
       CompilerHelper.assertCompiles(javaFileObject);
     }
@@ -101,7 +101,7 @@ public class SpecificRecordClassGeneratorTest {
     Assert.assertNull(result.getParseError());
     AvroRecordSchema recordSchema = (AvroRecordSchema) result.getTopLevelSchema();
     Assert.assertNotNull(recordSchema);
-    List<JavaFileObject> javaSourceFile = generator.generateSpecificClass(recordSchema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
+    List<JavaFileObject> javaSourceFile = generator.generateSpecificClassWithInternalTypes(recordSchema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
   }
 
 }
