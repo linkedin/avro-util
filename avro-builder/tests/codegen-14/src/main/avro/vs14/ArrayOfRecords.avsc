@@ -1,6 +1,6 @@
 {
   "type": "record",
-  "namespace": "com.linkedin.test",
+  "namespace": "vs14",
   "name": "ArrayOfRecords",
   "doc": "Array of String Record",
   "fields": [
