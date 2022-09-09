@@ -1,21 +1,14 @@
 {
   "type": "record",
   "namespace": "com.linkedin.test",
-  "name": "ArrayOfRecords",
+  "name": "ArrayOfStringRecord",
   "doc": "Array of String Record",
   "fields": [
     {
       "name": "arOfRec",
       "type": {
         "type":"array",
-        "items": {
-          "type" : "record",
-          "name" : "InnerRecord",
-          "fields": [{
-            "name" : "innerRecordField",
-            "type": "string"
-          }]
-        }
+        "items": "string"
       }
     }
   ]
