@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "namespace": "com.linkedin.test",
+  "name": "ArrayOfStringRecord",
+  "doc": "Array of String Record",
+  "fields": [
+    {
+      "name": "arOfRec",
+      "type": {
+        "type":"array",
+        "items": "string"
+      }
+    }
+  ]
+}
