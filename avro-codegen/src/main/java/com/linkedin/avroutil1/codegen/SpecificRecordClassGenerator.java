@@ -203,36 +203,6 @@ public class SpecificRecordClassGenerator {
     }
   }
 
-  protected JavaFileObject test(AvroRecordSchema recordSchema, SpecificRecordGenerationConfig config) {
-    //public enum
-    TypeSpec.Builder classBuilder = TypeSpec.classBuilder(recordSchema.getSimpleName());
-    classBuilder.addModifiers(Modifier.PUBLIC);
-
-    AvroSchemaField field = recordSchema.getFields().get(0);
-
-    classBuilder.addField(FieldSpec.builder(CLASSNAME_SPECIFIC_DATA, "MODEL$", Modifier.PRIVATE,
-        Modifier.STATIC)
-        .initializer(CodeBlock.of("$L", getTypeName(field.getSchema(), field.getSchema().type())))
-        .build());
-
-    //add class-level doc from schema doc
-    //file-level (top of file) comment is added to the file object later
-    String doc = recordSchema.getDoc();
-    if (doc != null && !doc.isEmpty()) {
-      classBuilder.addJavadoc(doc);
-    }
-
-
-
-    //create file object
-    TypeSpec classSpec = classBuilder.build();
-    JavaFile javaFile = JavaFile.builder(recordSchema.getNamespace(), classSpec)
-        .skipJavaLangImports(false) //no imports
-        .addFileComment(AVRO_GEN_COMMENT)
-        .build();
-
-    return javaFile.toJavaFileObject();
-  }
 
   protected JavaFileObject generateSpecificEnum(AvroEnumSchema enumSchema, SpecificRecordGenerationConfig config) {
     //public enum
