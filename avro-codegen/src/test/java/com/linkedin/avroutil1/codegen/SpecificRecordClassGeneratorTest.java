@@ -31,10 +31,10 @@ public class SpecificRecordClassGeneratorTest {
     Assert.assertNull(result.getParseError());
     AvroEnumSchema enumSchema = (AvroEnumSchema) result.getTopLevelSchema();
     Assert.assertNotNull(enumSchema);
-    for (JavaFileObject javaFileObject : generator.generateSpecificClassWithInternalTypes(enumSchema,
-        SpecificRecordGenerationConfig.BROAD_COMPATIBILITY)) {
-      CompilerHelper.assertCompiles(javaFileObject);
-    }
+    JavaFileObject javaFileObject = generator.generateSpecificClass(enumSchema,
+        SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
+    CompilerHelper.assertCompiles(javaFileObject);
+
   }
 
   @Test
@@ -46,10 +46,9 @@ public class SpecificRecordClassGeneratorTest {
     Assert.assertNull(result.getParseError());
     AvroEnumSchema enumSchema = (AvroEnumSchema) result.getTopLevelSchema();
     Assert.assertNotNull(enumSchema);
-    for (JavaFileObject javaFileObject : generator.generateSpecificClassWithInternalTypes(enumSchema,
-        SpecificRecordGenerationConfig.BROAD_COMPATIBILITY)) {
-      CompilerHelper.assertCompiles(javaFileObject);
-    }
+    JavaFileObject javaFileObject =
+        generator.generateSpecificClass(enumSchema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
+    CompilerHelper.assertCompiles(javaFileObject);
 
   }
 
@@ -62,10 +61,10 @@ public class SpecificRecordClassGeneratorTest {
     Assert.assertNull(result.getParseError());
     AvroFixedSchema fixedSchema = (AvroFixedSchema) result.getTopLevelSchema();
     Assert.assertNotNull(fixedSchema);
-    for (JavaFileObject javaFileObject : generator.generateSpecificClassWithInternalTypes(fixedSchema,
-        SpecificRecordGenerationConfig.BROAD_COMPATIBILITY)) {
-      CompilerHelper.assertCompiles(javaFileObject);
-    }
+    JavaFileObject javaFileObject = generator.generateSpecificClass(fixedSchema,
+        SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
+    CompilerHelper.assertCompiles(javaFileObject);
+
   }
 
   @Test
@@ -77,14 +76,29 @@ public class SpecificRecordClassGeneratorTest {
     Assert.assertNull(result.getParseError());
     AvroFixedSchema fixedSchema = (AvroFixedSchema) result.getTopLevelSchema();
     Assert.assertNotNull(fixedSchema);
-    for (JavaFileObject javaFileObject : generator.generateSpecificClassWithInternalTypes(fixedSchema,
-        SpecificRecordGenerationConfig.BROAD_COMPATIBILITY)) {
-      CompilerHelper.assertCompiles(javaFileObject);
-    }
+    JavaFileObject javaFileObject =
+        generator.generateSpecificClass(fixedSchema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
+    CompilerHelper.assertCompiles(javaFileObject);
+
+  }
+
+  @Test
+  public void testRecordWithArrayOfRecords() throws Exception {
+    String avsc = TestUtil.load("schemas/ArrayOfStringRecord.avsc");
+    SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
+    AvscParser parser = new AvscParser();
+    AvscParseResult result = parser.parse(avsc);
+    Assert.assertNull(result.getParseError());
+    AvroRecordSchema recordSchema = (AvroRecordSchema) result.getTopLevelSchema();
+    Assert.assertNotNull(recordSchema);
+    JavaFileObject javaFileObject =
+        generator.generateSpecificClass(recordSchema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
+    CompilerHelper.assertCompiles(javaFileObject);
+
   }
 
   @DataProvider
-  Object[][] TestSpecificProvider() {
+  Object[][] testSpecificWithInternalClassesProvider() {
     return new Object[][]{
         {"schemas/RecordWithRecordOfEnum.avsc"},
         {"schemas/RecordWithRecordOfRecord.avsc"},
@@ -92,8 +106,8 @@ public class SpecificRecordClassGeneratorTest {
     };
   }
 
-  @Test(dataProvider = "TestSpecificProvider")
-  public void testSpecific(String filePath) throws Exception {
+  @Test(dataProvider = "testSpecificWithInternalClassesProvider")
+  public void testSpecificWithInternalClasses(String filePath) throws Exception {
     String avsc = TestUtil.load(filePath);
     SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
     AvscParser parser = new AvscParser();

@@ -580,9 +580,15 @@ public class SpecificRecordClassGenerator {
     //try
     buildMethodCodeBlockBuilder
         .addStatement("return record")
-        .endControlFlow()
-        .beginControlFlow("catch (org.apache.avro.AvroMissingFieldException e)")
-        .addStatement("throw e")
+        .endControlFlow();
+
+    // AvroMissingFieldException after 1.9
+    if(config.getMinimumSupportedAvroVersion().earlierThan(AvroVersion.AVRO_1_9)) {
+      buildMethodCodeBlockBuilder.beginControlFlow("catch (org.apache.avro.AvroRuntimeException e)");
+    } else {
+      buildMethodCodeBlockBuilder.beginControlFlow("catch (org.apache.avro.AvroMissingFieldException e)");
+    }
+     buildMethodCodeBlockBuilder.addStatement("throw e")
         .endControlFlow()
         .beginControlFlow("catch ($T e)", Exception.class)
         .addStatement("throw new org.apache.avro.AvroRuntimeException(e)")
@@ -766,7 +772,7 @@ public class SpecificRecordClassGenerator {
       SpecificRecordGenerationConfig config) {
     // reset var counter
     sizeValCounter = 0;
-    customDecodeBuilder.addStatement("org.apache.avro.Schema.Field[] fieldOrder = in.readFieldOrderIfDiff()")
+    customDecodeBuilder.addStatement("org.apache.avro.Schema.Field[] fieldOrder = in.readFieldOrder()")
         .beginControlFlow("if (fieldOrder == null)");
     for(AvroSchemaField field : recordSchema.getFields()) {
       customDecodeBuilder.addStatement(getSerializedCustomDecodeBlock(config, field.getSchemaOrRef().getSchema(),
