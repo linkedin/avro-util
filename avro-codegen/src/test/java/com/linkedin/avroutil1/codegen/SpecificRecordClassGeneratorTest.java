@@ -82,9 +82,17 @@ public class SpecificRecordClassGeneratorTest {
 
   }
 
-  @Test
-  public void testRecordWithArrayOfRecords() throws Exception {
-    String avsc = TestUtil.load("schemas/ArrayOfStringRecord.avsc");
+  @DataProvider
+  Object[][] testRecordWithArrayOfRecordsProvider() {
+    return new Object[][]{
+        {"schemas/ArrayOfStringRecord.avsc"},
+        {"schemas/ArrayOfRecords.avsc"}
+    };
+  }
+
+  @Test(dataProvider = "testRecordWithArrayOfRecordsProvider")
+  public void testRecordWithArrayOfRecords(String path) throws Exception {
+    String avsc = TestUtil.load(path);
     SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
     AvscParser parser = new AvscParser();
     AvscParseResult result = parser.parse(avsc);
@@ -93,7 +101,6 @@ public class SpecificRecordClassGeneratorTest {
     Assert.assertNotNull(recordSchema);
     JavaFileObject javaFileObject =
         generator.generateSpecificClass(recordSchema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
-    CompilerHelper.assertCompiles(javaFileObject);
 
   }
 
