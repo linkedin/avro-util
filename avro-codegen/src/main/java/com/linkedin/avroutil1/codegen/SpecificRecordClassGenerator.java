@@ -455,7 +455,7 @@ public class SpecificRecordClassGenerator {
   }
 
   private String handleJavaPoetStringLiteral(String str) {
-    if(str.contains("$")) {
+    if(str != null && !str.isEmpty() && str.contains("$")) {
       str = str.replaceAll("\\$", "\\$\\$");
     }
     return str;
@@ -509,7 +509,7 @@ public class SpecificRecordClassGenerator {
         }
       }
       if (field.hasDoc()) {
-        fieldBuilder.addJavadoc(field.getDoc());
+        fieldBuilder.addJavadoc(handleJavaPoetStringLiteral(field.getDoc()));
       }
       recordBuilder.addField(fieldBuilder.build());
 
@@ -766,7 +766,7 @@ public class SpecificRecordClassGenerator {
   }
 
   private String getFieldJavaDoc(AvroSchemaField field) {
-    return (field.hasDoc() ? "\n" + field.getDoc() + "\n" : "\n");
+    return (field.hasDoc() ? "\n" + handleJavaPoetStringLiteral(field.getDoc()) + "\n" : "\n");
   }
 
   private String getMethodNameForFieldWithPrefix(String prefix, String fieldName) {
@@ -969,7 +969,7 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = codeBlockBuilder.build().toString();
         break;
     }
-    return serializedCodeBlock;
+    return handleJavaPoetStringLiteral(serializedCodeBlock);
   }
 
 
@@ -1131,7 +1131,7 @@ public class SpecificRecordClassGenerator {
             }
           }
           codeBlockBuilder.addStatement("out.writeIndex($L)", i)
-              .addStatement(getSerializedCustomEncodeBlock(config, fieldSchema, unionMemberSchema.type(),
+              .addStatement(getSerializedCustomEncodeBlock(config, unionMemberSchema, unionMemberSchema.type(),
                    fieldName));
         }
         codeBlockBuilder.endControlFlow()

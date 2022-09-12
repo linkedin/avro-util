@@ -164,15 +164,17 @@ public class AvroUtilCodeGenOp implements Operation {
       AvroNamedSchema namedSchema = fileParseResult.getDefinedSchema(fullname);
 
       try {
-        List<JavaFileObject> javaFileObjects = generator.generateSpecificClassWithInternalTypes(
+        JavaFileObject javaFileObject = generator.generateSpecificClass(
             namedSchema,
             SpecificRecordGenerationConfig.BROAD_COMPATIBILITY
         );
-        specificRecords.addAll(javaFileObjects);
+        specificRecords.add(javaFileObject);
       } catch (Exception e) {
         errorCount++;
         //TODO - error-out
-        LOGGER.error("failed to generate class for " + fullname + " defined in " + fileParseResult.getContext().getUri(), e);
+        System.err.println("failed to generate class for " + fullname + " defined in " + fileParseResult.getContext().getUri());
+        System.err.println(e.getMessage());
+        e.printStackTrace();
       }
     }
     long genEnd = System.currentTimeMillis();
