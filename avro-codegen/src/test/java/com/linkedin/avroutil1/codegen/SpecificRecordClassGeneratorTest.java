@@ -6,13 +6,13 @@
 
 package com.linkedin.avroutil1.codegen;
 
-import com.linkedin.avroutil1.testutil.CompilerHelper;
 import com.linkedin.avroutil1.model.AvroEnumSchema;
 import com.linkedin.avroutil1.model.AvroFixedSchema;
 import com.linkedin.avroutil1.model.AvroRecordSchema;
 import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
 import com.linkedin.avroutil1.parser.avsc.AvscParser;
 import com.linkedin.avroutil1.testcommon.TestUtil;
+import com.linkedin.avroutil1.testutil.CompilerHelper;
 import java.util.List;
 import javax.tools.JavaFileObject;
 import org.testng.Assert;
@@ -116,6 +116,20 @@ public class SpecificRecordClassGeneratorTest {
     AvroRecordSchema recordSchema = (AvroRecordSchema) result.getTopLevelSchema();
     Assert.assertNotNull(recordSchema);
     List<JavaFileObject> javaSourceFile = generator.generateSpecificClassWithInternalTypes(recordSchema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
+  }
+
+  @Test
+  public void testSpecificWith$InDoc() throws Exception {
+    String avsc = TestUtil.load("schemas/DollarSignInDoc.avsc");
+    SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
+    AvscParser parser = new AvscParser();
+    AvscParseResult result = parser.parse(avsc);
+    Assert.assertNull(result.getParseError());
+    AvroRecordSchema recordSchema = (AvroRecordSchema) result.getTopLevelSchema();
+    Assert.assertNotNull(recordSchema);
+    JavaFileObject javaFileObject =
+        generator.generateSpecificClass(recordSchema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
+    CompilerHelper.assertCompiles(javaFileObject);
   }
 
 }
