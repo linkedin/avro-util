@@ -172,7 +172,9 @@ public class AvroUtilCodeGenOp implements Operation {
       } catch (Exception e) {
         errorCount++;
         //TODO - error-out
-        LOGGER.error("failed to generate class for " + fullname + " defined in " + fileParseResult.getContext().getUri(), e);
+        System.err.println("failed to generate class for " + fullname + " defined in " + fileParseResult.getContext().getUri());
+        System.err.println(e.getMessage());
+        e.printStackTrace();
       }
     }
     long genEnd = System.currentTimeMillis();
