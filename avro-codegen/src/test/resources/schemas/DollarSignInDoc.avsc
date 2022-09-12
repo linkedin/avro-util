@@ -5,7 +5,7 @@
   "doc": "$ sign in doc with Schema$ in Vari$able",
   "fields": [
     {
-      "name": "arOfRec",
+      "name": "arOfRec$",
       "type": {
         "type":"array",
         "items": "string"

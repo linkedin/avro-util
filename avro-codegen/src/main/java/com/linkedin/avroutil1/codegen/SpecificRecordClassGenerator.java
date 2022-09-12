@@ -288,9 +288,7 @@ public class SpecificRecordClassGenerator {
     //file-level (top of file) comment is added to the file object later
     String doc = recordSchema.getDoc();
     if (doc != null && !doc.isEmpty()) {
-      if(doc.contains("$")) {
-        doc = doc.replaceAll("\\$", "\\$\\$");
-      }
+      doc = handleJavaPoetStringLiteral(doc);
       classBuilder.addJavadoc(doc);
     }
 
@@ -454,6 +452,13 @@ public class SpecificRecordClassGenerator {
         .build();
 
     return javaFile.toJavaFileObject();
+  }
+
+  private String handleJavaPoetStringLiteral(String str) {
+    if(str.contains("$")) {
+      str = str.replaceAll("\\$", "\\$\\$");
+    }
+    return str;
   }
 
   private void populateBuilderClassBuilder(TypeSpec.Builder recordBuilder, AvroRecordSchema recordSchema,
@@ -781,7 +786,7 @@ public class SpecificRecordClassGenerator {
         .beginControlFlow("if (fieldOrder == null)");
     for(AvroSchemaField field : recordSchema.getFields()) {
       customDecodeBuilder.addStatement(getSerializedCustomDecodeBlock(config, field.getSchemaOrRef().getSchema(),
-          field.getSchemaOrRef().getSchema().type(), field.getName()));
+          field.getSchemaOrRef().getSchema().type(), handleJavaPoetStringLiteral(field.getName())));
     }
     // reset var counter
     sizeValCounter = 0;
@@ -793,8 +798,8 @@ public class SpecificRecordClassGenerator {
     for(AvroSchemaField field : recordSchema.getFields()) {
       customDecodeBuilder
           .addStatement(String.format("case %s: ",fieldIndex++)+ getSerializedCustomDecodeBlock(config,
-              field.getSchemaOrRef().getSchema(), field.getSchemaOrRef().getSchema().type(), field.getName()))
-      .addStatement("break");
+              field.getSchemaOrRef().getSchema(), field.getSchemaOrRef().getSchema().type(), handleJavaPoetStringLiteral(field.getName())))
+          .addStatement("break");
     }
     customDecodeBuilder
         //switch
@@ -977,7 +982,7 @@ public class SpecificRecordClassGenerator {
 
     for(AvroSchemaField field : recordSchema.getFields()) {
       customEncodeBuilder.addStatement(getSerializedCustomEncodeBlock(config, field.getSchemaOrRef().getSchema(),
-          field.getSchemaOrRef().getSchema().type(), field.getName()));
+          field.getSchemaOrRef().getSchema().type(), handleJavaPoetStringLiteral(field.getName())));
     }
   }
 
