@@ -288,6 +288,9 @@ public class SpecificRecordClassGenerator {
     //file-level (top of file) comment is added to the file object later
     String doc = recordSchema.getDoc();
     if (doc != null && !doc.isEmpty()) {
+      if(doc.contains("$")) {
+        doc = doc.replaceAll("\\$", "\\$\\$");
+      }
       classBuilder.addJavadoc(doc);
     }
 
