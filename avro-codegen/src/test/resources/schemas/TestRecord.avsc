@@ -115,6 +115,10 @@
           {"name": "f", "type": "int"}
         ]
       }
+    },
+    {
+      "name": "package",
+      "type": "string"
     }
   ]
 }
