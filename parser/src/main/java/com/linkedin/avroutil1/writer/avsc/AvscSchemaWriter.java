@@ -25,6 +25,7 @@ import com.linkedin.avroutil1.model.AvroName;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
 import com.linkedin.avroutil1.model.AvroNullLiteral;
 import com.linkedin.avroutil1.model.AvroPrimitiveSchema;
+import com.linkedin.avroutil1.model.AvroRecordLiteral;
 import com.linkedin.avroutil1.model.AvroRecordSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
 import com.linkedin.avroutil1.model.AvroSchemaField;
@@ -33,6 +34,9 @@ import com.linkedin.avroutil1.model.AvroType;
 import com.linkedin.avroutil1.model.AvroUnionSchema;
 import com.linkedin.avroutil1.model.JsonPropertiesContainer;
 import com.linkedin.avroutil1.model.SchemaOrRef;
+import com.linkedin.avroutil1.parser.jsonpext.JsonObjectExtBuilder;
+import com.linkedin.avroutil1.parser.jsonpext.JsonObjectExtImpl;
+import com.linkedin.avroutil1.parser.jsonpext.JsonValueExt;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
@@ -399,6 +403,16 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
         AvroUnionSchema unionSchema = (AvroUnionSchema) fieldSchema;
         AvroSchema firstBranchSchema = unionSchema.getTypes().get(0).getSchema();
         return writeDefaultValue(firstBranchSchema, literal);
+      case RECORD:
+        AvroRecordSchema recordSchema = (AvroRecordSchema) fieldSchema;
+        JsonObjectBuilder recordObjectBuilder = Json.createObjectBuilder();
+        Map<String, AvroLiteral> recordLiteralMap = ((AvroRecordLiteral) literal).getValue();
+
+        for (AvroSchemaField field : recordSchema.getFields()) {
+          recordObjectBuilder.add(field.getName(),
+              writeDefaultValue(field.getSchema(), recordLiteralMap.get(field.getName())));
+        }
+        return recordObjectBuilder.build();
       default:
         throw new UnsupportedOperationException("writing default values for " + type + " not implemented yet");
     }

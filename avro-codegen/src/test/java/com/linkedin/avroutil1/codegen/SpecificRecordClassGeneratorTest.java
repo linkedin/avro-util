@@ -140,7 +140,7 @@ public class SpecificRecordClassGeneratorTest {
   }
 
   @Test
-  public void testSpecific5() throws Exception {
+  public void testSpecificRecordReservedField2() throws Exception {
     String avsc = TestUtil.load("schemas/MoneyRange.avsc");
     SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
     AvscParser parser = new AvscParser();
@@ -150,6 +150,20 @@ public class SpecificRecordClassGeneratorTest {
     Assert.assertNotNull(recordSchema);
     JavaFileObject javaFileObject =
         generator.generateSpecificClass(recordSchema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
+  }
+
+  @Test
+  public void testDefaultForRecord() throws Exception {
+    String avsc = TestUtil.load("schemas/RecordDefault.avsc");
+    SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
+    AvscParser parser = new AvscParser();
+    AvscParseResult result = parser.parse(avsc);
+    Assert.assertNull(result.getParseError());
+    AvroRecordSchema recordSchema = (AvroRecordSchema) result.getTopLevelSchema();
+    Assert.assertNotNull(recordSchema);
+    JavaFileObject javaFileObject =
+        generator.generateSpecificClass(recordSchema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
+    CompilerHelper.assertCompiles(javaFileObject);
   }
 
 }
