@@ -68,7 +68,7 @@ public class SpecificRecordClassGenerator {
   /***
    * Pattern to match single instance of $ sign
    */
-  private static final Pattern SINGLE_$_REGEX = Pattern.compile("(?<![\\$])[\\$](?![\\$])");
+  private static final Pattern SINGLE_DOLLAR_SIGN_REGEX = Pattern.compile("(?<![\\$])[\\$](?![\\$])");
 
   private static final String AVRO_GEN_COMMENT = "GENERATED CODE by avro-util";
 
@@ -462,7 +462,7 @@ public class SpecificRecordClassGenerator {
 
   private String replaceSingleDollarSignWithDouble(String str) {
     if(str != null && !str.isEmpty() && str.contains("$")) {
-      str = SINGLE_$_REGEX.matcher(str).replaceAll("\\$\\$");
+      str = SINGLE_DOLLAR_SIGN_REGEX.matcher(str).replaceAll("\\$\\$");
     }
     return str;
   }
@@ -975,7 +975,7 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = codeBlockBuilder.build().toString();
         break;
     }
-    return SINGLE_$_REGEX.matcher(serializedCodeBlock).replaceAll("SCHEMA\\$\\$");
+    return SINGLE_DOLLAR_SIGN_REGEX.matcher(serializedCodeBlock).replaceAll("SCHEMA\\$\\$");
   }
 
 
@@ -1151,7 +1151,7 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = String.format("%s.customEncode(out)", fieldName);
         break;
     }
-    return SINGLE_$_REGEX.matcher(serializedCodeBlock).replaceAll("SCHEMA\\$\\$");
+    return SINGLE_DOLLAR_SIGN_REGEX.matcher(serializedCodeBlock).replaceAll("SCHEMA\\$\\$");
   }
 
   private String getKeyVarName() {
