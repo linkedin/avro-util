@@ -119,6 +119,18 @@
     {
       "name": "package",
       "type": "string"
+    },
+    {
+      "name": "exception",
+      "type": "float"
+    },
+    {
+      "name": "int",
+      "type": "double"
+    },
+    {
+      "name": "true",
+      "type": "boolean"
     }
   ]
 }
