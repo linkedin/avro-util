@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.StringJoiner;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.lang.model.element.Modifier;
 import javax.tools.JavaFileObject;
@@ -63,6 +64,8 @@ import org.apache.avro.util.Utf8;
  * generates java classes out of avro schemas.
  */
 public class SpecificRecordClassGenerator {
+
+  private final Pattern SINGLE_$_REGEX = Pattern.compile("(?<![\\$])[\\$](?![\\$])");
 
   private static final String AVRO_GEN_COMMENT = "GENERATED CODE by avro-util";
 
@@ -457,7 +460,7 @@ public class SpecificRecordClassGenerator {
 
   private String handleJavaPoetStringLiteral(String str) {
     if(str != null && !str.isEmpty() && str.contains("$")) {
-      str = str.replaceAll("\\$", "\\$\\$");
+      str = SINGLE_$_REGEX.matcher(str).replaceAll("\\$\\$");
     }
     return str;
   }
@@ -981,7 +984,7 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = codeBlockBuilder.build().toString();
         break;
     }
-    return serializedCodeBlock;
+    return SINGLE_$_REGEX.matcher(serializedCodeBlock).replaceAll("SCHEMA\\$\\$");
   }
 
 
@@ -1157,7 +1160,7 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = String.format("%s.customEncode(out)", fieldName);
         break;
     }
-    return serializedCodeBlock;
+    return SINGLE_$_REGEX.matcher(serializedCodeBlock).replaceAll("SCHEMA\\$\\$");
   }
 
   private String getKeyVarName() {
