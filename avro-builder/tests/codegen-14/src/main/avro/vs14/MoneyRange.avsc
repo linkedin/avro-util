@@ -1,0 +1,47 @@
+{
+  "type": "record",
+  "name": "MoneyRange",
+  "namespace": "vs14",
+  "doc": "A value of money",
+  "fields": [
+    {
+      "type" : {
+        "type" : "record",
+        "name" : "Amount",
+        "namespace" : "vs14",
+        "doc" : "Represents an amount of money",
+        "fields" : [ {
+          "name" : "currencyCode",
+          "type" : "string",
+          "doc" : "Currency code v$",
+          "compliance" : "NONE"
+        }, {
+          "name" : "amount",
+          "type" : "string",
+          "doc" : "The amount of money as a real number string, See https://docs.oracle.com/javase/8/docs/api/java/math/BigDecimal.html#BigDecimal-java.lang.String-",
+          "compliance" : {
+            "policy" : "FINANCIAL_NUMBER"
+          }
+        } ],
+        "aliases": [
+          "vs14.MoneyAmount"
+        ]
+      },
+      "name" : "min",
+      "doc" : "Minimum value"
+    },
+    {
+      "type" : "vs14.Amount",
+      "name" : "max",
+      "doc" : "Maximum value"
+    },
+    {
+      "name" : "default",
+      "type": [
+        "null",
+        "vs14.Amount"
+      ],
+      "doc" : "Default value"
+    }
+  ]
+}
