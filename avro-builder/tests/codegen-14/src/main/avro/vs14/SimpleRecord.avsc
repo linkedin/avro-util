@@ -6,6 +6,10 @@
     {
       "name": "stringField",
       "type": "string"
+    },
+    {
+      "name": "package",
+      "type": "string"
     }
   ]
 }
