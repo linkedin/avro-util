@@ -1,0 +1,19 @@
+{
+  "type": "record",
+  "name": "RecordDefault",
+  "namespace": "vs14",
+  "fields": [
+    {"name": "isPresent",
+      "type": {
+        "type": "record",
+        "name": "MyBool",
+        "doc": "A Boolean value",
+        "fields": [
+          {"name": "value", "type": "boolean", "default": false},
+          {"name": "score", "type": "float", "default": 0.0}
+        ]
+      },
+      "doc": "Is it ?",
+    "default": {"value": false, "score": 0.0}
+  }]
+}
