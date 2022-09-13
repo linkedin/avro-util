@@ -65,7 +65,10 @@ import org.apache.avro.util.Utf8;
  */
 public class SpecificRecordClassGenerator {
 
-  private final Pattern SINGLE_$_REGEX = Pattern.compile("(?<![\\$])[\\$](?![\\$])");
+  /***
+   * Pattern to match single instance of $ sign
+   */
+  private static final Pattern SINGLE_$_REGEX = Pattern.compile("(?<![\\$])[\\$](?![\\$])");
 
   private static final String AVRO_GEN_COMMENT = "GENERATED CODE by avro-util";
 
@@ -291,7 +294,7 @@ public class SpecificRecordClassGenerator {
     //file-level (top of file) comment is added to the file object later
     String doc = recordSchema.getDoc();
     if (doc != null && !doc.isEmpty()) {
-      doc = handleJavaPoetStringLiteral(doc);
+      doc = replaceSingleDollarSignWithDouble(doc);
       classBuilder.addJavadoc(doc);
     }
 
@@ -457,7 +460,7 @@ public class SpecificRecordClassGenerator {
     return javaFile.toJavaFileObject();
   }
 
-  private String handleJavaPoetStringLiteral(String str) {
+  private String replaceSingleDollarSignWithDouble(String str) {
     if(str != null && !str.isEmpty() && str.contains("$")) {
       str = SINGLE_$_REGEX.matcher(str).replaceAll("\\$\\$");
     }
@@ -512,7 +515,7 @@ public class SpecificRecordClassGenerator {
         }
       }
       if (field.hasDoc()) {
-        fieldBuilder.addJavadoc(handleJavaPoetStringLiteral(field.getDoc()));
+        fieldBuilder.addJavadoc(replaceSingleDollarSignWithDouble(field.getDoc()));
       }
       recordBuilder.addField(fieldBuilder.build());
 
@@ -769,7 +772,7 @@ public class SpecificRecordClassGenerator {
   }
 
   private String getFieldJavaDoc(AvroSchemaField field) {
-    return (field.hasDoc() ? "\n" + handleJavaPoetStringLiteral(field.getDoc()) + "\n" : "\n");
+    return (field.hasDoc() ? "\n" + replaceSingleDollarSignWithDouble(field.getDoc()) + "\n" : "\n");
   }
 
   private String getMethodNameForFieldWithPrefix(String prefix, String fieldName) {
@@ -789,7 +792,7 @@ public class SpecificRecordClassGenerator {
         .beginControlFlow("if (fieldOrder == null)");
     for(AvroSchemaField field : recordSchema.getFields()) {
       customDecodeBuilder.addStatement(getSerializedCustomDecodeBlock(config, field.getSchemaOrRef().getSchema(),
-          field.getSchemaOrRef().getSchema().type(), handleJavaPoetStringLiteral(field.getName())));
+          field.getSchemaOrRef().getSchema().type(), replaceSingleDollarSignWithDouble(field.getName())));
     }
     // reset var counter
     sizeValCounter = 0;
@@ -801,7 +804,7 @@ public class SpecificRecordClassGenerator {
     for(AvroSchemaField field : recordSchema.getFields()) {
       customDecodeBuilder
           .addStatement(String.format("case %s: ",fieldIndex++)+ getSerializedCustomDecodeBlock(config,
-              field.getSchemaOrRef().getSchema(), field.getSchemaOrRef().getSchema().type(), handleJavaPoetStringLiteral(field.getName())))
+              field.getSchemaOrRef().getSchema(), field.getSchemaOrRef().getSchema().type(), replaceSingleDollarSignWithDouble(field.getName())))
           .addStatement("break");
     }
     customDecodeBuilder
@@ -985,7 +988,7 @@ public class SpecificRecordClassGenerator {
 
     for(AvroSchemaField field : recordSchema.getFields()) {
       customEncodeBuilder.addStatement(getSerializedCustomEncodeBlock(config, field.getSchemaOrRef().getSchema(),
-          field.getSchemaOrRef().getSchema().type(), handleJavaPoetStringLiteral(field.getName())));
+          field.getSchemaOrRef().getSchema().type(), replaceSingleDollarSignWithDouble(field.getName())));
     }
   }
 
