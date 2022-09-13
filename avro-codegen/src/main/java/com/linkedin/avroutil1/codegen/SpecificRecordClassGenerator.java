@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.StringJoiner;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.lang.model.element.Modifier;
 import javax.tools.JavaFileObject;
@@ -63,6 +64,8 @@ import org.apache.avro.util.Utf8;
  * generates java classes out of avro schemas.
  */
 public class SpecificRecordClassGenerator {
+
+  private final Pattern SINGLE_$_REGEX = Pattern.compile("(?<![\\$])[\\$](?![\\$])");
 
   private static final String AVRO_GEN_COMMENT = "GENERATED CODE by avro-util";
 
@@ -455,8 +458,8 @@ public class SpecificRecordClassGenerator {
   }
 
   private String handleJavaPoetStringLiteral(String str) {
-    if(str.contains("$")) {
-      str = str.replaceAll("\\$", "\\$\\$");
+    if(str != null && !str.isEmpty() && str.contains("$")) {
+      str = SINGLE_$_REGEX.matcher(str).replaceAll("\\$\\$");
     }
     return str;
   }
@@ -509,7 +512,7 @@ public class SpecificRecordClassGenerator {
         }
       }
       if (field.hasDoc()) {
-        fieldBuilder.addJavadoc(field.getDoc());
+        fieldBuilder.addJavadoc(handleJavaPoetStringLiteral(field.getDoc()));
       }
       recordBuilder.addField(fieldBuilder.build());
 
@@ -766,7 +769,7 @@ public class SpecificRecordClassGenerator {
   }
 
   private String getFieldJavaDoc(AvroSchemaField field) {
-    return (field.hasDoc() ? "\n" + field.getDoc() + "\n" : "\n");
+    return (field.hasDoc() ? "\n" + handleJavaPoetStringLiteral(field.getDoc()) + "\n" : "\n");
   }
 
   private String getMethodNameForFieldWithPrefix(String prefix, String fieldName) {
@@ -969,7 +972,7 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = codeBlockBuilder.build().toString();
         break;
     }
-    return serializedCodeBlock;
+    return SINGLE_$_REGEX.matcher(serializedCodeBlock).replaceAll("SCHEMA\\$\\$");
   }
 
 
@@ -1131,7 +1134,7 @@ public class SpecificRecordClassGenerator {
             }
           }
           codeBlockBuilder.addStatement("out.writeIndex($L)", i)
-              .addStatement(getSerializedCustomEncodeBlock(config, fieldSchema, unionMemberSchema.type(),
+              .addStatement(getSerializedCustomEncodeBlock(config, unionMemberSchema, unionMemberSchema.type(),
                    fieldName));
         }
         codeBlockBuilder.endControlFlow()
@@ -1145,7 +1148,7 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = String.format("%s.customEncode(out)", fieldName);
         break;
     }
-    return serializedCodeBlock;
+    return SINGLE_$_REGEX.matcher(serializedCodeBlock).replaceAll("SCHEMA\\$\\$");
   }
 
   private String getKeyVarName() {
