@@ -65,7 +65,10 @@ import org.apache.avro.util.Utf8;
  */
 public class SpecificRecordClassGenerator {
 
-  private final Pattern SINGLE_$_REGEX = Pattern.compile("(?<![\\$])[\\$](?![\\$])");
+  /***
+   * Pattern to match single instance of $ sign
+   */
+  private final Pattern SINGLE_DOLLAR_SIGN_REGEX = Pattern.compile("(?<![\\$])[\\$](?![\\$])");
 
   private static final String AVRO_GEN_COMMENT = "GENERATED CODE by avro-util";
 
@@ -291,7 +294,7 @@ public class SpecificRecordClassGenerator {
     //file-level (top of file) comment is added to the file object later
     String doc = recordSchema.getDoc();
     if (doc != null && !doc.isEmpty()) {
-      doc = handleJavaPoetStringLiteral(doc);
+      doc = replaceSingleDollarSignWithDouble(doc);
       classBuilder.addJavadoc(doc);
     }
 
@@ -458,9 +461,9 @@ public class SpecificRecordClassGenerator {
     return javaFile.toJavaFileObject();
   }
 
-  private String handleJavaPoetStringLiteral(String str) {
+  private String replaceSingleDollarSignWithDouble(String str) {
     if(str != null && !str.isEmpty() && str.contains("$")) {
-      str = SINGLE_$_REGEX.matcher(str).replaceAll("\\$\\$");
+      str = SINGLE_DOLLAR_SIGN_REGEX.matcher(str).replaceAll("\\$\\$");
     }
     return str;
   }
@@ -514,7 +517,7 @@ public class SpecificRecordClassGenerator {
         }
       }
       if (field.hasDoc()) {
-        fieldBuilder.addJavadoc(handleJavaPoetStringLiteral(field.getDoc()));
+        fieldBuilder.addJavadoc(replaceSingleDollarSignWithDouble(field.getDoc()));
       }
       recordBuilder.addField(fieldBuilder.build());
 
@@ -771,7 +774,7 @@ public class SpecificRecordClassGenerator {
   }
 
   private String getFieldJavaDoc(AvroSchemaField field) {
-    return (field.hasDoc() ? "\n" + handleJavaPoetStringLiteral(field.getDoc()) + "\n" : "\n");
+    return (field.hasDoc() ? "\n" + replaceSingleDollarSignWithDouble(field.getDoc()) + "\n" : "\n");
   }
 
   private String getSuffixForFieldName(String fieldName) {
@@ -800,7 +803,7 @@ public class SpecificRecordClassGenerator {
     for(AvroSchemaField field : recordSchema.getFields()) {
       String fieldName = getFieldNameWithSuffix(field);
       customDecodeBuilder.addStatement(getSerializedCustomDecodeBlock(config, field.getSchemaOrRef().getSchema(),
-          field.getSchemaOrRef().getSchema().type(), handleJavaPoetStringLiteral(fieldName)));
+          field.getSchemaOrRef().getSchema().type(), replaceSingleDollarSignWithDouble(fieldName)));
     }
     // reset var counter
     sizeValCounter = 0;
@@ -813,7 +816,7 @@ public class SpecificRecordClassGenerator {
       String fieldName = getFieldNameWithSuffix(field);
       customDecodeBuilder
           .addStatement(String.format("case %s: ",fieldIndex++)+ getSerializedCustomDecodeBlock(config,
-              field.getSchemaOrRef().getSchema(), field.getSchemaOrRef().getSchema().type(), handleJavaPoetStringLiteral(fieldName)))
+              field.getSchemaOrRef().getSchema(), field.getSchemaOrRef().getSchema().type(), replaceSingleDollarSignWithDouble(fieldName)))
           .addStatement("break");
     }
     customDecodeBuilder
@@ -984,7 +987,7 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = codeBlockBuilder.build().toString();
         break;
     }
-    return SINGLE_$_REGEX.matcher(serializedCodeBlock).replaceAll("SCHEMA\\$\\$");
+    return SINGLE_DOLLAR_SIGN_REGEX.matcher(serializedCodeBlock).replaceAll("SCHEMA\\$\\$");
   }
 
 
@@ -997,7 +1000,7 @@ public class SpecificRecordClassGenerator {
     for(AvroSchemaField field : recordSchema.getFields()) {
       String fieldName = getFieldNameWithSuffix(field);
       customEncodeBuilder.addStatement(getSerializedCustomEncodeBlock(config, field.getSchemaOrRef().getSchema(),
-          field.getSchemaOrRef().getSchema().type(), handleJavaPoetStringLiteral(fieldName)));
+          field.getSchemaOrRef().getSchema().type(), replaceSingleDollarSignWithDouble(fieldName)));
     }
   }
 
@@ -1160,7 +1163,7 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = String.format("%s.customEncode(out)", fieldName);
         break;
     }
-    return SINGLE_$_REGEX.matcher(serializedCodeBlock).replaceAll("SCHEMA\\$\\$");
+    return SINGLE_DOLLAR_SIGN_REGEX.matcher(serializedCodeBlock).replaceAll("SCHEMA\\$\\$");
   }
 
   private String getKeyVarName() {
