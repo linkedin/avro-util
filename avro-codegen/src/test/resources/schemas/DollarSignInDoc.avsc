@@ -9,7 +9,8 @@
       "type": {
         "type":"array",
         "items": "string"
-      }
+      },
+      "doc": "$ in doc $Doc"
     }
   ]
 }

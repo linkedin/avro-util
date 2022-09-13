@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.StringJoiner;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.lang.model.element.Modifier;
 import javax.tools.JavaFileObject;
@@ -63,6 +64,11 @@ import org.apache.avro.util.Utf8;
  * generates java classes out of avro schemas.
  */
 public class SpecificRecordClassGenerator {
+
+  /***
+   * Pattern to match single instance of $ sign
+   */
+  private static final Pattern SINGLE_DOLLAR_SIGN_REGEX = Pattern.compile("(?<![\\$])[\\$](?![\\$])");
 
   private static final String AVRO_GEN_COMMENT = "GENERATED CODE by avro-util";
 
@@ -288,7 +294,7 @@ public class SpecificRecordClassGenerator {
     //file-level (top of file) comment is added to the file object later
     String doc = recordSchema.getDoc();
     if (doc != null && !doc.isEmpty()) {
-      doc = handleJavaPoetStringLiteral(doc);
+      doc = replaceSingleDollarSignWithDouble(doc);
       classBuilder.addJavadoc(doc);
     }
 
@@ -454,9 +460,9 @@ public class SpecificRecordClassGenerator {
     return javaFile.toJavaFileObject();
   }
 
-  private String handleJavaPoetStringLiteral(String str) {
-    if(str.contains("$")) {
-      str = str.replaceAll("\\$", "\\$\\$");
+  private String replaceSingleDollarSignWithDouble(String str) {
+    if(str != null && !str.isEmpty() && str.contains("$")) {
+      str = SINGLE_DOLLAR_SIGN_REGEX.matcher(str).replaceAll("\\$\\$");
     }
     return str;
   }
@@ -509,7 +515,7 @@ public class SpecificRecordClassGenerator {
         }
       }
       if (field.hasDoc()) {
-        fieldBuilder.addJavadoc(field.getDoc());
+        fieldBuilder.addJavadoc(replaceSingleDollarSignWithDouble(field.getDoc()));
       }
       recordBuilder.addField(fieldBuilder.build());
 
@@ -766,7 +772,7 @@ public class SpecificRecordClassGenerator {
   }
 
   private String getFieldJavaDoc(AvroSchemaField field) {
-    return (field.hasDoc() ? "\n" + field.getDoc() + "\n" : "\n");
+    return (field.hasDoc() ? "\n" + replaceSingleDollarSignWithDouble(field.getDoc()) + "\n" : "\n");
   }
 
   private String getMethodNameForFieldWithPrefix(String prefix, String fieldName) {
@@ -786,7 +792,7 @@ public class SpecificRecordClassGenerator {
         .beginControlFlow("if (fieldOrder == null)");
     for(AvroSchemaField field : recordSchema.getFields()) {
       customDecodeBuilder.addStatement(getSerializedCustomDecodeBlock(config, field.getSchemaOrRef().getSchema(),
-          field.getSchemaOrRef().getSchema().type(), handleJavaPoetStringLiteral(field.getName())));
+          field.getSchemaOrRef().getSchema().type(), replaceSingleDollarSignWithDouble(field.getName())));
     }
     // reset var counter
     sizeValCounter = 0;
@@ -798,7 +804,7 @@ public class SpecificRecordClassGenerator {
     for(AvroSchemaField field : recordSchema.getFields()) {
       customDecodeBuilder
           .addStatement(String.format("case %s: ",fieldIndex++)+ getSerializedCustomDecodeBlock(config,
-              field.getSchemaOrRef().getSchema(), field.getSchemaOrRef().getSchema().type(), handleJavaPoetStringLiteral(field.getName())))
+              field.getSchemaOrRef().getSchema(), field.getSchemaOrRef().getSchema().type(), replaceSingleDollarSignWithDouble(field.getName())))
           .addStatement("break");
     }
     customDecodeBuilder
@@ -969,7 +975,7 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = codeBlockBuilder.build().toString();
         break;
     }
-    return serializedCodeBlock;
+    return SINGLE_DOLLAR_SIGN_REGEX.matcher(serializedCodeBlock).replaceAll("SCHEMA\\$\\$");
   }
 
 
@@ -982,7 +988,7 @@ public class SpecificRecordClassGenerator {
 
     for(AvroSchemaField field : recordSchema.getFields()) {
       customEncodeBuilder.addStatement(getSerializedCustomEncodeBlock(config, field.getSchemaOrRef().getSchema(),
-          field.getSchemaOrRef().getSchema().type(), handleJavaPoetStringLiteral(field.getName())));
+          field.getSchemaOrRef().getSchema().type(), replaceSingleDollarSignWithDouble(field.getName())));
     }
   }
 
@@ -1131,7 +1137,7 @@ public class SpecificRecordClassGenerator {
             }
           }
           codeBlockBuilder.addStatement("out.writeIndex($L)", i)
-              .addStatement(getSerializedCustomEncodeBlock(config, fieldSchema, unionMemberSchema.type(),
+              .addStatement(getSerializedCustomEncodeBlock(config, unionMemberSchema, unionMemberSchema.type(),
                    fieldName));
         }
         codeBlockBuilder.endControlFlow()
@@ -1145,7 +1151,7 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = String.format("%s.customEncode(out)", fieldName);
         break;
     }
-    return serializedCodeBlock;
+    return SINGLE_DOLLAR_SIGN_REGEX.matcher(serializedCodeBlock).replaceAll("SCHEMA\\$\\$");
   }
 
   private String getKeyVarName() {
