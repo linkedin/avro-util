@@ -34,16 +34,6 @@ import com.linkedin.avroutil1.model.AvroType;
 import com.linkedin.avroutil1.model.AvroUnionSchema;
 import com.linkedin.avroutil1.model.JsonPropertiesContainer;
 import com.linkedin.avroutil1.model.SchemaOrRef;
-import com.linkedin.avroutil1.parser.jsonpext.JsonObjectExtBuilder;
-import com.linkedin.avroutil1.parser.jsonpext.JsonObjectExtImpl;
-import com.linkedin.avroutil1.parser.jsonpext.JsonValueExt;
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonReader;
-import javax.json.JsonValue;
-import javax.json.JsonWriter;
-import javax.json.stream.JsonGenerator;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
@@ -55,6 +45,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonReader;
+import javax.json.JsonValue;
+import javax.json.JsonWriter;
+import javax.json.stream.JsonGenerator;
 
 
 public class AvscSchemaWriter implements AvroSchemaWriter {
