@@ -14,7 +14,7 @@ public class JsonObjectExtBuilder extends BuilderWithLocations<JsonObjectExt> {
 
     protected LinkedHashMap<String, JsonValueExt> valueMap = new LinkedHashMap<>(1);
 
-    JsonObjectExtBuilder add(String name, JsonValueExt value) {
+    public JsonObjectExtBuilder add(String name, JsonValueExt value) {
         JsonValueExt conflictingValue = valueMap.get(name);
         if (conflictingValue != null) {
             throw new JsonException("key " + name + " is defined at " + conflictingValue.getStartLocation() + " and again at " + value.getStartLocation());
