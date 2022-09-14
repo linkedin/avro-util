@@ -13,15 +13,11 @@
         "fields" : [ {
           "name" : "currencyCode",
           "type" : "string",
-          "doc" : "Currency code v$",
-          "compliance" : "NONE"
+          "doc" : "Currency code v$"
         }, {
           "name" : "amount",
           "type" : "string",
-          "doc" : "The amount of money as a real number string, See https://docs.oracle.com/javase/8/docs/api/java/math/BigDecimal.html#BigDecimal-java.lang.String-",
-          "compliance" : {
-            "policy" : "FINANCIAL_NUMBER"
-          }
+          "doc" : "The amount of money as a real number string, See https://docs.oracle.com/javase/8/docs/api/java/math/BigDecimal.html#BigDecimal-java.lang.String-"
         } ],
         "aliases": [
           "vs14.MoneyAmount"
