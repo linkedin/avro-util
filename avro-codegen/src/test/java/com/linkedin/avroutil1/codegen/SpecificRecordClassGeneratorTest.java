@@ -140,7 +140,7 @@ public class SpecificRecordClassGeneratorTest {
   }
 
   @Test
-  public void testSpecificRecordReservedField2() throws Exception {
+  public void testSpecificRecordWithInternalDefinedTypeReuse() throws Exception {
     String avsc = TestUtil.load("schemas/MoneyRange.avsc");
     SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
     AvscParser parser = new AvscParser();

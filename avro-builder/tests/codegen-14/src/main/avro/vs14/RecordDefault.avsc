@@ -14,6 +14,24 @@
         ]
       },
       "doc": "Is it ?",
-    "default": {"value": false, "score": 0.0}
-  }]
+      "default": {"value": false, "score": 0.0}
+    },
+    {
+      "name": "recordUnion",
+      "type": ["null", "vs14.MyBool"],
+      "doc": "Union of Is it?"
+    },
+    {
+      "name": "recordUnionWithDefault",
+      "type": ["vs14.MyBool", "null"],
+      "doc": "Union of Is it?",
+      "default": {"value": true, "score": 1.0}
+    },
+    {
+      "name": "recordUnionWithDefaultForNull",
+      "type": ["null", "vs14.MyBool"],
+      "doc": "Union of Is it?",
+      "default": null
+    }
+  ]
 }

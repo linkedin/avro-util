@@ -16,7 +16,7 @@ import org.testng.annotations.Test;
 public class DefaultRecordTest {
 
   @Test
-  public void testRoundTripSerializationArrayOfStrings() throws Exception {
+  public void testRoundTripSerializationDefaultRecordValue() throws Exception {
     RandomRecordGenerator generator = new RandomRecordGenerator();
     vs14.RecordDefault instance =
         generator.randomSpecific(vs14.RecordDefault.class, RecordGenerationConfig.newConfig().withAvoidNulls(true));

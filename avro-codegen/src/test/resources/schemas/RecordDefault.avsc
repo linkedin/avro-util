@@ -15,5 +15,23 @@
       },
       "doc": "Is it ?",
     "default": {"value": false, "score": 0.0}
-  }]
+    },
+    {
+      "name": "recordUnion",
+      "type": ["null", "com.linkedin.test.MyBool"],
+      "doc": "Union of Is it?"
+    },
+    {
+      "name": "recordUnionWithDefault",
+      "type": ["com.linkedin.test.MyBool", "null"],
+      "doc": "Union of Is it?",
+      "default": {"value": true, "score": 1.0}
+    },
+    {
+      "name": "recordUnionWithDefaultForNull",
+      "type": ["null", "com.linkedin.test.MyBool"],
+      "doc": "Union of Is it?",
+      "default": null
+    }
+  ]
 }

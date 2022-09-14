@@ -16,7 +16,7 @@ import org.testng.annotations.Test;
 public class MoneyRangeTest {
 
   @Test
-  public void testRoundTripSerialization() throws Exception {
+  public void testRoundTripSerializationForRecordWithReusedInternalSchema() throws Exception {
     RandomRecordGenerator generator = new RandomRecordGenerator();
     vs14.MoneyRange instance =
         generator.randomSpecific(vs14.MoneyRange.class, RecordGenerationConfig.newConfig().withAvoidNulls(true));
