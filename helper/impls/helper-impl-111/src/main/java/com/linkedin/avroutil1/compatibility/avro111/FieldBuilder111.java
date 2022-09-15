@@ -6,6 +6,8 @@
 
 package com.linkedin.avroutil1.compatibility.avro111;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linkedin.avroutil1.compatibility.AvroSchemaUtil;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
 import java.util.HashMap;
@@ -113,6 +115,34 @@ public class FieldBuilder111 implements FieldBuilder {
       }
     }
     return result;
+  }
+
+  @Override
+  public FieldBuilder addProp(String propName, String jsonObject) {
+    ObjectMapper objectMapper = new ObjectMapper();
+    try {
+      _props.put(propName, objectMapper.readTree(jsonObject));
+      return this;
+    } catch (JsonProcessingException e) {
+      throw new IllegalStateException("Failed to parse serialized json object: " + jsonObject, e);
+    }
+  }
+
+  @Override
+  public FieldBuilder addProps(Map<String, String> propNameToJsonObjectMap) {
+    for (Map.Entry<String, String> entry : propNameToJsonObjectMap.entrySet()) {
+      addProp(entry.getKey(), entry.getValue());
+    }
+    return this;
+  }
+
+  @Override
+  public FieldBuilder removeProp(String propName) {
+    if (!_props.containsKey(propName)) {
+      throw new IllegalStateException("Cannot remove prop that doesn't exist: " + propName);
+    }
+    _props.remove(propName);
+    return null;
   }
 
   /**

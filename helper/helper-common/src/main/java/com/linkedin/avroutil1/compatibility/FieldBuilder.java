@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.compatibility;
 
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field.Order;
 
@@ -26,6 +27,18 @@ public interface FieldBuilder {
   FieldBuilder setDefault(Object defaultValue);
 
   FieldBuilder setOrder(Order order);
+
+  /**
+   * @param jsonObject a JSON object serialized in String form.
+   */
+  FieldBuilder addProp(String propName, String jsonObject);
+
+  /**
+   * @param propNameToJsonObjectMap the key is the propName and the value is a JSON object serialized in String form.
+   */
+  FieldBuilder addProps(Map<String, String> propNameToJsonObjectMap);
+
+  FieldBuilder removeProp(String propName);
 
   @Deprecated
   FieldBuilder copyFromField();

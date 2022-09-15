@@ -9,9 +9,12 @@ package com.linkedin.avroutil1.compatibility.avro18;
 import com.linkedin.avroutil1.compatibility.AvroSchemaUtil;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
 import com.linkedin.avroutil1.compatibility.Jackson1Utils;
+import java.io.IOException;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field.Order;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.NullNode;
 
 import java.util.Map;
@@ -118,5 +121,33 @@ public class FieldBuilder18 implements FieldBuilder {
       }
     }
     return result;
+  }
+
+  @Override
+  public FieldBuilder addProp(String propName, String jsonObject) {
+    ObjectMapper objectMapper = new ObjectMapper();
+    try {
+      _props.put(propName, objectMapper.readTree(jsonObject));
+      return this;
+    } catch (IOException e) {
+      throw new IllegalStateException("Failed to parse serialized json object: " + jsonObject, e);
+    }
+  }
+
+  @Override
+  public FieldBuilder addProps(Map<String, String> propNameToJsonObjectMap) {
+    for (Map.Entry<String, String> entry : propNameToJsonObjectMap.entrySet()) {
+      addProp(entry.getKey(), entry.getValue());
+    }
+    return this;
+  }
+
+  @Override
+  public FieldBuilder removeProp(String propName) {
+    if (!_props.containsKey(propName)) {
+      throw new IllegalStateException("Cannot remove prop that doesn't exist: " + propName);
+    }
+    _props.remove(propName);
+    return null;
   }
 }

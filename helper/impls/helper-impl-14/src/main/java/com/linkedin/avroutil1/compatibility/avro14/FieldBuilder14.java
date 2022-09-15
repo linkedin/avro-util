@@ -136,4 +136,27 @@ public class FieldBuilder14 implements FieldBuilder {
       throw new IllegalStateException("unable to access props on Schema$Field " + field.name(), e);
     }
   }
+
+  @Override
+  public FieldBuilder addProp(String propName, String jsonObject) {
+    _props.put(propName, jsonObject);
+    return this;
+  }
+
+  @Override
+  public FieldBuilder addProps(Map<String, String> propNameToJsonObjectMap) {
+    for (Map.Entry<String, String> entry : propNameToJsonObjectMap.entrySet()) {
+      addProp(entry.getKey(), entry.getValue());
+    }
+    return this;
+  }
+
+  @Override
+  public FieldBuilder removeProp(String propName) {
+    if (!_props.containsKey(propName)) {
+      throw new IllegalStateException("Cannot remove prop that doesn't exist: " + propName);
+    }
+    _props.remove(propName);
+    return null;
+  }
 }
