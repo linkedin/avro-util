@@ -10,13 +10,12 @@ import com.linkedin.avroutil1.compatibility.AvroSchemaUtil;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
 import com.linkedin.avroutil1.compatibility.Jackson1Utils;
 import java.io.IOException;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field.Order;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.NullNode;
-
-import java.util.Map;
 
 
 public class FieldBuilder17 implements FieldBuilder {
@@ -116,13 +115,13 @@ public class FieldBuilder17 implements FieldBuilder {
   }
 
   @Override
-  public FieldBuilder addProp(String propName, String jsonObject) {
+  public FieldBuilder addProp(String propName, String jsonLiteral) {
     ObjectMapper objectMapper = new ObjectMapper();
     try {
-      _props.put(propName, objectMapper.readTree(jsonObject));
+      _props.put(propName, objectMapper.readTree(jsonLiteral));
       return this;
     } catch (IOException e) {
-      throw new IllegalStateException("Failed to parse serialized json object: " + jsonObject, e);
+      throw new IllegalStateException("Failed to parse serialized json object: " + jsonLiteral, e);
     }
   }
 

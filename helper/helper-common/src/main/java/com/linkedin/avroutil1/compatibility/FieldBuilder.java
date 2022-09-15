@@ -29,9 +29,9 @@ public interface FieldBuilder {
   FieldBuilder setOrder(Order order);
 
   /**
-   * @param jsonObject a JSON object serialized in String form.
+   * @param jsonLiteral a JSON object serialized in String form.
    */
-  FieldBuilder addProp(String propName, String jsonObject);
+  FieldBuilder addProp(String propName, String jsonLiteral);
 
   /**
    * @param propNameToJsonObjectMap the key is the propName and the value is a JSON object serialized in String form.

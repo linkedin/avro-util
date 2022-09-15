@@ -119,13 +119,13 @@ public class FieldBuilder19 implements FieldBuilder {
   }
 
   @Override
-  public FieldBuilder addProp(String propName, String jsonObject) {
+  public FieldBuilder addProp(String propName, String jsonLiteral) {
     ObjectMapper objectMapper = new ObjectMapper();
     try {
-      _props.put(propName, objectMapper.readTree(jsonObject));
+      _props.put(propName, objectMapper.readTree(jsonLiteral));
       return this;
     } catch (JsonProcessingException e) {
-      throw new IllegalStateException("Failed to parse serialized json object: " + jsonObject, e);
+      throw new IllegalArgumentException("Failed to parse serialized json object: " + jsonLiteral, e);
     }
   }
 

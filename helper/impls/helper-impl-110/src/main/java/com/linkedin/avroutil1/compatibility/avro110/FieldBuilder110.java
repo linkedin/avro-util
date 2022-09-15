@@ -11,11 +11,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linkedin.avroutil1.compatibility.AvroSchemaUtil;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
 import java.util.HashMap;
+import java.util.Map;
 import org.apache.avro.JsonProperties;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field.Order;
-
-import java.util.Map;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericFixed;
 import org.apache.avro.generic.IndexedRecord;
@@ -95,13 +94,13 @@ public class FieldBuilder110 implements FieldBuilder {
   }
 
   @Override
-  public FieldBuilder addProp(String propName, String jsonObject) {
+  public FieldBuilder addProp(String propName, String jsonLiteral) {
     ObjectMapper objectMapper = new ObjectMapper();
     try {
-      _props.put(propName, objectMapper.readTree(jsonObject));
+      _props.put(propName, objectMapper.readTree(jsonLiteral));
       return this;
     } catch (JsonProcessingException e) {
-      throw new IllegalStateException("Failed to parse serialized json object: " + jsonObject, e);
+      throw new IllegalArgumentException("Failed to parse serialized json object: " + jsonLiteral, e);
     }
   }
 
