@@ -856,14 +856,24 @@ public class AvroCompatibilityHelper {
       return AvroVersion.AVRO_1_9;
     }
 
+    // ArrayPositionPredicate was added in 1.11.1 https://issues.apache.org/jira/browse/AVRO-3375
+    Class<?> arrayPositionPredicateClass;
+    try {
+      arrayPositionPredicateClass = Class.forName("org.apache.avro.path.ArrayPositionPredicate");
+    } catch (ClassNotFoundException ignored) {
+      arrayPositionPredicateClass = null;
+    }
+
     try {
       //public static final Set<String> RESERVED_WORDS exists in 1.8+
       @SuppressWarnings("JavaReflectionMemberAccess")
       Field reservedWordsField = SpecificData.class.getField("RESERVED_WORDS");
       @SuppressWarnings("unchecked")
       Collection<String> reservedWords = (Collection<String>) reservedWordsField.get(null);
-      //"record" was added as a reserved word in 1.11 as part of https://issues.apache.org/jira/browse/AVRO-3116
-      if (!reservedWords.contains("record")) {
+      //"record" was added as a reserved word in 1.11.0 (but removed from 1.11.1+)
+      // as part of https://issues.apache.org/jira/browse/AVRO-3116
+      // To check if version 1.11.1+, we check for presence of the ArrayPositionPredicate.
+      if (!reservedWords.contains("record") && arrayPositionPredicateClass == null) {
         return AvroVersion.AVRO_1_10;
       }
     } catch (NoSuchFieldException unexpected1) {
