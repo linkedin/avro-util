@@ -30,11 +30,13 @@ public interface FieldBuilder {
 
   /**
    * @param jsonLiteral a JSON object serialized in String form.
+   * For example, a JSON object, {"key" : 123}, should be serialized as the following string: "{\"key\":123}".
    */
   FieldBuilder addProp(String propName, String jsonLiteral);
 
   /**
    * @param propNameToJsonObjectMap the key is the propName and the value is a JSON object serialized in String form.
+   * Please see {@link #addProp(String, String)} for more details on the JSON serialized String.
    */
   FieldBuilder addProps(Map<String, String> propNameToJsonObjectMap);
 

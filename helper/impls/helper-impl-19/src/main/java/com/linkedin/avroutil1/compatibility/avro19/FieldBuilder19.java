@@ -120,6 +120,9 @@ public class FieldBuilder19 implements FieldBuilder {
 
   @Override
   public FieldBuilder addProp(String propName, String jsonLiteral) {
+    if (propName == null || jsonLiteral == null) {
+      throw new IllegalArgumentException("Function input parameters cannot be null.");
+    }
     ObjectMapper objectMapper = new ObjectMapper();
     try {
       _props.put(propName, objectMapper.readTree(jsonLiteral));
@@ -131,15 +134,24 @@ public class FieldBuilder19 implements FieldBuilder {
 
   @Override
   public FieldBuilder addProps(Map<String, String> propNameToJsonObjectMap) {
+    if (propNameToJsonObjectMap == null) {
+      throw new IllegalArgumentException("Function input parameters cannot be null.");
+    }
     for (Map.Entry<String, String> entry : propNameToJsonObjectMap.entrySet()) {
-      addProp(entry.getKey(), entry.getValue());
+      try {
+        addProp(entry.getKey(), entry.getValue());
+      } catch (IllegalArgumentException e) {
+        throw new IllegalArgumentException(
+            "Issue with adding prop with key: " + entry.getKey() + " and value: " + entry.getValue());
+      }
     }
     return this;
   }
 
+
   @Override
   public FieldBuilder removeProp(String propName) {
-    if (!_props.containsKey(propName)) {
+    if (propName == null || !_props.containsKey(propName)) {
       throw new IllegalStateException("Cannot remove prop that doesn't exist: " + propName);
     }
     _props.remove(propName);
