@@ -58,6 +58,10 @@ public class AvroUtilCodeGenOp implements Operation {
           "unable to create destination folder " + config.getOutputSpecificRecordClassesRoot());
     }
 
+    if (!config.isAvro702Handling()) {
+      throw new IllegalArgumentException("--enableAvro702Handling should never be disabled");
+    }
+
     Set<File> avscFiles = new HashSet<>();
     Set<File> nonImportableFiles = new HashSet<>();
     String[] extensions = new String[]{BuilderConsts.AVSC_EXTENSION};
@@ -164,10 +168,9 @@ public class AvroUtilCodeGenOp implements Operation {
       AvroNamedSchema namedSchema = fileParseResult.getDefinedSchema(fullname);
 
       try {
-        JavaFileObject javaFileObject = generator.generateSpecificClass(
-            namedSchema,
-            SpecificRecordGenerationConfig.BROAD_COMPATIBILITY
-        );
+        JavaFileObject javaFileObject = generator.generateSpecificClass(namedSchema,
+            SpecificRecordGenerationConfig.getBroadCompatibilitySpecificRecordGenerationConfig(
+                config.getMinAvroVersion()));
         specificRecords.add(javaFileObject);
       } catch (Exception e) {
         errorCount++;

@@ -58,9 +58,9 @@ public class VanillaProcessedCodeGenOp implements Operation {
       }
     }
 
-    AvscGenerationConfig avscConfig = AvscGenerationConfig.VANILLA_ONELINE;
-    if (config.isAvro702Handling()) {
-      avscConfig = AvscGenerationConfig.CORRECT_MITIGATED_ONELINE;
+    AvscGenerationConfig avscConfig = AvscGenerationConfig.CORRECT_MITIGATED_ONELINE;
+    if (!config.isAvro702Handling()) {
+      throw new IllegalArgumentException("--enableAvro702Handling should never be disabled");
     }
 
     //build a classpath SchemaSet if classpath (cp) lookup is turned on
@@ -193,7 +193,7 @@ public class VanillaProcessedCodeGenOp implements Operation {
       throw new IllegalArgumentException("no \"name\" property in schema " + schemaJson);
     }
     String name = schemaJson.getString("name");
-    String fqcn ;
+    String fqcn;
     if (name.contains(".") || namespace == null) {
       fqcn = name; //avro spec says ignore namespace if name is a "full name"
     } else {
