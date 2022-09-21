@@ -81,7 +81,7 @@ public class SchemaBuilder {
             "enableAvro702Handling",
             "enable handling of avro702 when generating classes (will have correct AVSC with aliases to the impacted fullnames)")
         .withOptionalArg()
-        .defaultsTo("false")
+        .defaultsTo("true")
         .describedAs("true/false");
 
     //allow plugins to add CLI options
@@ -171,7 +171,7 @@ public class SchemaBuilder {
       }
     }
 
-    boolean handleAvro702 = false;
+    boolean handleAvro702 = true;
     if (options.has(enableAvro702Handling)) {
       String value = options.valueOf(enableAvro702Handling);
       handleAvro702 = Boolean.TRUE.equals(Boolean.parseBoolean(value));
