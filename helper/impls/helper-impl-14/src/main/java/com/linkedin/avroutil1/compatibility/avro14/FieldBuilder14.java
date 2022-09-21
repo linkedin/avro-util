@@ -11,6 +11,7 @@ import com.linkedin.avroutil1.compatibility.FieldBuilder;
 import com.linkedin.avroutil1.compatibility.Jackson1Utils;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field.Order;
@@ -143,11 +144,14 @@ public class FieldBuilder14 implements FieldBuilder {
     if (propName == null || jsonLiteral == null) {
       throw new IllegalArgumentException("Function input parameters cannot be null.");
     }
+    if (_props == null) {
+      _props = new HashMap<>();
+    }
     ObjectMapper objectMapper = new ObjectMapper();
     try {
       JsonNode jsonNode = objectMapper.readTree(jsonLiteral);
       if (!jsonNode.isTextual()) {
-        throw new IllegalArgumentException("In Avro 1.7, can only use textual values, not " + jsonLiteral);
+        throw new IllegalArgumentException("In Avro 1.4, can only use textual values, not " + jsonLiteral);
       }
       _props.put(propName, jsonNode.getTextValue());
       return this;
@@ -166,7 +170,7 @@ public class FieldBuilder14 implements FieldBuilder {
         addProp(entry.getKey(), entry.getValue());
       } catch (IllegalArgumentException e) {
         throw new IllegalArgumentException(
-            "Issue with adding prop with key: " + entry.getKey() + " and value: " + entry.getValue());
+            "Issue with adding prop with key: " + entry.getKey() + " and value: " + entry.getValue(), e);
       }
     }
     return this;
@@ -174,8 +178,8 @@ public class FieldBuilder14 implements FieldBuilder {
 
   @Override
   public FieldBuilder removeProp(String propName) {
-    if (propName == null || !_props.containsKey(propName)) {
-      throw new IllegalStateException("Cannot remove prop that doesn't exist: " + propName);
+    if (propName == null || _props == null || !_props.containsKey(propName)) {
+      throw new IllegalArgumentException("Cannot remove prop that doesn't exist: " + propName);
     }
     _props.remove(propName);
     return null;

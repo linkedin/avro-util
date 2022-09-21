@@ -10,6 +10,8 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
 import com.linkedin.avroutil1.testcommon.TestUtil;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.JsonProperties;
@@ -155,5 +157,19 @@ public class Avro110FieldBuilderTest {
     } catch (AvroTypeException expected) {
       Assert.assertEquals(expected.getMessage(), "Invalid default for field boolWithoutDefault: \"invalid\" not a \"boolean\"");
     }
+  }
+
+  @Test
+  public void testAddPropsFields() {
+    // default (no order specified).
+    String propFieldString = "\"IAmAString\"";
+    String propFieldObject = "{\"f1\": \"v1\"}";
+    Map<String, String> propMap = new HashMap<>();
+    propMap.put("string", propFieldString);
+    propMap.put("object", propFieldObject);
+
+    Schema.Field field = AvroCompatibilityHelper.newField(null).setName("default").addProps(propMap).build();
+    Assert.assertEquals(field.getProp("string"), "IAmAString");
+    Assert.assertEquals(field.getObjectProp("object").toString(), "{f1=v1}");
   }
 }

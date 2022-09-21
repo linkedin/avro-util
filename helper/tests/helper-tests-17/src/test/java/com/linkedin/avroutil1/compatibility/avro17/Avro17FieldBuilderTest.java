@@ -9,6 +9,8 @@ package com.linkedin.avroutil1.compatibility.avro17;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
 import com.linkedin.avroutil1.testcommon.TestUtil;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.codehaus.jackson.node.NullNode;
 import org.testng.Assert;
@@ -105,5 +107,23 @@ public class Avro17FieldBuilderTest {
     // Arbitrary object. Not valid per the schema; Avro 1.7 warns, but no error.
     builder.setDefault("invalid");
     Assert.assertEquals(builder.build().defaultValue().getTextValue(), "invalid");
+  }
+
+  @Test
+  public void testAddPropsFields() {
+    // default (no order specified).
+    String propFieldString = "\"IAmAString\"";
+    String propFieldObject = "{\"f1\": \"v1\"}";
+    Map<String, String> propMap = new HashMap<>();
+    propMap.put("string", propFieldString);
+    propMap.put("object", propFieldObject);
+
+    FieldBuilder fieldBuilder = AvroCompatibilityHelper.newField(null).setName("default");
+    fieldBuilder.addProp("string", propFieldString);
+    fieldBuilder.addProp("object", propFieldObject);
+    Schema.Field field = fieldBuilder.build();
+
+    Assert.assertEquals(field.getProp("string"), "IAmAString");
+    Assert.assertEquals(field.getJsonProp("object").toString(), "{\"f1\":\"v1\"}");
   }
 }
