@@ -856,12 +856,25 @@ public class AvroCompatibilityHelper {
       return AvroVersion.AVRO_1_9;
     }
 
-    // ArrayPositionPredicate was added in 1.11.1 https://issues.apache.org/jira/browse/AVRO-3375
-    Class<?> arrayPositionPredicateClass;
+    // DataFileReader(SeekableInput sin, DatumReader<D> reader, boolean closeOnError, byte[] magic)
+    // was introduced in 1.11.1 https://issues.apache.org/jira/browse/AVRO-3482
+    boolean dataFileReaderClassContains1_11Constructor = false;
     try {
-      arrayPositionPredicateClass = Class.forName("org.apache.avro.path.ArrayPositionPredicate");
+      Class<?> dataFileReaderClass = Class.forName("org.apache.avro.file.DataFileReader");
+      Constructor<?>[] constructors = dataFileReaderClass.getDeclaredConstructors();
+      for (Constructor<?> constructor : constructors) {
+        if (constructor.toString().equals(
+            "protected org.apache.avro.file.DataFileReader(" +
+                "org.apache.avro.file.SeekableInput," +
+                "org.apache.avro.io.DatumReader," +
+                "boolean,byte[]) " +
+                "throws java.io.IOException")) {
+          dataFileReaderClassContains1_11Constructor = true;
+          break;
+        }
+      }
     } catch (ClassNotFoundException ignored) {
-      arrayPositionPredicateClass = null;
+      //empty
     }
 
     try {
@@ -872,8 +885,8 @@ public class AvroCompatibilityHelper {
       Collection<String> reservedWords = (Collection<String>) reservedWordsField.get(null);
       //"record" was added as a reserved word in 1.11.0 (but removed from 1.11.1+)
       // as part of https://issues.apache.org/jira/browse/AVRO-3116
-      // To check if version 1.11.1+, we check for presence of the ArrayPositionPredicate.
-      if (!reservedWords.contains("record") && arrayPositionPredicateClass == null) {
+      // To check if version 1.11.1+, we check for presence of the new DataFileReader constructor.
+      if (!reservedWords.contains("record") && !dataFileReaderClassContains1_11Constructor) {
         return AvroVersion.AVRO_1_10;
       }
     } catch (NoSuchFieldException unexpected1) {
