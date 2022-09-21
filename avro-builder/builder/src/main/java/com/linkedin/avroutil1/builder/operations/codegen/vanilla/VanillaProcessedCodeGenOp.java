@@ -60,7 +60,7 @@ public class VanillaProcessedCodeGenOp implements Operation {
 
     AvscGenerationConfig avscConfig = AvscGenerationConfig.CORRECT_MITIGATED_ONELINE;
     if (!config.isAvro702Handling()) {
-      throw new IllegalArgumentException("--enableAvro702Handling should never be disabled");
+      LOGGER.warn("Avro-702 handling was disabled. It is HIGHLY recommended that you enable Avro-702 handling.");
     }
 
     //build a classpath SchemaSet if classpath (cp) lookup is turned on

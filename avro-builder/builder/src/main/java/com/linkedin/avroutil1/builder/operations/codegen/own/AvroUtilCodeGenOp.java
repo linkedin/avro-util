@@ -59,7 +59,7 @@ public class AvroUtilCodeGenOp implements Operation {
     }
 
     if (!config.isAvro702Handling()) {
-      throw new IllegalArgumentException("--enableAvro702Handling should never be disabled");
+      LOGGER.warn("Avro-702 handling was disabled, however Avro-702 handling cannot be  disabled in AvroUtilCodeGenOp.");
     }
 
     Set<File> avscFiles = new HashSet<>();
