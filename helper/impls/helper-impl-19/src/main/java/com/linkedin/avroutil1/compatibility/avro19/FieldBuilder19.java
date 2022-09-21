@@ -158,7 +158,7 @@ public class FieldBuilder19 implements FieldBuilder {
       throw new IllegalArgumentException("Cannot remove prop that doesn't exist: " + propName);
     }
     _props.remove(propName);
-    return null;
+    return this;
   }
 
   /**

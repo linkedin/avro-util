@@ -133,7 +133,7 @@ public class FieldBuilder110 implements FieldBuilder {
       throw new IllegalArgumentException("Cannot remove prop that doesn't exist: " + propName);
     }
     _props.remove(propName);
-    return null;
+    return this;
   }
 
   @Override

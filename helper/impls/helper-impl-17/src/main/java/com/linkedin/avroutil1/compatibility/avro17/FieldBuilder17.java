@@ -151,11 +151,10 @@ public class FieldBuilder17 implements FieldBuilder {
 
   @Override
   public FieldBuilder removeProp(String propName) {
-
     if (propName == null || _props == null || !_props.containsKey(propName)) {
       throw new IllegalArgumentException("Cannot remove prop that doesn't exist: " + propName);
     }
     _props.remove(propName);
-    return null;
+    return this;
   }
 }
