@@ -9,6 +9,11 @@ package com.linkedin.avroutil1.compatibility.avro14;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.testcommon.JsonLiterals;
 import com.linkedin.avroutil1.testcommon.TestUtil;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.avro.Schema;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -57,5 +62,29 @@ public class AvroCompatibilityHelperProps14Test {
       String got = field.getProp(name);
       Assert.assertEquals(got, value, name);
     }
+  }
+
+  @Test
+  public void testSchemaPropNames() throws Exception {
+    Schema schema = Schema.parse(TestUtil.load("RecordWithFieldProps.avsc"));
+    List<String> want = Arrays.asList(new String[]{
+      "schemaNestedJsonProp",
+      "schemaStringProp",
+    });
+    List<String> got = AvroCompatibilityHelper.getAllPropNames(schema);
+    Collections.sort(got);
+    Assert.assertEquals(got, want);
+  }
+
+  @Test
+  public void testFieldPropNames() throws Exception {
+    Schema schema = Schema.parse(TestUtil.load("RecordWithFieldProps.avsc"));
+    List<String> want = Arrays.asList(new String[]{
+      "nestedJsonProp",
+      "stringProp",
+    });
+    List<String> got = AvroCompatibilityHelper.getAllPropNames(schema.getField("stringField"));
+    Collections.sort(got);
+    Assert.assertEquals(got, want);
   }
 }

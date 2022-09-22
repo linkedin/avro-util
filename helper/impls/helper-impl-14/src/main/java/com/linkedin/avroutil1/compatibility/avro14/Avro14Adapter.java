@@ -318,6 +318,24 @@ public class Avro14Adapter implements AvroAdapter {
     StringPropertyUtils.setFieldPropFromJsonString(field, name, value, strict);
   }
 
+  private Map<String, String> getPropsMap(Schema schema) {
+    try {
+      //noinspection unchecked
+      return (Map<String, String>) schemaPropsField.get(schema);
+    } catch (Exception e) {
+      throw new IllegalStateException("unable to access Schema.Field.props", e);
+    }
+  }
+
+  private Map<String, String> getPropsMap(Schema.Field field) {
+    try {
+      //noinspection unchecked
+      return (Map<String, String>) fieldPropsField.get(field);
+    } catch (Exception e) {
+      throw new IllegalStateException("unable to access Schema.Field.props", e);
+    }
+  }
+
   @Override
   public boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps, boolean compareNonStringProps) {
     if (compareNonStringProps) {
@@ -330,16 +348,8 @@ public class Avro14Adapter implements AvroAdapter {
     if (!compareStringProps) {
       return true;
     }
-    Map<String, String> aProps;
-    Map<String, String> bProps;
-    try {
-      //noinspection unchecked
-      aProps = (Map<String, String>) fieldPropsField.get(a);
-      //noinspection unchecked
-      bProps = (Map<String, String>) fieldPropsField.get(b);
-    } catch (Exception e) {
-      throw new IllegalStateException("unable to access Schema.Field.props", e);
-    }
+    Map<String, String> aProps = getPropsMap(a);
+    Map<String, String> bProps = getPropsMap(b);
     return Objects.equals(aProps, bProps);
   }
 
@@ -365,17 +375,19 @@ public class Avro14Adapter implements AvroAdapter {
     if (!compareStringProps) {
       return true;
     }
-    Map<String, String> aProps;
-    Map<String, String> bProps;
-    try {
-      //noinspection unchecked
-      aProps = (Map<String, String>) schemaPropsField.get(a);
-      //noinspection unchecked
-      bProps = (Map<String, String>) schemaPropsField.get(b);
-    } catch (Exception e) {
-      throw new IllegalStateException("unable to access Schema.props", e);
-    }
+    Map<String, String> aProps = getPropsMap(a);
+    Map<String, String> bProps = getPropsMap(b);
     return Objects.equals(aProps, bProps);
+  }
+
+  @Override
+  public List<String> getAllPropNames(Schema schema) {
+    return new ArrayList<>(getPropsMap(schema).keySet());
+  }
+
+  @Override
+  public List<String> getAllPropNames(Schema.Field field) {
+    return new ArrayList<>(getPropsMap(field).keySet());
   }
 
   @Override

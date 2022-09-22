@@ -384,6 +384,16 @@ public class Avro16Adapter implements AvroAdapter {
   }
 
   @Override
+  public List<String> getAllPropNames(Schema schema) {
+    return new ArrayList<>(schema.getProps().keySet());
+  }
+
+  @Override
+  public List<String> getAllPropNames(Schema.Field field) {
+    return new ArrayList<>(field.props().keySet());
+  }
+
+  @Override
   public String getEnumDefault(Schema s) {
     return s.getProp("default");
   }

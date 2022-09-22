@@ -10,6 +10,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.testcommon.JsonLiterals;
 import com.linkedin.avroutil1.testcommon.TestUtil;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.avro.Schema;
 import org.apache.avro.util.internal.JacksonUtils;
 import org.testng.Assert;
@@ -55,5 +60,39 @@ public class AvroCompatibilityHelperProps19Test {
       String got = AvroCompatibilityHelper.getFieldPropAsJsonString(field, name, false, false);
       Assert.assertEquals(got, value, name);
     }
+  }
+
+  @Test
+  public void testSchemaPropNames() throws Exception {
+    Schema schema = Schema.parse(TestUtil.load("RecordWithFieldProps.avsc"));
+    List<String> want = Arrays.asList(new String[]{
+      "schemaBoolProp",
+      "schemaFloatProp",
+      "schemaIntProp",
+      "schemaNestedJsonProp",
+      "schemaNullProp",
+      "schemaObjectProp",
+      "schemaStringProp",
+    });
+    List<String> got = AvroCompatibilityHelper.getAllPropNames(schema);
+    Collections.sort(got);
+    Assert.assertEquals(got, want);
+  }
+
+  @Test
+  public void testFieldPropNames() throws Exception {
+    Schema schema = Schema.parse(TestUtil.load("RecordWithFieldProps.avsc"));
+    List<String> want = Arrays.asList(new String[]{
+      "boolProp",
+      "floatProp",
+      "intProp",
+      "nestedJsonProp",
+      "nullProp",
+      "objectProp",
+      "stringProp",
+    });
+    List<String> got = AvroCompatibilityHelper.getAllPropNames(schema.getField("stringField"));
+    Collections.sort(got);
+    Assert.assertEquals(got, want);
   }
 }
