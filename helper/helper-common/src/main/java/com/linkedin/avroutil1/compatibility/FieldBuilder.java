@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.compatibility;
 
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field.Order;
 
@@ -26,6 +27,20 @@ public interface FieldBuilder {
   FieldBuilder setDefault(Object defaultValue);
 
   FieldBuilder setOrder(Order order);
+
+  /**
+   * @param jsonLiteral a JSON object serialized in String form.
+   * For example, a JSON object, {"key" : 123}, should be serialized as the following string: "{\"key\":123}".
+   */
+  FieldBuilder addProp(String propName, String jsonLiteral);
+
+  /**
+   * @param propNameToJsonObjectMap the key is the propName and the value is a JSON object serialized in String form.
+   * Please see {@link #addProp(String, String)} for more details on the JSON serialized String.
+   */
+  FieldBuilder addProps(Map<String, String> propNameToJsonObjectMap);
+
+  FieldBuilder removeProp(String propName);
 
   @Deprecated
   FieldBuilder copyFromField();
