@@ -52,6 +52,7 @@ include 'helper:tests:helper-tests-18'
 include 'helper:tests:helper-tests-19'
 include 'helper:tests:helper-tests-110'
 include 'helper:tests:helper-tests-111'
+include 'helper:tests:helper-tests-111_0'
 
 //fast avro
 include 'avro-fastserde'

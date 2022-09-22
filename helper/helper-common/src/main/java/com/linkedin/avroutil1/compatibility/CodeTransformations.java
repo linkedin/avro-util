@@ -53,7 +53,7 @@ public class CodeTransformations {
   private static final Pattern MODEL_ADD_TYPE_CONVERSION_PATTERN = Pattern.compile("MODEL\\$\\.addLogicalTypeConversion\\(.*\\);");
   private static final String  MODEL_DECL_REPLACEMENT = "private static final org.apache.avro.specific.SpecificData MODEL$ = SpecificData.get();";
   private static final String  IMPORT_SPECIFICDATA = "import org.apache.avro.specific.SpecificData;";
-  private static final Pattern GET_SPECIFICDATA_METHOD_PATTERN = Pattern.compile("public\\s*org\\.apache\\.avro\\.specific\\.SpecificData\\s*getSpecificData\\s*\\(\\s*\\)\\s*\\{\\s*return\\s*MODEL\\$\\s*;\\s*}");
+  private static final Pattern GET_SPECIFICDATA_METHOD_PATTERN = Pattern.compile("(@Override\n\\s*)public\\s*org\\.apache\\.avro\\.specific\\.SpecificData\\s*getSpecificData\\s*\\(\\s*\\)\\s*\\{\\s*return\\s*MODEL\\$\\s*;\\s*}");
   private static final Pattern WRITER_DOLLAR_DECL = Pattern.compile("WRITER\\$\\s*=\\s*([^;]+);");
   private static final String  WRITER_DOLLAR_DECL_REPLACEMENT = Matcher.quoteReplacement("WRITER$ = new org.apache.avro.specific.SpecificDatumWriter<>(SCHEMA$);");
   private static final Pattern READER_DOLLAR_DECL = Pattern.compile("READER\\$\\s*=\\s*([^;]+);");
