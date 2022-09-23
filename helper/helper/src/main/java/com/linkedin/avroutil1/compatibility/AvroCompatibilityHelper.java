@@ -1163,6 +1163,16 @@ public class AvroCompatibilityHelper {
     return ADAPTER.sameJsonProperties(a, b, compareStringProps, compareNonStringProps);
   }
 
+  public static List<String> getAllPropNames(Schema schema) {
+    assertAvroAvailable();
+    return ADAPTER.getAllPropNames(schema);
+  }
+
+  public static List<String> getAllPropNames(Schema.Field field) {
+    assertAvroAvailable();
+    return ADAPTER.getAllPropNames(field);
+  }
+
   /**
    * returns the enum default value.
    * returns null if schema has no such property.

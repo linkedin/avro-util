@@ -4,7 +4,7 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1.compatibility.avro110;
+package com.linkedin.avroutil1.compatibility.avro111;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
@@ -24,8 +24,7 @@ import org.testng.annotations.Test;
 /**
  * tests props-related methods on the {@link AvroCompatibilityHelper} class
  */
-
-public class AvroCompatibilityHelperProps110Test {
+public class AvroCompatibilityHelperProps111Test {
 
   @Test
   public void testValidNonStrings() throws Exception {

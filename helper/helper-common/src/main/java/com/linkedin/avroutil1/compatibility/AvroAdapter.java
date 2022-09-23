@@ -162,6 +162,9 @@ public interface AvroAdapter {
    */
   boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps);
 
+  List<String> getAllPropNames(Schema schema);
+  List<String> getAllPropNames(Schema.Field field);
+
   String getEnumDefault(Schema s);
 
   default Schema newEnumSchema(String name, String doc, String namespace, List<String> values, String enumDefault) {
