@@ -30,7 +30,7 @@ public class ClasspathSchemaSet implements SchemaSet {
 
   /**
    * @param name FQCN of a schema (so "com.acme.Foo")
-   * @return the schema, if an vro-generated class of the given name was found on the classpath
+   * @return the schema, if an avro-generated class of the given name was found on the classpath
    */
   @Override
   public synchronized Schema getByName(String name) {
