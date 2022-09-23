@@ -30,17 +30,17 @@ public class AvroCompatibilityHelperProps111Test {
   public void testValidNonStrings() throws Exception {
     Schema schema = Schema.parse(TestUtil.load("PerfectlyNormalRecord.avsc"));
     for (int i = 0; i < JsonLiterals.NON_STRING_LITERALS.length; ++i) {
-    String name = "schema/" + i;
-    String literal = JsonLiterals.NON_STRING_LITERALS[i];
-    String value = JsonLiterals.NON_STRING_VALUES[i];
+      String name = "schema/" + i;
+      String literal = JsonLiterals.NON_STRING_LITERALS[i];
+      String value = JsonLiterals.NON_STRING_VALUES[i];
 
-    AvroCompatibilityHelper.setSchemaPropFromJsonString(schema, name, literal, true);
-    JsonNode node = JacksonUtils.toJsonNode(schema.getObjectProp(name));
-    Assert.assertFalse(node.isTextual(), name);
-    Assert.assertEquals(node.toString(), value, name);
+      AvroCompatibilityHelper.setSchemaPropFromJsonString(schema, name, literal, true);
+      JsonNode node = JacksonUtils.toJsonNode(schema.getObjectProp(name));
+      Assert.assertFalse(node.isTextual(), name);
+      Assert.assertEquals(node.toString(), value, name);
 
-    String got = AvroCompatibilityHelper.getSchemaPropAsJsonString(schema, name, false, false);
-    Assert.assertEquals(got, value, name);
+      String got = AvroCompatibilityHelper.getSchemaPropAsJsonString(schema, name, false, false);
+      Assert.assertEquals(got, value, name);
     }
 
     // ----------------------------------------------------------------------------------------------
@@ -48,17 +48,17 @@ public class AvroCompatibilityHelperProps111Test {
 
     Schema.Field field = schema.getField("stringField");
     for (int i = 0; i < JsonLiterals.NON_STRING_LITERALS.length; ++i) {
-    String name = "field/" + i;
-    String literal = JsonLiterals.NON_STRING_LITERALS[i];
-    String value = JsonLiterals.NON_STRING_VALUES[i];
+      String name = "field/" + i;
+      String literal = JsonLiterals.NON_STRING_LITERALS[i];
+      String value = JsonLiterals.NON_STRING_VALUES[i];
 
-    AvroCompatibilityHelper.setFieldPropFromJsonString(field, name, literal, true);
-    JsonNode node = JacksonUtils.toJsonNode(field.getObjectProp(name));
-    Assert.assertFalse(node.isTextual(), name);
-    Assert.assertEquals(node.toString(), value, name);
+      AvroCompatibilityHelper.setFieldPropFromJsonString(field, name, literal, true);
+      JsonNode node = JacksonUtils.toJsonNode(field.getObjectProp(name));
+      Assert.assertFalse(node.isTextual(), name);
+      Assert.assertEquals(node.toString(), value, name);
 
-    String got = AvroCompatibilityHelper.getFieldPropAsJsonString(field, name, false, false);
-    Assert.assertEquals(got, value, name);
+      String got = AvroCompatibilityHelper.getFieldPropAsJsonString(field, name, false, false);
+      Assert.assertEquals(got, value, name);
     }
   }
 
@@ -66,13 +66,13 @@ public class AvroCompatibilityHelperProps111Test {
   public void testSchemaPropNames() throws Exception {
     Schema schema = Schema.parse(TestUtil.load("RecordWithFieldProps.avsc"));
     List<String> want = Arrays.asList(new String[]{
-    "schemaBoolProp",
-    "schemaFloatProp",
-    "schemaIntProp",
-    "schemaNestedJsonProp",
-    "schemaNullProp",
-    "schemaObjectProp",
-    "schemaStringProp",
+      "schemaBoolProp",
+      "schemaFloatProp",
+      "schemaIntProp",
+      "schemaNestedJsonProp",
+      "schemaNullProp",
+      "schemaObjectProp",
+      "schemaStringProp",
     });
     List<String> got = AvroCompatibilityHelper.getAllPropNames(schema);
     Collections.sort(got);
@@ -83,13 +83,13 @@ public class AvroCompatibilityHelperProps111Test {
   public void testFieldPropNames() throws Exception {
     Schema schema = Schema.parse(TestUtil.load("RecordWithFieldProps.avsc"));
     List<String> want = Arrays.asList(new String[]{
-    "boolProp",
-    "floatProp",
-    "intProp",
-    "nestedJsonProp",
-    "nullProp",
-    "objectProp",
-    "stringProp",
+      "boolProp",
+      "floatProp",
+      "intProp",
+      "nestedJsonProp",
+      "nullProp",
+      "objectProp",
+      "stringProp",
     });
     List<String> got = AvroCompatibilityHelper.getAllPropNames(schema.getField("stringField"));
     Collections.sort(got);

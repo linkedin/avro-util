@@ -404,7 +404,7 @@ public class Avro111Adapter implements AvroAdapter {
 
     @Override
     public List<String> getAllPropNames(Schema schema) {
-      return new ArrayList<>(schema.getObjectProps().keySet());
+        return new ArrayList<>(schema.getObjectProps().keySet());
     }
 
     @Override
