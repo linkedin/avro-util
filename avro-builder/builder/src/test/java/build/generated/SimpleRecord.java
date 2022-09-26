@@ -1,6 +1,8 @@
-package simpleproject;
+package build.generated;
 
+import org.apache.avro.generic.GenericArray;
 import org.apache.avro.specific.SpecificData;
+import org.apache.avro.util.Utf8;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 
 
@@ -9,8 +11,8 @@ import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 
 
 public class SimpleRecord extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 982161213722345332L;
-  public static final org.apache.avro.Schema SCHEMA$ = AvroCompatibilityHelper.parse("{\"type\":\"record\",\"name\":\"SimpleRecord\",\"namespace\":\"simpleproject\",\"fields\":[{\"name\":\"f\",\"type\":\"int\"}]}");
+  private static final long serialVersionUID = -1889173190812654313L;
+  public static final org.apache.avro.Schema SCHEMA$ = AvroCompatibilityHelper.parse("{\"type\":\"record\",\"name\":\"SimpleRecord\",\"namespace\":\"build.generated\",\"fields\":[{\"name\":\"f\",\"type\":\"int\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static final org.apache.avro.specific.SpecificData MODEL$ = SpecificData.get();

@@ -6,7 +6,7 @@
   "fields": [
     {
       "name": "date",
-      "type": "simpleproject.SimpleRecord"
+      "type": "build.generated.SimpleRecord"
     }
   ]
 }
