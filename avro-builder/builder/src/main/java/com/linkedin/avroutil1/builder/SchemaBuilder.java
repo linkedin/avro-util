@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -224,12 +223,11 @@ public class SchemaBuilder {
   private static List<BuilderPlugin> loadPlugins(@SuppressWarnings("SameParameterValue") int currentApiVersion) {
     List<BuilderPlugin> plugins = new ArrayList<>(1);
     ServiceLoader<BuilderPlugin> loader = ServiceLoader.load(BuilderPlugin.class);
-    Iterator<BuilderPlugin> iterator = loader.iterator();
-    while (iterator.hasNext()) {
-      BuilderPlugin plugin = iterator.next();
+    for (BuilderPlugin plugin : loader) {
       Set<Integer> pluginSupportedVersions = plugin.supportedApiVersions();
       if (!pluginSupportedVersions.contains(currentApiVersion)) {
-        System.err.println("plugin " + plugin.name() + " does not support current API version " + currentApiVersion + " and will not be loaded");
+        System.err.println("plugin " + plugin.name() + " does not support current API version " + currentApiVersion
+            + " and will not be loaded");
         continue;
       }
       plugins.add(plugin);

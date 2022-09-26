@@ -16,6 +16,7 @@ import com.linkedin.avroutil1.codegen.SpecificRecordGenerationConfig;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
+import com.linkedin.avroutil1.model.AvroSchema;
 import com.linkedin.avroutil1.model.SchemaOrRef;
 import com.linkedin.avroutil1.parser.avsc.AvroParseContext;
 import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
@@ -29,6 +30,7 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -108,7 +110,14 @@ public class AvroUtilCodeGenOp implements Operation {
 
     long parseEnd = System.currentTimeMillis();
 
-    Map<String, AvscParseResult> allNamedSchemas = context.getAllNamedSchemas();
+    Map<String, AvscParseResult> allNamedSchemas = new HashMap<>();
+    for (AvscParseResult parseResult : parsedFiles) {
+      AvroSchema schema = parseResult.getTopLevelSchema();
+      if (schema instanceof AvroNamedSchema) {
+        String name = ((AvroNamedSchema) schema).getFullName();
+        allNamedSchemas.put(name, parseResult);
+      }
+    }
 
     // Handle duplicate schemas
     Map<String, List<AvscParseResult>> duplicates = context.getDuplicates();
@@ -206,7 +215,11 @@ public class AvroUtilCodeGenOp implements Operation {
 
     Set<File> allAvroFiles = new HashSet<>(avscFiles);
     allAvroFiles.addAll(nonImportableFiles);
-    opContext.addParsedSchemas(context.getTopLevelSchemas(), allAvroFiles);
+    Set<AvroSchema> allTopLevelSchemas = new HashSet<>();
+    for (AvscParseResult parsedFile : parsedFiles) {
+      allTopLevelSchemas.add(parsedFile.getTopLevelSchema());
+    }
+    opContext.addParsedSchemas(allTopLevelSchemas, allAvroFiles);
   }
 
   /**
@@ -256,6 +269,7 @@ public class AvroUtilCodeGenOp implements Operation {
         }
       }
       context.add(fileParseResult, areFilesImportable);
+      // We skipp adding the referenced parse results to `parsedFiles`
       parsedFiles.add(fileParseResult);
     }
     return parsedFiles;
