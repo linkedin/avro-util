@@ -96,6 +96,28 @@ public class SchemaBuilderTest {
     });
   }
 
+  @Test
+  public void testWithImportsFromClasspath() throws Exception {
+    File simpleProjectRoot = new File(locateTestProjectsRoot(), "classpath-project");
+    File inputFolder = new File(simpleProjectRoot, "input");
+    File outputFolder = new File(simpleProjectRoot, "output");
+    if (outputFolder.exists()) { //clear output
+      FileUtils.deleteDirectory(outputFolder);
+    }
+    //run the builder
+    SchemaBuilder.main(new String[] {
+        "--input", inputFolder.getAbsolutePath(),
+        "--output", outputFolder.getAbsolutePath(),
+        "--generator", CodeGenerator.AVRO_UTIL.name(),
+        "--includeClasspath", Boolean.toString(true)
+    });
+    //see output was generated
+    List<Path> javaFiles = Files.find(outputFolder.toPath(), 5,
+        (path, basicFileAttributes) -> path.getFileName().toString().endsWith(".java")
+    ).collect(Collectors.toList());
+    Assert.assertEquals(javaFiles.size(), 1);
+  }
+
 
   @Test
   public void testImportableSchemasUsingOwnCodegen() throws Exception {

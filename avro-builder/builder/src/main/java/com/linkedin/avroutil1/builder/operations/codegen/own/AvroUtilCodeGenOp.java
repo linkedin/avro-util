@@ -10,9 +10,14 @@ import com.linkedin.avroutil1.builder.BuilderConsts;
 import com.linkedin.avroutil1.builder.operations.Operation;
 import com.linkedin.avroutil1.builder.operations.OperationContext;
 import com.linkedin.avroutil1.builder.operations.codegen.CodeGenOpConfig;
+import com.linkedin.avroutil1.builder.operations.codegen.vanilla.ClasspathSchemaSet;
 import com.linkedin.avroutil1.codegen.SpecificRecordClassGenerator;
 import com.linkedin.avroutil1.codegen.SpecificRecordGenerationConfig;
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
+import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
+import com.linkedin.avroutil1.model.AvroSchema;
+import com.linkedin.avroutil1.model.SchemaOrRef;
 import com.linkedin.avroutil1.parser.avsc.AvroParseContext;
 import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
 import com.linkedin.avroutil1.parser.avsc.AvscParser;
@@ -25,12 +30,14 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
 import javax.tools.JavaFileObject;
+import org.apache.avro.Schema;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -89,15 +96,28 @@ public class AvroUtilCodeGenOp implements Operation {
     AvroParseContext context = new AvroParseContext();
     Set<AvscParseResult> parsedFiles = new HashSet<>();
 
-    parsedFiles.addAll(parseAvscFiles(avscFiles, true, context));
-    parsedFiles.addAll(parseAvscFiles(nonImportableFiles, false, context));
+    HashSet<String> visitedSchemas = new HashSet<>();
+    //build a classpath SchemaSet if classpath (cp) lookup is turned on
+    ClasspathSchemaSet cpLookup = null;
+    if (config.isIncludeClasspath()) {
+      cpLookup = new ClasspathSchemaSet();
+    }
+    parsedFiles.addAll(parseAvscFiles(avscFiles, true, context, cpLookup, visitedSchemas));
+    parsedFiles.addAll(parseAvscFiles(nonImportableFiles, false, context, cpLookup, visitedSchemas));
 
     //resolve any references across files that are part of this op (anything left would be external)
     context.resolveReferences();
 
     long parseEnd = System.currentTimeMillis();
 
-    Map<String, AvscParseResult> allNamedSchemas = context.getAllNamedSchemas();
+    Map<String, AvscParseResult> allNamedSchemas = new HashMap<>();
+    for (AvscParseResult parseResult : parsedFiles) {
+      AvroSchema schema = parseResult.getTopLevelSchema();
+      if (schema instanceof AvroNamedSchema) {
+        String name = ((AvroNamedSchema) schema).getFullName();
+        allNamedSchemas.put(name, parseResult);
+      }
+    }
 
     // Handle duplicate schemas
     Map<String, List<AvscParseResult>> duplicates = context.getDuplicates();
@@ -195,7 +215,11 @@ public class AvroUtilCodeGenOp implements Operation {
 
     Set<File> allAvroFiles = new HashSet<>(avscFiles);
     allAvroFiles.addAll(nonImportableFiles);
-    opContext.addParsedSchemas(context.getTopLevelSchemas(), allAvroFiles);
+    Set<AvroSchema> allTopLevelSchemas = new HashSet<>();
+    for (AvscParseResult parsedFile : parsedFiles) {
+      allTopLevelSchemas.add(parsedFile.getTopLevelSchema());
+    }
+    opContext.addParsedSchemas(allTopLevelSchemas, allAvroFiles);
   }
 
   /**
@@ -204,10 +228,12 @@ public class AvroUtilCodeGenOp implements Operation {
    * @param avscFiles Avsc files to parse
    * @param areFilesImportable whether to allow other avsc files to import from this avsc file
    * @param context the full parsing context for this "run".
+   * @param cpLookup
+   * @param visitedSchemas
    * @return a set of all the parsed file results (a Set of AvscParseResult)
    */
-  private Set<AvscParseResult> parseAvscFiles(Set<File> avscFiles, boolean areFilesImportable,
-      AvroParseContext context) {
+  private Set<AvscParseResult> parseAvscFiles(Set<File> avscFiles, boolean areFilesImportable, AvroParseContext context,
+      ClasspathSchemaSet cpLookup, HashSet<String> visitedSchemas) {
     AvscParser parser = new AvscParser();
     HashSet<AvscParseResult> parsedFiles = new HashSet<>();
     for (File p : avscFiles) {
@@ -216,7 +242,34 @@ public class AvroUtilCodeGenOp implements Operation {
       if (parseError != null) {
         throw new IllegalArgumentException("failed to parse file " + p.getAbsolutePath(), parseError);
       }
+      if (fileParseResult.getTopLevelSchema() instanceof AvroNamedSchema) {
+        String fullname = ((AvroNamedSchema) fileParseResult.getTopLevelSchema()).getFullName();
+        visitedSchemas.add(fullname);
+      }
+      // Lookup unresolved schemas in classpath
+      for (SchemaOrRef externalReference : fileParseResult.getExternalReferences()) {
+        String ref = externalReference.getRef();
+        String inheritedRef = externalReference.getInheritedName();
+        if (ref != null && !ref.isEmpty() && !visitedSchemas.contains(ref)) {
+          Schema referencedSchema = cpLookup.getByName(ref);
+          if (referencedSchema != null) {
+            AvscParseResult referencedParseResult =
+                parser.parse(AvroCompatibilityHelper.toAvsc(referencedSchema, AvscGenerationConfig.CORRECT_PRETTY));
+            context.add(referencedParseResult);
+            visitedSchemas.add(ref);
+          }
+        } else if (inheritedRef != null && !inheritedRef.isEmpty() && !visitedSchemas.contains(inheritedRef)) {
+          Schema referencedSchema = cpLookup.getByName(inheritedRef);
+          if (referencedSchema != null) {
+            AvscParseResult referencedParseResult =
+                parser.parse(AvroCompatibilityHelper.toAvsc(referencedSchema, AvscGenerationConfig.CORRECT_PRETTY));
+            context.add(referencedParseResult);
+            visitedSchemas.add(ref);
+          }
+        }
+      }
       context.add(fileParseResult, areFilesImportable);
+      // We skipp adding the referenced parse results to `parsedFiles`
       parsedFiles.add(fileParseResult);
     }
     return parsedFiles;

@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "name": "SchemaWithClasspathImport",
+  "namespace": "com.linkedin.test",
+  "doc": "This is a test schema with a reference to a schema on the classpath",
+  "fields": [
+    {
+      "name": "date",
+      "type": "build.generated.SimpleRecord"
+    }
+  ]
+}
