@@ -904,8 +904,14 @@ public class CodeTransformations {
     // of the cached instance may try to look up those fields.
     int insertPosition = code.indexOf(MODEL_DECL_REPLACEMENT);
     if (insertPosition < 0) {
-      // This must be because the max targeted Avro version is <= 1.8, which doesn't use MODEL$. Use SCHEMA$ instead.
-      insertPosition = findEndOfSchemaDeclaration(code);
+      // Perhaps the MODEL$ definition was NOT transformed, for whatever reason. Look for the original definition.
+      Matcher modelMatcher = MODEL_DECL_PATTERN.matcher(code);
+      if (modelMatcher.find()) {
+        insertPosition = modelMatcher.end();
+      } else {
+        // This must be because the max targeted Avro version is <= 1.8, which doesn't use MODEL$. Use SCHEMA$ instead.
+        insertPosition = findEndOfSchemaDeclaration(code);
+      }
     } else {
       insertPosition += MODEL_DECL_REPLACEMENT.length();
     }

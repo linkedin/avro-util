@@ -25,6 +25,8 @@ import org.apache.commons.io.IOUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import under19wbuildersmin18.NormalRecordWithoutReferences;
+
 
 public class CodeTransformationsAvro19Test {
 
@@ -137,6 +139,11 @@ public class CodeTransformationsAvro19Test {
     Method customDecodeMethod = fixedClass.getMethod("customDecode", ResolvingDecoder.class);
     Assert.assertNotNull(customDecodeMethod);
     Assert.assertEquals(customDecodeMethod.getDeclaringClass().getName(), "org.apache.avro.specific.SpecificRecordBase"); //inherited default impl
+  }
+
+  @Test
+  public void testBuilders() throws Exception {
+    Assert.assertNotNull(NormalRecordWithoutReferences.newBuilder());
   }
 
   private String runNativeCodegen(Schema schema) throws Exception {
