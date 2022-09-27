@@ -1,3 +1,6 @@
+// Specific Record used in com.linkedin.avroutil1.builder.SchemaBuilderTest in order to
+// test classpath imports. See SchemaBuilderTest#testWithImportsFromClasspath()
+
 package build.generated;
 
 import org.apache.avro.generic.GenericArray;
