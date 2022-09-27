@@ -23,6 +23,8 @@ import org.apache.commons.io.IOUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import under18wbuildersmin18.NormalRecordWithoutReferences;
+
 
 public class CodeTransformationsAvro18Test {
 
@@ -49,6 +51,11 @@ public class CodeTransformationsAvro18Test {
 
     Class<?> transformedClass = CompilerUtils.CACHED_COMPILER.loadFromJava(schema.getFullName(), transformedCode);
     Assert.assertNotNull(transformedClass);
+  }
+
+  @Test
+  public void testBuilders() throws Exception {
+    Assert.assertNotNull(NormalRecordWithoutReferences.newBuilder());
   }
 
   private String runNativeCodegen(Schema schema) throws Exception {

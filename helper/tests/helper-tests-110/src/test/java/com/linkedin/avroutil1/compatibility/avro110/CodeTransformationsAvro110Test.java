@@ -25,6 +25,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.regex.Matcher;
 
+import under110wbuildersmin18.NormalRecordWithoutReferences;
+
 
 public class CodeTransformationsAvro110Test {
 
@@ -149,6 +151,11 @@ public class CodeTransformationsAvro110Test {
     Method customDecodeMethod = fixedClass.getMethod("customDecode", ResolvingDecoder.class);
     Assert.assertNotNull(customDecodeMethod);
     Assert.assertEquals(customDecodeMethod.getDeclaringClass().getName(), "org.apache.avro.specific.SpecificRecordBase"); //inherited default impl
+  }
+
+  @Test
+  public void testBuilders() throws Exception {
+    Assert.assertNotNull(NormalRecordWithoutReferences.newBuilder());
   }
 
   private String runNativeCodegen(Schema schema) throws Exception {

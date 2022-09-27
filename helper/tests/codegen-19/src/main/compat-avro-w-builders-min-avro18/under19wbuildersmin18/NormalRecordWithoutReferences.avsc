@@ -1,0 +1,81 @@
+{
+  "type": "record",
+  "namespace": "under19wbuildersmin18",
+  "name": "NormalRecordWithoutReferences",
+  "fields": [
+    {
+      "name": "nullWithoutDefault",
+      "type": "null"
+    },
+    {
+      "name": "nullField",
+      "type": "null",
+      "default": null
+    },
+    {
+      "name": "boolWithoutDefault",
+      "type": "boolean"
+    },
+    {
+      "name": "boolField",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "name": "intField",
+      "type": "int",
+      "default": 1
+    },
+    {
+      "name": "doubleField",
+      "type": "double",
+      "default": 4.0
+    },
+    {
+      "name": "strField",
+      "type": "string",
+      "default": "default"
+    },
+    {
+      "name": "strWithoutDefault",
+      "type": "string"
+    },
+    {
+      "name": "arrayField",
+      "type": {
+        "type": "array",
+        "items": "string"
+      },
+      "default": [
+        "bla", "bla"
+      ]
+    },
+    {
+      "name": "mapField",
+      "type": {
+        "type": "map",
+        "values": "float"
+      },
+      "default": {
+      }
+    },
+    {
+      "name": "unionWithNullDefault",
+      "type": ["null", "double"],
+      "default": null
+    },
+    {
+      "name": "unionWithNullNoDefault",
+      "type": ["null", "double"]
+    },
+    {
+      "name": "unionWithDoubleDefault",
+      "type": ["double", "null"],
+      "default": 2.6
+    },
+    {
+      "name": "unionWithDoubleNoDefault",
+      "type": ["double", "null"]
+    }
+  ]
+}
