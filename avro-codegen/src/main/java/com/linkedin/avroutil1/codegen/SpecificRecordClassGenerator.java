@@ -11,7 +11,6 @@ import com.linkedin.avroutil1.compatibility.AvroVersion;
 import com.linkedin.avroutil1.compatibility.CompatibleSpecificRecordBuilderBase;
 import com.linkedin.avroutil1.compatibility.HelperConsts;
 import com.linkedin.avroutil1.compatibility.SourceCodeUtils;
-import com.linkedin.avroutil1.compatibility.StringConverterUtil;
 import com.linkedin.avroutil1.compatibility.StringUtils;
 import com.linkedin.avroutil1.compatibility.exception.AvroUtilException;
 import com.linkedin.avroutil1.model.AvroArraySchema;
@@ -635,7 +634,7 @@ public class SpecificRecordClassGenerator {
     recordBuilder.addMethod(
         MethodSpec.methodBuilder("build")
             .addModifiers(Modifier.PUBLIC)
-            .addException(AvroUtilException.class)
+            .addException(Exception.class)
             .returns(ClassName.get(recordSchema.getNamespace(), recordSchema.getSimpleName()))
             .addCode(buildMethodCodeBlockBuilder.build())
             .build());
@@ -1278,10 +1277,10 @@ public class SpecificRecordClassGenerator {
       Class<?> fieldClass =
           getFieldClass(field.getSchemaOrRef().getSchema().type(), config.getDefaultFieldStringRepresentation());
       if(fieldClass != null) {
-        fullyQualifiedClassesInRecord.add(StringConverterUtil.class.getName());
         if(field.getSchemaOrRef().getSchema().type() == AvroType.STRING) {
-          switchBuilder.addStatement("case $L: this.$L = new $T(value).get$L(); break", fieldIndex++, escapedFieldName,
-              StringConverterUtil.class, fieldClass.getSimpleName());
+          switchBuilder.addStatement(
+              "case $L: this.$L = new com.linkedin.avroutil1.compatibility.StringConverterUtil(value).get$L(); break",
+              fieldIndex++, escapedFieldName, fieldClass.getSimpleName());
         } else {
           switchBuilder.addStatement("case $L: this.$L = ($T) value; break", fieldIndex++, escapedFieldName, fieldClass);
         }
@@ -1311,8 +1310,7 @@ public class SpecificRecordClassGenerator {
 
       if(field.getSchemaOrRef().getSchema().type() == AvroType.STRING) {
         Class<?> fieldClass = getFieldClass(AvroType.STRING, config.getDefaultMethodStringRepresentation());
-        switchBuilder.addStatement("case $L: return new $T($L).get$L()", fieldIndex++, StringConverterUtil.class,
-            escapedFieldName, fieldClass.getSimpleName());
+        switchBuilder.addStatement("case $L: return new com.linkedin.avroutil1.compatibility.StringConverterUtil($L).get$L()", fieldIndex++, escapedFieldName, fieldClass.getSimpleName());
       } else {
         switchBuilder.addStatement("case $L: return $L", fieldIndex++, escapedFieldName);
       }
