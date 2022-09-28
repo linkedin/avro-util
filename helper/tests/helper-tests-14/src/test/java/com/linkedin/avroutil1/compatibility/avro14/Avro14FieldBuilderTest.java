@@ -9,9 +9,12 @@ package com.linkedin.avroutil1.compatibility.avro14;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
 import com.linkedin.avroutil1.testcommon.TestUtil;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.codehaus.jackson.node.NullNode;
 import org.testng.Assert;
+import org.testng.TestException;
 import org.testng.annotations.Test;
 
 public class Avro14FieldBuilderTest {
@@ -105,5 +108,28 @@ public class Avro14FieldBuilderTest {
     // Arbitrary object. Not valid per the schema, but Avro 1.4 doesn't mind.
     builder.setDefault("invalid");
     Assert.assertEquals(builder.build().defaultValue().getTextValue(), "invalid");
+  }
+
+  @Test
+  public void testAddPropsFields() {
+    // default (no order specified).
+    String propFieldString = "\"IAmAString\"";
+    String propFieldObject = "{\"f1\": \"v1\"}";
+    Map<String, String> propMap = new HashMap<>();
+    propMap.put("string", propFieldString);
+    propMap.put("object", propFieldObject);
+
+    FieldBuilder fieldBuilder = AvroCompatibilityHelper.newField(null).setName("default");
+    fieldBuilder.addProp("string", propFieldString);
+      try {
+        fieldBuilder.addProp("object", propFieldObject);
+        throw new TestException("Test failed. Inserting object should cause exception");
+      } catch (IllegalArgumentException expected) {
+        //ignore
+      }
+      Schema.Field field = fieldBuilder.build();
+
+    Assert.assertEquals(field.getProp("string"), "IAmAString");
+    Assert.assertNull(field.getProp("object"));
   }
 }

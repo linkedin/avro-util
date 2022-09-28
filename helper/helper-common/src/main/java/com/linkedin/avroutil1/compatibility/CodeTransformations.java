@@ -53,7 +53,7 @@ public class CodeTransformations {
   private static final Pattern MODEL_ADD_TYPE_CONVERSION_PATTERN = Pattern.compile("MODEL\\$\\.addLogicalTypeConversion\\(.*\\);");
   private static final String  MODEL_DECL_REPLACEMENT = "private static final org.apache.avro.specific.SpecificData MODEL$ = SpecificData.get();";
   private static final String  IMPORT_SPECIFICDATA = "import org.apache.avro.specific.SpecificData;";
-  private static final Pattern GET_SPECIFICDATA_METHOD_PATTERN = Pattern.compile("public\\s*org\\.apache\\.avro\\.specific\\.SpecificData\\s*getSpecificData\\s*\\(\\s*\\)\\s*\\{\\s*return\\s*MODEL\\$\\s*;\\s*}");
+  private static final Pattern GET_SPECIFICDATA_METHOD_PATTERN = Pattern.compile("(@Override\n\\s*)public\\s*org\\.apache\\.avro\\.specific\\.SpecificData\\s*getSpecificData\\s*\\(\\s*\\)\\s*\\{\\s*return\\s*MODEL\\$\\s*;\\s*}");
   private static final Pattern WRITER_DOLLAR_DECL = Pattern.compile("WRITER\\$\\s*=\\s*([^;]+);");
   private static final String  WRITER_DOLLAR_DECL_REPLACEMENT = Matcher.quoteReplacement("WRITER$ = new org.apache.avro.specific.SpecificDatumWriter<>(SCHEMA$);");
   private static final Pattern READER_DOLLAR_DECL = Pattern.compile("READER\\$\\s*=\\s*([^;]+);");
@@ -904,8 +904,14 @@ public class CodeTransformations {
     // of the cached instance may try to look up those fields.
     int insertPosition = code.indexOf(MODEL_DECL_REPLACEMENT);
     if (insertPosition < 0) {
-      // This must be because the max targeted Avro version is <= 1.8, which doesn't use MODEL$. Use SCHEMA$ instead.
-      insertPosition = findEndOfSchemaDeclaration(code);
+      // Perhaps the MODEL$ definition was NOT transformed, for whatever reason. Look for the original definition.
+      Matcher modelMatcher = MODEL_DECL_PATTERN.matcher(code);
+      if (modelMatcher.find()) {
+        insertPosition = modelMatcher.end();
+      } else {
+        // This must be because the max targeted Avro version is <= 1.8, which doesn't use MODEL$. Use SCHEMA$ instead.
+        insertPosition = findEndOfSchemaDeclaration(code);
+      }
     } else {
       insertPosition += MODEL_DECL_REPLACEMENT.length();
     }

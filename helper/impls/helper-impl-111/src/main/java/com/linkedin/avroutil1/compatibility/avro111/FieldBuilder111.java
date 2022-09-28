@@ -6,14 +6,15 @@
 
 package com.linkedin.avroutil1.compatibility.avro111;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linkedin.avroutil1.compatibility.AvroSchemaUtil;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
 import java.util.HashMap;
+import java.util.Map;
 import org.apache.avro.JsonProperties;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field.Order;
-
-import java.util.Map;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericFixed;
 import org.apache.avro.generic.IndexedRecord;
@@ -104,7 +105,8 @@ public class FieldBuilder111 implements FieldBuilder {
     try {
       avroFriendlyDefault = avroFriendlyDefaultValue(_defaultVal);
     } catch (Exception e) {
-      throw new IllegalArgumentException("unable to convert default value " + _defaultVal + " into something avro can handle", e);
+      throw new IllegalArgumentException(
+          "unable to convert default value " + _defaultVal + " into something avro can handle", e);
     }
     Schema.Field result = new Schema.Field(_name, _schema, _doc, avroFriendlyDefault, _order);
     if (_props != null) {
@@ -113,6 +115,48 @@ public class FieldBuilder111 implements FieldBuilder {
       }
     }
     return result;
+  }
+
+  @Override
+  public FieldBuilder addProp(String propName, String jsonLiteral) {
+    if (propName == null || jsonLiteral == null) {
+      throw new IllegalArgumentException("Function input parameters cannot be null.");
+    }
+    if (_props == null) {
+      _props = new HashMap<>();
+    }
+    ObjectMapper objectMapper = new ObjectMapper();
+    try {
+      _props.put(propName, objectMapper.readTree(jsonLiteral));
+      return this;
+    } catch (JsonProcessingException e) {
+      throw new IllegalArgumentException("Failed to parse serialized json object: " + jsonLiteral, e);
+    }
+  }
+
+  @Override
+  public FieldBuilder addProps(Map<String, String> propNameToJsonObjectMap) {
+    if (propNameToJsonObjectMap == null) {
+      throw new IllegalArgumentException("Function input parameters cannot be null.");
+    }
+    for (Map.Entry<String, String> entry : propNameToJsonObjectMap.entrySet()) {
+      try {
+        addProp(entry.getKey(), entry.getValue());
+      } catch (IllegalArgumentException e) {
+        throw new IllegalArgumentException(
+            "Issue with adding prop with key: " + entry.getKey() + " and value: " + entry.getValue(), e);
+      }
+    }
+    return this;
+  }
+
+  @Override
+  public FieldBuilder removeProp(String propName) {
+    if (propName == null || _props == null || !_props.containsKey(propName)) {
+      throw new IllegalArgumentException("Cannot remove prop that doesn't exist: " + propName);
+    }
+    _props.remove(propName);
+    return this;
   }
 
   /**

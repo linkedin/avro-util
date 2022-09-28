@@ -9,12 +9,14 @@ package com.linkedin.avroutil1.compatibility.avro18;
 import com.linkedin.avroutil1.compatibility.AvroSchemaUtil;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
 import com.linkedin.avroutil1.compatibility.Jackson1Utils;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field.Order;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.NullNode;
-
-import java.util.Map;
 
 
 public class FieldBuilder18 implements FieldBuilder {
@@ -118,5 +120,48 @@ public class FieldBuilder18 implements FieldBuilder {
       }
     }
     return result;
+  }
+
+  @Override
+  public FieldBuilder addProp(String propName, String jsonLiteral) {
+    if (propName == null || jsonLiteral == null) {
+      throw new IllegalArgumentException("Function input parameters cannot be null.");
+    }
+    if (_props == null) {
+      _props = new HashMap<>();
+    }
+    ObjectMapper objectMapper = new ObjectMapper();
+    try {
+      _props.put(propName, objectMapper.readTree(jsonLiteral));
+      return this;
+    } catch (IOException e) {
+      throw new IllegalStateException("Failed to parse serialized json object: " + jsonLiteral, e);
+    }
+  }
+
+  @Override
+  public FieldBuilder addProps(Map<String, String> propNameToJsonObjectMap) {
+    if (propNameToJsonObjectMap == null) {
+      throw new IllegalArgumentException("Function input parameters cannot be null.");
+    }
+    for (Map.Entry<String, String> entry : propNameToJsonObjectMap.entrySet()) {
+      try {
+        addProp(entry.getKey(), entry.getValue());
+      } catch (IllegalArgumentException e) {
+        throw new IllegalArgumentException(
+            "Issue with adding prop with key: " + entry.getKey() + " and value: " + entry.getValue(), e);
+      }
+    }
+    return this;
+  }
+
+
+  @Override
+  public FieldBuilder removeProp(String propName) {
+    if (propName == null || _props == null || !_props.containsKey(propName)) {
+      throw new IllegalArgumentException("Cannot remove prop that doesn't exist: " + propName);
+    }
+    _props.remove(propName);
+    return this;
   }
 }

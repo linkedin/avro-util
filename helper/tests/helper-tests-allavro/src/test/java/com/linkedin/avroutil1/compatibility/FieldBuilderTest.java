@@ -7,6 +7,8 @@
 package com.linkedin.avroutil1.compatibility;
 
 import com.linkedin.avroutil1.testcommon.TestUtil;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.avro.Schema;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -125,5 +127,23 @@ public class FieldBuilderTest {
                 .build();
 
         Assert.assertEquals(newField, moreNewField);
+    }
+
+    @Test
+    public void testAddPropsFields() {
+        // default (no order specified).
+        String propFieldString = "\"IAmAString\"";
+        Map<String, String> propMap = new HashMap<>();
+        propMap.put("string1", propFieldString);
+        propMap.put("string2", propFieldString);
+
+        FieldBuilder fieldBuilder = AvroCompatibilityHelper.newField(null)
+            .setName("default")
+            .addProps(propMap)
+            .removeProp("string1")
+            .removeProp("string2");
+        Schema.Field field = fieldBuilder.build();
+        Assert.assertNull(field.getProp("string1"));
+        Assert.assertNull(field.getProp("string2"));
     }
 }
