@@ -12,7 +12,6 @@ import com.linkedin.avroutil1.compatibility.CompatibleSpecificRecordBuilderBase;
 import com.linkedin.avroutil1.compatibility.HelperConsts;
 import com.linkedin.avroutil1.compatibility.SourceCodeUtils;
 import com.linkedin.avroutil1.compatibility.StringUtils;
-import com.linkedin.avroutil1.compatibility.exception.AvroUtilException;
 import com.linkedin.avroutil1.model.AvroArraySchema;
 import com.linkedin.avroutil1.model.AvroEnumSchema;
 import com.linkedin.avroutil1.model.AvroFixedSchema;
