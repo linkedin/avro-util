@@ -877,7 +877,7 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = String.format("%s = in.readDouble()", fieldName);
         break;
       case BYTES:
-        serializedCodeBlock = String.format("%s = in.readBytes(this.%s)", fieldName, fieldName);
+        serializedCodeBlock = String.format("%s = in.readBytes(%s)", fieldName, fieldName);
         break;
       case STRING:
         serializedCodeBlock =
@@ -1008,7 +1008,7 @@ public class SpecificRecordClassGenerator {
         codeBlockBuilder.beginControlFlow("if($L == null)", fieldName)
         .addStatement("$L = new $T()", fieldName, className)
         .endControlFlow()
-        .addStatement("$L.customDecode(in)", fieldName);
+        .addStatement("(($T)$L).customDecode(in)", className, fieldName);
 
         serializedCodeBlock = codeBlockBuilder.build().toString();
         break;
