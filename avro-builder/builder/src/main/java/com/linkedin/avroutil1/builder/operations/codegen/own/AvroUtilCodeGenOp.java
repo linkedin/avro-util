@@ -28,7 +28,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -178,7 +177,7 @@ public class AvroUtilCodeGenOp implements Operation {
     }
 
     SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
-    List<JavaFileObject> specificRecords = new ArrayList<>(allNamedSchemas.size());
+    HashSet<JavaFileObject> specificRecords = new HashSet<>(allNamedSchemas.size());
 
     long genStart = System.currentTimeMillis();
     long errorCount = 0;
@@ -188,10 +187,14 @@ public class AvroUtilCodeGenOp implements Operation {
       AvroNamedSchema namedSchema = fileParseResult.getDefinedSchema(fullname);
 
       try {
-        JavaFileObject javaFileObject = generator.generateSpecificClass(namedSchema,
+        List<JavaFileObject> javaFileObjects = generator.generateSpecificClassWithInternalTypes(namedSchema,
             SpecificRecordGenerationConfig.getBroadCompatibilitySpecificRecordGenerationConfig(
                 config.getMinAvroVersion()));
-        specificRecords.add(javaFileObject);
+        for(JavaFileObject fileObject : javaFileObjects) {
+          if (!specificRecords.contains(fileObject)) {
+            specificRecords.add(fileObject);
+          }
+        }
       } catch (Exception e) {
         errorCount++;
         //TODO - error-out

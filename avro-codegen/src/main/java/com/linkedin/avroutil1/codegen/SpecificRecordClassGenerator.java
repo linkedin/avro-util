@@ -84,7 +84,7 @@ public class SpecificRecordClassGenerator {
   final ClassName CLASSNAME_DATUM_WRITER = ClassName.get("org.apache.avro.io", "DatumWriter");
   final ClassName CLASSNAME_FIXED_SIZE = ClassName.get("org.apache.avro.specific", "FixedSize");
 
-  private int sizeValCounter = 0;
+  private int sizeValCounter = -1;
 
   HashSet<TypeName> fullyQualifiedClassNamesInRecord = new HashSet<>();
   HashSet<String> fullyQualifiedClassesInRecord = new HashSet<>(Arrays.asList(
@@ -204,6 +204,9 @@ public class SpecificRecordClassGenerator {
           break;
         case MAP:
           schemaQueue.add(((AvroMapSchema) fieldSchema).getValueSchema());
+          break;
+        case ARRAY:
+          schemaQueue.add(((AvroArraySchema) fieldSchema).getValueSchema());
           break;
       }
     }
@@ -816,7 +819,7 @@ public class SpecificRecordClassGenerator {
   private void addCustomDecodeMethod(MethodSpec.Builder customDecodeBuilder, AvroRecordSchema recordSchema,
       SpecificRecordGenerationConfig config) {
     // reset var counter
-    sizeValCounter = 0;
+    sizeValCounter = -1;
     customDecodeBuilder.addStatement("org.apache.avro.Schema.Field[] fieldOrder = in.readFieldOrder()")
         .beginControlFlow("if (fieldOrder == null)");
     for(AvroSchemaField field : recordSchema.getFields()) {
@@ -825,7 +828,7 @@ public class SpecificRecordClassGenerator {
           field.getSchemaOrRef().getSchema().type(), replaceSingleDollarSignWithDouble(escapedFieldName)));
     }
     // reset var counter
-    sizeValCounter = 0;
+    sizeValCounter = -1;
     int fieldIndex = 0;
     customDecodeBuilder.endControlFlow()
         .beginControlFlow("else")
@@ -895,19 +898,22 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = codeBlockBuilder.build().toString();
         break;
       case ARRAY:
+        sizeValCounter++;
 
         String arrayVarName = getArrayVarName();
         String gArrayVarName = getGArrayVarName();
+        String arraySizeVarName = getSizeVarName();
+        String arrayElementVarName = getElementVarName();
         AvroSchema arrayItemSchema = ((AvroArraySchema) fieldSchema).getValueSchema();
         Class<?> arrayItemClass = getJavaClassForAvroTypeIfApplicable(arrayItemSchema.type());
         TypeName arrayItemTypeName = getTypeName(arrayItemSchema, arrayItemSchema.type());
 
         codeBlockBuilder
-            .addStatement("long $L = in.readArrayStart()", getSizeVarName())
+            .addStatement("long $L = in.readArrayStart()", arraySizeVarName)
             .addStatement("$T<$T> $L = $L", List.class, arrayItemClass != null ? arrayItemClass : arrayItemTypeName, arrayVarName, fieldName)
             .beginControlFlow("if($L == null)", arrayVarName)
             .addStatement("$L = new org.apache.avro.specific.SpecificData.Array<$T>((int)$L, $L.getField(\"nullArrayField\").schema())",
-                arrayVarName, arrayItemClass != null ? arrayItemClass : arrayItemTypeName, getSizeVarName(), "SCHEMA$$")
+                arrayVarName, arrayItemClass != null ? arrayItemClass : arrayItemTypeName, arraySizeVarName, "SCHEMA$$")
             .addStatement("$L = $L", fieldName, arrayVarName)
             .endControlFlow()
             .beginControlFlow("else")
@@ -917,58 +923,59 @@ public class SpecificRecordClassGenerator {
         codeBlockBuilder.addStatement(
             "org.apache.avro.specific.SpecificData.Array<$T> $L = ($L instanceof org.apache.avro.specific.SpecificData.Array ? (org.apache.avro.specific.SpecificData.Array<$T>)$L : null)",
             arrayItemClass != null ? arrayItemClass : arrayItemTypeName, gArrayVarName, arrayVarName, arrayItemClass != null ? arrayItemClass : arrayItemTypeName, arrayVarName);
-        codeBlockBuilder.beginControlFlow("for (; 0 < $L; $L = in.arrayNext())", getSizeVarName(), getSizeVarName())
-            .beginControlFlow("for(; $L != 0; $L--)", getSizeVarName(), getSizeVarName())
-            .addStatement("$T $L = ($L != null ? $L.peek() : null)", arrayItemClass != null ? arrayItemClass : arrayItemTypeName, getElementVarName(), gArrayVarName, gArrayVarName);
+        codeBlockBuilder.beginControlFlow("for (; 0 < $1L; $1L = in.arrayNext())", arraySizeVarName)
+            .beginControlFlow("for(; $1L != 0; $1L--)", arraySizeVarName)
+            .addStatement("$T $L = ($L != null ? $L.peek() : null)", arrayItemClass != null ? arrayItemClass : arrayItemTypeName, arrayElementVarName, gArrayVarName, gArrayVarName);
 
         codeBlockBuilder.addStatement(
-            getSerializedCustomDecodeBlock(config, arrayItemSchema, arrayItemSchema.type(), getElementVarName()));
-        codeBlockBuilder.addStatement("$L.add($L)", arrayVarName, getElementVarName())
+            getSerializedCustomDecodeBlock(config, arrayItemSchema, arrayItemSchema.type(), arrayElementVarName));
+        codeBlockBuilder.addStatement("$L.add($L)", arrayVarName, arrayElementVarName)
             .endControlFlow()
             .endControlFlow();
 
         serializedCodeBlock = codeBlockBuilder.build().toString();
 
-        sizeValCounter++;
 
         break;
       case MAP:
-
+        sizeValCounter++;
         String mapVarName = getMapVarName();
+        String mapKeyVarName = getKeyVarName();
+        String mapSizeVarName = getSizeVarName();
+        String mapValueVarName = getValueVarName();
         AvroType mapItemAvroType = ((AvroMapSchema) fieldSchema).getValueSchema().type();
         Class<?> mapItemClass = getJavaClassForAvroTypeIfApplicable(mapItemAvroType);
         TypeName mapItemClassName = getTypeName(((AvroMapSchema) fieldSchema).getValueSchema(), mapItemAvroType);
 
         codeBlockBuilder
-            .addStatement("long $L = in.readMapStart()", getSizeVarName());
+            .addStatement("long $L = in.readMapStart()", mapSizeVarName);
 
         codeBlockBuilder.addStatement("$T<$T,$T> $L = $L", Map.class, CharSequence.class,
             ((mapItemClass != null) ? mapItemClass : mapItemClassName), mapVarName, fieldName);
 
         codeBlockBuilder.beginControlFlow("if($L == null)", mapVarName)
           .addStatement("$L = new $T<$T,$T>((int)$L)", mapVarName, HashMap.class, CharSequence.class,
-              ((mapItemClass != null) ? mapItemClass : mapItemClassName), getSizeVarName())
+              ((mapItemClass != null) ? mapItemClass : mapItemClassName), mapSizeVarName)
           .addStatement("$L = $L", fieldName, mapVarName)
           .endControlFlow()
           .beginControlFlow("else")
           .addStatement("$L.clear()", mapVarName)
           .endControlFlow();
 
-        codeBlockBuilder.beginControlFlow("for (; 0 < $L; $L = in.mapNext())", getSizeVarName(), getSizeVarName())
-            .beginControlFlow("for(; $L != 0; $L--)", getSizeVarName(), getSizeVarName())
-            .addStatement("$T $L = null", CharSequence.class, getKeyVarName())
-            .addStatement(getSerializedCustomDecodeBlock(config, ((AvroMapSchema) fieldSchema).getValueSchema(), AvroType.STRING, getKeyVarName()))
-            .addStatement("$T $L = null", ((mapItemClass != null) ? mapItemClass : mapItemClassName), getValueVarName())
+        codeBlockBuilder.beginControlFlow("for (; 0 < $1L; $1L = in.mapNext())", mapSizeVarName)
+            .beginControlFlow("for(; $1L != 0; $1L--)", mapSizeVarName)
+            .addStatement("$T $L = null", CharSequence.class, mapKeyVarName)
+            .addStatement(getSerializedCustomDecodeBlock(config, ((AvroMapSchema) fieldSchema).getValueSchema(), AvroType.STRING, mapKeyVarName))
+            .addStatement("$T $L = null", ((mapItemClass != null) ? mapItemClass : mapItemClassName), mapValueVarName)
             .addStatement(
                 getSerializedCustomDecodeBlock(config, ((AvroMapSchema) fieldSchema).getValueSchema(),
-                    ((AvroMapSchema) fieldSchema).getValueSchema().type(), getValueVarName()));
+                    ((AvroMapSchema) fieldSchema).getValueSchema().type(), mapValueVarName));
 
-        codeBlockBuilder.addStatement("$L.put($L,$L)", mapVarName, getKeyVarName(), getValueVarName())
+        codeBlockBuilder.addStatement("$L.put($L,$L)", mapVarName, mapKeyVarName, mapValueVarName)
             .endControlFlow()
             .endControlFlow();
 
         serializedCodeBlock = codeBlockBuilder.build().toString();
-        sizeValCounter++;
 
         break;
 
@@ -1061,6 +1068,7 @@ public class SpecificRecordClassGenerator {
             ((AvroFixedSchema) fieldSchema).getSize());
         break;
       case ARRAY:
+        sizeValCounter++;
         String lengthVarName = getSizeVarName();
         String actualSizeVarName = getActualSizeVarName();
         AvroType arrayItemAvroType = ((AvroArraySchema) fieldSchema).getValueSchema().type();
@@ -1092,9 +1100,9 @@ public class SpecificRecordClassGenerator {
         codeBlockBuilder.endControlFlow();
 
         serializedCodeBlock = codeBlockBuilder.build().toString();
-        sizeValCounter++;
         break;
       case MAP:
+        sizeValCounter++;
         lengthVarName = getSizeVarName();
         actualSizeVarName = getActualSizeVarName();
         String elementVarName = getElementVarName();
@@ -1107,29 +1115,19 @@ public class SpecificRecordClassGenerator {
 
         AvroType mapItemAvroType = ((AvroMapSchema) fieldSchema).getValueSchema().type();
         Class<?> mapItemClass = getJavaClassForAvroTypeIfApplicable(mapItemAvroType);
+        TypeName mapItemClassName = getTypeName(((AvroMapSchema) fieldSchema).getValueSchema(), mapItemAvroType);
 
-        if (mapItemClass != null) {
-          codeBlockBuilder.beginControlFlow(
-              "for (java.util.Map.Entry<java.lang.CharSequence, $T> $L: $L.entrySet())", mapItemClass,
-              elementVarName, fieldName);
-        } else {
-          TypeName mapItemClassName = getTypeName(((AvroMapSchema) fieldSchema).getValueSchema(), mapItemAvroType);
-          codeBlockBuilder.beginControlFlow(
-              "for (java.util.Map.Entry<java.lang.CharSequence, $T> $L: $L.entrySet())", mapItemClassName,
-              elementVarName, fieldName);
-        }
+        codeBlockBuilder.beginControlFlow("for (java.util.Map.Entry<java.lang.CharSequence, $T> $L: $L.entrySet())",
+            (mapItemClass != null) ? mapItemClass : mapItemClassName, elementVarName, fieldName);
+
         codeBlockBuilder
             .addStatement("$L++", actualSizeVarName)
             .addStatement("out.startItem()")
             .addStatement("out.writeString($L.getKey())", elementVarName);
 
+        codeBlockBuilder.addStatement("$T $L = $L.getValue()", (mapItemClass != null) ? mapItemClass : mapItemClassName,
+            valueVarName, elementVarName);
 
-        if (mapItemClass != null) {
-          codeBlockBuilder.addStatement("$T $L = $L.getValue()", mapItemClass, valueVarName, elementVarName);
-        } else {
-          TypeName mapItemClassName = getTypeName(((AvroMapSchema) fieldSchema).getValueSchema(), mapItemAvroType);
-          codeBlockBuilder.addStatement("$T $L = $L.getValue()", mapItemClassName, valueVarName, elementVarName);
-        }
         codeBlockBuilder.addStatement(
             getSerializedCustomEncodeBlock(config, ((AvroMapSchema) fieldSchema).getValueSchema(), mapItemAvroType,
                 valueVarName))
@@ -1141,7 +1139,6 @@ public class SpecificRecordClassGenerator {
             .endControlFlow();
 
         serializedCodeBlock = codeBlockBuilder.build().toString();
-        sizeValCounter++;
         break;
       case UNION:
         int numberOfUnionMembers = ((AvroUnionSchema) fieldSchema).getTypes().size();
