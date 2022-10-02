@@ -264,11 +264,13 @@ public class SpecificRecordClassGenerator {
     classBuilder.superclass(CLASSNAME_SPECIFIC_FIXED);
 
     // no args constructor
-    classBuilder.addMethod(MethodSpec.constructorBuilder().addStatement("super()").build());
+    classBuilder.addMethod(
+        MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC).addStatement("super()").build());
 
     // constructor with bytes args
     classBuilder.addMethod(
         MethodSpec.constructorBuilder()
+            .addModifiers(Modifier.PUBLIC)
             .addParameter(byte[].class, "bytes")
             .addStatement("super()")
             .addStatement("bytes(bytes)")
@@ -305,7 +307,7 @@ public class SpecificRecordClassGenerator {
 
     //add getSchema method
     classBuilder.addMethod(MethodSpec.methodBuilder("getSchema")
-        .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+        .addModifiers(Modifier.PUBLIC)
         .returns(CLASSNAME_SCHEMA)
         .addStatement("return $L", "SCHEMA$")
         .build());
