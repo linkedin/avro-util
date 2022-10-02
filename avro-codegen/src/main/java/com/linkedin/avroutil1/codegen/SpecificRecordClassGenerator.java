@@ -1176,7 +1176,9 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = codeBlockBuilder.build().toString();
         break;
       case RECORD:
-        serializedCodeBlock = String.format("%s.customEncode(out)", fieldName);
+        TypeName className = getTypeName(fieldSchema, fieldType, true);
+        serializedCodeBlock =
+            CodeBlock.builder().addStatement("(($T)$L).customEncode(out)", className, fieldName).build().toString();
         break;
     }
     return SINGLE_DOLLAR_SIGN_REGEX.matcher(serializedCodeBlock).replaceAll("\\$\\$");
