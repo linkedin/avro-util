@@ -28,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -176,46 +177,64 @@ public class AvroUtilCodeGenOp implements Operation {
           "unresolved referenced to external schemas: " + context.getExternalReferences());
     }
 
-    SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
-    HashSet<JavaFileObject> specificRecords = new HashSet<>(allNamedSchemas.size());
+    List<Map<String, AvscParseResult>> namedSchemaChunks = new ArrayList<>();
+    List<Map.Entry<String, AvscParseResult>> namedSchemaEntryList = new ArrayList(allNamedSchemas.entrySet());
+    int schemaSize = allNamedSchemas.size();
+    int numberOfChunks = 5;
 
-    long genStart = System.currentTimeMillis();
-    long errorCount = 0;
-    for (Map.Entry<String, AvscParseResult> namedSchemaEntry : allNamedSchemas.entrySet()) {
-      String fullname = namedSchemaEntry.getKey();
-      AvscParseResult fileParseResult = namedSchemaEntry.getValue();
-      AvroNamedSchema namedSchema = fileParseResult.getDefinedSchema(fullname);
-
-      try {
-        List<JavaFileObject> javaFileObjects = generator.generateSpecificClassWithInternalTypes(namedSchema,
-            SpecificRecordGenerationConfig.getBroadCompatibilitySpecificRecordGenerationConfig(
-                config.getMinAvroVersion()));
-        for(JavaFileObject fileObject : javaFileObjects) {
-          if (!specificRecords.contains(fileObject)) {
-            specificRecords.add(fileObject);
-          }
+    if (schemaSize > 500) {
+      for (int chunkNumber = 0; chunkNumber < numberOfChunks; chunkNumber++) {
+        Map<String, AvscParseResult> temp = new HashMap<>();
+        for (int itemNumber = (chunkNumber) * schemaSize / (numberOfChunks);
+            itemNumber < (chunkNumber + 1) * schemaSize / (numberOfChunks); itemNumber++) {
+          temp.put(namedSchemaEntryList.get(itemNumber).getKey(), namedSchemaEntryList.get(itemNumber).getValue());
         }
-      } catch (Exception e) {
-        errorCount++;
-        //TODO - error-out
-        LOGGER.error("failed to generate class for " + fullname + " defined in " + fileParseResult.getContext().getUri(), e);
+        namedSchemaChunks.add(temp);
       }
-    }
-    long genEnd = System.currentTimeMillis();
-
-    if (errorCount > 0) {
-      LOGGER.info("failed to generate {} java source files ({} generated successfully) in {} millis",
-          errorCount, specificRecords.size(), genEnd - genStart);
     } else {
-      LOGGER.info("generated {} java source files in {} millis", specificRecords.size(), genEnd - genStart);
+      namedSchemaChunks.add(allNamedSchemas);
     }
 
-    writeJavaFilesToDisk(specificRecords, config.getOutputSpecificRecordClassesRoot());
 
-    long writeEnd = System.currentTimeMillis();
-    LOGGER.info("wrote out {} generated java source files under {} in {} millis",
-        specificRecords.size(), config.getOutputSpecificRecordClassesRoot(), writeEnd - genEnd);
+    for(Map<String, AvscParseResult> namedSchemaChunk : namedSchemaChunks) {
+      SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
+      HashSet<JavaFileObject> specificRecords = new HashSet<>(namedSchemaChunk.size());
 
+      long genStart = System.currentTimeMillis();
+      long errorCount = 0;
+      for (Map.Entry<String, AvscParseResult> namedSchemaEntry : namedSchemaChunk.entrySet()) {
+        String fullname = namedSchemaEntry.getKey();
+        AvscParseResult fileParseResult = namedSchemaEntry.getValue();
+        AvroNamedSchema namedSchema = fileParseResult.getDefinedSchema(fullname);
+
+        try {
+          List<JavaFileObject> javaFileObjects = generator.generateSpecificClassWithInternalTypes(namedSchema,
+              SpecificRecordGenerationConfig.getBroadCompatibilitySpecificRecordGenerationConfig(config.getMinAvroVersion()));
+          for (JavaFileObject fileObject : javaFileObjects) {
+            if (!specificRecords.contains(fileObject)) {
+              specificRecords.add(fileObject);
+            }
+          }
+        } catch (Exception e) {
+          errorCount++;
+          //TODO - error-out
+          LOGGER.error("failed to generate class for " + fullname + " defined in " + fileParseResult.getContext().getUri(), e);
+        }
+      }
+      long genEnd = System.currentTimeMillis();
+
+      if (errorCount > 0) {
+        LOGGER.info("failed to generate {} java source files ({} generated successfully) in {} millis", errorCount,
+            specificRecords.size(), genEnd - genStart);
+      } else {
+        LOGGER.info("generated {} java source files in {} millis", specificRecords.size(), genEnd - genStart);
+      }
+
+      writeJavaFilesToDisk(specificRecords, config.getOutputSpecificRecordClassesRoot());
+
+      long writeEnd = System.currentTimeMillis();
+      LOGGER.info("wrote out {} generated java source files under {} in {} millis", specificRecords.size(), config.getOutputSpecificRecordClassesRoot(), writeEnd - genEnd);
+    }
     Set<File> allAvroFiles = new HashSet<>(avscFiles);
     allAvroFiles.addAll(nonImportableFiles);
     Set<AvroSchema> allTopLevelSchemas = new HashSet<>();
@@ -253,7 +272,7 @@ public class AvroUtilCodeGenOp implements Operation {
       for (SchemaOrRef externalReference : fileParseResult.getExternalReferences()) {
         String ref = externalReference.getRef();
         String inheritedRef = externalReference.getInheritedName();
-        if (ref != null && !ref.isEmpty() && !visitedSchemas.contains(ref)) {
+        if (ref != null && !ref.isEmpty() && !visitedSchemas.contains(ref) && cpLookup!= null) {
           Schema referencedSchema = cpLookup.getByName(ref);
           if (referencedSchema != null) {
             AvscParseResult referencedParseResult =
@@ -261,7 +280,7 @@ public class AvroUtilCodeGenOp implements Operation {
             context.add(referencedParseResult);
             visitedSchemas.add(ref);
           }
-        } else if (inheritedRef != null && !inheritedRef.isEmpty() && !visitedSchemas.contains(inheritedRef)) {
+        } else if (inheritedRef != null && !inheritedRef.isEmpty() && !visitedSchemas.contains(inheritedRef) && cpLookup != null) {
           Schema referencedSchema = cpLookup.getByName(inheritedRef);
           if (referencedSchema != null) {
             AvscParseResult referencedParseResult =

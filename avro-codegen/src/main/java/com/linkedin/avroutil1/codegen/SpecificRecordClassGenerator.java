@@ -84,6 +84,8 @@ public class SpecificRecordClassGenerator {
   final ClassName CLASSNAME_DATUM_WRITER = ClassName.get("org.apache.avro.io", "DatumWriter");
   final ClassName CLASSNAME_FIXED_SIZE = ClassName.get("org.apache.avro.specific", "FixedSize");
 
+  final ClassName CLASSNAME_SPECIFIC_FIXED = ClassName.get("org.apache.avro.specific", "SpecificFixed");
+
   private int sizeValCounter = -1;
 
   HashSet<TypeName> fullyQualifiedClassNamesInRecord = new HashSet<>();
@@ -261,6 +263,24 @@ public class SpecificRecordClassGenerator {
     //add public final static SCHEMA$
     addSchema$ToGeneratedClass(classBuilder, fixedSchema);
 
+    // extends SpecificFixed from avro
+    classBuilder.superclass(CLASSNAME_SPECIFIC_FIXED);
+
+    // no args constructor
+    classBuilder.addMethod(
+        MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC).addStatement("super()").build());
+
+    // constructor with bytes args
+    classBuilder.addMethod(
+        MethodSpec.constructorBuilder()
+            .addModifiers(Modifier.PUBLIC)
+            .addParameter(byte[].class, "bytes")
+            .addStatement("super()")
+            .addStatement("bytes(bytes)")
+            .build()
+    );
+
+    addCommonClassComponents(config, classBuilder);
 
     //add size annotation to class
     addAndInitializeSizeFieldToClass(classBuilder, fixedSchema);
@@ -273,6 +293,62 @@ public class SpecificRecordClassGenerator {
         .build();
 
     return javaFile.toJavaFileObject();
+  }
+
+  /***
+   * Adds getClassSchema, getSchema, DatumReader, DatumWriter
+   * @param config
+   * @param classBuilder
+   */
+  private void addCommonClassComponents(SpecificRecordGenerationConfig config, TypeSpec.Builder classBuilder) {
+    //add getClassSchema method
+    classBuilder.addMethod(MethodSpec.methodBuilder("getClassSchema")
+        .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+        .returns(CLASSNAME_SCHEMA)
+        .addStatement("return $L", "SCHEMA$")
+        .build());
+
+    //add getSchema method
+    classBuilder.addMethod(MethodSpec.methodBuilder("getSchema")
+        .addModifiers(Modifier.PUBLIC)
+        .returns(CLASSNAME_SCHEMA)
+        .addStatement("return $L", "SCHEMA$")
+        .build());
+
+    if(config.getMinimumSupportedAvroVersion().laterThan(AvroVersion.AVRO_1_7)) {
+      // read external
+      classBuilder.addField(
+          FieldSpec.builder(CLASSNAME_DATUM_READER, "READER$", Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
+              .initializer(CodeBlock.of("new $T($L)", CLASSNAME_SPECIFIC_DATUM_READER, "SCHEMA$"))
+              .build());
+
+      MethodSpec.Builder readExternalBuilder = MethodSpec.methodBuilder("readExternal")
+          .addException(IOException.class)
+          .addParameter(ObjectInput.class, "in")
+          .addModifiers(Modifier.PUBLIC)
+          .addCode(CodeBlock.builder().addStatement("$L.read(this, $T.getDecoder(in))", "READER$", CLASSNAME_SPECIFIC_DATA).build());
+
+      // write external
+      classBuilder.addField(
+          FieldSpec.builder(CLASSNAME_DATUM_WRITER, "WRITER$", Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
+              .initializer(CodeBlock.of("new $T($L)", CLASSNAME_SPECIFIC_DATUM_WRITER, "SCHEMA$"))
+              .build());
+
+      MethodSpec.Builder writeExternalBuilder = MethodSpec
+          .methodBuilder("writeExternal")
+          .addException(IOException.class)
+          .addParameter(ObjectOutput.class, "out")
+          .addModifiers(Modifier.PUBLIC)
+          .addCode(CodeBlock
+              .builder()
+              .addStatement("$L.write(this, $T.getEncoder(out))", "WRITER$", CLASSNAME_SPECIFIC_DATA)
+              .build());
+      readExternalBuilder.addAnnotation(Override.class);
+      writeExternalBuilder.addAnnotation(Override.class);
+
+      classBuilder.addMethod(readExternalBuilder.build());
+      classBuilder.addMethod(writeExternalBuilder.build());
+    }
   }
 
   protected JavaFileObject generateSpecificRecord(AvroRecordSchema recordSchema, SpecificRecordGenerationConfig config)
@@ -384,13 +460,13 @@ public class SpecificRecordClassGenerator {
 
       // add all arg constructor if #args < 254
       if(recordSchema.getFields().size() < 254) {
-        MethodSpec.Builder allArgsConstructorBuilder = MethodSpec.constructorBuilder();
+        MethodSpec.Builder allArgsConstructorBuilder = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC);
         for (AvroSchemaField field : recordSchema.getFields()) {
           //if declared schema, use fully qualified class (no import)
           String escapedFieldName = getFieldNameWithSuffix(field);
           addFullyQualified(field, config);
           allArgsConstructorBuilder.addParameter(getParameterSpecForField(field, config))
-              .addStatement("this.$1L = $1L", escapedFieldName);
+              .addStatement("$1L = $1L", escapedFieldName);
         }
         classBuilder.addMethod(allArgsConstructorBuilder.build());
       }
@@ -1229,9 +1305,6 @@ public class SpecificRecordClassGenerator {
     switch (avroType) {
       case NULL:
         cls = java.lang.Void.class;
-        break;
-      case ENUM:
-        cls = java.lang.Enum.class;
         break;
       case BOOLEAN:
         cls = java.lang.Boolean.class;
