@@ -2,6 +2,8 @@ package com.linkedin.avro.fastserde;
 
 import com.linkedin.avro.fastserde.generated.avro.FullRecord;
 import com.linkedin.avro.fastserde.generated.avro.IntRecord;
+import com.linkedin.avro.fastserde.generated.avro.MyEnumV2;
+import com.linkedin.avro.fastserde.generated.avro.MyRecordV2;
 import com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord;
 import com.linkedin.avro.fastserde.generated.avro.SplitRecordTest1;
 import com.linkedin.avro.fastserde.generated.avro.SplitRecordTest2;
@@ -10,6 +12,7 @@ import com.linkedin.avro.fastserde.generated.avro.SubRecord;
 import com.linkedin.avro.fastserde.generated.avro.TestEnum;
 import com.linkedin.avro.fastserde.generated.avro.TestFixed;
 import com.linkedin.avro.fastserde.generated.avro.TestRecord;
+import com.linkedin.avro.fastserde.generated.avro.UnionOfRecordsWithSameNameEnumField;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import java.io.File;
 import java.io.IOException;
@@ -800,6 +803,25 @@ public class FastSpecificDeserializerGeneratorTest {
       Assert.assertEquals(getField(((List<FullRecord>) getField(splitRecordTest1, "record3")).get(0), "field1"), new Utf8("test3"));
       Assert.assertEquals(getField(((List<FullRecord>) getField(splitRecordTest1, "record3")).get(0), "field2"), 3);
     }
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
+  public void shouldReadUnionOfRecordFieldsWithSameEnumFieldName(Boolean whetherUseFastDeserializer) {
+    Schema writerSchema = UnionOfRecordsWithSameNameEnumField.SCHEMA$;
+
+    UnionOfRecordsWithSameNameEnumField testRecord = new UnionOfRecordsWithSameNameEnumField();
+    MyRecordV2 myRecord = new MyRecordV2();
+    setField(myRecord, "enumField", MyEnumV2.VAL3);
+    setField(testRecord, "unionField", myRecord);
+
+    UnionOfRecordsWithSameNameEnumField deserRecord = null;
+    if (whetherUseFastDeserializer) {
+      deserRecord = decodeRecordFast(writerSchema, writerSchema, specificDataAsDecoder(testRecord));
+    } else {
+      deserRecord = decodeRecordSlow(writerSchema, writerSchema, specificDataAsDecoder(testRecord));
+    }
+
+    Assert.assertEquals(getField((MyRecordV2) getField(deserRecord, "unionField"), "enumField"), MyEnumV2.VAL3);
   }
 
   @SuppressWarnings("unchecked")
