@@ -266,6 +266,8 @@ public class SpecificRecordClassGenerator {
     // extends SpecificFixed from avro
     classBuilder.superclass(CLASSNAME_SPECIFIC_FIXED);
 
+    classBuilder.addSuperinterface(java.io.Externalizable.class);
+
     // no args constructor
     classBuilder.addMethod(
         MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC).addStatement("super()").build());
@@ -315,7 +317,6 @@ public class SpecificRecordClassGenerator {
         .addStatement("return $L", "SCHEMA$")
         .build());
 
-    if(config.getMinimumSupportedAvroVersion().laterThan(AvroVersion.AVRO_1_7)) {
       // read external
       classBuilder.addField(
           FieldSpec.builder(CLASSNAME_DATUM_READER, "READER$", Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
@@ -326,7 +327,11 @@ public class SpecificRecordClassGenerator {
           .addException(IOException.class)
           .addParameter(ObjectInput.class, "in")
           .addModifiers(Modifier.PUBLIC)
-          .addCode(CodeBlock.builder().addStatement("$L.read(this, $T.getDecoder(in))", "READER$", CLASSNAME_SPECIFIC_DATA).build());
+          .addCode(CodeBlock.builder()
+              .addStatement(
+                  "$L.read(this, com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.newBinaryDecoder(in))",
+                  "READER$")
+              .build());
 
       // write external
       classBuilder.addField(
@@ -341,14 +346,13 @@ public class SpecificRecordClassGenerator {
           .addModifiers(Modifier.PUBLIC)
           .addCode(CodeBlock
               .builder()
-              .addStatement("$L.write(this, $T.getEncoder(out))", "WRITER$", CLASSNAME_SPECIFIC_DATA)
+              .addStatement(
+                  "$L.write(this, com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.newBinaryEncoder(out))",
+                  "WRITER$")
               .build());
-      readExternalBuilder.addAnnotation(Override.class);
-      writeExternalBuilder.addAnnotation(Override.class);
 
       classBuilder.addMethod(readExternalBuilder.build());
       classBuilder.addMethod(writeExternalBuilder.build());
-    }
   }
 
   protected JavaFileObject generateSpecificRecord(AvroRecordSchema recordSchema, SpecificRecordGenerationConfig config)

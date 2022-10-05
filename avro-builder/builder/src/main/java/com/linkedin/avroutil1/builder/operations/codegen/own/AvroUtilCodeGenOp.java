@@ -96,14 +96,39 @@ public class AvroUtilCodeGenOp implements Operation {
     AvroParseContext context = new AvroParseContext();
     Set<AvscParseResult> parsedFiles = new HashSet<>();
 
-    HashSet<String> visitedSchemas = new HashSet<>();
     //build a classpath SchemaSet if classpath (cp) lookup is turned on
     ClasspathSchemaSet cpLookup = null;
     if (config.isIncludeClasspath()) {
       cpLookup = new ClasspathSchemaSet();
     }
-    parsedFiles.addAll(parseAvscFiles(avscFiles, true, context, cpLookup, visitedSchemas));
-    parsedFiles.addAll(parseAvscFiles(nonImportableFiles, false, context, cpLookup, visitedSchemas));
+    parsedFiles.addAll(parseAvscFiles(avscFiles, true, context));
+    parsedFiles.addAll(parseAvscFiles(nonImportableFiles, false, context));
+
+    // Lookup unresolved schemas in classpath
+    for (AvscParseResult parsedFile : parsedFiles) {
+      for (SchemaOrRef externalReference : parsedFile.getExternalReferences()) {
+        AvscParser parser = new AvscParser();
+        String ref = externalReference.getRef();
+        String inheritedRef = externalReference.getInheritedName();
+        if (!context.getAllNamedSchemas().containsKey(inheritedRef) && !context.getAllNamedSchemas().containsKey(ref)
+            && cpLookup != null) {
+          Schema referencedSchema = cpLookup.getByName(ref);
+          if (referencedSchema != null) {
+            AvscParseResult referencedParseResult =
+                parser.parse(AvroCompatibilityHelper.toAvsc(referencedSchema, AvscGenerationConfig.CORRECT_PRETTY));
+            context.add(referencedParseResult, true);
+          } else {
+            Schema inheritedReferencedSchema = cpLookup.getByName(inheritedRef);
+            if (inheritedReferencedSchema != null) {
+              AvscParseResult referencedParseResult = parser.parse(
+                  AvroCompatibilityHelper.toAvsc(inheritedReferencedSchema, AvscGenerationConfig.CORRECT_PRETTY));
+              context.add(referencedParseResult, true);
+            }
+          }
+        }
+      }
+    }
+    // TODO: check and throw if schemas defined in the filesystem (parsedFiles) have duplicates on the classpath.
 
     //resolve any references across files that are part of this op (anything left would be external)
     context.resolveReferences();
@@ -250,12 +275,9 @@ public class AvroUtilCodeGenOp implements Operation {
    * @param avscFiles Avsc files to parse
    * @param areFilesImportable whether to allow other avsc files to import from this avsc file
    * @param context the full parsing context for this "run".
-   * @param cpLookup
-   * @param visitedSchemas
    * @return a set of all the parsed file results (a Set of AvscParseResult)
    */
-  private Set<AvscParseResult> parseAvscFiles(Set<File> avscFiles, boolean areFilesImportable, AvroParseContext context,
-      ClasspathSchemaSet cpLookup, HashSet<String> visitedSchemas) {
+  private Set<AvscParseResult> parseAvscFiles(Set<File> avscFiles, boolean areFilesImportable, AvroParseContext context) {
     AvscParser parser = new AvscParser();
     HashSet<AvscParseResult> parsedFiles = new HashSet<>();
     for (File p : avscFiles) {
@@ -264,32 +286,7 @@ public class AvroUtilCodeGenOp implements Operation {
       if (parseError != null) {
         throw new IllegalArgumentException("failed to parse file " + p.getAbsolutePath(), parseError);
       }
-      if (fileParseResult.getTopLevelSchema() instanceof AvroNamedSchema) {
-        String fullname = ((AvroNamedSchema) fileParseResult.getTopLevelSchema()).getFullName();
-        visitedSchemas.add(fullname);
-      }
-      // Lookup unresolved schemas in classpath
-      for (SchemaOrRef externalReference : fileParseResult.getExternalReferences()) {
-        String ref = externalReference.getRef();
-        String inheritedRef = externalReference.getInheritedName();
-        if (ref != null && !ref.isEmpty() && !visitedSchemas.contains(ref) && cpLookup!= null) {
-          Schema referencedSchema = cpLookup.getByName(ref);
-          if (referencedSchema != null) {
-            AvscParseResult referencedParseResult =
-                parser.parse(AvroCompatibilityHelper.toAvsc(referencedSchema, AvscGenerationConfig.CORRECT_PRETTY));
-            context.add(referencedParseResult);
-            visitedSchemas.add(ref);
-          }
-        } else if (inheritedRef != null && !inheritedRef.isEmpty() && !visitedSchemas.contains(inheritedRef) && cpLookup != null) {
-          Schema referencedSchema = cpLookup.getByName(inheritedRef);
-          if (referencedSchema != null) {
-            AvscParseResult referencedParseResult =
-                parser.parse(AvroCompatibilityHelper.toAvsc(referencedSchema, AvscGenerationConfig.CORRECT_PRETTY));
-            context.add(referencedParseResult);
-            visitedSchemas.add(ref);
-          }
-        }
-      }
+
       context.add(fileParseResult, areFilesImportable);
       // We skipp adding the referenced parse results to `parsedFiles`
       parsedFiles.add(fileParseResult);

@@ -452,7 +452,11 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
   }
 
   private static Symbol mkEnumAdjustWithDefault(Schema writer, Schema reader) {
-    Avro19Resolver.EnumAdjust e = (Avro19Resolver.EnumAdjust) Avro19Resolver.EnumAdjust.resolve(writer, reader, GenericData.get());
+    Avro19Resolver.Action a = Avro19Resolver.EnumAdjust.resolve(writer, reader, GenericData.get());
+    if (a instanceof Avro19Resolver.ErrorAction) {
+      return Symbol.error(a.toString());
+    }
+    Avro19Resolver.EnumAdjust e = (Avro19Resolver.EnumAdjust) a;
     Object[] adjs = new Object[e.adjustments.length];
     for (int i = 0; i < adjs.length; i++) {
       adjs[i] = (0 <= e.adjustments[i] ? new Integer(e.adjustments[i])
