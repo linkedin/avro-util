@@ -110,10 +110,8 @@ public class AvroUtilCodeGenOp implements Operation {
         AvscParser parser = new AvscParser();
         String ref = externalReference.getRef();
         String inheritedRef = externalReference.getInheritedName();
-        boolean avroParseContextContainsRef = ref != null && !ref.isEmpty() && context.getAllNamedSchemas().containsKey(ref);
-        boolean avroParseContextContainsInheritedRef =
-            inheritedRef != null && !inheritedRef.isEmpty() && context.getAllNamedSchemas().containsKey(inheritedRef);
-        if (!avroParseContextContainsRef && !avroParseContextContainsInheritedRef && cpLookup != null) {
+        if (!context.getAllNamedSchemas().containsKey(inheritedRef) && !context.getAllNamedSchemas().containsKey(ref)
+            && cpLookup != null) {
           Schema referencedSchema = cpLookup.getByName(ref);
           if (referencedSchema != null) {
             AvscParseResult referencedParseResult =
