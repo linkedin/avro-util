@@ -128,6 +128,7 @@ public class AvroUtilCodeGenOp implements Operation {
         }
       }
     }
+    // TODO: check and throw if schemas defined in the filesystem (parsedFiles) have duplicates on the classpath.
 
     //resolve any references across files that are part of this op (anything left would be external)
     context.resolveReferences();
