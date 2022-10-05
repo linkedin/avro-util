@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "name": "SimpleRecord",
+  "namespace": "build.generated",
+  "doc": "This is a test schema with a reference to a schema that is both on the classpath and in a file",
+  "fields": [
+    {
+      "name": "lookAtMe",
+      "type": "string"
+    }
+  ]
+}
