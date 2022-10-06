@@ -136,7 +136,7 @@ public class AvroUtilCodeGenOp implements Operation {
 
     long parseEnd = System.currentTimeMillis();
 
-    int schemaChunkSize = 1000, schemaCounter = 0, totalSchemaParsed = 0;
+    int schemaChunkSize = 500, schemaCounter = 0, totalSchemaParsed = 0;
 
     List<Map<String, AvscParseResult>> allNamedSchemaList = new ArrayList<>();
     Map<String, AvscParseResult> namedSchemaChunk = new HashMap<>();
@@ -220,13 +220,15 @@ public class AvroUtilCodeGenOp implements Operation {
 
     SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
     HashSet<String> alreadyGeneratedSchemas = new HashSet<>();
-    List<JavaFileObject> generatedSpecificClasses = new ArrayList<>(totalSchemaParsed);
+    List<JavaFileObject> generatedSpecificClasses;
+    int totalGeneratedClasses = 0;
 
     long genStart = System.currentTimeMillis();
     long errorCount = 0;
     List<AvroNamedSchema> internalSchemaList;
 
     for (Map<String, AvscParseResult> allNamedSchemas : allNamedSchemaList) {
+      generatedSpecificClasses = new ArrayList<>(totalSchemaParsed);
       for (Map.Entry<String, AvscParseResult> namedSchemaEntry : allNamedSchemas.entrySet()) {
         String fullname = namedSchemaEntry.getKey();
         AvscParseResult fileParseResult = namedSchemaEntry.getValue();
@@ -259,21 +261,18 @@ public class AvroUtilCodeGenOp implements Operation {
               "failed to generate class for " + fullname + " defined in " + fileParseResult.getContext().getUri(), e);
         }
       }
+      writeJavaFilesToDisk(generatedSpecificClasses, config.getOutputSpecificRecordClassesRoot());
+      totalGeneratedClasses += generatedSpecificClasses.size();
     }
 
     long genEnd = System.currentTimeMillis();
 
     if (errorCount > 0) {
       LOGGER.info("failed to generate {} java source files ({} generated successfully) in {} millis", errorCount,
-          generatedSpecificClasses.size(), genEnd - genStart);
+          totalGeneratedClasses, genEnd - genStart);
     } else {
-      LOGGER.info("generated {} java source files in {} millis", generatedSpecificClasses.size(), genEnd - genStart);
+      LOGGER.info("generated {} java source files in {} millis", totalGeneratedClasses, genEnd - genStart);
     }
-
-    writeJavaFilesToDisk(generatedSpecificClasses, config.getOutputSpecificRecordClassesRoot());
-
-    long writeEnd = System.currentTimeMillis();
-    LOGGER.info("wrote out {} generated java source files under {} in {} millis", generatedSpecificClasses.size(), config.getOutputSpecificRecordClassesRoot(), writeEnd - genEnd);
 
     Set<File> allAvroFiles = new HashSet<>(avscFiles);
     allAvroFiles.addAll(nonImportableFiles);
@@ -310,6 +309,9 @@ public class AvroUtilCodeGenOp implements Operation {
   }
 
   private void writeJavaFilesToDisk(Collection<JavaFileObject> javaClassFiles, File outputFolder) {
+
+    long writeStart = System.currentTimeMillis();
+
     //make sure the output folder exists
     if (!outputFolder.exists() && !outputFolder.mkdirs()) {
       throw new IllegalStateException("unable to create output folder " + outputFolder);
@@ -338,5 +340,8 @@ public class AvroUtilCodeGenOp implements Operation {
         throw new IllegalStateException("while writing file " + outputFile, e);
       }
     }
+    long writeEnd = System.currentTimeMillis();
+    LOGGER.info("wrote out {} generated java source files under {} in {} millis", javaClassFiles.size(), outputFolder,
+        writeEnd - writeStart);
   }
 }
