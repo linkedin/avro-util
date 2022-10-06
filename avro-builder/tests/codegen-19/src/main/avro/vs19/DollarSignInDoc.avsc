@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "namespace": "vs19",
+  "name": "DollarSignInDoc",
+  "doc": "$ sign in doc with Schema$ in Vari$able",
+  "fields": [
+    {
+      "name": "arOfRec",
+      "type": {
+        "type":"array",
+        "items": "string"
+      }
+    }
+  ]
+}

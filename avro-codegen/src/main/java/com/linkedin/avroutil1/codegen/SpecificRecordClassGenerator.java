@@ -171,6 +171,7 @@ public class SpecificRecordClassGenerator {
   private void populateJavaFilesOfInnerNamedSchemasFromRecord(AvroRecordSchema recordSchema,
       SpecificRecordGenerationConfig config, List<JavaFileObject> namedSchemaFiles) throws ClassNotFoundException {
 
+    HashSet<String> visitedSchemasFullNames = new HashSet<>();
     Queue<AvroSchema> schemaQueue = recordSchema.getFields()
         .stream()
         .filter(field -> field.getSchemaOrRef().getRef() == null)
@@ -179,7 +180,14 @@ public class SpecificRecordClassGenerator {
 
     while (!schemaQueue.isEmpty()) {
       AvroSchema fieldSchema = schemaQueue.poll();
-
+      if(fieldSchema instanceof AvroNamedSchema) {
+        String fieldFullName = ((AvroNamedSchema) fieldSchema).getFullName();
+        if (visitedSchemasFullNames.contains(fieldFullName)) {
+          continue;
+        } else {
+          visitedSchemasFullNames.add(fieldFullName);
+        }
+      }
       switch (fieldSchema.type()) {
         case RECORD:
           // record's inner fields can also be named types. Add them to the queue
@@ -905,7 +913,7 @@ public class SpecificRecordClassGenerator {
     for(AvroSchemaField field : recordSchema.getFields()) {
       String escapedFieldName = getFieldNameWithSuffix(field);
       customDecodeBuilder.addStatement(getSerializedCustomDecodeBlock(config, field.getSchemaOrRef().getSchema(),
-          field.getSchemaOrRef().getSchema().type(), replaceSingleDollarSignWithDouble(escapedFieldName)));
+          field.getSchemaOrRef().getSchema().type(), "this."+replaceSingleDollarSignWithDouble(escapedFieldName)));
     }
     // reset var counter
     sizeValCounter = -1;
@@ -918,7 +926,7 @@ public class SpecificRecordClassGenerator {
       String escapedFieldName = getFieldNameWithSuffix(field);
       customDecodeBuilder
           .addStatement(String.format("case %s: ",fieldIndex++)+ getSerializedCustomDecodeBlock(config,
-              field.getSchemaOrRef().getSchema(), field.getSchemaOrRef().getSchema().type(), replaceSingleDollarSignWithDouble(escapedFieldName)))
+              field.getSchemaOrRef().getSchema(), field.getSchemaOrRef().getSchema().type(), "this."+replaceSingleDollarSignWithDouble(escapedFieldName)))
           .addStatement("break");
     }
     customDecodeBuilder
@@ -957,7 +965,7 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = String.format("%s = in.readDouble()", fieldName);
         break;
       case BYTES:
-        serializedCodeBlock = String.format("%s = in.readBytes(%s)", fieldName, fieldName);
+        serializedCodeBlock = String.format("%s = in.readBytes((java.nio.ByteBuffer) %s)", fieldName, fieldName);
         break;
       case STRING:
         serializedCodeBlock =
@@ -972,7 +980,7 @@ public class SpecificRecordClassGenerator {
         codeBlockBuilder.beginControlFlow("if ($L == null)", fieldName)
             .addStatement("$L = new $L()", fieldName,
                 getTypeName(fieldSchema, AvroType.FIXED, true).toString())
-            .endControlFlow().addStatement("in.readFixed($L.bytes(), 0, $L)", fieldName,
+            .endControlFlow().addStatement("in.readFixed((($T)$L).bytes(), 0, $L)", getTypeName(fieldSchema, AvroType.FIXED, false), fieldName,
             ((AvroFixedSchema) fieldSchema).getSize());
 
         serializedCodeBlock = codeBlockBuilder.build().toString();
@@ -1106,7 +1114,7 @@ public class SpecificRecordClassGenerator {
     for(AvroSchemaField field : recordSchema.getFields()) {
       String escapedFieldName = getFieldNameWithSuffix(field);
       customEncodeBuilder.addStatement(getSerializedCustomEncodeBlock(config, field.getSchemaOrRef().getSchema(),
-          field.getSchemaOrRef().getSchema().type(), replaceSingleDollarSignWithDouble(escapedFieldName)));
+          field.getSchemaOrRef().getSchema().type(), "this."+replaceSingleDollarSignWithDouble(escapedFieldName)));
     }
   }
 
@@ -1120,32 +1128,42 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = "out.writeNull()";
         break;
       case BOOLEAN:
-        serializedCodeBlock = String.format("out.writeBoolean(%s)", fieldName);
+        serializedCodeBlock = String.format("out.writeBoolean((Boolean) %s)", fieldName);
         break;
       case INT:
-        serializedCodeBlock = String.format("out.writeInt(%s)", fieldName);
+        serializedCodeBlock = String.format("out.writeInt((Integer) %s)", fieldName);
         break;
       case LONG:
-        serializedCodeBlock = String.format("out.writeLong(%s)", fieldName);
+        serializedCodeBlock = String.format("out.writeLong((Long) %s)", fieldName);
         break;
       case FLOAT:
-        serializedCodeBlock = String.format("out.writeFloat(%s)", fieldName);
+        serializedCodeBlock = String.format("out.writeFloat((Float) %s)", fieldName);
         break;
       case STRING:
-        serializedCodeBlock = String.format("out.writeString(%s)", fieldName);
+        serializedCodeBlock = CodeBlock.builder()
+            .addStatement("out.writeString(($T)$L)", getJavaClassForAvroTypeIfApplicable(fieldType), fieldName)
+            .build()
+            .toString();
         break;
       case DOUBLE:
-        serializedCodeBlock = String.format("out.writeDouble(%s)", fieldName);
+        serializedCodeBlock = String.format("out.writeDouble((Double) %s)", fieldName);
         break;
       case BYTES:
-        serializedCodeBlock = String.format("out.writeBytes(%s)", fieldName);
+        serializedCodeBlock = String.format("out.writeBytes((java.nio.ByteBuffer) %s)", fieldName);
         break;
       case ENUM:
-        serializedCodeBlock = String.format("out.writeEnum(%s.ordinal())", fieldName);
+        serializedCodeBlock = CodeBlock.builder()
+            .addStatement("out.writeEnum((($T)$L).ordinal())", getTypeName(fieldSchema, AvroType.ENUM, false),
+                fieldName)
+            .build()
+            .toString();
         break;
       case FIXED:
-        serializedCodeBlock = String.format("out.writeFixed(%s.bytes(), 0, %s)", fieldName,
-            ((AvroFixedSchema) fieldSchema).getSize());
+        serializedCodeBlock = CodeBlock.builder()
+            .addStatement("out.writeFixed((($T)$L).bytes(), 0, $L)", getTypeName(fieldSchema, AvroType.FIXED, false),
+                fieldName, ((AvroFixedSchema) fieldSchema).getSize())
+            .build()
+            .toString();
         break;
       case ARRAY:
         sizeValCounter++;
