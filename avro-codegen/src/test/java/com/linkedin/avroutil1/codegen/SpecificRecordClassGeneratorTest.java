@@ -13,7 +13,6 @@ import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
 import com.linkedin.avroutil1.parser.avsc.AvscParser;
 import com.linkedin.avroutil1.testcommon.TestUtil;
 import com.linkedin.avroutil1.testutil.CompilerHelper;
-import java.util.List;
 import javax.tools.JavaFileObject;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -122,7 +121,7 @@ public class SpecificRecordClassGeneratorTest {
     Assert.assertNull(result.getParseError());
     AvroRecordSchema recordSchema = (AvroRecordSchema) result.getTopLevelSchema();
     Assert.assertNotNull(recordSchema);
-    List<JavaFileObject> javaSourceFile = generator.generateSpecificClassWithInternalTypes(recordSchema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
+    JavaFileObject javaSourceFile = generator.generateSpecificClass(recordSchema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
   }
 
   @Test

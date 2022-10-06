@@ -13,6 +13,7 @@ import com.linkedin.avroutil1.builder.operations.codegen.CodeGenOpConfig;
 import com.linkedin.avroutil1.builder.operations.codegen.vanilla.ClasspathSchemaSet;
 import com.linkedin.avroutil1.codegen.SpecificRecordClassGenerator;
 import com.linkedin.avroutil1.codegen.SpecificRecordGenerationConfig;
+import com.linkedin.avroutil1.codegen.SpecificRecordGeneratorUtil;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
@@ -135,13 +136,27 @@ public class AvroUtilCodeGenOp implements Operation {
 
     long parseEnd = System.currentTimeMillis();
 
-    Map<String, AvscParseResult> allNamedSchemas = new HashMap<>();
+    int schemaChunkSize = 1000, schemaCounter = 0, totalSchemaParsed = 0;
+
+    List<Map<String, AvscParseResult>> allNamedSchemaList = new ArrayList<>();
+    Map<String, AvscParseResult> namedSchemaChunk = new HashMap<>();
     for (AvscParseResult parseResult : parsedFiles) {
+      if(schemaCounter == schemaChunkSize) {
+        allNamedSchemaList.add(namedSchemaChunk);
+        namedSchemaChunk = new HashMap<>();
+        totalSchemaParsed += schemaCounter;
+        schemaCounter = 0;
+      }
       AvroSchema schema = parseResult.getTopLevelSchema();
       if (schema instanceof AvroNamedSchema) {
         String name = ((AvroNamedSchema) schema).getFullName();
-        allNamedSchemas.put(name, parseResult);
+        namedSchemaChunk.put(name, parseResult);
       }
+      schemaCounter++;
+    }
+    if(!namedSchemaChunk.isEmpty()) {
+      totalSchemaParsed += schemaCounter;
+      allNamedSchemaList.add(namedSchemaChunk);
     }
 
     // Handle duplicate schemas
@@ -192,7 +207,7 @@ public class AvroUtilCodeGenOp implements Operation {
       }
     }
 
-    LOGGER.info("parsed {} named schemas in {} millis, {} of which have duplicates", allNamedSchemas.size(),
+    LOGGER.info("parsed {} named schemas in {} millis, {} of which have duplicates", totalSchemaParsed,
         parseEnd - scanEnd, duplicates.size());
 
     //TODO fail if any errors or dups (depending on config) are found
@@ -204,38 +219,61 @@ public class AvroUtilCodeGenOp implements Operation {
 
 
     SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
-    HashSet<JavaFileObject> specificRecords = new HashSet<>(allNamedSchemas.size());
+    HashSet<String> alreadyGeneratedSchemas = new HashSet<>();
+    List<JavaFileObject> generatedSpecificClasses = new ArrayList<>(totalSchemaParsed);
 
     long genStart = System.currentTimeMillis();
     long errorCount = 0;
-    for (Map.Entry<String, AvscParseResult> namedSchemaEntry : allNamedSchemas.entrySet()) {
-      String fullname = namedSchemaEntry.getKey();
-      AvscParseResult fileParseResult = namedSchemaEntry.getValue();
-      AvroNamedSchema namedSchema = fileParseResult.getDefinedSchema(fullname);
+    List<AvroNamedSchema> internalSchemaList;
 
-      try {
-        List<JavaFileObject> javaFileObjects = generator.generateSpecificClassWithInternalTypes(namedSchema,
-            SpecificRecordGenerationConfig.getBroadCompatibilitySpecificRecordGenerationConfig(config.getMinAvroVersion()));
-        specificRecords.addAll(javaFileObjects);
-      } catch (Exception e) {
-        errorCount++;
-        //TODO - error-out
-        LOGGER.error("failed to generate class for " + fullname + " defined in " + fileParseResult.getContext().getUri(), e);
+    for (Map<String, AvscParseResult> allNamedSchemas : allNamedSchemaList) {
+      for (Map.Entry<String, AvscParseResult> namedSchemaEntry : allNamedSchemas.entrySet()) {
+        String fullname = namedSchemaEntry.getKey();
+        AvscParseResult fileParseResult = namedSchemaEntry.getValue();
+        AvroNamedSchema namedSchema = fileParseResult.getDefinedSchema(fullname);
+
+        try {
+
+          if (!alreadyGeneratedSchemas.contains(namedSchema.getFullName())) {
+            //top level schema
+            alreadyGeneratedSchemas.add(namedSchema.getFullName());
+            generatedSpecificClasses.add(generator.generateSpecificClass(namedSchema,
+                SpecificRecordGenerationConfig.getBroadCompatibilitySpecificRecordGenerationConfig(
+                    config.getMinAvroVersion())));
+
+            // generate internal schemas if not already present
+            internalSchemaList = SpecificRecordGeneratorUtil.getNestedInternalSchemaList(namedSchema);
+            for (AvroNamedSchema namedInternalSchema : internalSchemaList) {
+              if (!alreadyGeneratedSchemas.contains(namedInternalSchema.getFullName())) {
+                generatedSpecificClasses.add(generator.generateSpecificClass(namedInternalSchema,
+                    SpecificRecordGenerationConfig.getBroadCompatibilitySpecificRecordGenerationConfig(
+                        config.getMinAvroVersion())));
+                alreadyGeneratedSchemas.add(namedInternalSchema.getFullName());
+              }
+            }
+          }
+        } catch (Exception e) {
+          errorCount++;
+          //TODO - error-out
+          LOGGER.error(
+              "failed to generate class for " + fullname + " defined in " + fileParseResult.getContext().getUri(), e);
+        }
       }
     }
+
     long genEnd = System.currentTimeMillis();
 
     if (errorCount > 0) {
       LOGGER.info("failed to generate {} java source files ({} generated successfully) in {} millis", errorCount,
-          specificRecords.size(), genEnd - genStart);
+          generatedSpecificClasses.size(), genEnd - genStart);
     } else {
-      LOGGER.info("generated {} java source files in {} millis", specificRecords.size(), genEnd - genStart);
+      LOGGER.info("generated {} java source files in {} millis", generatedSpecificClasses.size(), genEnd - genStart);
     }
 
-    writeJavaFilesToDisk(specificRecords, config.getOutputSpecificRecordClassesRoot());
+    writeJavaFilesToDisk(generatedSpecificClasses, config.getOutputSpecificRecordClassesRoot());
 
     long writeEnd = System.currentTimeMillis();
-    LOGGER.info("wrote out {} generated java source files under {} in {} millis", specificRecords.size(), config.getOutputSpecificRecordClassesRoot(), writeEnd - genEnd);
+    LOGGER.info("wrote out {} generated java source files under {} in {} millis", generatedSpecificClasses.size(), config.getOutputSpecificRecordClassesRoot(), writeEnd - genEnd);
 
     Set<File> allAvroFiles = new HashSet<>(avscFiles);
     allAvroFiles.addAll(nonImportableFiles);

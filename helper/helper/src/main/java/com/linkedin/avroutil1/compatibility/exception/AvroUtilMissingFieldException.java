@@ -12,6 +12,9 @@ import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 
 
+/***
+ * Replaces org.apache.avro.AvroMissingFieldException in codegen which is not available in earlier avro versions
+ */
 public class AvroUtilMissingFieldException extends AvroUtilException{
   private List<Schema.Field> chainOfFields = new ArrayList<>(8);
 

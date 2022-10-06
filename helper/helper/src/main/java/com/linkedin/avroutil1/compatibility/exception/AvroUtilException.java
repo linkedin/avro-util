@@ -6,6 +6,9 @@
 
 package com.linkedin.avroutil1.compatibility.exception;
 
+/***
+ * Base exception for AvroUtil
+ */
 public class AvroUtilException extends Exception {
 
   public AvroUtilException(Exception e) {
