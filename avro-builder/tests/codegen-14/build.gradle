@@ -34,7 +34,8 @@ task runOwnCodegen {
       main = 'com.linkedin.avroutil1.builder.SchemaBuilder'
       args = [
           "--input", "$projectDir/src/main/avro",
-          "--output", "$buildDir/generated/sources/avro/java/main"
+          "--output", "$buildDir/generated/sources/avro/java/main",
+          "--generator", "AVRO_UTIL"
       ]
     }
   }

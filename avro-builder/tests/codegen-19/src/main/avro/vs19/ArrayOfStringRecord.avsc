@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "namespace": "vs19",
+  "name": "ArrayOfStringRecord",
+  "doc": "Array of String Record",
+  "fields": [
+    {
+      "name": "arOfRec",
+      "type": {
+        "type":"array",
+        "items": "string"
+      }
+    }
+  ]
+}

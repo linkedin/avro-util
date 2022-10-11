@@ -14,18 +14,26 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import vs19.FixedType;
 
 
-public class FixedTypeTest {
+public class SpecificFixedTest {
 
-  @Test
-  public void testRoundTripSerialization() throws Exception {
+  @DataProvider
+  private Object[][] TestRoundTripSerializationProvider() {
+    return new Object[][]{
+        {vs14.FixedType.class},
+        {vs19.FixedType.class}
+    };
+  }
+
+  @Test(dataProvider = "TestRoundTripSerializationProvider")
+  public <T> void testRoundTripSerialization(Class<T> clazz ) throws Exception {
     RandomRecordGenerator generator = new RandomRecordGenerator();
+    T instance =
+        generator.randomSpecific(clazz, RecordGenerationConfig.newConfig().withAvoidNulls(true));
 
-    vs19.FixedType instance =
-        generator.randomSpecific(vs19.FixedType.class, RecordGenerationConfig.newConfig().withAvoidNulls(true));
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     ObjectOutputStream os = null;
     ObjectInputStream ois = null;
@@ -36,7 +44,7 @@ public class FixedTypeTest {
       os.flush();
 
       ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-      vs19.FixedType deserializedInstance = (FixedType) ois.readObject();
+      T deserializedInstance = (T) ois.readObject();
 
       Assert.assertEquals(deserializedInstance, instance);
     } finally {
