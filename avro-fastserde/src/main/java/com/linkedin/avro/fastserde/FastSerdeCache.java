@@ -31,6 +31,7 @@ import org.apache.avro.io.Decoder;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificDatumWriter;
+import org.apache.avro.util.Utf8;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +66,8 @@ public final class FastSerdeCache {
   private ClassLoader classLoader;
 
   private Optional<String> compileClassPath;
+
+  private Class defaultStringClass = Utf8.class;
 
   /**
    *
@@ -121,6 +124,11 @@ public final class FastSerdeCache {
     }
 
     this.compileClassPath = Optional.empty();
+  }
+
+  public FastSerdeCache(Executor executorService, Class defaultStringClass) {
+    this(executorService);
+    this.defaultStringClass = defaultStringClass;
   }
 
   private FastSerdeCache() {
@@ -355,7 +363,7 @@ public final class FastSerdeCache {
   public FastDeserializer<?> buildFastSpecificDeserializer(Schema writerSchema, Schema readerSchema) {
     FastSpecificDeserializerGenerator<?> generator =
         new FastSpecificDeserializerGenerator<>(writerSchema, readerSchema, classesDir, classLoader,
-            compileClassPath.orElse(null));
+            compileClassPath.orElse(null), defaultStringClass);
     FastDeserializer<?> fastDeserializer = generator.generateDeserializer();
 
     if (LOGGER.isDebugEnabled()) {
