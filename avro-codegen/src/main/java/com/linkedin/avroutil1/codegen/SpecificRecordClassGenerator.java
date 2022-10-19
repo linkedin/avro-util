@@ -1362,15 +1362,15 @@ public class SpecificRecordClassGenerator {
   }
 
   private MethodSpec getSetterMethodSpec(AvroSchemaField field, SpecificRecordGenerationConfig config) {
-
+    AvroType fieldType;
     String escapedFieldName = getFieldNameWithSuffix(field);
 
     MethodSpec.Builder methodSpecBuilder = MethodSpec
         .methodBuilder(getMethodNameForFieldWithPrefix("set", escapedFieldName))
-        .addStatement("this.$1L = $1L", escapedFieldName)
         .addModifiers(Modifier.PUBLIC);
 
     if(field.getSchemaOrRef().getSchema() != null) {
+      fieldType = field.getSchemaOrRef().getSchema().type();
       Class<?> fieldClass = getFieldClass(field.getSchemaOrRef().getSchema().type(), config.getDefaultFieldStringRepresentation());
       if (fieldClass != null) {
         methodSpecBuilder.addParameter(fieldClass, escapedFieldName)
@@ -1382,19 +1382,44 @@ public class SpecificRecordClassGenerator {
     } else {
       ClassName className =  ClassName.get(field.getSchemaOrRef().getParentNamespace(), field.getSchemaOrRef().getRef());
       methodSpecBuilder.addParameter(className, escapedFieldName);
+      fieldType = null;
+    }
 
+    // false if field type is reference
+    if (AvroType.STRING.equals(fieldType)) {
+      switch (config.getDefaultFieldStringRepresentation()) {
+        case STRING:
+          methodSpecBuilder.addStatement("return this.$1L == null ? null : String.valueOf(this.$1L)", escapedFieldName);
+          break;
+
+          // Default during transition, stores Utf8s in runtime
+        case CHAR_SEQUENCE:
+
+        case UTF8:
+          methodSpecBuilder.beginControlFlow("if (this.$1L == null || this.$1L instanceof org.apache.avro.util.Utf8)",
+                  escapedFieldName)
+              .addStatement("this.$1L = $1L", escapedFieldName)
+              .endControlFlow()
+              .beginControlFlow("else")
+              .addStatement("this.$1L = new org.apache.avro.util.Utf8($1L.toString())", escapedFieldName)
+              .endControlFlow();
+          break;
+      }
+    } else {
+      methodSpecBuilder.addStatement("this.$1L = $1L", escapedFieldName);
     }
 
     return methodSpecBuilder.build();
   }
 
   private MethodSpec getGetterMethodSpec(AvroSchemaField field, SpecificRecordGenerationConfig config) {
-    AvroType fieldType = field.getSchemaOrRef().getSchema().type();
+    AvroType fieldType;
     String escapedFieldName = getFieldNameWithSuffix(field);
     MethodSpec.Builder methodSpecBuilder = MethodSpec
         .methodBuilder(getMethodNameForFieldWithPrefix("get", field.getName())).addModifiers(Modifier.PUBLIC);
 
     if(field.getSchemaOrRef().getSchema() != null) {
+      fieldType = field.getSchemaOrRef().getSchema().type();
       Class<?> fieldClass = getFieldClass(fieldType, config.getDefaultMethodStringRepresentation());
       if (fieldClass != null) {
         methodSpecBuilder.returns(fieldClass);
@@ -1405,13 +1430,15 @@ public class SpecificRecordClassGenerator {
     } else {
       ClassName className =  ClassName.get(field.getSchemaOrRef().getParentNamespace(), field.getSchemaOrRef().getRef());
       methodSpecBuilder.returns(className);
+      fieldType = null;
     }
     // if fieldRepresentation != methodRepresentation for String field
+    // false if field type is reference
     if (AvroType.STRING.equals(fieldType)
         && config.getDefaultFieldStringRepresentation() != config.getDefaultMethodStringRepresentation()) {
       switch (config.getDefaultMethodStringRepresentation()) {
         case STRING:
-          methodSpecBuilder.addStatement("return String.valueOf(this.$L)", escapedFieldName);
+          methodSpecBuilder.addStatement("return this.$1L == null ? null : String.valueOf(this.$1L)", escapedFieldName);
           break;
 
         case CHAR_SEQUENCE:
@@ -1420,9 +1447,13 @@ public class SpecificRecordClassGenerator {
 
         case UTF8:
           if (AvroJavaStringRepresentation.STRING.equals(config.getDefaultFieldStringRepresentation())) {
-            methodSpecBuilder.addStatement("return new Utf8(this.$L)", escapedFieldName);
+            methodSpecBuilder.addStatement("return this.$1L == null ? null : new org.apache.avro.util.Utf8(this.$1L)",
+                escapedFieldName);
+
+            // Default for the transition period is CharSeq, which stores Utf8s in runtime
           } else if (AvroJavaStringRepresentation.CHAR_SEQUENCE.equals(config.getDefaultFieldStringRepresentation())) {
-            methodSpecBuilder.addStatement("return new Utf8(String.valueOf(this.$L))", escapedFieldName);
+            methodSpecBuilder.addStatement("return this.$1L == null ? ((org.apache.avro.util.Utf8) this.$1L)",
+                escapedFieldName);
           }
       }
     } else {

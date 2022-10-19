@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.avro.generic.IndexedRecord;
+import org.apache.avro.util.Utf8;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -222,5 +223,28 @@ public class SpecificRecordTest {
     Assert.assertEquals(builderTester.get(10), simpleUnion);
     Assert.assertEquals(builderTester.get(11), fixedType);
     Assert.assertEquals(builderTester.get(12), wierdUnion);
+  }
+
+  @Test
+  public void TestCharSeqAccessor() {
+    RandomRecordGenerator generator = new RandomRecordGenerator();
+    vs14.SimpleRecord instance14 = generator.randomSpecific(vs14.SimpleRecord.class, RecordGenerationConfig.newConfig().withAvoidNulls(true));
+    vs19.SimpleRecord instance19 = generator.randomSpecific(vs19.SimpleRecord.class, RecordGenerationConfig.newConfig().withAvoidNulls(true));
+    String string14 = "new_String_14";
+    String string19 = "new_String_19";
+
+    instance14.setStringField(string14);
+    instance19.setStringField(string19);
+
+    Assert.assertTrue(instance14.stringField instanceof Utf8);
+    Assert.assertEquals(instance14.stringField.toString(), string14);
+    Assert.assertTrue(instance14.getStringField() instanceof String);
+    Assert.assertEquals(instance14.stringField, new Utf8(instance14.getStringField()));
+
+    Assert.assertTrue(instance19.stringField instanceof Utf8);
+    Assert.assertEquals(instance19.stringField.toString(), string19);
+    Assert.assertTrue(instance19.getStringField() instanceof String);
+    Assert.assertEquals(instance19.stringField, new Utf8(instance19.getStringField()));
+
   }
 }
