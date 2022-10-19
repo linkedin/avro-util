@@ -1371,7 +1371,7 @@ public class SpecificRecordClassGenerator {
 
     if(field.getSchemaOrRef().getSchema() != null) {
       fieldType = field.getSchemaOrRef().getSchema().type();
-      Class<?> fieldClass = getFieldClass(field.getSchemaOrRef().getSchema().type(), config.getDefaultFieldStringRepresentation());
+      Class<?> fieldClass = getFieldClass(field.getSchemaOrRef().getSchema().type(), config.getDefaultMethodStringRepresentation());
       if (fieldClass != null) {
         methodSpecBuilder.addParameter(fieldClass, escapedFieldName)
             .addModifiers(Modifier.PUBLIC);
