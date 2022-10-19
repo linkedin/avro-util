@@ -1284,9 +1284,18 @@ public class SpecificRecordClassGenerator {
           getFieldClass(field.getSchemaOrRef().getSchema().type(), config.getDefaultFieldStringRepresentation());
       if(fieldClass != null) {
         if(field.getSchemaOrRef().getSchema().type() == AvroType.STRING) {
-          switchBuilder.addStatement(
-              "case $L: this.$L = com.linkedin.avroutil1.compatibility.StringConverterUtil.get$L(value); break",
-              fieldIndex++, escapedFieldName, fieldClass.getSimpleName());
+
+          // Default during transition, stores Utf8 in runtime for string fields
+          if(config.getDefaultFieldStringRepresentation().equals(AvroJavaStringRepresentation.CHAR_SEQUENCE)) {
+            switchBuilder.addStatement(
+                "case $L: this.$L = com.linkedin.avroutil1.compatibility.StringConverterUtil.getUtf8(value); break",
+                fieldIndex++, escapedFieldName);
+          } else {
+            switchBuilder.addStatement(
+                "case $L: this.$L = com.linkedin.avroutil1.compatibility.StringConverterUtil.get$L(value); break",
+                fieldIndex++, escapedFieldName, fieldClass.getSimpleName());
+          }
+
         } else {
           switchBuilder.addStatement("case $L: this.$L = ($T) value; break", fieldIndex++, escapedFieldName, fieldClass);
         }
@@ -1396,13 +1405,8 @@ public class SpecificRecordClassGenerator {
         case CHAR_SEQUENCE:
 
         case UTF8:
-          methodSpecBuilder.beginControlFlow("if (this.$1L == null || this.$1L instanceof org.apache.avro.util.Utf8)",
-                  escapedFieldName)
-              .addStatement("this.$1L = $1L", escapedFieldName)
-              .endControlFlow()
-              .beginControlFlow("else")
-              .addStatement("this.$1L = new org.apache.avro.util.Utf8($1L.toString())", escapedFieldName)
-              .endControlFlow();
+          methodSpecBuilder.addStatement(
+              "this.$1L = com.linkedin.avroutil1.compatibility.StringConverterUtil.getUtf8($1L)", escapedFieldName);
           break;
       }
     } else {
@@ -1447,9 +1451,9 @@ public class SpecificRecordClassGenerator {
 
         case UTF8:
           if (AvroJavaStringRepresentation.STRING.equals(config.getDefaultFieldStringRepresentation())) {
-            methodSpecBuilder.addStatement("return this.$1L == null ? null : new org.apache.avro.util.Utf8(this.$1L)",
+            methodSpecBuilder.addStatement(
+                "return this.$1L == null ? null : com.linkedin.avroutil1.compatibility.StringConverterUtil.getUtf8(this.$1L)",
                 escapedFieldName);
-
             // Default for the transition period is CharSeq, which stores Utf8s in runtime
           } else if (AvroJavaStringRepresentation.CHAR_SEQUENCE.equals(config.getDefaultFieldStringRepresentation())) {
             methodSpecBuilder.addStatement("return this.$1L == null ? ((org.apache.avro.util.Utf8) this.$1L)",

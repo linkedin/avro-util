@@ -233,7 +233,7 @@ public class SpecificRecordTest {
     String string14 = "new_String_14";
     String string19 = "new_String_19";
 
-    instance14.setStringField(string14);
+    instance14.put(0, string14);
     instance19.setStringField(string19);
 
     Assert.assertTrue(instance14.stringField instanceof Utf8);
