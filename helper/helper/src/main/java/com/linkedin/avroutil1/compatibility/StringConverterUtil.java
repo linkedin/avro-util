@@ -24,16 +24,25 @@ public class StringConverterUtil {
   }
 
   public static String getString(Object value) {
+    if (value == null) {
+      return null;
+    }
     validateArgs(value);
     return String.valueOf(value);
   }
 
   public static Utf8 getUtf8(Object value) {
+    if (value == null) {
+      return null;
+    }
     validateArgs(value);
     return new Utf8(String.valueOf(value));
   }
 
   public static CharSequence getCharSequence(Object value) {
+    if (value == null) {
+      return null;
+    }
     validateArgs(value);
     return String.valueOf(value);
   }
