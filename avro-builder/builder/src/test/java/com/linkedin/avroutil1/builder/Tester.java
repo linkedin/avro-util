@@ -21,29 +21,13 @@ import org.testng.annotations.Test;
 
 public class Tester {
   @Test
-  public void testSimpleProjectUsingVanilla() throws Exception {
-    File simpleProjectRoot = new File(locateTestProjectsRoot(), "tester");
-    File inputFolder = new File(simpleProjectRoot, "input");
-    File outputFolder = new File(simpleProjectRoot, "output");
-    if (outputFolder.exists()) { //clear output
-      FileUtils.deleteDirectory(outputFolder);
-    }
-    //run the builder
-    SchemaBuilder.main(new String[] {
-        "--input", inputFolder.getAbsolutePath(),
-        "--output", outputFolder.getAbsolutePath()});
-    //see output was generated
-    List<Path> javaFiles = Files.find(outputFolder.toPath(), 5,
-        (path, basicFileAttributes) -> path.getFileName().toString().endsWith(".java")
-    ).collect(Collectors.toList());
-    Assert.assertEquals(javaFiles.size(), 1);
-
-//    Schema newSchema = getNewSchema();
-//    String newJson = "{\"f\" : \"NEW_ENUM\"}";
-//    GenericRecord genericRecord = AvroCodecUtil.deserializeAsGeneric(newJson, newSchema, newSchema);
-//    SpamUser spamUser = AvroRecordUtil.genericRecordToSpecificRecord(genericRecord, null,
-//        new RecordConversionConfig(true, true, true, true, StringRepresentation.Utf8, true));
-//    Assert.assertEquals("UNKNOWN", spamUser.f.name());
+  public void testGenericRecordToSpecificRecord_enumEdgeCase() throws Exception {
+    Schema newSchema = getNewSchema();
+    String newJson = "{\"f\" : \"NEW_ENUM\"}";
+    GenericRecord genericRecord = AvroCodecUtil.deserializeAsGeneric(newJson, newSchema, newSchema);
+    SpamUser spamUser = AvroRecordUtil.genericRecordToSpecificRecord(genericRecord, null,
+        new RecordConversionConfig(true, true, true, true, StringRepresentation.Utf8, true));
+    Assert.assertEquals("UNKNOWN", spamUser.f.name());
   }
 
   private Schema getNewSchema() {
