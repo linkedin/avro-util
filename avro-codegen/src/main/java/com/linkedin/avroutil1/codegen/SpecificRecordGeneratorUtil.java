@@ -105,47 +105,6 @@ public class SpecificRecordGeneratorUtil {
     return false;
   }
 
-//  /***
-//   *
-//   * @param avroType
-//   * @return
-//   *      Returns Java class for matching types
-//   *      Returns null if TypeName should be used instead
-//   */
-//  @Nullable
-//  public static Class<?> getJavaClassForAvroTypeIfApplicable(AvroType avroType) {
-//    Class<?> cls;
-//    switch (avroType) {
-//      case NULL:
-//        cls = java.lang.Void.class;
-//        break;
-//      case BOOLEAN:
-//        cls = java.lang.Boolean.class;
-//        break;
-//      case INT:
-//        cls = java.lang.Integer.class;
-//        break;
-//      case FLOAT:
-//        cls = java.lang.Float.class;
-//        break;
-//      case LONG:
-//        cls = java.lang.Long.class;
-//        break;
-//      case DOUBLE:
-//        cls = java.lang.Double.class;
-//        break;
-//      case STRING:
-//        cls = java.lang.CharSequence.class;
-//        break;
-//      case BYTES:
-//        cls = ByteBuffer.class;
-//        break;
-//      default:
-//        cls = null;
-//    }
-//    return cls;
-//  }
-
   @Nullable
   public static Class<?> getJavaClassForAvroTypeIfApplicable(AvroType fieldType,
       AvroJavaStringRepresentation defaultStringRepresentation) {
