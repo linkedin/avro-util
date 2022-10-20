@@ -8,10 +8,6 @@ import com.linkedin.avroutil1.compatibility.RecordConversionConfig;
 import com.linkedin.avroutil1.compatibility.StringRepresentation;
 import java.io.File;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.commons.io.FileUtils;
@@ -20,6 +16,19 @@ import org.testng.annotations.Test;
 
 
 public class Tester {
+  @Test
+  public void generateSRClasses() throws Exception {
+    File simpleProjectRoot = new File(locateTestProjectsRoot(), "tester");
+    File inputFolder = new File(simpleProjectRoot, "input");
+    File outputFolder = new File(simpleProjectRoot, "output");
+    if (outputFolder.exists()) { //clear output
+      FileUtils.deleteDirectory(outputFolder);
+    }
+    //run the builder
+    SchemaBuilder.main(
+        new String[]{"--input", inputFolder.getAbsolutePath(), "--output", outputFolder.getAbsolutePath()});
+  }
+
   @Test
   public void testGenericRecordToSpecificRecord_enumEdgeCase() throws Exception {
     Schema newSchema = getNewSchema();
