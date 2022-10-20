@@ -573,12 +573,12 @@ public class SpecificRecordClassGenerator {
 
           if (AvroType.ARRAY.equals(fieldSchema.type()) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.ARRAY, field)) {
             buildMethodCodeBlockBuilder.addStatement(
-                "record.$1L = fieldSetFlags()[$2L] ? com.linkedin.avroutil1.compatibility.collectionadapter.ListAdapter.getUtf8List(this.$1L) : ($3L) com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.getSpecificDefaultValue(fields()[$2L])",
+                "record.$1L = fieldSetFlags()[$2L] ? com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.getUtf8List(this.$1L) : ($3L) com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.getSpecificDefaultValue(fields()[$2L])",
                 escapedFieldName, fieldIndex, SpecificRecordGeneratorUtil.getTypeName(field.getSchema(), fieldAvroType, true,
                     config.getDefaultFieldStringRepresentation()));
           } else if (AvroType.MAP.equals(fieldSchema.type()) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.MAP, field)) {
             buildMethodCodeBlockBuilder.addStatement(
-                "record.$1L = fieldSetFlags()[$2L] ? com.linkedin.avroutil1.compatibility.collectionadapter.MapAdapter.getUtf8Map(this.$1L) : ($3L) com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.getSpecificDefaultValue(fields()[$2L])",
+                "record.$1L = fieldSetFlags()[$2L] ? com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.getUtf8Map(this.$1L) : ($3L) com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.getSpecificDefaultValue(fields()[$2L])",
                 escapedFieldName, fieldIndex, SpecificRecordGeneratorUtil.getTypeName(field.getSchema(), fieldAvroType, true,
                     config.getDefaultFieldStringRepresentation()));
           } else {
@@ -1361,12 +1361,12 @@ public class SpecificRecordClassGenerator {
 
         } else if (AvroType.ARRAY.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.ARRAY, field)) {
           switchBuilder.addStatement(
-              "case $1L: this.$2L = ($3T) com.linkedin.avroutil1.compatibility.collectionadapter.ListAdapter.getUtf8List($2L); break",
+              "case $1L: this.$2L = ($3T) com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.getUtf8List($2L); break",
               fieldIndex++, escapedFieldName, SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(),
                   field.getSchemaOrRef().getSchema().type(), true, config.getDefaultFieldStringRepresentation()));
         } else if (AvroType.MAP.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.MAP, field)) {
           switchBuilder.addStatement(
-              "case $1L: this.$2L = ($3T) com.linkedin.avroutil1.compatibility.collectionadapter.MapAdapter.getUtf8Map($2L); break",
+              "case $1L: this.$2L = ($3T) com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.getUtf8Map($2L); break",
               fieldIndex++, escapedFieldName, SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(),
                   field.getSchemaOrRef().getSchema().type(), true, config.getDefaultFieldStringRepresentation()));
         } else {
@@ -1401,11 +1401,11 @@ public class SpecificRecordClassGenerator {
         switchBuilder.addStatement("case $L: return com.linkedin.avroutil1.compatibility.StringConverterUtil.get$L($L)", fieldIndex++, fieldClass.getSimpleName(), escapedFieldName);
       } else if (AvroType.ARRAY.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.ARRAY, field)) {
         switchBuilder.addStatement(
-            "case $L: return com.linkedin.avroutil1.compatibility.collectionadapter.ListAdapter.getStringList(this.$L)",
+            "case $L: return com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.getStringList(this.$L)",
             fieldIndex++, escapedFieldName);
       } else if (AvroType.MAP.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.MAP, field)) {
         switchBuilder.addStatement(
-            "case $L: return com.linkedin.avroutil1.compatibility.collectionadapter.MapAdapter.getStringMap(this.$L)",
+            "case $L: return com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.getStringMap(this.$L)",
             fieldIndex++, escapedFieldName);
       } else {
         switchBuilder.addStatement("case $L: return $L", fieldIndex++, escapedFieldName);
@@ -1494,12 +1494,12 @@ public class SpecificRecordClassGenerator {
       }
     } else if (AvroType.ARRAY.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.ARRAY, field)) {
       methodSpecBuilder.addStatement(
-          "this.$1L = ($2T) com.linkedin.avroutil1.compatibility.collectionadapter.ListAdapter.getUtf8List($1L)",
+          "this.$1L = ($2T) com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.getUtf8List($1L)",
           escapedFieldName, SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(),
               field.getSchemaOrRef().getSchema().type(), true, config.getDefaultFieldStringRepresentation()));
     } else if (AvroType.MAP.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.MAP, field)) {
       methodSpecBuilder.addStatement(
-          "this.$1L = ($2T) com.linkedin.avroutil1.compatibility.collectionadapter.MapAdapter.getUtf8Map($1L)",
+          "this.$1L = ($2T) com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.getUtf8Map($1L)",
           escapedFieldName, SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(),
               field.getSchemaOrRef().getSchema().type(), true, config.getDefaultFieldStringRepresentation()));
     } else {
@@ -1555,11 +1555,11 @@ public class SpecificRecordClassGenerator {
       }
     } else if (AvroType.ARRAY.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.ARRAY, field)) {
       methodSpecBuilder.addStatement(
-          "return com.linkedin.avroutil1.compatibility.collectionadapter.ListAdapter.getStringList(this.$L)",
+          "return com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.getStringList(this.$L)",
           escapedFieldName);
     } else if (AvroType.MAP.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.MAP, field)) {
       methodSpecBuilder.addStatement(
-          "return com.linkedin.avroutil1.compatibility.collectionadapter.MapAdapter.getStringMap(this.$L)",
+          "return com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.getStringMap(this.$L)",
           escapedFieldName);
     } else {
       methodSpecBuilder.addStatement("return this.$L", escapedFieldName);

@@ -4,7 +4,7 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1.compatibility.collectionadapter;
+package com.linkedin.avroutil1.compatibility.collectiontransformer;
 
 import com.linkedin.avroutil1.compatibility.StringConverterUtil;
 import java.util.Collections;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class MapAdapter extends HashMap implements Map {
+public class MapTransformer extends HashMap implements Map {
 
   public static Map getUtf8Map(Map map) {
     if(map == null) return null;
@@ -21,9 +21,9 @@ public class MapAdapter extends HashMap implements Map {
     for(Object key : map.keySet()) {
       Object val = map.get(key);
       if (val instanceof List) {
-        ret.put(StringConverterUtil.getUtf8(key), ListAdapter.getUtf8List((List) val));
+        ret.put(StringConverterUtil.getUtf8(key), ListTransformer.getUtf8List((List) val));
       } else if (val instanceof Map) {
-        ret.put(StringConverterUtil.getUtf8(key), MapAdapter.getUtf8Map((Map) val));
+        ret.put(StringConverterUtil.getUtf8(key), MapTransformer.getUtf8Map((Map) val));
       } else if (val instanceof CharSequence) {
         ret.put(StringConverterUtil.getUtf8(key), StringConverterUtil.getUtf8(val));
       } else {
@@ -39,9 +39,9 @@ public class MapAdapter extends HashMap implements Map {
     for(Object key : map.keySet()) {
       Object val = map.get(key);
       if (val instanceof List) {
-        ret.put(StringConverterUtil.getString(key), ListAdapter.getStringList((List) val));
+        ret.put(StringConverterUtil.getString(key), ListTransformer.getStringList((List) val));
       } else if (val instanceof Map) {
-        ret.put(StringConverterUtil.getString(key), MapAdapter.getStringMap((Map) val));
+        ret.put(StringConverterUtil.getString(key), MapTransformer.getStringMap((Map) val));
       } else if (val instanceof CharSequence) {
         ret.put(StringConverterUtil.getString(key), StringConverterUtil.getString(val));
       } else {

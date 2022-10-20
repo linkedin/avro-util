@@ -4,7 +4,7 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1.compatibility.collectionadapter;
+package com.linkedin.avroutil1.compatibility.collectiontransformer;
 
 import com.linkedin.avroutil1.compatibility.StringConverterUtil;
 import java.util.Arrays;
@@ -28,7 +28,7 @@ import org.testng.annotations.Test;
  * Map<Map>
  * Map<List>
  */
-public class AdapterTest {
+public class CollectionTransformerTest {
   List<String> strList;
   List<String> strList2;
   List<Utf8> utf8List;
@@ -40,25 +40,25 @@ public class AdapterTest {
 
   @Test
   public void testNull() {
-    Assert.assertNull(ListAdapter.getStringList(null));
-    Assert.assertNull(ListAdapter.getUtf8List(null));
+    Assert.assertNull(ListTransformer.getStringList(null));
+    Assert.assertNull(ListTransformer.getUtf8List(null));
 
-    Assert.assertNull(MapAdapter.getStringMap(null));
-    Assert.assertNull(MapAdapter.getUtf8Map(null));
+    Assert.assertNull(MapTransformer.getStringMap(null));
+    Assert.assertNull(MapTransformer.getUtf8Map(null));
   }
 
   @Test
   public void testListOfString() {
 
     int i = 0;
-    List retList = ListAdapter.getUtf8List(strList);
+    List retList = ListTransformer.getUtf8List(strList);
     for(Object item : retList) {
       Assert.assertTrue(item instanceof Utf8);
       Assert.assertEquals(item, utf8List.get(i++));
     }
 
     i = 0;
-    List retListStr = ListAdapter.getStringList(retList);
+    List retListStr = ListTransformer.getStringList(retList);
     for(Object item : retListStr) {
       Assert.assertEquals(item, strList.get(i++));
     }
@@ -69,7 +69,7 @@ public class AdapterTest {
   public void testListOfListOfString() {
     List<List<String>> listOfListOfStr = Arrays.asList(strList, strList2);
     int i = 0;
-    List retList = ListAdapter.getUtf8List(listOfListOfStr);
+    List retList = ListTransformer.getUtf8List(listOfListOfStr);
     for(Object item : (List) retList.get(0)) {
       Assert.assertTrue(item instanceof Utf8);
       Assert.assertEquals(item, utf8List.get(i++));
@@ -81,7 +81,7 @@ public class AdapterTest {
     }
 
 
-    List retList2 = ListAdapter.getStringList(retList);
+    List retList2 = ListTransformer.getStringList(retList);
     i = 0;
     for(Object item : (List) retList2.get(0)) {
       Assert.assertTrue(item instanceof String);
@@ -96,7 +96,7 @@ public class AdapterTest {
 
   @Test
   public void testMap() {
-    Map retMap = MapAdapter.getUtf8Map(mapStr);
+    Map retMap = MapTransformer.getUtf8Map(mapStr);
     for(Object key: retMap.keySet()) {
       Assert.assertTrue(key instanceof Utf8);
       Assert.assertTrue(retMap.get(key) instanceof Utf8);
@@ -106,7 +106,7 @@ public class AdapterTest {
       Assert.assertTrue(retMap.containsKey(new Utf8(possibleKey)));
     }
 
-    Map retMap2 = MapAdapter.getStringMap(retMap);
+    Map retMap2 = MapTransformer.getStringMap(retMap);
     Assert.assertEquals(retMap2, mapStr);
   }
 
@@ -115,7 +115,7 @@ public class AdapterTest {
     Map mapOfMap = new HashMap();
     mapOfMap.put("key", mapStr);
 
-    Map retMap = MapAdapter.getUtf8Map(mapOfMap);
+    Map retMap = MapTransformer.getUtf8Map(mapOfMap);
     for(Object key: retMap.keySet()) {
       System.err.println(key);
       Assert.assertTrue(key instanceof Utf8);
@@ -128,7 +128,7 @@ public class AdapterTest {
           StringConverterUtil.getUtf8(mapStr.get(key)));
     }
 
-    Map retMap2 = MapAdapter.getStringMap(retMap);
+    Map retMap2 = MapTransformer.getStringMap(retMap);
     Assert.assertEquals(retMap2.get("key"), mapStr);
 
   }
@@ -136,15 +136,15 @@ public class AdapterTest {
   @Test
   public void testListOfMap() {
     List listOfMaps = Arrays.asList(mapStr, mapStr2);
-    List retList = ListAdapter.getUtf8List(listOfMaps);
+    List retList = ListTransformer.getUtf8List(listOfMaps);
 
-    Map retMap1 = MapAdapter.getUtf8Map(mapStr);
-    Map retMap2 = MapAdapter.getUtf8Map(mapStr2);
+    Map retMap1 = MapTransformer.getUtf8Map(mapStr);
+    Map retMap2 = MapTransformer.getUtf8Map(mapStr2);
 
     Assert.assertEquals(retList.get(0), retMap1);
     Assert.assertEquals(retList.get(1), retMap2);
 
-    List retList2 = ListAdapter.getStringList(retList);
+    List retList2 = ListTransformer.getStringList(retList);
 
     Assert.assertEquals(retList2.get(0), mapStr);
     Assert.assertEquals(retList2.get(1), mapStr2);
@@ -157,12 +157,12 @@ public class AdapterTest {
     map.put("list1", strList);
     map.put("list2", strList2);
 
-    Map retMap = MapAdapter.getUtf8Map(map);
+    Map retMap = MapTransformer.getUtf8Map(map);
 
-    Assert.assertEquals(retMap.get(new Utf8("list1")), ListAdapter.getUtf8List(strList));
-    Assert.assertEquals(retMap.get(new Utf8("list2")), ListAdapter.getUtf8List(strList2));
+    Assert.assertEquals(retMap.get(new Utf8("list1")), ListTransformer.getUtf8List(strList));
+    Assert.assertEquals(retMap.get(new Utf8("list2")), ListTransformer.getUtf8List(strList2));
 
-    Map retMap2 = MapAdapter.getStringMap(retMap);
+    Map retMap2 = MapTransformer.getStringMap(retMap);
     Assert.assertEquals(retMap2.get("list1"), strList);
     Assert.assertEquals(retMap2.get("list2"), strList2);
   }
@@ -170,8 +170,8 @@ public class AdapterTest {
 
   @Test
   public void testUnmodifiableResponse() {
-    Assert.assertThrows(UnsupportedOperationException.class, () -> ListAdapter.getUtf8List(strList).add(""));
-    Assert.assertThrows(UnsupportedOperationException.class, () -> MapAdapter.getUtf8Map(mapStr).put("", ""));
+    Assert.assertThrows(UnsupportedOperationException.class, () -> ListTransformer.getUtf8List(strList).add(""));
+    Assert.assertThrows(UnsupportedOperationException.class, () -> MapTransformer.getUtf8Map(mapStr).put("", ""));
   }
 
   @BeforeClass
