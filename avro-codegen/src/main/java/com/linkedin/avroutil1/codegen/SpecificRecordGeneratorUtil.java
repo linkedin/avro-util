@@ -10,6 +10,7 @@ import com.linkedin.avroutil1.compatibility.CompatibleSpecificRecordBuilderBase;
 import com.linkedin.avroutil1.model.AvroArraySchema;
 import com.linkedin.avroutil1.model.AvroEnumSchema;
 import com.linkedin.avroutil1.model.AvroFixedSchema;
+import com.linkedin.avroutil1.model.AvroJavaStringRepresentation;
 import com.linkedin.avroutil1.model.AvroMapSchema;
 import com.linkedin.avroutil1.model.AvroName;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
@@ -38,6 +39,7 @@ import java.util.Queue;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.avro.reflect.Nullable;
+import org.apache.avro.util.Utf8;
 
 
 public class SpecificRecordGeneratorUtil {
@@ -103,47 +105,93 @@ public class SpecificRecordGeneratorUtil {
     return false;
   }
 
-  /***
-   *
-   * @param avroType
-   * @return
-   *      Returns Java class for matching types
-   *      Returns null if TypeName should be used instead
-   */
+//  /***
+//   *
+//   * @param avroType
+//   * @return
+//   *      Returns Java class for matching types
+//   *      Returns null if TypeName should be used instead
+//   */
+//  @Nullable
+//  public static Class<?> getJavaClassForAvroTypeIfApplicable(AvroType avroType) {
+//    Class<?> cls;
+//    switch (avroType) {
+//      case NULL:
+//        cls = java.lang.Void.class;
+//        break;
+//      case BOOLEAN:
+//        cls = java.lang.Boolean.class;
+//        break;
+//      case INT:
+//        cls = java.lang.Integer.class;
+//        break;
+//      case FLOAT:
+//        cls = java.lang.Float.class;
+//        break;
+//      case LONG:
+//        cls = java.lang.Long.class;
+//        break;
+//      case DOUBLE:
+//        cls = java.lang.Double.class;
+//        break;
+//      case STRING:
+//        cls = java.lang.CharSequence.class;
+//        break;
+//      case BYTES:
+//        cls = ByteBuffer.class;
+//        break;
+//      default:
+//        cls = null;
+//    }
+//    return cls;
+//  }
+
   @Nullable
-  public static Class<?> getJavaClassForAvroTypeIfApplicable(AvroType avroType) {
-    Class<?> cls;
-    switch (avroType) {
+  public static Class<?> getJavaClassForAvroTypeIfApplicable(AvroType fieldType,
+      AvroJavaStringRepresentation defaultStringRepresentation) {
+    Class<?> fieldClass = null;
+    switch (fieldType) {
       case NULL:
-        cls = java.lang.Void.class;
+        fieldClass = Void.class;
         break;
       case BOOLEAN:
-        cls = java.lang.Boolean.class;
+        fieldClass = Boolean.class;
         break;
       case INT:
-        cls = java.lang.Integer.class;
-        break;
-      case FLOAT:
-        cls = java.lang.Float.class;
+        fieldClass =  Integer.class;
         break;
       case LONG:
-        cls = java.lang.Long.class;
+        fieldClass =  Long.class;
         break;
-      case DOUBLE:
-        cls = java.lang.Double.class;
+      case FLOAT:
+        fieldClass =  Float.class;
         break;
       case STRING:
-        cls = java.lang.CharSequence.class;
+        switch (defaultStringRepresentation) {
+          case STRING:
+            fieldClass = String.class;
+            break;
+          case UTF8:
+            fieldClass = Utf8.class;
+            break;
+          case CHAR_SEQUENCE:
+            fieldClass = CharSequence.class;
+            break;
+        }
+        break;
+      case DOUBLE:
+        fieldClass = Double.class;
         break;
       case BYTES:
-        cls = ByteBuffer.class;
+        fieldClass = ByteBuffer.class;
         break;
-      default:
-        cls = null;
+
     }
-    return cls;
+    return fieldClass;
   }
-  public static TypeName getTypeName(AvroSchema fieldSchema, AvroType avroType, boolean getParameterizedTypeNames) {
+
+  public static TypeName getTypeName(AvroSchema fieldSchema, AvroType avroType, boolean getParameterizedTypeNames,
+      AvroJavaStringRepresentation defaultStringRepresentation) {
     TypeName className = ClassName.OBJECT;
     switch (avroType) {
       case NULL:
@@ -173,21 +221,21 @@ public class SpecificRecordGeneratorUtil {
 
           AvroSchema branchSchema = unionMemberSchemaOrRef.getSchema();
           AvroType branchSchemaType = branchSchema.type();
-          Class<?> simpleClass = getJavaClassForAvroTypeIfApplicable(branchSchemaType);
+          Class<?> simpleClass = getJavaClassForAvroTypeIfApplicable(branchSchemaType, defaultStringRepresentation);
           if (simpleClass != null) {
             className = ClassName.get(simpleClass);
           } else {
-            className = getTypeName(branchSchema, branchSchemaType, getParameterizedTypeNames);
+            className = getTypeName(branchSchema, branchSchemaType, getParameterizedTypeNames, defaultStringRepresentation);
           }
         } //otherwise Object
         break;
       case ARRAY:
         if(!getParameterizedTypeNames) return TypeName.get(List.class);
         AvroArraySchema arraySchema = ((AvroArraySchema) fieldSchema);
-        Class<?> valueClass = getJavaClassForAvroTypeIfApplicable(arraySchema.getValueSchema().type());
+        Class<?> valueClass = getJavaClassForAvroTypeIfApplicable(arraySchema.getValueSchema().type(), defaultStringRepresentation);
         if (valueClass == null) {
           TypeName parameterTypeName = getTypeName(arraySchema.getValueSchema(), arraySchema.getValueSchema().type(),
-              true);
+              true, defaultStringRepresentation);
           fullyQualifiedClassesInRecord.add(parameterTypeName.toString());
           className = ParameterizedTypeName.get(ClassName.get(List.class), parameterTypeName);
         } else {
@@ -197,15 +245,16 @@ public class SpecificRecordGeneratorUtil {
       case MAP:
         if(!getParameterizedTypeNames) return TypeName.get(Map.class);
         AvroMapSchema mapSchema = ((AvroMapSchema) fieldSchema);
-        Class<?> mapValueClass = getJavaClassForAvroTypeIfApplicable(mapSchema.getValueSchema().type());
+        Class<?> mapValueClass = getJavaClassForAvroTypeIfApplicable(mapSchema.getValueSchema().type(), defaultStringRepresentation);
+        Class<?> mapKeyClass = getJavaClassForAvroTypeIfApplicable(AvroType.STRING, defaultStringRepresentation);
         //complex map is allowed
         if (mapValueClass == null) {
-          TypeName mapValueTypeName = getTypeName(mapSchema.getValueSchema(), mapSchema.getValueSchema().type(), true);
+          TypeName mapValueTypeName = getTypeName(mapSchema.getValueSchema(), mapSchema.getValueSchema().type(), true, defaultStringRepresentation);
           fullyQualifiedClassesInRecord.add(mapValueTypeName.toString());
           className =
-              ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(CharSequence.class), mapValueTypeName);
+              ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(mapKeyClass), mapValueTypeName);
         } else {
-          className = ParameterizedTypeName.get(Map.class, CharSequence.class, mapValueClass);
+          className = ParameterizedTypeName.get(Map.class, mapKeyClass, mapValueClass);
         }
         break;
       default:
@@ -232,6 +281,27 @@ public class SpecificRecordGeneratorUtil {
       default:
         throw new IllegalArgumentException("cant generate java class for " + type);
     }
+  }
+
+  /***
+   * Checks if field type can be treated as null union of the given type
+   *
+   * @param type
+   * @param field
+   * @return True if [type] or [null, type] or [type, null]
+   */
+  public static boolean isNullUnionOf(AvroType type, AvroSchemaField field) {
+    if(field.getSchema() instanceof AvroUnionSchema) {
+      List<SchemaOrRef> unionMembers = ((AvroUnionSchema) field.getSchema()).getTypes();
+      return (unionMembers.size() == 1 && unionMembers.get(0).getSchema().type().equals(type)) ||
+          (unionMembers.size() == 2 &&
+          (
+              (unionMembers.get(0).getSchema().type().equals(AvroType.NULL) && unionMembers.get(1).getSchema().type().equals(type))
+                  ||
+              (unionMembers.get(1).getSchema().type().equals(AvroType.NULL) && unionMembers.get(0).getSchema().type().equals(type))
+          ));
+    }
+    return false;
   }
 
   private static List<AvroNamedSchema> getNestedInternalSchemaListForRecord(AvroRecordSchema topLevelSchema) {

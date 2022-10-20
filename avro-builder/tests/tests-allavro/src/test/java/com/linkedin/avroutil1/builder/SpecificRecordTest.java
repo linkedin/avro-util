@@ -78,27 +78,27 @@ public class SpecificRecordTest {
     return new Object[][]{
         {
           "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, null
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, null, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal2
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal2, Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal3
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal3, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal4
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal4, Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal5
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal5, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal6
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal6, Arrays.asList("123")
         },
 
     };
@@ -106,10 +106,10 @@ public class SpecificRecordTest {
 
   @Test(dataProvider = "testSpecificRecordBuilderProvider19")
   public void testSpecificRecordBuilder19(String stringField, String package$, Float exception, Double dbl,
-      Boolean isTrue, List<CharSequence> arrayOfStrings, vs19.Amount min, List<vs19.Amount> arrayOfRecord,
-      Map<CharSequence, CharSequence> mapOfStrings, Map<CharSequence, vs19.Amount> mapOfRecord, vs19.Amount simpleUnion,
-      vs19.RandomFixedName fixedType, Object wierdUnion) throws Exception {
-    vs19.BuilderTester builderTester = vs19.BuilderTester.Builder.newBuilder()
+      Boolean isTrue, List<String> arrayOfStrings, vs19.Amount min, List<vs19.Amount> arrayOfRecord,
+      Map<String, String> mapOfStrings, Map<String, vs19.Amount> mapOfRecord, vs19.Amount simpleUnion,
+      vs19.RandomFixedName fixedType, Object wierdUnion, List<String> unionOfArray) throws Exception {
+    vs19.BuilderTester builderTester = vs19.BuilderTester.newBuilder()
         .setStringField(stringField)
         .setPackage$(package$)
         .setException(exception)
@@ -122,7 +122,8 @@ public class SpecificRecordTest {
         .setMapOfRecord(mapOfRecord)
         .setSimpleUnion(simpleUnion)
         .setFixedType(fixedType)
-        .setWierdUnion(wierdUnion).build();
+        .setWierdUnion(wierdUnion)
+        .setUnionOfArray(unionOfArray).build();
     Assert.assertNotNull(builderTester);
 
     Assert.assertEquals(builderTester.get(0), stringField);
@@ -138,6 +139,7 @@ public class SpecificRecordTest {
     Assert.assertEquals(builderTester.get(10), simpleUnion);
     Assert.assertEquals(builderTester.get(11), fixedType);
     Assert.assertEquals(builderTester.get(12), wierdUnion);
+    Assert.assertEquals(builderTester.get(13), unionOfArray);
   }
 
   @DataProvider
@@ -163,27 +165,27 @@ public class SpecificRecordTest {
     return new Object[][]{
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, null
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, null, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal2
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal2, Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal3
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal3, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal4
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal4, Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal5
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal5, Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal6
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal6, null
         },
 
     };
@@ -191,10 +193,10 @@ public class SpecificRecordTest {
 
   @Test(dataProvider = "testSpecificRecordBuilderProvider14")
   public void testSpecificRecordBuilder14(String stringField, String package$, Float exception, Double dbl,
-      Boolean isTrue, List<CharSequence> arrayOfStrings, vs14.Amount min, List<vs14.Amount> arrayOfRecord,
-      Map<CharSequence, CharSequence> mapOfStrings, Map<CharSequence, vs14.Amount> mapOfRecord, vs14.Amount simpleUnion,
-      vs14.RandomFixedName fixedType, Object wierdUnion) throws Exception {
-    vs14.BuilderTester builderTester = vs14.BuilderTester.Builder.newBuilder()
+      Boolean isTrue, List<String> arrayOfStrings, vs14.Amount min, List<vs14.Amount> arrayOfRecord,
+      Map<String, String> mapOfStrings, Map<String, vs14.Amount> mapOfRecord, vs14.Amount simpleUnion,
+      vs14.RandomFixedName fixedType, Object wierdUnion, List<String> unionOfArray) throws Exception {
+    vs14.BuilderTester builderTester = vs14.BuilderTester.newBuilder()
         .setStringField(stringField)
         .setPackage$(package$)
         .setException(exception)
@@ -207,7 +209,8 @@ public class SpecificRecordTest {
         .setMapOfRecord(mapOfRecord)
         .setSimpleUnion(simpleUnion)
         .setFixedType(fixedType)
-        .setWierdUnion(wierdUnion).build();
+        .setWierdUnion(wierdUnion)
+        .setUnionOfArray(unionOfArray).build();
     Assert.assertNotNull(builderTester);
 
     Assert.assertEquals(builderTester.get(0), stringField);
@@ -223,6 +226,7 @@ public class SpecificRecordTest {
     Assert.assertEquals(builderTester.get(10), simpleUnion);
     Assert.assertEquals(builderTester.get(11), fixedType);
     Assert.assertEquals(builderTester.get(12), wierdUnion);
+    Assert.assertEquals(builderTester.get(13), unionOfArray);
   }
 
   @Test
