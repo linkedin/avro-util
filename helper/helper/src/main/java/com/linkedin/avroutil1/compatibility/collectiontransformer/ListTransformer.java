@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class ListTransformer extends ArrayList implements List {
+public class ListTransformer {
 
   public static List getUtf8List(List list) {
     if(list == null) return null;

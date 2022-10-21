@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class MapTransformer extends HashMap implements Map {
+public class MapTransformer {
 
   public static Map getUtf8Map(Map map) {
     if(map == null) return null;
