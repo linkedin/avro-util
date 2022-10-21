@@ -17,7 +17,7 @@ public class ListTransformer extends ArrayList implements List {
 
   public static List getUtf8List(List list) {
     if(list == null) return null;
-    List ret = new ArrayList();
+    List ret = new ArrayList(list.size());
     for (Object item : list) {
       if (item instanceof List) {
         ret.add(ListTransformer.getUtf8List((List) item));
@@ -34,7 +34,7 @@ public class ListTransformer extends ArrayList implements List {
 
   public static List getStringList(List list) {
     if(list == null) return null;
-    List ret = new ArrayList();
+    List ret = new ArrayList(list.size());
     for (Object item : list) {
       if (item instanceof List) {
         ret.add(ListTransformer.getStringList((List) item));
