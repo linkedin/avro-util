@@ -17,9 +17,10 @@ public class MapTransformer extends HashMap implements Map {
 
   public static Map getUtf8Map(Map map) {
     if(map == null) return null;
-    Map ret = new HashMap();
-    for(Object key : map.keySet()) {
-      Object val = map.get(key);
+    Map ret = new HashMap(map.size());
+    for(Object entry : map.entrySet()) {
+      Object key = ((Map.Entry)entry).getKey();
+      Object val = ((Map.Entry)entry).getValue();
       if (val instanceof List) {
         ret.put(StringConverterUtil.getUtf8(key), ListTransformer.getUtf8List((List) val));
       } else if (val instanceof Map) {
@@ -35,9 +36,10 @@ public class MapTransformer extends HashMap implements Map {
 
   public static Map getStringMap(Map map) {
     if(map == null) return null;
-    Map ret = new HashMap();
-    for(Object key : map.keySet()) {
-      Object val = map.get(key);
+    Map ret = new HashMap(map.size());
+    for(Object entry : map.entrySet()) {
+      Object key = ((Map.Entry)entry).getKey();
+      Object val = ((Map.Entry)entry).getValue();
       if (val instanceof List) {
         ret.put(StringConverterUtil.getString(key), ListTransformer.getStringList((List) val));
       } else if (val instanceof Map) {
