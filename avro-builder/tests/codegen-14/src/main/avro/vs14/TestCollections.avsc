@@ -1,0 +1,48 @@
+{
+  "name": "TestCollections",
+  "namespace": "vs14",
+  "fields": [
+    {
+      "name": "str",
+      "type": "string"
+    },
+    {
+      "name": "strAr",
+      "type": {
+        "type": "array",
+        "items": "string"
+      }
+    },
+    {
+      "name": "strArAr",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "array",
+          "items": "string"
+        }
+      }
+    },
+    {
+      "name": "unionOfArray",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": "string"
+        }
+      ]
+    },
+    {
+      "name": "arOfMap",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "map",
+          "values": "string"
+        }
+      }
+    }
+  ],
+  "type": "record"
+}

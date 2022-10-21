@@ -88,6 +88,14 @@
     {
       "name": "wierdUnion",
       "type": ["null", "int", "long", "string", "vs14.Amount", "vs14.RandomFixedName"]
+    },
+    {
+      "name": "unionOfArray",
+      "type": ["null", {
+        "type": "array",
+        "items": "string"
+      }
+      ]
     }
   ]
 }

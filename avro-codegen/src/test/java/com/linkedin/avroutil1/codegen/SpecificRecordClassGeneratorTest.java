@@ -164,4 +164,17 @@ public class SpecificRecordClassGeneratorTest {
         generator.generateSpecificClass(recordSchema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
   }
 
+  @Test
+  public void testRecord() throws Exception {
+    String avsc = TestUtil.load("schemas/TestCollections.avsc");
+    SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
+    AvscParser parser = new AvscParser();
+    AvscParseResult result = parser.parse(avsc);
+    Assert.assertNull(result.getParseError());
+    AvroRecordSchema recordSchema = (AvroRecordSchema) result.getTopLevelSchema();
+    Assert.assertNotNull(recordSchema);
+    JavaFileObject javaFileObject =
+        generator.generateSpecificClass(recordSchema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
+  }
+
 }
