@@ -646,6 +646,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
             thenBlock._throw(JExpr._new(codeModel.ref(AvroTypeException.class)).arg(
                 composeLargeStringLiteral(codeModel, fullExceptionString)));
           }
+          continue;
         }
 
         Symbol.Alternative alternative = null;
