@@ -824,6 +824,23 @@ public class FastSpecificDeserializerGeneratorTest {
     Assert.assertEquals(getField((MyRecordV2) getField(deserRecord, "unionField"), "enumField"), MyEnumV2.VAL3);
   }
 
+  @Test(groups = {"deserializationTest"})
+  public void largeSchemasWithUnionCanBeHandled() {
+    Schema largeSchema = Schema.create(Schema.Type.UNION);
+    for (int i = 0; i < 10_000; i++) {
+      largeSchema.addProp("Property" + i, Schema.create(Schema.Type.INT));
+    }
+
+    Assert.assertTrue(largeSchema.toString().length() > FastDeserializerGenerator.MAX_LENGTH_OF_STRING_LITERAL);
+
+    // generateDeserializer should not throw an exception
+    try {
+      new FastSpecificDeserializerGenerator<>(largeSchema, largeSchema, tempDir, classLoader, null).generateDeserializer();
+    } catch (Exception e) {
+      Assert.fail("Exception was thrown!");
+    }
+  }
+
   @SuppressWarnings("unchecked")
   private <T> T decodeRecordFast(Schema readerSchema, Schema writerSchema, Decoder decoder) {
     FastDeserializer<T> deserializer =
