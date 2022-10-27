@@ -829,13 +829,9 @@ public class FastSpecificDeserializerGeneratorTest {
 
   @Test(groups = {"deserializationTest"})
   public void largeSchemasWithUnionCanBeHandled() {
-    int numChars = FastDeserializerGenerator.MAX_LENGTH_OF_STRING_LITERAL + 100;
-    char[] field1Content = new char[numChars];
-    for (int i = 0; i < numChars; i++) {
-      field1Content[i] = 'a';
-    }
-
     Schema schema = RecordWithLargeUnionField.SCHEMA$;
+
+    FastDeserializerGenerator.MAX_LENGTH_OF_STRING_LITERAL = 50;
 
     Assert.assertTrue(schema.toString().length() > FastDeserializerGenerator.MAX_LENGTH_OF_STRING_LITERAL);
 

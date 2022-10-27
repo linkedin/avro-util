@@ -58,7 +58,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
   private static final String DECODER = "decoder";
   private static final String VAR_NAME_FOR_REUSE = "reuse";
   private static int FIELDS_PER_POPULATION_METHOD = 100;
-  static final int MAX_LENGTH_OF_STRING_LITERAL = 65535;
+  static int MAX_LENGTH_OF_STRING_LITERAL = 65535;
 
   /**
    * This is sometimes passed into the reuse parameter,
