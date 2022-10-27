@@ -637,15 +637,8 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
           // This is the same exception that vanilla Avro would throw in this circumstance
           String fullExceptionString = "Found " + optionSchema + ", expecting " + (readerSchemaNotAUnion ? unionReaderSchema.toString()
               : unionReaderSchema.getTypes().toString());
-
-          if (fullExceptionString.length() <= MAX_LENGTH_OF_STRING_LITERAL) {
-            thenBlock._throw(JExpr._new(codeModel.ref(AvroTypeException.class)).arg(
-                JExpr.lit(fullExceptionString)));
-          } else {
-            // need to compose the message using StringBuilder
-            thenBlock._throw(JExpr._new(codeModel.ref(AvroTypeException.class)).arg(
-                composeLargeStringLiteral(codeModel, fullExceptionString)));
-          }
+          thenBlock._throw(JExpr._new(codeModel.ref(AvroTypeException.class)).arg(
+              composeStringLiteral(codeModel, fullExceptionString)));
           continue;
         }
 
@@ -1352,11 +1345,16 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
    * String literals in Java classes cannot exceed length of 65535.
    * For such cases we break down the literal into chunks of valid lengths and use StringBuilder.
    */
-  private static JInvocation composeLargeStringLiteral(JCodeModel codeModel, String largeString) {
+  private static JExpression composeStringLiteral(JCodeModel codeModel, String input) {
+    if (input.length() <= MAX_LENGTH_OF_STRING_LITERAL) {
+      return JExpr.lit(input);
+    }
+
+    // need to compose the message using StringBuilder
     JInvocation stringBuilder = JExpr._new(codeModel.ref(StringBuilder.class));
-    for (int pos = 0; pos < largeString.length();) {
-      int endIndex = Math.min(pos + MAX_LENGTH_OF_STRING_LITERAL, largeString.length());
-      String chunkedLiteral = "\"" + largeString.substring(pos, endIndex) + "\"";
+    for (int pos = 0; pos < input.length();) {
+      int endIndex = Math.min(pos + MAX_LENGTH_OF_STRING_LITERAL, input.length());
+      String chunkedLiteral = "\"" + input.substring(pos, endIndex) + "\"";
       stringBuilder.invoke("append").arg(chunkedLiteral);
       pos = endIndex;
     }

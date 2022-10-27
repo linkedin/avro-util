@@ -1,9 +1,11 @@
+
 package com.linkedin.avro.fastserde;
 
 import com.linkedin.avro.fastserde.generated.avro.FullRecord;
 import com.linkedin.avro.fastserde.generated.avro.IntRecord;
 import com.linkedin.avro.fastserde.generated.avro.MyEnumV2;
 import com.linkedin.avro.fastserde.generated.avro.MyRecordV2;
+import com.linkedin.avro.fastserde.generated.avro.RecordWithLargeUnionField;
 import com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord;
 import com.linkedin.avro.fastserde.generated.avro.SplitRecordTest1;
 import com.linkedin.avro.fastserde.generated.avro.SplitRecordTest2;
@@ -25,6 +27,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -826,18 +829,21 @@ public class FastSpecificDeserializerGeneratorTest {
 
   @Test(groups = {"deserializationTest"})
   public void largeSchemasWithUnionCanBeHandled() {
-    Schema largeSchema = Schema.create(Schema.Type.UNION);
-    for (int i = 0; i < 10_000; i++) {
-      largeSchema.addProp("Property" + i, Schema.create(Schema.Type.INT));
+    int numChars = FastDeserializerGenerator.MAX_LENGTH_OF_STRING_LITERAL + 100;
+    char[] field1Content = new char[numChars];
+    for (int i = 0; i < numChars; i++) {
+      field1Content[i] = 'a';
     }
 
-    Assert.assertTrue(largeSchema.toString().length() > FastDeserializerGenerator.MAX_LENGTH_OF_STRING_LITERAL);
+    Schema schema = RecordWithLargeUnionField.SCHEMA$;
+
+    Assert.assertTrue(schema.toString().length() > FastDeserializerGenerator.MAX_LENGTH_OF_STRING_LITERAL);
 
     // generateDeserializer should not throw an exception
     try {
-      new FastSpecificDeserializerGenerator<>(largeSchema, largeSchema, tempDir, classLoader, null).generateDeserializer();
+      new FastSpecificDeserializerGenerator<>(schema, schema, tempDir, classLoader, null).generateDeserializer();
     } catch (Exception e) {
-      Assert.fail("Exception was thrown!");
+      Assert.fail("Exception was thrown: ", e);
     }
   }
 
