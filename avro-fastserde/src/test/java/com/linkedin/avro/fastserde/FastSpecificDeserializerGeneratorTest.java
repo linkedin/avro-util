@@ -829,15 +829,18 @@ public class FastSpecificDeserializerGeneratorTest {
 
   @Test(groups = {"deserializationTest"})
   public void largeSchemasWithUnionCanBeHandled() {
-    Schema schema = RecordWithLargeUnionField.SCHEMA$;
+    // doesn't contain "int" type in the union field
+    Schema readerSchema = AvroCompatibilityHelper.parse("{\\\"type\\\":\\\"record\\\",\\\"name\\\":\\\"RecordWithLargeUnionField\\\",\\\"namespace\\\":\\\"com.linkedin.avro.fastserde.generated.avro\\\",\\\"fields\\\":[{\\\"name\\\":\\\"unionField\\\",\\\"type\\\":[\\\"string\\\"],\\\"default\\\":\\\"more than 50 letters aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\"}]}");
+
+    Schema writerSchema = RecordWithLargeUnionField.SCHEMA$;
 
     FastDeserializerGenerator.MAX_LENGTH_OF_STRING_LITERAL = 50;
 
-    Assert.assertTrue(schema.toString().length() > FastDeserializerGenerator.MAX_LENGTH_OF_STRING_LITERAL);
+    Assert.assertTrue(writerSchema.toString().length() > FastDeserializerGenerator.MAX_LENGTH_OF_STRING_LITERAL);
 
     // generateDeserializer should not throw an exception
     try {
-      new FastSpecificDeserializerGenerator<>(schema, schema, tempDir, classLoader, null).generateDeserializer();
+      new FastSpecificDeserializerGenerator<>(writerSchema, readerSchema, tempDir, classLoader, null).generateDeserializer();
     } catch (Exception e) {
       Assert.fail("Exception was thrown: ", e);
     }
