@@ -1,5 +1,5 @@
 
-package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
+package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_5;
 
 import java.io.IOException;
 import com.linkedin.avro.fastserde.FastDeserializer;
@@ -8,13 +8,13 @@ import org.apache.avro.Schema;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.util.Utf8;
 
-public class RecordWithLargeUnionField_SpecificDeserializer_4069749625437031485_2248112817970344725
+public class RecordWithLargeUnionField_SpecificDeserializer_3405422059761328483_4069749625437031485
     implements FastDeserializer<com.linkedin.avro.fastserde.generated.avro.RecordWithLargeUnionField>
 {
 
     private final Schema readerSchema;
 
-    public RecordWithLargeUnionField_SpecificDeserializer_4069749625437031485_2248112817970344725(Schema readerSchema) {
+    public RecordWithLargeUnionField_SpecificDeserializer_3405422059761328483_4069749625437031485(Schema readerSchema) {
         this.readerSchema = readerSchema;
     }
 
@@ -43,9 +43,13 @@ public class RecordWithLargeUnionField_SpecificDeserializer_4069749625437031485_
             }
         } else {
             if (unionIndex0 == 1) {
-                throw new AvroTypeException(new StringBuilder().append("\"Found\"").append("\" \"int\"").append("\"\", ex\"").append("\"pecti\"").append("\"ng \"s\"").append("\"tring\"").append("\"\"\"").toString());
+                RecordWithLargeUnionField.put(0, (decoder.readInt()));
             } else {
-                throw new RuntimeException(("Illegal union index for 'unionField': "+ unionIndex0));
+                if (unionIndex0 == 2) {
+                    throw new AvroTypeException(new StringBuilder().append("\"Found\"").append("\" \"byt\"").append("\"es\", \"").append("\"expec\"").append("\"ting \"").append("\"[\"str\"").append("\"ing\",\"").append("\" \"int\"").append("\"\"]\"").toString());
+                } else {
+                    throw new RuntimeException(("Illegal union index for 'unionField': "+ unionIndex0));
+                }
             }
         }
         return RecordWithLargeUnionField;

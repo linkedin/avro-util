@@ -5,7 +5,7 @@
   "fields": [
     {
       "name": "unionField",
-      "type": ["string", "int"],
+      "type": ["string", "int", "bytes"],
       "default": "more than 50 letters aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     }
   ]
