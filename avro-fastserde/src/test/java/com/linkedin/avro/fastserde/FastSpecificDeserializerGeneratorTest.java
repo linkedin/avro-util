@@ -830,11 +830,10 @@ public class FastSpecificDeserializerGeneratorTest {
   @Test(groups = {"deserializationTest"})
   public void largeSchemasWithUnionCanBeHandled() {
     // doesn't contain "int" type in the union field
-    Schema readerSchema = AvroCompatibilityHelper.parse("{\\\"type\\\":\\\"record\\\",\\\"name\\\":\\\"RecordWithLargeUnionField\\\",\\\"namespace\\\":\\\"com.linkedin.avro.fastserde.generated.avro\\\",\\\"fields\\\":[{\\\"name\\\":\\\"unionField\\\",\\\"type\\\":[\\\"string\\\"],\\\"default\\\":\\\"more than 50 letters aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\\"}]}");
-
+    Schema readerSchema = AvroCompatibilityHelper.parse("{\"type\":\"record\",\"name\":\"RecordWithLargeUnionField\",\"namespace\":\"com.linkedin.avro.fastserde.generated.avro\",\"fields\":[{\"name\":\"unionField\",\"type\":\"string\",\"default\":\"more than 50 letters aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}]}");
     Schema writerSchema = RecordWithLargeUnionField.SCHEMA$;
 
-    FastDeserializerGenerator.MAX_LENGTH_OF_STRING_LITERAL = 50;
+    FastDeserializerGenerator.MAX_LENGTH_OF_STRING_LITERAL = 5;
 
     Assert.assertTrue(writerSchema.toString().length() > FastDeserializerGenerator.MAX_LENGTH_OF_STRING_LITERAL);
 

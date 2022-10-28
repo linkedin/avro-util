@@ -1355,9 +1355,9 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     for (int pos = 0; pos < input.length();) {
       int endIndex = Math.min(pos + MAX_LENGTH_OF_STRING_LITERAL, input.length());
       String chunkedLiteral = "\"" + input.substring(pos, endIndex) + "\"";
-      stringBuilder.invoke("append").arg(chunkedLiteral);
+      stringBuilder = stringBuilder.invoke("append").arg(chunkedLiteral);
       pos = endIndex;
     }
-    return stringBuilder.invoke("build");
+    return stringBuilder.invoke("toString");
   }
 }
