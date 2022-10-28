@@ -1,9 +1,11 @@
+
 package com.linkedin.avro.fastserde;
 
 import com.linkedin.avro.fastserde.generated.avro.FullRecord;
 import com.linkedin.avro.fastserde.generated.avro.IntRecord;
 import com.linkedin.avro.fastserde.generated.avro.MyEnumV2;
 import com.linkedin.avro.fastserde.generated.avro.MyRecordV2;
+import com.linkedin.avro.fastserde.generated.avro.RecordWithLargeUnionField;
 import com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord;
 import com.linkedin.avro.fastserde.generated.avro.SplitRecordTest1;
 import com.linkedin.avro.fastserde.generated.avro.SplitRecordTest2;
@@ -25,6 +27,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -822,6 +825,24 @@ public class FastSpecificDeserializerGeneratorTest {
     }
 
     Assert.assertEquals(getField((MyRecordV2) getField(deserRecord, "unionField"), "enumField"), MyEnumV2.VAL3);
+  }
+
+  @Test(groups = {"deserializationTest"})
+  public void largeSchemasWithUnionCanBeHandled() {
+    // doesn't contain "bytes" type in the union field
+    Schema readerSchema = AvroCompatibilityHelper.parse("{\"type\":\"record\",\"name\":\"RecordWithLargeUnionField\",\"namespace\":\"com.linkedin.avro.fastserde.generated.avro\",\"fields\":[{\"name\":\"unionField\",\"type\":[\"string\",\"int\"],\"default\":\"more than 50 letters aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}]}");
+    Schema writerSchema = RecordWithLargeUnionField.SCHEMA$;
+
+    FastDeserializerGenerator.MAX_LENGTH_OF_STRING_LITERAL = 5;
+
+    Assert.assertTrue(writerSchema.toString().length() > FastDeserializerGenerator.MAX_LENGTH_OF_STRING_LITERAL);
+
+    // generateDeserializer should not throw an exception
+    try {
+      new FastSpecificDeserializerGenerator<>(writerSchema, readerSchema, tempDir, classLoader, null).generateDeserializer();
+    } catch (Exception e) {
+      Assert.fail("Exception was thrown: ", e);
+    }
   }
 
   @SuppressWarnings("unchecked")

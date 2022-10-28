@@ -9,6 +9,7 @@ import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JCatchBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
+import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JConditional;
 import com.sun.codemodel.JDoLoop;
 import com.sun.codemodel.JExpr;
@@ -57,6 +58,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
   private static final String DECODER = "decoder";
   private static final String VAR_NAME_FOR_REUSE = "reuse";
   private static int FIELDS_PER_POPULATION_METHOD = 100;
+  static int MAX_LENGTH_OF_STRING_LITERAL = 65535;
 
   /**
    * This is sometimes passed into the reuse parameter,
@@ -633,11 +635,13 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
 
         if (null == readerOptionSchema) {
           // This is the same exception that vanilla Avro would throw in this circumstance
+          String fullExceptionString = "Found " + optionSchema + ", expecting " + (readerSchemaNotAUnion ? unionReaderSchema.toString()
+              : unionReaderSchema.getTypes().toString());
           thenBlock._throw(JExpr._new(codeModel.ref(AvroTypeException.class)).arg(
-              JExpr.lit("Found " + optionSchema + ", expecting " + (readerSchemaNotAUnion ? unionReaderSchema.toString()
-                      : unionReaderSchema.getTypes().toString()))));
+              composeStringLiteral(codeModel, fullExceptionString)));
           continue;
         }
+
         Symbol.Alternative alternative = null;
         if (action.getSymbol() instanceof Symbol.Alternative) {
           alternative = (Symbol.Alternative) action.getSymbol();
@@ -1335,5 +1339,25 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
 
   static void setFieldsPerPopulationMethod(int fieldCount) {
     FIELDS_PER_POPULATION_METHOD = fieldCount;
+  }
+
+  /**
+   * String literals in Java classes cannot exceed length of 65535.
+   * For such cases we break down the literal into chunks of valid lengths and use StringBuilder.
+   */
+  private static JExpression composeStringLiteral(JCodeModel codeModel, String input) {
+    if (input.length() <= MAX_LENGTH_OF_STRING_LITERAL) {
+      return JExpr.lit(input);
+    }
+
+    // need to compose the message using StringBuilder
+    JInvocation stringBuilder = JExpr._new(codeModel.ref(StringBuilder.class));
+    for (int pos = 0; pos < input.length();) {
+      int endIndex = Math.min(pos + MAX_LENGTH_OF_STRING_LITERAL, input.length());
+      String chunkedLiteral = "\"" + input.substring(pos, endIndex) + "\"";
+      stringBuilder = stringBuilder.invoke("append").arg(chunkedLiteral);
+      pos = endIndex;
+    }
+    return stringBuilder.invoke("toString");
   }
 }
