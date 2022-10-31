@@ -14,38 +14,67 @@ import java.util.Map;
 
 
 public class ListTransformer {
+  static boolean hasCharSeq = false;
 
-  public static List getUtf8List(List list) {
-    if(list == null) return null;
-    List ret = new ArrayList(list.size());
-    for (Object item : list) {
-      if (item instanceof List) {
-        ret.add(ListTransformer.getUtf8List((List) item));
-      } else if (item instanceof Map) {
-        ret.add(MapTransformer.getUtf8Map((Map) item));
-      } else if (item instanceof CharSequence) {
-        ret.add(StringConverterUtil.getUtf8(item));
-      } else {
-        ret.add(item);
-      }
-    }
-    return Collections.unmodifiableList(ret);
+  public static List getUtf8List(Object listObj) {
+    flushCharSeqFlag();
+    return getUtf8(listObj);
   }
 
-  public static List getStringList(List list) {
-    if(list == null) return null;
-    List ret = new ArrayList(list.size());
-    for (Object item : list) {
-      if (item instanceof List) {
-        ret.add(ListTransformer.getStringList((List) item));
-      } else if (item instanceof Map) {
-        ret.add(MapTransformer.getStringMap((Map) item));
-      } else if (item instanceof CharSequence) {
-        ret.add(StringConverterUtil.getString(item));
-      } else {
-        ret.add(item);
+  public static List getStringList(Object listObj) {
+    flushCharSeqFlag();
+    return getString(listObj);
+  }
+  private static List getUtf8(Object listObj) {
+    if(listObj == null) return null;
+    if (listObj instanceof List) {
+      List list = (List) listObj;
+      List ret = new ArrayList(list.size());
+      for (Object item : list) {
+        if (item instanceof List) {
+          ret.add(ListTransformer.getUtf8((List) item));
+        } else if (item instanceof Map) {
+          hasCharSeq = true;
+          ret.add(MapTransformer.getUtf8Map((Map) item));
+        } else if (item instanceof CharSequence) {
+          hasCharSeq = true;
+          ret.add(StringConverterUtil.getUtf8(item));
+        } else {
+          ret.add(item);
+        }
       }
+      return hasCharSeq? Collections.unmodifiableList(ret) : list;
+    } else {
+      throw new UnsupportedOperationException("Supports only Lists");
     }
-    return Collections.unmodifiableList(ret);
+  }
+
+  private static void flushCharSeqFlag() {
+    hasCharSeq = false;
+  }
+
+  private static List getString(Object listObj) {
+    if(listObj == null) return null;
+    List ret;
+    if(listObj instanceof List) {
+      List list = (List) listObj;
+      ret = new ArrayList(list.size());
+      for (Object item : list) {
+        if (item instanceof List) {
+          ret.add(ListTransformer.getString((List) item));
+        } else if (item instanceof Map) {
+          hasCharSeq = true;
+          ret.add(MapTransformer.getStringMap((Map) item));
+        } else if (item instanceof CharSequence) {
+          hasCharSeq = true;
+          ret.add(StringConverterUtil.getString(item));
+        } else {
+          ret.add(item);
+        }
+      }
+      return hasCharSeq? Collections.unmodifiableList(ret) : list;
+    } else {
+      throw new UnsupportedOperationException("Supports only Lists");
+    }
   }
 }

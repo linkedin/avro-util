@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.util.Utf8;
 import org.testng.Assert;
@@ -41,7 +42,13 @@ public class SpecificRecordTest {
         {vs19.ArrayOfRecords.class, vs19.ArrayOfRecords.getClassSchema()},
 
         {vs14.ArrayOfStringRecord.class, vs14.ArrayOfStringRecord.getClassSchema()},
-        {vs19.ArrayOfStringRecord.class, vs19.ArrayOfStringRecord.getClassSchema()}
+        {vs19.ArrayOfStringRecord.class, vs19.ArrayOfStringRecord.getClassSchema()},
+
+        {vs14.TestCollections.class, vs14.TestCollections.getClassSchema()},
+        {vs19.TestCollections.class, vs19.TestCollections.getClassSchema()},
+
+        {vs14.BuilderTester.class, vs14.BuilderTester.getClassSchema()},
+        {vs19.BuilderTester.class, vs19.BuilderTester.getClassSchema()}
     };
   }
 
@@ -52,7 +59,36 @@ public class SpecificRecordTest {
     byte[] serialized = AvroCodecUtil.serializeBinary(instance);
     T deserialized = AvroCodecUtil.deserializeAsSpecific(serialized, classSchema, clazz);
     Assert.assertNotSame(deserialized, instance);
-    Assert.assertEquals(deserialized, instance);
+    try {
+      Assert.assertEquals(deserialized, instance);
+    } catch (AvroRuntimeException e) {
+      if(e.getMessage().equals("Can't compare maps!")) {
+        for(int i = 0; i < instance.getSchema().getFields().size(); i++) {
+          Object fromDeserialized = deserialized.get(i);
+          if(fromDeserialized instanceof List) {
+            assertListEquality(fromDeserialized, instance.get(i));
+          } else {
+            Assert.assertEquals(fromDeserialized, instance.get(i));
+          }
+
+        }
+      } else {
+        throw e;
+      }
+    }
+  }
+
+  private void assertListEquality(Object fromDeserialized, Object fromExpected) {
+    Assert.assertTrue(fromExpected instanceof List);
+    int i = 0;
+    for(Object obj1 : (List) fromDeserialized) {
+      Object obj2 = ((List)fromExpected).get(i++);
+      if(obj1 instanceof List) {
+        assertListEquality(obj1, obj2);
+      } else {
+        Assert.assertEquals(obj1, obj2);
+      }
+    }
   }
 
   @DataProvider
@@ -73,7 +109,8 @@ public class SpecificRecordTest {
     long wierdUnionVal3 = 4L;
     String wierdUnionVal4 = "WierdVal";
     vs19.Amount wierdUnionVal5 = generator.randomSpecific(vs19.Amount.class);;
-    vs19.RandomFixedName wierdUnionVal6 = generator.randomSpecific(vs19.RandomFixedName.class);;
+    vs19.RandomFixedName wierdUnionVal6 = generator.randomSpecific(vs19.RandomFixedName.class);
+    List<String> wierdUnionVal7 = Arrays.asList("item1, item2");
 
     return new Object[][]{
         {
@@ -100,6 +137,10 @@ public class SpecificRecordTest {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal6, Arrays.asList("123")
         },
+        {
+            "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal7, Arrays.asList("123")
+        }
 
     };
   }
@@ -109,7 +150,8 @@ public class SpecificRecordTest {
       Boolean isTrue, List<String> arrayOfStrings, vs19.Amount min, List<vs19.Amount> arrayOfRecord,
       Map<String, String> mapOfStrings, Map<String, vs19.Amount> mapOfRecord, vs19.Amount simpleUnion,
       vs19.RandomFixedName fixedType, Object wierdUnion, List<String> unionOfArray) throws Exception {
-    vs19.BuilderTester builderTester = vs19.BuilderTester.newBuilder()
+    vs19.BuilderTester builderTester = vs19.BuilderTester
+        .newBuilder()
         .setStringField(stringField)
         .setPackage$(package$)
         .setException(exception)
@@ -126,20 +168,32 @@ public class SpecificRecordTest {
         .setUnionOfArray(unionOfArray).build();
     Assert.assertNotNull(builderTester);
 
-    Assert.assertEquals(builderTester.get(0), stringField);
-    Assert.assertEquals(builderTester.get(1), package$);
-    Assert.assertEquals(builderTester.get(2), exception);
-    Assert.assertEquals(builderTester.get(3), dbl);
-    Assert.assertEquals(builderTester.get(4), isTrue);
+    Assert.assertSame(builderTester.get(0), stringField);
+    Assert.assertSame(builderTester.get(1), package$);
+    Assert.assertSame(builderTester.get(2), exception);
+    Assert.assertSame(builderTester.get(3), dbl);
+    Assert.assertSame(builderTester.get(4), isTrue);
+    Assert.assertSame(builderTester.get(6), min);
+    Assert.assertSame(builderTester.get(7), arrayOfRecord);
+    Assert.assertSame(builderTester.get(10), simpleUnion);
+    Assert.assertSame(builderTester.get(11), fixedType);
+
+    // Use transformers to return a copy of data
+    assertNotSameIfNotNull(builderTester.get(5), arrayOfStrings);
     Assert.assertEquals(builderTester.get(5), arrayOfStrings);
-    Assert.assertEquals(builderTester.get(6), min);
-    Assert.assertEquals(builderTester.get(7), arrayOfRecord);
+    assertNotSameIfNotNull(builderTester.get(8), mapOfStrings);
     Assert.assertEquals(builderTester.get(8), mapOfStrings);
+    assertNotSameIfNotNull(builderTester.get(9), mapOfRecord);
     Assert.assertEquals(builderTester.get(9), mapOfRecord);
-    Assert.assertEquals(builderTester.get(10), simpleUnion);
-    Assert.assertEquals(builderTester.get(11), fixedType);
-    Assert.assertEquals(builderTester.get(12), wierdUnion);
+    assertNotSameIfNotNull(builderTester.get(13), unionOfArray);
     Assert.assertEquals(builderTester.get(13), unionOfArray);
+
+    if(wierdUnion instanceof List && wierdUnion != null && ((List)wierdUnion).get(0) instanceof CharSequence) {
+      Assert.assertEquals(builderTester.get(12), wierdUnion);
+      Assert.assertNotSame(builderTester.get(12), wierdUnion);
+    } else {
+      Assert.assertSame(builderTester.get(12), wierdUnion);
+    }
   }
 
   @DataProvider
@@ -160,7 +214,8 @@ public class SpecificRecordTest {
     long wierdUnionVal3 = 4L;
     String wierdUnionVal4 = "WierdVal";
     vs14.Amount wierdUnionVal5 = generator.randomSpecific(vs14.Amount.class);;
-    vs14.RandomFixedName wierdUnionVal6 = generator.randomSpecific(vs14.RandomFixedName.class);;
+    vs14.RandomFixedName wierdUnionVal6 = generator.randomSpecific(vs14.RandomFixedName.class);
+    List<String> wierdUnionVal7 = Arrays.asList("item1, item2");
 
     return new Object[][]{
         {
@@ -187,7 +242,10 @@ public class SpecificRecordTest {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal6, null
         },
-
+        {
+            "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal7, Arrays.asList("123")
+        }
     };
   }
 
@@ -213,22 +271,40 @@ public class SpecificRecordTest {
         .setUnionOfArray(unionOfArray).build();
     Assert.assertNotNull(builderTester);
 
-    Assert.assertEquals(builderTester.get(0), stringField);
-    Assert.assertEquals(builderTester.get(1), package$);
-    Assert.assertEquals(builderTester.get(2), exception);
-    Assert.assertEquals(builderTester.get(3), dbl);
-    Assert.assertEquals(builderTester.get(4), isTrue);
+    Assert.assertSame(builderTester.get(0), stringField);
+    Assert.assertSame(builderTester.get(1), package$);
+    Assert.assertSame(builderTester.get(2), exception);
+    Assert.assertSame(builderTester.get(3), dbl);
+    Assert.assertSame(builderTester.get(4), isTrue);
+    Assert.assertSame(builderTester.get(6), min);
+    Assert.assertSame(builderTester.get(7), arrayOfRecord);
+    Assert.assertSame(builderTester.get(10), simpleUnion);
+    Assert.assertSame(builderTester.get(11), fixedType);
+
+    // Use transformers to return a copy of data
+    assertNotSameIfNotNull(builderTester.get(5), arrayOfStrings);
     Assert.assertEquals(builderTester.get(5), arrayOfStrings);
-    Assert.assertEquals(builderTester.get(6), min);
-    Assert.assertEquals(builderTester.get(7), arrayOfRecord);
+    assertNotSameIfNotNull(builderTester.get(8), mapOfStrings);
     Assert.assertEquals(builderTester.get(8), mapOfStrings);
+    assertNotSameIfNotNull(builderTester.get(9), mapOfRecord);
     Assert.assertEquals(builderTester.get(9), mapOfRecord);
-    Assert.assertEquals(builderTester.get(10), simpleUnion);
-    Assert.assertEquals(builderTester.get(11), fixedType);
-    Assert.assertEquals(builderTester.get(12), wierdUnion);
+    assertNotSameIfNotNull(builderTester.get(13), unionOfArray);
     Assert.assertEquals(builderTester.get(13), unionOfArray);
+
+    if(wierdUnion instanceof List && wierdUnion != null && ((List)wierdUnion).get(0) instanceof CharSequence) {
+      Assert.assertEquals(builderTester.get(12), wierdUnion);
+      Assert.assertNotSame(builderTester.get(12), wierdUnion);
+    } else {
+      Assert.assertSame(builderTester.get(12), wierdUnion);
+    }
+
   }
 
+
+  /***
+   * Test runtime and accessor types for
+   * String, List<String>, Map<String, String>, [String, ...], [List<String>...], [Map<String, String>...], List<Map<String>>, Map<List<String>>
+   */
   @Test
   public void TestCharSeqAccessor() {
     RandomRecordGenerator generator = new RandomRecordGenerator();
@@ -250,5 +326,11 @@ public class SpecificRecordTest {
     Assert.assertTrue(instance19.getStringField() instanceof String);
     Assert.assertEquals(instance19.stringField, new Utf8(instance19.getStringField()));
 
+  }
+
+  private void assertNotSameIfNotNull(Object obj1, Object obj2) {
+    if(obj1 != null) {
+      Assert.assertNotSame(obj1, obj2);
+    }
   }
 }

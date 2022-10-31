@@ -87,10 +87,7 @@
     },
     {
       "name": "wierdUnion",
-      "type": ["null", "int", "long", "string", "vs19.Amount", "vs19.RandomFixedName", {
-        "type": "array",
-        "items": "string"
-      }]
+      "type": ["null", "int", "long", "string", "vs19.Amount", "vs19.RandomFixedName"]
     },
     {
       "name": "unionOfArray",

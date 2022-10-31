@@ -42,6 +42,16 @@
           "values": "string"
         }
       }
+    },
+    {
+      "name": "unionOfMap",
+      "type": [
+        "null",
+        {
+          "type": "map",
+          "values": "string"
+        }
+      ]
     }
   ],
   "type": "record"
