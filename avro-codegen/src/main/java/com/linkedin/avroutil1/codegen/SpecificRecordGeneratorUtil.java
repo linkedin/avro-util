@@ -65,6 +65,9 @@ public class SpecificRecordGeneratorUtil {
   public static final ClassName CLASSNAME_SPECIFIC_FIXED = ClassName.get("org.apache.avro.specific", "SpecificFixed");
 
 
+  public static String ARRAY_GET_ELEMENT_TYPE = ".getElementType()";
+  public static String MAP_GET_VALUE_TYPE = ".getValueType()";
+
   public static HashSet<TypeName> fullyQualifiedClassNamesInRecord = new HashSet<>();
 
   public static HashSet<String> fullyQualifiedClassesInRecord = new HashSet<>(Arrays.asList(
@@ -351,6 +354,11 @@ public class SpecificRecordGeneratorUtil {
       }
     }
     return schemaList;
+  }
+
+  public static String removePrefixFromFieldName(String fieldNameWithPrefix) {
+    String[] fieldNameParts = fieldNameWithPrefix.split("\\.");
+    return fieldNameParts.length > 1 ? fieldNameParts[1] : fieldNameWithPrefix;
   }
 
 }

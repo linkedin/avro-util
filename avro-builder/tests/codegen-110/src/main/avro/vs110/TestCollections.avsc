@@ -1,6 +1,6 @@
 {
   "name": "TestCollections",
-  "namespace": "vs14",
+  "namespace": "vs110",
   "fields": [
     {
       "name": "str",

@@ -85,7 +85,8 @@ public class SpecificRecordClassGeneratorTest {
   Object[][] testRecordWithArrayOfRecordsProvider() {
     return new Object[][]{
         {"schemas/ArrayOfStringRecord.avsc"},
-        {"schemas/ArrayOfRecords.avsc"}
+        {"schemas/ArrayOfRecords.avsc"},
+        {"schemas/TestCollections.avsc"}
     };
   }
 

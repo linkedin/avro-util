@@ -1,0 +1,37 @@
+{
+  "type": "record",
+  "name": "RecordDefault",
+  "namespace": "vs18",
+  "fields": [
+    {"name": "isPresent",
+      "type": {
+        "type": "record",
+        "name": "MyBool",
+        "doc": "A Boolean value",
+        "fields": [
+          {"name": "value", "type": "boolean", "default": false},
+          {"name": "score", "type": "float", "default": 0.0}
+        ]
+      },
+      "doc": "Is it ?",
+      "default": {"value": false, "score": 0.0}
+    },
+    {
+      "name": "recordUnion",
+      "type": ["null", "vs18.MyBool"],
+      "doc": "Union of Is it?"
+    },
+    {
+      "name": "recordUnionWithDefault",
+      "type": ["vs18.MyBool", "null"],
+      "doc": "Union of Is it?",
+      "default": {"value": true, "score": 1.0}
+    },
+    {
+      "name": "recordUnionWithDefaultForNull",
+      "type": ["null", "vs18.MyBool"],
+      "doc": "Union of Is it?",
+      "default": null
+    }
+  ]
+}
