@@ -51,7 +51,6 @@ import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import javax.lang.model.element.Modifier;
 import javax.tools.JavaFileObject;
-import org.apache.logging.log4j.util.Strings;
 
 
 /**
@@ -1006,7 +1005,7 @@ public class SpecificRecordClassGenerator {
       String escapedFieldName = getFieldNameWithSuffix(field);
       customDecodeBuilder.addStatement(getSerializedCustomDecodeBlock(config, field.getSchemaOrRef().getSchema(),
           field.getSchemaOrRef().getSchema().type(), "this." + replaceSingleDollarSignWithDouble(escapedFieldName),
-          "this." + replaceSingleDollarSignWithDouble(escapedFieldName), Strings.EMPTY));
+          "this." + replaceSingleDollarSignWithDouble(escapedFieldName), StringUtils.EMPTY_STRING));
     }
     // reset var counter
     sizeValCounter = -1;
@@ -1021,7 +1020,7 @@ public class SpecificRecordClassGenerator {
           .addStatement(String.format("case %s: ",fieldIndex++)+ getSerializedCustomDecodeBlock(config,
               field.getSchemaOrRef().getSchema(), field.getSchemaOrRef().getSchema().type(),
               "this." + replaceSingleDollarSignWithDouble(escapedFieldName),
-              "this." + replaceSingleDollarSignWithDouble(escapedFieldName), Strings.EMPTY))
+              "this." + replaceSingleDollarSignWithDouble(escapedFieldName), StringUtils.EMPTY_STRING))
           .addStatement("break");
     }
     customDecodeBuilder

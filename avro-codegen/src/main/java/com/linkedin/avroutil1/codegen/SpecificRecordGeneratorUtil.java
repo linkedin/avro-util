@@ -250,7 +250,7 @@ public class SpecificRecordGeneratorUtil {
    *
    * @param type
    * @param schema
-   * @return True if type or [type] or [null, type] or [type, null]
+   * @return True if type [null, type] or [type, null]
    */
   public static boolean isNullUnionOf(AvroType type, AvroSchema schema) {
     if(schema == null) return false;
