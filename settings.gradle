@@ -80,6 +80,4 @@ include 'avro-builder:tests:codegen-111'
 include 'avro-builder:tests:tests-allavro'
 
 include 'demos:spotbugs-demo'
-include 'avro-builder:tests:codegen-15'
-findProject(':avro-builder:tests:codegen-15')?.name = 'codegen-15'
 
