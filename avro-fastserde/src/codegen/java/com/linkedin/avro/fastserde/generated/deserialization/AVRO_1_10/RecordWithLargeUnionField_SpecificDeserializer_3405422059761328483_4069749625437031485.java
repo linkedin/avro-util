@@ -46,7 +46,7 @@ public class RecordWithLargeUnionField_SpecificDeserializer_3405422059761328483_
                 RecordWithLargeUnionField.put(0, (decoder.readInt()));
             } else {
                 if (unionIndex0 == 2) {
-                    throw new AvroTypeException(new StringBuilder().append("\"Found\"").append("\" \"byt\"").append("\"es\", \"").append("\"expec\"").append("\"ting \"").append("\"[\"str\"").append("\"ing\",\"").append("\" \"int\"").append("\"\"]\"").toString());
+                    throw new AvroTypeException(new StringBuilder().append("Found").append(" \"byt").append("es\", ").append("expec").append("ting ").append("[\"str").append("ing\",").append(" \"int").append("\"]").toString());
                 } else {
                     throw new RuntimeException(("Illegal union index for 'unionField': "+ unionIndex0));
                 }
