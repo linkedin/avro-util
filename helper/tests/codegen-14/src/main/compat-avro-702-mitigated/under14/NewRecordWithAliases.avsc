@@ -1,0 +1,30 @@
+{
+  "type": "record",
+  "namespace": "under14.newpkg.outer",
+  "name": "NewOuterRecordWithAliases",
+  "aliases": ["under14.oldpkg.outer.OldOuterRecordWithoutAliases"],
+  "fields": [
+    {
+      "name": "newOuterField",
+      "aliases": ["outerField"],
+      "type": {
+        "type": "record",
+        "name": "NewInnerRecordWithAliases",
+        "namespace": "under14.newpkg.inner",
+        "aliases": ["under14.oldpkg.inner.OldInnerRecordWithoutAliases"],
+        "fields": [
+          {
+            "name": "newF1",
+            "aliases": ["f1"],
+            "type": "int"
+          },
+          {
+            "name": "newF2",
+            "aliases": ["f2"],
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ]
+}

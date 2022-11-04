@@ -12,6 +12,7 @@ import java.util.Random;
  * configuration for use with {@link RandomRecordGenerator}
  */
 public class RecordGenerationConfig {
+    public static final RecordGenerationConfig NO_NULLS = RecordGenerationConfig.newConfig().withAvoidNulls(true);
     private final long seed;
     private final Random random;
     /**

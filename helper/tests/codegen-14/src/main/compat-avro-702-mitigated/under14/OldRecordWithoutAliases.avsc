@@ -1,0 +1,25 @@
+{
+  "type": "record",
+  "namespace": "under14.oldpkg.outer",
+  "name": "OldOuterRecordWithoutAliases",
+  "fields": [
+    {
+      "name": "outerField",
+      "type": {
+        "type": "record",
+        "name": "OldInnerRecordWithoutAliases",
+        "namespace": "under14.oldpkg.inner",
+        "fields": [
+          {
+            "name": "f1",
+            "type": "int"
+          },
+          {
+            "name": "f2",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ]
+}
