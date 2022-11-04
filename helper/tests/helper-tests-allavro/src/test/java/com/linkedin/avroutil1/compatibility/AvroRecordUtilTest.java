@@ -14,6 +14,10 @@ import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.specific.SpecificRecord;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import under14.newnewpkg.outer.NewNewOuterRecordWithAliases;
+import under14.newpkg.outer.NewOuterRecordWithAliases;
+import under14.oldpkg.inner.OldInnerRecordWithoutAliases;
+import under14.oldpkg.outer.OldOuterRecordWithoutAliases;
 
 
 public class AvroRecordUtilTest {
@@ -93,6 +97,67 @@ public class AvroRecordUtilTest {
     Schema schema = under14.RecordWithCollectionsOfUnions.SCHEMA$;
     GenericRecord genericInstance = (GenericRecord) gen.randomGeneric(schema, genConfig);
     convertRoundTrip(genericInstance);
+  }
+
+  @Test
+  public void testConversionsWithAliases() throws Exception {
+    RandomRecordGenerator gen = new RandomRecordGenerator();
+
+    //specific --> generic
+
+    OldOuterRecordWithoutAliases oldSpecific = gen.randomSpecific(OldOuterRecordWithoutAliases.class, RecordGenerationConfig.NO_NULLS);
+    GenericRecord newGeneric = new GenericData.Record(NewOuterRecordWithAliases.getClassSchema());
+    newGeneric = AvroRecordUtil.specificRecordToGenericRecord(oldSpecific, newGeneric, RecordConversionConfig.ALLOW_ALL);
+    Assert.assertNotNull(newGeneric);
+    Assert.assertNotEquals(newGeneric.getSchema(), oldSpecific.getSchema());
+
+    GenericRecord newGenericInner = (GenericRecord) newGeneric.get("newOuterField");
+    Assert.assertNotNull(newGenericInner);
+    Assert.assertNotEquals(newGenericInner.getSchema(), OldInnerRecordWithoutAliases.getClassSchema());
+
+    Assert.assertEquals(newGenericInner.get("newF1"), oldSpecific.outerField.f1);
+    Assert.assertEquals(newGenericInner.get("newF2"), oldSpecific.outerField.f2);
+
+    //generic --> specific
+
+    GenericRecord oldGeneric = (GenericRecord) gen.randomGeneric(OldOuterRecordWithoutAliases.getClassSchema());
+    SpecificRecord newSpecific = new NewOuterRecordWithAliases();
+    newSpecific = AvroRecordUtil.genericRecordToSpecificRecord(oldGeneric, newSpecific, RecordConversionConfig.ALLOW_ALL);
+
+    Assert.assertNotNull(newSpecific);
+    Assert.assertNotEquals(newSpecific.getSchema(), oldGeneric.getSchema());
+
+    SpecificRecord newSpecificInner = (SpecificRecord) newSpecific.get(newSpecific.getSchema().getField("newOuterField").pos());
+    Assert.assertNotNull(newSpecificInner);
+    Assert.assertNotEquals(newSpecificInner.getSchema(), OldInnerRecordWithoutAliases.getClassSchema());
+
+    GenericRecord oldGenericInnder = (GenericRecord) oldGeneric.get("outerField");
+    Assert.assertEquals(
+        newSpecificInner.get(newSpecificInner.getSchema().getField("newF1").pos()),
+        oldGenericInnder.get("f1")
+    );
+    Assert.assertEquals(
+        newSpecificInner.get(newSpecificInner.getSchema().getField("newF2").pos()),
+        oldGenericInnder.get("f2")
+    );
+  }
+
+  @Test
+  public void testConversionsWithAliasesAndUnions() throws Exception {
+    RandomRecordGenerator gen = new RandomRecordGenerator();
+    OldOuterRecordWithoutAliases old = gen.randomSpecific(OldOuterRecordWithoutAliases.class, RecordGenerationConfig.NO_NULLS);
+    GenericData.Record newRecord = new GenericData.Record(NewNewOuterRecordWithAliases.getClassSchema());
+    GenericRecord genericRecord =
+        AvroRecordUtil.specificRecordToGenericRecord(old, newRecord, RecordConversionConfig.ALLOW_ALL);
+    Assert.assertNotNull(genericRecord);
+    Assert.assertNotEquals(genericRecord.getSchema(), old.getSchema());
+
+    GenericData.Record newInner = (GenericData.Record) genericRecord.get("newNewOuterField");
+    Assert.assertNotNull(newInner);
+    Assert.assertNotEquals(newInner.getSchema(), OldInnerRecordWithoutAliases.getClassSchema());
+
+    Assert.assertEquals(Long.valueOf(String.valueOf(newInner.get("newNewF1"))), Long.valueOf(old.outerField.f1));
+    Assert.assertEquals(newInner.get("newNewF2"), old.outerField.f2);
   }
 
   private void convertRoundTrip(GenericRecord original) {

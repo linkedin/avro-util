@@ -10,6 +10,7 @@ import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericContainer;
 import org.apache.avro.generic.GenericData;
@@ -345,11 +346,20 @@ public class AvroSchemaUtil {
             }
           }
           //named types need to match on fullname, or possibly aliases
-          if (writer.getFullName().equals(reader.getFullName())) {
+          String writerFullName = writer.getFullName();
+          if (writerFullName.equals(reader.getFullName())) {
             return new SchemaResolutionResult(reader, writer, false);
           }
           if (useAliases) {
-            throw new UnsupportedOperationException("aliases TBD");
+            Set<String> aliases = reader.getAliases();
+            if (aliases != null && !aliases.isEmpty()) {
+              for (String alias : aliases) {
+                //TODO - handle "relative" aliases (which are not fullnames) as per spec
+                if (writerFullName.equals(alias)) {
+                  return new SchemaResolutionResult(reader, writer, false, true);
+                }
+              }
+            }
           }
         }
         break;
