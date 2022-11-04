@@ -37,7 +37,8 @@ public class MapTransformer {
         }
       }
     } else {
-      throw new UnsupportedOperationException("Supports only Maps");
+      throw new UnsupportedOperationException(
+          "Supports only Map. Received" + CollectionTransformerUtil.getErrorMessageForInstance(mapObj));
     }
 
     return Collections.unmodifiableMap(ret);
@@ -65,7 +66,8 @@ public class MapTransformer {
         }
       }
     } else {
-      throw new UnsupportedOperationException("Supports only Maps");
+      throw new UnsupportedOperationException(
+          "Supports only Map. Received" + CollectionTransformerUtil.getErrorMessageForInstance(mapObj));
     }
     return Collections.unmodifiableMap(ret);
   }

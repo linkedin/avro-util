@@ -45,7 +45,8 @@ public class ListTransformer {
       }
       return hasCharSeq? Collections.unmodifiableList(ret) : list;
     } else {
-      throw new UnsupportedOperationException("Supports only Lists");
+      throw new UnsupportedOperationException(
+          "Supports only Lists. Received" + CollectionTransformerUtil.getErrorMessageForInstance(listObj));
     }
   }
 
@@ -74,7 +75,8 @@ public class ListTransformer {
       }
       return hasCharSeq? Collections.unmodifiableList(ret) : list;
     } else {
-      throw new UnsupportedOperationException("Supports only Lists");
+      throw new UnsupportedOperationException(
+          "Supports only Lists. Received" + CollectionTransformerUtil.getErrorMessageForInstance(listObj));
     }
   }
 }
