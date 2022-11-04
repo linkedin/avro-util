@@ -12,8 +12,10 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.specific.SpecificRecord;
+import org.apache.avro.util.Utf8;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import under14.newnewpkg.inner.NewNewInnerRecordWithAliases;
 import under14.newnewpkg.outer.NewNewOuterRecordWithAliases;
 import under14.newpkg.outer.NewOuterRecordWithAliases;
 import under14.oldpkg.inner.OldInnerRecordWithoutAliases;
@@ -107,7 +109,7 @@ public class AvroRecordUtilTest {
 
     OldOuterRecordWithoutAliases oldSpecific = gen.randomSpecific(OldOuterRecordWithoutAliases.class, RecordGenerationConfig.NO_NULLS);
     GenericRecord newGeneric = new GenericData.Record(NewOuterRecordWithAliases.getClassSchema());
-    newGeneric = AvroRecordUtil.specificRecordToGenericRecord(oldSpecific, newGeneric, RecordConversionConfig.ALLOW_ALL);
+    newGeneric = AvroRecordUtil.specificRecordToGenericRecord(oldSpecific, newGeneric, RecordConversionConfig.ALLOW_ALL_USE_UTF8);
     Assert.assertNotNull(newGeneric);
     Assert.assertNotEquals(newGeneric.getSchema(), oldSpecific.getSchema());
 
@@ -122,7 +124,7 @@ public class AvroRecordUtilTest {
 
     GenericRecord oldGeneric = (GenericRecord) gen.randomGeneric(OldOuterRecordWithoutAliases.getClassSchema());
     SpecificRecord newSpecific = new NewOuterRecordWithAliases();
-    newSpecific = AvroRecordUtil.genericRecordToSpecificRecord(oldGeneric, newSpecific, RecordConversionConfig.ALLOW_ALL);
+    newSpecific = AvroRecordUtil.genericRecordToSpecificRecord(oldGeneric, newSpecific, RecordConversionConfig.ALLOW_ALL_USE_UTF8);
 
     Assert.assertNotNull(newSpecific);
     Assert.assertNotEquals(newSpecific.getSchema(), oldGeneric.getSchema());
@@ -148,7 +150,7 @@ public class AvroRecordUtilTest {
     OldOuterRecordWithoutAliases old = gen.randomSpecific(OldOuterRecordWithoutAliases.class, RecordGenerationConfig.NO_NULLS);
     GenericData.Record newRecord = new GenericData.Record(NewNewOuterRecordWithAliases.getClassSchema());
     GenericRecord genericRecord =
-        AvroRecordUtil.specificRecordToGenericRecord(old, newRecord, RecordConversionConfig.ALLOW_ALL);
+        AvroRecordUtil.specificRecordToGenericRecord(old, newRecord, RecordConversionConfig.ALLOW_ALL_USE_UTF8);
     Assert.assertNotNull(genericRecord);
     Assert.assertNotEquals(genericRecord.getSchema(), old.getSchema());
 
@@ -158,13 +160,37 @@ public class AvroRecordUtilTest {
 
     Assert.assertEquals(Long.valueOf(String.valueOf(newInner.get("newNewF1"))), Long.valueOf(old.outerField.f1));
     Assert.assertEquals(newInner.get("newNewF2"), old.outerField.f2);
+
+    //other direction (generic --> specific) tested in testStringTypeConversion() below
+  }
+
+  @Test
+  public void testStringTypeConversion() throws Exception {
+    RandomRecordGenerator gen = new RandomRecordGenerator();
+    GenericRecord oldGeneric = (GenericRecord) gen.randomGeneric(OldOuterRecordWithoutAliases.getClassSchema(), RecordGenerationConfig.NO_NULLS);
+    NewNewOuterRecordWithAliases newSpecific = new NewNewOuterRecordWithAliases();
+    newSpecific = AvroRecordUtil.genericRecordToSpecificRecord(oldGeneric, newSpecific, RecordConversionConfig.ALLOW_ALL_USE_STRING);
+    Assert.assertNotNull(newSpecific);
+    Assert.assertNotEquals(newSpecific.getSchema(), oldGeneric.getSchema());
+
+    NewNewInnerRecordWithAliases newInner = newSpecific.newNewOuterField;
+    Assert.assertNotNull(newInner);
+    Assert.assertNotEquals(newInner.getSchema(), OldInnerRecordWithoutAliases.getClassSchema());
+
+    GenericRecord oldGenericInner = (GenericRecord) oldGeneric.get("outerField");
+    //int --> long widening
+    Assert.assertEquals(newInner.newNewF1.longValue(), ((Integer) oldGenericInner.get("f1")).longValue());
+    //Utf8 --> String conversion
+    Assert.assertTrue(oldGenericInner.get("f2") instanceof Utf8);
+    Assert.assertTrue(newInner.newNewF2 instanceof String);
+    Assert.assertEquals(newInner.newNewF2, String.valueOf(oldGenericInner.get("f2")));
   }
 
   private void convertRoundTrip(GenericRecord original) {
     Assert.assertNotNull(original);
-    SpecificRecord converted = AvroRecordUtil.genericRecordToSpecificRecord(original, null, RecordConversionConfig.ALLOW_ALL);
+    SpecificRecord converted = AvroRecordUtil.genericRecordToSpecificRecord(original, null, RecordConversionConfig.ALLOW_ALL_USE_UTF8);
     Assert.assertNotNull(converted);
-    GenericRecord backAgain = AvroRecordUtil.specificRecordToGenericRecord(converted, null, RecordConversionConfig.ALLOW_ALL);
+    GenericRecord backAgain = AvroRecordUtil.specificRecordToGenericRecord(converted, null, RecordConversionConfig.ALLOW_ALL_USE_UTF8);
     Assert.assertNotSame(original, backAgain);
     try {
       Assert.assertEquals(backAgain, original);
