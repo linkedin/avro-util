@@ -89,7 +89,7 @@ public class CompatibleSpecificRecordBuilderBase {
 
   protected  <T> T deepCopyField (Object inputValue, Schema fieldSchema,
       String stringRepresentationValue) {
-    RecordConversionConfig allowAllConfig = RecordConversionConfig.ALLOW_ALL;
+    RecordConversionConfig allowAllConfig = RecordConversionConfig.ALLOW_ALL_USE_UTF8;
 
     RecordConversionContext context = new RecordConversionContext(new RecordConversionConfig(
         allowAllConfig.isUseAliasesOnNamedTypes(),

@@ -10,12 +10,30 @@ package com.linkedin.avroutil1.compatibility;
  * configuration for use in specific &lt;--&gt; generic record conversion operations
  */
 public class RecordConversionConfig {
+    @Deprecated
     public static final RecordConversionConfig ALLOW_ALL = new RecordConversionConfig(
         true,
         true,
         false,
         true,
         StringRepresentation.Utf8,
+        false
+    );
+
+    public static final RecordConversionConfig ALLOW_ALL_USE_UTF8 = new RecordConversionConfig(
+        true,
+            true,
+            false,
+            true,
+        StringRepresentation.Utf8,
+        false
+    );
+    public static final RecordConversionConfig ALLOW_ALL_USE_STRING = new RecordConversionConfig(
+        true,
+        true,
+        false,
+        true,
+        StringRepresentation.String,
         false
     );
 
