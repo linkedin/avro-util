@@ -58,7 +58,9 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
   private static final String DECODER = "decoder";
   private static final String VAR_NAME_FOR_REUSE = "reuse";
   private static int FIELDS_PER_POPULATION_METHOD = 100;
-  static int MAX_LENGTH_OF_STRING_LITERAL = 65535;
+
+  // 65535 is the actual limit, 65K added for safety
+  static int MAX_LENGTH_OF_STRING_LITERAL = 65000;
 
   /**
    * This is sometimes passed into the reuse parameter,
@@ -1354,7 +1356,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     JInvocation stringBuilder = JExpr._new(codeModel.ref(StringBuilder.class));
     for (int pos = 0; pos < input.length();) {
       int endIndex = Math.min(pos + MAX_LENGTH_OF_STRING_LITERAL, input.length());
-      String chunkedLiteral = "\"" + input.substring(pos, endIndex) + "\"";
+      String chunkedLiteral = input.substring(pos, endIndex);
       stringBuilder = stringBuilder.invoke("append").arg(chunkedLiteral);
       pos = endIndex;
     }
