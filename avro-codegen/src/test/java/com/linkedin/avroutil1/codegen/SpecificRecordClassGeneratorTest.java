@@ -85,7 +85,8 @@ public class SpecificRecordClassGeneratorTest {
   Object[][] testRecordWithArrayOfRecordsProvider() {
     return new Object[][]{
         {"schemas/ArrayOfStringRecord.avsc"},
-        {"schemas/ArrayOfRecords.avsc"}
+        {"schemas/ArrayOfRecords.avsc"},
+        {"schemas/TestCollections.avsc"}
     };
   }
 
@@ -166,7 +167,7 @@ public class SpecificRecordClassGeneratorTest {
 
   @Test
   public void testRecord() throws Exception {
-    String avsc = TestUtil.load("schemas/TestCollections.avsc");
+    String avsc = TestUtil.load("schemas/BuilderTester.avsc");
     SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
     AvscParser parser = new AvscParser();
     AvscParseResult result = parser.parse(avsc);

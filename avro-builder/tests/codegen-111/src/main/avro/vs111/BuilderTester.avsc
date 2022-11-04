@@ -1,0 +1,110 @@
+{
+  "type": "record",
+  "namespace": "vs111",
+  "name": "BuilderTester",
+  "fields": [
+    {
+      "name": "stringField",
+      "type": "string"
+    },
+    {
+      "name": "package",
+      "type": "string"
+    },
+    {
+      "name": "exception",
+      "type": "float"
+    },
+    {
+      "name": "dbl",
+      "type": "double"
+    },
+    {
+      "name": "isTrue",
+      "type": "boolean"
+    },
+    {
+      "name": "arrayOfStrings",
+      "type": {
+        "type": "array",
+        "items": "string"
+      }
+    },
+    {
+      "name" : "min",
+      "doc" : "Minimum value",
+      "type" : {
+        "type" : "record",
+        "name" : "Amount",
+        "namespace" : "vs111",
+        "doc" : "Represents an amount of money",
+        "fields" : [ {
+          "name" : "currencyCode",
+          "type" : "string",
+          "doc" : "Currency code v$"
+        }, {
+          "name" : "amount",
+          "type" : "string",
+          "doc" : "The amount of money as a real number string, See https://docs.oracle.com/javase/8/docs/api/java/math/BigDecimal.html#BigDecimal-java.lang.String-"
+        } ],
+        "aliases": [
+          "vs111.MoneyAmount"
+        ]
+      }
+    },
+    {
+      "name": "arrayOfRecord",
+      "type": {
+        "type": "array",
+        "items": "vs111.Amount"
+      }
+    },
+    {
+      "name": "mapOfStrings",
+      "type": {
+        "type": "map",
+        "values": "string"
+      }
+    },
+    {
+      "name": "mapOfRecord",
+      "type": {
+        "type": "map",
+        "values": "vs111.Amount"
+      }
+    },
+    {
+      "name": "simpleUnion",
+      "type": ["null", "vs111.Amount"]
+    },
+    {
+      "name": "fixedType",
+      "type": {
+        "name": "RandomFixedName",
+        "type": "fixed",
+        "size": 16
+      }
+    },
+    {
+      "name": "wierdUnion",
+      "type": ["null", "int", "long", "string", "vs111.Amount", "vs111.RandomFixedName", {
+        "type": "array",
+        "items": "string"
+      }]
+    },
+    {
+      "name": "unionOfArray",
+      "type": ["null", {
+        "type": "array",
+        "items": "string"
+      }
+      ]
+    },
+    {
+      "name": "externalRefRecordUnion",
+      "type": [
+        "null", "vs111.TestCollections"
+      ]
+    }
+  ]
+}

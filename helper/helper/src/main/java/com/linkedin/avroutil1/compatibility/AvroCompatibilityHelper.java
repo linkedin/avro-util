@@ -1218,6 +1218,21 @@ public class AvroCompatibilityHelper {
     return ADAPTER.toAvsc(schema, config);
   }
 
+  /***
+   * Check if Fields in schema are reordered
+   * @param schema
+   * @return true / false
+   */
+  public static boolean areFieldsReordered(Schema schema) {
+    List<Schema.Field> fields = schema.getFields();
+    for (int i = 0; i < fields.size(); i++) {
+      if(i != fields.get(i).pos()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   /**
    * given a schema, returns a (exploded, fully-inlined, self-container, however you want to call it)
    * avsc representation of the schema.

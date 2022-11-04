@@ -1,0 +1,22 @@
+{
+  "type": "record",
+  "namespace": "vs111",
+  "name": "ArrayOfRecords",
+  "doc": "Array of String Record",
+  "fields": [
+    {
+      "name": "arOfRec",
+      "type": {
+        "type":"array",
+        "items": {
+          "type" : "record",
+          "name" : "InnerRecord",
+          "fields": [{
+            "name" : "innerRecordField",
+            "type": "string"
+          }]
+        }
+      }
+    }
+  ]
+}

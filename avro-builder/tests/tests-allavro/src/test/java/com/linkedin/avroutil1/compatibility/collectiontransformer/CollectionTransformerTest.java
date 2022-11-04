@@ -7,6 +7,7 @@
 package com.linkedin.avroutil1.compatibility.collectiontransformer;
 
 import com.linkedin.avroutil1.compatibility.StringConverterUtil;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -174,6 +175,30 @@ public class CollectionTransformerTest {
     Assert.assertThrows(UnsupportedOperationException.class, () -> MapTransformer.getUtf8Map(mapStr).put("", ""));
   }
 
+  @Test
+  public void testObjectString() {
+    List<Object> listWithCharSeq = new ArrayList<>();
+    listWithCharSeq.add(new Object());
+    listWithCharSeq.add(Long.valueOf(1));
+    listWithCharSeq.add(null);
+    listWithCharSeq.add(new Utf8("str"));
+
+
+    List<Object> listWithoutCharSeq = new ArrayList<>();
+    listWithoutCharSeq.add(new Object());
+    listWithoutCharSeq.add(Long.valueOf(1));
+    listWithoutCharSeq.add(null);
+
+    List ret1 = ListTransformer.getUtf8List(listWithCharSeq);
+    List ret2 = ListTransformer.getUtf8List(listWithoutCharSeq);
+
+
+    Assert.assertNotSame(ret1, listWithCharSeq);
+    Assert.assertEquals(ret1, listWithCharSeq);
+
+    Assert.assertSame(ret2, listWithoutCharSeq);
+  }
+
   @BeforeClass
   public void setup() {
     strList = Arrays.asList("this", "is", "a", "great", "set", "of", "words");
@@ -190,7 +215,5 @@ public class CollectionTransformerTest {
     for(int i = 0; i < strList.size(); i++) {
       mapStr2.put(strList2.get(i), strList.get(i));
     }
-
-
   }
 }

@@ -87,7 +87,10 @@
     },
     {
       "name": "wierdUnion",
-      "type": ["null", "int", "long", "string", "vs14.Amount", "vs14.RandomFixedName"]
+      "type": ["null", "int", "long", "string", "vs14.Amount", "vs14.RandomFixedName", {
+        "type": "array",
+        "items": "string"
+      }]
     },
     {
       "name": "unionOfArray",
@@ -95,6 +98,12 @@
         "type": "array",
         "items": "string"
       }
+      ]
+    },
+    {
+      "name": "externalRefRecordUnion",
+      "type": [
+        "null", "vs14.TestCollections"
       ]
     }
   ]

@@ -53,7 +53,6 @@ import javax.lang.model.element.Modifier;
 import javax.tools.JavaFileObject;
 
 
-
 /**
  * generates java classes out of avro schemas.
  */
@@ -441,9 +440,61 @@ public class SpecificRecordClassGenerator {
           //if declared schema, use fully qualified class (no import)
           String escapedFieldName = getFieldNameWithSuffix(field);
           addFullyQualified(field, config);
-          allArgsConstructorBuilder.addParameter(getParameterSpecForField(field, config))
-              .addStatement("$1L = $1L", escapedFieldName);
+          allArgsConstructorBuilder.addParameter(getParameterSpecForField(field, config));
+          if(field.getSchema() != null && AvroType.STRING.equals(field.getSchema().type())) {
+            allArgsConstructorBuilder.addStatement(
+                "this.$1L = com.linkedin.avroutil1.compatibility.StringConverterUtil.getUtf8($1L)",
+                escapedFieldName);
+          } else if (SpecificRecordGeneratorUtil.isListTransformerApplicableForSchema(field.getSchema())
+              || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.ARRAY, field.getSchema())) {
+            allArgsConstructorBuilder.addStatement(
+                "this.$1L = com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.getUtf8List($1L)",
+                escapedFieldName);
+          } else if (SpecificRecordGeneratorUtil.isMapTransformerApplicable(field.getSchema())
+              || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.MAP, field.getSchema())) {
+            allArgsConstructorBuilder.addStatement(
+                "this.$1L = com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.getUtf8Map($1L)",
+                escapedFieldName);
+          } else if (field.getSchema() != null && AvroType.UNION.equals(field.getSchema().type())
+              && !SpecificRecordGeneratorUtil.isSingleTypeNullableUnionSchema(field.getSchema())) {
+
+            allArgsConstructorBuilder.beginControlFlow("if ($1L == null)", escapedFieldName)
+                .addStatement("this.$1L = null", escapedFieldName)
+                .endControlFlow();
+
+            // if union might contain string value in runtime
+            for (SchemaOrRef unionMemberSchema : ((AvroUnionSchema) field.getSchema()).getTypes()) {
+              if (unionMemberSchema.getSchema() != null && unionMemberSchema.getSchema()
+                  .type().equals(AvroType.STRING)) {
+                allArgsConstructorBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName,
+                        CharSequence.class)
+                    .addStatement("this.$1L = com.linkedin.avroutil1.compatibility.StringConverterUtil.getUtf8($1L)",
+                        escapedFieldName)
+                    .endControlFlow();
+              } else if (SpecificRecordGeneratorUtil.isListTransformerApplicableForSchema(
+                  unionMemberSchema.getSchema())) {
+                allArgsConstructorBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName, List.class)
+                    .addStatement(
+                        "this.$1L = com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.getUtf8List($1L)",
+                        escapedFieldName)
+                    .endControlFlow();
+              } else if (SpecificRecordGeneratorUtil.isMapTransformerApplicable(unionMemberSchema.getSchema())) {
+                allArgsConstructorBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName, Map.class)
+                    .addStatement(
+                        "this.$1L = com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.getUtf8Map($1L)",
+                        escapedFieldName)
+                    .endControlFlow();
+              }
+            }
+
+            allArgsConstructorBuilder.beginControlFlow("else")
+                .addStatement("this.$1L = $1L", escapedFieldName)
+                .endControlFlow();
+          } else {
+            allArgsConstructorBuilder.addStatement("this.$1L = $1L", escapedFieldName);
+          }
         }
+
         classBuilder.addMethod(allArgsConstructorBuilder.build());
       }
 
@@ -550,20 +601,25 @@ public class SpecificRecordClassGenerator {
       AvroType fieldAvroType = fieldSchema.type();
       Class<?> fieldClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(fieldAvroType,
           config.getDefaultMethodStringRepresentation());
-      TypeName fieldType = SpecificRecordGeneratorUtil.getTypeName(field.getSchema(), fieldAvroType, true,
-          config.getDefaultMethodStringRepresentation());
+      TypeName fieldType = (AvroType.UNION.equals(fieldAvroType)) ? TypeName.get(Object.class)
+          : SpecificRecordGeneratorUtil.getTypeName(field.getSchema(), fieldAvroType, true,
+              config.getDefaultMethodStringRepresentation());
 
       if (fieldClass != null) {
         fieldBuilder = FieldSpec.builder(fieldClass, escapedFieldName, Modifier.PRIVATE);
-        if(AvroType.STRING.equals(fieldSchema.type()) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.STRING, field)) {
+        if(AvroType.STRING.equals(fieldSchema.type()) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.STRING, field.getSchema())) {
           buildMethodCodeBlockBuilder.addStatement(
-              "record.$1L = fieldSetFlags()[$2L] ? com.linkedin.avroutil1.compatibility.StringConverterUtil.getUtf8(this.$1L) : ($3T) com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.getSpecificDefaultValue(fields()[$2L])",
+              "record.$1L = fieldSetFlags()[$2L] ? "
+                  + "com.linkedin.avroutil1.compatibility.StringConverterUtil.getUtf8(this.$1L) : "
+                  + "($3T) com.linkedin.avroutil1.compatibility.StringConverterUtil.getUtf8(com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.getSpecificDefaultValue(fields()[$2L]))",
               escapedFieldName, fieldIndex,
               SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(fieldAvroType,
                   config.getDefaultFieldStringRepresentation()));
         } else {
           buildMethodCodeBlockBuilder.addStatement(
-              "record.$1L = fieldSetFlags()[$2L] ? this.$1L : ($3T) com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.getSpecificDefaultValue(fields()[$2L])",
+              "record.$1L = fieldSetFlags()[$2L] ? "
+                  + "($3T) this.$1L : "
+                  + "($3T) com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.getSpecificDefaultValue(fields()[$2L])",
               escapedFieldName, fieldIndex, fieldClass);
         }
 
@@ -571,19 +627,65 @@ public class SpecificRecordClassGenerator {
         fieldBuilder = FieldSpec.builder(fieldType, escapedFieldName, Modifier.PRIVATE);
         if(!AvroType.RECORD.equals(fieldAvroType)) {
 
-          if (AvroType.ARRAY.equals(fieldSchema.type()) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.ARRAY, field)) {
+          if (AvroType.ARRAY.equals(fieldSchema.type()) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.ARRAY, field.getSchema())) {
             buildMethodCodeBlockBuilder.addStatement(
-                "record.$1L = fieldSetFlags()[$2L] ? com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.getUtf8List(this.$1L) : ($3L) com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.getSpecificDefaultValue(fields()[$2L])",
+                "record.$1L = fieldSetFlags()[$2L] ? "
+                    + "com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.getUtf8List(this.$1L) : "
+                    + "($3L) com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.getUtf8List(com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.getSpecificDefaultValue(fields()[$2L]))",
                 escapedFieldName, fieldIndex, SpecificRecordGeneratorUtil.getTypeName(field.getSchema(), fieldAvroType, true,
                     config.getDefaultFieldStringRepresentation()));
-          } else if (AvroType.MAP.equals(fieldSchema.type()) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.MAP, field)) {
+          } else if (AvroType.MAP.equals(fieldSchema.type()) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.MAP, field.getSchema())) {
             buildMethodCodeBlockBuilder.addStatement(
-                "record.$1L = fieldSetFlags()[$2L] ? com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.getUtf8Map(this.$1L) : ($3L) com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.getSpecificDefaultValue(fields()[$2L])",
+                "record.$1L = fieldSetFlags()[$2L] ? "
+                    + "com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.getUtf8Map(this.$1L) : "
+                    + "($3L) com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.getUtf8Map(com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.getSpecificDefaultValue(fields()[$2L]))",
                 escapedFieldName, fieldIndex, SpecificRecordGeneratorUtil.getTypeName(field.getSchema(), fieldAvroType, true,
                     config.getDefaultFieldStringRepresentation()));
+          } else if (AvroType.UNION.equals(fieldSchema.type())) {
+            buildMethodCodeBlockBuilder.beginControlFlow("if (fieldSetFlags()[$1L]  && $2L == null)", fieldIndex, escapedFieldName)
+                .addStatement("record.$1L = null", escapedFieldName)
+                .endControlFlow();
+            // if union might contain string value in runtime
+            for (SchemaOrRef unionMemberSchema : ((AvroUnionSchema) field.getSchema()).getTypes()) {
+              if (unionMemberSchema.getSchema() != null && unionMemberSchema.getSchema().type().equals(AvroType.STRING)) {
+                buildMethodCodeBlockBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName, CharSequence.class)
+                    .addStatement(
+                        "record.$1L = fieldSetFlags()[$2L] ? "
+                            + "com.linkedin.avroutil1.compatibility.StringConverterUtil.getUtf8(this.$1L) : "
+                            + "($3T) com.linkedin.avroutil1.compatibility.StringConverterUtil.getUtf8(com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.getSpecificDefaultValue(fields()[$2L]))",
+                        escapedFieldName, fieldIndex,
+                        SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(AvroType.STRING,
+                            config.getDefaultFieldStringRepresentation()))
+                    .endControlFlow();
+              } else if (SpecificRecordGeneratorUtil.isListTransformerApplicableForSchema(unionMemberSchema.getSchema())) {
+                buildMethodCodeBlockBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName, List.class)
+                    .addStatement(
+                        "record.$1L = fieldSetFlags()[$2L] ? "
+                            + "com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.getUtf8List(this.$1L) : "
+                            + "($3L) com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.getUtf8List(com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.getSpecificDefaultValue(fields()[$2L]))",
+                        escapedFieldName, fieldIndex, SpecificRecordGeneratorUtil.getTypeName(field.getSchema(), fieldAvroType, true,
+                            config.getDefaultFieldStringRepresentation()))
+                    .endControlFlow();
+              } else if (SpecificRecordGeneratorUtil.isMapTransformerApplicable(unionMemberSchema.getSchema())) {
+                buildMethodCodeBlockBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName, Map.class)
+                    .addStatement(
+                        "record.$1L = fieldSetFlags()[$2L] ? "
+                            + "com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.getUtf8Map(this.$1L) : "
+                            + "($3L) com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.getUtf8Map(com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.getSpecificDefaultValue(fields()[$2L]))",
+                        escapedFieldName, fieldIndex, SpecificRecordGeneratorUtil.getTypeName(field.getSchema(), fieldAvroType, true,
+                            config.getDefaultFieldStringRepresentation()))
+                    .endControlFlow();
+              }
+            }
+            buildMethodCodeBlockBuilder.beginControlFlow("else")
+                .addStatement(
+                    "record.$1L = fieldSetFlags()[$2L] ? ($3L) this.$1L : ($3L) com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.getSpecificDefaultValue(fields()[$2L])",
+                    escapedFieldName, fieldIndex, SpecificRecordGeneratorUtil.getTypeName(field.getSchema(), fieldAvroType, true,
+                        config.getDefaultFieldStringRepresentation()))
+                .endControlFlow();
           } else {
             buildMethodCodeBlockBuilder.addStatement(
-                "record.$1L = fieldSetFlags()[$2L] ? this.$1L : ($3L) com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.getSpecificDefaultValue(fields()[$2L])",
+                "record.$1L = fieldSetFlags()[$2L] ? ($3L) this.$1L : ($3L) com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.getSpecificDefaultValue(fields()[$2L])",
                 escapedFieldName, fieldIndex, SpecificRecordGeneratorUtil.getTypeName(field.getSchema(), fieldAvroType, true,
                     config.getDefaultFieldStringRepresentation()));
           }
@@ -818,12 +920,11 @@ public class SpecificRecordClassGenerator {
         MethodSpec.methodBuilder(getMethodNameForFieldWithPrefix("get", escapedFieldName))
             .addModifiers(Modifier.PUBLIC)
             .addJavadoc("Gets the value of the '$L' field.$L" + "@return The value.", field.getName(),
-                getFieldJavaDoc(field))
-        .addStatement("return $L", escapedFieldName);
+                getFieldJavaDoc(field));
     if(fieldClass != null) {
-      getMethodBuilder.returns(fieldClass);
+      getMethodBuilder.returns(fieldClass).addStatement("return ($T)$L", fieldClass, escapedFieldName);
     } else {
-      getMethodBuilder.returns(fieldType);
+      getMethodBuilder.returns(fieldType).addStatement("return ($T)$L", fieldType, escapedFieldName);
     }
 
     //Setter
@@ -897,12 +998,14 @@ public class SpecificRecordClassGenerator {
       SpecificRecordGenerationConfig config) {
     // reset var counter
     sizeValCounter = -1;
-    customDecodeBuilder.addStatement("org.apache.avro.Schema.Field[] fieldOrder = in.readFieldOrder()")
+    customDecodeBuilder.addStatement(
+            "org.apache.avro.Schema.Field[] fieldOrder = (com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.areFieldsReordered(getSchema())) ? in.readFieldOrder() : null")
         .beginControlFlow("if (fieldOrder == null)");
     for(AvroSchemaField field : recordSchema.getFields()) {
       String escapedFieldName = getFieldNameWithSuffix(field);
       customDecodeBuilder.addStatement(getSerializedCustomDecodeBlock(config, field.getSchemaOrRef().getSchema(),
-          field.getSchemaOrRef().getSchema().type(), "this."+replaceSingleDollarSignWithDouble(escapedFieldName)));
+          field.getSchemaOrRef().getSchema().type(), "this." + replaceSingleDollarSignWithDouble(escapedFieldName),
+          "this." + replaceSingleDollarSignWithDouble(escapedFieldName), StringUtils.EMPTY_STRING));
     }
     // reset var counter
     sizeValCounter = -1;
@@ -915,7 +1018,9 @@ public class SpecificRecordClassGenerator {
       String escapedFieldName = getFieldNameWithSuffix(field);
       customDecodeBuilder
           .addStatement(String.format("case %s: ",fieldIndex++)+ getSerializedCustomDecodeBlock(config,
-              field.getSchemaOrRef().getSchema(), field.getSchemaOrRef().getSchema().type(), "this."+replaceSingleDollarSignWithDouble(escapedFieldName)))
+              field.getSchemaOrRef().getSchema(), field.getSchemaOrRef().getSchema().type(),
+              "this." + replaceSingleDollarSignWithDouble(escapedFieldName),
+              "this." + replaceSingleDollarSignWithDouble(escapedFieldName), StringUtils.EMPTY_STRING))
           .addStatement("break");
     }
     customDecodeBuilder
@@ -930,7 +1035,7 @@ public class SpecificRecordClassGenerator {
 
 
   private String getSerializedCustomDecodeBlock(SpecificRecordGenerationConfig config,
-      AvroSchema fieldSchema, AvroType fieldType, String fieldName) {
+      AvroSchema fieldSchema, AvroType fieldType, String fieldName, String schemaFieldName, String arrayOption) {
     String serializedCodeBlock = "";
     CodeBlock.Builder codeBlockBuilder  = CodeBlock.builder();
     switch (fieldType) {
@@ -995,11 +1100,13 @@ public class SpecificRecordClassGenerator {
 
         codeBlockBuilder
             .addStatement("long $L = in.readArrayStart()", arraySizeVarName)
-            .addStatement("$T<$T> $L = $L", List.class, arrayItemClass != null ? arrayItemClass : arrayItemTypeName, arrayVarName, fieldName)
+            .addStatement("$1T<$2T> $3L = ($1T<$2T>)$4L", List.class,
+                arrayItemClass != null ? arrayItemClass : arrayItemTypeName, arrayVarName, fieldName)
             .beginControlFlow("if($L == null)", arrayVarName)
-            .addStatement("$L = new org.apache.avro.specific.SpecificData.Array<$T>((int)$L, $L.getField($S).schema())",
-                arrayVarName, arrayItemClass != null ? arrayItemClass : arrayItemTypeName, arraySizeVarName, "SCHEMA$$", fieldName)
-            .addStatement("$L = $L", fieldName, arrayVarName)
+            .addStatement(
+                "$L = new org.apache.avro.specific.SpecificData.Array<$T>((int)$L, $L.getField($S).schema()$L)",
+                arrayVarName, arrayItemClass != null ? arrayItemClass : arrayItemTypeName, arraySizeVarName, "SCHEMA$$",
+                SpecificRecordGeneratorUtil.removePrefixFromFieldName(schemaFieldName), arrayOption)
             .endControlFlow()
             .beginControlFlow("else")
             .addStatement("$L.clear()", arrayVarName)
@@ -1013,10 +1120,12 @@ public class SpecificRecordClassGenerator {
             .addStatement("$T $L = ($L != null ? $L.peek() : null)", arrayItemClass != null ? arrayItemClass : arrayItemTypeName, arrayElementVarName, gArrayVarName, gArrayVarName);
 
         codeBlockBuilder.addStatement(
-            getSerializedCustomDecodeBlock(config, arrayItemSchema, arrayItemSchema.type(), arrayElementVarName));
+            getSerializedCustomDecodeBlock(config, arrayItemSchema, arrayItemSchema.type(), arrayElementVarName,
+                schemaFieldName,  arrayOption + SpecificRecordGeneratorUtil.ARRAY_GET_ELEMENT_TYPE));
         codeBlockBuilder.addStatement("$L.add($L)", arrayVarName, arrayElementVarName)
             .endControlFlow()
-            .endControlFlow();
+            .endControlFlow()
+            .addStatement("$L = com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.getUtf8List($L)", fieldName, arrayVarName);
 
         serializedCodeBlock = codeBlockBuilder.build().toString();
 
@@ -1037,13 +1146,12 @@ public class SpecificRecordClassGenerator {
         codeBlockBuilder
             .addStatement("long $L = in.readMapStart()", mapSizeVarName);
 
-        codeBlockBuilder.addStatement("$T<$T,$T> $L = $L", Map.class, CharSequence.class,
+        codeBlockBuilder.addStatement("$1T<$2T,$3T> $4L = ($1T<$2T,$3T>)$5L", Map.class, CharSequence.class,
             ((mapItemClass != null) ? mapItemClass : mapItemClassName), mapVarName, fieldName);
 
         codeBlockBuilder.beginControlFlow("if($L == null)", mapVarName)
           .addStatement("$L = new $T<$T,$T>((int)$L)", mapVarName, HashMap.class, CharSequence.class,
               ((mapItemClass != null) ? mapItemClass : mapItemClassName), mapSizeVarName)
-          .addStatement("$L = $L", fieldName, mapVarName)
           .endControlFlow()
           .beginControlFlow("else")
           .addStatement("$L.clear()", mapVarName)
@@ -1052,15 +1160,18 @@ public class SpecificRecordClassGenerator {
         codeBlockBuilder.beginControlFlow("for (; 0 < $1L; $1L = in.mapNext())", mapSizeVarName)
             .beginControlFlow("for(; $1L != 0; $1L--)", mapSizeVarName)
             .addStatement("$T $L = null", CharSequence.class, mapKeyVarName)
-            .addStatement(getSerializedCustomDecodeBlock(config, ((AvroMapSchema) fieldSchema).getValueSchema(), AvroType.STRING, mapKeyVarName))
-            .addStatement("$T $L = null", ((mapItemClass != null) ? mapItemClass : mapItemClassName), mapValueVarName)
             .addStatement(
-                getSerializedCustomDecodeBlock(config, ((AvroMapSchema) fieldSchema).getValueSchema(),
-                    ((AvroMapSchema) fieldSchema).getValueSchema().type(), mapValueVarName));
+                getSerializedCustomDecodeBlock(config, ((AvroMapSchema) fieldSchema).getValueSchema(), AvroType.STRING,
+                    mapKeyVarName, schemaFieldName, arrayOption + SpecificRecordGeneratorUtil.MAP_GET_VALUE_TYPE))
+            .addStatement("$T $L = null", ((mapItemClass != null) ? mapItemClass : mapItemClassName), mapValueVarName)
+            .addStatement(getSerializedCustomDecodeBlock(config, ((AvroMapSchema) fieldSchema).getValueSchema(),
+                ((AvroMapSchema) fieldSchema).getValueSchema().type(), mapValueVarName, schemaFieldName,
+                arrayOption + SpecificRecordGeneratorUtil.MAP_GET_VALUE_TYPE));
 
         codeBlockBuilder.addStatement("$L.put($L,$L)", mapVarName, mapKeyVarName, mapValueVarName)
             .endControlFlow()
-            .endControlFlow();
+            .endControlFlow()
+            .addStatement("$L = com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.getUtf8Map($L)", fieldName, mapVarName);;
 
         serializedCodeBlock = codeBlockBuilder.build().toString();
 
@@ -1068,22 +1179,20 @@ public class SpecificRecordClassGenerator {
 
       case UNION:
         int numberOfUnionMembers = ((AvroUnionSchema) fieldSchema).getTypes().size();
+        codeBlockBuilder.beginControlFlow("switch(in.readIndex())");
         for (int i = 0; i < numberOfUnionMembers; i++) {
 
           SchemaOrRef unionMember = ((AvroUnionSchema) fieldSchema).getTypes().get(i);
-          if (i == 0) {
-            codeBlockBuilder.beginControlFlow("if (in.readIndex() == $L) ", i);
-          } else {
-            codeBlockBuilder.beginControlFlow(" else if (in.readIndex() == $L) ", i);
-          }
+          codeBlockBuilder.addStatement("case $L: ", i);
           codeBlockBuilder.addStatement(
-              getSerializedCustomDecodeBlock(config, unionMember.getSchema(), unionMember.getSchema().type(), fieldName));
+              getSerializedCustomDecodeBlock(config, unionMember.getSchema(), unionMember.getSchema().type(), fieldName,
+                  schemaFieldName, arrayOption + ".getTypes().get(" + i + ")" ));
           if (unionMember.getSchema().type().equals(AvroType.NULL)) {
             codeBlockBuilder.addStatement("$L = null", fieldName);
           }
-          codeBlockBuilder.endControlFlow();
+          codeBlockBuilder.addStatement("break");
         }
-        codeBlockBuilder.beginControlFlow("else")
+        codeBlockBuilder.addStatement("default:")
             .addStatement("throw new $T($S)", IndexOutOfBoundsException.class, "Union IndexOutOfBounds")
             .endControlFlow();
 
@@ -1186,11 +1295,11 @@ public class SpecificRecordClassGenerator {
           SpecificRecordGeneratorUtil.fullyQualifiedClassesInRecord.add(arrayItemTypeName.toString());
         }
 
-        codeBlockBuilder.addStatement("long $L = $L.size()", lengthVarName, fieldName)
+        codeBlockBuilder.addStatement("long $L = ((java.util.List)$L).size()", lengthVarName, fieldName)
             .addStatement("out.writeArrayStart()")
             .addStatement("out.setItemCount($L)", lengthVarName)
             .addStatement("long $L = 0", actualSizeVarName)
-            .beginControlFlow("for ($T $L: $L)", arrayItemClass != null ? arrayItemClass : arrayItemTypeName,
+            .beginControlFlow("for ($1T $2L: (java.util.List<$1T>)$3L)", arrayItemClass != null ? arrayItemClass : arrayItemTypeName,
                 getElementVarName(), fieldName)
             .addStatement("$L++", actualSizeVarName)
             .addStatement("out.startItem()")
@@ -1215,8 +1324,9 @@ public class SpecificRecordClassGenerator {
         String valueVarName = getValueVarName();
 
         codeBlockBuilder
-            .addStatement("long $L = $L.size()", lengthVarName, fieldName)
+            .addStatement("long $L = ((Map)$L).size()", lengthVarName, fieldName)
             .addStatement("out.writeMapStart()")
+            .addStatement(" out.setItemCount($L)", lengthVarName)
             .addStatement("long $L = 0", actualSizeVarName);
 
         AvroType mapItemAvroType = ((AvroMapSchema) fieldSchema).getValueSchema().type();
@@ -1226,7 +1336,7 @@ public class SpecificRecordClassGenerator {
             SpecificRecordGeneratorUtil.getTypeName(((AvroMapSchema) fieldSchema).getValueSchema(), mapItemAvroType,
                 true, config.getDefaultFieldStringRepresentation());
 
-        codeBlockBuilder.beginControlFlow("for (java.util.Map.Entry<java.lang.CharSequence, $T> $L: $L.entrySet())",
+        codeBlockBuilder.beginControlFlow("for (java.util.Map.Entry<java.lang.CharSequence, $1T> $2L: ((java.util.Map<java.lang.CharSequence, $1T>)$3L).entrySet())",
             (mapItemClass != null) ? mapItemClass : mapItemClassName, elementVarName, fieldName);
 
         codeBlockBuilder
@@ -1310,6 +1420,10 @@ public class SpecificRecordClassGenerator {
     return "e" + sizeValCounter;
   }
 
+  private String getElementVarNameForCounter(int counter) {
+    return "e" + counter;
+  }
+
   private String getSizeVarName() {
     return "size" + sizeValCounter;
   }
@@ -1344,37 +1458,73 @@ public class SpecificRecordClassGenerator {
     for (AvroSchemaField field : recordSchema.getFields()) {
       String escapedFieldName = getFieldNameWithSuffix(field);
       Class<?> fieldClass =
-          SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(field.getSchemaOrRef().getSchema().type(), config.getDefaultFieldStringRepresentation());
-      if(fieldClass != null) {
-        AvroType fieldType = field.getSchemaOrRef().getSchema().type();
-        if (fieldType == AvroType.STRING || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.STRING, field)) {
-          // Default during transition, stores Utf8 in runtime for string fields
-          if(config.getDefaultFieldStringRepresentation().equals(AvroJavaStringRepresentation.CHAR_SEQUENCE)) {
-            switchBuilder.addStatement(
-                "case $L: this.$L = com.linkedin.avroutil1.compatibility.StringConverterUtil.getUtf8(value); break",
-                fieldIndex++, escapedFieldName);
-          } else {
-            switchBuilder.addStatement(
-                "case $L: this.$L = com.linkedin.avroutil1.compatibility.StringConverterUtil.get$L(value); break",
-                fieldIndex++, escapedFieldName, fieldClass.getSimpleName());
-          }
+          SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(field.getSchemaOrRef().getSchema().type(),
+              config.getDefaultFieldStringRepresentation());
 
-        } else if (AvroType.ARRAY.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.ARRAY, field)) {
+      AvroType fieldType = field.getSchemaOrRef().getSchema().type();
+      if (fieldType == AvroType.STRING || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.STRING,
+          field.getSchema())) {
+        // Default during transition, stores Utf8 in runtime for string fields
+        if (config.getDefaultFieldStringRepresentation().equals(AvroJavaStringRepresentation.CHAR_SEQUENCE)) {
           switchBuilder.addStatement(
-              "case $1L: this.$2L = ($3T) com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.getUtf8List($2L); break",
-              fieldIndex++, escapedFieldName, SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(),
-                  field.getSchemaOrRef().getSchema().type(), true, config.getDefaultFieldStringRepresentation()));
-        } else if (AvroType.MAP.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.MAP, field)) {
-          switchBuilder.addStatement(
-              "case $1L: this.$2L = ($3T) com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.getUtf8Map($2L); break",
-              fieldIndex++, escapedFieldName, SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(),
-                  field.getSchemaOrRef().getSchema().type(), true, config.getDefaultFieldStringRepresentation()));
+              "case $L: this.$L = com.linkedin.avroutil1.compatibility.StringConverterUtil.getUtf8(value); break",
+              fieldIndex++, escapedFieldName);
         } else {
-          switchBuilder.addStatement("case $L: this.$L = ($T) value; break", fieldIndex++, escapedFieldName, fieldClass);
+          switchBuilder.addStatement(
+              "case $L: this.$L = com.linkedin.avroutil1.compatibility.StringConverterUtil.get$L(value); break",
+              fieldIndex++, escapedFieldName, fieldClass.getSimpleName());
         }
+      } else if (AvroType.ARRAY.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.ARRAY,
+          field.getSchema())) {
+        switchBuilder.addStatement(
+            "case $1L: this.$2L = ($3T) com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.getUtf8List(value); break",
+            fieldIndex++, escapedFieldName, SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(),
+                field.getSchemaOrRef().getSchema().type(), true, config.getDefaultFieldStringRepresentation()));
+      } else if (AvroType.MAP.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.MAP,
+          field.getSchema())) {
+        switchBuilder.addStatement(
+            "case $1L: this.$2L = ($3T) com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.getUtf8Map(value); break",
+            fieldIndex++, escapedFieldName, SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(),
+                field.getSchemaOrRef().getSchema().type(), true, config.getDefaultFieldStringRepresentation()));
+      } else if (field.getSchema() != null && AvroType.UNION.equals(field.getSchema().type())) {
+        switchBuilder.addStatement("case $L:", fieldIndex++);
+        switchBuilder.beginControlFlow("if (value == null)")
+            .addStatement("this.$1L = null", escapedFieldName)
+            .endControlFlow();
+
+        // if union might contain string value in runtime
+        for (SchemaOrRef unionMemberSchema : ((AvroUnionSchema) field.getSchema()).getTypes()) {
+          if (unionMemberSchema.getSchema() != null && unionMemberSchema.getSchema().type().equals(AvroType.STRING)) {
+            switchBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName, CharSequence.class)
+                .addStatement("this.$1L = com.linkedin.avroutil1.compatibility.StringConverterUtil.getUtf8(value)",
+                    escapedFieldName)
+                .endControlFlow();
+          } else if (SpecificRecordGeneratorUtil.isListTransformerApplicableForSchema(unionMemberSchema.getSchema())) {
+            switchBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName, List.class)
+                .addStatement(
+                    "this.$1L = com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.getUtf8List(value)",
+                    escapedFieldName)
+                .endControlFlow();
+          } else if (SpecificRecordGeneratorUtil.isMapTransformerApplicable(unionMemberSchema.getSchema())) {
+            switchBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName, Map.class)
+                .addStatement(
+                    "this.$1L = com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.getUtf8Map(value)",
+                    escapedFieldName)
+                .endControlFlow();
+          }
+        }
+        switchBuilder.beginControlFlow("else")
+            .addStatement("this.$L = ($L) value", escapedFieldName,
+                SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(),
+                    field.getSchemaOrRef().getSchema().type(), true, config.getDefaultFieldStringRepresentation()))
+            .endControlFlow()
+            .addStatement("break");
       } else {
-        switchBuilder.addStatement("case $L: this.$L = ($T) value; break", fieldIndex++, escapedFieldName,
-            SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(), field.getSchemaOrRef().getSchema().type(), true, config.getDefaultFieldStringRepresentation()));
+        switchBuilder.addStatement(
+            fieldClass != null ? "case $L: this.$L = ($T) value; break" : "case $L: this.$L = ($L) value; break",
+            fieldIndex++, escapedFieldName, fieldClass != null ? fieldClass
+                : SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(),
+                    field.getSchemaOrRef().getSchema().type(), true, config.getDefaultFieldStringRepresentation()));
       }
     }
     switchBuilder.addStatement("default: throw new org.apache.avro.AvroRuntimeException(\"Bad index\")")
@@ -1395,18 +1545,51 @@ public class SpecificRecordClassGenerator {
     switchBuilder.beginControlFlow("switch (field)");
     for (AvroSchemaField field : recordSchema.getFields()) {
       String escapedFieldName = getFieldNameWithSuffix(field);
-      AvroType fieldType = field.getSchemaOrRef().getSchema().type();
-      if (fieldType == AvroType.STRING || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.STRING, field)) {
+      AvroType fieldType = field.getSchema().type();
+      if (fieldType == AvroType.STRING || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.STRING, field.getSchema())) {
         Class<?> fieldClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(AvroType.STRING, config.getDefaultMethodStringRepresentation());
         switchBuilder.addStatement("case $L: return com.linkedin.avroutil1.compatibility.StringConverterUtil.get$L($L)", fieldIndex++, fieldClass.getSimpleName(), escapedFieldName);
-      } else if (AvroType.ARRAY.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.ARRAY, field)) {
+      } else if (AvroType.ARRAY.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.ARRAY, field.getSchema())) {
         switchBuilder.addStatement(
             "case $L: return com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.getStringList(this.$L)",
             fieldIndex++, escapedFieldName);
-      } else if (AvroType.MAP.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.MAP, field)) {
+      } else if (AvroType.MAP.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.MAP, field.getSchema())) {
         switchBuilder.addStatement(
             "case $L: return com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.getStringMap(this.$L)",
             fieldIndex++, escapedFieldName);
+      } else if (field.getSchema() != null && AvroType.UNION.equals(field.getSchema().type())) {
+
+        switchBuilder.addStatement("case $L:", fieldIndex++);
+        switchBuilder.beginControlFlow("if (this.$1L == null)", escapedFieldName)
+            .addStatement("return null", escapedFieldName)
+            .endControlFlow();
+
+        // if union might contain string value in runtime
+        for (SchemaOrRef unionMemberSchema : ((AvroUnionSchema) field.getSchema()).getTypes()) {
+          if (unionMemberSchema.getSchema() != null && unionMemberSchema.getSchema().type().equals(AvroType.STRING)) {
+            switchBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName, CharSequence.class)
+                .addStatement("return com.linkedin.avroutil1.compatibility.StringConverterUtil.getString($1L)",
+                    escapedFieldName)
+                .endControlFlow();
+          } else if (SpecificRecordGeneratorUtil.isListTransformerApplicableForSchema(
+              unionMemberSchema.getSchema())) {
+            switchBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName, List.class)
+                .addStatement(
+                    "return com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.getStringList($1L)",
+                    escapedFieldName)
+                .endControlFlow();
+          } else if (SpecificRecordGeneratorUtil.isMapTransformerApplicable(unionMemberSchema.getSchema())) {
+            switchBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName, Map.class)
+                .addStatement(
+                    "return com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.getStringMap($1L)",
+                    escapedFieldName)
+                .endControlFlow();
+          }
+        }
+
+        switchBuilder.beginControlFlow("else")
+            .addStatement("return this.$1L", escapedFieldName)
+            .endControlFlow();
       } else {
         switchBuilder.addStatement("case $L: return $L", fieldIndex++, escapedFieldName);
       }
@@ -1478,7 +1661,7 @@ public class SpecificRecordClassGenerator {
     }
 
     // false if field type is reference
-    if (AvroType.STRING.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.STRING, field)) {
+    if (AvroType.STRING.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.STRING, field.getSchema())) {
       switch (config.getDefaultFieldStringRepresentation()) {
         case STRING:
           methodSpecBuilder.addStatement("return this.$1L == null ? null : String.valueOf(this.$1L)", escapedFieldName);
@@ -1492,16 +1675,47 @@ public class SpecificRecordClassGenerator {
               "this.$1L = com.linkedin.avroutil1.compatibility.StringConverterUtil.getUtf8($1L)", escapedFieldName);
           break;
       }
-    } else if (AvroType.ARRAY.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.ARRAY, field)) {
+    } else if (AvroType.ARRAY.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.ARRAY, field.getSchema())) {
       methodSpecBuilder.addStatement(
           "this.$1L = ($2T) com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.getUtf8List($1L)",
           escapedFieldName, SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(),
               field.getSchemaOrRef().getSchema().type(), true, config.getDefaultFieldStringRepresentation()));
-    } else if (AvroType.MAP.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.MAP, field)) {
+    } else if (AvroType.MAP.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.MAP, field.getSchema())) {
       methodSpecBuilder.addStatement(
           "this.$1L = ($2T) com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.getUtf8Map($1L)",
           escapedFieldName, SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(),
               field.getSchemaOrRef().getSchema().type(), true, config.getDefaultFieldStringRepresentation()));
+    } else if (field.getSchema() != null && AvroType.UNION.equals(field.getSchema().type())) {
+      methodSpecBuilder.beginControlFlow("if ($1L == null)", escapedFieldName)
+          .addStatement("this.$1L = null", escapedFieldName)
+          .endControlFlow();
+
+      // if union might contain string value in runtime
+      for (SchemaOrRef unionMemberSchema : ((AvroUnionSchema) field.getSchema()).getTypes()) {
+        if (unionMemberSchema.getSchema() != null && unionMemberSchema.getSchema().type().equals(AvroType.STRING)) {
+          methodSpecBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName, CharSequence.class)
+              .addStatement("this.$1L = com.linkedin.avroutil1.compatibility.StringConverterUtil.getUtf8($1L)",
+                  escapedFieldName)
+              .endControlFlow();
+        } else if (SpecificRecordGeneratorUtil.isListTransformerApplicableForSchema(unionMemberSchema.getSchema())) {
+          methodSpecBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName, List.class)
+              .addStatement(
+                  "this.$1L = com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.getUtf8List($1L)",
+                  escapedFieldName)
+              .endControlFlow();
+        } else if (SpecificRecordGeneratorUtil.isMapTransformerApplicable(unionMemberSchema.getSchema())) {
+          methodSpecBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName, Map.class)
+              .addStatement(
+                  "this.$1L = com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.getUtf8Map($1L)",
+                  escapedFieldName)
+              .endControlFlow();
+        }
+      }
+      methodSpecBuilder.beginControlFlow("else")
+          .addStatement("this.$1L = ($2L) $1L", escapedFieldName,
+              SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(),
+                  field.getSchemaOrRef().getSchema().type(), true, config.getDefaultFieldStringRepresentation()))
+          .endControlFlow();
     } else {
       methodSpecBuilder.addStatement("this.$1L = $1L", escapedFieldName);
     }
@@ -1514,15 +1728,15 @@ public class SpecificRecordClassGenerator {
     String escapedFieldName = getFieldNameWithSuffix(field);
     MethodSpec.Builder methodSpecBuilder = MethodSpec
         .methodBuilder(getMethodNameForFieldWithPrefix("get", field.getName())).addModifiers(Modifier.PUBLIC);
-
+    TypeName typeName = null;
     if(field.getSchemaOrRef().getSchema() != null) {
       fieldType = field.getSchemaOrRef().getSchema().type();
       Class<?> fieldClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(fieldType, config.getDefaultMethodStringRepresentation());
       if (fieldClass != null) {
         methodSpecBuilder.returns(fieldClass);
       } else {
-        TypeName className = SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(), fieldType, true, config.getDefaultMethodStringRepresentation());
-        methodSpecBuilder.returns(className);
+        typeName = SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(), fieldType, true, config.getDefaultMethodStringRepresentation());
+        methodSpecBuilder.returns(typeName);
       }
     } else {
       ClassName className =  ClassName.get(field.getSchemaOrRef().getParentNamespace(), field.getSchemaOrRef().getRef());
@@ -1531,7 +1745,7 @@ public class SpecificRecordClassGenerator {
     }
     // if fieldRepresentation != methodRepresentation for String field
     // false if field type is reference
-    if ((AvroType.STRING.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.STRING, field))
+    if ((AvroType.STRING.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.STRING, field.getSchema()))
         && config.getDefaultFieldStringRepresentation() != config.getDefaultMethodStringRepresentation()) {
       switch (config.getDefaultMethodStringRepresentation()) {
         case STRING:
@@ -1553,16 +1767,51 @@ public class SpecificRecordClassGenerator {
                 escapedFieldName);
           }
       }
-    } else if (AvroType.ARRAY.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.ARRAY, field)) {
+    } else if (AvroType.ARRAY.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.ARRAY, field.getSchema())) {
       methodSpecBuilder.addStatement(
           "return com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.getStringList(this.$L)",
           escapedFieldName);
-    } else if (AvroType.MAP.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.MAP, field)) {
+    } else if (AvroType.MAP.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.MAP, field.getSchema())) {
       methodSpecBuilder.addStatement(
           "return com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.getStringMap(this.$L)",
           escapedFieldName);
+    } else if (field.getSchema() != null && AvroType.UNION.equals(field.getSchema().type())) {
+
+      methodSpecBuilder.beginControlFlow("if (this.$1L == null)", escapedFieldName)
+          .addStatement("return null", escapedFieldName)
+          .endControlFlow();
+
+      // if union might contain string value in runtime
+      for (SchemaOrRef unionMemberSchema : ((AvroUnionSchema) field.getSchema()).getTypes()) {
+        if (unionMemberSchema.getSchema() != null && unionMemberSchema.getSchema().type().equals(AvroType.STRING)) {
+          methodSpecBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName, CharSequence.class)
+              .addStatement("return com.linkedin.avroutil1.compatibility.StringConverterUtil.getString($1L)",
+                  escapedFieldName)
+              .endControlFlow();
+        } else if (SpecificRecordGeneratorUtil.isListTransformerApplicableForSchema(unionMemberSchema.getSchema())) {
+          methodSpecBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName, List.class)
+              .addStatement(
+                  "return com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.getStringList($1L)",
+                  escapedFieldName)
+              .endControlFlow();
+        } else if (SpecificRecordGeneratorUtil.isMapTransformerApplicable(unionMemberSchema.getSchema())) {
+          methodSpecBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName, Map.class)
+              .addStatement(
+                  "return com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.getStringMap($1L)",
+                  escapedFieldName)
+              .endControlFlow();
+        }
+      }
+      methodSpecBuilder.beginControlFlow("else")
+          .addStatement("return this.$1L", escapedFieldName)
+          .endControlFlow();
     } else {
-      methodSpecBuilder.addStatement("return this.$L", escapedFieldName);
+      if(typeName != null) {
+        methodSpecBuilder.addStatement("return ($T)this.$L", typeName, escapedFieldName);
+      } else {
+        methodSpecBuilder.addStatement("return this.$L", escapedFieldName);
+      }
+
     }
 
     return methodSpecBuilder.build();

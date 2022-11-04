@@ -65,6 +65,9 @@ public class SpecificRecordGeneratorUtil {
   public static final ClassName CLASSNAME_SPECIFIC_FIXED = ClassName.get("org.apache.avro.specific", "SpecificFixed");
 
 
+  public static String ARRAY_GET_ELEMENT_TYPE = ".getElementType()";
+  public static String MAP_GET_VALUE_TYPE = ".getValueType()";
+
   public static HashSet<TypeName> fullyQualifiedClassNamesInRecord = new HashSet<>();
 
   public static HashSet<String> fullyQualifiedClassesInRecord = new HashSet<>(Arrays.asList(
@@ -93,8 +96,9 @@ public class SpecificRecordGeneratorUtil {
   private SpecificRecordGeneratorUtil(){}
 
 
-  private static boolean isSingleTypeNullableUnionSchema(AvroUnionSchema unionSchema) {
-    if(unionSchema.getTypes().size() == 1) return true;
+  public static boolean isSingleTypeNullableUnionSchema(AvroSchema schema) {
+    if(!(schema instanceof AvroUnionSchema)) return false;
+    AvroUnionSchema unionSchema = (AvroUnionSchema) schema;
     if(unionSchema.getTypes().size() == 2) {
       for(SchemaOrRef unionMember : unionSchema.getTypes()) {
         if(AvroType.NULL.equals(unionMember.getSchema().type())) {
@@ -174,9 +178,8 @@ public class SpecificRecordGeneratorUtil {
 
         if(isSingleTypeNullableUnionSchema(unionSchema)) {
           List<SchemaOrRef> branches = unionSchema.getTypes();
-          SchemaOrRef unionMemberSchemaOrRef = (branches.size() == 1) ? branches.get(0)
-              : (branches.get(0).getSchema().type().equals(AvroType.NULL) ? branches.get(1)
-                  : branches.get(0));
+          SchemaOrRef unionMemberSchemaOrRef =
+              (branches.get(0).getSchema().type().equals(AvroType.NULL) ? branches.get(1) : branches.get(0));
 
           AvroSchema branchSchema = unionMemberSchemaOrRef.getSchema();
           AvroType branchSchemaType = branchSchema.type();
@@ -246,13 +249,15 @@ public class SpecificRecordGeneratorUtil {
    * Checks if field type can be treated as null union of the given type
    *
    * @param type
-   * @param field
-   * @return True if [type] or [null, type] or [type, null]
+   * @param schema
+   * @return True if type [null, type] or [type, null]
    */
-  public static boolean isNullUnionOf(AvroType type, AvroSchemaField field) {
-    if(field.getSchema() instanceof AvroUnionSchema) {
-      List<SchemaOrRef> unionMembers = ((AvroUnionSchema) field.getSchema()).getTypes();
-      return (unionMembers.size() == 1 && unionMembers.get(0).getSchema().type().equals(type)) ||
+  public static boolean isNullUnionOf(AvroType type, AvroSchema schema) {
+    if(schema == null) return false;
+
+    if(schema instanceof AvroUnionSchema) {
+      List<SchemaOrRef> unionMembers = ((AvroUnionSchema) schema).getTypes();
+      return
           (unionMembers.size() == 2 &&
           (
               (unionMembers.get(0).getSchema().type().equals(AvroType.NULL) && unionMembers.get(1).getSchema().type().equals(type))
@@ -260,7 +265,44 @@ public class SpecificRecordGeneratorUtil {
               (unionMembers.get(1).getSchema().type().equals(AvroType.NULL) && unionMembers.get(0).getSchema().type().equals(type))
           ));
     }
+    return schema.type().equals(type);
+  }
+
+  /***
+   * Handles list , union of list
+   * @param schema
+   * @return true for List of String and List of Union of String
+   */
+  public static boolean isListTransformerApplicableForSchema(AvroSchema schema) {
+    if(schema == null) return false;
+    if (schema.type().equals(AvroType.ARRAY)) {
+      AvroSchema arrayItemSchema = getListItemSchemaFromPossible(schema);
+      return arrayItemSchema != null && arrayItemSchema.type().equals(AvroType.STRING);
+    }
     return false;
+  }
+
+  public static boolean isMapTransformerApplicable(AvroSchema schema) {
+    return isNullUnionOf(AvroType.MAP, schema);
+  }
+
+  /***
+   * if isNullUnionOf Array type is true, call this method to get item schema
+   * @param schema
+   * @return item schema, null if not compatible
+   */
+  private static AvroSchema getListItemSchemaFromPossible(AvroSchema schema) {
+    switch (schema.type()) {
+      case ARRAY:
+        return ((AvroArraySchema) schema).getValueSchema();
+      case UNION:
+        for( SchemaOrRef unionMemberSchema: ((AvroUnionSchema) schema).getTypes()) {
+          if(unionMemberSchema.getSchema() != null && AvroType.ARRAY.equals(unionMemberSchema.getSchema().type())) {
+            return getListItemSchemaFromPossible(unionMemberSchema.getSchema());
+          }
+        }
+      default: return null;
+    }
   }
 
   private static List<AvroNamedSchema> getNestedInternalSchemaListForRecord(AvroRecordSchema topLevelSchema) {
@@ -312,6 +354,11 @@ public class SpecificRecordGeneratorUtil {
       }
     }
     return schemaList;
+  }
+
+  public static String removePrefixFromFieldName(String fieldNameWithPrefix) {
+    String[] fieldNameParts = fieldNameWithPrefix.split("\\.");
+    return fieldNameParts.length > 1 ? fieldNameParts[1] : fieldNameWithPrefix;
   }
 
 }

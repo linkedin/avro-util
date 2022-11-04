@@ -1,0 +1,60 @@
+/*
+ * Copyright 2022 LinkedIn Corp.
+ * Licensed under the BSD 2-Clause License (the "License").
+ * See License in the project root for license information.
+ */
+
+plugins {
+    id "java-library"
+}
+
+configurations {
+    codegen
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+            srcDir "$buildDir/generated/sources/avro/java/main"
+        }
+        resources {
+            srcDirs = [
+                "src/main/avro"
+            ]
+        }
+    }
+}
+
+task runOwnCodegen {
+
+    description = 'generate specific classes using own codegen utility'
+    doLast {
+        javaexec {
+            classpath configurations.codegen
+            main = 'com.linkedin.avroutil1.builder.SchemaBuilder'
+            args = [
+                "--input", "$projectDir/src/main/avro",
+                "--output", "$buildDir/generated/sources/avro/java/main",
+                "--generator", "AVRO_UTIL",
+                "--minAvroVer", "1.4"
+            ]
+        }
+    }
+}
+
+compileJava.dependsOn runOwnCodegen
+
+dependencies {
+    codegen project(":avro-builder:builder")
+
+    implementation ("org.apache.avro:avro:1.5.4") {
+        exclude group: "org.mortbay.jetty"
+        exclude group: "org.apache.velocity"
+        exclude group: "commons-lang"
+        exclude group: "org.jboss.netty"
+        exclude group: "com.thoughtworks.paranamer", module: "paranamer-ant"
+    }
+    //required because generated code depends on the helper
+    implementation project(":helper:helper")
+}

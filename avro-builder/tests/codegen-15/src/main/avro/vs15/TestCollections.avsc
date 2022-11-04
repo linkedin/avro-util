@@ -1,0 +1,78 @@
+{
+  "name": "TestCollections",
+  "namespace": "vs15",
+  "fields": [
+    {
+      "name": "str",
+      "type": "string"
+    },
+    {
+      "name": "strAr",
+      "type": {
+        "type": "array",
+        "items": "string"
+      }
+    },
+    {
+      "name": "strArAr",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "array",
+          "items": "string"
+        }
+      }
+    },
+    {
+      "name": "unionOfArray",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": "string"
+        }
+      ]
+    },
+    {
+      "name": "arOfMap",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "map",
+          "values": "string"
+        }
+      }
+    },
+    {
+      "name": "unionOfMap",
+      "type": [
+        "null",
+        {
+          "type": "map",
+          "values": "string"
+        }
+      ]
+    },
+    {
+      "name": "arOfUnionOfStr",
+      "type": {
+        "type": "array",
+        "items": ["null", "string"]
+      }
+    },
+    {
+      "name": "arOfMapOfUnionOfArray",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "map",
+          "values": ["null", {
+            "type": "array",
+            "items": "string"
+          }]
+        }
+      }
+    }
+  ],
+  "type": "record"
+}

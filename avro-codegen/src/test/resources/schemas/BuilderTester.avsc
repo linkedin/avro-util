@@ -1,0 +1,20 @@
+{
+  "type": "record",
+  "namespace": "vs19",
+  "name": "BuilderTester",
+  "fields": [
+    {
+      "name": "arOfMapOfUnionOfArray",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "map",
+          "values": ["null", {
+            "type": "array",
+            "items": "string"
+          }]
+        }
+      }
+    }
+  ]
+}
