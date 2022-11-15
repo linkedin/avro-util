@@ -1,0 +1,15 @@
+[{
+  "type": "record",
+  "namespace": "simpleproject",
+  "name": "SimpleRecord",
+  "fields": [
+    {"name": "f", "type": "int"}
+  ]
+},{
+  "type": "record",
+  "namespace": "simpleproject",
+  "name": "SimpleRecord2",
+  "fields": [
+    {"name": "f", "type": "int"}
+  ]
+}]
