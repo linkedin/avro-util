@@ -690,33 +690,9 @@ public class SpecificRecordClassGenerator {
                     config.getDefaultFieldStringRepresentation()));
           }
         } else {
-          canThrowMissingFieldException = true;
-          buildMethodCodeBlockBuilder.beginControlFlow("if ($L != null)", escapedFieldName + "Builder")
-              .beginControlFlow("try")
-              .addStatement("record.$1L = this.$1LBuilder.build()", escapedFieldName)
-              .endControlFlow();
-
-
-
-          if (config.getMinimumSupportedAvroVersion().laterThan(AvroVersion.AVRO_1_8)) {
-            buildMethodCodeBlockBuilder.beginControlFlow("catch (org.apache.avro.AvroMissingFieldException e)")
-                .addStatement("com.linkedin.avroutil1.compatibility.exception.AvroUtilMissingFieldException avroUtilException = new com.linkedin.avroutil1.compatibility.exception.AvroUtilMissingFieldException(e)")
-                .addStatement("avroUtilException.addParentField(record.getSchema().getField($S))", escapedFieldName)
-                .addStatement("throw avroUtilException")
-                .endControlFlow();
-          }
-
-          buildMethodCodeBlockBuilder.beginControlFlow("catch (org.apache.avro.AvroRuntimeException e)")
-              .addStatement("com.linkedin.avroutil1.compatibility.exception.AvroUtilMissingFieldException avroUtilException = new com.linkedin.avroutil1.compatibility.exception.AvroUtilMissingFieldException(e)")
-              .addStatement("avroUtilException.addParentField(record.getSchema().getField($S))", escapedFieldName)
-              .addStatement("throw avroUtilException")
-              .endControlFlow()
-              .endControlFlow()
-              .beginControlFlow("else")
-              .addStatement(
+          buildMethodCodeBlockBuilder.addStatement(
               "record.$1L = fieldSetFlags()[$2L] ? this.$1L : ($3L) com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.getSpecificDefaultValue(fields()[$2L])",
-              escapedFieldName, fieldIndex, fieldType)
-          .endControlFlow();
+              escapedFieldName, fieldIndex, fieldType);
         }
       }
       if (field.hasDoc()) {
@@ -737,23 +713,6 @@ public class SpecificRecordClassGenerator {
               config.getDefaultFieldStringRepresentation().getJsonValue())
           .addStatement("fieldSetFlags()[$1L] = other.fieldSetFlags()[$1L]", fieldIndex)
           .endControlFlow();
-
-      if (AvroType.RECORD.equals(fieldAvroType)) {
-        recordBuilder.addField(
-            FieldSpec.builder(ClassName.get(((AvroRecordSchema) field.getSchema()).getFullName(), "Builder"),
-                escapedFieldName + "Builder").build());
-
-        populateRecordBuilderAccessor(accessorMethodSpecs, escapedFieldName, recordSchema.getFullName(), field);
-
-        otherBuilderConstructorFromRecordBlockBuilder.addStatement("this.$L = null", escapedFieldName+"Builder");
-        otherBuilderConstructorFromOtherBuilderBlockBuilder.beginControlFlow("if (other.$L())",
-            getMethodNameForFieldWithPrefix("has", escapedFieldName + "Builder"))
-            .addStatement("this.$L = $L.newBuilder(other.$L())", escapedFieldName + "Builder",
-                ((AvroRecordSchema) field.getSchema()).getFullName(),
-                getMethodNameForFieldWithPrefix("get", escapedFieldName + "Builder"))
-        .endControlFlow();
-
-      }
 
       // get, set, has, clear methods
       populateAccessorMethodsBlock(accessorMethodSpecs, field, fieldClass, fieldType, recordSchema.getFullName(),
@@ -863,53 +822,6 @@ public class SpecificRecordClassGenerator {
         .build();
 
     return Arrays.asList(noArgNewBuilderSpec, otherBuilderNewBuilderSpec, otherInstanceNewBuilderSpec);
-  }
-
-  private void populateRecordBuilderAccessor(List<MethodSpec> accessorMethodSpecs, String fieldName,
-      String recordFullName, AvroSchemaField field) {
-
-    String builderName = fieldName+"Builder";
-    String fieldParentNamespace = ((AvroRecordSchema)field.getSchema()).getFullName();
-    // Getter
-    MethodSpec.Builder getMethodBuilder = MethodSpec.methodBuilder(getMethodNameForFieldWithPrefix("get", builderName))
-        .addModifiers(Modifier.PUBLIC)
-        .returns(ClassName.get(fieldParentNamespace, "Builder"))
-        .addJavadoc("Gets the Builder instance for the '$L' field and creates one if it doesn't exist yet.\n@return This builder.", fieldName)
-        .beginControlFlow("if ($L == null )", builderName)
-        .beginControlFlow("if($L())", getMethodNameForFieldWithPrefix("has", fieldName))
-        .addStatement("$L($L.newBuilder($L))", getMethodNameForFieldWithPrefix("set", builderName),
-            fieldParentNamespace, fieldName)
-        .endControlFlow()
-        .beginControlFlow("else")
-        .addStatement("$L($L.newBuilder())", getMethodNameForFieldWithPrefix("set", builderName),
-            fieldParentNamespace)
-        .endControlFlow()
-        .endControlFlow()
-        .addStatement("return $L", builderName);
-
-    // Setter
-    MethodSpec.Builder setMethodBuilder = MethodSpec.methodBuilder(getMethodNameForFieldWithPrefix("set", builderName))
-        .addModifiers(Modifier.PUBLIC)
-        .returns(ClassName.get(recordFullName, "Builder"))
-        .addJavadoc("Sets the Builder instance for the '$L' field\n "
-            + "@param value The builder instance that must be set."
-            + "\n@return This builder.", fieldName)
-        .addParameter(ClassName.get(fieldParentNamespace, "Builder"), "value")
-        .addStatement("$L()", getMethodNameForFieldWithPrefix("clear", fieldName))
-        .addStatement("$L = value", builderName)
-        .addStatement("return this");
-
-    // Has
-    MethodSpec.Builder hasMethodBuilder = MethodSpec.methodBuilder(getMethodNameForFieldWithPrefix("has", builderName))
-        .addModifiers(Modifier.PUBLIC)
-        .returns(boolean.class)
-        .addJavadoc("Checks whether the '$1L' field has an active Builder instance\n"
-            + "@return True if the '$1L' field has an active Builder instance", fieldName)
-        .addStatement("return $L != null", builderName);
-
-    accessorMethodSpecs.add(getMethodBuilder.build());
-    accessorMethodSpecs.add(setMethodBuilder.build());
-    accessorMethodSpecs.add(hasMethodBuilder.build());
   }
 
   private void populateAccessorMethodsBlock(List<MethodSpec> accessorMethodSpecs, AvroSchemaField field,
