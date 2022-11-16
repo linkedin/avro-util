@@ -600,7 +600,7 @@ public class SpecificRecordClassGenerator {
       AvroSchema fieldSchema = field.getSchemaOrRef().getSchema();
       AvroType fieldAvroType = fieldSchema.type();
       Class<?> fieldClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(fieldAvroType,
-          config.getDefaultMethodStringRepresentation());
+          config.getDefaultMethodStringRepresentation(), false);
       TypeName fieldType = (AvroType.UNION.equals(fieldAvroType)) ? TypeName.get(Object.class)
           : SpecificRecordGeneratorUtil.getTypeName(field.getSchema(), fieldAvroType, true,
               config.getDefaultMethodStringRepresentation());
@@ -614,7 +614,7 @@ public class SpecificRecordClassGenerator {
                   + "($3T) com.linkedin.avroutil1.compatibility.StringConverterUtil.getUtf8(com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.getSpecificDefaultValue(fields()[$2L]))",
               escapedFieldName, fieldIndex,
               SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(fieldAvroType,
-                  config.getDefaultFieldStringRepresentation()));
+                  config.getDefaultFieldStringRepresentation(), false));
         } else {
           buildMethodCodeBlockBuilder.addStatement(
               "record.$1L = fieldSetFlags()[$2L] ? "
@@ -655,7 +655,7 @@ public class SpecificRecordClassGenerator {
                             + "($3T) com.linkedin.avroutil1.compatibility.StringConverterUtil.getUtf8(com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.getSpecificDefaultValue(fields()[$2L]))",
                         escapedFieldName, fieldIndex,
                         SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(AvroType.STRING,
-                            config.getDefaultFieldStringRepresentation()))
+                            config.getDefaultFieldStringRepresentation(), true))
                     .endControlFlow();
               } else if (SpecificRecordGeneratorUtil.isListTransformerApplicableForSchema(unionMemberSchema.getSchema())) {
                 buildMethodCodeBlockBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName, List.class)
@@ -961,11 +961,14 @@ public class SpecificRecordClassGenerator {
             .addModifiers(Modifier.PUBLIC)
             .addJavadoc(
                 "Clears the value of the '$L' field.$L" + "@return This Builder.",
-                field.getName(), getFieldJavaDoc(field))
-            .addStatement("$L = null", escapedFieldName)
-            .addStatement("fieldSetFlags()[$L] = false", fieldIndex)
-            .addStatement("return this")
-            .returns(ClassName.get(parentClass, "Builder"));
+                field.getName(), getFieldJavaDoc(field));
+
+    if (fieldClass == null) {
+      clearMethodBuilder.addStatement("$L = null", escapedFieldName);
+    }
+    clearMethodBuilder.addStatement("fieldSetFlags()[$L] = false", fieldIndex)
+        .addStatement("return this")
+        .returns(ClassName.get(parentClass, "Builder"));
 
     accessorMethodSpecs.add(getMethodBuilder.build());
     accessorMethodSpecs.add(setMethodBuilder.build());
@@ -1093,7 +1096,7 @@ public class SpecificRecordClassGenerator {
         AvroSchema arrayItemSchema = ((AvroArraySchema) fieldSchema).getValueSchema();
         Class<?> arrayItemClass =
             SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(arrayItemSchema.type(),
-                config.getDefaultFieldStringRepresentation());
+                config.getDefaultFieldStringRepresentation(), true);
         TypeName arrayItemTypeName =
             SpecificRecordGeneratorUtil.getTypeName(arrayItemSchema, arrayItemSchema.type(), true,
                 config.getDefaultFieldStringRepresentation());
@@ -1138,7 +1141,8 @@ public class SpecificRecordClassGenerator {
         String mapSizeVarName = getSizeVarName();
         String mapValueVarName = getValueVarName();
         AvroType mapItemAvroType = ((AvroMapSchema) fieldSchema).getValueSchema().type();
-        Class<?> mapItemClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(mapItemAvroType, config.getDefaultFieldStringRepresentation());
+        Class<?> mapItemClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(mapItemAvroType,
+            config.getDefaultFieldStringRepresentation(), true);
         TypeName mapItemClassName =
             SpecificRecordGeneratorUtil.getTypeName(((AvroMapSchema) fieldSchema).getValueSchema(), mapItemAvroType,
                 true, config.getDefaultFieldStringRepresentation());
@@ -1252,7 +1256,7 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = CodeBlock.builder()
             .addStatement("out.writeString(($T)$L)",
                 SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(fieldType,
-                    config.getDefaultFieldStringRepresentation()), fieldName)
+                    config.getDefaultFieldStringRepresentation(), false), fieldName)
             .build()
             .toString();
         break;
@@ -1285,7 +1289,7 @@ public class SpecificRecordClassGenerator {
         String actualSizeVarName = getActualSizeVarName();
         AvroType arrayItemAvroType = ((AvroArraySchema) fieldSchema).getValueSchema().type();
         Class<?> arrayItemClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(arrayItemAvroType,
-            config.getDefaultFieldStringRepresentation());
+            config.getDefaultFieldStringRepresentation(), true);
         TypeName arrayItemTypeName =
             SpecificRecordGeneratorUtil.getTypeName(((AvroArraySchema) fieldSchema).getValueSchema(), arrayItemAvroType,
                 true, config.getDefaultFieldStringRepresentation());
@@ -1331,7 +1335,7 @@ public class SpecificRecordClassGenerator {
 
         AvroType mapItemAvroType = ((AvroMapSchema) fieldSchema).getValueSchema().type();
         Class<?> mapItemClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(mapItemAvroType,
-            config.getDefaultFieldStringRepresentation());
+            config.getDefaultFieldStringRepresentation(), true);
         TypeName mapItemClassName =
             SpecificRecordGeneratorUtil.getTypeName(((AvroMapSchema) fieldSchema).getValueSchema(), mapItemAvroType,
                 true, config.getDefaultFieldStringRepresentation());
@@ -1366,7 +1370,7 @@ public class SpecificRecordClassGenerator {
           AvroSchema unionMemberSchema = ((AvroUnionSchema) fieldSchema).getTypes().get(i).getSchema();
           Class<?> unionMemberType =
               SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(unionMemberSchema.type(),
-                  config.getDefaultFieldStringRepresentation());
+                  config.getDefaultFieldStringRepresentation(), true);
           TypeName unionMemberTypeName =
               SpecificRecordGeneratorUtil.getTypeName(unionMemberSchema, unionMemberSchema.type(), false,
                   config.getDefaultFieldStringRepresentation());
@@ -1459,7 +1463,7 @@ public class SpecificRecordClassGenerator {
       String escapedFieldName = getFieldNameWithSuffix(field);
       Class<?> fieldClass =
           SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(field.getSchemaOrRef().getSchema().type(),
-              config.getDefaultFieldStringRepresentation());
+              config.getDefaultFieldStringRepresentation(), false);
 
       AvroType fieldType = field.getSchemaOrRef().getSchema().type();
       if (fieldType == AvroType.STRING || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.STRING,
@@ -1547,7 +1551,8 @@ public class SpecificRecordClassGenerator {
       String escapedFieldName = getFieldNameWithSuffix(field);
       AvroType fieldType = field.getSchema().type();
       if (fieldType == AvroType.STRING || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.STRING, field.getSchema())) {
-        Class<?> fieldClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(AvroType.STRING, config.getDefaultMethodStringRepresentation());
+        Class<?> fieldClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(AvroType.STRING,
+            config.getDefaultMethodStringRepresentation(), false);
         switchBuilder.addStatement("case $L: return com.linkedin.avroutil1.compatibility.StringConverterUtil.get$L($L)", fieldIndex++, fieldClass.getSimpleName(), escapedFieldName);
       } else if (AvroType.ARRAY.equals(fieldType) || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.ARRAY, field.getSchema())) {
         switchBuilder.addStatement(
@@ -1624,7 +1629,7 @@ public class SpecificRecordClassGenerator {
 
   private void addFullyQualified(AvroSchemaField field, SpecificRecordGenerationConfig config) {
     if(field.getSchemaOrRef().getSchema() != null) {
-      Class<?> fieldClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(field.getSchemaOrRef().getSchema().type(), config.getDefaultFieldStringRepresentation());
+      Class<?> fieldClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(field.getSchemaOrRef().getSchema().type(), config.getDefaultFieldStringRepresentation(), false);
       if (fieldClass != null) {
         SpecificRecordGeneratorUtil.fullyQualifiedClassesInRecord.add(fieldClass.getName());
       } else {
@@ -1644,7 +1649,7 @@ public class SpecificRecordClassGenerator {
 
     if(field.getSchemaOrRef().getSchema() != null) {
       fieldType = field.getSchemaOrRef().getSchema().type();
-      Class<?> fieldClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(field.getSchemaOrRef().getSchema().type(), config.getDefaultMethodStringRepresentation());
+      Class<?> fieldClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(field.getSchemaOrRef().getSchema().type(), config.getDefaultMethodStringRepresentation(), false);
       if (fieldClass != null) {
         methodSpecBuilder.addParameter(fieldClass, escapedFieldName)
             .addModifiers(Modifier.PUBLIC);
@@ -1731,7 +1736,7 @@ public class SpecificRecordClassGenerator {
     TypeName typeName = null;
     if(field.getSchemaOrRef().getSchema() != null) {
       fieldType = field.getSchemaOrRef().getSchema().type();
-      Class<?> fieldClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(fieldType, config.getDefaultMethodStringRepresentation());
+      Class<?> fieldClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(fieldType, config.getDefaultMethodStringRepresentation(), false);
       if (fieldClass != null) {
         methodSpecBuilder.returns(fieldClass);
       } else {
@@ -1821,7 +1826,7 @@ public class SpecificRecordClassGenerator {
     FieldSpec.Builder fieldSpecBuilder;
     String escapedFieldName = getFieldNameWithSuffix(field);
     if(field.getSchemaOrRef().getSchema() != null) {
-      Class<?> fieldClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(field.getSchemaOrRef().getSchema().type(), config.getDefaultFieldStringRepresentation());
+      Class<?> fieldClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(field.getSchemaOrRef().getSchema().type(), config.getDefaultFieldStringRepresentation(), false);
       if (fieldClass != null) {
         fieldSpecBuilder = FieldSpec.builder(fieldClass, escapedFieldName);
       } else {
@@ -1840,7 +1845,9 @@ public class SpecificRecordClassGenerator {
     ParameterSpec.Builder parameterSpecBuilder = null;
     String escapedFieldName = getFieldNameWithSuffix(field);
     if(field.getSchemaOrRef().getSchema() != null) {
-      Class<?> fieldClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(field.getSchemaOrRef().getSchema().type(), config.getDefaultFieldStringRepresentation());
+      Class<?> fieldClass =
+          SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(field.getSchemaOrRef().getSchema().type(),
+              config.getDefaultFieldStringRepresentation(), false);
       if (fieldClass != null) {
           parameterSpecBuilder = ParameterSpec.builder(fieldClass, escapedFieldName);
       } else {
