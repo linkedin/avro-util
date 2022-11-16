@@ -18,6 +18,8 @@ import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
+import com.linkedin.avroutil1.model.AvroType;
+import com.linkedin.avroutil1.model.AvroUnionSchema;
 import com.linkedin.avroutil1.model.SchemaOrRef;
 import com.linkedin.avroutil1.parser.avsc.AvroParseContext;
 import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
@@ -138,10 +140,10 @@ public class AvroUtilCodeGenOp implements Operation {
 
     int schemaChunkSize = 500, schemaCounter = 0, totalSchemaParsed = 0;
 
-    List<Map<String, AvscParseResult>> allNamedSchemaList = new ArrayList<>();
-    Map<String, AvscParseResult> namedSchemaChunk = new HashMap<>();
+    List<Map<String, AvroNamedSchema>> allNamedSchemaList = new ArrayList<>();
+    Map<String, AvroNamedSchema> namedSchemaChunk = new HashMap<>();
     for (AvscParseResult parseResult : parsedFiles) {
-      if(schemaCounter == schemaChunkSize) {
+      if(schemaCounter >= schemaChunkSize) {
         allNamedSchemaList.add(namedSchemaChunk);
         namedSchemaChunk = new HashMap<>();
         totalSchemaParsed += schemaCounter;
@@ -150,7 +152,13 @@ public class AvroUtilCodeGenOp implements Operation {
       AvroSchema schema = parseResult.getTopLevelSchema();
       if (schema instanceof AvroNamedSchema) {
         String name = ((AvroNamedSchema) schema).getFullName();
-        namedSchemaChunk.put(name, parseResult);
+        namedSchemaChunk.put(name, (AvroNamedSchema) parseResult.getTopLevelSchema());
+      } else if (AvroType.UNION.equals(schema.type())) {
+        for(SchemaOrRef schemaOrRef : ((AvroUnionSchema) schema).getTypes()) {
+          String name = ((AvroNamedSchema) schemaOrRef.getSchema()).getFullName();
+          namedSchemaChunk.put(name, (AvroNamedSchema) schemaOrRef.getSchema());
+          schemaCounter++;
+        }
       }
       schemaCounter++;
     }
@@ -227,12 +235,11 @@ public class AvroUtilCodeGenOp implements Operation {
     long errorCount = 0;
     List<AvroNamedSchema> internalSchemaList;
 
-    for (Map<String, AvscParseResult> allNamedSchemas : allNamedSchemaList) {
+    for (Map<String, AvroNamedSchema> allNamedSchemas : allNamedSchemaList) {
       generatedSpecificClasses = new ArrayList<>(totalSchemaParsed);
-      for (Map.Entry<String, AvscParseResult> namedSchemaEntry : allNamedSchemas.entrySet()) {
+      for (Map.Entry<String, AvroNamedSchema> namedSchemaEntry : allNamedSchemas.entrySet()) {
         String fullname = namedSchemaEntry.getKey();
-        AvscParseResult fileParseResult = namedSchemaEntry.getValue();
-        AvroNamedSchema namedSchema = fileParseResult.getDefinedSchema(fullname);
+        AvroNamedSchema namedSchema = namedSchemaEntry.getValue();
 
         try {
 
@@ -258,7 +265,7 @@ public class AvroUtilCodeGenOp implements Operation {
           errorCount++;
           //TODO - error-out
           LOGGER.error(
-              "failed to generate class for " + fullname + " defined in " + fileParseResult.getContext().getUri(), e);
+              "failed to generate class for " + fullname, e);
         }
       }
       writeJavaFilesToDisk(generatedSpecificClasses, config.getOutputSpecificRecordClassesRoot());
