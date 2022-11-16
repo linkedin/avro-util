@@ -244,14 +244,14 @@ public class SpecificRecordTest {
 
     Assert.assertSame(builderTester.get(0), stringField);
     Assert.assertSame(builderTester.get(1), package$);
-    Assert.assertSame(builderTester.get(2), exception);
-    Assert.assertSame(builderTester.get(3), dbl);
-    Assert.assertSame(builderTester.get(4), isTrue);
     Assert.assertSame(builderTester.get(6), min);
     Assert.assertSame(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
     Assert.assertSame(builderTester.get(14), testCollections);
+    Assert.assertEquals(builderTester.get(2), exception);
+    Assert.assertEquals(builderTester.get(3), dbl);
+    Assert.assertEquals(builderTester.get(4), isTrue);
 
     // Use transformers to return a copy of data
     assertNotSameIfNotNull(builderTester.get(5), arrayOfStrings);
@@ -389,14 +389,14 @@ public class SpecificRecordTest {
 
     Assert.assertSame(builderTester.get(0), stringField);
     Assert.assertSame(builderTester.get(1), package$);
-    Assert.assertSame(builderTester.get(2), exception);
-    Assert.assertSame(builderTester.get(3), dbl);
-    Assert.assertSame(builderTester.get(4), isTrue);
     Assert.assertSame(builderTester.get(6), min);
     Assert.assertSame(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
     Assert.assertSame(builderTester.get(14), testCollections);
+    Assert.assertEquals(builderTester.get(2), exception);
+    Assert.assertEquals(builderTester.get(3), dbl);
+    Assert.assertEquals(builderTester.get(4), isTrue);
 
     // Use transformers to return a copy of data
     assertNotSameIfNotNull(builderTester.get(5), arrayOfStrings);
@@ -534,14 +534,14 @@ public class SpecificRecordTest {
 
     Assert.assertSame(builderTester.get(0), stringField);
     Assert.assertSame(builderTester.get(1), package$);
-    Assert.assertSame(builderTester.get(2), exception);
-    Assert.assertSame(builderTester.get(3), dbl);
-    Assert.assertSame(builderTester.get(4), isTrue);
     Assert.assertSame(builderTester.get(6), min);
     Assert.assertSame(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
     Assert.assertSame(builderTester.get(14), testCollections);
+    Assert.assertEquals(builderTester.get(2), exception);
+    Assert.assertEquals(builderTester.get(3), dbl);
+    Assert.assertEquals(builderTester.get(4), isTrue);
 
     // Use transformers to return a copy of data
     assertNotSameIfNotNull(builderTester.get(5), arrayOfStrings);
@@ -679,14 +679,14 @@ public class SpecificRecordTest {
 
     Assert.assertSame(builderTester.get(0), stringField);
     Assert.assertSame(builderTester.get(1), package$);
-    Assert.assertSame(builderTester.get(2), exception);
-    Assert.assertSame(builderTester.get(3), dbl);
-    Assert.assertSame(builderTester.get(4), isTrue);
     Assert.assertSame(builderTester.get(6), min);
     Assert.assertSame(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
     Assert.assertSame(builderTester.get(14), testCollections);
+    Assert.assertEquals(builderTester.get(2), exception);
+    Assert.assertEquals(builderTester.get(3), dbl);
+    Assert.assertEquals(builderTester.get(4), isTrue);
 
     // Use transformers to return a copy of data
     assertNotSameIfNotNull(builderTester.get(5), arrayOfStrings);
@@ -823,14 +823,14 @@ public class SpecificRecordTest {
 
     Assert.assertSame(builderTester.get(0), stringField);
     Assert.assertSame(builderTester.get(1), package$);
-    Assert.assertSame(builderTester.get(2), exception);
-    Assert.assertSame(builderTester.get(3), dbl);
-    Assert.assertSame(builderTester.get(4), isTrue);
     Assert.assertSame(builderTester.get(6), min);
     Assert.assertSame(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
     Assert.assertSame(builderTester.get(14), testCollections);
+    Assert.assertEquals(builderTester.get(2), exception);
+    Assert.assertEquals(builderTester.get(3), dbl);
+    Assert.assertEquals(builderTester.get(4), isTrue);
 
     // Use transformers to return a copy of data
     assertNotSameIfNotNull(builderTester.get(5), arrayOfStrings);
@@ -969,14 +969,14 @@ public class SpecificRecordTest {
 
     Assert.assertSame(builderTester.get(0), stringField);
     Assert.assertSame(builderTester.get(1), package$);
-    Assert.assertSame(builderTester.get(2), exception);
-    Assert.assertSame(builderTester.get(3), dbl);
-    Assert.assertSame(builderTester.get(4), isTrue);
     Assert.assertSame(builderTester.get(6), min);
     Assert.assertSame(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
     Assert.assertSame(builderTester.get(14), testCollections);
+    Assert.assertEquals(builderTester.get(2), exception);
+    Assert.assertEquals(builderTester.get(3), dbl);
+    Assert.assertEquals(builderTester.get(4), isTrue);
 
     // Use transformers to return a copy of data
     assertNotSameIfNotNull(builderTester.get(5), arrayOfStrings);
@@ -1114,14 +1114,14 @@ public class SpecificRecordTest {
 
     Assert.assertSame(builderTester.get(0), stringField);
     Assert.assertSame(builderTester.get(1), package$);
-    Assert.assertSame(builderTester.get(2), exception);
-    Assert.assertSame(builderTester.get(3), dbl);
-    Assert.assertSame(builderTester.get(4), isTrue);
     Assert.assertSame(builderTester.get(6), min);
     Assert.assertSame(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
     Assert.assertSame(builderTester.get(14), testCollections);
+    Assert.assertEquals(builderTester.get(2), exception);
+    Assert.assertEquals(builderTester.get(3), dbl);
+    Assert.assertEquals(builderTester.get(4), isTrue);
 
     // Use transformers to return a copy of data
     assertNotSameIfNotNull(builderTester.get(5), arrayOfStrings);
@@ -1258,14 +1258,14 @@ public class SpecificRecordTest {
 
     Assert.assertSame(builderTester.get(0), stringField);
     Assert.assertSame(builderTester.get(1), package$);
-    Assert.assertSame(builderTester.get(2), exception);
-    Assert.assertSame(builderTester.get(3), dbl);
-    Assert.assertSame(builderTester.get(4), isTrue);
     Assert.assertSame(builderTester.get(6), min);
     Assert.assertSame(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
     Assert.assertSame(builderTester.get(14), testCollections);
+    Assert.assertEquals(builderTester.get(2), exception);
+    Assert.assertEquals(builderTester.get(3), dbl);
+    Assert.assertEquals(builderTester.get(4), isTrue);
 
     // Use transformers to return a copy of data
     assertNotSameIfNotNull(builderTester.get(5), arrayOfStrings);
