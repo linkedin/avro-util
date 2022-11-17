@@ -18,9 +18,14 @@ public abstract class FastDeserializerGeneratorBase<T> extends FastSerdeBase {
   protected final Schema writer;
   protected final Schema reader;
 
-  FastDeserializerGeneratorBase(boolean useGenericTypes, Schema writer, Schema reader, File destination, ClassLoader classLoader,
+  public FastDeserializerGeneratorBase(boolean useGenericTypes, Schema writer, Schema reader, File destination, ClassLoader classLoader,
       String compileClassPath) {
-    super("deserialization", useGenericTypes, Utf8.class, destination, classLoader, compileClassPath, false);
+    this(useGenericTypes, writer, reader, destination, classLoader, compileClassPath, Utf8.class);
+  }
+
+  public FastDeserializerGeneratorBase(boolean useGenericTypes, Schema writer, Schema reader, File destination, ClassLoader classLoader,
+                                       String compileClassPath, Class defaultStringClass) {
+    super("deserialization", useGenericTypes, defaultStringClass, destination, classLoader, compileClassPath, false);
     this.writer = writer;
     this.reader = reader;
   }

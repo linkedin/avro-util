@@ -76,9 +76,14 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
   private Map<String, JMethod> skipMethodMap = new HashMap<>();
   private Map<JMethod, Set<Class<? extends Exception>>> exceptionFromMethodMap = new HashMap<>();
 
-  FastDeserializerGenerator(boolean useGenericTypes, Schema writer, Schema reader, File destination,
+  public FastDeserializerGenerator(boolean useGenericTypes, Schema writer, Schema reader, File destination,
       ClassLoader classLoader, String compileClassPath) {
     super(useGenericTypes, writer, reader, destination, classLoader, compileClassPath);
+  }
+
+  public FastDeserializerGenerator(boolean useGenericTypes, Schema writer, Schema reader, File destination,
+                                   ClassLoader classLoader, String compileClassPath, Class defaultStringClass) {
+    super(useGenericTypes, writer, reader, destination, classLoader, compileClassPath, defaultStringClass);
   }
 
   public FastDeserializer<T> generateDeserializer() {
