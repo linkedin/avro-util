@@ -14,10 +14,8 @@ import com.linkedin.avroutil1.parser.avsc.AvscParser;
 import com.linkedin.avroutil1.testcommon.TestUtil;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.regex.Matcher;
-
 import org.apache.avro.Schema;
 import org.testng.Assert;
 import org.testng.annotations.Test;
