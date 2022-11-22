@@ -652,6 +652,23 @@ public class AvscParserTest {
         Assert.assertEquals(parsed.getField("uuidField").schema().getProp("logicalType"), "uuid");
     }
 
+    @Test
+    public void testFieldAlias() throws Exception {
+        String recordAvsc = TestUtil.load("schemas/AliasInField.avsc");
+
+        AvscParser avscParser = new AvscParser();
+
+        AvscParseResult recordParseResult = avscParser.parse(recordAvsc);
+        Schema vanillaSchema = vanillaParse("schemas/AliasInField.avsc");
+        Schema.Field vanillaField = vanillaSchema.getFields().get(0);
+        AvroRecordSchema avSchema = (AvroRecordSchema) recordParseResult.getTopLevelSchema();
+        AvroSchemaField avroSchemaField = avSchema.getField(0);
+
+        Assert.assertNotNull(vanillaField.aliases());
+        Assert.assertEquals(vanillaField.aliases(), avroSchemaField.aliases());
+    }
+
+
     private Schema vanillaParse(String resource) throws Exception {
         String avsc = TestUtil.load(resource);
         Schema.Parser vanillaParser = new Schema.Parser();
