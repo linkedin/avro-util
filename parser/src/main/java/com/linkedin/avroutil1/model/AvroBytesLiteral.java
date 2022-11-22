@@ -28,4 +28,9 @@ public class AvroBytesLiteral extends AvroPrimitiveLiteral {
         //TODO - hex encode
         return value.length + " bytes";
     }
+
+    @Override
+    public boolean equals(Object literal) {
+        return literal instanceof AvroBytesLiteral && this.value == ((AvroBytesLiteral) literal).getValue();
+    }
 }

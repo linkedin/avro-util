@@ -27,4 +27,9 @@ public class AvroIntegerLiteral extends AvroPrimitiveLiteral {
     public String toString() {
         return Integer.toString(value);
     }
+
+    @Override
+    public boolean equals(Object literal) {
+        return literal instanceof AvroIntegerLiteral && this.value == ((AvroIntegerLiteral) literal).getValue();
+    }
 }

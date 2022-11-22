@@ -307,7 +307,6 @@ public class SpecificRecordGeneratorUtil {
 
   private static List<AvroNamedSchema> getNestedInternalSchemaListForRecord(AvroRecordSchema topLevelSchema) {
     List<AvroNamedSchema> schemaList = new ArrayList<>();
-    schemaList.add(topLevelSchema);
     HashSet<String> visitedSchemasFullNames = new HashSet<>();
     Queue<AvroSchema> schemaQueue = topLevelSchema.getFields()
         .stream()

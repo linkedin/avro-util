@@ -6,6 +6,8 @@
 
 package com.linkedin.avroutil1.model;
 
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -43,6 +45,9 @@ public class AvroSchemaField implements LocatedCode, JsonPropertiesContainer {
      * this field's default value (if any).
      */
     private AvroLiteral defaultValue;
+
+    private Set<String> aliases;
+
     /**
      * any extra properties defined on this field beyond the ones in the core avro specification
      */
@@ -67,6 +72,31 @@ public class AvroSchemaField implements LocatedCode, JsonPropertiesContainer {
         this.doc = doc;
         this.schema = schema;
         this.defaultValue = defaultValue;
+        this.aliases = null;
+        this.props = extraProps;
+    }
+
+    public AvroSchemaField(
+        CodeLocation codeLocation,
+        String name,
+        String doc,
+        SchemaOrRef schema,
+        AvroLiteral defaultValue,
+        Set<String> aliases,
+        JsonPropertiesContainer extraProps
+    ) {
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("name cannot be null or empty");
+        }
+        if (schema == null) {
+            throw new IllegalArgumentException("schema for " + name + " cannot be null");
+        }
+        this.codeLocation = codeLocation;
+        this.name = name;
+        this.doc = doc;
+        this.schema = schema;
+        this.defaultValue = defaultValue;
+        this.aliases = aliases;
         this.props = extraProps;
     }
 
@@ -162,4 +192,17 @@ public class AvroSchemaField implements LocatedCode, JsonPropertiesContainer {
         sb.append(schema.toString()).append(" ").append(name);
         return sb.toString();
     }
+
+    public Set<String> aliases() {
+        if (aliases == null)
+            return Collections.emptySet();
+        return Collections.unmodifiableSet(aliases);
+    }
+
+    public void addAlias(String alias) {
+        if (aliases == null)
+            this.aliases = new LinkedHashSet<>();
+        aliases.add(alias);
+    }
+
 }

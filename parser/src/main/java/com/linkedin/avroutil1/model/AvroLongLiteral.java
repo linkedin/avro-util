@@ -27,4 +27,9 @@ public class AvroLongLiteral extends AvroPrimitiveLiteral {
     public String toString() {
         return value + "L";
     }
+
+    @Override
+    public boolean equals(Object literal) {
+        return literal instanceof AvroLongLiteral && this.value == ((AvroLongLiteral) literal).getValue();
+    }
 }

@@ -35,4 +35,25 @@ public class AvroRecordLiteral extends AvroLiteral {
         }
         return "[" + csv + "]";
     }
+
+    @Override
+    public boolean equals(Object literal) {
+        if(!(literal instanceof AvroRecordLiteral)) {
+            return false;
+        }
+        Map<String, AvroLiteral> literalVal = ((AvroRecordLiteral) literal).getValue();
+        if(this.value == null && literalVal == null) {
+            return true;
+        }
+        if(this.value.size() != literalVal.size()) {
+            return false;
+        }
+
+        for(String key : this.value.keySet()) {
+            if(!this.value.get(key).equals(literalVal.get(key))) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

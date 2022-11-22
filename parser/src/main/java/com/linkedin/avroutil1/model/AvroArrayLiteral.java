@@ -34,4 +34,9 @@ public class AvroArrayLiteral extends AvroLiteral {
         }
         return "[" + csv + "]";
     }
+
+    @Override
+    public boolean equals(Object literal) {
+        return literal instanceof AvroArrayLiteral && this.value.equals(((AvroArrayLiteral) literal).getValue());
+    }
 }

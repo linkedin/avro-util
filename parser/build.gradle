@@ -23,4 +23,7 @@ dependencies {
     testImplementation project(path: ':helper:helper', configuration: 'shadow')
     testImplementation "org.apache.avro:avro:1.10.2"
     testImplementation "org.skyscreamer:jsonassert:1.5.0"
+    compileOnly "com.fasterxml.jackson.core:jackson-core:2.10.2"
+    compileOnly "com.fasterxml.jackson.core:jackson-databind:2.10.2"
+    compileOnly (project(":helper:helper-common"))
 }

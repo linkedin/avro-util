@@ -27,4 +27,9 @@ public class AvroFloatLiteral extends AvroPrimitiveLiteral {
     public String toString() {
         return value + "F";
     }
+
+    @Override
+    public boolean equals(Object literal) {
+        return literal instanceof AvroFloatLiteral && this.value == ((AvroFloatLiteral) literal).getValue();
+    }
 }
