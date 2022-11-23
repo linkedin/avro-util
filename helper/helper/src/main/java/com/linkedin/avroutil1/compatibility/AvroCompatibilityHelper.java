@@ -104,8 +104,7 @@ public class AvroCompatibilityHelper  extends AvroCompatibilityHelperCommon{
   }
 
   /**
-   * @Deprecated: Use AvroCompatibilityHelperCommon.getRuntimeAvroVersion()
-   *
+   * Deprecated: Use AvroCompatibilityHelperCommon.getRuntimeAvroVersion()
    * returns the detected runtime version of avro, or null if none found
    * @return the version of avro detected on the runtime classpath, or null if no avro found
    */
