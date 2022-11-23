@@ -21,4 +21,9 @@ public class AvroNullLiteral extends AvroPrimitiveLiteral {
     public String toString() {
         return "null";
     }
+
+    @Override
+    public boolean equals(Object literal) {
+        return literal instanceof AvroNullLiteral;
+    }
 }

@@ -30,4 +30,11 @@ public class AvroEnumLiteral extends AvroLiteral {
     public String toString() {
         return value;
     }
+
+    @Override
+    public boolean equals(Object literal) {
+        return literal instanceof AvroEnumLiteral &&
+            (this.value == null) ? ((AvroEnumLiteral) literal).getValue() == null :
+            this.value.equals(((AvroEnumLiteral) literal).getValue());
+    }
 }

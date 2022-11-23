@@ -11,10 +11,11 @@ import com.linkedin.avroutil1.model.AvroSchema;
 import com.linkedin.avroutil1.parser.avsc.AvscIssue;
 import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
 import com.linkedin.avroutil1.parser.avsc.AvscParser;
+import com.linkedin.avroutil1.testcommon.TestUtil;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.regex.Matcher;
-
 import org.apache.avro.Schema;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -80,6 +81,11 @@ public class AvscSchemaWriterTest {
         + "    ]\n"
         + "}"
     );
+  }
+
+  @Test void testSchemaWithFieldAlias() throws IOException {
+    String avsc = TestUtil.load("schemas/AliasInField.avsc");
+    testParsingCycle(avsc);
   }
 
   /**

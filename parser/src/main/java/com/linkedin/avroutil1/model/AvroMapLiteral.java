@@ -35,4 +35,11 @@ public class AvroMapLiteral extends AvroLiteral {
         }
         return "[" + csv + "]";
     }
+
+    @Override
+    public boolean equals(Object literal) {
+        return literal instanceof AvroMapLiteral &&
+            (this.value == null) ? ((AvroMapLiteral) literal).getValue() == null :
+            this.value.equals(((AvroMapLiteral) literal).getValue());
+    }
 }

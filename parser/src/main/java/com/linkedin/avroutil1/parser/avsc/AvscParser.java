@@ -58,6 +58,7 @@ import java.io.FileReader;
 import java.io.Reader;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import javax.json.JsonValue;
 import javax.json.stream.JsonParsingException;
 import java.io.StringReader;
@@ -381,6 +382,14 @@ public class AvscParser {
                     String docField = locatedDocField == null ? null : locatedDocField.getValue();
                     SchemaOrRef fieldSchema = parseSchemaDeclOrRef(fieldTypeNode, context, false);
                     JsonValueExt fieldDefaultValueNode = fieldDecl.get("default");
+                    JsonArrayExt aliasesArrayNode = getOptionalArray(fieldDecl, "aliases");
+                    Set<String> aliasSet = null;
+                    if (aliasesArrayNode != null) {
+                        aliasSet = new LinkedHashSet<>(aliasesArrayNode.size());
+                        for(JsonValue aliasStr : aliasesArrayNode) {
+                            aliasSet.add(String.valueOf(aliasStr));
+                        }
+                    }
                     AvroLiteral defaultValue = null;
                     if (fieldDefaultValueNode != null) {
                         if (fieldSchema.isFullyDefined()) {
@@ -406,7 +415,7 @@ public class AvscParser {
                     JsonPropertiesContainer propsContainer = props.isEmpty() ? JsonPropertiesContainer.EMPTY : new JsonPropertiesContainerImpl(props);
                     AvroSchemaField field =
                         new AvroSchemaField(fieldCodeLocation, fieldName.getValue(), docField, fieldSchema,
-                            defaultValue, propsContainer);
+                            defaultValue, aliasSet, propsContainer);
                     fields.add(field);
                 }
                 recordSchema.setFields(fields);

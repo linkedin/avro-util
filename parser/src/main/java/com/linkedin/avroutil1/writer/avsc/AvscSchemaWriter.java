@@ -325,7 +325,13 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
         fieldBuilder.add("default", defaultValueLiteral);
       }
       //TODO - order
-      //TODO - aliases
+      if (field.aliases() != null) {
+        JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
+        for(String alias : field.aliases()) {
+          jsonArrayBuilder.add(alias);
+        }
+        fieldBuilder.add("aliases", jsonArrayBuilder.build());
+      }
       arrayBuilder.add(fieldBuilder);
     }
     output.add("fields", arrayBuilder);

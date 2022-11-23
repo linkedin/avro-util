@@ -6,6 +6,8 @@
 
 package com.linkedin.avroutil1.model;
 
+import com.linkedin.avroutil1.compatibility.SchemaComparisonConfiguration;
+import com.linkedin.avroutil1.util.ConfigurableAvroSchemaComparator;
 import java.util.Locale;
 import java.util.Set;
 
@@ -67,5 +69,15 @@ public abstract class AvroSchema implements LocatedCode, JsonPropertiesContainer
             return typeName;
         }
         return typeName + " (" + logicalType + ")";
+    }
+
+    @Override
+    public boolean equals(Object schema) {
+        return schema instanceof AvroSchema && this.equals((AvroSchema) schema,
+            SchemaComparisonConfiguration.PRE_1_7_3);
+    }
+
+    public boolean equals(AvroSchema schema, SchemaComparisonConfiguration config) {
+        return ConfigurableAvroSchemaComparator.equals(this, schema, config);
     }
 }

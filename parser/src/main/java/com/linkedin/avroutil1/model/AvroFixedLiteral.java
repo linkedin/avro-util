@@ -31,4 +31,9 @@ public class AvroFixedLiteral extends AvroLiteral {
         //TODO - hex encode
         return value.length + " bytes";
     }
+
+    @Override
+    public boolean equals(Object literal) {
+        return literal instanceof AvroFixedLiteral && this.value == ((AvroFixedLiteral) literal).getValue();
+    }
 }

@@ -47,4 +47,7 @@ public abstract class AvroLiteral implements LocatedCode {
     public CodeLocation getCodeLocation() {
         return codeLocation;
     }
+
+    @Override
+    public abstract boolean equals(Object o);
 }

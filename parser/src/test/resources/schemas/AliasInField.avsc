@@ -1,0 +1,13 @@
+{
+  "name": "AliasInField",
+  "type": "record",
+  "namespace": "com.test",
+  "fields": [
+    {
+      "name": "NEW_NAME",
+      "doc": "Shiny new name, All caps too!!",
+      "type": "string",
+      "aliases": ["OLD_NAME"]
+    }
+  ]
+}

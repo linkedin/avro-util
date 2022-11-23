@@ -37,4 +37,10 @@ public class AvscUnparsedLiteral extends AvroLiteral {
   public JsonValueExt getDefaultValueNode() {
     return defaultValueNode;
   }
+
+  @Override
+  public boolean equals(Object literal) {
+    return literal instanceof AvscUnparsedLiteral
+        && this.defaultValueNode == ((AvscUnparsedLiteral) literal).getDefaultValueNode();
+  }
 }
