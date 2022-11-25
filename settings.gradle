@@ -77,6 +77,7 @@ include 'avro-builder:tests:codegen-18'
 include 'avro-builder:tests:codegen-19'
 include 'avro-builder:tests:codegen-110'
 include 'avro-builder:tests:codegen-111'
+include 'avro-builder:tests:codegen-charseq-method'
 include 'avro-builder:tests:tests-allavro'
 
 include 'demos:spotbugs-demo'

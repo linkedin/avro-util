@@ -18,6 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.Set;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.util.Utf8;
@@ -103,6 +104,8 @@ public class SpecificRecordTest {
         {vs19.BuilderTester.class, vs19.BuilderTester.getClassSchema()},
         {vs110.BuilderTester.class, vs110.BuilderTester.getClassSchema()},
         {vs111.BuilderTester.class, vs111.BuilderTester.getClassSchema()},
+
+        {charseqmethod.TestCollections.class, charseqmethod.TestCollections.getClassSchema()}
     };
   }
 
@@ -180,45 +183,39 @@ public class SpecificRecordTest {
     vs14.RandomFixedName wierdUnionVal6 = generator.randomSpecific(vs14.RandomFixedName.class);
     List<String> wierdUnionVal7 = Arrays.asList("item1, item2");
 
-    vs14.TestCollections testCollections1 = generator.randomSpecific(vs14.TestCollections.class);
-    vs14.TestCollections testCollections2 = generator.randomSpecific(vs14.TestCollections.class);
-    vs14.TestCollections testCollections3 = generator.randomSpecific(vs14.TestCollections.class);
-    vs14.TestCollections testCollections4 = generator.randomSpecific(vs14.TestCollections.class);
 
     return new Object[][]{
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, null, null, null
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, null, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal2,
-            Arrays.asList("123"), testCollections1
+            Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal3, null,
-            testCollections2
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal3, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal4,
-            Arrays.asList("123"), testCollections3
+            Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal5,
-            Arrays.asList("123"), testCollections4
+            Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal6, null,
-            testCollections1
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal6, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal7,
-            Arrays.asList("123"), testCollections1
+            Arrays.asList("123")
         }
     };
   }
@@ -227,8 +224,7 @@ public class SpecificRecordTest {
   public void testSpecificRecordBuilder14(String stringField, String package$, Float exception, Double dbl,
       Boolean isTrue, List<String> arrayOfStrings, vs14.Amount min, List<vs14.Amount> arrayOfRecord,
       Map<String, String> mapOfStrings, Map<String, vs14.Amount> mapOfRecord, vs14.Amount simpleUnion,
-      vs14.RandomFixedName fixedType, Object wierdUnion, List<String> unionOfArray,
-      vs14.TestCollections testCollections) throws Exception {
+      vs14.RandomFixedName fixedType, Object wierdUnion, List<String> unionOfArray) throws Exception {
     vs14.BuilderTester builderTester = vs14.BuilderTester.newBuilder()
         .setStringField(stringField)
         .setPackage$(package$)
@@ -244,7 +240,7 @@ public class SpecificRecordTest {
         .setFixedType(fixedType)
         .setWierdUnion(wierdUnion)
         .setUnionOfArray(unionOfArray)
-        .setExternalRefRecordUnion(testCollections).build();
+        .build();
     Assert.assertNotNull(builderTester);
 
     Assert.assertSame(builderTester.get(0), stringField);
@@ -253,7 +249,6 @@ public class SpecificRecordTest {
     Assert.assertSame(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
-    Assert.assertSame(builderTester.get(14), testCollections);
     Assert.assertEquals(builderTester.get(2), exception);
     Assert.assertEquals(builderTester.get(3), dbl);
     Assert.assertEquals(builderTester.get(4), isTrue);
@@ -325,45 +320,38 @@ public class SpecificRecordTest {
     vs15.RandomFixedName wierdUnionVal6 = generator.randomSpecific(vs15.RandomFixedName.class);
     List<String> wierdUnionVal7 = Arrays.asList("item1, item2");
 
-    vs15.TestCollections testCollections1 = generator.randomSpecific(vs15.TestCollections.class);
-    vs15.TestCollections testCollections2 = generator.randomSpecific(vs15.TestCollections.class);
-    vs15.TestCollections testCollections3 = generator.randomSpecific(vs15.TestCollections.class);
-    vs15.TestCollections testCollections4 = generator.randomSpecific(vs15.TestCollections.class);
-
     return new Object[][]{
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, null, null, null
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, null, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal2,
-            Arrays.asList("123"), testCollections1
+            Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal3, null,
-            testCollections2
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal3, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal4,
-            Arrays.asList("123"), testCollections3
+            Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal5,
-            Arrays.asList("123"), testCollections4
+            Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal6, null,
-            testCollections1
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal6, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal7,
-            Arrays.asList("123"), testCollections1
+            Arrays.asList("123")
         }
     };
   }
@@ -372,8 +360,7 @@ public class SpecificRecordTest {
   public void testSpecificRecordBuilder15(String stringField, String package$, Float exception, Double dbl,
       Boolean isTrue, List<String> arrayOfStrings, vs15.Amount min, List<vs15.Amount> arrayOfRecord,
       Map<String, String> mapOfStrings, Map<String, vs15.Amount> mapOfRecord, vs15.Amount simpleUnion,
-      vs15.RandomFixedName fixedType, Object wierdUnion, List<String> unionOfArray,
-      vs15.TestCollections testCollections) throws Exception {
+      vs15.RandomFixedName fixedType, Object wierdUnion, List<String> unionOfArray) throws Exception {
     vs15.BuilderTester builderTester = vs15.BuilderTester.newBuilder()
         .setStringField(stringField)
         .setPackage$(package$)
@@ -389,7 +376,7 @@ public class SpecificRecordTest {
         .setFixedType(fixedType)
         .setWierdUnion(wierdUnion)
         .setUnionOfArray(unionOfArray)
-        .setExternalRefRecordUnion(testCollections).build();
+        .build();
     Assert.assertNotNull(builderTester);
 
     Assert.assertSame(builderTester.get(0), stringField);
@@ -398,7 +385,6 @@ public class SpecificRecordTest {
     Assert.assertSame(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
-    Assert.assertSame(builderTester.get(14), testCollections);
     Assert.assertEquals(builderTester.get(2), exception);
     Assert.assertEquals(builderTester.get(3), dbl);
     Assert.assertEquals(builderTester.get(4), isTrue);
@@ -470,45 +456,39 @@ public class SpecificRecordTest {
     vs16.RandomFixedName wierdUnionVal6 = generator.randomSpecific(vs16.RandomFixedName.class);
     List<String> wierdUnionVal7 = Arrays.asList("item1, item2");
 
-    vs16.TestCollections testCollections1 = generator.randomSpecific(vs16.TestCollections.class);
-    vs16.TestCollections testCollections2 = generator.randomSpecific(vs16.TestCollections.class);
-    vs16.TestCollections testCollections3 = generator.randomSpecific(vs16.TestCollections.class);
-    vs16.TestCollections testCollections4 = generator.randomSpecific(vs16.TestCollections.class);
 
     return new Object[][]{
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, null, null, null
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, null, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal2,
-            Arrays.asList("123"), testCollections1
+            Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal3, null,
-            testCollections2
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal3, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal4,
-            Arrays.asList("123"), testCollections3
+            Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal5,
-            Arrays.asList("123"), testCollections4
+            Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal6, null,
-            testCollections1
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal6, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal7,
-            Arrays.asList("123"), testCollections1
+            Arrays.asList("123")
         }
     };
   }
@@ -517,8 +497,7 @@ public class SpecificRecordTest {
   public void testSpecificRecordBuilder16(String stringField, String package$, Float exception, Double dbl,
       Boolean isTrue, List<String> arrayOfStrings, vs16.Amount min, List<vs16.Amount> arrayOfRecord,
       Map<String, String> mapOfStrings, Map<String, vs16.Amount> mapOfRecord, vs16.Amount simpleUnion,
-      vs16.RandomFixedName fixedType, Object wierdUnion, List<String> unionOfArray,
-      vs16.TestCollections testCollections) throws Exception {
+      vs16.RandomFixedName fixedType, Object wierdUnion, List<String> unionOfArray) throws Exception {
     vs16.BuilderTester builderTester = vs16.BuilderTester.newBuilder()
         .setStringField(stringField)
         .setPackage$(package$)
@@ -534,7 +513,7 @@ public class SpecificRecordTest {
         .setFixedType(fixedType)
         .setWierdUnion(wierdUnion)
         .setUnionOfArray(unionOfArray)
-        .setExternalRefRecordUnion(testCollections).build();
+        .build();
     Assert.assertNotNull(builderTester);
 
     Assert.assertSame(builderTester.get(0), stringField);
@@ -543,7 +522,6 @@ public class SpecificRecordTest {
     Assert.assertSame(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
-    Assert.assertSame(builderTester.get(14), testCollections);
     Assert.assertEquals(builderTester.get(2), exception);
     Assert.assertEquals(builderTester.get(3), dbl);
     Assert.assertEquals(builderTester.get(4), isTrue);
@@ -615,45 +593,38 @@ public class SpecificRecordTest {
     vs17.RandomFixedName wierdUnionVal6 = generator.randomSpecific(vs17.RandomFixedName.class);
     List<String> wierdUnionVal7 = Arrays.asList("item1, item2");
 
-    vs17.TestCollections testCollections1 = generator.randomSpecific(vs17.TestCollections.class);
-    vs17.TestCollections testCollections2 = generator.randomSpecific(vs17.TestCollections.class);
-    vs17.TestCollections testCollections3 = generator.randomSpecific(vs17.TestCollections.class);
-    vs17.TestCollections testCollections4 = generator.randomSpecific(vs17.TestCollections.class);
-
     return new Object[][]{
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, null, null, null
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, null, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal2,
-            Arrays.asList("123"), testCollections1
+            Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal3, null,
-            testCollections2
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal3, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal4,
-            Arrays.asList("123"), testCollections3
+            Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal5,
-            Arrays.asList("123"), testCollections4
+            Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal6, null,
-            testCollections1
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal6, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal7,
-            Arrays.asList("123"), testCollections1
+            Arrays.asList("123")
         }
     };
   }
@@ -662,8 +633,7 @@ public class SpecificRecordTest {
   public void testSpecificRecordBuilder17(String stringField, String package$, Float exception, Double dbl,
       Boolean isTrue, List<String> arrayOfStrings, vs17.Amount min, List<vs17.Amount> arrayOfRecord,
       Map<String, String> mapOfStrings, Map<String, vs17.Amount> mapOfRecord, vs17.Amount simpleUnion,
-      vs17.RandomFixedName fixedType, Object wierdUnion, List<String> unionOfArray,
-      vs17.TestCollections testCollections) throws Exception {
+      vs17.RandomFixedName fixedType, Object wierdUnion, List<String> unionOfArray) throws Exception {
     vs17.BuilderTester builderTester = vs17.BuilderTester.newBuilder()
         .setStringField(stringField)
         .setPackage$(package$)
@@ -679,7 +649,7 @@ public class SpecificRecordTest {
         .setFixedType(fixedType)
         .setWierdUnion(wierdUnion)
         .setUnionOfArray(unionOfArray)
-        .setExternalRefRecordUnion(testCollections).build();
+        .build();
     Assert.assertNotNull(builderTester);
 
     Assert.assertSame(builderTester.get(0), stringField);
@@ -688,7 +658,6 @@ public class SpecificRecordTest {
     Assert.assertSame(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
-    Assert.assertSame(builderTester.get(14), testCollections);
     Assert.assertEquals(builderTester.get(2), exception);
     Assert.assertEquals(builderTester.get(3), dbl);
     Assert.assertEquals(builderTester.get(4), isTrue);
@@ -767,37 +736,35 @@ public class SpecificRecordTest {
     return new Object[][]{
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, null, null, null
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, null, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal2,
-            Arrays.asList("123"), testCollections1
+            Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal3, null,
-            testCollections2
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal3, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal4,
-            Arrays.asList("123"), testCollections3
+            Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal5,
-            Arrays.asList("123"), testCollections4
+            Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal6, null,
-            testCollections1
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal6, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal7,
-            Arrays.asList("123"), testCollections1
+            Arrays.asList("123")
         }
     };
   }
@@ -806,8 +773,7 @@ public class SpecificRecordTest {
   public void testSpecificRecordBuilder18(String stringField, String package$, Float exception, Double dbl,
       Boolean isTrue, List<String> arrayOfStrings, vs18.Amount min, List<vs18.Amount> arrayOfRecord,
       Map<String, String> mapOfStrings, Map<String, vs18.Amount> mapOfRecord, vs18.Amount simpleUnion,
-      vs18.RandomFixedName fixedType, Object wierdUnion, List<String> unionOfArray,
-      vs18.TestCollections testCollections) throws Exception {
+      vs18.RandomFixedName fixedType, Object wierdUnion, List<String> unionOfArray) throws Exception {
     vs18.BuilderTester builderTester = vs18.BuilderTester.newBuilder()
         .setStringField(stringField)
         .setPackage$(package$)
@@ -823,7 +789,7 @@ public class SpecificRecordTest {
         .setFixedType(fixedType)
         .setWierdUnion(wierdUnion)
         .setUnionOfArray(unionOfArray)
-        .setExternalRefRecordUnion(testCollections).build();
+        .build();
     Assert.assertNotNull(builderTester);
 
     Assert.assertSame(builderTester.get(0), stringField);
@@ -832,7 +798,6 @@ public class SpecificRecordTest {
     Assert.assertSame(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
-    Assert.assertSame(builderTester.get(14), testCollections);
     Assert.assertEquals(builderTester.get(2), exception);
     Assert.assertEquals(builderTester.get(3), dbl);
     Assert.assertEquals(builderTester.get(4), isTrue);
@@ -913,37 +878,35 @@ public class SpecificRecordTest {
     return new Object[][]{
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, null, null, null
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, null, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal2,
-            Arrays.asList("123"), testCollections1
+            Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal3, null,
-            testCollections2
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal3, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal4,
-            Arrays.asList("123"), testCollections3
+            Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal5,
-            Arrays.asList("123"), testCollections4
+            Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal6, null,
-            testCollections1
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal6, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal7,
-            Arrays.asList("123"), testCollections1
+            Arrays.asList("123")
         }
     };
   }
@@ -952,8 +915,7 @@ public class SpecificRecordTest {
   public void testSpecificRecordBuilder19(String stringField, String package$, Float exception, Double dbl,
       Boolean isTrue, List<String> arrayOfStrings, vs19.Amount min, List<vs19.Amount> arrayOfRecord,
       Map<String, String> mapOfStrings, Map<String, vs19.Amount> mapOfRecord, vs19.Amount simpleUnion,
-      vs19.RandomFixedName fixedType, Object wierdUnion, List<String> unionOfArray,
-      vs19.TestCollections testCollections) throws Exception {
+      vs19.RandomFixedName fixedType, Object wierdUnion, List<String> unionOfArray) throws Exception {
     vs19.BuilderTester builderTester = vs19.BuilderTester.newBuilder()
         .setStringField(stringField)
         .setPackage$(package$)
@@ -969,7 +931,7 @@ public class SpecificRecordTest {
         .setFixedType(fixedType)
         .setWierdUnion(wierdUnion)
         .setUnionOfArray(unionOfArray)
-        .setExternalRefRecordUnion(testCollections).build();
+        .build();
     Assert.assertNotNull(builderTester);
 
     Assert.assertSame(builderTester.get(0), stringField);
@@ -978,7 +940,6 @@ public class SpecificRecordTest {
     Assert.assertSame(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
-    Assert.assertSame(builderTester.get(14), testCollections);
     Assert.assertEquals(builderTester.get(2), exception);
     Assert.assertEquals(builderTester.get(3), dbl);
     Assert.assertEquals(builderTester.get(4), isTrue);
@@ -1058,37 +1019,35 @@ public class SpecificRecordTest {
     return new Object[][]{
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, null, null, null
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, null, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal2,
-            Arrays.asList("123"), testCollections1
+            Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal3, null,
-            testCollections2
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal3, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal4,
-            Arrays.asList("123"), testCollections3
+            Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal5,
-            Arrays.asList("123"), testCollections4
+            Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal6, null,
-            testCollections1
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal6, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal7,
-            Arrays.asList("123"), testCollections1
+            Arrays.asList("123")
         }
     };
   }
@@ -1097,8 +1056,7 @@ public class SpecificRecordTest {
   public void testSpecificRecordBuilder110(String stringField, String package$, Float exception, Double dbl,
       Boolean isTrue, List<String> arrayOfStrings, vs110.Amount min, List<vs110.Amount> arrayOfRecord,
       Map<String, String> mapOfStrings, Map<String, vs110.Amount> mapOfRecord, vs110.Amount simpleUnion,
-      vs110.RandomFixedName fixedType, Object wierdUnion, List<String> unionOfArray,
-      vs110.TestCollections testCollections) throws Exception {
+      vs110.RandomFixedName fixedType, Object wierdUnion, List<String> unionOfArray) throws Exception {
     vs110.BuilderTester builderTester = vs110.BuilderTester.newBuilder()
         .setStringField(stringField)
         .setPackage$(package$)
@@ -1114,7 +1072,7 @@ public class SpecificRecordTest {
         .setFixedType(fixedType)
         .setWierdUnion(wierdUnion)
         .setUnionOfArray(unionOfArray)
-        .setExternalRefRecordUnion(testCollections).build();
+        .build();
     Assert.assertNotNull(builderTester);
 
     Assert.assertSame(builderTester.get(0), stringField);
@@ -1123,7 +1081,6 @@ public class SpecificRecordTest {
     Assert.assertSame(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
-    Assert.assertSame(builderTester.get(14), testCollections);
     Assert.assertEquals(builderTester.get(2), exception);
     Assert.assertEquals(builderTester.get(3), dbl);
     Assert.assertEquals(builderTester.get(4), isTrue);
@@ -1194,45 +1151,39 @@ public class SpecificRecordTest {
     vs111.RandomFixedName wierdUnionVal6 = generator.randomSpecific(vs111.RandomFixedName.class);
     List<String> wierdUnionVal7 = Arrays.asList("item1, item2");
 
-    vs111.TestCollections testCollections1 = generator.randomSpecific(vs111.TestCollections.class);
-    vs111.TestCollections testCollections2 = generator.randomSpecific(vs111.TestCollections.class);
-    vs111.TestCollections testCollections3 = generator.randomSpecific(vs111.TestCollections.class);
-    vs111.TestCollections testCollections4 = generator.randomSpecific(vs111.TestCollections.class);
 
     return new Object[][]{
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, null, null, null
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, null, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal2,
-            Arrays.asList("123"), testCollections1
+            Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal3, null,
-            testCollections2
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal3, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal4,
-            Arrays.asList("123"), testCollections3
+            Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal5,
-            Arrays.asList("123"), testCollections4
+            Arrays.asList("123")
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
-            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal6, null,
-            testCollections1
+            Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal6, null
         },
         {
             "str", "pck", Float.valueOf("1"), Double.valueOf("2"), false, Arrays.asList("123", "123"), amount1,
             Arrays.asList(amount1, amount2), stringMap, amountMap, null, fixedName, wierdUnionVal7,
-            Arrays.asList("123"), testCollections1
+            Arrays.asList("123")
         }
     };
   }
@@ -1241,8 +1192,7 @@ public class SpecificRecordTest {
   public void testSpecificRecordBuilder111(String stringField, String package$, Float exception, Double dbl,
       Boolean isTrue, List<String> arrayOfStrings, vs111.Amount min, List<vs111.Amount> arrayOfRecord,
       Map<String, String> mapOfStrings, Map<String, vs111.Amount> mapOfRecord, vs111.Amount simpleUnion,
-      vs111.RandomFixedName fixedType, Object wierdUnion, List<String> unionOfArray,
-      vs111.TestCollections testCollections) throws Exception {
+      vs111.RandomFixedName fixedType, Object wierdUnion, List<String> unionOfArray) throws Exception {
     vs111.BuilderTester builderTester = vs111.BuilderTester.newBuilder()
         .setStringField(stringField)
         .setPackage$(package$)
@@ -1258,7 +1208,7 @@ public class SpecificRecordTest {
         .setFixedType(fixedType)
         .setWierdUnion(wierdUnion)
         .setUnionOfArray(unionOfArray)
-        .setExternalRefRecordUnion(testCollections).build();
+        .build();
     Assert.assertNotNull(builderTester);
 
     Assert.assertSame(builderTester.get(0), stringField);
@@ -1267,7 +1217,6 @@ public class SpecificRecordTest {
     Assert.assertSame(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
-    Assert.assertSame(builderTester.get(14), testCollections);
     Assert.assertEquals(builderTester.get(2), exception);
     Assert.assertEquals(builderTester.get(3), dbl);
     Assert.assertEquals(builderTester.get(4), isTrue);
@@ -1401,6 +1350,18 @@ public class SpecificRecordTest {
       put("arOfUnionOfStr", "java.util.List<java.lang.String>");
       put("arOfMapOfUnionOfArray", "java.util.List<java.util.Map<java.lang.String, java.util.List<java.lang.String>>>");
     }};
+
+    Map<String, String> vs14TestCollectionsCharSeqFieldToType = new LinkedHashMap<String, String>() {{
+      put("str", "interface java.lang.CharSequence");
+      put("strAr", "java.util.List<java.lang.CharSequence>");
+      put("strArAr", "java.util.List<java.util.List<java.lang.CharSequence>>");
+      put("unionOfArray", "java.util.List<java.lang.CharSequence>");
+      put("arOfMap", "java.util.List<java.util.Map<java.lang.CharSequence, java.lang.CharSequence>>");
+      put("unionOfMap", "java.util.Map<java.lang.CharSequence, java.lang.CharSequence>");
+      put("arOfUnionOfStr", "java.util.List<java.lang.CharSequence>");
+      put("arOfMapOfUnionOfArray", "java.util.List<java.util.Map<java.lang.CharSequence, java.util.List<java.lang.CharSequence>>>");
+    }};
+
     return new Object[][]{
         {vs14.TestCollections.class, vs14TestCollectionsFieldToType, false},
         {vs14.TestCollections.Builder.class, vs14TestCollectionsFieldToType, true},
@@ -1417,7 +1378,9 @@ public class SpecificRecordTest {
         {vs110.TestCollections.class, vs14TestCollectionsFieldToType, false},
         {vs110.TestCollections.Builder.class, vs14TestCollectionsFieldToType, true},
         {vs111.TestCollections.class, vs14TestCollectionsFieldToType, false},
-        {vs111.TestCollections.Builder.class, vs14TestCollectionsFieldToType, true}
+        {vs111.TestCollections.Builder.class, vs14TestCollectionsFieldToType, true},
+        {charseqmethod.TestCollections.class, vs14TestCollectionsCharSeqFieldToType, false},
+        {charseqmethod.TestCollections.Builder.class, vs14TestCollectionsCharSeqFieldToType, true}
     };
   }
 
@@ -1457,6 +1420,100 @@ public class SpecificRecordTest {
 
   private String getMethodWithPrefixForField(String fieldName, String prefix) {
     return prefix + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+  }
+
+  @Test
+  public void testRecordWithCharSeqStringTypeForMethods() throws Exception {
+    CharSequence str = "str";
+    Map<CharSequence, CharSequence> mapCharSeq  = new HashMap<CharSequence, CharSequence>() {{
+      put("key1", "value1");
+      put("key2", "value2");
+    }};
+
+    Map<CharSequence, List<CharSequence>> mapOfList = new HashMap<CharSequence, List<CharSequence>>() {{
+      put("key1", Arrays.asList("val1", "val2"));
+      put("key2", Arrays.asList("val10", "val20"));
+    }};
+    charseqmethod.TestCollections.Builder testCollectionsBuilder = charseqmethod.TestCollections.newBuilder()
+        .setStr(str)
+        .setStrAr(Arrays.asList(str))
+        .setStrArAr(Arrays.asList(Arrays.asList(str), Arrays.asList(str)))
+        .setUnionOfArray(Arrays.asList(str))
+        .setArOfMap(Arrays.asList(mapCharSeq))
+        .setUnionOfMap(mapCharSeq)
+        .setArOfUnionOfStr(Arrays.asList(str))
+        .setArOfMapOfUnionOfArray(Arrays.asList(mapOfList));
+
+    charseqmethod.TestCollections testCollections = testCollectionsBuilder.build();
+
+    Assert.assertTrue(testCollections.get(0) instanceof CharSequence);
+
+    Assert.assertTrue(testCollections.get(1) instanceof List);
+    Assert.assertTrue(((List<?>) testCollections.get(1)).get(0) instanceof CharSequence);
+
+    Assert.assertTrue(testCollections.get(2) instanceof List);
+    Assert.assertTrue(((List<?>) testCollections.get(2)).get(0) instanceof List);
+    Assert.assertTrue(((List) ((List<?>) testCollections.get(2)).get(0)).get(0) instanceof CharSequence);
+
+    Assert.assertTrue(testCollections.get(3) instanceof List);
+    Assert.assertTrue(((List<?>) testCollections.get(3)).get(0) instanceof CharSequence);
+
+    Assert.assertTrue(testCollections.get(4) instanceof List);
+    Assert.assertTrue(((List<?>) testCollections.get(4)).get(0) instanceof Map);
+    Set<Map.Entry<CharSequence, CharSequence>> entrySet = ((Map) ((List) testCollections.get(4)).get(0)).entrySet();
+    for(Map.Entry entry : entrySet) {
+      Assert.assertTrue(entry.getKey() instanceof CharSequence);
+      Assert.assertFalse(entry.getKey() instanceof Utf8);
+      Assert.assertTrue(entry.getValue() instanceof CharSequence);
+      Assert.assertFalse(entry.getValue() instanceof Utf8);
+    }
+    Assert.assertTrue(testCollections.get(5) instanceof Map);
+    //Validates all entry sets are in CharSeq->CharSeq form
+    Set<Map.Entry<CharSequence, CharSequence>> entrySet2 = ((Map) testCollections.get(5)).entrySet();
+    for(Map.Entry entry : entrySet2) {
+      Assert.assertTrue(entry.getKey() instanceof CharSequence);
+      Assert.assertFalse(entry.getKey() instanceof Utf8);
+      Assert.assertTrue(entry.getValue() instanceof CharSequence);
+      Assert.assertFalse(entry.getValue() instanceof Utf8);
+    }
+
+    Assert.assertTrue(testCollections.get(6) instanceof List);
+    Assert.assertTrue(((List<?>) testCollections.get(6)).get(0) instanceof CharSequence);
+
+    Assert.assertTrue(testCollections.get(7) instanceof List);
+    Assert.assertTrue(((List<?>) testCollections.get(7)).get(0) instanceof Map);
+
+    Set<Map.Entry<CharSequence, List<CharSequence>>> entrySet4 = ((Map) ((List<?>) testCollections.get(7)).get(0)).entrySet();
+    for(Map.Entry<CharSequence, List<CharSequence>> entry : entrySet4) {
+      Assert.assertTrue(((Map.Entry)entry).getKey() instanceof CharSequence);
+      Assert.assertFalse(((Map.Entry)entry).getKey() instanceof Utf8);
+
+      Assert.assertTrue(((Map.Entry)entry).getValue() instanceof List);
+      Assert.assertTrue(((List<?>) ((Map.Entry)entry).getValue()).get(0) instanceof CharSequence);
+      Assert.assertFalse(((List<?>) ((Map.Entry)entry).getValue()).get(0) instanceof Utf8);
+    }
+
+    Assert.assertTrue(testCollections.str instanceof Utf8);
+    Assert.assertTrue(((List<?>) testCollections.strAr).get(0) instanceof Utf8);
+    Assert.assertTrue(((List) ((List<?>) testCollections.strArAr).get(0)).get(0) instanceof Utf8);
+    Assert.assertTrue(((List<?>) testCollections.unionOfArray).get(0) instanceof CharSequence);
+    Set<Map.Entry<Utf8, Utf8>> entrySet3 = ((Map) testCollections.unionOfMap).entrySet();
+    for(Map.Entry entry : entrySet3) {
+      Assert.assertTrue(entry.getKey() instanceof Utf8);
+      Assert.assertTrue(entry.getValue() instanceof Utf8);
+    }
+
+    Assert.assertTrue(((List<?>) testCollections.arOfUnionOfStr).get(0) instanceof Utf8);
+
+    Set<Map.Entry<Utf8, List<Utf8>>> entrySet5 = ((Map) ((List<?>) testCollections.arOfMapOfUnionOfArray).get(0)).entrySet();
+    for(Map.Entry<Utf8, List<Utf8>> entry : entrySet5) {
+      Assert.assertTrue(((Map.Entry)entry).getKey() instanceof CharSequence);
+      Assert.assertTrue(((Map.Entry)entry).getKey() instanceof Utf8);
+
+      Assert.assertTrue(((Map.Entry)entry).getValue() instanceof List);
+      Assert.assertTrue(((List<?>) ((Map.Entry)entry).getValue()).get(0) instanceof CharSequence);
+      Assert.assertTrue(((List<?>) ((Map.Entry)entry).getValue()).get(0) instanceof Utf8);
+    }
   }
 
   private void assertNotSameIfNotNull(Object obj1, Object obj2) {

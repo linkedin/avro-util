@@ -95,7 +95,11 @@ public class SpecificRecordGeneratorUtil {
 
   private SpecificRecordGeneratorUtil(){}
 
-
+  /***
+   * Returns true if schema is union with size = 2 and a null member
+   * @param schema
+   * @return
+   */
   public static boolean isSingleTypeNullableUnionSchema(AvroSchema schema) {
     if(!(schema instanceof AvroUnionSchema)) return false;
     AvroUnionSchema unionSchema = (AvroUnionSchema) schema;
@@ -275,34 +279,43 @@ public class SpecificRecordGeneratorUtil {
    */
   public static boolean isListTransformerApplicableForSchema(AvroSchema schema) {
     if(schema == null) return false;
-    if (schema.type().equals(AvroType.ARRAY)) {
-      AvroSchema arrayItemSchema = getListItemSchemaFromPossible(schema);
-      return arrayItemSchema != null && arrayItemSchema.type().equals(AvroType.STRING);
-    }
-    return false;
+    return isNullUnionOf(AvroType.ARRAY, schema) && schemaContainsString(schema);
   }
 
   public static boolean isMapTransformerApplicable(AvroSchema schema) {
     return isNullUnionOf(AvroType.MAP, schema);
   }
 
-  /***
-   * if isNullUnionOf Array type is true, call this method to get item schema
-   * @param schema
-   * @return item schema, null if not compatible
-   */
-  private static AvroSchema getListItemSchemaFromPossible(AvroSchema schema) {
-    switch (schema.type()) {
-      case ARRAY:
-        return ((AvroArraySchema) schema).getValueSchema();
-      case UNION:
-        for( SchemaOrRef unionMemberSchema: ((AvroUnionSchema) schema).getTypes()) {
-          if(unionMemberSchema.getSchema() != null && AvroType.ARRAY.equals(unionMemberSchema.getSchema().type())) {
-            return getListItemSchemaFromPossible(unionMemberSchema.getSchema());
-          }
-        }
-      default: return null;
+
+  public static boolean schemaContainsString(AvroSchema schema) {
+    if (schema == null) {
+      return false;
     }
+    boolean hasString = false;
+    switch (schema.type()) {
+      case STRING:
+      case MAP:
+        return true;
+      case UNION:
+        AvroUnionSchema unionSchema = (AvroUnionSchema) schema;
+        // Any member can have string?
+        for(SchemaOrRef schemaOrRef : unionSchema.getTypes()) {
+          hasString |= schemaContainsString(schemaOrRef.getSchema());
+        }
+        return hasString;
+      case ARRAY:
+        AvroArraySchema arraySchema = (AvroArraySchema) schema;
+        return schemaContainsString(arraySchema.getValueSchema());
+      case RECORD:
+        AvroRecordSchema recordSchema = (AvroRecordSchema) schema;
+        for(AvroSchemaField schemaField : recordSchema.getFields()) {
+          // Any fields with String?
+          hasString |= schemaContainsString(schemaField.getSchema());
+        }
+        return hasString;
+    }
+
+    return false;
   }
 
   private static List<AvroNamedSchema> getNestedInternalSchemaListForRecord(AvroRecordSchema topLevelSchema) {

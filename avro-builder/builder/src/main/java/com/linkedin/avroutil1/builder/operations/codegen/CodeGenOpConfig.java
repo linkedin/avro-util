@@ -40,6 +40,8 @@ public class CodeGenOpConfig {
   List<String> duplicateSchemasToIgnore; //by fullname
 
   StringRepresentation stringRepresentation;
+
+  StringRepresentation methodStringRepresentation;
   AvroVersion minAvroVersion;
   boolean avro702Handling;
 
@@ -65,6 +67,35 @@ public class CodeGenOpConfig {
     this.dupBehaviour = dupBehaviour;
     this.duplicateSchemasToIgnore = duplicateSchemasToIgnore;
     this.stringRepresentation = stringRepresentation;
+    this.methodStringRepresentation = stringRepresentation;
+    this.minAvroVersion = minAvroVersion;
+    this.avro702Handling = avro702Handling;
+  }
+
+  public CodeGenOpConfig(
+      List<File> inputRoots,
+      List<File> nonImportableSourceRoots,
+      boolean includeClasspath,
+      File outputSpecificRecordClassesRoot,
+      File outputExpandedSchemasRoot,
+      CodeGenerator generatorType,
+      DuplicateSchemaBehaviour dupBehaviour,
+      List<String> duplicateSchemasToIgnore,
+      StringRepresentation stringRepresentation,
+      StringRepresentation methodStringRepresentation,
+      AvroVersion minAvroVersion,
+      boolean avro702Handling
+  ) {
+    this.inputRoots = inputRoots;
+    this.nonImportableSourceRoots = nonImportableSourceRoots;
+    this.includeClasspath = includeClasspath;
+    this.outputSpecificRecordClassesRoot = outputSpecificRecordClassesRoot;
+    this.outputExpandedSchemasRoot = outputExpandedSchemasRoot;
+    this.generatorType = generatorType;
+    this.dupBehaviour = dupBehaviour;
+    this.duplicateSchemasToIgnore = duplicateSchemasToIgnore;
+    this.stringRepresentation = stringRepresentation;
+    this.methodStringRepresentation = methodStringRepresentation;
     this.minAvroVersion = minAvroVersion;
     this.avro702Handling = avro702Handling;
   }
@@ -155,6 +186,10 @@ public class CodeGenOpConfig {
 
   public StringRepresentation getStringRepresentation() {
     return stringRepresentation;
+  }
+
+  public StringRepresentation getMethodStringRepresentation() {
+    return methodStringRepresentation;
   }
 
   public AvroVersion getMinAvroVersion() {

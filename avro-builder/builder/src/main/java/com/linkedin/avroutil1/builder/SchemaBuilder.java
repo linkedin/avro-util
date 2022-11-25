@@ -67,6 +67,9 @@ public class SchemaBuilder {
     OptionSpec<String> stringRepresentationOpt = parser.accepts("stringRepresentation", "controls the java type used to represent string"
             + " properties in generated code. values are [CharSequence|String|Utf8], default is CharSequence for compatibility with 1.4")
         .withOptionalArg();
+    OptionSpec<String> methodStringRepresentationOpt = parser.accepts("methodStringRepresentation", "controls the java type used to represent string in method argument"
+            + " in generated code. values are [CharSequence|String|Utf8], default is String")
+        .withOptionalArg();
     OptionSpec<String> failOnDupsOpt = parser.accepts("onDups", "control behaviour on encountering duplicate schema definitions")
         .withOptionalArg()
         .defaultsTo(DuplicateSchemaBehaviour.FAIL_IF_DIFFERENT.name())
@@ -161,6 +164,16 @@ public class SchemaBuilder {
       }
     }
 
+    StringRepresentation methodStringRepresentation = StringRepresentation.String;
+    if (options.has(methodStringRepresentationOpt)) {
+      String methodStringRepStr = options.valueOf(methodStringRepresentationOpt);
+      try {
+        methodStringRepresentation = StringRepresentation.valueOf(methodStringRepStr);
+      } catch (IllegalArgumentException e) {
+        croak("unhandled string methodStringRepresentation " + options.valueOf(methodStringRepStr));
+      }
+    }
+
     AvroVersion minAvroVer = AvroVersion.AVRO_1_4;
     if (options.has(minAvroVerOpt)) {
       try {
@@ -193,6 +206,7 @@ public class SchemaBuilder {
         dupBehaviour,
         duplicateClassesToIgnore,
         stringRepresentation,
+        methodStringRepresentation,
         minAvroVer,
         handleAvro702
     );

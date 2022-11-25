@@ -16,6 +16,7 @@ import com.linkedin.avroutil1.codegen.SpecificRecordGenerationConfig;
 import com.linkedin.avroutil1.codegen.SpecificRecordGeneratorUtil;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
+import com.linkedin.avroutil1.model.AvroJavaStringRepresentation;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
 import com.linkedin.avroutil1.model.AvroType;
@@ -248,6 +249,8 @@ public class AvroUtilCodeGenOp implements Operation {
             alreadyGeneratedSchemas.add(namedSchema.getFullName());
             generatedSpecificClasses.add(generator.generateSpecificClass(namedSchema,
                 SpecificRecordGenerationConfig.getBroadCompatibilitySpecificRecordGenerationConfig(
+                    AvroJavaStringRepresentation.fromJson(config.getStringRepresentation().toString()),
+                    AvroJavaStringRepresentation.fromJson(config.getMethodStringRepresentation().toString()),
                     config.getMinAvroVersion())));
 
             // generate internal schemas if not already present
@@ -256,6 +259,8 @@ public class AvroUtilCodeGenOp implements Operation {
               if (!alreadyGeneratedSchemas.contains(namedInternalSchema.getFullName())) {
                 generatedSpecificClasses.add(generator.generateSpecificClass(namedInternalSchema,
                     SpecificRecordGenerationConfig.getBroadCompatibilitySpecificRecordGenerationConfig(
+                        AvroJavaStringRepresentation.fromJson(config.getStringRepresentation().toString()),
+                        AvroJavaStringRepresentation.fromJson(config.getMethodStringRepresentation().toString()),
                         config.getMinAvroVersion())));
                 alreadyGeneratedSchemas.add(namedInternalSchema.getFullName());
               }

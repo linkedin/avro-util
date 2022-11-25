@@ -74,6 +74,9 @@ dependencies {
   testImplementation (project(":avro-builder:tests:codegen-111")) {
     exclude group: "org.apache.avro"
   }
+  testImplementation (project(":avro-builder:tests:codegen-charseq-method")) {
+    exclude group: "org.apache.avro"
+  }
 
   testImplementation "com.google.guava:guava:28.2-jre"
   testImplementation "org.mockito:mockito-core:3.2.4"
