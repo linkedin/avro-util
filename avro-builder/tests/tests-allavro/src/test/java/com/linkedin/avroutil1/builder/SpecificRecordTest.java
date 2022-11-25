@@ -1350,6 +1350,18 @@ public class SpecificRecordTest {
       put("arOfUnionOfStr", "java.util.List<java.lang.String>");
       put("arOfMapOfUnionOfArray", "java.util.List<java.util.Map<java.lang.String, java.util.List<java.lang.String>>>");
     }};
+
+    Map<String, String> vs14TestCollectionsCharSeqFieldToType = new LinkedHashMap<String, String>() {{
+      put("str", "interface java.lang.CharSequence");
+      put("strAr", "java.util.List<java.lang.CharSequence>");
+      put("strArAr", "java.util.List<java.util.List<java.lang.CharSequence>>");
+      put("unionOfArray", "java.util.List<java.lang.CharSequence>");
+      put("arOfMap", "java.util.List<java.util.Map<java.lang.CharSequence, java.lang.CharSequence>>");
+      put("unionOfMap", "java.util.Map<java.lang.CharSequence, java.lang.CharSequence>");
+      put("arOfUnionOfStr", "java.util.List<java.lang.CharSequence>");
+      put("arOfMapOfUnionOfArray", "java.util.List<java.util.Map<java.lang.CharSequence, java.util.List<java.lang.CharSequence>>>");
+    }};
+
     return new Object[][]{
         {vs14.TestCollections.class, vs14TestCollectionsFieldToType, false},
         {vs14.TestCollections.Builder.class, vs14TestCollectionsFieldToType, true},
@@ -1366,7 +1378,9 @@ public class SpecificRecordTest {
         {vs110.TestCollections.class, vs14TestCollectionsFieldToType, false},
         {vs110.TestCollections.Builder.class, vs14TestCollectionsFieldToType, true},
         {vs111.TestCollections.class, vs14TestCollectionsFieldToType, false},
-        {vs111.TestCollections.Builder.class, vs14TestCollectionsFieldToType, true}
+        {vs111.TestCollections.Builder.class, vs14TestCollectionsFieldToType, true},
+        {charseqmethod.TestCollections.class, vs14TestCollectionsCharSeqFieldToType, false},
+        {charseqmethod.TestCollections.Builder.class, vs14TestCollectionsCharSeqFieldToType, true}
     };
   }
 
