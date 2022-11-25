@@ -25,6 +25,12 @@ public class ListTransformer {
     flushCharSeqFlag();
     return getString(listObj);
   }
+
+  public static List getCharSequenceList(Object listObj) {
+    flushCharSeqFlag();
+    return getCharSequence(listObj);
+  }
+
   private static List getUtf8(Object listObj) {
     if(listObj == null) return null;
     if (listObj instanceof List) {
@@ -69,6 +75,32 @@ public class ListTransformer {
         } else if (item instanceof CharSequence) {
           hasCharSeq = true;
           ret.add(StringConverterUtil.getString(item));
+        } else {
+          ret.add(item);
+        }
+      }
+      return hasCharSeq? Collections.unmodifiableList(ret) : list;
+    } else {
+      throw new UnsupportedOperationException(
+          "Supports only Lists. Received" + CollectionTransformerUtil.getErrorMessageForInstance(listObj));
+    }
+  }
+
+  private static List getCharSequence(Object listObj) {
+    if(listObj == null) return null;
+    List ret;
+    if(listObj instanceof List) {
+      List list = (List) listObj;
+      ret = new ArrayList(list.size());
+      for (Object item : list) {
+        if (item instanceof List) {
+          ret.add(ListTransformer.getString((List) item));
+        } else if (item instanceof Map) {
+          hasCharSeq = true;
+          ret.add(MapTransformer.getStringMap((Map) item));
+        } else if (item instanceof CharSequence) {
+          hasCharSeq = true;
+          ret.add(StringConverterUtil.getCharSequence(item));
         } else {
           ret.add(item);
         }

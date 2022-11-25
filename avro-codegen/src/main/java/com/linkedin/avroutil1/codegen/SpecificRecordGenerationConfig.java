@@ -39,6 +39,22 @@ public class SpecificRecordGenerationConfig {
     );
   }
 
+  public final static SpecificRecordGenerationConfig getBroadCompatibilitySpecificRecordGenerationConfig(
+      AvroJavaStringRepresentation defaultFieldStringRepresentation,
+      AvroJavaStringRepresentation defaultMethodStringRepresentation,
+      AvroVersion minimumSupportedAvroVersion) {
+    return new SpecificRecordGenerationConfig(
+        BROAD_COMPATIBILITY.publicFields,
+        BROAD_COMPATIBILITY.getters,
+        BROAD_COMPATIBILITY.setters,
+        BROAD_COMPATIBILITY.builders,
+        BROAD_COMPATIBILITY.honorStringTypeHints,
+        defaultFieldStringRepresentation,
+        defaultMethodStringRepresentation,
+        minimumSupportedAvroVersion
+    );
+  }
+
   /**
    * true to make generated fields public
    */

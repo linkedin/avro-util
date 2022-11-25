@@ -99,12 +99,6 @@
         "items": "string"
       }
       ]
-    },
-    {
-      "name": "externalRefRecordUnion",
-      "type": [
-        "null", "vs18.TestCollections"
-      ]
     }
   ]
 }

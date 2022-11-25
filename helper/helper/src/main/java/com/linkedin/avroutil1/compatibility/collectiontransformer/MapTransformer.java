@@ -71,4 +71,32 @@ public class MapTransformer {
     }
     return Collections.unmodifiableMap(ret);
   }
+
+  public static Map getCharSequenceMap(Object mapObj) {
+    if (mapObj == null) {
+      return null;
+    }
+    Map ret;
+    if (mapObj instanceof Map) {
+      Map map = (Map) mapObj;
+      ret = new HashMap(map.size());
+      for (Object entry : map.entrySet()) {
+        Object key = ((Map.Entry) entry).getKey();
+        Object val = ((Map.Entry) entry).getValue();
+        if (val instanceof List) {
+          ret.put(StringConverterUtil.getString(key), ListTransformer.getCharSequenceList((List) val));
+        } else if (val instanceof Map) {
+          ret.put(StringConverterUtil.getString(key), MapTransformer.getCharSequenceMap((Map) val));
+        } else if (val instanceof CharSequence) {
+          ret.put(StringConverterUtil.getString(key), StringConverterUtil.getCharSequence(val));
+        } else {
+          ret.put(StringConverterUtil.getString(key), val);
+        }
+      }
+    } else {
+      throw new UnsupportedOperationException(
+          "Supports only Map. Received" + CollectionTransformerUtil.getErrorMessageForInstance(mapObj));
+    }
+    return Collections.unmodifiableMap(ret);
+  }
 }
