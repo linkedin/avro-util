@@ -173,7 +173,7 @@ public class SpecificRecordGeneratorUtil {
         className = ClassName.get(recordName.getNamespace(), recordName.getSimpleName());
         break;
       case UNION:
-        // if union is [type] or [null, type], className can be type. Else Object.class
+        // if union is [type, null] or [null, type], className can be type. Else Object.class
         AvroUnionSchema unionSchema = (AvroUnionSchema) fieldSchema;
 
         if(isSingleTypeNullableUnionSchema(unionSchema)) {

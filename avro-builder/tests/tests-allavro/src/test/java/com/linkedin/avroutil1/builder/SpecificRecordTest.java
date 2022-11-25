@@ -9,10 +9,15 @@ package com.linkedin.avroutil1.builder;
 import com.linkedin.avroutil1.compatibility.AvroCodecUtil;
 import com.linkedin.avroutil1.compatibility.RandomRecordGenerator;
 import com.linkedin.avroutil1.compatibility.RecordGenerationConfig;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.util.Utf8;
@@ -1382,6 +1387,76 @@ public class SpecificRecordTest {
     Assert.assertTrue(instance111.getStringField() instanceof String);
     Assert.assertEquals(instance111.stringField, new Utf8(instance111.getStringField()));
 
+  }
+
+  @DataProvider
+  private Object[][] testStringTypeParamsProvider() {
+    Map<String, String> vs14TestCollectionsFieldToType = new LinkedHashMap<String, String>() {{
+      put("str", "class java.lang.String");
+      put("strAr", "java.util.List<java.lang.String>");
+      put("strArAr", "java.util.List<java.util.List<java.lang.String>>");
+      put("unionOfArray", "java.util.List<java.lang.String>");
+      put("arOfMap", "java.util.List<java.util.Map<java.lang.String, java.lang.String>>");
+      put("unionOfMap", "java.util.Map<java.lang.String, java.lang.String>");
+      put("arOfUnionOfStr", "java.util.List<java.lang.String>");
+      put("arOfMapOfUnionOfArray", "java.util.List<java.util.Map<java.lang.String, java.util.List<java.lang.String>>>");
+    }};
+    return new Object[][]{
+        {vs14.TestCollections.class, vs14TestCollectionsFieldToType, false},
+        {vs14.TestCollections.Builder.class, vs14TestCollectionsFieldToType, true},
+        {vs15.TestCollections.class, vs14TestCollectionsFieldToType, false},
+        {vs15.TestCollections.Builder.class, vs14TestCollectionsFieldToType, true},
+        {vs16.TestCollections.class, vs14TestCollectionsFieldToType, false},
+        {vs16.TestCollections.Builder.class, vs14TestCollectionsFieldToType, true},
+        {vs17.TestCollections.class, vs14TestCollectionsFieldToType, false},
+        {vs17.TestCollections.Builder.class, vs14TestCollectionsFieldToType, true},
+        {vs18.TestCollections.class, vs14TestCollectionsFieldToType, false},
+        {vs18.TestCollections.Builder.class, vs14TestCollectionsFieldToType, true},
+        {vs19.TestCollections.class, vs14TestCollectionsFieldToType, false},
+        {vs19.TestCollections.Builder.class, vs14TestCollectionsFieldToType, true},
+        {vs110.TestCollections.class, vs14TestCollectionsFieldToType, false},
+        {vs110.TestCollections.Builder.class, vs14TestCollectionsFieldToType, true},
+        {vs111.TestCollections.class, vs14TestCollectionsFieldToType, false},
+        {vs111.TestCollections.Builder.class, vs14TestCollectionsFieldToType, true}
+    };
+  }
+
+  @Test(dataProvider = "testStringTypeParamsProvider")
+  public void testStringTypeParams(Class<?> clazz, Map<String, String> fieldToType, boolean isBuilder) throws NoSuchMethodException {
+
+    List<String> expectedParamTypesForStringMethodType = new ArrayList<>(fieldToType.values());
+
+    if(!isBuilder) {
+      Parameter[] allArgConstructorParamsForStringMethod = Arrays.stream(clazz.getConstructors()).filter(constructor -> constructor.getParameters().length != 0).findFirst().get()
+          .getParameters();
+      Assert.assertEquals(allArgConstructorParamsForStringMethod.length, fieldToType.size());
+      for(int i = 0; i< allArgConstructorParamsForStringMethod.length; i++) {
+      Assert.assertEquals(allArgConstructorParamsForStringMethod[i].getParameterizedType().toString(), expectedParamTypesForStringMethodType.get(i));
+      }
+    }
+
+    List<String> setterMethodNames = fieldToType.keySet().stream().map(fieldName -> getMethodWithPrefixForField(fieldName, "set")).collect(Collectors.toList());
+    List<String> getterMethodNames = fieldToType.keySet().stream().map(fieldName -> getMethodWithPrefixForField(fieldName, "get")).collect(Collectors.toList());
+    Map<String, String> setterMethodsTypes = Arrays.stream(clazz.getMethods())
+        .filter(method -> setterMethodNames.contains(method.getName()))
+        .collect(Collectors.toMap(Method::getName, method -> method.getParameters()[0].getParameterizedType().toString()));
+
+    Map<String, String> getterMethodsTypes = Arrays.stream(clazz.getMethods())
+        .filter(method -> getterMethodNames.contains(method.getName()))
+        .collect(Collectors.toMap(Method::getName, method -> method.getAnnotatedReturnType().getType().toString()));
+
+    for(String fieldName : fieldToType.keySet()) {
+      Assert.assertEquals(fieldToType.get(fieldName), setterMethodsTypes.get(getMethodWithPrefixForField(fieldName, "set")));
+    }
+
+    for(String fieldName : fieldToType.keySet()) {
+      Assert.assertEquals(fieldToType.get(fieldName), getterMethodsTypes.get(getMethodWithPrefixForField(fieldName, "get")));
+    }
+
+  }
+
+  private String getMethodWithPrefixForField(String fieldName, String prefix) {
+    return prefix + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
   }
 
   private void assertNotSameIfNotNull(Object obj1, Object obj2) {
