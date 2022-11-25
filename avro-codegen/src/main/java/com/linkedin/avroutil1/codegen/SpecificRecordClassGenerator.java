@@ -601,9 +601,8 @@ public class SpecificRecordClassGenerator {
       AvroType fieldAvroType = fieldSchema.type();
       Class<?> fieldClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(fieldAvroType,
           config.getDefaultMethodStringRepresentation(), false);
-      TypeName fieldType = (AvroType.UNION.equals(fieldAvroType)) ? TypeName.get(Object.class)
-          : SpecificRecordGeneratorUtil.getTypeName(field.getSchema(), fieldAvroType, true,
-              config.getDefaultMethodStringRepresentation());
+      TypeName fieldType = SpecificRecordGeneratorUtil.getTypeName(field.getSchema(), fieldAvroType, true,
+          config.getDefaultMethodStringRepresentation());
 
       if (fieldClass != null) {
         fieldBuilder = FieldSpec.builder(fieldClass, escapedFieldName, Modifier.PRIVATE);
@@ -1847,7 +1846,7 @@ public class SpecificRecordClassGenerator {
     if(field.getSchemaOrRef().getSchema() != null) {
       Class<?> fieldClass =
           SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(field.getSchemaOrRef().getSchema().type(),
-              config.getDefaultFieldStringRepresentation(), false);
+              config.getDefaultMethodStringRepresentation(), false);
       if (fieldClass != null) {
           parameterSpecBuilder = ParameterSpec.builder(fieldClass, escapedFieldName);
       } else {
