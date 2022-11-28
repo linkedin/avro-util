@@ -99,6 +99,10 @@
         "items": "string"
       }
       ]
+    },
+    {
+      "name": "unionOfString",
+      "type": ["null", "string"]
     }
   ]
 }

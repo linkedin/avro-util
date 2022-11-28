@@ -13,6 +13,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -1400,16 +1401,42 @@ public class SpecificRecordTest {
 
     List<String> setterMethodNames = fieldToType.keySet().stream().map(fieldName -> getMethodWithPrefixForField(fieldName, "set")).collect(Collectors.toList());
     List<String> getterMethodNames = fieldToType.keySet().stream().map(fieldName -> getMethodWithPrefixForField(fieldName, "get")).collect(Collectors.toList());
-    Map<String, String> setterMethodsTypes = Arrays.stream(clazz.getMethods())
-        .filter(method -> setterMethodNames.contains(method.getName()))
-        .collect(Collectors.toMap(Method::getName, method -> method.getParameters()[0].getParameterizedType().toString()));
 
     Map<String, String> getterMethodsTypes = Arrays.stream(clazz.getMethods())
         .filter(method -> getterMethodNames.contains(method.getName()))
         .collect(Collectors.toMap(Method::getName, method -> method.getAnnotatedReturnType().getType().toString()));
 
-    for(String fieldName : fieldToType.keySet()) {
-      Assert.assertEquals(fieldToType.get(fieldName), setterMethodsTypes.get(getMethodWithPrefixForField(fieldName, "set")));
+    // Setters for String + Charseq types should be present
+    // builder only have setters defined by defaultMethodStringRep in config
+    if (isBuilder) {
+      Map<String, String> setterMethodsTypesMap = Arrays.stream(clazz.getMethods())
+          .filter(method -> setterMethodNames.contains(method.getName()))
+          .collect(
+              Collectors.toMap(Method::getName, method -> method.getParameters()[0].getParameterizedType().toString()));
+
+      for (String fieldName : fieldToType.keySet()) {
+        Assert.assertEquals(fieldToType.get(fieldName),
+            setterMethodsTypesMap.get(getMethodWithPrefixForField(fieldName, "set")));
+      }
+    } else {
+      List<String> setterMethodsTypes = Arrays.stream(clazz.getMethods())
+          .filter(method -> setterMethodNames.contains(method.getName()))
+          .map(method -> method.getName()+ "::" + method.getParameters()[0].getParameterizedType().toString())
+          .collect(Collectors.toList());
+      List<String> setterMethodTypesExpected = fieldToType.entrySet()
+          .stream()
+          .map(entry -> getMethodWithPrefixForField(entry.getKey(), "set") + "::" + entry.getValue())
+          .collect(Collectors.toList());
+      if(fieldToType.get("str").equals("class java.lang.String")) {
+        setterMethodTypesExpected.add(getMethodWithPrefixForField("str", "set") + "::" + "interface java.lang.CharSequence");
+      } else {
+        setterMethodTypesExpected.add(getMethodWithPrefixForField("str", "set") + "::" + "class java.lang.String");
+      }
+
+      Collections.sort(setterMethodTypesExpected);
+      Collections.sort(setterMethodsTypes);
+
+      Assert.assertEquals(setterMethodsTypes, setterMethodTypesExpected);
     }
 
     for(String fieldName : fieldToType.keySet()) {
