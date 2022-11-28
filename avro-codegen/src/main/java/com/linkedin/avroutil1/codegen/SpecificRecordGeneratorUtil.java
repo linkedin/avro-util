@@ -306,13 +306,6 @@ public class SpecificRecordGeneratorUtil {
       case ARRAY:
         AvroArraySchema arraySchema = (AvroArraySchema) schema;
         return schemaContainsString(arraySchema.getValueSchema());
-      case RECORD:
-        AvroRecordSchema recordSchema = (AvroRecordSchema) schema;
-        for(AvroSchemaField schemaField : recordSchema.getFields()) {
-          // Any fields with String?
-          hasString |= schemaContainsString(schemaField.getSchema());
-        }
-        return hasString;
     }
 
     return false;
