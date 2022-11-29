@@ -668,6 +668,14 @@ public class AvscParserTest {
         Assert.assertEquals(vanillaField.aliases(), avroSchemaField.aliases());
     }
 
+    @Test
+    public void testSomething() throws Exception {
+        String recordAvsc = TestUtil.load("schemas/BadRecordDefault.avsc");
+        AvscParser avscParser = new AvscParser();
+
+        AvscParseResult recordParseResult = avscParser.parse(recordAvsc);
+        Assert.assertEquals(recordParseResult.getIssues().size(), 1);
+    }
 
     private Schema vanillaParse(String resource) throws Exception {
         String avsc = TestUtil.load(resource);

@@ -1,0 +1,22 @@
+{
+  "type" : "record",
+  "name" : "HasBadDefaultForInnerRecord",
+  "namespace" : "com.acme",
+  "fields" : [{
+    "name" : "recordField",
+    "type" : {
+      "type" : "record",
+      "name" : "InnerRecord",
+      "fields" : [ {
+        "name" : "f1",
+        "type" : "string",
+        "default" : ""
+      }, {
+        "name" : "f2",
+        "type" : "int",
+        "default" : 0
+      } ]
+    },
+    "default" : { }
+  }]
+}

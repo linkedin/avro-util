@@ -620,7 +620,6 @@ public class AvscParser {
                 if (jsonType != JsonValue.ValueType.NULL) {
                     issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                             literalNode.toString(), avroType, fieldName);
-                    context.addIssue(issue);
                     return new LiteralOrIssue(issue);
                 }
                 return new LiteralOrIssue(new AvroNullLiteral(
@@ -630,7 +629,6 @@ public class AvscParser {
                 if (jsonType != JsonValue.ValueType.FALSE && jsonType != JsonValue.ValueType.TRUE) {
                     issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                             literalNode.toString(), avroType, fieldName);
-                    context.addIssue(issue);
                     return new LiteralOrIssue(issue);
                 }
                 boolean boolValue = jsonType == JsonValue.ValueType.TRUE;
@@ -641,7 +639,6 @@ public class AvscParser {
                 if (jsonType != JsonValue.ValueType.NUMBER) {
                     issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                             literalNode.toString(), avroType, fieldName);
-                    context.addIssue(issue);
                     return new LiteralOrIssue(issue);
                 }
                 JsonNumberExt intNode = (JsonNumberExt) literalNode;
@@ -649,7 +646,6 @@ public class AvscParser {
                     //TODO - be more specific about this error (int vs float)
                     issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                             literalNode.toString(), avroType, fieldName);
-                    context.addIssue(issue);
                     return new LiteralOrIssue(issue);
                 }
                 bigIntegerValue = intNode.bigIntegerValue();
@@ -657,7 +653,6 @@ public class AvscParser {
                     //TODO - be more specific about this error (out of signed int range)
                     issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                             literalNode.toString(), avroType, fieldName);
-                    context.addIssue(issue);
                     return new LiteralOrIssue(issue);
                 }
                 return new LiteralOrIssue(new AvroIntegerLiteral(
@@ -667,7 +662,6 @@ public class AvscParser {
                 if (jsonType != JsonValue.ValueType.NUMBER) {
                     issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                             literalNode.toString(), avroType, fieldName);
-                    context.addIssue(issue);
                     return new LiteralOrIssue(issue);
                 }
                 JsonNumberExt longNode = (JsonNumberExt) literalNode;
@@ -675,7 +669,6 @@ public class AvscParser {
                     //TODO - be more specific about this error (long vs float)
                     issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                             literalNode.toString(), avroType, fieldName);
-                    context.addIssue(issue);
                     return new LiteralOrIssue(issue);
                 }
                 bigIntegerValue = longNode.bigIntegerValue();
@@ -683,7 +676,6 @@ public class AvscParser {
                     //TODO - be more specific about this error (out of signed long range)
                     issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                             literalNode.toString(), avroType, fieldName);
-                    context.addIssue(issue);
                     return new LiteralOrIssue(issue);
                 }
                 return new LiteralOrIssue(new AvroLongLiteral(
@@ -693,7 +685,6 @@ public class AvscParser {
                 if (jsonType != JsonValue.ValueType.NUMBER) {
                     issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                             literalNode.toString(), avroType, fieldName);
-                    context.addIssue(issue);
                     return new LiteralOrIssue(issue);
                 }
                 JsonNumberExt floatNode = (JsonNumberExt) literalNode;
@@ -702,7 +693,6 @@ public class AvscParser {
                     //TODO - be more specific about this error (out of float range)
                     issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                             literalNode.toString(), avroType, fieldName);
-                    context.addIssue(issue);
                     return new LiteralOrIssue(issue);
                 }
                 return new LiteralOrIssue(new AvroFloatLiteral(
@@ -712,7 +702,6 @@ public class AvscParser {
                 if (jsonType != JsonValue.ValueType.NUMBER) {
                     issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                             literalNode.toString(), avroType, fieldName);
-                    context.addIssue(issue);
                     return new LiteralOrIssue(issue);
                 }
                 JsonNumberExt doubleNode = (JsonNumberExt) literalNode;
@@ -721,7 +710,6 @@ public class AvscParser {
                     //TODO - be more specific about this error (out of double range)
                     issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                             literalNode.toString(), avroType, fieldName);
-                    context.addIssue(issue);
                     return new LiteralOrIssue(issue);
                 }
                 return new LiteralOrIssue(new AvroDoubleLiteral(
@@ -731,7 +719,6 @@ public class AvscParser {
                 if (jsonType != JsonValue.ValueType.STRING) {
                     issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                             literalNode.toString(), avroType, fieldName);
-                    context.addIssue(issue);
                     return new LiteralOrIssue(issue);
                 }
                 JsonStringExt bytesNode = (JsonStringExt) literalNode;
@@ -744,7 +731,6 @@ public class AvscParser {
                 if (jsonType != JsonValue.ValueType.STRING) {
                     issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                             literalNode.toString(), avroType, fieldName);
-                    context.addIssue(issue);
                     return new LiteralOrIssue(issue);
                 }
                 AvroFixedSchema fixedSchema = (AvroFixedSchema) schema;
@@ -755,7 +741,6 @@ public class AvscParser {
                     //TODO - be more specific about this error (wrong length)
                     issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                             literalNode.toString(), avroType, fieldName);
-                    context.addIssue(issue);
                     return new LiteralOrIssue(issue);
                 }
                 return new LiteralOrIssue(new AvroFixedLiteral(
@@ -765,7 +750,6 @@ public class AvscParser {
                 if (jsonType != JsonValue.ValueType.STRING) {
                     issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                             literalNode.toString(), avroType, fieldName);
-                    context.addIssue(issue);
                     return new LiteralOrIssue(issue);
                 }
                 JsonStringExt stringNode = (JsonStringExt) literalNode;
@@ -776,7 +760,6 @@ public class AvscParser {
                 if (jsonType != JsonValue.ValueType.STRING) {
                     issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                             literalNode.toString(), avroType, fieldName);
-                    context.addIssue(issue);
                     return new LiteralOrIssue(issue);
                 }
                 AvroEnumSchema enumSchema = (AvroEnumSchema) schema;
@@ -786,7 +769,6 @@ public class AvscParser {
                     //TODO - be more specific about this error (unknown symbol)
                     issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                             literalNode.toString(), avroType, fieldName);
-                    context.addIssue(issue);
                     return new LiteralOrIssue(issue);
                 }
                 return new LiteralOrIssue(new AvroEnumLiteral(
@@ -796,7 +778,6 @@ public class AvscParser {
                 if (jsonType != JsonValue.ValueType.ARRAY) {
                     issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                             literalNode.toString(), avroType, fieldName);
-                    context.addIssue(issue);
                     return new LiteralOrIssue(issue);
                 }
                 AvroArraySchema arraySchema = (AvroArraySchema) schema;
@@ -813,7 +794,6 @@ public class AvscParser {
                         issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                                 literalNode.toString(), avroType, fieldName);
 
-                        context.addIssue(issue);
                         return new LiteralOrIssue(issue);
                     }
                     values.add(value.getLiteral());
@@ -825,7 +805,6 @@ public class AvscParser {
                 if (jsonType != JsonValue.ValueType.OBJECT) {
                     issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                         literalNode.toString(), avroType, fieldName);
-                    context.addIssue(issue);
                     return new LiteralOrIssue(issue);
                 }
                 AvroMapSchema mapSchema = (AvroMapSchema) schema;
@@ -841,7 +820,6 @@ public class AvscParser {
                         issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                             literalNode.toString(), avroType, fieldName);
 
-                        context.addIssue(issue);
                         return new LiteralOrIssue(issue);
                     }
                     map.put(entry.getKey(), value.getLiteral());
@@ -853,7 +831,6 @@ public class AvscParser {
                 if (jsonType != JsonValue.ValueType.OBJECT) {
                     issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                         literalNode.toString(), avroType, fieldName);
-                    context.addIssue(issue);
                     return new LiteralOrIssue(issue);
                 }
                 AvroRecordSchema recordSchema = (AvroRecordSchema) schema;
@@ -865,6 +842,16 @@ public class AvscParser {
                     AvroSchema fieldSchema = field.getSchema();
                     AvroSchema literalSchema = fieldSchema; //except for unions, see below.
                     JsonValueExt fieldLiteral = objectNode.get(fn);
+
+                    if (fieldLiteral == null) {
+                        //TODO = allow multiple issues (continue trying to parse other fields)
+                        issue = AvscIssues.missingFieldValueInLiteral(
+                            locationOf(context.getUri(), literalNode),
+                            fn
+                        );
+                        return new LiteralOrIssue(issue);
+                    }
+
                     JsonValueExt literal = fieldLiteral; //except if union
                     if (fieldSchema.type() == AvroType.UNION) {
                         AvroUnionSchema unionSchema = (AvroUnionSchema) fieldSchema;
@@ -883,7 +870,6 @@ public class AvscParser {
                                     //TODO - provide more details (union object expected to only have a single prop)
                                     issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                                         literalNode.toString(), avroType, fieldName);
-                                    context.addIssue(issue);
                                     return new LiteralOrIssue(issue);
                                 }
                                 Map.Entry<String, JsonValue> discriminatorEntry = unionObjectProps.iterator().next();
@@ -900,14 +886,12 @@ public class AvscParser {
                             default:
                                 issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                                     literalNode.toString(), avroType, fieldName);
-                                context.addIssue(issue);
                                 return new LiteralOrIssue(issue);
 
                         }
                         if (branchNumber < 0) {
                             issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                                 literalNode.toString(), avroType, fieldName);
-                            context.addIssue(issue);
                             return new LiteralOrIssue(issue);
                         }
                         literalSchema = unionSchema.getTypes().get(branchNumber).getSchema();
@@ -917,7 +901,6 @@ public class AvscParser {
                         //TODO - be more specific (what avropath did we have the issue with?)
                         issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                             literalNode.toString(), avroType, fieldName);
-                        context.addIssue(issue);
                         return new LiteralOrIssue(issue);
                     }
                     map.put(fn, fieldValueOrIssue.getLiteral());
