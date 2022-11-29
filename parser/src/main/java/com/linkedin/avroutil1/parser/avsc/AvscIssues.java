@@ -79,6 +79,18 @@ public class AvscIssues {
         );
     }
 
+    public static AvscIssue missingFieldValueInLiteral(
+        CodeLocation valueLocation,
+        String fieldName
+    ) {
+        return new AvscIssue(
+            valueLocation,
+            IssueSeverity.SPEC_VIOLATION,
+            "missing value for field " + fieldName + " at " + valueLocation.getStart(),
+            null
+        );
+    }
+
     public static AvscIssue badEnumDefaultValue(
             CodeLocation valueLocation,
             String badValue,
