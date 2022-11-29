@@ -6,4 +6,5 @@
 
 <suppressions>
   <suppress checks=".*" files="[\\/]build[\\/]generated[\\/].*" />
+  <suppress checks=".*" files="\.*SimulatedSpecificRecord\.*" />
 </suppressions>

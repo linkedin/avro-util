@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -159,6 +160,9 @@ public class AvroRecordUtil {
       //look up SR class by fullname and possibly aliases
       //noinspection unchecked
       srClass = (Class<T>) context.lookup(inputSchema);
+      if (srClass == null) {
+        throw new IllegalStateException("unable to find/load class " + inputSchema.getFullName());
+      }
 
       outputSchema = AvroSchemaUtil.getDeclaredSchema(srClass);
       //noinspection unchecked
@@ -228,6 +232,69 @@ public class AvroRecordUtil {
     deepConvertRecord(input, outputRecord, context);
 
     return outputRecord;
+  }
+
+  public static <T extends IndexedRecord> T setStringField(T record, String fieldName, CharSequence value) {
+    Schema schema = record.getSchema();
+    Schema.Field field = schema.getField(fieldName);
+    if (field == null) {
+      throw new IllegalArgumentException("schema " + schema.getFullName() + " has no such field " + fieldName);
+    }
+    if (!(record instanceof SpecificRecord)) {
+      //generic record
+      //TODO - make this honor schema logical types or runtime avro version?
+      record.put(field.pos(), value);
+      return record;
+    }
+    String expectedFieldName = AVRO_RESERVED_FIELD_NAMES.contains(fieldName) ? fieldName + "$" : fieldName;
+    Class<? extends IndexedRecord> recordClass = record.getClass();
+    //look for public field 1st
+    Field[] classFields = recordClass.getFields();
+    for (Field classField : classFields) {
+      if (expectedFieldName.equals(classField.getName())) {
+        Class<?> classFieldType = classField.getType();
+        StringRepresentation classFieldStringRep = StringRepresentation.forClass(classFieldType);
+        CharSequence convertedValue = toString(value, classFieldStringRep);
+        try {
+          classField.set(record, convertedValue);
+        } catch (Exception e) {
+          throw new IllegalStateException("unable to set field " + recordClass.getName() + "." + classField.getName()
+              + " to " + classFieldStringRep + " " + convertedValue, e);
+        }
+        return record;
+      }
+    }
+
+    //look for setter
+    Method[] classMethods = recordClass.getMethods();
+    String expectedMethodName = "set" + expectedFieldName.substring(0, 1).toUpperCase(Locale.ROOT) + expectedFieldName.substring(1);
+    for (Method method : classMethods) {
+      //needs to be called setSomething()
+      if (!expectedMethodName.equals(method.getName())) {
+        continue;
+      }
+      //needs to be void
+      Class<?> returnType = method.getReturnType();
+      if (!Void.TYPE.equals(returnType)) {
+        continue;
+      }
+      //needs to have a single arg
+      Class<?>[] args = method.getParameterTypes();
+      if (args == null || args.length != 1) {
+        continue;
+      }
+      Class<?> setterArgType = args[0];
+      StringRepresentation setterArgStringRep = StringRepresentation.forClass(setterArgType);
+      CharSequence convertedValue = toString(value, setterArgStringRep);
+      try {
+        method.invoke(record, convertedValue);
+      } catch (Exception e) {
+        throw new IllegalStateException("unable to call setter " + method
+            + " to " + setterArgStringRep + " " + convertedValue, e);
+      }
+      return record;
+    }
+    throw new IllegalStateException("unable to find either public field of setter method for " + recordClass.getName() + "." + fieldName);
   }
 
   private static void deepConvertRecord(IndexedRecord input, IndexedRecord output, RecordConversionContext context) {
@@ -616,6 +683,9 @@ public class AvroRecordUtil {
   }
 
   private static CharSequence toString(CharSequence inputStr, StringRepresentation desired) {
+    if (inputStr == null) {
+      return null;
+    }
     switch (desired) {
       case String:
         return String.valueOf(inputStr);
