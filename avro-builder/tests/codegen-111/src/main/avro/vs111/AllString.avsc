@@ -1,0 +1,23 @@
+{
+  "type": "record",
+  "namespace": "vs111",
+  "name": "AllString",
+  "fields": [
+    {
+      "name": "one",
+      "type": "string"
+    },
+    {
+      "name": "two",
+      "type": "string"
+    },
+    {
+      "name": "three",
+      "type": "string"
+    },
+    {
+      "name": "four",
+      "type": "string"
+    }
+  ]
+}
