@@ -508,6 +508,10 @@ public class SpecificRecordClassGenerator {
 
         // setters
         classBuilder.addMethod(getSetterMethodSpec(field, config));
+        MethodSpec overloadedSetterIfString = getOverloadedSetterSpecIfStringField(field, config);
+        if(overloadedSetterIfString != null) {
+          classBuilder.addMethod(getOverloadedSetterSpecIfStringField(field, config));
+        }
       }
     }
 
@@ -1676,6 +1680,51 @@ public class SpecificRecordClassGenerator {
     }
   }
 
+  private MethodSpec getOverloadedSetterSpecIfStringField(AvroSchemaField field,
+      SpecificRecordGenerationConfig config) {
+    MethodSpec.Builder stringSetter = null;
+    String escapedFieldName = getFieldNameWithSuffix(field);
+    if (SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.STRING, field.getSchema())) {
+      Class<?> fieldClass =
+          SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(field.getSchemaOrRef().getSchema().type(),
+              config.getDefaultMethodStringRepresentation().equals(AvroJavaStringRepresentation.STRING)
+                  ? AvroJavaStringRepresentation.CHAR_SEQUENCE : AvroJavaStringRepresentation.STRING,
+              false);
+      stringSetter = MethodSpec
+          .methodBuilder(getMethodNameForFieldWithPrefix("set", escapedFieldName))
+          .addModifiers(Modifier.PUBLIC);
+
+      if(fieldClass != null ) {
+        if(fieldClass.equals(CharSequence.class)) {
+          stringSetter.addAnnotation(Deprecated.class);
+        }
+        stringSetter
+            .addParameter(fieldClass, escapedFieldName)
+            .addModifiers(Modifier.PUBLIC);
+
+      } else if (field.getSchema() != null && field.getSchema().type().equals(AvroType.UNION)) {
+        TypeName typeName = SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(),
+            field.getSchemaOrRef().getSchema().type(), true,
+            config.getDefaultMethodStringRepresentation().equals(AvroJavaStringRepresentation.STRING)
+                ? AvroJavaStringRepresentation.CHAR_SEQUENCE : AvroJavaStringRepresentation.STRING);
+
+        stringSetter.addParameter(typeName, escapedFieldName);
+
+        if (typeName.equals(ClassName.get(CharSequence.class))) {
+          stringSetter.addAnnotation(Deprecated.class);
+        }
+      }
+      if (config.getDefaultFieldStringRepresentation().equals(AvroJavaStringRepresentation.STRING)) {
+        stringSetter.addStatement(
+            "this.$1L = com.linkedin.avroutil1.compatibility.StringConverterUtil.getString($1L)", escapedFieldName);
+      } else {
+        stringSetter.addStatement(
+            "this.$1L = com.linkedin.avroutil1.compatibility.StringConverterUtil.getUtf8($1L)", escapedFieldName);
+      }
+    }
+    return stringSetter == null ? null : stringSetter.build();
+  }
+
   private MethodSpec getSetterMethodSpec(AvroSchemaField field, SpecificRecordGenerationConfig config) {
     AvroType fieldType;
     String escapedFieldName = getFieldNameWithSuffix(field);
@@ -1688,12 +1737,18 @@ public class SpecificRecordClassGenerator {
       fieldType = field.getSchemaOrRef().getSchema().type();
       Class<?> fieldClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(field.getSchemaOrRef().getSchema().type(), config.getDefaultMethodStringRepresentation(), false);
       if (fieldClass != null) {
+        if(fieldClass.equals(CharSequence.class)) {
+          methodSpecBuilder.addAnnotation(Deprecated.class);
+        }
         methodSpecBuilder.addParameter(fieldClass, escapedFieldName)
             .addModifiers(Modifier.PUBLIC);
       } else {
-        methodSpecBuilder.addParameter(SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(),
-                field.getSchemaOrRef().getSchema().type(), true, config.getDefaultMethodStringRepresentation()),
-            escapedFieldName);
+        TypeName typeName = SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(),
+            field.getSchemaOrRef().getSchema().type(), true, config.getDefaultMethodStringRepresentation());
+        if (typeName.equals(ClassName.get(CharSequence.class))) {
+          methodSpecBuilder.addAnnotation(Deprecated.class);
+        }
+        methodSpecBuilder.addParameter(typeName, escapedFieldName);
       }
     } else {
       methodSpecBuilder.addParameter(
