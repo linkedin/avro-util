@@ -9,6 +9,7 @@ package com.linkedin.avroutil1.builder;
 import com.linkedin.avroutil1.compatibility.AvroCodecUtil;
 import com.linkedin.avroutil1.compatibility.RandomRecordGenerator;
 import com.linkedin.avroutil1.compatibility.RecordGenerationConfig;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
@@ -18,8 +19,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.util.Utf8;
@@ -1541,6 +1542,51 @@ public class SpecificRecordTest {
       Assert.assertTrue(((List<?>) ((Map.Entry)entry).getValue()).get(0) instanceof CharSequence);
       Assert.assertTrue(((List<?>) ((Map.Entry)entry).getValue()).get(0) instanceof Utf8);
     }
+  }
+
+  @DataProvider
+  private Object[][] testAllStringRecordProvider() {
+    return new Object[][]{
+        {vs14.AllString.class},
+        {vs15.AllString.class},
+        {vs16.AllString.class},
+        {vs17.AllString.class},
+        {vs18.AllString.class},
+        {vs19.AllString.class},
+        {vs110.AllString.class},
+        {vs111.AllString.class},
+
+        //Default method type charseq
+        {charseqmethod.AllString.class}
+
+    };
+  }
+
+  @Test(dataProvider = "testAllStringRecordProvider")
+  public void testAllStringRecordConstructor(Class<?> clazz) {
+    String charseqToStr = "interface java.lang.CharSequence";
+    String stringToStr = "class java.lang.String";
+    boolean hasCharSeqConstructor = false;
+    boolean hasStringConstructor = false;
+
+    List<Constructor> constructors = Arrays.stream(clazz.getConstructors()).filter(constructor -> constructor.getParameters().length != 0).collect(
+        Collectors.toList());
+    Assert.assertEquals(constructors.size(), 2);
+    for(Constructor constructor : constructors) {
+      if(constructor.getParameters()[0].getParameterizedType().toString().equals(charseqToStr)) {
+        for(Parameter param : constructor.getParameters()) {
+          Assert.assertEquals(param.getParameterizedType().toString(), charseqToStr);
+        }
+        hasCharSeqConstructor = true;
+      } else {
+        for(Parameter param : constructor.getParameters()) {
+          Assert.assertEquals(param.getParameterizedType().toString(), stringToStr);
+        }
+        hasStringConstructor = true;
+      }
+    }
+
+    Assert.assertTrue(hasCharSeqConstructor && hasStringConstructor);
   }
 
   private void assertNotSameIfNotNull(Object obj1, Object obj2) {
