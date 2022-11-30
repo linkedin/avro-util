@@ -366,13 +366,13 @@ public class SpecificRecordGeneratorUtil {
     return fieldNameParts.length > 1 ? fieldNameParts[1] : fieldNameWithPrefix;
   }
 
-  public static boolean allFieldsAreStringTypeForRecord(AvroRecordSchema schema) {
+  public static boolean recordHasSimpleStringField(AvroRecordSchema schema) {
     for(AvroSchemaField field : schema.getFields()) {
-      if(!isNullUnionOf(AvroType.STRING, field.getSchema())) {
-        return false;
+      if(isNullUnionOf(AvroType.STRING, field.getSchema())) {
+        return true;
       }
     }
-    return true;
+    return false;
   }
 
 }

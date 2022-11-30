@@ -11,7 +11,6 @@ import com.linkedin.avroutil1.compatibility.RandomRecordGenerator;
 import com.linkedin.avroutil1.compatibility.RecordGenerationConfig;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -1365,39 +1364,46 @@ public class SpecificRecordTest {
     }};
 
     return new Object[][]{
-        {vs14.TestCollections.class, vs14TestCollectionsFieldToType, false},
-        {vs14.TestCollections.Builder.class, vs14TestCollectionsFieldToType, true},
-        {vs15.TestCollections.class, vs14TestCollectionsFieldToType, false},
-        {vs15.TestCollections.Builder.class, vs14TestCollectionsFieldToType, true},
-        {vs16.TestCollections.class, vs14TestCollectionsFieldToType, false},
-        {vs16.TestCollections.Builder.class, vs14TestCollectionsFieldToType, true},
-        {vs17.TestCollections.class, vs14TestCollectionsFieldToType, false},
-        {vs17.TestCollections.Builder.class, vs14TestCollectionsFieldToType, true},
-        {vs18.TestCollections.class, vs14TestCollectionsFieldToType, false},
-        {vs18.TestCollections.Builder.class, vs14TestCollectionsFieldToType, true},
-        {vs19.TestCollections.class, vs14TestCollectionsFieldToType, false},
-        {vs19.TestCollections.Builder.class, vs14TestCollectionsFieldToType, true},
-        {vs110.TestCollections.class, vs14TestCollectionsFieldToType, false},
-        {vs110.TestCollections.Builder.class, vs14TestCollectionsFieldToType, true},
-        {vs111.TestCollections.class, vs14TestCollectionsFieldToType, false},
-        {vs111.TestCollections.Builder.class, vs14TestCollectionsFieldToType, true},
-        {charseqmethod.TestCollections.class, vs14TestCollectionsCharSeqFieldToType, false},
-        {charseqmethod.TestCollections.Builder.class, vs14TestCollectionsCharSeqFieldToType, true}
+        {vs14.TestCollections.class, vs14TestCollectionsFieldToType, vs14TestCollectionsCharSeqFieldToType, false},
+        {vs14.TestCollections.Builder.class, vs14TestCollectionsFieldToType, vs14TestCollectionsCharSeqFieldToType, true},
+        {vs15.TestCollections.class, vs14TestCollectionsFieldToType, vs14TestCollectionsCharSeqFieldToType, false},
+        {vs15.TestCollections.Builder.class, vs14TestCollectionsFieldToType, vs14TestCollectionsCharSeqFieldToType, true},
+        {vs16.TestCollections.class, vs14TestCollectionsFieldToType, vs14TestCollectionsCharSeqFieldToType, false},
+        {vs16.TestCollections.Builder.class, vs14TestCollectionsFieldToType, vs14TestCollectionsCharSeqFieldToType, true},
+        {vs17.TestCollections.class, vs14TestCollectionsFieldToType, vs14TestCollectionsCharSeqFieldToType, false},
+        {vs17.TestCollections.Builder.class, vs14TestCollectionsFieldToType, vs14TestCollectionsCharSeqFieldToType, true},
+        {vs18.TestCollections.class, vs14TestCollectionsFieldToType, vs14TestCollectionsCharSeqFieldToType, false},
+        {vs18.TestCollections.Builder.class, vs14TestCollectionsFieldToType, vs14TestCollectionsCharSeqFieldToType, true},
+        {vs19.TestCollections.class, vs14TestCollectionsFieldToType, vs14TestCollectionsCharSeqFieldToType, false},
+        {vs19.TestCollections.Builder.class, vs14TestCollectionsFieldToType, vs14TestCollectionsCharSeqFieldToType, true},
+        {vs110.TestCollections.class, vs14TestCollectionsFieldToType, vs14TestCollectionsCharSeqFieldToType, false},
+        {vs110.TestCollections.Builder.class, vs14TestCollectionsFieldToType, vs14TestCollectionsCharSeqFieldToType, true},
+        {vs111.TestCollections.class, vs14TestCollectionsFieldToType, vs14TestCollectionsCharSeqFieldToType, false},
+        {vs111.TestCollections.Builder.class, vs14TestCollectionsFieldToType, vs14TestCollectionsCharSeqFieldToType, true},
+        {charseqmethod.TestCollections.class, vs14TestCollectionsCharSeqFieldToType, vs14TestCollectionsFieldToType, false},
+        {charseqmethod.TestCollections.Builder.class, vs14TestCollectionsCharSeqFieldToType, vs14TestCollectionsFieldToType, true}
     };
   }
 
   @Test(dataProvider = "testStringTypeParamsProvider")
-  public void testStringTypeParams(Class<?> clazz, Map<String, String> fieldToType, boolean isBuilder) throws NoSuchMethodException {
-
-    List<String> expectedParamTypesForStringMethodType = new ArrayList<>(fieldToType.values());
+  public void testStringTypeParams(Class<?> clazz, Map<String, String> fieldToType, Map<String, String> fieldToType2ndCtr, boolean isBuilder) throws NoSuchMethodException {
 
     if(!isBuilder) {
-      Parameter[] allArgConstructorParamsForStringMethod = Arrays.stream(clazz.getConstructors()).filter(constructor -> constructor.getParameters().length != 0).findFirst().get()
-          .getParameters();
-      Assert.assertEquals(allArgConstructorParamsForStringMethod.length, fieldToType.size());
-      for(int i = 0; i< allArgConstructorParamsForStringMethod.length; i++) {
-      Assert.assertEquals(allArgConstructorParamsForStringMethod[i].getParameterizedType().toString(), expectedParamTypesForStringMethodType.get(i));
+      List<Constructor> constructors = Arrays.stream(clazz.getConstructors()).filter(constructor -> constructor.getParameters().length != 0).collect(
+          Collectors.toList());
+      List<List<String>> listOfListOfConstructorParamsExpected =
+          Arrays.asList(new ArrayList<>(fieldToType.values()), new ArrayList<>(fieldToType2ndCtr.values()));
+      List<List<String>> listOfListOfConstructorParamsActual = new ArrayList<>();
+      for(Constructor constructor : constructors) {
+        listOfListOfConstructorParamsActual.add(
+            Arrays.stream(constructor.getParameters()).map(param -> param.getParameterizedType().toString()).collect(
+                Collectors.toList())
+        );
       }
+      Assert.assertTrue((listOfListOfConstructorParamsExpected.get(0).equals(listOfListOfConstructorParamsActual.get(0))
+          && listOfListOfConstructorParamsExpected.get(1).equals(listOfListOfConstructorParamsActual.get(1)))
+          || (listOfListOfConstructorParamsExpected.get(1).equals(listOfListOfConstructorParamsActual.get(0))
+          && listOfListOfConstructorParamsExpected.get(0).equals(listOfListOfConstructorParamsActual.get(1))));
     }
 
     List<String> setterMethodNames = fieldToType.keySet().stream().map(fieldName -> getMethodWithPrefixForField(fieldName, "set")).collect(Collectors.toList());
@@ -1545,48 +1551,29 @@ public class SpecificRecordTest {
   }
 
   @DataProvider
-  private Object[][] testAllStringRecordProvider() {
+  private Object[][] testRecordWitNoSimpleStrConstructorProvider() {
     return new Object[][]{
-        {vs14.AllString.class},
-        {vs15.AllString.class},
-        {vs16.AllString.class},
-        {vs17.AllString.class},
-        {vs18.AllString.class},
-        {vs19.AllString.class},
-        {vs110.AllString.class},
-        {vs111.AllString.class},
+        {vs14.HasNoSimpleString.class},
+        {vs15.HasNoSimpleString.class},
+        {vs16.HasNoSimpleString.class},
+        {vs17.HasNoSimpleString.class},
+        {vs18.HasNoSimpleString.class},
+        {vs19.HasNoSimpleString.class},
+        {vs110.HasNoSimpleString.class},
+        {vs111.HasNoSimpleString.class},
 
         //Default method type charseq
-        {charseqmethod.AllString.class}
+        {charseqmethod.HasNoSimpleString.class}
 
     };
   }
 
-  @Test(dataProvider = "testAllStringRecordProvider")
-  public void testAllStringRecordConstructor(Class<?> clazz) {
-    String charseqToStr = "interface java.lang.CharSequence";
-    String stringToStr = "class java.lang.String";
-    boolean hasCharSeqConstructor = false;
-    boolean hasStringConstructor = false;
+  @Test(dataProvider = "testRecordWitNoSimpleStrConstructorProvider")
+  public void testRecordWitNoSimpleStrConstructor(Class<?> clazz) {
 
     List<Constructor> constructors = Arrays.stream(clazz.getConstructors()).filter(constructor -> constructor.getParameters().length != 0).collect(
         Collectors.toList());
-    Assert.assertEquals(constructors.size(), 2);
-    for(Constructor constructor : constructors) {
-      if(constructor.getParameters()[0].getParameterizedType().toString().equals(charseqToStr)) {
-        for(Parameter param : constructor.getParameters()) {
-          Assert.assertEquals(param.getParameterizedType().toString(), charseqToStr);
-        }
-        hasCharSeqConstructor = true;
-      } else {
-        for(Parameter param : constructor.getParameters()) {
-          Assert.assertEquals(param.getParameterizedType().toString(), stringToStr);
-        }
-        hasStringConstructor = true;
-      }
-    }
-
-    Assert.assertTrue(hasCharSeqConstructor && hasStringConstructor);
+    Assert.assertEquals(constructors.size(), 1);
   }
 
   private void assertNotSameIfNotNull(Object obj1, Object obj2) {

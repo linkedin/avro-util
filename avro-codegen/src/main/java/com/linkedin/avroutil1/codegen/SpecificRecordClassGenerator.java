@@ -436,7 +436,7 @@ public class SpecificRecordClassGenerator {
       addAllArgsConstructor(recordSchema, config.getDefaultFieldStringRepresentation(),
           config.getDefaultMethodStringRepresentation(), classBuilder);
 
-      if(SpecificRecordGeneratorUtil.allFieldsAreStringTypeForRecord(recordSchema)) {
+      if(SpecificRecordGeneratorUtil.recordHasSimpleStringField(recordSchema)) {
         addAllArgsConstructor(recordSchema, config.getDefaultFieldStringRepresentation(),
             config.getDefaultMethodStringRepresentation().equals(AvroJavaStringRepresentation.STRING)
             ? AvroJavaStringRepresentation.CHAR_SEQUENCE : AvroJavaStringRepresentation.STRING,

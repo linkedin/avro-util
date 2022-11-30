@@ -1,23 +1,23 @@
 {
   "type": "record",
-  "namespace": "vs110",
-  "name": "AllString",
+  "namespace": "vs18",
+  "name": "HasNoSimpleString",
   "fields": [
     {
       "name": "one",
-      "type": "string"
+      "type": "float"
     },
     {
       "name": "two",
-      "type": "string"
+      "type": ["string"]
     },
     {
       "name": "three",
-      "type": "string"
+      "type": "int"
     },
     {
       "name": "four",
-      "type": "string"
+      "type": "boolean"
     }
   ]
 }
