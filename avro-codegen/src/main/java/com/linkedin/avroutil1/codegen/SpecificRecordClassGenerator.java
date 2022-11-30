@@ -584,6 +584,12 @@ public class SpecificRecordClassGenerator {
         }
       }
 
+      //CharSequence constructors are deprecated in favor of String constructors
+      if (defaultMethodStringRepresentation.equals(AvroJavaStringRepresentation.CHAR_SEQUENCE)
+          && SpecificRecordGeneratorUtil.recordHasSimpleStringField(recordSchema)) {
+        allArgsConstructorBuilder.addAnnotation(Deprecated.class);
+      }
+
       classBuilder.addMethod(allArgsConstructorBuilder.build());
     }
   }
