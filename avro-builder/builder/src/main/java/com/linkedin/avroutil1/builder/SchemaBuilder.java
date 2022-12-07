@@ -86,6 +86,13 @@ public class SchemaBuilder {
         .defaultsTo("true")
         .describedAs("true/false");
 
+    OptionSpec<String> enableUtf8EncodingInPutByIndex = parser.accepts(
+            "enableUtf8EncodingInPutByIndex",
+            "enable encoding String/ListOf/MapOf to their Utf8 values during set value in put-by-index method [ put(int, Object) ]")
+        .withOptionalArg()
+        .defaultsTo("true")
+        .describedAs("true/false");
+
     //allow plugins to add CLI options
     for (BuilderPlugin plugin : plugins) {
       plugin.customizeCLI(parser);
@@ -189,6 +196,12 @@ public class SchemaBuilder {
       handleAvro702 = Boolean.TRUE.equals(Boolean.parseBoolean(value));
     }
 
+    boolean handleUtf8EncodingInPutByIndex = true;
+    if (options.has(enableUtf8EncodingInPutByIndex)) {
+      String value = options.valueOf(enableUtf8EncodingInPutByIndex);
+      handleUtf8EncodingInPutByIndex = Boolean.TRUE.equals(Boolean.parseBoolean(value));
+    }
+
     //allow plugins to parse and validate their own added options
     for (BuilderPlugin plugin : plugins) {
       plugin.parseAndValidateOptions(options);
@@ -208,7 +221,8 @@ public class SchemaBuilder {
         stringRepresentation,
         methodStringRepresentation,
         minAvroVer,
-        handleAvro702
+        handleAvro702,
+        handleUtf8EncodingInPutByIndex
     );
 
     opConfig.validateParameters();

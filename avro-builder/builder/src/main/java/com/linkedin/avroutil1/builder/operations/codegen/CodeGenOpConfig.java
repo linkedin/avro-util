@@ -44,6 +44,7 @@ public class CodeGenOpConfig {
   StringRepresentation methodStringRepresentation;
   AvroVersion minAvroVersion;
   boolean avro702Handling;
+  boolean utf8EncodingPutByIndex;
 
   public CodeGenOpConfig(
       List<File> inputRoots,
@@ -70,6 +71,7 @@ public class CodeGenOpConfig {
     this.methodStringRepresentation = stringRepresentation;
     this.minAvroVersion = minAvroVersion;
     this.avro702Handling = avro702Handling;
+    this.utf8EncodingPutByIndex = true;
   }
 
   public CodeGenOpConfig(
@@ -98,6 +100,35 @@ public class CodeGenOpConfig {
     this.methodStringRepresentation = methodStringRepresentation;
     this.minAvroVersion = minAvroVersion;
     this.avro702Handling = avro702Handling;
+    this.utf8EncodingPutByIndex = true;
+  }
+
+  public CodeGenOpConfig(List<File> inputRoots,
+      List<File> nonImportableSourceRoots,
+      boolean includeClasspath,
+      File outputSpecificRecordClassesRoot,
+      File outputExpandedSchemasRoot,
+      CodeGenerator generatorType,
+      DuplicateSchemaBehaviour dupBehaviour,
+      List<String> duplicateSchemasToIgnore,
+      StringRepresentation stringRepresentation,
+      StringRepresentation methodStringRepresentation,
+      AvroVersion minAvroVersion,
+      boolean avro702Handling,
+      boolean handleUtf8EncodingInPutByIndex) {
+    this.inputRoots = inputRoots;
+    this.nonImportableSourceRoots = nonImportableSourceRoots;
+    this.includeClasspath = includeClasspath;
+    this.outputSpecificRecordClassesRoot = outputSpecificRecordClassesRoot;
+    this.outputExpandedSchemasRoot = outputExpandedSchemasRoot;
+    this.generatorType = generatorType;
+    this.dupBehaviour = dupBehaviour;
+    this.duplicateSchemasToIgnore = duplicateSchemasToIgnore;
+    this.stringRepresentation = stringRepresentation;
+    this.methodStringRepresentation = methodStringRepresentation;
+    this.minAvroVersion = minAvroVersion;
+    this.avro702Handling = avro702Handling;
+    this.utf8EncodingPutByIndex = handleUtf8EncodingInPutByIndex;
   }
 
   /**
@@ -198,6 +229,9 @@ public class CodeGenOpConfig {
 
   public boolean isAvro702Handling() {
     return avro702Handling;
+  }
+  public boolean isUtf8EncodingPutByIndexEnabled() {
+    return utf8EncodingPutByIndex;
   }
 
   private void validateInput(Collection<File> files, String desc) {
