@@ -186,6 +186,22 @@ public class AvroRecordUtilTest {
     Assert.assertEquals(newInner.newNewF2, String.valueOf(oldGenericInner.get("f2")));
   }
 
+  @Test
+  public void testStringFieldSetting() throws Exception {
+    SimulatedSpecificRecord record = new SimulatedSpecificRecord();
+
+    AvroRecordUtil.setStringField(record, "utf8WithBoth", "should hit field");
+    Assert.assertEquals(record.utf8WithBoth, new Utf8("should hit field"));
+
+    AvroRecordUtil.setStringField(record, "utf8WithSetterOnly", "much value");
+    Assert.assertEquals(record.getUtf8WithSetterOnly(), new Utf8("much value"));
+    AvroRecordUtil.setStringField(record, "utf8WithSetterOnly", new Utf8("such wow"));
+    Assert.assertEquals(record.getUtf8WithSetterOnly(), new Utf8("such wow"));
+
+    AvroRecordUtil.setStringField(record, "int", "something");
+    Assert.assertEquals(record.int$, new Utf8("something"));
+  }
+
   private void convertRoundTrip(GenericRecord original) {
     Assert.assertNotNull(original);
     SpecificRecord converted = AvroRecordUtil.genericRecordToSpecificRecord(original, null, RecordConversionConfig.ALLOW_ALL_USE_UTF8);

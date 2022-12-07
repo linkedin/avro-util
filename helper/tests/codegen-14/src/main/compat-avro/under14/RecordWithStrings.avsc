@@ -1,0 +1,17 @@
+{
+  "type": "record",
+  "namespace": "under14",
+  "name": "RecordWithStrings",
+  "fields": [
+    {"name": "f1", "type": "string"},
+    {"name": "f2", "type": "string"},
+    {"name": "f3", "type": {
+      "type": "string",
+      "avro.java.string": "String"
+    }},
+    {"name": "f4", "type": {
+      "type": "string",
+      "avro.java.string": "Utf8"
+    }}
+  ]
+}
