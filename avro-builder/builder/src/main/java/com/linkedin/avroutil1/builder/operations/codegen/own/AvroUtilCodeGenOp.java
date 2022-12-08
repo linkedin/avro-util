@@ -251,7 +251,7 @@ public class AvroUtilCodeGenOp implements Operation {
                 SpecificRecordGenerationConfig.getBroadCompatibilitySpecificRecordGenerationConfig(
                     AvroJavaStringRepresentation.fromJson(config.getStringRepresentation().toString()),
                     AvroJavaStringRepresentation.fromJson(config.getMethodStringRepresentation().toString()),
-                    config.getMinAvroVersion())));
+                    config.getMinAvroVersion(), config.isUtf8EncodingPutByIndexEnabled())));
 
             // generate internal schemas if not already present
             internalSchemaList = SpecificRecordGeneratorUtil.getNestedInternalSchemaList(namedSchema);
@@ -261,7 +261,7 @@ public class AvroUtilCodeGenOp implements Operation {
                     SpecificRecordGenerationConfig.getBroadCompatibilitySpecificRecordGenerationConfig(
                         AvroJavaStringRepresentation.fromJson(config.getStringRepresentation().toString()),
                         AvroJavaStringRepresentation.fromJson(config.getMethodStringRepresentation().toString()),
-                        config.getMinAvroVersion())));
+                        config.getMinAvroVersion(), config.isUtf8EncodingPutByIndexEnabled())));
                 alreadyGeneratedSchemas.add(namedInternalSchema.getFullName());
               }
             }

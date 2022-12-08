@@ -9,6 +9,7 @@ package com.linkedin.avroutil1.builder;
 import com.linkedin.avroutil1.compatibility.AvroCodecUtil;
 import com.linkedin.avroutil1.compatibility.RandomRecordGenerator;
 import com.linkedin.avroutil1.compatibility.RecordGenerationConfig;
+import com.linkedin.avroutil1.compatibility.StringConverterUtil;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -1580,6 +1581,94 @@ public class SpecificRecordTest {
     if(obj1 != null) {
       Assert.assertNotSame(obj1, obj2);
     }
+  }
+
+  @Test
+  public void testNoUtf8EncodingInPutByIndex() {
+    RandomRecordGenerator generator = new RandomRecordGenerator();
+    //uses put by index
+    noutf8.TestCollections instance =
+        generator.randomSpecific(noutf8.TestCollections.class, RecordGenerationConfig.newConfig().withAvoidNulls(true));
+
+    vs14.TestCollections instance2 =
+        generator.randomSpecific(vs14.TestCollections.class, RecordGenerationConfig.newConfig().withAvoidNulls(true));
+
+    instance.put(0, "val");
+    Assert.assertTrue(instance.str instanceof String);
+    instance.setStr("val");
+    Assert.assertTrue(instance.str instanceof Utf8);
+
+    instance.put(1, Arrays.asList("val"));
+    Assert.assertTrue(instance.strAr.get(0) instanceof String);
+    instance.setStrAr(Arrays.asList("val"));
+    Assert.assertTrue(instance.strAr.get(0) instanceof Utf8);
+
+    instance.put(2, Arrays.asList(Arrays.asList("val")));
+    Assert.assertTrue(instance.strArAr.get(0).get(0) instanceof String);
+    instance.setStrArAr(Arrays.asList(Arrays.asList("val")));
+    Assert.assertTrue(instance.strArAr.get(0).get(0) instanceof Utf8);
+
+    instance.put(3, Arrays.asList("val"));
+    Assert.assertTrue(instance.unionOfArray.get(0) instanceof String);
+    instance.setUnionOfArray(Arrays.asList("val"));
+    Assert.assertTrue(instance.unionOfArray.get(0) instanceof Utf8);
+
+    instance.put(4, Arrays.asList(new HashMap(){{
+      put("key1", "value1");
+    }}));
+    Assert.assertTrue(instance.arOfMap.get(0).get("key1") instanceof String);
+    instance.setArOfMap(Arrays.asList(new HashMap(){{
+      put("key1", "value1");
+    }}));
+    Assert.assertTrue(instance.arOfMap.get(0).get(StringConverterUtil.getUtf8("key1")) instanceof Utf8);
+
+    instance.put(7, Arrays.asList(new HashMap(){{
+      put("key1", Arrays.asList("val2"));
+    }}));
+    Assert.assertTrue(instance.arOfMapOfUnionOfArray.get(0).get("key1").get(0) instanceof String);
+    instance.setArOfMapOfUnionOfArray(Arrays.asList(new HashMap(){{
+      put("key1", Arrays.asList("val2"));
+    }}));
+    Assert.assertTrue(instance.arOfMapOfUnionOfArray.get(0).get(StringConverterUtil.getUtf8("key1")).get(0) instanceof Utf8);
+
+    instance2.put(0, "val");
+    Assert.assertTrue(instance2.str instanceof Utf8);
+    instance2.setStr("val");
+    Assert.assertTrue(instance2.str instanceof Utf8);
+
+    instance2.put(1, Arrays.asList("val"));
+    Assert.assertTrue(instance2.strAr.get(0) instanceof Utf8);
+    instance2.setStrAr(Arrays.asList("val"));
+    Assert.assertTrue(instance2.strAr.get(0) instanceof Utf8);
+
+    instance2.put(2, Arrays.asList(Arrays.asList("val")));
+    Assert.assertTrue(instance2.strArAr.get(0).get(0) instanceof Utf8);
+    instance2.setStrArAr(Arrays.asList(Arrays.asList("val")));
+    Assert.assertTrue(instance2.strArAr.get(0).get(0) instanceof Utf8);
+
+    instance2.put(3, Arrays.asList("val"));
+    Assert.assertTrue(instance2.unionOfArray.get(0) instanceof Utf8);
+    instance2.setUnionOfArray(Arrays.asList("val"));
+    Assert.assertTrue(instance2.unionOfArray.get(0) instanceof Utf8);
+
+    instance2.put(4, Arrays.asList(new HashMap(){{
+      put("key1", "value1");
+    }}));
+    Assert.assertTrue(instance2.arOfMap.get(0).get(StringConverterUtil.getUtf8("key1")) instanceof Utf8);
+    instance2.setArOfMap(Arrays.asList(new HashMap(){{
+      put("key1", "value1");
+    }}));
+    Assert.assertTrue(instance2.arOfMap.get(0).get(StringConverterUtil.getUtf8("key1")) instanceof Utf8);
+
+    instance2.put(7, Arrays.asList(new HashMap(){{
+      put("key1", Arrays.asList("val2"));
+    }}));
+    Assert.assertTrue(instance2.arOfMapOfUnionOfArray.get(0).get(StringConverterUtil.getUtf8("key1")).get(0) instanceof Utf8);
+    instance2.setArOfMapOfUnionOfArray(Arrays.asList(new HashMap(){{
+      put("key1", Arrays.asList("val2"));
+    }}));
+    Assert.assertTrue(instance2.arOfMapOfUnionOfArray.get(0).get(StringConverterUtil.getUtf8("key1")).get(0) instanceof Utf8);
+
   }
 
   @BeforeClass

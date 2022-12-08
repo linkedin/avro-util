@@ -179,7 +179,8 @@ public class SchemaBuilderTest {
     SchemaBuilder.main(new String[] {
         "--input", inputFolder.getAbsolutePath(),
         "--output", outputFolder.getAbsolutePath(),
-        "--generator", CodeGenerator.AVRO_UTIL.name()
+        "--generator", CodeGenerator.AVRO_UTIL.name(),
+        "enableUtf8EncodingInPutByIndex", "false"
     });
     //see output was generated
     List<Path> javaFiles = Files.find(outputFolder.toPath(), 5,
