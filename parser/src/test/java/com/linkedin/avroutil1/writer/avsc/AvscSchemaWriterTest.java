@@ -88,6 +88,11 @@ public class AvscSchemaWriterTest {
     testParsingCycle(avsc);
   }
 
+  @Test void testIfFieldPropsAreWritten() throws IOException {
+    String avsc = TestUtil.load("schemas/RecordFieldWithProps.avsc");
+    testParsingCycle(avsc);
+  }
+
   /**
    * given an avsc, parses and re-prints it using our code
    * and compares the result to vanilla avro.
