@@ -1,0 +1,19 @@
+{
+  "type": "record",
+  "name": "RecordFieldWithProps",
+  "doc": "The record's fields contain props",
+  "fields": [
+    {
+      "name": "hostname",
+      "type": "string",
+      "extra": "prop"
+    },
+    {
+      "name": "logNumberj",
+      "type": "long",
+      "extra": {
+        "blob": "ofProps"
+      }
+    }
+  ]
+}

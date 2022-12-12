@@ -319,6 +319,9 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
       }
       AvroSchema fieldSchema = field.getSchema();
       fieldBuilder.add("type", writeSchema(fieldSchema, context, config));
+
+      emitJsonProperties(field.getAllProps(), context, config, fieldBuilder);
+
       if (field.hasDefaultValue()) {
         AvroLiteral defaultValue = field.getDefaultValue();
         JsonValue defaultValueLiteral = writeDefaultValue(fieldSchema, defaultValue);
