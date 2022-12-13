@@ -1964,14 +1964,14 @@ public class SpecificRecordClassGenerator {
     return fieldSpecBuilder;
   }
 
-  private ParameterSpec getParameterSpecForField(AvroSchemaField field, AvroJavaStringRepresentation stringRepresentation, boolean forComplexType ) {
+  private ParameterSpec getParameterSpecForField(AvroSchemaField field, AvroJavaStringRepresentation stringRepresentation, boolean useBoxedTypes) {
     ParameterSpec.Builder parameterSpecBuilder = null;
     String escapedFieldName = getFieldNameWithSuffix(field);
     if(field.getSchemaOrRef().getSchema() != null) {
       //TODO : Input validation for non-nullable fields since Boxed types are used for Constructors
       Class<?> fieldClass =
           SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(field.getSchemaOrRef().getSchema().type(),
-              stringRepresentation, forComplexType);
+              stringRepresentation, useBoxedTypes);
       if (fieldClass != null) {
           parameterSpecBuilder = ParameterSpec.builder(fieldClass, escapedFieldName);
       } else {
