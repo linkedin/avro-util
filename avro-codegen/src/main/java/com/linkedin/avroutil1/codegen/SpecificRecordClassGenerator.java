@@ -532,7 +532,7 @@ public class SpecificRecordClassGenerator {
         //if declared schema, use fully qualified class (no import)
         String escapedFieldName = getFieldNameWithSuffix(field);
         addFullyQualified(field, defaultFieldStringRepresentation);
-        allArgsConstructorBuilder.addParameter(getParameterSpecForField(field, defaultMethodStringRepresentation));
+        allArgsConstructorBuilder.addParameter(getParameterSpecForField(field, defaultMethodStringRepresentation, true));
         if(SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.STRING, field.getSchema())) {
           allArgsConstructorBuilder.addStatement(
               "this.$1L = com.linkedin.avroutil1.compatibility.StringConverterUtil.getUtf8($1L)",
@@ -1964,13 +1964,14 @@ public class SpecificRecordClassGenerator {
     return fieldSpecBuilder;
   }
 
-  private ParameterSpec getParameterSpecForField(AvroSchemaField field, AvroJavaStringRepresentation stringRepresentation ) {
+  private ParameterSpec getParameterSpecForField(AvroSchemaField field, AvroJavaStringRepresentation stringRepresentation, boolean useBoxedTypes) {
     ParameterSpec.Builder parameterSpecBuilder = null;
     String escapedFieldName = getFieldNameWithSuffix(field);
     if(field.getSchemaOrRef().getSchema() != null) {
+      //TODO : Input validation for non-nullable fields since Boxed types are used for Constructors
       Class<?> fieldClass =
           SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(field.getSchemaOrRef().getSchema().type(),
-              stringRepresentation, false);
+              stringRepresentation, useBoxedTypes);
       if (fieldClass != null) {
           parameterSpecBuilder = ParameterSpec.builder(fieldClass, escapedFieldName);
       } else {
