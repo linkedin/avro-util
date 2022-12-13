@@ -12,6 +12,7 @@ import com.linkedin.avroutil1.compatibility.RecordGenerationConfig;
 import com.linkedin.avroutil1.compatibility.StringConverterUtil;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -1669,6 +1670,30 @@ public class SpecificRecordTest {
     }}));
     Assert.assertTrue(instance2.arOfMapOfUnionOfArray.get(0).get(StringConverterUtil.getUtf8("key1")).get(0) instanceof Utf8);
 
+  }
+
+  @DataProvider
+  private Object[][] testConstructorTypeForPrimitiveProvider() {
+    return new Object[][] {
+        {vs14.BuilderTester.class},
+        {vs15.BuilderTester.class},
+        {vs16.BuilderTester.class},
+        {vs17.BuilderTester.class},
+        {vs18.BuilderTester.class},
+        {vs19.BuilderTester.class},
+        {vs110.BuilderTester.class},
+        {vs111.BuilderTester.class}
+    };
+  }
+  @Test(dataProvider = "testConstructorTypeForPrimitiveProvider")
+  public void testConstructorTypeForPrimitive(Class<?> clazz) {
+    List<Constructor> constructors = Arrays.stream(clazz.getConstructors()).filter(constructor -> constructor.getParameters().length != 0).collect(
+        Collectors.toList());
+    for(Constructor constructor : constructors) {
+      for(Parameter param : constructor.getParameters()) {
+        Assert.assertFalse(param.getType().isPrimitive());
+      }
+    }
   }
 
   @BeforeClass
