@@ -14,7 +14,7 @@ import java.util.Map;
 
 
 public class ListTransformer {
-  static boolean hasCharSeq = false;
+  static ThreadLocal<Boolean> hasCharSeq = new ThreadLocal<>();
 
   public static List getUtf8List(Object listObj) {
     flushCharSeqFlag();
@@ -40,16 +40,16 @@ public class ListTransformer {
         if (item instanceof List) {
           ret.add(ListTransformer.getUtf8((List) item));
         } else if (item instanceof Map) {
-          hasCharSeq = true;
+          hasCharSeq.set(true);
           ret.add(MapTransformer.getUtf8Map((Map) item));
         } else if (item instanceof CharSequence) {
-          hasCharSeq = true;
+          hasCharSeq.set(true);
           ret.add(StringConverterUtil.getUtf8(item));
         } else {
           ret.add(item);
         }
       }
-      return hasCharSeq? Collections.unmodifiableList(ret) : list;
+      return hasCharSeq.get() ? Collections.unmodifiableList(ret) : list;
     } else {
       throw new UnsupportedOperationException(
           "Supports only Lists. Received" + CollectionTransformerUtil.getErrorMessageForInstance(listObj));
@@ -57,7 +57,7 @@ public class ListTransformer {
   }
 
   private static void flushCharSeqFlag() {
-    hasCharSeq = false;
+    hasCharSeq.set(false);
   }
 
   private static List getString(Object listObj) {
@@ -70,16 +70,16 @@ public class ListTransformer {
         if (item instanceof List) {
           ret.add(ListTransformer.getString((List) item));
         } else if (item instanceof Map) {
-          hasCharSeq = true;
+          hasCharSeq.set(true);
           ret.add(MapTransformer.getStringMap((Map) item));
         } else if (item instanceof CharSequence) {
-          hasCharSeq = true;
+          hasCharSeq.set(true);
           ret.add(StringConverterUtil.getString(item));
         } else {
           ret.add(item);
         }
       }
-      return hasCharSeq? Collections.unmodifiableList(ret) : list;
+      return hasCharSeq.get() ? Collections.unmodifiableList(ret) : list;
     } else {
       throw new UnsupportedOperationException(
           "Supports only Lists. Received" + CollectionTransformerUtil.getErrorMessageForInstance(listObj));
@@ -96,16 +96,16 @@ public class ListTransformer {
         if (item instanceof List) {
           ret.add(ListTransformer.getString((List) item));
         } else if (item instanceof Map) {
-          hasCharSeq = true;
+          hasCharSeq.set(true);
           ret.add(MapTransformer.getStringMap((Map) item));
         } else if (item instanceof CharSequence) {
-          hasCharSeq = true;
+          hasCharSeq.set(true);
           ret.add(StringConverterUtil.getCharSequence(item));
         } else {
           ret.add(item);
         }
       }
-      return hasCharSeq? Collections.unmodifiableList(ret) : list;
+      return hasCharSeq.get() ? Collections.unmodifiableList(ret) : list;
     } else {
       throw new UnsupportedOperationException(
           "Supports only Lists. Received" + CollectionTransformerUtil.getErrorMessageForInstance(listObj));
