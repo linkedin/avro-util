@@ -21,6 +21,13 @@ public class AvroUtilMissingFieldException extends AvroUtilException{
   public AvroUtilMissingFieldException(AvroRuntimeException e) {
     super(e);
   }
+  public AvroUtilMissingFieldException(String errorMessage, AvroRuntimeException e) {
+    super(errorMessage, e);
+  }
+
+  public AvroUtilMissingFieldException(String errorMessage) {
+    super(errorMessage);
+  }
 
   public AvroUtilMissingFieldException(String message, Schema.Field field) {
     super(message);

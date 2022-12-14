@@ -375,4 +375,29 @@ public class SpecificRecordGeneratorUtil {
     return false;
   }
 
+  public static boolean nullValueAllowedForSchema(AvroSchemaField field) {
+    if(field.hasDefaultValue()) return true;
+
+    if(isSingleTypeNullableUnionSchema(field.getSchema())) return true;
+
+    // NULL, Boolean, Int, Float, Long, Double, String, Bytes
+    if(field.getSchema().type().isPrimitive()) return false;
+
+    // Array, Map
+    if(field.getSchema().type().isCollection()) return true;
+
+    switch (field.getSchema().type()) {
+      case ENUM:
+      case FIXED: return false;
+      case UNION:
+      case RECORD: return true;
+      default:
+        throw new IllegalArgumentException("type : "+ field.getSchema().type()+ "not handled.");
+    }
+  }
+
+  public static String getNonNullableFieldErrorMessage(String fieldName) {
+    return ("\"Field " + fieldName + " not set and has no default value\\n\"");
+  }
+
 }
