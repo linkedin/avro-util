@@ -10,6 +10,8 @@ import com.linkedin.avroutil1.compatibility.AvroCodecUtil;
 import com.linkedin.avroutil1.compatibility.RandomRecordGenerator;
 import com.linkedin.avroutil1.compatibility.RecordGenerationConfig;
 import com.linkedin.avroutil1.compatibility.StringConverterUtil;
+import com.linkedin.avroutil1.compatibility.exception.AvroUtilException;
+import com.linkedin.avroutil1.compatibility.exception.AvroUtilMissingFieldException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -1694,6 +1696,35 @@ public class SpecificRecordTest {
         Assert.assertFalse(param.getType().isPrimitive());
       }
     }
+  }
+
+  public void testInputValidation() throws Exception {
+    try  {
+      vs14.Amount.newBuilder().setAmount("").build();
+    } catch (Exception e) {
+      Assert.assertTrue(e instanceof AvroUtilException);
+      Assert.assertTrue(e.getMessage().contains("not set and has no default value"));
+    }
+
+    try {
+      new vs14.Amount(null, "");
+    } catch (AvroUtilMissingFieldException e) {
+      Assert.assertTrue(e.getMessage().contains("Field currencyCode not set and has no default value"));
+    }
+
+    try {
+      new vs14.Amount("", null);
+    } catch (AvroUtilMissingFieldException e) {
+      Assert.assertTrue(e.getMessage().contains("Field amount not set and has no default value"));
+    }
+
+    try {
+      new vs14.Amount(null, null);
+    } catch (AvroUtilMissingFieldException e) {
+      Assert.assertTrue(e.getMessage().contains("Field currencyCode not set and has no default value"));
+      Assert.assertTrue(e.getMessage().contains("Field amount not set and has no default value"));
+    }
+
   }
 
   @BeforeClass

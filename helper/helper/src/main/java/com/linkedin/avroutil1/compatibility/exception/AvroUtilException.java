@@ -17,4 +17,7 @@ public class AvroUtilException extends Exception {
   public AvroUtilException(String message) {
     super(message);
   }
+  public AvroUtilException(String message, Exception e) {
+    super(message, e);
+  }
 }

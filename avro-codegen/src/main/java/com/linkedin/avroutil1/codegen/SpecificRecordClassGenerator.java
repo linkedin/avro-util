@@ -12,6 +12,7 @@ import com.linkedin.avroutil1.compatibility.CompatibleSpecificRecordBuilderBase;
 import com.linkedin.avroutil1.compatibility.HelperConsts;
 import com.linkedin.avroutil1.compatibility.SourceCodeUtils;
 import com.linkedin.avroutil1.compatibility.StringUtils;
+import com.linkedin.avroutil1.compatibility.exception.AvroUtilMissingFieldException;
 import com.linkedin.avroutil1.model.AvroArraySchema;
 import com.linkedin.avroutil1.model.AvroEnumSchema;
 import com.linkedin.avroutil1.model.AvroFixedSchema;
@@ -527,7 +528,12 @@ public class SpecificRecordClassGenerator {
       AvroJavaStringRepresentation defaultFieldStringRepresentation,
       AvroJavaStringRepresentation defaultMethodStringRepresentation, TypeSpec.Builder classBuilder) {
     if(recordSchema.getFields().size() < 254) {
-      MethodSpec.Builder allArgsConstructorBuilder = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC);
+      MethodSpec.Builder allArgsConstructorBuilder = MethodSpec.constructorBuilder()
+          .addModifiers(Modifier.PUBLIC)
+          .addException(AvroUtilMissingFieldException.class);
+
+      allArgsConstructorBuilder.addCode(getNullValidationBlockForNonNullableFields(recordSchema.getFields()));
+
       for (AvroSchemaField field : recordSchema.getFields()) {
         //if declared schema, use fully qualified class (no import)
         String escapedFieldName = getFieldNameWithSuffix(field);
@@ -719,14 +725,14 @@ public class SpecificRecordClassGenerator {
 
           if (config.getMinimumSupportedAvroVersion().laterThan(AvroVersion.AVRO_1_8)) {
             buildMethodCodeBlockBuilder.beginControlFlow("catch (org.apache.avro.AvroMissingFieldException e)")
-                .addStatement("com.linkedin.avroutil1.compatibility.exception.AvroUtilMissingFieldException avroUtilException = new com.linkedin.avroutil1.compatibility.exception.AvroUtilMissingFieldException(e)")
+                .addStatement("com.linkedin.avroutil1.compatibility.exception.AvroUtilMissingFieldException avroUtilException = new com.linkedin.avroutil1.compatibility.exception.AvroUtilMissingFieldException(e.getMessage(), e)")
                 .addStatement("avroUtilException.addParentField(record.getSchema().getField($S))", escapedFieldName)
                 .addStatement("throw avroUtilException")
                 .endControlFlow();
           }
 
           buildMethodCodeBlockBuilder.beginControlFlow("catch (org.apache.avro.AvroRuntimeException e)")
-              .addStatement("com.linkedin.avroutil1.compatibility.exception.AvroUtilMissingFieldException avroUtilException = new com.linkedin.avroutil1.compatibility.exception.AvroUtilMissingFieldException(e)")
+              .addStatement("com.linkedin.avroutil1.compatibility.exception.AvroUtilMissingFieldException avroUtilException = new com.linkedin.avroutil1.compatibility.exception.AvroUtilMissingFieldException(e.getMessage(), e)")
               .addStatement("avroUtilException.addParentField(record.getSchema().getField($S))", escapedFieldName)
               .addStatement("throw avroUtilException")
               .endControlFlow()
@@ -828,7 +834,7 @@ public class SpecificRecordClassGenerator {
 
     buildMethodCodeBlockBuilder
         .beginControlFlow("catch ($T e)", Exception.class)
-        .addStatement("throw new com.linkedin.avroutil1.compatibility.exception.AvroUtilException(e)")
+        .addStatement("throw new com.linkedin.avroutil1.compatibility.exception.AvroUtilException(e.getMessage(), e)")
         .endControlFlow();
 
     recordBuilder.addMethod(
@@ -838,6 +844,31 @@ public class SpecificRecordClassGenerator {
             .returns(ClassName.get(recordSchema.getNamespace(), recordSchema.getSimpleName()))
             .addCode(buildMethodCodeBlockBuilder.build())
             .build());
+  }
+
+  private CodeBlock getNullValidationBlockForNonNullableFields(List<AvroSchemaField> fields) {
+    CodeBlock.Builder codeBuilder = CodeBlock.builder();
+    List<AvroSchemaField> nonNullableFields = new ArrayList<>();
+    for(AvroSchemaField field : fields) {
+      if(!SpecificRecordGeneratorUtil.nullValueAllowedForSchema(field)) {
+        nonNullableFields.add(field);
+      }
+    }
+    if(!nonNullableFields.isEmpty()) {
+      codeBuilder.addStatement("StringBuilder sb = new StringBuilder()");
+      for(AvroSchemaField nonNullableField : nonNullableFields) {
+        String escapedFieldName = getFieldNameWithSuffix(nonNullableField);
+        codeBuilder.beginControlFlow("if ($L == null)", escapedFieldName)
+            .addStatement("sb.append($L)",
+                SpecificRecordGeneratorUtil.getNonNullableFieldErrorMessage(nonNullableField.getName()))
+            .endControlFlow();
+      }
+      codeBuilder.beginControlFlow("if(sb.length() != 0)")
+          .addStatement("throw new com.linkedin.avroutil1.compatibility.exception.AvroUtilMissingFieldException(sb.toString())")
+          .endControlFlow();
+    }
+
+    return codeBuilder.build();
   }
 
   private List<MethodSpec> getNewBuilderMethods(AvroRecordSchema recordSchema) {
