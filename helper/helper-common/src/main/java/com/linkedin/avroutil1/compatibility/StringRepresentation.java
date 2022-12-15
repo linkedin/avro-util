@@ -25,7 +25,8 @@ public enum StringRepresentation {
         if (CharSequence.class.isAssignableFrom(clazz)) {
             return Utf8;
         }
-        throw new IllegalStateException("dont know what to do with a " + clazz.getName());
+        //not a string
+        return null;
     }
     public static StringRepresentation forInstance(CharSequence instance) {
         if (instance == null) {

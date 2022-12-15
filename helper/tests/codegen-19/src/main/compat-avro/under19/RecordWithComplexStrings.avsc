@@ -1,0 +1,54 @@
+{
+  "type": "record",
+  "namespace": "under19",
+  "name": "RecordWithComplexStrings",
+  "fields": [
+    {"name": "notString", "type": "int"},
+    {"name": "stringField", "type": "string"},
+    {"name": "javaString", "type": {
+      "type": "string",
+      "avro.java.string": "String"
+    }},
+    {"name": "utf8", "type": {
+      "type": "string",
+      "avro.java.string": "Utf8"
+    }},
+    {"name": "optionalString", "type": ["null", "string"]},
+    {"name": "optionalJavaString", "type": [
+      {
+        "type": "string",
+        "avro.java.string": "String"
+      },
+      "null"
+    ]},
+    {"name": "optionalUtf8", "type": [
+      {
+        "type": "string",
+        "avro.java.string": "Utf8"
+      },
+      "null"
+    ]},
+    {"name": "arrayOfStrings", "type":  {
+      "type": "array",
+      "items": "string"
+    }},
+    {"name": "optionalArrayOfJavaStrings", "type":  {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "avro.java.string": "String"
+      }
+    }},
+    {"name": "mapOfStrings", "type":  {
+      "type": "map",
+      "values": "string"
+    }},
+    {"name": "optionalMapOfUtf8", "type":  {
+      "type": "map",
+      "values": {
+        "type": "string",
+        "avro.java.string": "Utf8"
+      }
+    }}
+  ]
+}

@@ -7,6 +7,9 @@
 package com.linkedin.avroutil1.compatibility;
 
 import com.linkedin.avroutil1.testcommon.TestUtil;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -20,6 +23,7 @@ import under14.newnewpkg.outer.NewNewOuterRecordWithAliases;
 import under14.newpkg.outer.NewOuterRecordWithAliases;
 import under14.oldpkg.inner.OldInnerRecordWithoutAliases;
 import under14.oldpkg.outer.OldOuterRecordWithoutAliases;
+import under19.RecordWithComplexStrings;
 
 
 public class AvroRecordUtilTest {
@@ -200,6 +204,55 @@ public class AvroRecordUtilTest {
 
     AvroRecordUtil.setStringField(record, "int", "something");
     Assert.assertEquals(record.int$, new Utf8("something"));
+  }
+
+  @Test
+  public void testStringCollectionFieldSetting() throws Exception {
+    RecordWithComplexStrings record = new RecordWithComplexStrings();
+
+    AvroRecordUtil.setField(record, "notString", 7);
+    Assert.assertEquals(record.getNotString(), 7);
+    AvroRecordUtil.setField(record, "stringField", new Utf8("a"));
+    Assert.assertEquals(record.getStringField(), new Utf8("a"));
+    AvroRecordUtil.setField(record, "stringField", "b");
+    Assert.assertEquals(record.getStringField(), new Utf8("b"));
+    AvroRecordUtil.setField(record, "javaString", new Utf8("a"));
+    Assert.assertEquals(record.getJavaString(), new Utf8("a"));
+    AvroRecordUtil.setField(record, "javaString", "b");
+    Assert.assertEquals(record.getJavaString(), new Utf8("b"));
+    AvroRecordUtil.setField(record, "utf8", new Utf8("a"));
+    Assert.assertEquals(record.getUtf8(), new Utf8("a"));
+    AvroRecordUtil.setField(record, "utf8", "b");
+    Assert.assertEquals(record.getUtf8(), new Utf8("b"));
+    AvroRecordUtil.setField(record, "optionalString", new Utf8("a"));
+    Assert.assertEquals(record.optionalString, new Utf8("a"));
+    AvroRecordUtil.setField(record, "optionalString", "b");
+    Assert.assertEquals(record.optionalString, new Utf8("b"));
+    AvroRecordUtil.setField(record, "optionalString", null);
+    Assert.assertNull(record.optionalString);
+    AvroRecordUtil.setField(record, "optionalJavaString", new Utf8("a"));
+    Assert.assertEquals(record.optionalJavaString, new Utf8("a"));
+    AvroRecordUtil.setField(record, "optionalJavaString", "b");
+    Assert.assertEquals(record.optionalJavaString, new Utf8("b"));
+    AvroRecordUtil.setField(record, "optionalJavaString", null);
+    Assert.assertNull(record.optionalJavaString);
+    AvroRecordUtil.setField(record, "arrayOfStrings", Arrays.asList("some", "strings"));
+    Assert.assertEquals(record.getArrayOfStrings(), Arrays.asList(new Utf8("some"), new Utf8("strings")));
+    AvroRecordUtil.setField(record, "arrayOfStrings", Arrays.asList(new Utf8("mixed"), "strings"));
+    Assert.assertEquals(record.getArrayOfStrings(), Arrays.asList(new Utf8("mixed"), new Utf8("strings")));
+    AvroRecordUtil.setField(record, "optionalArrayOfJavaStrings", null);
+    Assert.assertNull(record.optionalArrayOfJavaStrings);
+    Assert.assertNull(record.getOptionalArrayOfJavaStrings());
+    Map<CharSequence, CharSequence> value = new HashMap<>();
+    value.put(new Utf8("1"), "a");
+    value.put(new Utf8("2"), new Utf8("b"));
+    value.put("3", new Utf8("c"));
+    AvroRecordUtil.setField(record, "mapOfStrings", value);
+    Map<CharSequence, CharSequence> expected = new HashMap<>();
+    expected.put(new Utf8("1"), new Utf8("a"));
+    expected.put(new Utf8("2"), new Utf8("b"));
+    expected.put(new Utf8("3"), new Utf8("c"));
+    Assert.assertEquals(record.mapOfStrings, expected);
   }
 
   private void convertRoundTrip(GenericRecord original) {

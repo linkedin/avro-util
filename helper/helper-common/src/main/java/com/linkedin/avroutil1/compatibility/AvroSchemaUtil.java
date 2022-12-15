@@ -529,6 +529,38 @@ public class AvroSchemaUtil {
     throw new IllegalStateException(sb.toString());
   }
 
+  /**
+   * checks if the value for a given schema can possibly contain
+   * strings (meaning is a string, union containing string, or collections
+   * containing any of the above).
+   * this is important when dealing with things like Utf8 vs java.lang.Strings
+   * @param schema a schema
+   * @return true if value under schema could possibly involve strings
+   */
+  public static boolean schemaContainsString(Schema schema) {
+    if (schema == null) {
+      return false;
+    }
+    boolean hasString = false;
+    switch (schema.getType()) {
+      case STRING:
+      case MAP: //map keys are always strings, regardless of values
+        return true;
+      case UNION:
+        // Any member can have string?
+        for(Schema branch : schema.getTypes()) {
+          if (schemaContainsString(branch)) {
+            return true;
+          }
+        }
+        return false;
+      case ARRAY:
+        return schemaContainsString(schema.getElementType());
+    }
+
+    return false;
+  }
+
   private static void traverseSchema(Schema schema, SchemaVisitor visitor, IdentityHashMap<Object, Boolean> visited) {
     if (visited.put(schema, Boolean.TRUE) != null) {
       return; //been there, done that

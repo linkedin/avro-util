@@ -235,11 +235,7 @@ public class AvroRecordUtil {
   }
 
   public static <T extends IndexedRecord> T setStringField(T record, String fieldName, CharSequence value) {
-    Schema schema = record.getSchema();
-    Schema.Field field = schema.getField(fieldName);
-    if (field == null) {
-      throw new IllegalArgumentException("schema " + schema.getFullName() + " has no such field " + fieldName);
-    }
+    Schema.Field field = resolveField(record, fieldName);
     if (!(record instanceof SpecificRecord)) {
       //generic record
       //TODO - make this honor schema logical types or runtime avro version?
@@ -295,6 +291,97 @@ public class AvroRecordUtil {
       return record;
     }
     throw new IllegalStateException("unable to find either public field of setter method for " + recordClass.getName() + "." + fieldName);
+  }
+
+  public static <T extends IndexedRecord> T setField(T record, String fieldName, Object value) {
+    Schema.Field field = resolveField(record, fieldName);
+    Schema fieldSchema = field.schema();
+    Schema destinationSchema = fieldSchema; //unless union (see below)
+    if (fieldSchema.getType() == Schema.Type.UNION) {
+      //will throw if no matching branch found
+      //TODO - catch and provide details of record.field ?
+      destinationSchema = AvroSchemaUtil.resolveUnionBranchOf(value, fieldSchema);
+    }
+    if (!(record instanceof SpecificRecord)) {
+      //generic record
+      //TODO - make this honor schema logical types or runtime avro version?
+      record.put(field.pos(), value);
+      return record;
+    }
+    //specific record class below this point
+    Class<? extends IndexedRecord> recordClass = record.getClass();
+    //locate the destination - field or method
+    Field publicField = findPublicFieldFor(recordClass, fieldName);
+    Method setter = findSetterFor(recordClass, fieldName);;
+    FieldAccessor accessor = new FieldAccessor(
+        ((SpecificRecord) record).getClass(),
+        record.getSchema(),
+        field,
+        publicField,
+        setter
+    );
+    accessor.setValue((SpecificRecord) record, value);
+    return record;
+  }
+
+  private static Field findPublicFieldFor(Class<? extends IndexedRecord> recordClass, String schemaFieldName) {
+    String expectedFieldName = AVRO_RESERVED_FIELD_NAMES.contains(schemaFieldName) ? schemaFieldName + "$" : schemaFieldName;
+    //getting all public fields might be faster than getting the desired field by name
+    //because ot avoids the exception that would be thrown if its not found
+    //TODO - benchmark to prove the above statement
+    Field[] publicFields = recordClass.getFields();
+    for (Field publicField : publicFields) {
+      if (expectedFieldName.equals(publicField.getName())) {
+        return publicField;
+      }
+    }
+    return null;
+  }
+
+  private static Method findSetterFor(Class<? extends IndexedRecord> recordClass, String schemaFieldName) {
+    //bob --> setBob
+    String expectedSetterName = "set" + schemaFieldName.substring(0, 1).toUpperCase(Locale.ROOT) + schemaFieldName.substring(1);
+    if (AVRO_RESERVED_FIELD_NAMES.contains(schemaFieldName)) {
+      //setClass --> setClass$
+      expectedSetterName += "$";
+    }
+    String expectedFieldName =
+        AVRO_RESERVED_FIELD_NAMES.contains(schemaFieldName) ? schemaFieldName + "$" : schemaFieldName;
+    //going over all public methods might be faster compared to catching
+    //an exception trying to get a specific one
+    //TODO - benchmark above
+    Method[] publicMethods = recordClass.getMethods();
+    for (Method method : publicMethods) {
+      //needs to be called setSomething()
+      if (!expectedSetterName.equals(method.getName())) {
+        continue;
+      }
+      //needs to be void
+      Class<?> returnType = method.getReturnType();
+      if (!Void.TYPE.equals(returnType)) {
+        continue;
+      }
+      //needs to have a single arg
+      Class<?>[] args = method.getParameterTypes();
+      if (args == null || args.length != 1) {
+        continue;
+      }
+      return method;
+    }
+    //no setter
+    return null;
+  }
+
+  private static Schema.Field resolveField(IndexedRecord record, String fieldName) {
+    if (record == null) {
+      throw new IllegalArgumentException("record argument required");
+    }
+    Schema schema = record.getSchema();
+    Schema.Field field = schema.getField(fieldName);
+    if (field == null) {
+      throw new IllegalArgumentException("schema " + schema.getFullName() + " has no such field " + fieldName);
+    }
+    return field;
   }
 
   private static void deepConvertRecord(IndexedRecord input, IndexedRecord output, RecordConversionContext context) {
