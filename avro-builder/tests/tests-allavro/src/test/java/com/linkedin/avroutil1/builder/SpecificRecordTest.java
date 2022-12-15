@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.avro.AvroRuntimeException;
+import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.util.Utf8;
 import org.testng.Assert;
@@ -1699,10 +1700,13 @@ public class SpecificRecordTest {
 
   @Test(dataProvider = "TestRoundTripSerializationProvider")
   public <T extends IndexedRecord> void testDeprecatedPublicFields(Class<T> clazz, org.apache.avro.Schema classSchema) {
-    // first public field is SCHEMA
-    for(int i = 1; i < clazz.getFields().length; i++) {
+
+    List<String> fieldNames = classSchema.getFields().stream().map(Schema.Field::name).collect(Collectors.toList());
+    for(int i = 0; i < clazz.getFields().length; i++) {
       Field field  = clazz.getFields()[i];
-      Assert.assertEquals(field.getDeclaredAnnotations()[0].annotationType(), Deprecated.class);
+      if(fieldNames.contains(field.getName())) {
+        Assert.assertEquals(field.getDeclaredAnnotations()[0].annotationType(), Deprecated.class);
+      }
     }
   }
 
