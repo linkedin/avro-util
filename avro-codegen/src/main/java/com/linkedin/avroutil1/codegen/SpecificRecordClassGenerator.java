@@ -446,7 +446,11 @@ public class SpecificRecordClassGenerator {
       // Add public/private fields
       Modifier accessModifier = (config.hasPublicFields())? Modifier.PUBLIC : Modifier.PRIVATE;
       for (AvroSchemaField field : recordSchema.getFields()) {
-        classBuilder.addField(getFieldSpecBuilder(field, config).addModifiers(accessModifier).build());
+        FieldSpec.Builder fieldBuilder = getFieldSpecBuilder(field, config).addModifiers(accessModifier);
+        if(config.hasPublicFields()) {
+          fieldBuilder.addAnnotation(Deprecated.class);
+        }
+        classBuilder.addField(fieldBuilder.build());
 
         //if declared schema, use fully qualified class (no import)
         addFullyQualified(field, config.getDefaultFieldStringRepresentation());
