@@ -7,10 +7,12 @@
 package com.linkedin.avroutil1.builder;
 
 import com.linkedin.avroutil1.compatibility.AvroCodecUtil;
+import com.linkedin.avroutil1.compatibility.AvroRecordUtil;
 import com.linkedin.avroutil1.compatibility.RandomRecordGenerator;
 import com.linkedin.avroutil1.compatibility.RecordGenerationConfig;
 import com.linkedin.avroutil1.compatibility.StringConverterUtil;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
@@ -1692,6 +1694,21 @@ public class SpecificRecordTest {
     for(Constructor constructor : constructors) {
       for(Parameter param : constructor.getParameters()) {
         Assert.assertFalse(param.getType().isPrimitive());
+      }
+    }
+  }
+
+  @Test(dataProvider = "TestRoundTripSerializationProvider")
+  public <T extends IndexedRecord> void testDeprecatedPublicFields(Class<T> clazz, org.apache.avro.Schema classSchema) {
+    List<String> fieldNames = classSchema.getFields()
+        .stream()
+        .map(field -> AvroRecordUtil.AVRO_RESERVED_FIELD_NAMES.contains(field.name()) ? field.name() + "$"
+            : field.name())
+        .collect(Collectors.toList());
+    for(int i = 0; i < clazz.getFields().length; i++) {
+      Field field  = clazz.getFields()[i];
+      if(fieldNames.contains(field.getName())) {
+        Assert.assertEquals(field.getDeclaredAnnotations()[0].annotationType(), Deprecated.class);
       }
     }
   }
