@@ -7,6 +7,7 @@
 package com.linkedin.avroutil1.builder;
 
 import com.linkedin.avroutil1.compatibility.AvroCodecUtil;
+import com.linkedin.avroutil1.compatibility.AvroRecordUtil;
 import com.linkedin.avroutil1.compatibility.RandomRecordGenerator;
 import com.linkedin.avroutil1.compatibility.RecordGenerationConfig;
 import com.linkedin.avroutil1.compatibility.StringConverterUtil;
@@ -1700,8 +1701,11 @@ public class SpecificRecordTest {
 
   @Test(dataProvider = "TestRoundTripSerializationProvider")
   public <T extends IndexedRecord> void testDeprecatedPublicFields(Class<T> clazz, org.apache.avro.Schema classSchema) {
-
-    List<String> fieldNames = classSchema.getFields().stream().map(Schema.Field::name).collect(Collectors.toList());
+    List<String> fieldNames = classSchema.getFields()
+        .stream()
+        .map(field -> AvroRecordUtil.AVRO_RESERVED_FIELD_NAMES.contains(field.name()) ? field.name() + "$"
+            : field.name())
+        .collect(Collectors.toList());
     for(int i = 0; i < clazz.getFields().length; i++) {
       Field field  = clazz.getFields()[i];
       if(fieldNames.contains(field.getName())) {
