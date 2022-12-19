@@ -55,7 +55,7 @@ include 'helper:tests:helper-tests-111'
 include 'helper:tests:helper-tests-111_0'
 
 //fast avro
-//include 'avro-fastserde'
+include 'avro-fastserde'
 
 //spotbugs plugin
 include 'spotbugs-plugin'
