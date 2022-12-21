@@ -711,6 +711,11 @@ public class AvroRecordUtil {
           outputMap.put(outputKey, outputElement);
         }
         return outputMap;
+
+      case UNION:
+        inputValueActualSchema = AvroSchemaUtil.resolveUnionBranchOf(inputValue, inputSchema);
+        outputValueActualSchema = AvroSchemaUtil.resolveUnionBranchOf(inputValue, outputSchema);
+        return deepConvert(inputValue, inputValueActualSchema, outputValueActualSchema, context, stringRepresentation);
     }
     String inputClassName = inputValue == null ? "null" : inputValue.getClass().getName();
     throw new UnsupportedOperationException("dont know how to convert " + inputType + " " + inputValue
@@ -776,6 +781,7 @@ public class AvroRecordUtil {
     switch (desired) {
       case String:
         return String.valueOf(inputStr);
+      case CharSequence:
       case Utf8:
         return new Utf8(String.valueOf(inputStr));
       default:

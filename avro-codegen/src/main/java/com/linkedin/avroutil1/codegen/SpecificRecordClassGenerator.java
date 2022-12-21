@@ -750,14 +750,14 @@ public class SpecificRecordClassGenerator {
       otherBuilderConstructorFromRecordBlockBuilder.beginControlFlow("if (isValidValue(fields()[$L], other.$L))", fieldIndex,
           escapedFieldName)
           .addStatement("this.$1L = deepCopyField(other.$1L, fields()[$2L].schema(), $3S)", escapedFieldName, fieldIndex,
-              config.getDefaultFieldStringRepresentation().getJsonValue())
+              config.getDefaultMethodStringRepresentation().getJsonValue())
           .addStatement("fieldSetFlags()[$L] = true", fieldIndex)
           .endControlFlow();
 
       otherBuilderConstructorFromOtherBuilderBlockBuilder.beginControlFlow("if (isValidValue(fields()[$L], other.$L))", fieldIndex,
           escapedFieldName)
           .addStatement("this.$1L = deepCopyField(other.$1L, fields()[$2L].schema(), $3S)", escapedFieldName, fieldIndex,
-              config.getDefaultFieldStringRepresentation().getJsonValue())
+              config.getDefaultMethodStringRepresentation().getJsonValue())
           .addStatement("fieldSetFlags()[$1L] = other.fieldSetFlags()[$1L]", fieldIndex)
           .endControlFlow();
 
