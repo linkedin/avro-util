@@ -978,10 +978,18 @@ public class AvroCompatibilityHelper  extends AvroCompatibilityHelperCommon{
     ADAPTER.setFieldPropFromJsonString(field, propName, valueAsJsonLiteral, strict);
   }
 
-  public static boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps, boolean compareNonStringProps) {
+  public static boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps,
+      boolean compareNonStringProps) {
     assertAvroAvailable();
-    return ADAPTER.sameJsonProperties(a, b, compareStringProps, compareNonStringProps);
+    return ADAPTER.sameJsonProperties(a, b, compareStringProps, compareNonStringProps, null);
   }
+
+  public static boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps,
+      boolean compareNonStringProps, Set<String> jsonPropNamesToIgnore) {
+    assertAvroAvailable();
+    return ADAPTER.sameJsonProperties(a, b, compareStringProps, compareNonStringProps, jsonPropNamesToIgnore);
+  }
+
 
   /**
    * returns the value of the specified schema prop as a json literal.
@@ -1040,9 +1048,16 @@ public class AvroCompatibilityHelper  extends AvroCompatibilityHelperCommon{
     ADAPTER.setSchemaPropFromJsonString(schema, propName, valueAsJsonLiteral, strict);
   }
 
-  public static boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps) {
+  public static boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps,
+      boolean compareNonStringProps) {
     assertAvroAvailable();
-    return ADAPTER.sameJsonProperties(a, b, compareStringProps, compareNonStringProps);
+    return ADAPTER.sameJsonProperties(a, b, compareStringProps, compareNonStringProps, null);
+  }
+
+  public static boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps,
+      boolean compareNonStringProps, Set<String> jsonPropNamesToIgnore) {
+    assertAvroAvailable();
+    return ADAPTER.sameJsonProperties(a, b, compareStringProps, compareNonStringProps, jsonPropNamesToIgnore);
   }
 
   public static List<String> getAllPropNames(Schema schema) {

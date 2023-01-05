@@ -52,8 +52,7 @@ public interface AvroAdapter {
 
   BinaryDecoder newBinaryDecoder(ObjectInput in);
 
-  BinaryDecoder newBinaryDecoder(byte[] bytes, int offset,
-      int length, BinaryDecoder reuse);
+  BinaryDecoder newBinaryDecoder(byte[] bytes, int offset, int length, BinaryDecoder reuse);
 
   JsonEncoder newJsonEncoder(Schema schema, OutputStream out, boolean pretty) throws IOException;
 
@@ -143,9 +142,11 @@ public interface AvroAdapter {
    * @param compareStringProps true to compare string properties (otherwise ignored)
    * @param compareNonStringProps true to compare all other properties (otherwise ignored). this exists because avro 1.4
    *                              doesnt handle non-string props at all and we want to be able to match that behaviour under any avro
+   * @param jsonPropNamesToIgnore a set of json property names to ignore. if null, no properties will be ignored
    * @return if field properties are equal, under the configuration parameters above
    */
-  boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps, boolean compareNonStringProps);
+  boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps, boolean compareNonStringProps,
+      Set<String> jsonPropNamesToIgnore);
 
   String getSchemaPropAsJsonString(Schema schema, String propName);
 
@@ -158,11 +159,14 @@ public interface AvroAdapter {
    * @param compareStringProps true to compare string properties (otherwise ignored)
    * @param compareNonStringProps true to compare all other properties (otherwise ignored). this exists because avro 1.4
    *                              doesnt handle non-string props at all and we want to be able to match that behaviour under any avro
+   * @param jsonPropNamesToIgnore a set of json property names to ignore. if null, all properties are considered
    * @return if schema properties are equal, under the configuration parameters above
    */
-  boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps);
+  boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps,
+      Set<String> jsonPropNamesToIgnore);
 
   List<String> getAllPropNames(Schema schema);
+
   List<String> getAllPropNames(Schema.Field field);
 
   String getEnumDefault(Schema s);
@@ -226,10 +230,6 @@ public interface AvroAdapter {
 
   //code generation
 
-  Collection<AvroGeneratedSourceCode> compile(
-      Collection<Schema> toCompile,
-      AvroVersion minSupportedVersion,
-      AvroVersion maxSupportedVersion,
-      CodeGenerationConfig config
-  );
+  Collection<AvroGeneratedSourceCode> compile(Collection<Schema> toCompile, AvroVersion minSupportedVersion,
+      AvroVersion maxSupportedVersion, CodeGenerationConfig config);
 }

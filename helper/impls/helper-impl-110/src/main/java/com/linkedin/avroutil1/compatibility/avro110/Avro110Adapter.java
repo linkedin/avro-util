@@ -66,509 +66,541 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+
 public class Avro110Adapter implements AvroAdapter {
 
-    private final Field jsonPropertiesPropsField;
-    private boolean compilerSupported;
-    private Throwable compilerSupportIssue;
-    private String compilerSupportMessage;
-    private Constructor<?> specificCompilerCtr;
-    private Method compilerEnqueueMethod;
-    private Method compilerCompileMethod;
-    private Field outputFilePathField;
-    private Field outputFileContentsField;
-    private Object publicFieldVisibilityEnumInstance;
-    private Method setFieldVisibilityMethod;
-    private Object charSequenceStringTypeEnumInstance;
-    private Object javaLangStringTypeEnumInstance;
-    private Object utf8TypeEnumInstance;
-    private Method setStringTypeMethod;
+  private final Field jsonPropertiesPropsField;
+  private boolean compilerSupported;
+  private Throwable compilerSupportIssue;
+  private String compilerSupportMessage;
+  private Constructor<?> specificCompilerCtr;
+  private Method compilerEnqueueMethod;
+  private Method compilerCompileMethod;
+  private Field outputFilePathField;
+  private Field outputFileContentsField;
+  private Object publicFieldVisibilityEnumInstance;
+  private Method setFieldVisibilityMethod;
+  private Object charSequenceStringTypeEnumInstance;
+  private Object javaLangStringTypeEnumInstance;
+  private Object utf8TypeEnumInstance;
+  private Method setStringTypeMethod;
 
-    public Avro110Adapter() {
-        try {
-            jsonPropertiesPropsField = JsonProperties.class.getDeclaredField("props");
-            jsonPropertiesPropsField.setAccessible(true);
-        } catch (Exception e) {
-            throw new IllegalStateException("error initializing adapter", e);
+  public Avro110Adapter() {
+    try {
+      jsonPropertiesPropsField = JsonProperties.class.getDeclaredField("props");
+      jsonPropertiesPropsField.setAccessible(true);
+    } catch (Exception e) {
+      throw new IllegalStateException("error initializing adapter", e);
+    }
+    tryInitializeCompilerFields();
+  }
+
+  private void tryInitializeCompilerFields() {
+    //compiler was moved out into a separate jar in avro 1.5+, so compiler functionality is optional
+    try {
+      Class<?> compilerClass = Class.forName("org.apache.avro.compiler.specific.SpecificCompiler");
+      specificCompilerCtr = compilerClass.getConstructor(Schema.class);
+      compilerEnqueueMethod = compilerClass.getDeclaredMethod("enqueue", Schema.class);
+      compilerEnqueueMethod.setAccessible(true); //its normally private
+      compilerCompileMethod = compilerClass.getDeclaredMethod("compile");
+      compilerCompileMethod.setAccessible(true); //package-protected
+      Class<?> outputFileClass = Class.forName("org.apache.avro.compiler.specific.SpecificCompiler$OutputFile");
+      outputFilePathField = outputFileClass.getDeclaredField("path");
+      outputFilePathField.setAccessible(true);
+      outputFileContentsField = outputFileClass.getDeclaredField("contents");
+      outputFileContentsField.setAccessible(true);
+      Class<?> fieldVisibilityEnum =
+          Class.forName("org.apache.avro.compiler.specific.SpecificCompiler$FieldVisibility");
+      Field publicVisibilityField = fieldVisibilityEnum.getDeclaredField("PUBLIC");
+      publicFieldVisibilityEnumInstance = publicVisibilityField.get(null);
+      setFieldVisibilityMethod = compilerClass.getDeclaredMethod("setFieldVisibility", fieldVisibilityEnum);
+      Class<?> fieldTypeEnum = Class.forName("org.apache.avro.generic.GenericData$StringType");
+      Field charSequenceField = fieldTypeEnum.getDeclaredField("CharSequence");
+      charSequenceStringTypeEnumInstance = charSequenceField.get(null);
+      Field javaLangStringField = fieldTypeEnum.getDeclaredField("String");
+      javaLangStringTypeEnumInstance = javaLangStringField.get(null);
+      Field utf8Field = fieldTypeEnum.getDeclaredField("Utf8");
+      utf8TypeEnumInstance = utf8Field.get(null);
+      setStringTypeMethod = compilerClass.getDeclaredMethod("setStringType", fieldTypeEnum);
+      compilerSupported = true;
+    } catch (Exception | LinkageError e) {
+      //if a class we directly look for above isnt found, we get ClassNotFoundException
+      //but if we're missing a transitive dependency we will get NoClassDefFoundError
+      compilerSupported = false;
+      compilerSupportIssue = e;
+      String reason = ExceptionUtils.rootCause(compilerSupportIssue).getMessage();
+      compilerSupportMessage = "avro SpecificCompiler class could not be found or instantiated because " + reason
+          + ". please make sure you have a dependency on org.apache.avro:avro-compiler";
+      //ignore
+    }
+  }
+
+  @Override
+  public AvroVersion supportedMajorVersion() {
+    return AvroVersion.AVRO_1_10;
+  }
+
+  @Override
+  public BinaryEncoder newBinaryEncoder(OutputStream out, boolean buffered, BinaryEncoder reuse) {
+    if (buffered) {
+      return EncoderFactory.get().binaryEncoder(out, reuse);
+    } else {
+      return EncoderFactory.get().directBinaryEncoder(out, reuse);
+    }
+  }
+
+  @Override
+  public BinaryEncoder newBinaryEncoder(ObjectOutput out) {
+    return SpecificData.getEncoder(out);
+  }
+
+  @Override
+  public BinaryDecoder newBinaryDecoder(InputStream in, boolean buffered, BinaryDecoder reuse) {
+    DecoderFactory factory = DecoderFactory.get();
+    return buffered ? factory.binaryDecoder(in, reuse) : factory.directBinaryDecoder(in, reuse);
+  }
+
+  @Override
+  public BinaryDecoder newBinaryDecoder(ObjectInput in) {
+    return newBinaryDecoder(new ObjectInputToInputStreamAdapter(in), false, null);
+  }
+
+  @Override
+  public BinaryDecoder newBinaryDecoder(byte[] bytes, int offset, int length, BinaryDecoder reuse) {
+    return Avro110BinaryDecoderAccessUtil.newBinaryDecoder(bytes, offset, length, reuse);
+  }
+
+  @Override
+  public JsonEncoder newJsonEncoder(Schema schema, OutputStream out, boolean pretty) throws IOException {
+    return EncoderFactory.get().jsonEncoder(schema, out, pretty);
+  }
+
+  @Override
+  public Encoder newJsonEncoder(Schema schema, OutputStream out, boolean pretty, AvroVersion jsonFormat)
+      throws IOException {
+    return new CompatibleJsonEncoder(schema, out, pretty,
+        jsonFormat == null || jsonFormat.laterThan(AvroVersion.AVRO_1_4));
+  }
+
+  @Override
+  public JsonDecoder newJsonDecoder(Schema schema, InputStream in) throws IOException {
+    return DecoderFactory.get().jsonDecoder(schema, in);
+  }
+
+  @Override
+  public JsonDecoder newJsonDecoder(Schema schema, String in) throws IOException {
+    return DecoderFactory.get().jsonDecoder(schema, in);
+  }
+
+  @Override
+  public Decoder newCompatibleJsonDecoder(Schema schema, InputStream in) throws IOException {
+    return new CompatibleJsonDecoder(schema, in);
+  }
+
+  @Override
+  public Decoder newCompatibleJsonDecoder(Schema schema, String in) throws IOException {
+    return new CompatibleJsonDecoder(schema, in);
+  }
+
+  @Override
+  public SkipDecoder newCachedResolvingDecoder(Schema writer, Schema reader, Decoder in) throws IOException {
+    return new CachedResolvingDecoder(writer, reader, in);
+  }
+
+  @Override
+  public Decoder newBoundedMemoryDecoder(InputStream in) throws IOException {
+    return new BoundedMemoryDecoder(in);
+  }
+
+  @Override
+  public Decoder newBoundedMemoryDecoder(byte[] data) throws IOException {
+    return new BoundedMemoryDecoder(data);
+  }
+
+  @Override
+  public <T> SpecificDatumReader<T> newAliasAwareSpecificDatumReader(Schema writer, Class<T> readerClass) {
+    Schema readerSchema = AvroSchemaUtil.getDeclaredSchema(readerClass);
+    return new AliasAwareSpecificDatumReader<>(writer, readerSchema);
+  }
+
+  @Override
+  public SchemaParseResult parse(String schemaJson, SchemaParseConfiguration desiredConf, Collection<Schema> known) {
+    Schema.Parser parser = new Schema.Parser();
+    boolean validateNames = true;
+    boolean validateDefaults = true;
+    boolean validateNumericDefaultValueTypes = false;
+    boolean validateNoDanglingContent = false;
+    if (desiredConf != null) {
+      validateNames = desiredConf.validateNames();
+      validateDefaults = desiredConf.validateDefaultValues();
+      validateNumericDefaultValueTypes = desiredConf.validateNumericDefaultValueTypes();
+      validateNoDanglingContent = desiredConf.validateNoDanglingContent();
+    }
+    SchemaParseConfiguration configUsed =
+        new SchemaParseConfiguration(validateNames, validateDefaults, validateNumericDefaultValueTypes,
+            validateNoDanglingContent);
+    parser.setValidate(validateNames);
+    //avro 1.10 default validation also validates numeric types, so if we want to be
+    //more nuanced we cant use avro's default value validation
+    if (validateDefaults && validateNumericDefaultValueTypes) {
+      parser.setValidateDefaults(true);
+    } else {
+      parser.setValidateDefaults(false);
+    }
+    if (known != null && !known.isEmpty()) {
+      Map<String, Schema> knownByFullName = new HashMap<>(known.size());
+      for (Schema s : known) {
+        knownByFullName.put(s.getFullName(), s);
+      }
+      parser.addTypes(knownByFullName);
+    }
+    Schema mainSchema = parser.parse(schemaJson);
+    Map<String, Schema> knownByFullName = parser.getTypes();
+
+    if (configUsed.validateDefaultValues()) {
+      //dont trust avro, also run our own. also we might have told avro not to validate over numerics
+      Avro110SchemaValidator validator = new Avro110SchemaValidator(configUsed, known);
+      AvroSchemaUtil.traverseSchema(mainSchema, validator);
+    }
+    if (configUsed.validateNoDanglingContent()) {
+      Jackson2Utils.assertNoTrailingContent(schemaJson);
+    }
+    //todo - depending on how https://issues.apache.org/jira/browse/AVRO-2742 is settled, may need to use our own validator here
+    return new SchemaParseResult(mainSchema, knownByFullName, configUsed);
+  }
+
+  @Override
+  public String toParsingForm(Schema s) {
+    return SchemaNormalization.toParsingForm(s);
+  }
+
+  @Override
+  public String getDefaultValueAsJsonString(Schema.Field field) {
+    JsonNode json = Accessor.defaultValue(field);
+    if (json == null) {
+      throw new AvroRuntimeException("Field " + field + " has no default value");
+    }
+    return json.toString();
+  }
+
+  @Override
+  public Object newInstance(Class<?> clazz, Schema schema) {
+    return SpecificData.newInstance(clazz, schema);
+  }
+
+  @Override
+  public Object getSpecificDefaultValue(Schema.Field field) {
+    return SpecificData.get().getDefaultValue(field);
+  }
+
+  @Override
+  public GenericData.EnumSymbol newEnumSymbol(Schema enumSchema, String enumValue) {
+    return new GenericData.EnumSymbol(enumSchema, enumValue);
+  }
+
+  @Override
+  public GenericData.Fixed newFixedField(Schema fixedSchema) {
+    return new GenericData.Fixed(fixedSchema);
+  }
+
+  @Override
+  public GenericData.Fixed newFixedField(Schema fixedSchema, byte[] contents) {
+    return new GenericData.Fixed(fixedSchema, contents);
+  }
+
+  @Override
+  public Object getGenericDefaultValue(Schema.Field field) {
+    //always use our cache for the validation
+    return Avro110DefaultValuesCache.getDefaultValue(field, false);
+  }
+
+  @Override
+  public boolean fieldHasDefault(Schema.Field field) {
+    return field.hasDefaultValue();
+  }
+
+  @Override
+  public boolean defaultValuesEqual(Schema.Field a, Schema.Field b, boolean allowLooseNumerics) {
+    JsonNode aVal = Accessor.defaultValue(a);
+    JsonNode bVal = Accessor.defaultValue(b);
+    return Jackson2Utils.JsonNodesEqual(aVal, bVal, allowLooseNumerics);
+  }
+
+  @Override
+  public Set<String> getFieldAliases(Schema.Field field) {
+    return field.aliases();
+  }
+
+  @Override
+  public FieldBuilder newFieldBuilder(Schema.Field other) {
+    return new FieldBuilder110(other);
+  }
+
+  @Override
+  public SchemaBuilder newSchemaBuilder(Schema other) {
+    return new SchemaBuilder110(this, other);
+  }
+
+  @Override
+  public String getFieldPropAsJsonString(Schema.Field field, String name) {
+    // Goes from JsonNode to Object to JsonNode (again) to String. Painful, but suffices until somebody complains.
+    JsonNode node = JacksonUtils.toJsonNode(field.getObjectProp(name));
+    return Jackson2Utils.toJsonString(node);
+  }
+
+  @Override
+  public void setFieldPropFromJsonString(Schema.Field field, String name, String value, boolean strict) {
+    // Goes from String to JsonNode to Object to JsonNode (again). Painful, but suffices until somebody complains.
+    JsonNode node = Jackson2Utils.toJsonNode(value, strict);
+    field.addProp(name, JacksonUtils.toObject(node));
+  }
+
+  @Override
+  public boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps,
+      boolean compareNonStringProps, Set<String> jsonPropNamesToIgnore) {
+    if (a == null || b == null) {
+      return false;
+    }
+    Map<String, JsonNode> unfilteredPropsA;
+    Map<String, JsonNode> unfilteredPropsB;
+    try {
+      //noinspection unchecked
+      unfilteredPropsA = (Map<String, JsonNode>) jsonPropertiesPropsField.get(a);
+      //noinspection unchecked
+      unfilteredPropsB = (Map<String, JsonNode>) jsonPropertiesPropsField.get(b);
+    } catch (Exception e) {
+      throw new IllegalStateException("unable to access JsonProperties.props", e);
+    }
+
+    if (jsonPropNamesToIgnore == null) {
+      return Jackson2Utils.compareJsonProperties(unfilteredPropsA, unfilteredPropsB, compareStringProps,
+          compareNonStringProps);
+    } else {
+      Map<String, JsonNode> aProps = new HashMap<>();
+      Map<String, JsonNode> bProps = new HashMap<>();
+      for (Map.Entry<String, JsonNode> entry : unfilteredPropsA.entrySet()) {
+        if (!jsonPropNamesToIgnore.contains(entry.getKey())) {
+          aProps.put(entry.getKey(), entry.getValue());
         }
-        tryInitializeCompilerFields();
-    }
-
-    private void tryInitializeCompilerFields() {
-        //compiler was moved out into a separate jar in avro 1.5+, so compiler functionality is optional
-        try {
-            Class<?> compilerClass = Class.forName("org.apache.avro.compiler.specific.SpecificCompiler");
-            specificCompilerCtr = compilerClass.getConstructor(Schema.class);
-            compilerEnqueueMethod = compilerClass.getDeclaredMethod("enqueue", Schema.class);
-            compilerEnqueueMethod.setAccessible(true); //its normally private
-            compilerCompileMethod = compilerClass.getDeclaredMethod("compile");
-            compilerCompileMethod.setAccessible(true); //package-protected
-            Class<?> outputFileClass = Class.forName("org.apache.avro.compiler.specific.SpecificCompiler$OutputFile");
-            outputFilePathField = outputFileClass.getDeclaredField("path");
-            outputFilePathField.setAccessible(true);
-            outputFileContentsField = outputFileClass.getDeclaredField("contents");
-            outputFileContentsField.setAccessible(true);
-            Class<?> fieldVisibilityEnum = Class.forName("org.apache.avro.compiler.specific.SpecificCompiler$FieldVisibility");
-            Field publicVisibilityField = fieldVisibilityEnum.getDeclaredField("PUBLIC");
-            publicFieldVisibilityEnumInstance = publicVisibilityField.get(null);
-            setFieldVisibilityMethod = compilerClass.getDeclaredMethod("setFieldVisibility", fieldVisibilityEnum);
-            Class<?> fieldTypeEnum = Class.forName("org.apache.avro.generic.GenericData$StringType");
-            Field charSequenceField = fieldTypeEnum.getDeclaredField("CharSequence");
-            charSequenceStringTypeEnumInstance = charSequenceField.get(null);
-            Field javaLangStringField = fieldTypeEnum.getDeclaredField("String");
-            javaLangStringTypeEnumInstance = javaLangStringField.get(null);
-            Field utf8Field = fieldTypeEnum.getDeclaredField("Utf8");
-            utf8TypeEnumInstance = utf8Field.get(null);
-            setStringTypeMethod = compilerClass.getDeclaredMethod("setStringType", fieldTypeEnum);
-            compilerSupported = true;
-        } catch (Exception | LinkageError e) {
-            //if a class we directly look for above isnt found, we get ClassNotFoundException
-            //but if we're missing a transitive dependency we will get NoClassDefFoundError
-            compilerSupported = false;
-            compilerSupportIssue = e;
-            String reason = ExceptionUtils.rootCause(compilerSupportIssue).getMessage();
-            compilerSupportMessage = "avro SpecificCompiler class could not be found or instantiated because " + reason
-                    + ". please make sure you have a dependency on org.apache.avro:avro-compiler";
-            //ignore
+      }
+      for (Map.Entry<String, JsonNode> entry : unfilteredPropsB.entrySet()) {
+        if (!jsonPropNamesToIgnore.contains(entry.getKey())) {
+          bProps.put(entry.getKey(), entry.getValue());
         }
+      }
+      return Jackson2Utils.compareJsonProperties(aProps, bProps, compareStringProps, compareNonStringProps);
+    }
+  }
+
+  @Override
+  public String getSchemaPropAsJsonString(Schema schema, String name) {
+    // Goes from JsonNode to Object to JsonNode (again) to String. Painful, but suffices until somebody complains.
+    JsonNode node = JacksonUtils.toJsonNode(schema.getObjectProp(name));
+    return Jackson2Utils.toJsonString(node);
+  }
+
+  @Override
+  public void setSchemaPropFromJsonString(Schema schema, String name, String value, boolean strict) {
+    // Goes from String to JsonNode to Object to JsonNode (again). Painful, but suffices until somebody complains.
+    JsonNode node = Jackson2Utils.toJsonNode(value, strict);
+    schema.addProp(name, JacksonUtils.toObject(node));
+  }
+
+  @Override
+  public boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps,
+      Set<String> jsonPropNamesToIgnore) {
+    if (a == null || b == null) {
+      return false;
+    }
+    Map<String, JsonNode> unfilteredPropsA;
+    Map<String, JsonNode> unfilteredPropsB;
+    try {
+      //noinspection unchecked
+      unfilteredPropsA = (Map<String, JsonNode>) jsonPropertiesPropsField.get(a);
+      //noinspection unchecked
+      unfilteredPropsB = (Map<String, JsonNode>) jsonPropertiesPropsField.get(b);
+    } catch (Exception e) {
+      throw new IllegalStateException("unable to access JsonProperties.props", e);
     }
 
-    @Override
-    public AvroVersion supportedMajorVersion() {
-        return AvroVersion.AVRO_1_10;
-    }
-
-    @Override
-    public BinaryEncoder newBinaryEncoder(OutputStream out, boolean buffered, BinaryEncoder reuse) {
-        if (buffered) {
-            return EncoderFactory.get().binaryEncoder(out, reuse);
-        } else {
-            return EncoderFactory.get().directBinaryEncoder(out, reuse);
+    if (jsonPropNamesToIgnore == null) {
+      return Jackson2Utils.compareJsonProperties(unfilteredPropsA, unfilteredPropsB, compareStringProps,
+          compareNonStringProps);
+    } else {
+      Map<String, JsonNode> aProps = new HashMap<>();
+      Map<String, JsonNode> bProps = new HashMap<>();
+      for (Map.Entry<String, JsonNode> entry : unfilteredPropsA.entrySet()) {
+        if (!jsonPropNamesToIgnore.contains(entry.getKey())) {
+          aProps.put(entry.getKey(), entry.getValue());
         }
-    }
-
-    @Override
-    public BinaryEncoder newBinaryEncoder(ObjectOutput out) {
-        return SpecificData.getEncoder(out);
-    }
-
-    @Override
-    public BinaryDecoder newBinaryDecoder(InputStream in, boolean buffered, BinaryDecoder reuse) {
-        DecoderFactory factory = DecoderFactory.get();
-        return buffered ? factory.binaryDecoder(in, reuse) : factory.directBinaryDecoder(in, reuse);
-    }
-
-    @Override
-    public BinaryDecoder newBinaryDecoder(ObjectInput in) {
-        return newBinaryDecoder(new ObjectInputToInputStreamAdapter(in), false, null);
-    }
-
-    @Override
-    public BinaryDecoder newBinaryDecoder(byte[] bytes, int offset, int length, BinaryDecoder reuse) {
-        return Avro110BinaryDecoderAccessUtil.newBinaryDecoder(bytes, offset, length, reuse);
-    }
-
-    @Override
-    public JsonEncoder newJsonEncoder(Schema schema, OutputStream out, boolean pretty) throws IOException {
-        return EncoderFactory.get().jsonEncoder(schema, out, pretty);
-    }
-
-    @Override
-    public Encoder newJsonEncoder(Schema schema, OutputStream out, boolean pretty, AvroVersion jsonFormat) throws IOException {
-        return new CompatibleJsonEncoder(schema, out, pretty, jsonFormat == null || jsonFormat.laterThan(AvroVersion.AVRO_1_4));
-    }
-
-    @Override
-    public JsonDecoder newJsonDecoder(Schema schema, InputStream in) throws IOException {
-        return DecoderFactory.get().jsonDecoder(schema, in);
-    }
-
-    @Override
-    public JsonDecoder newJsonDecoder(Schema schema, String in) throws IOException {
-        return DecoderFactory.get().jsonDecoder(schema, in);
-    }
-
-    @Override
-    public Decoder newCompatibleJsonDecoder(Schema schema, InputStream in) throws IOException {
-        return new CompatibleJsonDecoder(schema, in);
-    }
-
-    @Override
-    public Decoder newCompatibleJsonDecoder(Schema schema, String in) throws IOException {
-        return new CompatibleJsonDecoder(schema, in);
-    }
-
-    @Override
-    public SkipDecoder newCachedResolvingDecoder(Schema writer, Schema reader, Decoder in) throws IOException {
-        return new CachedResolvingDecoder(writer, reader, in);
-    }
-
-    @Override
-    public Decoder newBoundedMemoryDecoder(InputStream in) throws IOException {
-        return new BoundedMemoryDecoder(in);
-    }
-
-    @Override
-    public Decoder newBoundedMemoryDecoder(byte[] data) throws IOException {
-        return new BoundedMemoryDecoder(data);
-    }
-
-    @Override
-    public <T> SpecificDatumReader<T> newAliasAwareSpecificDatumReader(Schema writer, Class<T> readerClass) {
-        Schema readerSchema = AvroSchemaUtil.getDeclaredSchema(readerClass);
-        return new AliasAwareSpecificDatumReader<>(writer, readerSchema);
-    }
-
-    @Override
-    public SchemaParseResult parse(String schemaJson, SchemaParseConfiguration desiredConf, Collection<Schema> known) {
-        Schema.Parser parser = new Schema.Parser();
-        boolean validateNames = true;
-        boolean validateDefaults = true;
-        boolean validateNumericDefaultValueTypes = false;
-        boolean validateNoDanglingContent = false;
-        if (desiredConf != null) {
-            validateNames = desiredConf.validateNames();
-            validateDefaults = desiredConf.validateDefaultValues();
-            validateNumericDefaultValueTypes = desiredConf.validateNumericDefaultValueTypes();
-            validateNoDanglingContent = desiredConf.validateNoDanglingContent();
+      }
+      for (Map.Entry<String, JsonNode> entry : unfilteredPropsB.entrySet()) {
+        if (!jsonPropNamesToIgnore.contains(entry.getKey())) {
+          bProps.put(entry.getKey(), entry.getValue());
         }
-        SchemaParseConfiguration configUsed = new SchemaParseConfiguration(
-            validateNames,
-            validateDefaults,
-            validateNumericDefaultValueTypes,
-            validateNoDanglingContent
-        );
-        parser.setValidate(validateNames);
-        //avro 1.10 default validation also validates numeric types, so if we want to be
-        //more nuanced we cant use avro's default value validation
-        if (validateDefaults && validateNumericDefaultValueTypes) {
-            parser.setValidateDefaults(true);
-        } else {
-            parser.setValidateDefaults(false);
+      }
+      return Jackson2Utils.compareJsonProperties(aProps, bProps, compareStringProps, compareNonStringProps);
+    }
+  }
+
+  @Override
+  public List<String> getAllPropNames(Schema schema) {
+    return new ArrayList<>(schema.getObjectProps().keySet());
+  }
+
+  @Override
+  public List<String> getAllPropNames(Schema.Field field) {
+    return new ArrayList<>(field.getObjectProps().keySet());
+  }
+
+  @Override
+  public String getEnumDefault(Schema s) {
+    return s.getEnumDefault();
+  }
+
+  @Override
+  public Schema newEnumSchema(String name, String doc, String namespace, List<String> values, String enumDefault) {
+    return Schema.createEnum(name, doc, namespace, values, enumDefault);
+  }
+
+  @Override
+  public String toAvsc(Schema schema, AvscGenerationConfig config) {
+    boolean useRuntime;
+    if (!isRuntimeAvroCapableOf(config)) {
+      if (config.isForceUseOfRuntimeAvro()) {
+        throw new UnsupportedOperationException(
+            "desired configuration " + config + " is forced yet runtime avro " + supportedMajorVersion()
+                + " is not capable of it");
+      }
+      useRuntime = false;
+    } else {
+      useRuntime = config.isPreferUseOfRuntimeAvro();
+    }
+
+    if (useRuntime) {
+      return schema.toString(config.isPrettyPrint());
+    } else {
+      //if the user does not specify do whatever runtime avro would (which for 1.10 means produce correct schema)
+      boolean usePre702Logic = config.getRetainPreAvro702Logic().orElse(Boolean.FALSE);
+      Avro110AvscWriter writer =
+          new Avro110AvscWriter(config.isPrettyPrint(), usePre702Logic, config.isAddAvro702Aliases());
+      return writer.toAvsc(schema);
+    }
+  }
+
+  @Override
+  public Collection<AvroGeneratedSourceCode> compile(Collection<Schema> toCompile, AvroVersion minSupportedVersion,
+      AvroVersion maxSupportedVersion, CodeGenerationConfig config) {
+    if (!compilerSupported) {
+      throw new UnsupportedOperationException(compilerSupportMessage, compilerSupportIssue);
+    }
+    if (minSupportedVersion.earlierThan(AvroVersion.AVRO_1_6) && !StringRepresentation.CharSequence.equals(
+        config.getStringRepresentation())) {
+      throw new IllegalArgumentException(
+          "StringRepresentation " + config.getStringRepresentation() + " incompatible with minimum supported avro "
+              + minSupportedVersion);
+    }
+    if (toCompile == null || toCompile.isEmpty()) {
+      return Collections.emptyList();
+    }
+
+    Map<String, String> fullNameToAlternativeAvsc;
+    if (!config.isAvro702HandlingEnabled()) {
+      fullNameToAlternativeAvsc = Collections.emptyMap();
+    } else {
+      fullNameToAlternativeAvsc = createAlternativeAvscs(toCompile, config);
+    }
+
+    Iterator<Schema> schemaIter = toCompile.iterator();
+    Schema first = schemaIter.next();
+    try {
+      //since avro-compiler may not be on the CP, we use pure reflection to deal with the compiler
+      Object compiler = specificCompilerCtr.newInstance(first);
+
+      //configure the compiler
+
+      switch (config.getStringRepresentation()) {
+        case CharSequence:
+          //this is the (only) way avro 1.4/5 generates code
+          setStringTypeMethod.invoke(compiler, charSequenceStringTypeEnumInstance);
+          break;
+        case String:
+          setStringTypeMethod.invoke(compiler, javaLangStringTypeEnumInstance);
+          break;
+        case Utf8:
+          setStringTypeMethod.invoke(compiler, utf8TypeEnumInstance);
+          break;
+        default:
+          throw new IllegalStateException("unhandled StringRepresentation " + config.getStringRepresentation());
+      }
+
+      //make fields public (as avro 1.4 and 1.5 do)
+      setFieldVisibilityMethod.invoke(compiler, publicFieldVisibilityEnumInstance);
+
+      while (schemaIter.hasNext()) {
+        compilerEnqueueMethod.invoke(compiler, schemaIter.next());
+      }
+
+      Collection<?> outputFiles = (Collection<?>) compilerCompileMethod.invoke(compiler);
+
+      List<AvroGeneratedSourceCode> sourceFiles = new ArrayList<>(outputFiles.size());
+      for (Object outputFile : outputFiles) {
+        AvroGeneratedSourceCode sourceCode = new AvroGeneratedSourceCode(getPath(outputFile), getContents(outputFile));
+        String altAvsc = fullNameToAlternativeAvsc.get(sourceCode.getFullyQualifiedClassName());
+        if (altAvsc != null) {
+          sourceCode.setAlternativeAvsc(altAvsc);
         }
-        if (known != null && !known.isEmpty()) {
-            Map<String, Schema> knownByFullName = new HashMap<>(known.size());
-            for (Schema s : known) {
-                knownByFullName.put(s.getFullName(), s);
-            }
-            parser.addTypes(knownByFullName);
-        }
-        Schema mainSchema = parser.parse(schemaJson);
-        Map<String, Schema> knownByFullName = parser.getTypes();
+        sourceFiles.add(sourceCode);
+      }
 
-        if (configUsed.validateDefaultValues()) {
-            //dont trust avro, also run our own. also we might have told avro not to validate over numerics
-            Avro110SchemaValidator validator = new Avro110SchemaValidator(configUsed, known);
-            AvroSchemaUtil.traverseSchema(mainSchema, validator);
-        }
-        if (configUsed.validateNoDanglingContent()) {
-            Jackson2Utils.assertNoTrailingContent(schemaJson);
-        }
-        //todo - depending on how https://issues.apache.org/jira/browse/AVRO-2742 is settled, may need to use our own validator here
-        return new SchemaParseResult(mainSchema, knownByFullName, configUsed);
+      return transform(sourceFiles, minSupportedVersion, maxSupportedVersion);
+    } catch (UnsupportedOperationException e) {
+      throw e; //as-is
+    } catch (Exception e) {
+      throw new IllegalStateException(e);
     }
+  }
 
-    @Override
-    public String toParsingForm(Schema s) {
-        return SchemaNormalization.toParsingForm(s);
+  private Collection<AvroGeneratedSourceCode> transform(List<AvroGeneratedSourceCode> avroGenerated,
+      AvroVersion minAvro, AvroVersion maxAvro) {
+    List<AvroGeneratedSourceCode> transformed = new ArrayList<>(avroGenerated.size());
+    for (AvroGeneratedSourceCode generated : avroGenerated) {
+      String fixed = CodeTransformations.applyAll(generated.getContents(), supportedMajorVersion(), minAvro, maxAvro,
+          generated.getAlternativeAvsc());
+      transformed.add(new AvroGeneratedSourceCode(generated.getPath(), fixed));
     }
+    return transformed;
+  }
 
-    @Override
-    public String getDefaultValueAsJsonString(Schema.Field field) {
-        JsonNode json = Accessor.defaultValue(field);
-        if (json == null) {
-            throw new AvroRuntimeException("Field " + field + " has no default value");
-        }
-        return json.toString();
+  private String getPath(Object shouldBeOutputFile) {
+    try {
+      return (String) outputFilePathField.get(shouldBeOutputFile);
+    } catch (Exception e) {
+      throw new IllegalStateException("cant extract path from avro OutputFile", e);
     }
+  }
 
-    @Override
-    public Object newInstance(Class<?> clazz, Schema schema) {
-        return SpecificData.newInstance(clazz, schema);
+  private String getContents(Object shouldBeOutputFile) {
+    try {
+      return (String) outputFileContentsField.get(shouldBeOutputFile);
+    } catch (Exception e) {
+      throw new IllegalStateException("cant extract contents from avro OutputFile", e);
     }
+  }
 
-    @Override
-    public Object getSpecificDefaultValue(Schema.Field field) {
-        return SpecificData.get().getDefaultValue(field);
+  private boolean isRuntimeAvroCapableOf(AvscGenerationConfig config) {
+    if (config == null) {
+      throw new IllegalArgumentException("config cannot be null");
     }
-
-    @Override
-    public GenericData.EnumSymbol newEnumSymbol(Schema enumSchema, String enumValue) {
-        return new GenericData.EnumSymbol(enumSchema, enumValue);
+    if (config.isAddAvro702Aliases()) {
+      return false;
     }
-
-    @Override
-    public GenericData.Fixed newFixedField(Schema fixedSchema) {
-        return new GenericData.Fixed(fixedSchema);
+    Optional<Boolean> preAvro702Output = config.getRetainPreAvro702Logic();
+    //noinspection RedundantIfStatement
+    if (preAvro702Output.isPresent() && preAvro702Output.get().equals(Boolean.TRUE)) {
+      //avro 1.10 can only do correct avsc
+      return false;
     }
-
-    @Override
-    public GenericData.Fixed newFixedField(Schema fixedSchema, byte[] contents) {
-        return new GenericData.Fixed(fixedSchema, contents);
-    }
-
-    @Override
-    public Object getGenericDefaultValue(Schema.Field field) {
-        //always use our cache for the validation
-        return Avro110DefaultValuesCache.getDefaultValue(field, false);
-    }
-
-    @Override
-    public boolean fieldHasDefault(Schema.Field field) {
-        return field.hasDefaultValue();
-    }
-
-    @Override
-    public boolean defaultValuesEqual(Schema.Field a, Schema.Field b, boolean allowLooseNumerics) {
-        JsonNode aVal = Accessor.defaultValue(a);
-        JsonNode bVal = Accessor.defaultValue(b);
-        return Jackson2Utils.JsonNodesEqual(aVal, bVal, allowLooseNumerics);
-    }
-
-    @Override
-    public Set<String> getFieldAliases(Schema.Field field) {
-        return field.aliases();
-    }
-
-    @Override
-    public FieldBuilder newFieldBuilder(Schema.Field other) {
-        return new FieldBuilder110(other);
-    }
-
-    @Override
-    public SchemaBuilder newSchemaBuilder(Schema other) {
-        return new SchemaBuilder110(this, other);
-    }
-
-    @Override
-    public String getFieldPropAsJsonString(Schema.Field field, String name) {
-        // Goes from JsonNode to Object to JsonNode (again) to String. Painful, but suffices until somebody complains.
-        JsonNode node = JacksonUtils.toJsonNode(field.getObjectProp(name));
-        return Jackson2Utils.toJsonString(node);
-    }
-
-    @Override
-    public void setFieldPropFromJsonString(Schema.Field field, String name, String value, boolean strict) {
-        // Goes from String to JsonNode to Object to JsonNode (again). Painful, but suffices until somebody complains.
-        JsonNode node = Jackson2Utils.toJsonNode(value, strict);
-        field.addProp(name, JacksonUtils.toObject(node));
-    }
-
-    @Override
-    public boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps, boolean compareNonStringProps) {
-        if (a == null || b == null) {
-            return false;
-        }
-        Map<String, JsonNode> propsA;
-        Map<String, JsonNode> propsB;
-        try {
-            //noinspection unchecked
-            propsA = (Map<String, JsonNode>) jsonPropertiesPropsField.get(a);
-            //noinspection unchecked
-            propsB = (Map<String, JsonNode>) jsonPropertiesPropsField.get(b);
-        } catch (Exception e) {
-            throw new IllegalStateException("unable to access JsonProperties.props", e);
-        }
-        return Jackson2Utils.compareJsonProperties(propsA, propsB, compareStringProps, compareNonStringProps);
-    }
-
-    @Override
-    public String getSchemaPropAsJsonString(Schema schema, String name) {
-        // Goes from JsonNode to Object to JsonNode (again) to String. Painful, but suffices until somebody complains.
-        JsonNode node = JacksonUtils.toJsonNode(schema.getObjectProp(name));
-        return Jackson2Utils.toJsonString(node);
-    }
-
-    @Override
-    public void setSchemaPropFromJsonString(Schema schema, String name, String value, boolean strict) {
-        // Goes from String to JsonNode to Object to JsonNode (again). Painful, but suffices until somebody complains.
-        JsonNode node = Jackson2Utils.toJsonNode(value, strict);
-        schema.addProp(name, JacksonUtils.toObject(node));
-    }
-
-    @Override
-    public boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps) {
-        if (a == null || b == null) {
-            return false;
-        }
-        Map<String, JsonNode> propsA;
-        Map<String, JsonNode> propsB;
-        try {
-            //noinspection unchecked
-            propsA = (Map<String, JsonNode>) jsonPropertiesPropsField.get(a);
-            //noinspection unchecked
-            propsB = (Map<String, JsonNode>) jsonPropertiesPropsField.get(b);
-        } catch (Exception e) {
-            throw new IllegalStateException("unable to access JsonProperties.props", e);
-        }
-        return Jackson2Utils.compareJsonProperties(propsA, propsB, compareStringProps, compareNonStringProps);
-    }
-
-    @Override
-    public List<String> getAllPropNames(Schema schema) {
-        return new ArrayList<>(schema.getObjectProps().keySet());
-    }
-
-    @Override
-    public List<String> getAllPropNames(Schema.Field field) {
-        return new ArrayList<>(field.getObjectProps().keySet());
-    }
-
-    @Override
-    public String getEnumDefault(Schema s) {
-        return s.getEnumDefault();
-    }
-
-    @Override
-    public Schema newEnumSchema(String name, String doc, String namespace, List<String> values, String enumDefault) {
-        return Schema.createEnum(name, doc, namespace, values, enumDefault);
-    }
-
-    @Override
-    public String toAvsc(Schema schema, AvscGenerationConfig config) {
-        boolean useRuntime;
-        if (!isRuntimeAvroCapableOf(config)) {
-            if (config.isForceUseOfRuntimeAvro()) {
-                throw new UnsupportedOperationException("desired configuration " + config
-                        + " is forced yet runtime avro " + supportedMajorVersion() + " is not capable of it");
-            }
-            useRuntime = false;
-        } else {
-            useRuntime = config.isPreferUseOfRuntimeAvro();
-        }
-
-        if (useRuntime) {
-            return schema.toString(config.isPrettyPrint());
-        } else {
-            //if the user does not specify do whatever runtime avro would (which for 1.10 means produce correct schema)
-            boolean usePre702Logic = config.getRetainPreAvro702Logic().orElse(Boolean.FALSE);
-            Avro110AvscWriter writer = new Avro110AvscWriter(
-                    config.isPrettyPrint(),
-                    usePre702Logic,
-                    config.isAddAvro702Aliases()
-            );
-            return writer.toAvsc(schema);
-        }
-    }
-
-    @Override
-    public Collection<AvroGeneratedSourceCode> compile(
-        Collection<Schema> toCompile,
-        AvroVersion minSupportedVersion,
-        AvroVersion maxSupportedVersion,
-        CodeGenerationConfig config
-    ) {
-        if (!compilerSupported) {
-            throw new UnsupportedOperationException(compilerSupportMessage, compilerSupportIssue);
-        }
-        if (minSupportedVersion.earlierThan(AvroVersion.AVRO_1_6) && !StringRepresentation.CharSequence.equals(config.getStringRepresentation())) {
-            throw new IllegalArgumentException("StringRepresentation " + config.getStringRepresentation() + " incompatible with minimum supported avro " + minSupportedVersion);
-        }
-        if (toCompile == null || toCompile.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        Map<String, String> fullNameToAlternativeAvsc;
-        if (!config.isAvro702HandlingEnabled()) {
-            fullNameToAlternativeAvsc = Collections.emptyMap();
-        } else {
-            fullNameToAlternativeAvsc = createAlternativeAvscs(toCompile, config);
-        }
-
-        Iterator<Schema> schemaIter = toCompile.iterator();
-        Schema first = schemaIter.next();
-        try {
-            //since avro-compiler may not be on the CP, we use pure reflection to deal with the compiler
-            Object compiler = specificCompilerCtr.newInstance(first);
-
-            //configure the compiler
-
-            switch (config.getStringRepresentation()) {
-                case CharSequence:
-                    //this is the (only) way avro 1.4/5 generates code
-                    setStringTypeMethod.invoke(compiler, charSequenceStringTypeEnumInstance);
-                    break;
-                case String:
-                    setStringTypeMethod.invoke(compiler, javaLangStringTypeEnumInstance);
-                    break;
-                case Utf8:
-                    setStringTypeMethod.invoke(compiler, utf8TypeEnumInstance);
-                    break;
-                default:
-                    throw new IllegalStateException("unhandled StringRepresentation " + config.getStringRepresentation());
-            }
-
-            //make fields public (as avro 1.4 and 1.5 do)
-            setFieldVisibilityMethod.invoke(compiler, publicFieldVisibilityEnumInstance);
-
-            while (schemaIter.hasNext()) {
-                compilerEnqueueMethod.invoke(compiler, schemaIter.next());
-            }
-
-            Collection<?> outputFiles = (Collection<?>) compilerCompileMethod.invoke(compiler);
-
-            List<AvroGeneratedSourceCode> sourceFiles = new ArrayList<>(outputFiles.size());
-            for (Object outputFile : outputFiles) {
-                AvroGeneratedSourceCode sourceCode = new AvroGeneratedSourceCode(getPath(outputFile), getContents(outputFile));
-                String altAvsc = fullNameToAlternativeAvsc.get(sourceCode.getFullyQualifiedClassName());
-                if (altAvsc != null) {
-                    sourceCode.setAlternativeAvsc(altAvsc);
-                }
-                sourceFiles.add(sourceCode);
-            }
-
-            return transform(sourceFiles, minSupportedVersion, maxSupportedVersion);
-        } catch (UnsupportedOperationException e) {
-            throw e; //as-is
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    private Collection<AvroGeneratedSourceCode> transform(List<AvroGeneratedSourceCode> avroGenerated, AvroVersion minAvro, AvroVersion maxAvro) {
-        List<AvroGeneratedSourceCode> transformed = new ArrayList<>(avroGenerated.size());
-        for (AvroGeneratedSourceCode generated : avroGenerated) {
-            String fixed = CodeTransformations.applyAll(
-                generated.getContents(),
-                supportedMajorVersion(),
-                minAvro,
-                maxAvro,
-                generated.getAlternativeAvsc()
-            );
-            transformed.add(new AvroGeneratedSourceCode(generated.getPath(), fixed));
-        }
-        return transformed;
-    }
-
-    private String getPath(Object shouldBeOutputFile) {
-        try {
-            return (String) outputFilePathField.get(shouldBeOutputFile);
-        } catch (Exception e) {
-            throw new IllegalStateException("cant extract path from avro OutputFile", e);
-        }
-    }
-
-    private String getContents(Object shouldBeOutputFile) {
-        try {
-            return (String) outputFileContentsField.get(shouldBeOutputFile);
-        } catch (Exception e) {
-            throw new IllegalStateException("cant extract contents from avro OutputFile", e);
-        }
-    }
-
-    private boolean isRuntimeAvroCapableOf(AvscGenerationConfig config) {
-        if (config == null) {
-            throw new IllegalArgumentException("config cannot be null");
-        }
-        if (config.isAddAvro702Aliases()) {
-            return false;
-        }
-        Optional<Boolean> preAvro702Output = config.getRetainPreAvro702Logic();
-        //noinspection RedundantIfStatement
-        if (preAvro702Output.isPresent() && preAvro702Output.get().equals(Boolean.TRUE)) {
-            //avro 1.10 can only do correct avsc
-            return false;
-        }
-        return true;
-    }
+    return true;
+  }
 }

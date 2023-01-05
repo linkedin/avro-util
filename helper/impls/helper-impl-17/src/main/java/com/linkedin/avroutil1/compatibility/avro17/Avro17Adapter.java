@@ -118,7 +118,8 @@ public class Avro17Adapter implements AvroAdapter {
       outputFilePathField.setAccessible(true);
       outputFileContentsField = outputFileClass.getDeclaredField("contents");
       outputFileContentsField.setAccessible(true);
-      Class<?> fieldVisibilityEnum = Class.forName("org.apache.avro.compiler.specific.SpecificCompiler$FieldVisibility");
+      Class<?> fieldVisibilityEnum =
+          Class.forName("org.apache.avro.compiler.specific.SpecificCompiler$FieldVisibility");
       Field publicVisibilityField = fieldVisibilityEnum.getDeclaredField("PUBLIC");
       publicFieldVisibilityEnumInstance = publicVisibilityField.get(null);
       setFieldVisibilityMethod = compilerClass.getDeclaredMethod("setFieldVisibility", fieldVisibilityEnum);
@@ -138,7 +139,7 @@ public class Avro17Adapter implements AvroAdapter {
       compilerSupportIssue = e;
       String reason = ExceptionUtils.rootCause(compilerSupportIssue).getMessage();
       compilerSupportMessage = "avro SpecificCompiler class could not be found or instantiated because " + reason
-              + ". please make sure you have a dependency on org.apache.avro:avro-compiler";
+          + ". please make sure you have a dependency on org.apache.avro:avro-compiler";
       //ignore
     }
 
@@ -206,8 +207,10 @@ public class Avro17Adapter implements AvroAdapter {
   }
 
   @Override
-  public Encoder newJsonEncoder(Schema schema, OutputStream out, boolean pretty, AvroVersion jsonFormat) throws IOException {
-    return new CompatibleJsonEncoder(schema, out, pretty, jsonFormat == null || jsonFormat.laterThan(AvroVersion.AVRO_1_4));
+  public Encoder newJsonEncoder(Schema schema, OutputStream out, boolean pretty, AvroVersion jsonFormat)
+      throws IOException {
+    return new CompatibleJsonEncoder(schema, out, pretty,
+        jsonFormat == null || jsonFormat.laterThan(AvroVersion.AVRO_1_4));
   }
 
   @Override
@@ -264,12 +267,9 @@ public class Avro17Adapter implements AvroAdapter {
       validateNumericDefaultValueTypes = desiredConf.validateNumericDefaultValueTypes();
       validateNoDanglingContent = desiredConf.validateNoDanglingContent();
     }
-    SchemaParseConfiguration configUsed = new SchemaParseConfiguration(
-        validateNames,
-        validateDefaults,
-        validateNumericDefaultValueTypes,
-        validateNoDanglingContent
-    );
+    SchemaParseConfiguration configUsed =
+        new SchemaParseConfiguration(validateNames, validateDefaults, validateNumericDefaultValueTypes,
+            validateNoDanglingContent);
 
     parser.setValidate(validateNames);
 
@@ -386,8 +386,9 @@ public class Avro17Adapter implements AvroAdapter {
   }
 
   @Override
-  public boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps, boolean compareNonStringProps) {
-    return Avro17Utils.sameJsonProperties(a, b, compareStringProps, compareNonStringProps);
+  public boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps,
+      boolean compareNonStringProps, Set<String> jsonPropNamesToIgnore) {
+    return Avro17Utils.sameJsonProperties(a, b, compareStringProps, compareNonStringProps, jsonPropNamesToIgnore);
   }
 
   @Override
@@ -401,8 +402,9 @@ public class Avro17Adapter implements AvroAdapter {
   }
 
   @Override
-  public boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps) {
-    return Avro17Utils.sameJsonProperties(a, b, compareStringProps, compareNonStringProps);
+  public boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps,
+      Set<String> jsonPropNamesToIgnore) {
+    return Avro17Utils.sameJsonProperties(a, b, compareStringProps, compareNonStringProps, jsonPropNamesToIgnore);
   }
 
   @Override
@@ -425,8 +427,9 @@ public class Avro17Adapter implements AvroAdapter {
     boolean useRuntime;
     if (!isRuntimeAvroCapableOf(config)) {
       if (config.isForceUseOfRuntimeAvro()) {
-        throw new UnsupportedOperationException("desired configuration " + config
-                + " is forced yet runtime avro " + supportedMajorVersion() + " is not capable of it");
+        throw new UnsupportedOperationException(
+            "desired configuration " + config + " is forced yet runtime avro " + supportedMajorVersion()
+                + " is not capable of it");
       }
       useRuntime = false;
     } else {
@@ -438,27 +441,23 @@ public class Avro17Adapter implements AvroAdapter {
     } else {
       //if the user does not specify do whatever runtime avro would (which for 1.7 means produce correct schema)
       boolean usePre702Logic = config.getRetainPreAvro702Logic().orElse(Boolean.FALSE);
-      Avro17AvscWriter writer = new Avro17AvscWriter(
-              config.isPrettyPrint(),
-              usePre702Logic,
-              config.isAddAvro702Aliases()
-      );
+      Avro17AvscWriter writer =
+          new Avro17AvscWriter(config.isPrettyPrint(), usePre702Logic, config.isAddAvro702Aliases());
       return writer.toAvsc(schema);
     }
   }
 
   @Override
-  public Collection<AvroGeneratedSourceCode> compile(
-      Collection<Schema> toCompile,
-      AvroVersion minSupportedVersion,
-      AvroVersion maxSupportedVersion,
-      CodeGenerationConfig config
-  ) {
+  public Collection<AvroGeneratedSourceCode> compile(Collection<Schema> toCompile, AvroVersion minSupportedVersion,
+      AvroVersion maxSupportedVersion, CodeGenerationConfig config) {
     if (!compilerSupported) {
       throw new UnsupportedOperationException(compilerSupportMessage, compilerSupportIssue);
     }
-    if (minSupportedVersion.earlierThan(AvroVersion.AVRO_1_6) && !StringRepresentation.CharSequence.equals(config.getStringRepresentation())) {
-      throw new IllegalArgumentException("StringRepresentation " + config.getStringRepresentation() + " incompatible with minimum supported avro " + minSupportedVersion);
+    if (minSupportedVersion.earlierThan(AvroVersion.AVRO_1_6) && !StringRepresentation.CharSequence.equals(
+        config.getStringRepresentation())) {
+      throw new IllegalArgumentException(
+          "StringRepresentation " + config.getStringRepresentation() + " incompatible with minimum supported avro "
+              + minSupportedVersion);
     }
     if (toCompile == null || toCompile.isEmpty()) {
       return Collections.emptyList();
@@ -521,16 +520,12 @@ public class Avro17Adapter implements AvroAdapter {
     }
   }
 
-  private Collection<AvroGeneratedSourceCode> transform(List<AvroGeneratedSourceCode> avroGenerated, AvroVersion minAvro, AvroVersion maxAvro) {
+  private Collection<AvroGeneratedSourceCode> transform(List<AvroGeneratedSourceCode> avroGenerated,
+      AvroVersion minAvro, AvroVersion maxAvro) {
     List<AvroGeneratedSourceCode> transformed = new ArrayList<>(avroGenerated.size());
     for (AvroGeneratedSourceCode generated : avroGenerated) {
-      String fixed = CodeTransformations.applyAll(
-          generated.getContents(),
-          supportedMajorVersion(),
-          minAvro,
-          maxAvro,
-          generated.getAlternativeAvsc()
-      );
+      String fixed = CodeTransformations.applyAll(generated.getContents(), supportedMajorVersion(), minAvro, maxAvro,
+          generated.getAlternativeAvsc());
       transformed.add(new AvroGeneratedSourceCode(generated.getPath(), fixed));
     }
     return transformed;

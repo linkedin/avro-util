@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.compatibility;
 
+import java.util.Collections;
 import org.apache.avro.Schema;
 import org.testng.Assert;
 import org.testng.SkipException;
@@ -69,7 +70,8 @@ public class ConfigurableSchemaComparatorTest {
         false,
         true,
         true,
-        true
+        true,
+        Collections.emptySet()
     );
     switch (runtimeAvroVersion) {
       case AVRO_1_4:
@@ -224,6 +226,57 @@ public class ConfigurableSchemaComparatorTest {
     Assert.assertFalse(ConfigurableSchemaComparator.equals(a, b, strict));
     Assert.assertFalse(ConfigurableSchemaComparator.equals(a, c, strict));
     Assert.assertFalse(ConfigurableSchemaComparator.equals(b, c, strict));
+  }
+
+  @Test
+  public void testJsonPropNamesToIgnore() {
+    String avscA = "{\n"
+        + "  \"type\": \"record\",\n"
+        + "  \"name\": \"Bob\",\n"
+        + "  \"fields\": [\n"
+        + "    {\n"
+        + "      \"name\": \"f1\",\n"
+        + "      \"type\": \"int\"\n"
+        + "    }\n"
+        + "  ]\n"
+        + "}";
+
+    String avscB = "{\n"
+        + "  \"type\": \"record\",\n"
+        + "  \"name\": \"Bob\",\n"
+        + "  \"myProp\": \"f2\",\n"
+        + "  \"fields\": [\n"
+        + "    {\n"
+        + "      \"name\": \"f1\",\n"
+        + "      \"type\": \"int\",\n"
+        + "      \"myProp\": \"f2\"\n"
+        + "    }\n"
+        + "  ]\n"
+        + "}";
+
+    String avscC = "{\n"
+        + "  \"type\": \"record\",\n"
+        + "  \"name\": \"Bob\",\n"
+        + "  \"unknownProp\": \"f2\",\n"
+        + "  \"fields\": [\n"
+        + "    {\n"
+        + "      \"name\": \"f1\",\n"
+        + "      \"type\": \"int\",\n"
+        + "      \"myProp\": \"f2\"\n"
+        + "    }\n"
+        + "  ]\n"
+        + "}";
+
+    Schema a = AvroCompatibilityHelper.parse(avscA, SchemaParseConfiguration.STRICT, null).getMainSchema();
+    Schema b = AvroCompatibilityHelper.parse(avscB, SchemaParseConfiguration.STRICT, null).getMainSchema();
+    Schema c = AvroCompatibilityHelper.parse(avscC, SchemaParseConfiguration.STRICT, null).getMainSchema();
+
+    SchemaComparisonConfiguration ignoreMyProp = SchemaComparisonConfiguration.STRICT
+        .jsonPropNamesToIgnore(Collections.singleton("myProp"))
+        .compareNonStringJsonProps(false); //required to work under old avro
+
+    Assert.assertTrue(ConfigurableSchemaComparator.equals(a, b, ignoreMyProp));
+    Assert.assertFalse(ConfigurableSchemaComparator.equals(b, c, ignoreMyProp));
   }
 
   @Test
