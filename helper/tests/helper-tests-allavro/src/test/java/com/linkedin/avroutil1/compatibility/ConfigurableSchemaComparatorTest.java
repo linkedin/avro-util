@@ -272,7 +272,8 @@ public class ConfigurableSchemaComparatorTest {
     Schema c = AvroCompatibilityHelper.parse(avscC, SchemaParseConfiguration.STRICT, null).getMainSchema();
 
     SchemaComparisonConfiguration ignoreMyProp = SchemaComparisonConfiguration.STRICT
-        .jsonPropNamesToIgnore(Collections.singleton("myProp"));
+        .jsonPropNamesToIgnore(Collections.singleton("myProp"))
+        .compareNonStringJsonProps(false); //required to work under old avro
 
     Assert.assertTrue(ConfigurableSchemaComparator.equals(a, b, ignoreMyProp));
     Assert.assertFalse(ConfigurableSchemaComparator.equals(b, c, ignoreMyProp));
