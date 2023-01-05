@@ -307,7 +307,7 @@ public class Avro17Utils {
       }
 
       Map<String, String> unfilteredJsonPropsA = a.getProps();
-      Map<String, String> unfilteredJsonPropsB = a.getProps();
+      Map<String, String> unfilteredJsonPropsB = b.getProps();
 
       if (jsonPropNamesToIgnore == null) {
         return Objects.equals(unfilteredJsonPropsA, unfilteredJsonPropsB);
