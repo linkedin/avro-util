@@ -12,5 +12,5 @@ plugins {
 
 dependencies {
   implementation (project(":helper:helper-common"))
-  compileOnly ("org.apache.avro:avro:1.11.0")
+  compileOnly ("org.apache.avro:avro:1.11.1")
 }

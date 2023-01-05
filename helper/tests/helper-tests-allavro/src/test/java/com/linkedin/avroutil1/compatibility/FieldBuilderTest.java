@@ -83,16 +83,20 @@ public class FieldBuilderTest {
     @Test
     public void testNewFieldSortOrder() throws Exception {
         // default (no order specified).
-        Schema.Field field = AvroCompatibilityHelper.newField(null).setName("default").build();
+        Schema.Field field = AvroCompatibilityHelper.newField(null).setName("default")
+            .setSchema(Schema.parse("\"int\"")).build();
         Assert.assertEquals(field.order(), Schema.Field.Order.ASCENDING);
 
-        field = AvroCompatibilityHelper.newField(null).setName("ascending").setOrder(Schema.Field.Order.ASCENDING).build();
+        field = AvroCompatibilityHelper.newField(null).setName("ascending")
+            .setSchema(Schema.parse("\"int\"")).setOrder(Schema.Field.Order.ASCENDING).build();
         Assert.assertEquals(field.order(), Schema.Field.Order.ASCENDING);
 
-        field = AvroCompatibilityHelper.newField(null).setName("descending").setOrder(Schema.Field.Order.DESCENDING).build();
+        field = AvroCompatibilityHelper.newField(null).setName("descending")
+            .setSchema(Schema.parse("\"int\"")).setOrder(Schema.Field.Order.DESCENDING).build();
         Assert.assertEquals(field.order(), Schema.Field.Order.DESCENDING);
 
-        field = AvroCompatibilityHelper.newField(null).setName("ignore").setOrder(Schema.Field.Order.IGNORE).build();
+        field = AvroCompatibilityHelper.newField(null).setName("ignore")
+            .setSchema(Schema.parse("\"int\"")).setOrder(Schema.Field.Order.IGNORE).build();
         Assert.assertEquals(field.order(), Schema.Field.Order.IGNORE);
 
         Schema.Field copy = AvroCompatibilityHelper.newField(field).build();
@@ -114,17 +118,17 @@ public class FieldBuilderTest {
 
         //set default value using specifics
         Schema.Field newField = AvroCompatibilityHelper.newField(null)
-                .setSchema(fieldSchema)
-                .setDefault(specificDefault)
-                .setName("excitingField") //required
-                .build();
+            .setSchema(fieldSchema)
+            .setDefault(specificDefault)
+            .setName("excitingField") //required
+            .build();
 
         //set default value using generics
         Schema.Field moreNewField = AvroCompatibilityHelper.newField(null)
-                .setSchema(fieldSchema)
-                .setDefault(genericDefault)
-                .setName("excitingField") //required
-                .build();
+            .setSchema(fieldSchema)
+            .setDefault(genericDefault)
+            .setName("excitingField") //required
+            .build();
 
         Assert.assertEquals(newField, moreNewField);
     }
@@ -139,6 +143,7 @@ public class FieldBuilderTest {
 
         FieldBuilder fieldBuilder = AvroCompatibilityHelper.newField(null)
             .setName("default")
+            .setSchema(Schema.parse("\"int\""))
             .addProps(propMap)
             .removeProp("string1")
             .removeProp("string2");
