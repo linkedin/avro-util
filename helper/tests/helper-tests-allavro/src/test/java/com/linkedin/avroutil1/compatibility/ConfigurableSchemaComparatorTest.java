@@ -244,7 +244,7 @@ public class ConfigurableSchemaComparatorTest {
     String avscB = "{\n"
         + "  \"type\": \"record\",\n"
         + "  \"name\": \"Bob\",\n"
-        + "  \"myProp\": \"f2\"\n"
+        + "  \"myProp\": \"f2\",\n"
         + "  \"fields\": [\n"
         + "    {\n"
         + "      \"name\": \"f1\",\n"
@@ -257,7 +257,7 @@ public class ConfigurableSchemaComparatorTest {
     String avscC = "{\n"
         + "  \"type\": \"record\",\n"
         + "  \"name\": \"Bob\",\n"
-        + "  \"unknownProp\": \"f2\"\n"
+        + "  \"unknownProp\": \"f2\",\n"
         + "  \"fields\": [\n"
         + "    {\n"
         + "      \"name\": \"f1\",\n"
@@ -269,7 +269,7 @@ public class ConfigurableSchemaComparatorTest {
 
     Schema a = AvroCompatibilityHelper.parse(avscA, SchemaParseConfiguration.STRICT, null).getMainSchema();
     Schema b = AvroCompatibilityHelper.parse(avscB, SchemaParseConfiguration.STRICT, null).getMainSchema();
-    Schema c = AvroCompatibilityHelper.parse(avscB, SchemaParseConfiguration.STRICT, null).getMainSchema();
+    Schema c = AvroCompatibilityHelper.parse(avscC, SchemaParseConfiguration.STRICT, null).getMainSchema();
 
     SchemaComparisonConfiguration ignoreMyProp = SchemaComparisonConfiguration.STRICT
         .jsonPropNamesToIgnore(Collections.singleton("myProp"));
