@@ -357,25 +357,6 @@ public class Avro110Adapter implements AvroAdapter {
 
   @Override
   public boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps,
-      boolean compareNonStringProps) {
-    if (a == null || b == null) {
-      return false;
-    }
-    Map<String, JsonNode> propsA;
-    Map<String, JsonNode> propsB;
-    try {
-      //noinspection unchecked
-      propsA = (Map<String, JsonNode>) jsonPropertiesPropsField.get(a);
-      //noinspection unchecked
-      propsB = (Map<String, JsonNode>) jsonPropertiesPropsField.get(b);
-    } catch (Exception e) {
-      throw new IllegalStateException("unable to access JsonProperties.props", e);
-    }
-    return Jackson2Utils.compareJsonProperties(propsA, propsB, compareStringProps, compareNonStringProps);
-  }
-
-  @Override
-  public boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps,
       boolean compareNonStringProps, Set<String> jsonPropNamesToIgnore) {
     if (a == null || b == null) {
       return false;
@@ -423,24 +404,6 @@ public class Avro110Adapter implements AvroAdapter {
     // Goes from String to JsonNode to Object to JsonNode (again). Painful, but suffices until somebody complains.
     JsonNode node = Jackson2Utils.toJsonNode(value, strict);
     schema.addProp(name, JacksonUtils.toObject(node));
-  }
-
-  @Override
-  public boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps) {
-    if (a == null || b == null) {
-      return false;
-    }
-    Map<String, JsonNode> propsA;
-    Map<String, JsonNode> propsB;
-    try {
-      //noinspection unchecked
-      propsA = (Map<String, JsonNode>) jsonPropertiesPropsField.get(a);
-      //noinspection unchecked
-      propsB = (Map<String, JsonNode>) jsonPropertiesPropsField.get(b);
-    } catch (Exception e) {
-      throw new IllegalStateException("unable to access JsonProperties.props", e);
-    }
-    return Jackson2Utils.compareJsonProperties(propsA, propsB, compareStringProps, compareNonStringProps);
   }
 
   @Override

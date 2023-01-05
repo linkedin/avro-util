@@ -981,7 +981,7 @@ public class AvroCompatibilityHelper  extends AvroCompatibilityHelperCommon{
   public static boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps,
       boolean compareNonStringProps) {
     assertAvroAvailable();
-    return ADAPTER.sameJsonProperties(a, b, compareStringProps, compareNonStringProps);
+    return ADAPTER.sameJsonProperties(a, b, compareStringProps, compareNonStringProps, null);
   }
 
   public static boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps,
@@ -1051,7 +1051,7 @@ public class AvroCompatibilityHelper  extends AvroCompatibilityHelperCommon{
   public static boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps,
       boolean compareNonStringProps) {
     assertAvroAvailable();
-    return ADAPTER.sameJsonProperties(a, b, compareStringProps, compareNonStringProps);
+    return ADAPTER.sameJsonProperties(a, b, compareStringProps, compareNonStringProps, null);
   }
 
   public static boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps,

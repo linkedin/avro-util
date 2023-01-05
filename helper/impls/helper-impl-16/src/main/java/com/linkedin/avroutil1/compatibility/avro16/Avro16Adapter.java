@@ -340,24 +340,6 @@ public class Avro16Adapter implements AvroAdapter {
 
   @Override
   public boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps,
-      boolean compareNonStringProps) {
-    if (compareNonStringProps) {
-      throw new IllegalArgumentException(
-          "avro " + supportedMajorVersion() + " does not preserve non-string props and so cannot compare them");
-    }
-    if (a == null || b == null) {
-      return false;
-    }
-    if (!compareStringProps) {
-      return true;
-    }
-    Map<String, String> aProps = a.props();
-    Map<String, String> bProps = b.props();
-    return Objects.equals(aProps, bProps);
-  }
-
-  @Override
-  public boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps,
       boolean compareNonStringProps, Set<String> jsonPropNamesToIgnore) {
     if (compareNonStringProps) {
       throw new IllegalArgumentException(
@@ -399,23 +381,6 @@ public class Avro16Adapter implements AvroAdapter {
   @Override
   public void setSchemaPropFromJsonString(Schema schema, String name, String value, boolean strict) {
     StringPropertyUtils.setSchemaPropFromJsonString(schema, name, value, strict);
-  }
-
-  @Override
-  public boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps) {
-    if (compareNonStringProps) {
-      throw new IllegalArgumentException(
-          "avro " + supportedMajorVersion() + " does not preserve non-string props and so cannot compare them");
-    }
-    if (a == null || b == null) {
-      return false;
-    }
-    if (!compareStringProps) {
-      return true;
-    }
-    Map<String, String> aProps = a.getProps();
-    Map<String, String> bProps = b.getProps();
-    return Objects.equals(aProps, bProps);
   }
 
   @Override

@@ -387,12 +387,6 @@ public class Avro17Adapter implements AvroAdapter {
 
   @Override
   public boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps,
-      boolean compareNonStringProps) {
-    return Avro17Utils.sameJsonProperties(a, b, compareStringProps, compareNonStringProps, null);
-  }
-
-  @Override
-  public boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps,
       boolean compareNonStringProps, Set<String> jsonPropNamesToIgnore) {
     return Avro17Utils.sameJsonProperties(a, b, compareStringProps, compareNonStringProps, jsonPropNamesToIgnore);
   }
@@ -405,11 +399,6 @@ public class Avro17Adapter implements AvroAdapter {
   @Override
   public void setSchemaPropFromJsonString(Schema schema, String name, String value, boolean strict) {
     Avro17Utils.setJsonProp(schema, name, value, strict);
-  }
-
-  @Override
-  public boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps) {
-    return Avro17Utils.sameJsonProperties(a, b, compareStringProps, compareNonStringProps, null);
   }
 
   @Override

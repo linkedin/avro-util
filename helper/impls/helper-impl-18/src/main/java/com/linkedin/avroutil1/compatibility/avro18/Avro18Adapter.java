@@ -343,17 +343,6 @@ public class Avro18Adapter implements AvroAdapter {
 
   @Override
   public boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps,
-      boolean compareNonStringProps) {
-    if (a == null || b == null) {
-      return false;
-    }
-    Map<String, JsonNode> propsA = a.getJsonProps();
-    Map<String, JsonNode> propsB = b.getJsonProps();
-    return Jackson1Utils.compareJsonProperties(propsA, propsB, compareStringProps, compareNonStringProps);
-  }
-
-  @Override
-  public boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps,
       boolean compareNonStringProps, Set<String> jsonPropNamesToIgnore) {
     if (a == null || b == null) {
       return false;
@@ -393,16 +382,6 @@ public class Avro18Adapter implements AvroAdapter {
     JsonNode node = Jackson1Utils.toJsonNode(value, strict);
     //noinspection deprecation this is faster
     schema.addProp(name, node);
-  }
-
-  @Override
-  public boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps) {
-    if (a == null || b == null) {
-      return false;
-    }
-    Map<String, JsonNode> propsA = a.getJsonProps();
-    Map<String, JsonNode> propsB = b.getJsonProps();
-    return Jackson1Utils.compareJsonProperties(propsA, propsB, compareStringProps, compareNonStringProps);
   }
 
   @Override

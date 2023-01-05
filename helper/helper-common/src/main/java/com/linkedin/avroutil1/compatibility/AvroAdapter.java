@@ -142,10 +142,9 @@ public interface AvroAdapter {
    * @param compareStringProps true to compare string properties (otherwise ignored)
    * @param compareNonStringProps true to compare all other properties (otherwise ignored). this exists because avro 1.4
    *                              doesnt handle non-string props at all and we want to be able to match that behaviour under any avro
+   * @param jsonPropNamesToIgnore a set of json property names to ignore. if null, no properties will be ignored
    * @return if field properties are equal, under the configuration parameters above
    */
-  boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps, boolean compareNonStringProps);
-
   boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps, boolean compareNonStringProps,
       Set<String> jsonPropNamesToIgnore);
 
@@ -160,10 +159,9 @@ public interface AvroAdapter {
    * @param compareStringProps true to compare string properties (otherwise ignored)
    * @param compareNonStringProps true to compare all other properties (otherwise ignored). this exists because avro 1.4
    *                              doesnt handle non-string props at all and we want to be able to match that behaviour under any avro
+   * @param jsonPropNamesToIgnore a set of json property names to ignore. if null, all properties are considered
    * @return if schema properties are equal, under the configuration parameters above
    */
-  boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps);
-
   boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps,
       Set<String> jsonPropNamesToIgnore);
 
