@@ -31,12 +31,12 @@ public class ConfigurableSchemaComparator {
     AvroVersion runtimeAvroVersion = AvroCompatibilityHelper.getRuntimeAvroVersion();
     if (runtimeAvroVersion.earlierThan(AvroVersion.AVRO_1_7) && config.isCompareNonStringJsonProps()) {
       //1.7 itself changes between < 1.7.3 and >= 1.7.3, so we leave that validation to later runtime :-(
-      throw new IllegalArgumentException("avro " + runtimeAvroVersion
-          + " does not preserve non-string props and so cannot compare them");
+      throw new IllegalArgumentException(
+          "avro " + runtimeAvroVersion + " does not preserve non-string props and so cannot compare them");
     }
   }
 
-  private static boolean equals(Schema a, Schema b,  SchemaComparisonConfiguration config, Set<SeenPair> seen) {
+  private static boolean equals(Schema a, Schema b, SchemaComparisonConfiguration config, Set<SeenPair> seen) {
     if (a == null && b == null) {
       return true;
     }
@@ -51,36 +51,34 @@ public class ConfigurableSchemaComparator {
     boolean considerJsonStringProps = config.isCompareStringJsonProps();
     boolean considerJsonNonStringProps = config.isCompareNonStringJsonProps();
     boolean considerAliases = config.isCompareAliases();
+    boolean considerJsonProps = considerJsonStringProps || considerJsonNonStringProps;
+    Set<String> jsonPropNamesToIgnore = config.getJsonPropNamesToIgnore();
+
+    if (considerJsonProps && !hasSameObjectProps(a, b, considerJsonStringProps, considerJsonNonStringProps,
+        jsonPropNamesToIgnore)) {
+      return false;
+    }
 
     switch (type) {
-      //all of these have nothing more to compare by beyond their type (and we ignore props)
+      //all of these have nothing more to compare by beyond their type and props
       case NULL:
-        return true;
       case BOOLEAN:
-        return true;
       case INT:
-        return true;
       case LONG:
-        return true;
       case FLOAT:
-        return true;
       case DOUBLE:
-        return true;
       case STRING:
-        return true;
       case BYTES:
         return true;
 
       //named types
 
       case ENUM:
-        return a.getFullName().equals(b.getFullName())
-            && (!considerAliases || hasSameAliases(a, b))
+        return a.getFullName().equals(b.getFullName()) && (!considerAliases || hasSameAliases(a, b))
             //list comparison is sensitive to order
             && a.getEnumSymbols().equals(b.getEnumSymbols());
       case FIXED:
-        return a.getFullName().equals(b.getFullName())
-            && (!considerAliases || hasSameAliases(a, b))
+        return a.getFullName().equals(b.getFullName()) && (!considerAliases || hasSameAliases(a, b))
             && a.getFixedSize() == b.getFixedSize();
       case RECORD:
         return recordSchemaEquals(a, b, config, seen);
@@ -110,7 +108,8 @@ public class ConfigurableSchemaComparator {
     }
   }
 
-  private static boolean recordSchemaEquals(Schema a, Schema b, SchemaComparisonConfiguration config, Set<SeenPair> seen) {
+  private static boolean recordSchemaEquals(Schema a, Schema b, SchemaComparisonConfiguration config,
+      Set<SeenPair> seen) {
     if (!a.getFullName().equals(b.getFullName())) {
       return false;
     }
@@ -125,14 +124,16 @@ public class ConfigurableSchemaComparator {
     boolean considerJsonNonStringProps = config.isCompareNonStringJsonProps();
     boolean considerAliases = config.isCompareAliases();
     boolean considerJsonProps = considerJsonStringProps || considerJsonNonStringProps;
-    boolean compareIntToFLoatDefaults = config.isCompareIntToFloatDefaults();
+    boolean compareIntToFloatDefaults = config.isCompareIntToFloatDefaults();
+    Set<String> jsonPropNamesToIgnore = config.getJsonPropNamesToIgnore();
 
     try {
       if (considerAliases && !hasSameAliases(a, b)) {
         return false;
       }
 
-      if (considerJsonProps && !hasSameObjectProps(a, b, considerJsonStringProps, considerJsonNonStringProps)) {
+      if (considerJsonProps && !hasSameObjectProps(a, b, considerJsonStringProps, considerJsonNonStringProps,
+          jsonPropNamesToIgnore)) {
         return false;
       }
 
@@ -152,7 +153,7 @@ public class ConfigurableSchemaComparator {
           return false;
         }
         if (AvroCompatibilityHelper.fieldHasDefault(aField) && AvroCompatibilityHelper.fieldHasDefault(bField)) {
-          boolean defaultsEqual = AvroCompatibilityHelper.defaultValuesEqual(aField, bField, compareIntToFLoatDefaults);
+          boolean defaultsEqual = AvroCompatibilityHelper.defaultValuesEqual(aField, bField, compareIntToFloatDefaults);
           if (!defaultsEqual) {
             return false;
           }
@@ -163,7 +164,8 @@ public class ConfigurableSchemaComparator {
         if (!Objects.equals(aField.order(), bField.order())) {
           return false;
         }
-        if (considerJsonProps && !hasSameObjectProps(aField, bField, considerJsonStringProps, considerJsonNonStringProps)) {
+        if (considerJsonProps && !hasSameObjectProps(aField, bField, considerJsonStringProps,
+            considerJsonNonStringProps, jsonPropNamesToIgnore)) {
           return false;
         }
         if (considerAliases && !hasSameAliases(aField, bField)) {
@@ -186,12 +188,17 @@ public class ConfigurableSchemaComparator {
     return Objects.equals(aAliases, bAliases);
   }
 
-  private static boolean hasSameObjectProps(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps) {
-    return AvroCompatibilityHelper.sameJsonProperties(a, b, compareStringProps, compareNonStringProps);
+  private static boolean hasSameObjectProps(Schema a, Schema b, boolean compareStringProps,
+      boolean compareNonStringProps, Set<String> jsonPropNamesToIgnore) {
+
+    return AvroCompatibilityHelper.sameJsonProperties(a, b, compareStringProps, compareNonStringProps,
+        jsonPropNamesToIgnore);
   }
 
-  private static boolean hasSameObjectProps(Schema.Field a, Schema.Field b, boolean compareStringProps, boolean compareNonStringProps) {
-    return AvroCompatibilityHelper.sameJsonProperties(a, b, compareStringProps, compareNonStringProps);
+  private static boolean hasSameObjectProps(Schema.Field a, Schema.Field b, boolean compareStringProps,
+      boolean compareNonStringProps, Set<String> jsonPropNamesToIgnore) {
+    return AvroCompatibilityHelper.sameJsonProperties(a, b, compareStringProps, compareNonStringProps,
+        jsonPropNamesToIgnore);
   }
 
   private static class SeenPair {

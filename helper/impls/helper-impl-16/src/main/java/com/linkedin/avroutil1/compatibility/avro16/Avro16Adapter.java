@@ -122,7 +122,7 @@ public class Avro16Adapter implements AvroAdapter {
       compilerSupportIssue = e;
       String reason = ExceptionUtils.rootCause(compilerSupportIssue).getMessage();
       compilerSupportMessage = "avro SpecificCompiler class could not be found or instantiated because " + reason
-              + ". please make sure you have a dependency on org.apache.avro:avro-compiler";
+          + ". please make sure you have a dependency on org.apache.avro:avro-compiler";
       //ignore
     }
   }
@@ -172,8 +172,10 @@ public class Avro16Adapter implements AvroAdapter {
   }
 
   @Override
-  public Encoder newJsonEncoder(Schema schema, OutputStream out, boolean pretty, AvroVersion jsonFormat) throws IOException {
-    return new CompatibleJsonEncoder(schema, out, pretty, jsonFormat == null || jsonFormat.laterThan(AvroVersion.AVRO_1_4));
+  public Encoder newJsonEncoder(Schema schema, OutputStream out, boolean pretty, AvroVersion jsonFormat)
+      throws IOException {
+    return new CompatibleJsonEncoder(schema, out, pretty,
+        jsonFormat == null || jsonFormat.laterThan(AvroVersion.AVRO_1_4));
   }
 
   @Override
@@ -230,12 +232,9 @@ public class Avro16Adapter implements AvroAdapter {
       validateNumericDefaultValueTypes = desiredConf.validateNumericDefaultValueTypes();
       validateNoDanglingContent = desiredConf.validateNoDanglingContent();
     }
-    SchemaParseConfiguration configUsed = new SchemaParseConfiguration(
-        validateNames,
-        validateDefaults,
-        validateNumericDefaultValueTypes,
-        validateNoDanglingContent
-    );
+    SchemaParseConfiguration configUsed =
+        new SchemaParseConfiguration(validateNames, validateDefaults, validateNumericDefaultValueTypes,
+            validateNoDanglingContent);
 
     parser.setValidate(validateNames);
     if (known != null && !known.isEmpty()) {
@@ -340,10 +339,11 @@ public class Avro16Adapter implements AvroAdapter {
   }
 
   @Override
-  public boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps, boolean compareNonStringProps) {
+  public boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps,
+      boolean compareNonStringProps) {
     if (compareNonStringProps) {
-      throw new IllegalArgumentException("avro " + supportedMajorVersion()
-          + " does not preserve non-string props and so cannot compare them");
+      throw new IllegalArgumentException(
+          "avro " + supportedMajorVersion() + " does not preserve non-string props and so cannot compare them");
     }
     if (a == null || b == null) {
       return false;
@@ -354,6 +354,41 @@ public class Avro16Adapter implements AvroAdapter {
     Map<String, String> aProps = a.props();
     Map<String, String> bProps = b.props();
     return Objects.equals(aProps, bProps);
+  }
+
+  @Override
+  public boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps,
+      boolean compareNonStringProps, Set<String> jsonPropNamesToIgnore) {
+    if (compareNonStringProps) {
+      throw new IllegalArgumentException(
+          "avro " + supportedMajorVersion() + " does not preserve non-string props and so cannot compare them");
+    }
+    if (a == null || b == null) {
+      return false;
+    }
+    if (!compareStringProps) {
+      return true;
+    }
+    Map<String, String> unfilteredPropsA = a.props();
+    Map<String, String> unfilteredPropsB = b.props();
+
+    if (jsonPropNamesToIgnore == null) {
+      return Objects.equals(unfilteredPropsA, unfilteredPropsB);
+    } else {
+      Map<String, String> aProps = new HashMap<>();
+      Map<String, String> bProps = new HashMap<>();
+      for (Map.Entry<String, String> entry : unfilteredPropsA.entrySet()) {
+        if (!jsonPropNamesToIgnore.contains(entry.getKey())) {
+          aProps.put(entry.getKey(), entry.getValue());
+        }
+      }
+      for (Map.Entry<String, String> entry : unfilteredPropsB.entrySet()) {
+        if (!jsonPropNamesToIgnore.contains(entry.getKey())) {
+          bProps.put(entry.getKey(), entry.getValue());
+        }
+      }
+      return Objects.equals(aProps, bProps);
+    }
   }
 
   @Override
@@ -369,8 +404,8 @@ public class Avro16Adapter implements AvroAdapter {
   @Override
   public boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps) {
     if (compareNonStringProps) {
-      throw new IllegalArgumentException("avro " + supportedMajorVersion()
-          + " does not preserve non-string props and so cannot compare them");
+      throw new IllegalArgumentException(
+          "avro " + supportedMajorVersion() + " does not preserve non-string props and so cannot compare them");
     }
     if (a == null || b == null) {
       return false;
@@ -381,6 +416,41 @@ public class Avro16Adapter implements AvroAdapter {
     Map<String, String> aProps = a.getProps();
     Map<String, String> bProps = b.getProps();
     return Objects.equals(aProps, bProps);
+  }
+
+  @Override
+  public boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps,
+      Set<String> jsonPropNamesToIgnore) {
+    if (compareNonStringProps) {
+      throw new IllegalArgumentException(
+          "avro " + supportedMajorVersion() + " does not preserve non-string props and so cannot compare them");
+    }
+    if (a == null || b == null) {
+      return false;
+    }
+    if (!compareStringProps) {
+      return true;
+    }
+    Map<String, String> unfilteredPropsA = a.getProps();
+    Map<String, String> unfilteredPropsB = b.getProps();
+
+    if (jsonPropNamesToIgnore == null) {
+      return Objects.equals(unfilteredPropsA, unfilteredPropsB);
+    } else {
+      Map<String, String> aProps = new HashMap<>();
+      Map<String, String> bProps = new HashMap<>();
+      for (Map.Entry<String, String> entry : unfilteredPropsA.entrySet()) {
+        if (!jsonPropNamesToIgnore.contains(entry.getKey())) {
+          aProps.put(entry.getKey(), entry.getValue());
+        }
+      }
+      for (Map.Entry<String, String> entry : unfilteredPropsB.entrySet()) {
+        if (!jsonPropNamesToIgnore.contains(entry.getKey())) {
+          bProps.put(entry.getKey(), entry.getValue());
+        }
+      }
+      return Objects.equals(aProps, bProps);
+    }
   }
 
   @Override
@@ -403,8 +473,9 @@ public class Avro16Adapter implements AvroAdapter {
     boolean useRuntime;
     if (!isRuntimeAvroCapableOf(config)) {
       if (config.isForceUseOfRuntimeAvro()) {
-        throw new UnsupportedOperationException("desired configuration " + config
-                + " is forced yet runtime avro " + supportedMajorVersion() + " is not capable of it");
+        throw new UnsupportedOperationException(
+            "desired configuration " + config + " is forced yet runtime avro " + supportedMajorVersion()
+                + " is not capable of it");
       }
       useRuntime = false;
     } else {
@@ -416,27 +487,23 @@ public class Avro16Adapter implements AvroAdapter {
     } else {
       //if the user does not specify do whatever runtime avro would (which for 1.6 means produce correct schema)
       boolean usePre702Logic = config.getRetainPreAvro702Logic().orElse(Boolean.FALSE);
-      Avro16AvscWriter writer = new Avro16AvscWriter(
-              config.isPrettyPrint(),
-              usePre702Logic,
-              config.isAddAvro702Aliases()
-      );
+      Avro16AvscWriter writer =
+          new Avro16AvscWriter(config.isPrettyPrint(), usePre702Logic, config.isAddAvro702Aliases());
       return writer.toAvsc(schema);
     }
   }
 
   @Override
-  public Collection<AvroGeneratedSourceCode> compile(
-      Collection<Schema> toCompile,
-      AvroVersion minSupportedVersion,
-      AvroVersion maxSupportedVersion,
-      CodeGenerationConfig config
-  ) {
+  public Collection<AvroGeneratedSourceCode> compile(Collection<Schema> toCompile, AvroVersion minSupportedVersion,
+      AvroVersion maxSupportedVersion, CodeGenerationConfig config) {
     if (!compilerSupported) {
       throw new UnsupportedOperationException(compilerSupportMessage, compilerSupportIssue);
     }
-    if (minSupportedVersion.earlierThan(AvroVersion.AVRO_1_6) && !StringRepresentation.CharSequence.equals(config.getStringRepresentation())) {
-      throw new IllegalArgumentException("StringRepresentation " + config.getStringRepresentation() + " incompatible with minimum supported avro " + minSupportedVersion);
+    if (minSupportedVersion.earlierThan(AvroVersion.AVRO_1_6) && !StringRepresentation.CharSequence.equals(
+        config.getStringRepresentation())) {
+      throw new IllegalArgumentException(
+          "StringRepresentation " + config.getStringRepresentation() + " incompatible with minimum supported avro "
+              + minSupportedVersion);
     }
     if (toCompile == null || toCompile.isEmpty()) {
       return Collections.emptyList();
@@ -496,16 +563,12 @@ public class Avro16Adapter implements AvroAdapter {
     }
   }
 
-  private Collection<AvroGeneratedSourceCode> transform(List<AvroGeneratedSourceCode> avroGenerated, AvroVersion minAvro, AvroVersion maxAvro) {
+  private Collection<AvroGeneratedSourceCode> transform(List<AvroGeneratedSourceCode> avroGenerated,
+      AvroVersion minAvro, AvroVersion maxAvro) {
     List<AvroGeneratedSourceCode> transformed = new ArrayList<>(avroGenerated.size());
     for (AvroGeneratedSourceCode generated : avroGenerated) {
-      String fixed = CodeTransformations.applyAll(
-          generated.getContents(),
-          supportedMajorVersion(),
-          minAvro,
-          maxAvro,
-          generated.getAlternativeAvsc()
-      );
+      String fixed = CodeTransformations.applyAll(generated.getContents(), supportedMajorVersion(), minAvro, maxAvro,
+          generated.getAlternativeAvsc());
       transformed.add(new AvroGeneratedSourceCode(generated.getPath(), fixed));
     }
     return transformed;

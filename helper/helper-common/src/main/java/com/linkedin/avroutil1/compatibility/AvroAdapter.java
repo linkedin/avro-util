@@ -52,8 +52,7 @@ public interface AvroAdapter {
 
   BinaryDecoder newBinaryDecoder(ObjectInput in);
 
-  BinaryDecoder newBinaryDecoder(byte[] bytes, int offset,
-      int length, BinaryDecoder reuse);
+  BinaryDecoder newBinaryDecoder(byte[] bytes, int offset, int length, BinaryDecoder reuse);
 
   JsonEncoder newJsonEncoder(Schema schema, OutputStream out, boolean pretty) throws IOException;
 
@@ -147,6 +146,9 @@ public interface AvroAdapter {
    */
   boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps, boolean compareNonStringProps);
 
+  boolean sameJsonProperties(Schema.Field a, Schema.Field b, boolean compareStringProps, boolean compareNonStringProps,
+      Set<String> jsonPropNamesToIgnore);
+
   String getSchemaPropAsJsonString(Schema schema, String propName);
 
   void setSchemaPropFromJsonString(Schema field, String propName, String valueAsJsonLiteral, boolean strict);
@@ -162,7 +164,11 @@ public interface AvroAdapter {
    */
   boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps);
 
+  boolean sameJsonProperties(Schema a, Schema b, boolean compareStringProps, boolean compareNonStringProps,
+      Set<String> jsonPropNamesToIgnore);
+
   List<String> getAllPropNames(Schema schema);
+
   List<String> getAllPropNames(Schema.Field field);
 
   String getEnumDefault(Schema s);
@@ -226,10 +232,6 @@ public interface AvroAdapter {
 
   //code generation
 
-  Collection<AvroGeneratedSourceCode> compile(
-      Collection<Schema> toCompile,
-      AvroVersion minSupportedVersion,
-      AvroVersion maxSupportedVersion,
-      CodeGenerationConfig config
-  );
+  Collection<AvroGeneratedSourceCode> compile(Collection<Schema> toCompile, AvroVersion minSupportedVersion,
+      AvroVersion maxSupportedVersion, CodeGenerationConfig config);
 }

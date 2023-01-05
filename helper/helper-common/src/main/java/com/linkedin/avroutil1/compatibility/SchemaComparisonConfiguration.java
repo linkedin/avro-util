@@ -6,22 +6,25 @@
 
 package com.linkedin.avroutil1.compatibility;
 
+import java.util.Collections;
+import java.util.Set;
+
 
 public class SchemaComparisonConfiguration {
   /**
    * behaves like avro &lt;= 1.7.2 - non-string props on fields or types are ignored
    */
   public static final SchemaComparisonConfiguration PRE_1_7_3 = new SchemaComparisonConfiguration(
-      true, false, false, false, true, false
+      true, false, false, false, true, false,  Collections.emptySet()
   );
   /**
    * same as {@link #STRICT} but allows int default values to match (round) float default values
    */
   public static final SchemaComparisonConfiguration LOOSE_NUMERICS = new SchemaComparisonConfiguration(
-      true, true, true, true, true, true
+      true, true, true, true, true, true, Collections.emptySet()
   );
   public static final SchemaComparisonConfiguration STRICT = new SchemaComparisonConfiguration(
-      true, true, true, false, true, true
+      true, true, true, false, true, true,  Collections.emptySet()
   );
 
   private final boolean compareStringJsonProps;
@@ -30,6 +33,7 @@ public class SchemaComparisonConfiguration {
   private final boolean compareIntToFloatDefaults;
   private final boolean compareFieldOrder;
   private final boolean compareFieldLogicalTypes;
+  private final Set<String> jsonPropNamesToIgnore;
 
   public SchemaComparisonConfiguration(
       boolean compareStringJsonProps,
@@ -37,7 +41,8 @@ public class SchemaComparisonConfiguration {
       boolean compareAliases,
       boolean compareIntToFloatDefaults,
       boolean compareFieldOrder,
-      boolean compareFieldLogicalTypes
+      boolean compareFieldLogicalTypes,
+      Set<String> jsonPropNamesToIgnore
   ) {
     this.compareStringJsonProps = compareStringJsonProps;
     this.compareNonStringJsonProps = compareNonStringJsonProps;
@@ -45,6 +50,7 @@ public class SchemaComparisonConfiguration {
     this.compareIntToFloatDefaults = compareIntToFloatDefaults;
     this.compareFieldOrder = compareFieldOrder;
     this.compareFieldLogicalTypes = compareFieldLogicalTypes;
+    this.jsonPropNamesToIgnore = jsonPropNamesToIgnore;
   }
 
   public boolean isCompareStringJsonProps() {
@@ -71,6 +77,10 @@ public class SchemaComparisonConfiguration {
     return compareFieldLogicalTypes;
   }
 
+  public Set<String> getJsonPropNamesToIgnore() {
+    return jsonPropNamesToIgnore;
+  }
+
   public SchemaComparisonConfiguration compareStringJsonProps(boolean compare) {
     return new SchemaComparisonConfiguration(
         compare,
@@ -78,7 +88,8 @@ public class SchemaComparisonConfiguration {
         compareAliases,
         compareIntToFloatDefaults,
         compareFieldOrder,
-        compareFieldLogicalTypes
+        compareFieldLogicalTypes,
+        jsonPropNamesToIgnore
     );
   }
 
@@ -89,7 +100,8 @@ public class SchemaComparisonConfiguration {
         compareAliases,
         compareIntToFloatDefaults,
         compareFieldOrder,
-        compareFieldLogicalTypes
+        compareFieldLogicalTypes,
+        jsonPropNamesToIgnore
     );
   }
 
@@ -100,7 +112,8 @@ public class SchemaComparisonConfiguration {
         compare,
         compareIntToFloatDefaults,
         compareFieldOrder,
-        compareFieldLogicalTypes
+        compareFieldLogicalTypes,
+        jsonPropNamesToIgnore
     );
   }
 
@@ -111,7 +124,8 @@ public class SchemaComparisonConfiguration {
         compareAliases,
         compare,
         compareFieldOrder,
-        compareFieldLogicalTypes
+        compareFieldLogicalTypes,
+        jsonPropNamesToIgnore
     );
   }
 
@@ -122,7 +136,8 @@ public class SchemaComparisonConfiguration {
         compareAliases,
         compareIntToFloatDefaults,
         compare,
-        compareFieldLogicalTypes
+        compareFieldLogicalTypes,
+        jsonPropNamesToIgnore
     );
   }
 
@@ -133,7 +148,20 @@ public class SchemaComparisonConfiguration {
         compareAliases,
         compareIntToFloatDefaults,
         compareFieldOrder,
-        compare
+        compare,
+        jsonPropNamesToIgnore
+    );
+  }
+
+  public SchemaComparisonConfiguration jsonPropNamesToIgnore(Set<String> jsonPropNamesToIgnore) {
+    return new SchemaComparisonConfiguration(
+        compareStringJsonProps,
+        compareNonStringJsonProps,
+        compareAliases,
+        compareIntToFloatDefaults,
+        compareFieldOrder,
+        compareFieldLogicalTypes,
+        jsonPropNamesToIgnore
     );
   }
 }
