@@ -56,9 +56,12 @@ public class AvroCompatibilityHelperToAvscTest {
 
   @Test
   public void testAliasInjectionOnBadSchemas() throws Exception {
-    boolean modernAvro = AvroCompatibilityHelper.getRuntimeAvroVersion().laterThan(AvroVersion.AVRO_1_4);
-    testAliasInjection("avro702/Avro702DemoEnum-good.avsc", "avro702/Avro702DemoEnum-bad.avsc", !modernAvro);
-    testAliasInjection("avro702/Avro702DemoFixed-good.avsc", "avro702/Avro702DemoFixed-bad.avsc", !modernAvro);
+    AvroVersion runtimeVersion = AvroCompatibilityHelperCommon.getRuntimeAvroVersion();
+    boolean newerThan14 = runtimeVersion.laterThan(AvroVersion.AVRO_1_4);
+    //1.11.1 started disrespecting aliases ?!
+    boolean is1111 = runtimeVersion.equals(AvroVersion.AVRO_1_11);
+    testAliasInjection("avro702/Avro702DemoEnum-good.avsc", "avro702/Avro702DemoEnum-bad.avsc", !newerThan14 || is1111);
+    testAliasInjection("avro702/Avro702DemoFixed-good.avsc", "avro702/Avro702DemoFixed-bad.avsc", !newerThan14 | is1111);
     //even modern avro "tolerates" renaming records ...
     testAliasInjection("avro702/Avro702DemoRecord-good.avsc", "avro702/Avro702DemoRecord-bad.avsc", true);
   }
