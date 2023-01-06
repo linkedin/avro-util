@@ -24,10 +24,13 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
+import org.apache.avro.io.DatumReader;
+import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
+import org.apache.avro.specific.SpecificData;
 import org.apache.avro.specific.SpecificDatumReader;
 
 
@@ -73,6 +76,10 @@ public interface AvroAdapter {
   Decoder newBoundedMemoryDecoder(byte[] data) throws IOException;
 
   <T> SpecificDatumReader<T> newAliasAwareSpecificDatumReader(Schema writer, Class<T> readerClass);
+
+  DatumWriter<?> newSpecificDatumWriter(Schema writer, SpecificData specificData);
+
+  DatumReader<?> newSpecificDatumReader(Schema writer, Schema reader, SpecificData specificData);
 
   //parsing and Schema-related
 

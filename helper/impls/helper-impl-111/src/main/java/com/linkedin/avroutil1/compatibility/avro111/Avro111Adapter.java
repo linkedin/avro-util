@@ -37,6 +37,8 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.io.Avro111BinaryDecoderAccessUtil;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
+import org.apache.avro.io.DatumReader;
+import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.io.Encoder;
@@ -45,6 +47,7 @@ import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
 import org.apache.avro.specific.SpecificData;
 import org.apache.avro.specific.SpecificDatumReader;
+import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.avro.util.internal.Accessor;
 import org.apache.avro.util.internal.JacksonUtils;
 
@@ -221,6 +224,16 @@ public class Avro111Adapter implements AvroAdapter {
   public <T> SpecificDatumReader<T> newAliasAwareSpecificDatumReader(Schema writer, Class<T> readerClass) {
     Schema readerSchema = AvroSchemaUtil.getDeclaredSchema(readerClass);
     return new AliasAwareSpecificDatumReader<>(writer, readerSchema);
+  }
+
+  @Override
+  public DatumWriter<?> newSpecificDatumWriter(Schema writer, SpecificData specificData) {
+    return new SpecificDatumWriter<>(writer, specificData);
+  }
+
+  @Override
+  public DatumReader<?> newSpecificDatumReader(Schema writer, Schema reader, SpecificData specificData) {
+    return new SpecificDatumReader<>(writer, reader, specificData);
   }
 
   @Override

@@ -55,9 +55,9 @@ public class CodeTransformations {
   private static final String  IMPORT_SPECIFICDATA = "import org.apache.avro.specific.SpecificData;";
   private static final Pattern GET_SPECIFICDATA_METHOD_PATTERN = Pattern.compile("(@Override\n\\s*)public\\s*org\\.apache\\.avro\\.specific\\.SpecificData\\s*getSpecificData\\s*\\(\\s*\\)\\s*\\{\\s*return\\s*MODEL\\$\\s*;\\s*}");
   private static final Pattern WRITER_DOLLAR_DECL = Pattern.compile("WRITER\\$\\s*=\\s*([^;]+);");
-  private static final String  WRITER_DOLLAR_DECL_REPLACEMENT = Matcher.quoteReplacement("WRITER$ = new org.apache.avro.specific.SpecificDatumWriter<>(SCHEMA$);");
+  private static final String  WRITER_DOLLAR_DECL_REPLACEMENT = Matcher.quoteReplacement("WRITER$ = " + HelperConsts.HELPER_SIMPLE_NAME + ".newSpecificDatumWriter(SCHEMA$, MODEL$);");
   private static final Pattern READER_DOLLAR_DECL = Pattern.compile("READER\\$\\s*=\\s*([^;]+);");
-  private static final String  READER_DOLLAR_DECL_REPLACEMENT = Matcher.quoteReplacement("READER$ = new org.apache.avro.specific.SpecificDatumReader<>(SCHEMA$);");
+  private static final String  READER_DOLLAR_DECL_REPLACEMENT = Matcher.quoteReplacement("READER$ = " + HelperConsts.HELPER_SIMPLE_NAME + ".newSpecificDatumReader(SCHEMA$, SCHEMA$, MODEL$);");
   private static final Pattern WRITE_EXTERNAL_SIGNATURE = Pattern.compile(Pattern.quote("@Override public void writeExternal(java.io.ObjectOutput out)"));
   private static final String  WRITE_EXTERNAL_WITHOUT_OVERRIDE = Matcher.quoteReplacement("public void writeExternal(java.io.ObjectOutput out)");
   private static final Pattern READ_EXTERNAL_SIGNATURE = Pattern.compile(Pattern.quote("@Override public void readExternal(java.io.ObjectInput in)"));
