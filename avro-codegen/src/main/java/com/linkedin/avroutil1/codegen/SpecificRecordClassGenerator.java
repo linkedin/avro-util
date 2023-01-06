@@ -32,8 +32,10 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.TypeVariableName;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -288,42 +290,42 @@ public class SpecificRecordClassGenerator {
         .addStatement("return $L", "SCHEMA$")
         .build());
 
-      // read external
-      classBuilder.addField(
-          FieldSpec.builder(SpecificRecordGeneratorUtil.CLASSNAME_DATUM_READER, "READER$", Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
-              .initializer(CodeBlock.of("new $T($L)", SpecificRecordGeneratorUtil.CLASSNAME_SPECIFIC_DATUM_READER, "SCHEMA$"))
-              .build());
+    //read external
+    classBuilder.addField(
+        FieldSpec.builder(SpecificRecordGeneratorUtil.CLASSNAME_DATUM_READER, "READER$", Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
+            .initializer(CodeBlock.of("new $T($L)", SpecificRecordGeneratorUtil.CLASSNAME_SPECIFIC_DATUM_READER, "SCHEMA$"))
+            .build());
 
-      MethodSpec.Builder readExternalBuilder = MethodSpec.methodBuilder("readExternal")
-          .addException(IOException.class)
-          .addParameter(ObjectInput.class, "in")
-          .addModifiers(Modifier.PUBLIC)
-          .addCode(CodeBlock.builder()
-              .addStatement(
-                  "$L.read(this, com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.newBinaryDecoder(in))",
-                  "READER$")
-              .build());
+    MethodSpec.Builder readExternalBuilder = MethodSpec.methodBuilder("readExternal")
+        .addException(IOException.class)
+        .addParameter(ObjectInput.class, "in")
+        .addModifiers(Modifier.PUBLIC)
+        .addCode(CodeBlock.builder()
+            .addStatement(
+                "$L.read(this, com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.newBinaryDecoder(in))",
+                "READER$")
+            .build());
 
-      // write external
-      classBuilder.addField(
-          FieldSpec.builder(SpecificRecordGeneratorUtil.CLASSNAME_DATUM_WRITER, "WRITER$", Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
-              .initializer(CodeBlock.of("new $T($L)", SpecificRecordGeneratorUtil.CLASSNAME_SPECIFIC_DATUM_WRITER, "SCHEMA$"))
-              .build());
+    // write external
+    classBuilder.addField(
+        FieldSpec.builder(SpecificRecordGeneratorUtil.CLASSNAME_DATUM_WRITER, "WRITER$", Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
+            .initializer(CodeBlock.of("new $T($L)", SpecificRecordGeneratorUtil.CLASSNAME_SPECIFIC_DATUM_WRITER, "SCHEMA$"))
+            .build());
 
-      MethodSpec.Builder writeExternalBuilder = MethodSpec
-          .methodBuilder("writeExternal")
-          .addException(IOException.class)
-          .addParameter(ObjectOutput.class, "out")
-          .addModifiers(Modifier.PUBLIC)
-          .addCode(CodeBlock
-              .builder()
-              .addStatement(
-                  "$L.write(this, com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.newBinaryEncoder(out))",
-                  "WRITER$")
-              .build());
+    MethodSpec.Builder writeExternalBuilder = MethodSpec
+        .methodBuilder("writeExternal")
+        .addException(IOException.class)
+        .addParameter(ObjectOutput.class, "out")
+        .addModifiers(Modifier.PUBLIC)
+        .addCode(CodeBlock
+            .builder()
+            .addStatement(
+                "$L.write(this, com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.newBinaryEncoder(out))",
+                "WRITER$")
+            .build());
 
-      classBuilder.addMethod(readExternalBuilder.build());
-      classBuilder.addMethod(writeExternalBuilder.build());
+    classBuilder.addMethod(readExternalBuilder.build());
+    classBuilder.addMethod(writeExternalBuilder.build());
   }
 
   protected JavaFileObject generateSpecificRecord(AvroRecordSchema recordSchema, SpecificRecordGenerationConfig config)
@@ -352,6 +354,7 @@ public class SpecificRecordClassGenerator {
       classBuilder.addJavadoc(doc);
     }
 
+    //MODEL$
     if(config.getMinimumSupportedAvroVersion().laterThan(AvroVersion.AVRO_1_7)) {
       // MODEL$ as new instance of SpecificData()
       classBuilder.addField(
@@ -366,8 +369,6 @@ public class SpecificRecordClassGenerator {
               .initializer(CodeBlock.of("$T.get()", SpecificRecordGeneratorUtil.CLASSNAME_SPECIFIC_DATA))
               .build());
     }
-
-
 
     // serialVersionUID
     classBuilder.addField(
@@ -391,45 +392,59 @@ public class SpecificRecordClassGenerator {
         .addStatement("return $L", "SCHEMA$")
         .build());
 
-    if(config.getMinimumSupportedAvroVersion().laterThan(AvroVersion.AVRO_1_7)) {
-      // read external
-      classBuilder.addField(
-          FieldSpec.builder(SpecificRecordGeneratorUtil.CLASSNAME_DATUM_READER, "READER$", Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
-              .initializer(CodeBlock.of("new $T($L)", SpecificRecordGeneratorUtil.CLASSNAME_SPECIFIC_DATUM_READER, "SCHEMA$"))
-              .build());
+    //READER$
+    ParameterizedTypeName datumReaderType = ParameterizedTypeName.get(
+        SpecificRecordGeneratorUtil.CLASSNAME_DATUM_READER,
+        TypeVariableName.get(recordSchema.getSimpleName())
+    );
+    classBuilder.addField(
+        FieldSpec.builder(datumReaderType, "READER$", Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
+            .initializer(
+                CodeBlock.of("com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.newSpecificDatumReader($L, $L, $L)", "SCHEMA$", "SCHEMA$", "MODEL$")
+            )
+            .build()
+    );
 
-      MethodSpec.Builder readExternalBuilder = MethodSpec.methodBuilder("readExternal")
-          .addException(IOException.class)
-          .addParameter(java.io.ObjectInput.class, "in")
-          .addModifiers(Modifier.PUBLIC)
-          .addCode(CodeBlock.builder().addStatement("$L.read(this, $T.getDecoder(in))", "READER$", SpecificRecordGeneratorUtil.CLASSNAME_SPECIFIC_DATA).build());
+    //readExternal()
+    MethodSpec.Builder readExternalBuilder = MethodSpec.methodBuilder("readExternal")
+        .addException(IOException.class)
+        .addParameter(java.io.ObjectInput.class, "in")
+        .addModifiers(Modifier.PUBLIC)
+        .addCode(CodeBlock.builder().addStatement("$L.read(this, com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.newBinaryDecoder(in))", "READER$").build());
+    //no @Overrides annotation since under old avro the parent class is not externalizable
+    //TODO - add this is min avro version is high enough
+    //readExternalBuilder.addAnnotation(Override.class);
+    classBuilder.addMethod(readExternalBuilder.build());
 
-      // write external
-      classBuilder.addField(
-          FieldSpec.builder(SpecificRecordGeneratorUtil.CLASSNAME_DATUM_WRITER, "WRITER$", Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
-              .initializer(CodeBlock.of("new $T($L)", SpecificRecordGeneratorUtil.CLASSNAME_SPECIFIC_DATUM_WRITER, "SCHEMA$"))
-              .build());
+    //WRITER$
+    ParameterizedTypeName datumWriterType = ParameterizedTypeName.get(
+        SpecificRecordGeneratorUtil.CLASSNAME_DATUM_WRITER,
+        TypeVariableName.get(recordSchema.getSimpleName())
+    );
+    classBuilder.addField(
+        FieldSpec.builder(datumWriterType, "WRITER$", Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
+            .initializer(
+                CodeBlock.of("com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.newSpecificDatumWriter($L, $L)", "SCHEMA$", "MODEL$")
+            )
+            .build());
 
-      MethodSpec.Builder writeExternalBuilder = MethodSpec
-          .methodBuilder("writeExternal")
-          .addException(IOException.class)
-          .addParameter(java.io.ObjectOutput.class, "out")
-          .addModifiers(Modifier.PUBLIC)
-          .addCode(CodeBlock
-              .builder()
-              .addStatement("$L.write(this, $T.getEncoder(out))", "WRITER$", SpecificRecordGeneratorUtil.CLASSNAME_SPECIFIC_DATA)
-              .build());
-      readExternalBuilder.addAnnotation(Override.class);
-      writeExternalBuilder.addAnnotation(Override.class);
-
-      classBuilder.addMethod(readExternalBuilder.build());
-      classBuilder.addMethod(writeExternalBuilder.build());
-    }
-
+    //writeExternal()
+    MethodSpec.Builder writeExternalBuilder = MethodSpec
+        .methodBuilder("writeExternal")
+        .addException(IOException.class)
+        .addParameter(java.io.ObjectOutput.class, "out")
+        .addModifiers(Modifier.PUBLIC)
+        .addCode(CodeBlock
+            .builder()
+            .addStatement("$L.write(this, com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.newBinaryEncoder(out))", "WRITER$")
+            .build());
+    //no @Overrides annotation since under old avro the parent class is not externalizable
+    //TODO - add this is min avro version is high enough
+    //writeExternalBuilder.addAnnotation(Override.class);
+    classBuilder.addMethod(writeExternalBuilder.build());
 
     // add no arg constructor
     classBuilder.addMethod(MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC).build());
-
 
     if (recordSchema.getFields().size() > 0) {
       // add all arg constructor if #args < 254
@@ -467,13 +482,11 @@ public class SpecificRecordClassGenerator {
       }
     }
 
-
     // Add get method by index
     addGetByIndexMethod(classBuilder, recordSchema, config);
 
     //Add put method by index
     addPutByIndexMethod(classBuilder, recordSchema, config);
-
 
     classBuilder.addMethod(
         MethodSpec.methodBuilder("hasCustomCoders")
@@ -481,8 +494,9 @@ public class SpecificRecordClassGenerator {
             .returns(boolean.class)
             .addStatement("return $L", hasCustomCoders(recordSchema))
             .build());
+
     //customCoders
-    if(hasCustomCoders(recordSchema)){
+    if(hasCustomCoders(recordSchema)) {
 
       // customEncode
       MethodSpec.Builder customEncodeBuilder = MethodSpec
