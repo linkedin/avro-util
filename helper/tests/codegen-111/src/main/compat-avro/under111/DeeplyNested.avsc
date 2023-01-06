@@ -1,0 +1,29 @@
+{
+  "type": "record",
+  "name": "Outer",
+  "namespace": "under111",
+  "fields": [
+    {
+      "name": "outerRef",
+      "type": {
+        "type": "record",
+        "name": "Middle",
+        "fields": [
+          {
+            "name": "middleRef",
+            "type": {
+              "type": "record",
+              "name": "Inner",
+              "fields": [
+                {
+                  "name": "f",
+                  "type": "int"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

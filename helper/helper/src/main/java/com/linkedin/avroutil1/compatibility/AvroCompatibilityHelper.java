@@ -33,10 +33,13 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
+import org.apache.avro.io.DatumReader;
+import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
+import org.apache.avro.specific.SpecificData;
 import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificRecord;
 
@@ -345,6 +348,16 @@ public class AvroCompatibilityHelper  extends AvroCompatibilityHelperCommon{
   public static <T> SpecificDatumReader<T> newAliasAwareSpecificDatumReader(Schema writerSchema, Class<T> readerClass) {
     assertAvroAvailable();
     return ADAPTER.newAliasAwareSpecificDatumReader(writerSchema, readerClass);
+  }
+
+  public static DatumWriter newSpecificDatumWriter(Schema schema, SpecificData specificData) {
+    assertAvroAvailable();
+    return ADAPTER.newSpecificDatumWriter(schema, specificData);
+  }
+
+  public static DatumReader newSpecificDatumReader(Schema writer, Schema reader, SpecificData specificData) {
+    assertAvroAvailable();
+    return ADAPTER.newSpecificDatumReader(writer, reader, specificData);
   }
 
   // schema parsing, and other Schema-related operations
