@@ -36,6 +36,13 @@ sourceSets {
 
 task runVanillaAvroCodegen {
   description = 'generate specific classes using vanilla avro'
+
+  dependsOn configurations.codegen
+  // define input and output files so we can have incremental build when nothing changes
+  inputs.files(configurations.codegen)
+  inputs.dir("src/main/raw-avro")
+  outputs.dir("$buildDir/generated/sources/raw-avro/java/main").withPropertyName('outputDir')
+
   fileTree(dir: 'src/main/raw-avro', include:'**/*.avsc').each { file ->
     doLast {
       javaexec {
@@ -49,7 +56,13 @@ task runVanillaAvroCodegen {
 
 task runCompatAvroCodegen {
   description = 'generate specific classes using compatibility helper'
+
+  dependsOn configurations.codegen
+  // define input and output files so we can have incremental build when nothing changes
+  inputs.files(configurations.codegen)
+  inputs.dir("src/main/compat-avro")
   outputs.dir("$buildDir/generated/sources/compat-avro/java/main").withPropertyName('outputDir')
+
   fileTree(dir: 'src/main/compat-avro', include:'**/*.avsc').each { file ->
     doLast {
       javaexec {
@@ -69,7 +82,13 @@ task runCompatAvroCodegen {
 
 task runCompatAvroCodegenWithBuilders {
   description = 'generate specific classes using compatibility helper with minimum avro 1.6 target'
+
+  dependsOn configurations.codegen
+  // define input and output files so we can have incremental build when nothing changes
+  inputs.files(configurations.codegen)
+  inputs.dir("src/main/compat-avro-w-builders")
   outputs.dir("$buildDir/generated/sources/compat-avro-w-builders/java/main").withPropertyName('outputDir')
+
   fileTree(dir: 'src/main/compat-avro-w-builders', include:'**/*.avsc').each { file ->
     doLast {
       javaexec {
@@ -88,7 +107,13 @@ task runCompatAvroCodegenWithBuilders {
 
 task runCompatAvroCodegenWithBuildersMinAvro18 {
   description = 'generate specific classes using compatibility helper with minimum avro 1.8 target'
+
+  dependsOn configurations.codegen
+  // define input and output files so we can have incremental build when nothing changes
+  inputs.files(configurations.codegen)
+  inputs.dir("src/main/compat-avro-w-builders-min-avro18")
   outputs.dir("$buildDir/generated/sources/compat-avro-w-builders-min-avro18/java/main").withPropertyName('outputDir')
+
   fileTree(dir: 'src/main/compat-avro-w-builders-min-avro18', include:'**/*.avsc').each { file ->
     doLast {
       javaexec {

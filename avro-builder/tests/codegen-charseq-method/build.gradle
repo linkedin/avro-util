@@ -26,8 +26,15 @@ sourceSets {
   }
 }
 
+dependencies {
+  codegen project(":avro-builder:builder")
+}
+
 task runOwnCodegen {
   description = 'generate specific classes using own codegen utility'
+
+  dependsOn configurations.codegen
+
   doLast {
     javaexec {
       classpath configurations.codegen
