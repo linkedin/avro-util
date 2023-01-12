@@ -13,6 +13,9 @@ package org.apache.avro.io;
  * is that this method supports configuring custom BinaryDecoder since it does not check class type of BinaryDecoder.
  */
 public class Avro15BinaryDecoderAccessUtil {
+  private Avro15BinaryDecoderAccessUtil() {
+  }
+
   public static BinaryDecoder newBinaryDecoder(byte[] bytes, int offset,
       int length, BinaryDecoder reuse) {
     if (null == reuse) {

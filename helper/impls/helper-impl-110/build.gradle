@@ -13,4 +13,10 @@ plugins {
 dependencies {
   implementation (project(":helper:helper-common"))
   compileOnly ("org.apache.avro:avro:1.10.2")
+  testImplementation project(":test-common")
+  testImplementation("org.mockito:mockito-inline:4.11.0")
+}
+
+configurations {
+  testImplementation.extendsFrom compileOnly
 }
