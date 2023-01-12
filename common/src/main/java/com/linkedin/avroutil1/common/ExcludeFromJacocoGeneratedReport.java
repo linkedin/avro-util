@@ -15,6 +15,8 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation that can be used to exclude code from jacoco coverage.
+ *
+ * Add @ExcludeFromJacocoGeneratedReport to the class or method that need to be excluded from jacoco coverage report.
  */
 
 @Retention(RetentionPolicy.RUNTIME)
