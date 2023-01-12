@@ -28,6 +28,11 @@ dependencies {
   implementation project(":helper:impls:helper-impl-19")
   implementation project(":helper:impls:helper-impl-110")
   implementation project(":helper:impls:helper-impl-111")
+  testImplementation project(":test-common")
+}
+
+configurations {
+  testImplementation.extendsFrom compileOnly
 }
 
 shadowJar {

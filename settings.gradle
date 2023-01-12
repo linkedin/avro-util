@@ -20,6 +20,7 @@ apply plugin: 'net.vivin.gradle-semantic-build-versioning'
 //otherwise it defaults to the folder name
 rootProject.name = 'avro-util'
 
+include 'common'
 include 'test-common'
 
 //compatibility helper
@@ -82,4 +83,3 @@ include 'avro-builder:tests:codegen-no-utf8-in-putbyindex'
 include 'avro-builder:tests:tests-allavro'
 
 include 'demos:spotbugs-demo'
-
