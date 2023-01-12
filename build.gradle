@@ -273,6 +273,7 @@ task codeCoverageReport(type: JacocoReport) {
           //add source sets from all relevant submodules
           sourceSets subproject.sourceSets.main
         }
+        //exclude the generated classes from the code coverage report
         classDirectories.setFrom(files(classDirectories.files.collect {
           fileTree(dir: it, exclude: [
               "by*/*",
