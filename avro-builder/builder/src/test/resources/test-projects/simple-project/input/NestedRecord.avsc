@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "namespace": "simpleproject",
+  "name": "NestedRecord",
+  "fields": [
+    {
+      "name": "j",
+      "type": "int"
+    }
+  ]
+}
