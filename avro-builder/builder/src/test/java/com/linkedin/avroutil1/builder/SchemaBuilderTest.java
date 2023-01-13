@@ -80,7 +80,7 @@ public class SchemaBuilderTest {
     List<Path> javaFiles = Files.find(outputFolder.toPath(), 5,
         (path, basicFileAttributes) -> path.getFileName().toString().endsWith(".java")
     ).collect(Collectors.toList());
-    Assert.assertEquals(javaFiles.size(), 1);
+    Assert.assertEquals(javaFiles.size(), 2);
   }
 
   @Test(expectedExceptions = java.lang.RuntimeException.class)
