@@ -320,6 +320,8 @@ public class FileSystemSchemaSetProvider implements SchemaSetProvider {
       if (e.getClass().getName().equals("com.fasterxml.jackson.core.JsonProcessingException")) {
         LOGGER.error("exception parsing avro file {}", f.getAbsolutePath(), e);
         throw new IllegalArgumentException("exception parsing avro file " + f.getAbsolutePath(), e);
+      } else {
+        throw e;
       }
     }
   }
