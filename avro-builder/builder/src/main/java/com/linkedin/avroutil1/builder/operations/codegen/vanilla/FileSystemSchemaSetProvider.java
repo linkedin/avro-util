@@ -316,8 +316,11 @@ public class FileSystemSchemaSetProvider implements SchemaSetProvider {
     } catch (Exception e) {
       //this catches json processing exceptions (from jackson 1.* or 2.*, as different versions of avro use either)
       //this DOES NOT catch avro exceptions (that may happen after json parsing is done) as they are handled by the caller
-      LOGGER.error("exception parsing avro file {}", f.getAbsolutePath(), e);
-      throw new IllegalArgumentException("exception parsing avro file " + f.getAbsolutePath(), e);
+      // We check the name by its String value not its class value in order to not directly depend on a specific version of Jackson.
+      if (e.getClass().getName().equals("com.fasterxml.jackson.core.JsonProcessingException")) {
+        LOGGER.error("exception parsing avro file {}", f.getAbsolutePath(), e);
+        throw new IllegalArgumentException("exception parsing avro file " + f.getAbsolutePath(), e);
+      }
     }
   }
 

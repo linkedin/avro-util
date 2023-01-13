@@ -30,7 +30,10 @@ public class SchemaBuilderTest {
       FileUtils.deleteDirectory(outputFolder);
     }
     //run the builder
-    SchemaBuilder.main(new String[] {"--input", inputFolder.getAbsolutePath(), "--output", outputFolder.getAbsolutePath()});
+    SchemaBuilder.main(new String[] {
+        "--input", inputFolder.getAbsolutePath(),
+        "--output", outputFolder.getAbsolutePath()
+    });
     //see output was generated
     List<Path> javaFiles = Files.find(outputFolder.toPath(), 5,
         (path, basicFileAttributes) -> path.getFileName().toString().endsWith(".java")
@@ -77,7 +80,7 @@ public class SchemaBuilderTest {
     List<Path> javaFiles = Files.find(outputFolder.toPath(), 5,
         (path, basicFileAttributes) -> path.getFileName().toString().endsWith(".java")
     ).collect(Collectors.toList());
-    Assert.assertEquals(javaFiles.size(), 1);
+    Assert.assertEquals(javaFiles.size(), 2);
   }
 
   @Test(expectedExceptions = java.lang.RuntimeException.class)
