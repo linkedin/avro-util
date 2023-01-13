@@ -3,6 +3,13 @@
   "namespace": "simpleproject",
   "name": "SimpleRecord",
   "fields": [
-    {"name": "f", "type": "int"}
+    {
+      "name": "f",
+      "type": "int"
+    },
+    {
+      "name": "s",
+      "type": "simpleproject.NestedRecord"
+    }
   ]
 }
