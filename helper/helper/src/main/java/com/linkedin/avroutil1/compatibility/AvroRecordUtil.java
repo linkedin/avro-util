@@ -782,6 +782,7 @@ public class AvroRecordUtil {
       case String:
         return String.valueOf(inputStr);
       case CharSequence:
+        // intentional pass through
       case Utf8:
         return new Utf8(String.valueOf(inputStr));
       default:
@@ -793,6 +794,8 @@ public class AvroRecordUtil {
     switch (desired) {
       case String:
         return new String(inputBytes, StandardCharsets.UTF_8);
+      case CharSequence:
+        // intentional pass through
       case Utf8:
         return new Utf8(inputBytes);
       default:
