@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import noutf8.TestCollections;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.util.Utf8;
@@ -1711,6 +1712,25 @@ public class SpecificRecordTest {
         Assert.assertEquals(field.getDeclaredAnnotations()[0].annotationType(), Deprecated.class);
       }
     }
+  }
+
+  @Test
+  public void testNewBuilder() throws Exception {
+    RandomRecordGenerator generator = new RandomRecordGenerator();
+    TestCollections instance = generator.randomSpecific(TestCollections.class, RecordGenerationConfig.newConfig().withAvoidNulls(true));
+    TestCollections.Builder builder = TestCollections.newBuilder()
+        .setStr(instance.getStr())
+        .setStrAr(instance.getStrAr())
+        .setStrArAr(instance.getStrArAr())
+        .setUnionOfArray(instance.getUnionOfArray())
+        .setArOfMap(instance.getArOfMap())
+        .setUnionOfMap(instance.getUnionOfMap())
+        .setArOfUnionOfStr(instance.getArOfUnionOfStr())
+        .setArOfMapOfUnionOfArray(instance.getArOfMapOfUnionOfArray());
+
+    TestCollections.newBuilder(builder);
+
+    compareIndexedRecords(instance, builder.build());
   }
 
   @BeforeClass
