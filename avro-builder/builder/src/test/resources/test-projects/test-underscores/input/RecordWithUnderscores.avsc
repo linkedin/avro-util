@@ -1,0 +1,10 @@
+{
+  "name": "RecordWithUnderscores",
+  "type": "record",
+  "fields": [
+    {
+      "name": "field_with_underscores",
+      "type": "string"
+    }
+  ]
+}
