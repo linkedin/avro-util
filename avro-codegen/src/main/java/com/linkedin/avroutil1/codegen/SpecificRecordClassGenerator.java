@@ -942,8 +942,11 @@ public class SpecificRecordClassGenerator {
       throw new IllegalArgumentException("FieldName must be longer than 1");
     }
 
-    return prefix + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1)
-        + getSuffixForFieldName(fieldName);
+    String pascalCasedField = Arrays.stream(fieldName.split("_"))
+        .map(s -> s.substring(0, 1).toUpperCase() + s.substring(1))
+        .collect(Collectors.joining());
+
+    return prefix + pascalCasedField + getSuffixForFieldName(fieldName);
   }
 
   private void addCustomDecodeMethod(MethodSpec.Builder customDecodeBuilder, AvroRecordSchema recordSchema,
