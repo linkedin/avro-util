@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 
@@ -171,6 +172,12 @@ public class SchemaBuilderTest {
     Assert.assertEquals(javaFiles.size(), 2);
   }
 
+  @DataProvider
+  Object[][] testUnderscoreProvider() {
+    return new Object[][]{{true}, {false}};
+  }
+
+  @Test(dataProvider = "testUnderscoreProvider")
   public void testUnderscores(boolean useOwnCodegen) throws Exception {
     File simpleProjectRoot = new File(locateTestProjectsRoot(), "test-underscores");
     File inputFolder = new File(simpleProjectRoot, "input");
@@ -179,30 +186,21 @@ public class SchemaBuilderTest {
       FileUtils.deleteDirectory(outputFolder);
     }
     //run the builder
-    SchemaBuilder.main(new String[] {
-        "--input", inputFolder.getAbsolutePath(),
-        "--output", outputFolder.getAbsolutePath(),
-        "--generator", useOwnCodegen ? CodeGenerator.AVRO_UTIL.name() : CodeGenerator.VANILLA.name()
-    });
+    SchemaBuilder.main(
+        new String[]{"--input", inputFolder.getAbsolutePath(), "--output", outputFolder.getAbsolutePath(),
+            "--generator", useOwnCodegen ? CodeGenerator.AVRO_UTIL.name() : CodeGenerator.VANILLA.name()});
     //see output was generated
     Optional<Path> javaFile = Files.find(outputFolder.toPath(), 5,
-        (path, basicFileAttributes) -> path.getFileName().toString().endsWith(".java")
-    ).collect(Collectors.toList()).stream().findFirst();
+            (path, basicFileAttributes) -> path.getFileName().toString().endsWith(".java"))
+        .collect(Collectors.toList())
+        .stream()
+        .findFirst();
     Assert.assertTrue(javaFile.isPresent());
 
     String file = new String(Files.readAllBytes(javaFile.get()));
 
     Assert.assertTrue(file.contains("getFieldWithUnderscores()"));
-  }
-
-  @Test
-  public void testUnderscores_ownCodegen() throws Exception {
-    testUnderscores(true);
-  }
-
-  @Test
-  public void testUnderscores_vanillaCodegen() throws Exception {
-    testUnderscores(false);
+    Assert.assertTrue(file.contains("getFieldWithDoubleUnderscores()"));
   }
 
   @Test

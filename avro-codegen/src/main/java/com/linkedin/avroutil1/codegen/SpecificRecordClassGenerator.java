@@ -942,9 +942,14 @@ public class SpecificRecordClassGenerator {
       throw new IllegalArgumentException("FieldName must be longer than 1");
     }
 
-    String pascalCasedField = Arrays.stream(fieldName.split("_"))
-        .map(s -> s.substring(0, 1).toUpperCase() + s.substring(1))
-        .collect(Collectors.joining());
+    // Converts a snake_case name to a PascalCase name
+    String pascalCasedField = Arrays.stream(fieldName.split("_")).map(s -> {
+      if (s.length() < 1) {
+        return s;
+      } else {
+        return s.substring(0, 1).toUpperCase() + s.substring(1);
+      }
+    }).collect(Collectors.joining());
 
     return prefix + pascalCasedField + getSuffixForFieldName(fieldName);
   }

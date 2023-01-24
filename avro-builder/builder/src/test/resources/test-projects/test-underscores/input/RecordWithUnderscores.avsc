@@ -5,6 +5,10 @@
     {
       "name": "field_with_underscores_",
       "type": "string"
+    },
+    {
+      "name": "field_with_double__underscores",
+      "type": "string"
     }
   ]
 }
