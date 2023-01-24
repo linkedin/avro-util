@@ -13,9 +13,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 
@@ -168,6 +170,37 @@ public class SchemaBuilderTest {
         (path, basicFileAttributes) -> path.getFileName().toString().endsWith(".java")
     ).collect(Collectors.toList());
     Assert.assertEquals(javaFiles.size(), 2);
+  }
+
+  @DataProvider
+  Object[][] testUnderscoreProvider() {
+    return new Object[][]{{true}, {false}};
+  }
+
+  @Test(dataProvider = "testUnderscoreProvider")
+  public void testUnderscores(boolean useOwnCodegen) throws Exception {
+    File simpleProjectRoot = new File(locateTestProjectsRoot(), "test-underscores");
+    File inputFolder = new File(simpleProjectRoot, "input");
+    File outputFolder = new File(simpleProjectRoot, "output");
+    if (outputFolder.exists()) { //clear output
+      FileUtils.deleteDirectory(outputFolder);
+    }
+    //run the builder
+    SchemaBuilder.main(
+        new String[]{"--input", inputFolder.getAbsolutePath(), "--output", outputFolder.getAbsolutePath(),
+            "--generator", useOwnCodegen ? CodeGenerator.AVRO_UTIL.name() : CodeGenerator.VANILLA.name()});
+    //see output was generated
+    Optional<Path> javaFile = Files.find(outputFolder.toPath(), 5,
+            (path, basicFileAttributes) -> path.getFileName().toString().endsWith(".java"))
+        .collect(Collectors.toList())
+        .stream()
+        .findFirst();
+    Assert.assertTrue(javaFile.isPresent());
+
+    String file = new String(Files.readAllBytes(javaFile.get()));
+
+    Assert.assertTrue(file.contains("getFieldWithUnderscores()"));
+    Assert.assertTrue(file.contains("getFieldWithDoubleUnderscores()"));
   }
 
   @Test
