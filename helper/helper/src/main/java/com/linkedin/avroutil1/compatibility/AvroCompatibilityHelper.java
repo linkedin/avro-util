@@ -25,8 +25,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -39,9 +42,11 @@ import org.apache.avro.io.Decoder;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.io.JsonDecoder;
 import org.apache.avro.io.JsonEncoder;
+import org.apache.avro.reflect.Nullable;
 import org.apache.avro.specific.SpecificData;
 import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificRecord;
+import org.codehaus.jackson.JsonNode;
 
 
 /**
@@ -1143,6 +1148,123 @@ public class AvroCompatibilityHelper  extends AvroCompatibilityHelperCommon{
     return false;
   }
 
+  public static String canonicalize(Schema schema, List<String> additionalProps) {
+    try {
+      if (getRuntimeAvroCompilerVersion().laterThan(AvroVersion.AVRO_1_4)) {
+        Map<String, String> env = new HashMap<>();
+        return buildCanonicalForm(env, schema, new StringBuilder(), additionalProps).toString();
+      } else {
+        throw new UnsupportedOperationException("Canonicalize need avro > 1.4");
+      }
+    } catch (IOException e) {
+      // Shouldn't happen, b/c StringBuilder can't throw IOException
+      throw new RuntimeException(e);
+    }
+  }
+
+  private static Appendable buildCanonicalForm(Map<String, String> env, Schema s, Appendable o, List<String> additionalProps) throws IOException {
+    boolean firstTime = true;
+    Schema.Type st = s.getType();
+
+    switch (st) {
+      default: // boolean, bytes, double, float, int, long, null, string
+        return o.append('"').append(st.name().toLowerCase()).append('"');
+      case UNION:
+        o.append('[');
+        for (Schema b : s.getTypes()) {
+          if (!firstTime)
+            o.append(',');
+          else
+            firstTime = false;
+          buildCanonicalForm(env, b, o, additionalProps);
+        }
+        return o.append(']');
+      case ARRAY:
+      case MAP:
+        o.append("{\"type\":\"").append(st.name().toLowerCase()).append("\"");
+        if (st == Schema.Type.ARRAY)
+          buildCanonicalForm(env, s.getElementType(), o.append(",\"items\":"), additionalProps);
+        else
+          buildCanonicalForm(env, s.getValueType(), o.append(",\"values\":"), additionalProps);
+        return o.append("}");
+      case ENUM:
+      case FIXED:
+      case RECORD:
+        // Named Schemas
+        String name = s.getFullName();
+        if (env.get(name) != null)
+          return o.append(env.get(name));
+        String qname = "\"" + name + "\"";
+        env.put(name, qname);
+        o.append("{\"name\":").append(qname);
+        o.append(",\"type\":\"").append(st.name().toLowerCase()).append("\"");
+
+        //Aliases for named schemas
+        if (getJsonStringFromSet(s.getAliases()) != null) {
+          o.append(",\"aliases\":").append(getJsonStringFromSet(s.getAliases()));
+        }
+
+        if (st == Schema.Type.ENUM) {
+          o.append(",\"symbols\":[");
+          for (String enumSymbol : s.getEnumSymbols()) {
+            if (!firstTime)
+              o.append(',');
+            else
+              firstTime = false;
+            o.append('"').append(enumSymbol).append('"');
+          }
+          o.append("]");
+        } else if (st == Schema.Type.FIXED) {
+          o.append(",\"size\":").append(Integer.toString(s.getFixedSize()));
+        } else { // st == Schema.Type.RECORD
+          o.append(",\"fields\":[");
+          for (Schema.Field f : s.getFields()) {
+            if (!firstTime)
+              o.append(',');
+            else
+              firstTime = false;
+            o.append("{\"name\":\"").append(f.name()).append("\"");
+            buildCanonicalForm(env, f.schema(), o.append(",\"type\":"), additionalProps);
+
+
+            // Field level json props
+            for(String prop : additionalProps) {
+              String jsonPropStr = ADAPTER.getFieldPropAsJsonString(f, prop);
+              if(jsonPropStr != null && !jsonPropStr.isEmpty()) {
+                o.append(",");
+                o.append("\"" + prop +"\":").append(jsonPropStr);
+              }
+            }
+
+            //Default val
+            if (fieldHasDefault(f)) {
+              o.append(",");
+              o.append("\"default\":").append(ADAPTER.getDefaultValueAsJsonString(f));
+            }
+
+            //Aliases
+            Set<String> fieldAliases = ADAPTER.getFieldAliases(f);
+            if(fieldAliases != null && !fieldAliases.isEmpty()) {
+              o.append(",");
+              o.append("\"aliases\" :").append(getJsonStringFromSet(fieldAliases));
+            }
+            o.append("}");
+
+          }
+          o.append("]");
+        }
+    }
+    // Record level json props
+    for(String prop : additionalProps) {
+      String jsonPropStr = ADAPTER.getSchemaPropAsJsonString(s, prop);
+      if(jsonPropStr != null && !jsonPropStr.isEmpty()) {
+        o.append(",");
+        o.append("\"" + prop +"\":").append(jsonPropStr);
+      }
+    }
+    return o.append("}");
+  }
+
   /**
    * given a schema, returns a (exploded, fully-inlined, self-container, however you want to call it)
    * avsc representation of the schema.
@@ -1180,5 +1302,23 @@ public class AvroCompatibilityHelper  extends AvroCompatibilityHelperCommon{
                     AvscGenerationConfig.LEGACY_PRETTY
                   : AvscGenerationConfig.LEGACY_ONELINE
     );
+  }
+
+  @Nullable
+  private static String getJsonStringFromSet(Set<String> set) {
+    int counter = 0;
+    if (set == null || set.isEmpty()) {
+      return null;
+    }
+    StringBuilder sb = new StringBuilder();
+    sb.append("[");
+
+    for (String element : set) {
+      sb.append("\"").append(element).append("\"");
+      if (++counter == set.size() - 1) {
+        sb.append(",");
+      }
+    }
+    return sb.append("]").toString();
   }
 }
