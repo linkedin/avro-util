@@ -6,10 +6,10 @@
 
 package com.linkedin.avroutil1.builder.operations.codegen.vanilla;
 
-import com.linkedin.avroutil1.builder.BuilderConsts;
 import com.linkedin.avroutil1.builder.operations.OperationContext;
 import com.linkedin.avroutil1.builder.operations.codegen.CodeGenOpConfig;
 import com.linkedin.avroutil1.builder.operations.Operation;
+import com.linkedin.avroutil1.builder.operations.codegen.util.AvscFileFinderUtil;
 import com.linkedin.avroutil1.compatibility.Avro702Checker;
 import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
 import com.linkedin.avroutil1.compatibility.CodeGenerationConfig;
@@ -89,18 +89,13 @@ public class VanillaProcessedCodeGenOp implements Operation {
     }
 
     Set<File> avroFiles = new HashSet<>();
-    String[] extensions = new String[]{BuilderConsts.AVSC_EXTENSION};
     if (config.getNonImportableSourceRoots() != null) {
       for (File include : config.getNonImportableSourceRoots()) {
-        avroFiles.addAll(FileUtils.listFiles(include, extensions, true));
+        avroFiles.addAll(AvscFileFinderUtil.findFiles(include));
       }
     }
     for (File file : config.getInputRoots()) {
-      if (file.isDirectory()) {
-        avroFiles.addAll(FileUtils.listFiles(file, extensions, true));
-      } else {
-        avroFiles.add(file);
-      }
+        avroFiles.addAll(AvscFileFinderUtil.findFiles(file));
     }
 
     Map<String, String> schemaNameToFilepath = new HashMap<>();
