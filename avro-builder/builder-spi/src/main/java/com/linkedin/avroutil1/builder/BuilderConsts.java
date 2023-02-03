@@ -7,7 +7,10 @@
 package com.linkedin.avroutil1.builder;
 
 public class BuilderConsts {
+  public static final String DOT = ".";
   public static final String AVSC_EXTENSION = "avsc";
+  public static final String ZIP_EXTENSION = "zip";
+  public static final String JAR_EXTENSION = "jar";
 
   private BuilderConsts() {
     //util class

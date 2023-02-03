@@ -6,10 +6,10 @@
 
 package com.linkedin.avroutil1.builder.operations.codegen.own;
 
-import com.linkedin.avroutil1.builder.BuilderConsts;
 import com.linkedin.avroutil1.builder.operations.Operation;
 import com.linkedin.avroutil1.builder.operations.OperationContext;
 import com.linkedin.avroutil1.builder.operations.codegen.CodeGenOpConfig;
+import com.linkedin.avroutil1.builder.operations.codegen.util.AvscFileFinderUtil;
 import com.linkedin.avroutil1.builder.operations.codegen.vanilla.ClasspathSchemaSet;
 import com.linkedin.avroutil1.codegen.SpecificRecordClassGenerator;
 import com.linkedin.avroutil1.codegen.SpecificRecordGenerationConfig;
@@ -42,7 +42,6 @@ import java.util.Set;
 import java.util.StringJoiner;
 import javax.tools.JavaFileObject;
 import org.apache.avro.Schema;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,16 +74,15 @@ public class AvroUtilCodeGenOp implements Operation {
 
     Set<File> avscFiles = new HashSet<>();
     Set<File> nonImportableFiles = new HashSet<>();
-    String[] extensions = new String[]{BuilderConsts.AVSC_EXTENSION};
     long scanStart = System.currentTimeMillis();
 
     for (File inputRoot : config.getInputRoots()) {
-      avscFiles.addAll(FileUtils.listFiles(inputRoot, extensions, true));
+      avscFiles.addAll(AvscFileFinderUtil.findFiles(inputRoot));
     }
 
     if (config.getNonImportableSourceRoots() != null) {
       for (File nonImportableRoot : config.getNonImportableSourceRoots()) {
-        nonImportableFiles.addAll(FileUtils.listFiles(nonImportableRoot, extensions, true));
+        nonImportableFiles.addAll(AvscFileFinderUtil.findFiles(nonImportableRoot));
       }
     }
 
