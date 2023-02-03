@@ -26,9 +26,20 @@ public class AvscFileFinderUtil {
   private static final String[] EXTENSIONS = new String[]{BuilderConsts.AVSC_EXTENSION};
   private static final String TEMP_DIR_NAME = "tempCompressedAvroSrc";
 
+  /**
+   * finds all avsc files in the given directory and all its subdirectories.
+   * If the directory is a jar or zip file, the zipped file will be searched for avsc files.
+   */
   private AvscFileFinderUtil() {
   }
 
+  /**
+   * Four cases:
+   * 1. directory is a directory - the directory and all its subdirectories will be searched for avsc files
+   * 2. directory is a file - the file will be searched for avsc files
+   * 3. directory is a jar file - the jar file will be searched for avsc files
+   * 4. directory is a zip file - the zip file will be searched for avsc files
+   */
   public static Collection<File> findFiles(File inputRoot) throws IOException {
     Set<File> avscFiles = new HashSet<>();
     if (inputRoot.isDirectory()) {
