@@ -1714,6 +1714,99 @@ public class SpecificRecordTest {
     }
   }
 
+  @DataProvider
+  private Object[][] testDeepCopyProvider() {
+    return new Object[][] {
+        {vs14.SimpleRecord.class},
+        {vs15.SimpleRecord.class},
+        {vs16.SimpleRecord.class},
+        {vs17.SimpleRecord.class},
+        {vs18.SimpleRecord.class},
+        {vs19.SimpleRecord.class},
+        {vs110.SimpleRecord.class},
+        {vs111.SimpleRecord.class},
+
+        {vs14.MoneyRange.class},
+        {vs15.MoneyRange.class},
+        {vs16.MoneyRange.class},
+        {vs17.MoneyRange.class},
+        {vs18.MoneyRange.class},
+        {vs19.MoneyRange.class},
+        {vs110.MoneyRange.class},
+        {vs111.MoneyRange.class},
+
+        {vs14.DollarSignInDoc.class},
+        {vs15.DollarSignInDoc.class},
+        {vs16.DollarSignInDoc.class},
+        {vs17.DollarSignInDoc.class},
+        {vs18.DollarSignInDoc.class},
+        {vs19.DollarSignInDoc.class},
+        {vs110.DollarSignInDoc.class},
+        {vs111.DollarSignInDoc.class},
+
+        {vs14.RecordDefault.class},
+        {vs15.RecordDefault.class},
+        {vs16.RecordDefault.class},
+        {vs17.RecordDefault.class},
+        {vs18.RecordDefault.class},
+        {vs19.RecordDefault.class},
+        {vs110.RecordDefault.class},
+        {vs111.RecordDefault.class},
+
+        {vs14.ArrayOfRecords.class},
+        {vs15.ArrayOfRecords.class},
+        {vs16.ArrayOfRecords.class},
+        {vs17.ArrayOfRecords.class},
+        {vs18.ArrayOfRecords.class},
+        {vs19.ArrayOfRecords.class},
+        {vs110.ArrayOfRecords.class},
+        {vs111.ArrayOfRecords.class},
+
+        {vs14.ArrayOfStringRecord.class},
+        {vs15.ArrayOfStringRecord.class},
+        {vs16.ArrayOfStringRecord.class},
+        {vs17.ArrayOfStringRecord.class},
+        {vs18.ArrayOfStringRecord.class},
+        {vs19.ArrayOfStringRecord.class},
+        {vs110.ArrayOfStringRecord.class},
+        {vs111.ArrayOfStringRecord.class},
+/*
+TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collections of unions
+
+        {vs14.TestCollections.class},
+        {vs15.TestCollections.class},
+        {vs16.TestCollections.class},
+        {vs17.TestCollections.class},
+        {vs18.TestCollections.class},
+        {vs19.TestCollections.class},
+        {vs110.TestCollections.class},
+        {vs111.TestCollections.class},
+*/
+        {vs14.BuilderTester.class},
+        {vs15.BuilderTester.class},
+        {vs16.BuilderTester.class},
+        {vs17.BuilderTester.class},
+        {vs18.BuilderTester.class},
+        {vs19.BuilderTester.class},
+        {vs110.BuilderTester.class},
+        {vs111.BuilderTester.class}
+    };
+  }
+
+  @Test(dataProvider = "testDeepCopyProvider")
+  public <T extends IndexedRecord> void testDeepCopy(Class<T> clazz) throws Exception {
+    RandomRecordGenerator generator = new RandomRecordGenerator();
+    T instance = generator.randomSpecific(clazz, RecordGenerationConfig.newConfig().withAvoidNulls(true));
+
+    Method newBuilderMethod = clazz.getMethod("newBuilder", clazz);
+    Method buildMethod = newBuilderMethod.getReturnType().getMethod("build");
+
+    T copiedInstance = (T) buildMethod.invoke(newBuilderMethod.invoke(null, instance));
+
+    Assert.assertNotSame(copiedInstance, instance);
+    compareIndexedRecords(copiedInstance, instance);
+  }
+
   @Test
   public void testNewBuilder() throws Exception {
     RandomRecordGenerator generator = new RandomRecordGenerator();
