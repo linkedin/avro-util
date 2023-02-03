@@ -86,7 +86,7 @@ public class CompatibleSpecificRecordBuilderBase {
     return false;
   }
 
-
+  @SuppressWarnings("unchecked")
   protected  <T> T deepCopyField (Object inputValue, Schema fieldSchema,
       String stringRepresentationValue) {
     RecordConversionConfig allowAllConfig = RecordConversionConfig.ALLOW_ALL_USE_UTF8;
@@ -99,6 +99,9 @@ public class CompatibleSpecificRecordBuilderBase {
         StringRepresentation.valueOf(stringRepresentationValue),
         allowAllConfig.isUseStringRepresentationHints()
     ));
+
+    context.setUseSpecifics(true);
+    context.setClassLoader(Thread.currentThread().getContextClassLoader());
 
     return (T) AvroRecordUtil.deepConvert(inputValue, fieldSchema, fieldSchema, context,
         StringRepresentation.valueOf(stringRepresentationValue));
