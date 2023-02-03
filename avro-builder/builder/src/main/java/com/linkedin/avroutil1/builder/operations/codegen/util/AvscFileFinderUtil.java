@@ -1,3 +1,9 @@
+/*
+ * Copyright 2023 LinkedIn Corp.
+ * Licensed under the BSD 2-Clause License (the "License").
+ * See License in the project root for license information.
+ */
+
 package com.linkedin.avroutil1.builder.operations.codegen.util;
 
 import com.linkedin.avroutil1.builder.BuilderConsts;
@@ -7,7 +13,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,7 +23,7 @@ import org.apache.commons.io.FileUtils;
 
 
 public class AvscFileFinderUtil {
-  private static final String[] extensions = new String[]{BuilderConsts.AVSC_EXTENSION};
+  private static final String[] EXTENSIONS = new String[]{BuilderConsts.AVSC_EXTENSION};
   private static final String TEMP_DIR_NAME = "tempCompressedAvroSrc";
 
   private AvscFileFinderUtil() {
@@ -27,7 +32,7 @@ public class AvscFileFinderUtil {
   public static Collection<File> findFiles(File inputRoot) throws IOException {
     Set<File> avscFiles = new HashSet<>();
     if (inputRoot.isDirectory()) {
-      avscFiles.addAll(FileUtils.listFiles(inputRoot, extensions, true));
+      avscFiles.addAll(FileUtils.listFiles(inputRoot, EXTENSIONS, true));
     } else if (inputRoot.getAbsolutePath().endsWith(BuilderConsts.DOT + BuilderConsts.ZIP_EXTENSION)) {
       avscFiles.addAll(findSchemasFromCompressedFile(inputRoot, false));
     } else if (inputRoot.getAbsolutePath().endsWith(BuilderConsts.DOT + BuilderConsts.JAR_EXTENSION)) {
