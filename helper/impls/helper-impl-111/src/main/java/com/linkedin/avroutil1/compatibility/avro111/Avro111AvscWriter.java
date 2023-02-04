@@ -13,10 +13,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linkedin.avroutil1.compatibility.AvscWriter;
 import com.linkedin.avroutil1.compatibility.Jackson2JsonGeneratorWrapper;
 import com.linkedin.avroutil1.compatibility.Jackson2Utils;
+import com.linkedin.avroutil1.normalization.AvscWriterPlugin;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import org.apache.avro.Schema;
 import org.apache.avro.util.internal.Accessor;
 import org.apache.avro.util.internal.JacksonUtils;
@@ -27,6 +30,12 @@ public class Avro111AvscWriter extends AvscWriter<Jackson2JsonGeneratorWrapper> 
 
     public Avro111AvscWriter(boolean pretty, boolean preAvro702, boolean addAliasesForAvro702) {
         super(pretty, preAvro702, addAliasesForAvro702);
+    }
+    public Avro111AvscWriter(boolean pretty, boolean preAvro702, boolean addAliasesForAvro702, boolean retainDefaults,
+        boolean retainDocs, boolean retainFieldAliases, boolean retainNonClaimedProps, boolean retainSchemaAliases,
+        List<AvscWriterPlugin> schemaPlugins) {
+        super(pretty, preAvro702, addAliasesForAvro702, retainDefaults, retainDocs, retainFieldAliases,
+            retainNonClaimedProps, retainSchemaAliases, schemaPlugins);
     }
 
     @Override
@@ -44,18 +53,22 @@ public class Avro111AvscWriter extends AvscWriter<Jackson2JsonGeneratorWrapper> 
     }
 
     @Override
-    protected void writeProps(Schema schema, Jackson2JsonGeneratorWrapper gen) throws IOException {
+    protected void writeProps(Schema schema, Jackson2JsonGeneratorWrapper gen, Set<String> claimedProps) throws IOException {
         Map<String, Object> props = schema.getObjectProps();
         if (props != null && !props.isEmpty()) {
-            writeProps(props, gen);
+            Map<String, Object> sortedProps = new TreeMap<>(props);
+            claimedProps.stream().map(sortedProps::remove);
+            writeProps(sortedProps, gen);
         }
     }
 
     @Override
-    protected void writeProps(Schema.Field field, Jackson2JsonGeneratorWrapper gen) throws IOException {
+    protected void writeProps(Schema.Field field, Jackson2JsonGeneratorWrapper gen, Set<String> claimedProps) throws IOException {
         Map<String, Object> props = field.getObjectProps();
         if (props != null && !props.isEmpty()) {
-            writeProps(props, gen);
+            Map<String, Object> sortedProps = new TreeMap<>(props);
+            claimedProps.stream().map(sortedProps::remove);
+            writeProps(sortedProps, gen);
         }
     }
 

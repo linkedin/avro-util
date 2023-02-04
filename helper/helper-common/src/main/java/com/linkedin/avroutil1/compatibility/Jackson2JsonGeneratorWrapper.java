@@ -72,4 +72,10 @@ public class Jackson2JsonGeneratorWrapper implements JsonGeneratorWrapper<JsonGe
     public void flush() throws IOException {
         delegate.flush();
     }
+
+    @Override
+    public void writeObject(String fieldName, Object obj) throws IOException {
+        delegate.writeFieldName(fieldName);
+        delegate.writeObject(obj);
+    }
 }

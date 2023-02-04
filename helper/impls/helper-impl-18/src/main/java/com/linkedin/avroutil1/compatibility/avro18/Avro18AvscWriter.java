@@ -9,10 +9,13 @@ package com.linkedin.avroutil1.compatibility.avro18;
 import com.linkedin.avroutil1.compatibility.AvscWriter;
 import com.linkedin.avroutil1.compatibility.Jackson1JsonGeneratorWrapper;
 import com.linkedin.avroutil1.compatibility.Jackson1Utils;
+import com.linkedin.avroutil1.normalization.AvscWriterPlugin;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.function.Predicate;
 import org.apache.avro.Schema;
 import org.codehaus.jackson.JsonFactory;
@@ -26,6 +29,13 @@ public class Avro18AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
 
     public Avro18AvscWriter(boolean pretty, boolean preAvro702, boolean addAliasesForAvro702) {
         super(pretty, preAvro702, addAliasesForAvro702);
+    }
+
+    public Avro18AvscWriter(boolean pretty, boolean preAvro702, boolean addAliasesForAvro702, boolean retainDefaults,
+        boolean retainDocs, boolean retainFieldAliases, boolean retainNonClaimedProps, boolean retainSchemaAliases,
+        List<AvscWriterPlugin> schemaPlugins) {
+        super(pretty, preAvro702, addAliasesForAvro702, retainDefaults, retainDocs, retainFieldAliases,
+            retainNonClaimedProps, retainSchemaAliases, schemaPlugins);
     }
 
     @Override
@@ -44,24 +54,28 @@ public class Avro18AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
     }
 
     @Override
-    protected void writeProps(Schema schema, Jackson1JsonGeneratorWrapper gen) throws IOException {
+    protected void writeProps(Schema schema, Jackson1JsonGeneratorWrapper gen, Set<String> claimedProps) throws IOException {
         Map<String, JsonNode> props = schema.getJsonProps();
         if (props == null || props.isEmpty()) {
             return;
         }
+        Map<String, JsonNode> sortedProps = new TreeMap<>(props);
+        claimedProps.stream().map(sortedProps::remove);
         //write all props except "default" for enums
         if (schema.getType() == Schema.Type.ENUM) {
-            writeProps(props, gen, s -> !"default".equals(s));
+            writeProps(sortedProps, gen, s -> !"default".equals(s));
         } else {
-            writeProps(props, gen);
+            writeProps(sortedProps, gen);
         }
     }
 
     @Override
-    protected void writeProps(Schema.Field field, Jackson1JsonGeneratorWrapper gen) throws IOException {
+    protected void writeProps(Schema.Field field, Jackson1JsonGeneratorWrapper gen, Set<String> claimedProps) throws IOException {
         Map<String, JsonNode> props = field.getJsonProps();
         if (props != null && !props.isEmpty()) {
-            writeProps(props, gen);
+            Map<String, JsonNode> sortedProps = new TreeMap<>(props);
+            claimedProps.stream().map(sortedProps::remove);
+            writeProps(sortedProps, gen);
         }
     }
 

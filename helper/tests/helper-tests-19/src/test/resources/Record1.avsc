@@ -3,13 +3,14 @@
   "namespace": "com.acme",
   "name": "RecordWithStuff",
   "doc": "Here is a great overall doc",
-  "aliases": ["record_alias"],
+  "aliases": ["record_alias", "a_record_alias"],
   "fields": [
     {
       "name": "nullWithoutDefault",
       "doc" : "yup.. extra doc",
       "type": "null",
-      "not_important_stuff" : "an apple a day!"
+      "not_important_stuff" : "an apple a day!",
+      "another_non_important_json" : "decreases apple count by 1."
     },
     {
       "name": "enumField",
@@ -18,13 +19,13 @@
         "name": "EnumForHasDefaults",
         "doc" : "yup.. extra doc inside internal type",
         "symbols": ["A", "B"],
-        "aliases": ["field_type_alias"]
+        "aliases": ["field_type_alias", "Afield_type_alias"]
       },
       "default": "A"
     },
     {
       "name": "recordField",
-      "aliases": ["field_alias"],
+      "aliases": ["field_alias", "afield_alias"],
       "type": {
         "type": "record",
         "name": "RecordForHasDefaults",

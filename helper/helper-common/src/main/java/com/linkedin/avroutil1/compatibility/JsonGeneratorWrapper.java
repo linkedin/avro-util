@@ -34,4 +34,6 @@ public interface JsonGeneratorWrapper<T> {
     void writeArrayFieldStart(String fieldName) throws IOException;
 
     void flush() throws IOException;
+
+    void writeObject(String fieldName, Object obj) throws IOException;
 }

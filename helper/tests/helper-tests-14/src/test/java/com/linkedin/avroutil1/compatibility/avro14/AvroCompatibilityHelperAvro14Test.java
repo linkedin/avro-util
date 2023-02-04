@@ -7,11 +7,10 @@
 package com.linkedin.avroutil1.compatibility.avro14;
 
 import com.linkedin.avroutil1.Pojo;
-import com.linkedin.avroutil1.testcommon.TestUtil;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
+import com.linkedin.avroutil1.testcommon.TestUtil;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -55,13 +54,6 @@ public class AvroCompatibilityHelperAvro14Test {
     Object instance = AvroCompatibilityHelper.newInstance(Pojo.class, schema);
     Assert.assertNotNull(instance);
     Assert.assertTrue(instance instanceof  Pojo);
-  }
-
-  @Test
-  public void testCanonicalize() throws IOException {
-    Schema schema = Schema.parse(TestUtil.load("MonsantoRecord.avsc"));
-    Assert.assertThrows(UnsupportedOperationException.class,
-        () -> AvroCompatibilityHelper.canonicalize(schema, Arrays.asList("compliance")));
   }
 
   @Test
