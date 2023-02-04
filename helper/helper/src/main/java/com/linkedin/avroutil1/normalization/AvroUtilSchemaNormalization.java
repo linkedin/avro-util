@@ -10,13 +10,28 @@ import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
 import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
 import com.linkedin.avroutil1.compatibility.AvscWriter;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.avro.Schema;
 
 
-public class SchemaCanonicalizer {
+public class AvroUtilSchemaNormalization {
+
+  public enum FingerprintingAlgo {
+    CRC_64 ("CRC-64-AVRO"),
+    MD5_128 ("MD5"),
+    SHA_256 ("SHA-256");
+
+    private final String name;
+    FingerprintingAlgo(String fpName) {
+      name = fpName;
+    }
+
+    public String toString() { return name; }
+  }
 
   /**
    * Returns "Parsing Canonical Form" of a schema as defined by Avro spec.
@@ -36,6 +51,45 @@ public class SchemaCanonicalizer {
   }
 
   /**
+   * Returns {@link #fingerprint} applied to the parsing canonical form of the
+   * supplied schema.
+   * @param fpName fingerprint algorithm name
+   * @param s schema who's parsing canonical form will be fingerprinted
+   * @return fingerprint of given schema's parsing canonical form
+   * @throws NoSuchAlgorithmException if algorithm if not found, shouldn't happen
+   */
+  public static byte[] parsingFingerprint(FingerprintingAlgo fpName, Schema s, AvscGenerationConfig config,
+      List<AvscWriterPlugin> plugins) throws NoSuchAlgorithmException {
+    return fingerprint(fpName, getCanonicalForm(s, config, plugins).getBytes(StandardCharsets.UTF_8));
+  }
+
+  /**
+   * Returns {@link #fingerprint} applied to the parsing canonical form of the
+   * supplied schema.
+   * @param fpName fingerprint algorithm name
+   * @param s schema who's parsing canonical form will be fingerprinted
+   * @return fingerprint of given schema's parsing canonical form
+   * @throws NoSuchAlgorithmException if algorithm if not found, shouldn't happen
+   */
+  public static byte[] parsingFingerprint(FingerprintingAlgo fpName, Schema s) throws NoSuchAlgorithmException {
+    return fingerprint(fpName,
+        getCanonicalForm(s, AvscGenerationConfig.CANONICAL_BROAD_ONELINE, new ArrayList<AvscWriterPlugin>(0)).getBytes(
+            StandardCharsets.UTF_8));
+  }
+
+  /**
+   * Returns {@link #fingerprint64} applied to the parsing canonical form of the
+   * supplied schema.
+   * @param s schema who's parsing canonical form will be fingerprinted
+   * @return 64bit fingerprint of given schemas parsing canonical form
+   */
+  public static long parsingFingerprint64(Schema s) {
+    return fingerprint64(
+        getCanonicalForm(s, AvscGenerationConfig.CANONICAL_BROAD_ONELINE, new ArrayList<AvscWriterPlugin>(0)).getBytes(
+            StandardCharsets.UTF_8));
+  }
+
+  /**
    * Returns a fingerprint of a string of bytes. This string is presumed to
    * contain a canonical form of a schema. The algorithm used to compute the
    * fingerprint is selected by the argument <i>fpName</i>. If <i>fpName</i>
@@ -51,9 +105,9 @@ public class SchemaCanonicalizer {
    * @param fpName fingerprint algorithm name. typically "CRC-64-AVRO", "MD5" or "SHA-256"
    * @param data bytes to fingerprint
    * @return the fingerprint (size depends on algorithm)
-   * @throws NoSuchAlgorithmException if algorithm by provided name not found
+   * @throws NoSuchAlgorithmException if algorithm by provided name not found, shouldn't happen
    */
-  public static byte[] fingerprint(String fpName, byte[] data) throws NoSuchAlgorithmException {
+  public static byte[] fingerprint(FingerprintingAlgo fpName, byte[] data) throws NoSuchAlgorithmException {
     if (fpName.equals("CRC-64-AVRO")) {
       long fp = fingerprint64(data);
       byte[] result = new byte[8];
@@ -63,7 +117,7 @@ public class SchemaCanonicalizer {
       }
       return result;
     }
-    MessageDigest md = MessageDigest.getInstance(fpName);
+    MessageDigest md = MessageDigest.getInstance(fpName.toString());
     return md.digest(data);
   }
 

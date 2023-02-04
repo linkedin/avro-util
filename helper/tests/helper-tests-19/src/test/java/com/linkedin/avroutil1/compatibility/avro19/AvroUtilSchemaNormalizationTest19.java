@@ -13,10 +13,13 @@ import com.linkedin.avroutil1.compatibility.Jackson2JsonGeneratorWrapper;
 import com.linkedin.avroutil1.compatibility.JsonGeneratorWrapper;
 import com.linkedin.avroutil1.compatibility.SchemaComparisonConfiguration;
 import com.linkedin.avroutil1.normalization.AvscWriterPlugin;
-import com.linkedin.avroutil1.normalization.SchemaCanonicalizer;
+import com.linkedin.avroutil1.normalization.AvroUtilSchemaNormalization;
 import com.linkedin.avroutil1.testcommon.TestUtil;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.TreeMap;
 import org.apache.avro.Schema;
@@ -25,12 +28,12 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 
-public class SchemaCanonicalizerTest19 {
+public class AvroUtilSchemaNormalizationTest19 {
 
   @Test
   public void testCanonicalizeBareBones() throws IOException {
     Schema schema = Schema.parse(TestUtil.load("Record1.avsc"));
-    String str = SchemaCanonicalizer.getCanonicalForm(schema, AvscGenerationConfig.CANONICAL_ONELINE, null);
+    String str = AvroUtilSchemaNormalization.getCanonicalForm(schema, AvscGenerationConfig.CANONICAL_ONELINE, null);
     Schema canonicalizedSchema = Schema.parse(str);
 
     Schema schemaFromAvroNormalizer = Schema.parse(org.apache.avro.SchemaNormalization.toParsingForm(schema));
@@ -80,7 +83,7 @@ public class SchemaCanonicalizerTest19 {
   @Test
   public void testCanonicalBroadNoPlugin() throws IOException {
     Schema schema = Schema.parse(TestUtil.load("Record1.avsc"));
-    String str = SchemaCanonicalizer.getCanonicalForm(schema, AvscGenerationConfig.CANONICAL_BROAD_ONELINE, null);
+    String str = AvroUtilSchemaNormalization.getCanonicalForm(schema, AvscGenerationConfig.CANONICAL_BROAD_ONELINE, null);
     Schema canonicalizedSchema = Schema.parse(str);
 
     //Copies default value
@@ -105,7 +108,7 @@ public class SchemaCanonicalizerTest19 {
         false, false, true, false);
 
     Schema schema = Schema.parse(TestUtil.load("Record1.avsc"));
-    String str = SchemaCanonicalizer.getCanonicalForm(schema, config, null);
+    String str = AvroUtilSchemaNormalization.getCanonicalForm(schema, config, null);
     Schema canonicalizedSchema = Schema.parse(str);
 
     // copied all props, sorted by key
@@ -129,7 +132,7 @@ public class SchemaCanonicalizerTest19 {
   @Test
   public void testCanonicalBroadWithSchemaAndFieldPlugin() throws IOException {
     Schema schema = Schema.parse(TestUtil.load("Record1.avsc"));
-    String str = SchemaCanonicalizer.getCanonicalForm(schema, AvscGenerationConfig.CANONICAL_BROAD_ONELINE,
+    String str = AvroUtilSchemaNormalization.getCanonicalForm(schema, AvscGenerationConfig.CANONICAL_BROAD_ONELINE,
         Arrays.asList(new SchemaLevelPlugin(), new FieldLevelPlugin()));
     Schema canonicalizedSchema = Schema.parse(str);
 
@@ -156,6 +159,29 @@ public class SchemaCanonicalizerTest19 {
         .schema()
         .getField("innerLongField")
         .getObjectProp("very_important").toString(), "[important_stuff_1, important_stuff_2]");
+  }
+
+  @Test
+  public void testFingerprintBareBonesCanonicalForm() throws IOException, NoSuchAlgorithmException {
+    Schema schema = Schema.parse(TestUtil.load("Record1.avsc"));
+    String canonicalSchemaStr = AvroUtilSchemaNormalization.getCanonicalForm(schema, AvscGenerationConfig.CANONICAL_ONELINE,
+        Collections.EMPTY_LIST);
+    String canonicalSchemaStrWithPlugins = AvroUtilSchemaNormalization.getCanonicalForm(schema, AvscGenerationConfig.CANONICAL_ONELINE,
+        Arrays.asList(new SchemaLevelPlugin(), new FieldLevelPlugin()));
+
+
+    byte[] canonicalStrictMD5FP = AvroUtilSchemaNormalization.parsingFingerprint(AvroUtilSchemaNormalization.FingerprintingAlgo.MD5_128, schema,
+        AvscGenerationConfig.CANONICAL_ONELINE, Collections.EMPTY_LIST);
+
+    byte[] canonicalStrictMd5FPFromParsedSchema = AvroUtilSchemaNormalization.fingerprint(
+        AvroUtilSchemaNormalization.FingerprintingAlgo.MD5_128, canonicalSchemaStr.getBytes(StandardCharsets.UTF_8));
+
+    Assert.assertEquals(canonicalStrictMD5FP, canonicalStrictMd5FPFromParsedSchema);
+
+    byte[] canonicalStrictMd5FPFromParsedSchemaWithPlugins = AvroUtilSchemaNormalization.fingerprint(
+        AvroUtilSchemaNormalization.FingerprintingAlgo.MD5_128, canonicalSchemaStrWithPlugins.getBytes(StandardCharsets.UTF_8));
+    Assert.assertNotEquals(canonicalStrictMD5FP, canonicalStrictMd5FPFromParsedSchemaWithPlugins);
+
   }
 
 

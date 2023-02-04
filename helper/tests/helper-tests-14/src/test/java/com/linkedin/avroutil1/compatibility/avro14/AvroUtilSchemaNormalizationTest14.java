@@ -7,7 +7,7 @@
 package com.linkedin.avroutil1.compatibility.avro14;
 
 import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
-import com.linkedin.avroutil1.normalization.SchemaCanonicalizer;
+import com.linkedin.avroutil1.normalization.AvroUtilSchemaNormalization;
 import com.linkedin.avroutil1.testcommon.TestUtil;
 import java.io.IOException;
 import java.util.Collections;
@@ -16,13 +16,13 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 
-public class SchemaCanonicalizerTest14 {
+public class AvroUtilSchemaNormalizationTest14 {
 
   @Test
   public void testCanonicalize() throws IOException {
     Schema schema = Schema.parse(TestUtil.load("MonsantoRecord.avsc"));
     Assert.assertThrows(UnsupportedOperationException.class,
-        () -> SchemaCanonicalizer.getCanonicalForm(schema, AvscGenerationConfig.CANONICAL_ONELINE,
+        () -> AvroUtilSchemaNormalization.getCanonicalForm(schema, AvscGenerationConfig.CANONICAL_ONELINE,
             Collections.EMPTY_LIST));
   }
 

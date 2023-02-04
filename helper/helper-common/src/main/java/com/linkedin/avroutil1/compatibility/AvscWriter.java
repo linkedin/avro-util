@@ -245,19 +245,42 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
         }
     }
 
+    /***
+     * Runs execute(Schema, JsonGeneratorWrapper) for provided AvscWriterPlugins
+     * @param schema
+     * @param gen
+     * @return list of Json prop names handled by plugins
+     * @throws UnsupportedOperationException of 2+ plugins provided for same json prop
+     */
     private Set<String> executeAvscWriterPluginsForSchema(Schema schema, G gen) {
         Set<String> claimedProps = new HashSet<>();
         for(AvscWriterPlugin plugin : _plugins) {
-            claimedProps.add(plugin.execute(schema, gen));
+            String propName = plugin.execute(schema, gen);
+            if(propName!= null && !propName.isEmpty()) {
+                if(claimedProps.contains(propName)) {
+                    throw new UnsupportedOperationException("Only 1 AvscWriterPlugin per Json property allowed.");
+                }
+                claimedProps.add(propName);
+            }
         }
         return claimedProps;
     }
 
+    /***
+     * Runs execute(Field, JsonGeneratorWrapper) for provided AvscWriterPlugins
+     * @param field
+     * @param gen
+     * @return list of Json prop names handled by plugins
+     * @throws UnsupportedOperationException of 2+ plugins provided for same json prop
+     */
     private Set<String> executeAvscWriterPluginsForField(Schema.Field field, G gen) {
         Set<String> claimedProps = new HashSet<>();
         for(AvscWriterPlugin plugin : _plugins) {
             String propName = plugin.execute(field, gen);
             if(propName!= null && !propName.isEmpty()) {
+                if(claimedProps.contains(propName)) {
+                    throw new UnsupportedOperationException("Only 1 AvscWriterPlugin per Json property allowed.");
+                }
                 claimedProps.add(propName);
             }
         }
@@ -303,6 +326,12 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
         gen.writeEndArray();
     }
 
+    /***
+     * Checks if each alias in aliases has a namespace.name, adds parent namespace if not present
+     * @param aliases
+     * @param namespace
+     * @return sorted fully qualified aliases set
+     */
     private Set<String> getSortedFullyQualifiedSchemaAliases(Set<String> aliases, String namespace) {
         if(aliases == null) return null;
         Set<String> sortedAliases = new TreeSet<>();
@@ -395,8 +424,22 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
 
     protected abstract boolean hasProps(Schema schema);
 
+    /***
+     * Write all json props from schema, except the keys provided in claimedProps
+     * @param schema
+     * @param gen
+     * @param claimedProps
+     * @throws IOException
+     */
     protected abstract void writeProps(Schema schema, G gen, Set<String> claimedProps) throws IOException;
 
+    /***
+     * Write all json props from field, except the keys provided in claimedProps
+     * @param field
+     * @param gen
+     * @param claimedProps
+     * @throws IOException
+     */
     protected abstract void writeProps(Schema.Field field, G gen, Set<String> claimedProps) throws IOException;
 
     protected abstract void writeDefaultValue(Schema.Field field, G gen) throws IOException;
