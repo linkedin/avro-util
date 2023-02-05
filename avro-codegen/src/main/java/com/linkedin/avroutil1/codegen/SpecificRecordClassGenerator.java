@@ -1864,7 +1864,7 @@ public class SpecificRecordClassGenerator {
           methodSpecBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName, Map.class)
               .addStatement(
                   "return com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.get$2LMap($1L)",
-                  escapedFieldName, config.getDefaultMethodStringRepresentation())
+                  escapedFieldName, config.getDefaultMethodStringRepresentation().getJsonValue())
               .endControlFlow();
         }
       }
