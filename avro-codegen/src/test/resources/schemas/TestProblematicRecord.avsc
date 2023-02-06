@@ -1,0 +1,15 @@
+{
+  "name": "TestProblematicRecord",
+  "type": "record",
+  "fields": [
+    {
+      "name": "myIp3",
+      "type": [
+        {
+          "type": "map",
+          "values": "float"
+        }
+      ]
+    }
+  ]
+}
