@@ -170,16 +170,16 @@ public class AvroUtilSchemaNormalizationTest19 {
         Arrays.asList(new SchemaLevelPlugin(), new FieldLevelPlugin()));
 
 
-    byte[] canonicalStrictMD5FP = AvroUtilSchemaNormalization.parsingFingerprint(AvroUtilSchemaNormalization.FingerprintingAlgo.MD5_128, schema,
+    byte[] canonicalStrictMD5FP = AvroUtilSchemaNormalization.parsingFingerprint(AvroUtilSchemaNormalization.FingerprintingAlgo.XX_128, schema,
         AvscGenerationConfig.CANONICAL_ONELINE, Collections.EMPTY_LIST);
 
     byte[] canonicalStrictMd5FPFromParsedSchema = AvroUtilSchemaNormalization.fingerprint(
-        AvroUtilSchemaNormalization.FingerprintingAlgo.MD5_128, canonicalSchemaStr.getBytes(StandardCharsets.UTF_8));
+        AvroUtilSchemaNormalization.FingerprintingAlgo.XX_128, canonicalSchemaStr.getBytes(StandardCharsets.UTF_8));
 
     Assert.assertEquals(canonicalStrictMD5FP, canonicalStrictMd5FPFromParsedSchema);
 
     byte[] canonicalStrictMd5FPFromParsedSchemaWithPlugins = AvroUtilSchemaNormalization.fingerprint(
-        AvroUtilSchemaNormalization.FingerprintingAlgo.MD5_128, canonicalSchemaStrWithPlugins.getBytes(StandardCharsets.UTF_8));
+        AvroUtilSchemaNormalization.FingerprintingAlgo.XX_128, canonicalSchemaStrWithPlugins.getBytes(StandardCharsets.UTF_8));
     Assert.assertNotEquals(canonicalStrictMD5FP, canonicalStrictMd5FPFromParsedSchemaWithPlugins);
 
   }

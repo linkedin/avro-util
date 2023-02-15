@@ -89,7 +89,7 @@ public class AvscGenerationConfig {
      * Apache Avro.
      */
     public static final AvscGenerationConfig CANONICAL_ONELINE = new AvscGenerationConfig(
-        false, false, false, Optional.of(Boolean.TRUE), false, false,
+        false, false, false, Optional.of(Boolean.TRUE), true, false,
     false, false, false, false);
 
     /**
@@ -97,7 +97,7 @@ public class AvscGenerationConfig {
      * Apache Avro.
      */
     public static final AvscGenerationConfig CANONICAL_BROAD_ONELINE = new AvscGenerationConfig(
-        false, false, false, Optional.of(Boolean.TRUE), false, true,
+        false, false, false, Optional.of(Boolean.TRUE), true, true,
         false, true, false, true);
 
     /**
@@ -134,10 +134,25 @@ public class AvscGenerationConfig {
      * do so gradually and without compatibility breaks or global coordinated deployments.
      */
     private final boolean addAvro702Aliases;
+    /***
+     * true copies default values provided in the schema
+     */
     public final boolean retainDefaults;
+    /***
+     * true copies docs provided in the schema
+     */
     public final boolean retainDocs;
+    /***
+     * true copies alias values provided in for all the fields in the schema
+     */
     public final boolean retainFieldAliases;
+    /***
+     * true copies All extra json properties for which AvscWriterPlugins were not provided.
+     */
     public final boolean retainNonClaimedProps;
+    /***
+     * true copies alias values provided in for all the schemas, including top level record.
+     */
     public final boolean retainSchemaAliases;
 
 

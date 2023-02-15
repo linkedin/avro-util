@@ -41,12 +41,26 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
      * on the value of {@link #preAvro702}
      */
     protected final boolean addAliasesForAvro702;
-
-    protected final boolean retainNonClaimedProps;
-    protected final boolean retainFieldAliases;
-    protected final boolean retainSchemaAliases;
-    protected final boolean retainDefaults;
-    protected final boolean retainDocs;
+    /***
+     * true copies default values provided in the schema
+     */
+    public final boolean retainDefaults;
+    /***
+     * true copies docs provided in the schema
+     */
+    public final boolean retainDocs;
+    /***
+     * true copies alias values provided in for all the fields in the schema
+     */
+    public final boolean retainFieldAliases;
+    /***
+     * true copies All extra json properties for which AvscWriterPlugins were not provided.
+     */
+    public final boolean retainNonClaimedProps;
+    /***
+     * true copies alias values provided in for all the schemas, including top level record.
+     */
+    public final boolean retainSchemaAliases;
 
     protected AvscWriter(boolean pretty, boolean preAvro702, boolean addAliasesForAvro702) {
         this.pretty = pretty;
@@ -290,12 +304,8 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
     protected void aliasesToJson(Schema schema, List<AvroName> extraAliases, G gen, boolean retainSchemaAliases) throws IOException {
         Set<String> userDefinedAliases =
             retainSchemaAliases ? getSortedFullyQualifiedSchemaAliases(schema.getAliases(), schema.getNamespace()) : null;
-        Set<String> allAliases = userDefinedAliases; //could be null
+        Set<String> allAliases = userDefinedAliases == null ? new TreeSet<>() : userDefinedAliases;
         if (addAliasesForAvro702 && extraAliases != null) {
-            allAliases = new HashSet<>();
-            if (userDefinedAliases != null) {
-                allAliases.addAll(userDefinedAliases);
-            }
             for (AvroName extraAlias : extraAliases) {
                 allAliases.add(extraAlias.getFull());
             }

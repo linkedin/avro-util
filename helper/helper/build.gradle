@@ -28,6 +28,8 @@ dependencies {
   implementation project(":helper:impls:helper-impl-19")
   implementation project(":helper:impls:helper-impl-110")
   implementation project(":helper:impls:helper-impl-111")
+  // xxHash
+  implementation 'net.openhft:zero-allocation-hashing:0.16'
   testImplementation project(":test-common")
 }
 

@@ -10,11 +10,13 @@ import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
 import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
 import com.linkedin.avroutil1.compatibility.AvscWriter;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import net.openhft.hashing.LongTupleHashFunction;
 import org.apache.avro.Schema;
 
 
@@ -23,6 +25,7 @@ public class AvroUtilSchemaNormalization {
   public enum FingerprintingAlgo {
     CRC_64 ("CRC-64-AVRO"),
     MD5_128 ("MD5"),
+    XX_128("XX_HASH_128"),
     SHA_256 ("SHA-256");
 
     private final String name;
@@ -108,7 +111,7 @@ public class AvroUtilSchemaNormalization {
    * @throws NoSuchAlgorithmException if algorithm by provided name not found, shouldn't happen
    */
   public static byte[] fingerprint(FingerprintingAlgo fpName, byte[] data) throws NoSuchAlgorithmException {
-    if (fpName.equals("CRC-64-AVRO")) {
+    if (FingerprintingAlgo.CRC_64.equals(fpName)) {
       long fp = fingerprint64(data);
       byte[] result = new byte[8];
       for (int i = 0; i < 8; i++) {
@@ -116,6 +119,8 @@ public class AvroUtilSchemaNormalization {
         fp >>= 8;
       }
       return result;
+    } else if (FingerprintingAlgo.XX_128.equals(fpName)) {
+      return toByteArray(LongTupleHashFunction.xx128().hashBytes(data));
     }
     MessageDigest md = MessageDigest.getInstance(fpName.toString());
     return md.digest(data);
@@ -148,5 +153,11 @@ public class AvroUtilSchemaNormalization {
         FP_TABLE[i] = fp;
       }
     }
+  }
+
+  private static byte[] toByteArray(long[] longArray) {
+    ByteBuffer bb = ByteBuffer.allocate(longArray.length * Long.BYTES);
+    bb.asLongBuffer().put(longArray);
+    return bb.array();
   }
 }
