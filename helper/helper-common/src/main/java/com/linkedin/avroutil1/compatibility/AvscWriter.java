@@ -10,17 +10,16 @@ import com.linkedin.avroutil1.compatibility.backports.Avro702Data;
 import com.linkedin.avroutil1.compatibility.backports.AvroName;
 import com.linkedin.avroutil1.compatibility.backports.AvroNames;
 import com.linkedin.avroutil1.normalization.AvscWriterPlugin;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.TreeSet;
-import org.apache.avro.AvroRuntimeException;
-import org.apache.avro.Schema;
-
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
+import org.apache.avro.AvroRuntimeException;
+import org.apache.avro.Schema;
 
 public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
     protected final List<AvscWriterPlugin> _plugins;
@@ -42,23 +41,23 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
      */
     protected final boolean addAliasesForAvro702;
     /***
-     * true copies default values provided in the schema
+     * true includes default values provided in the schema
      */
     public final boolean retainDefaults;
     /***
-     * true copies docs provided in the schema
+     * true includes docs provided in the schema
      */
     public final boolean retainDocs;
     /***
-     * true copies alias values provided in for all the fields in the schema
+     * true includes alias values provided in for all the fields in the schema
      */
     public final boolean retainFieldAliases;
     /***
-     * true copies All extra json properties for which AvscWriterPlugins were not provided.
+     * true includes All extra json properties for which AvscWriterPlugins were not provided.
      */
     public final boolean retainNonClaimedProps;
     /***
-     * true copies alias values provided in for all the schemas, including top level record.
+     * true includes alias values provided in for all the schemas, including top level record.
      */
     public final boolean retainSchemaAliases;
 
@@ -268,14 +267,14 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
      */
     private Set<String> executeAvscWriterPluginsForSchema(Schema schema, G gen) {
         Set<String> claimedProps = new HashSet<>();
-        for(AvscWriterPlugin plugin : _plugins) {
-            String propName = plugin.execute(schema, gen);
-            if(propName!= null && !propName.isEmpty()) {
-                if(claimedProps.contains(propName)) {
-                    throw new UnsupportedOperationException("Only 1 AvscWriterPlugin per Json property allowed.");
-                }
-                claimedProps.add(propName);
+        for (AvscWriterPlugin plugin : _plugins) {
+            String propName = plugin.getPropName();
+            if (claimedProps.contains(propName)) {
+                throw new UnsupportedOperationException("Multiple AvscWriterPlugin(s) defined for " + propName
+                    + " Only 1 plugin per Json property allowed.");
             }
+            claimedProps.add(propName);
+            plugin.execute(schema, gen);
         }
         return claimedProps;
     }
@@ -289,14 +288,14 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
      */
     private Set<String> executeAvscWriterPluginsForField(Schema.Field field, G gen) {
         Set<String> claimedProps = new HashSet<>();
-        for(AvscWriterPlugin plugin : _plugins) {
-            String propName = plugin.execute(field, gen);
-            if(propName!= null && !propName.isEmpty()) {
-                if(claimedProps.contains(propName)) {
-                    throw new UnsupportedOperationException("Only 1 AvscWriterPlugin per Json property allowed.");
-                }
-                claimedProps.add(propName);
+        for (AvscWriterPlugin plugin : _plugins) {
+            String propName = plugin.getPropName();
+            if (claimedProps.contains(propName)) {
+                throw new UnsupportedOperationException("Multiple AvscWriterPlugin(s) defined for " + propName
+                    + " Only 1 plugin per Json property allowed.");
             }
+            claimedProps.add(propName);
+            plugin.execute(field, gen);
         }
         return claimedProps;
     }

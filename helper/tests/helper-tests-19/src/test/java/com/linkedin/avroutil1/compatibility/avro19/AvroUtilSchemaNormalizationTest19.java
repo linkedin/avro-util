@@ -133,7 +133,7 @@ public class AvroUtilSchemaNormalizationTest19 {
   public void testCanonicalBroadWithSchemaAndFieldPlugin() throws IOException {
     Schema schema = Schema.parse(TestUtil.load("Record1.avsc"));
     String str = AvroUtilSchemaNormalization.getCanonicalForm(schema, AvscGenerationConfig.CANONICAL_BROAD_ONELINE,
-        Arrays.asList(new SchemaLevelPlugin(), new FieldLevelPlugin()));
+        Arrays.asList(new SchemaLevelPlugin("record_level_important_json"), new FieldLevelPlugin("very_important")));
     Schema canonicalizedSchema = Schema.parse(str);
 
     //Copies default value
@@ -167,27 +167,76 @@ public class AvroUtilSchemaNormalizationTest19 {
     String canonicalSchemaStr = AvroUtilSchemaNormalization.getCanonicalForm(schema, AvscGenerationConfig.CANONICAL_ONELINE,
         Collections.EMPTY_LIST);
     String canonicalSchemaStrWithPlugins = AvroUtilSchemaNormalization.getCanonicalForm(schema, AvscGenerationConfig.CANONICAL_ONELINE,
-        Arrays.asList(new SchemaLevelPlugin(), new FieldLevelPlugin()));
+        Arrays.asList(new SchemaLevelPlugin("record_level_important_json"), new FieldLevelPlugin("very_important")));
 
 
     byte[] canonicalStrictMD5FP = AvroUtilSchemaNormalization.parsingFingerprint(AvroUtilSchemaNormalization.FingerprintingAlgo.XX_128, schema,
         AvscGenerationConfig.CANONICAL_ONELINE, Collections.EMPTY_LIST);
 
-    byte[] canonicalStrictMd5FPFromParsedSchema = AvroUtilSchemaNormalization.fingerprint(
+    byte[] canonicalStrictXXFpFromParsedSchema = AvroUtilSchemaNormalization.fingerprint(
         AvroUtilSchemaNormalization.FingerprintingAlgo.XX_128, canonicalSchemaStr.getBytes(StandardCharsets.UTF_8));
 
-    Assert.assertEquals(canonicalStrictMD5FP, canonicalStrictMd5FPFromParsedSchema);
+    Assert.assertEquals(canonicalStrictMD5FP, canonicalStrictXXFpFromParsedSchema);
 
     byte[] canonicalStrictMd5FPFromParsedSchemaWithPlugins = AvroUtilSchemaNormalization.fingerprint(
         AvroUtilSchemaNormalization.FingerprintingAlgo.XX_128, canonicalSchemaStrWithPlugins.getBytes(StandardCharsets.UTF_8));
     Assert.assertNotEquals(canonicalStrictMD5FP, canonicalStrictMd5FPFromParsedSchemaWithPlugins);
+  }
 
+  @Test
+  public void testBareBonesCanonicalFormCompareTwoDifferentButIdenticalSchemas()
+      throws IOException, NoSuchAlgorithmException {
+    Schema schema = Schema.parse(TestUtil.load("Record1.avsc"));
+    Schema schemaSimilar = Schema.parse(TestUtil.load("Record1DifferentDocsNoAliases.avsc"));
+
+    String canonicalSchemaStr = AvroUtilSchemaNormalization.getCanonicalForm(schema, AvscGenerationConfig.CANONICAL_ONELINE,
+        Collections.EMPTY_LIST);
+    String canonicalSchemaStrWithPlugins = AvroUtilSchemaNormalization.getCanonicalForm(schema, AvscGenerationConfig.CANONICAL_ONELINE,
+        Arrays.asList(new SchemaLevelPlugin("record_level_important_json"), new FieldLevelPlugin("very_important")));
+
+    // Canonical form -> narrow
+    String canonicalSimilarSchemaStr = AvroUtilSchemaNormalization.getCanonicalForm(schema, AvscGenerationConfig.CANONICAL_ONELINE,
+        Collections.EMPTY_LIST);
+    String canonicalSimilarSchemaStrWithPlugins = AvroUtilSchemaNormalization.getCanonicalForm(schema, AvscGenerationConfig.CANONICAL_ONELINE,
+        Arrays.asList(new SchemaLevelPlugin("record_level_important_json"), new FieldLevelPlugin("very_important")));
+
+    // Canonical form broad
+    String canonicalSimilarSchemaStrBroad = AvroUtilSchemaNormalization.getCanonicalForm(schema, AvscGenerationConfig.CANONICAL_BROAD_ONELINE,
+        Collections.EMPTY_LIST);
+    String canonicalSimilarSchemaStrWithPluginsBroad = AvroUtilSchemaNormalization.getCanonicalForm(schema, AvscGenerationConfig.CANONICAL_BROAD_ONELINE,
+        Arrays.asList(new SchemaLevelPlugin("record_level_important_json"), new FieldLevelPlugin("very_important")));
+
+    // Fingerprint
+    byte[] canonicalStrictXXFp = AvroUtilSchemaNormalization.parsingFingerprint(AvroUtilSchemaNormalization.FingerprintingAlgo.XX_128, schema,
+        AvscGenerationConfig.CANONICAL_ONELINE, Collections.EMPTY_LIST);
+    byte[] canonicalStrictXXFpForSimilarSchema = AvroUtilSchemaNormalization.parsingFingerprint(AvroUtilSchemaNormalization.FingerprintingAlgo.XX_128, schemaSimilar,
+        AvscGenerationConfig.CANONICAL_ONELINE, Collections.EMPTY_LIST);
+
+
+    // Fingerprint with plugins
+    byte[] canonicalStrictXXFpFromParsedSchemaWithPlugins = AvroUtilSchemaNormalization.fingerprint(
+        AvroUtilSchemaNormalization.FingerprintingAlgo.XX_128, canonicalSchemaStrWithPlugins.getBytes(StandardCharsets.UTF_8));
+    byte[] canonicalStrictXXFpFromParsedSimilarSchemaWithPlugins = AvroUtilSchemaNormalization.fingerprint(
+        AvroUtilSchemaNormalization.FingerprintingAlgo.XX_128, canonicalSimilarSchemaStrWithPlugins.getBytes(StandardCharsets.UTF_8));
+
+    //Equal canonical schema
+    Assert.assertEquals(canonicalSchemaStr, canonicalSimilarSchemaStr);
+    //Equal canonical schema with plugins
+    Assert.assertEquals(canonicalSchemaStrWithPlugins, canonicalSimilarSchemaStrWithPlugins);
+    // Same fingerprint
+    Assert.assertEquals(canonicalStrictXXFp, canonicalStrictXXFpForSimilarSchema);
+    //Same fingerprint with plugins
+    Assert.assertEquals(canonicalStrictXXFpFromParsedSchemaWithPlugins, canonicalStrictXXFpFromParsedSimilarSchemaWithPlugins);
+
+    //Different wider canonical form
+    Assert.assertNotEquals(canonicalSimilarSchemaStrBroad, canonicalSimilarSchemaStrWithPluginsBroad);
   }
 
 
-  private class SchemaLevelPlugin implements AvscWriterPlugin {
-
-    private final String PROP_NAME = "record_level_important_json";
+  private class SchemaLevelPlugin extends AvscWriterPlugin {
+    public SchemaLevelPlugin(String prop_name) {
+       super(prop_name);
+    }
 
     private void writeProp(String propName, Object prop, Jackson2JsonGeneratorWrapper gen){
       JsonGenerator delegate = gen.getDelegate();
@@ -212,9 +261,11 @@ public class AvroUtilSchemaNormalizationTest19 {
     }
   }
 
-  private class FieldLevelPlugin implements AvscWriterPlugin {
+  private class FieldLevelPlugin extends AvscWriterPlugin {
 
-    private final String PROP_NAME = "very_important";
+    public FieldLevelPlugin(String prop_name) {
+      super(prop_name);
+    }
 
     private void writeProp(String propName, Object prop, Jackson2JsonGeneratorWrapper gen){
       JsonGenerator delegate = gen.getDelegate();

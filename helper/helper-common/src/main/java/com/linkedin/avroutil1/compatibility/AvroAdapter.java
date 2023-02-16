@@ -194,6 +194,13 @@ public interface AvroAdapter {
    */
   String toAvsc(Schema schema, AvscGenerationConfig config);
 
+  /***
+   * Instantiates and returns com.linkedin.avroutil1.compatibility.AvroWriter for the provided configs, plugin list
+   * and runtime avro version.
+   * @param config
+   * @param schemaPlugins can be an empty list or null
+   * @return
+   */
   AvscWriter getAvscWriter(AvscGenerationConfig config, List<AvscWriterPlugin> schemaPlugins);
 
   default boolean isSusceptibleToAvro702(Schema schema) {

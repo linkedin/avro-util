@@ -14,7 +14,14 @@ import org.apache.avro.Schema;
  * AvscWriter is written to write AVSC json from avro Schemas.
  * This plugin allows you to define functionality to handle an extra JSON property differently
  */
-public interface AvscWriterPlugin<G extends JsonGeneratorWrapper<?>> {
+public abstract class AvscWriterPlugin<G extends JsonGeneratorWrapper<?>> {
+
+  protected final String PROP_NAME;
+
+  protected AvscWriterPlugin(String prop_name) {
+    PROP_NAME = prop_name;
+  }
+
   enum AvscWriterPluginLevel {
     SCHEMA,
     FIELD
@@ -26,7 +33,7 @@ public interface AvscWriterPlugin<G extends JsonGeneratorWrapper<?>> {
    * @param gen
    * @return
    */
-  default String execute(Schema schema, G gen) {
+  public String execute(Schema schema, G gen) {
     return null;
   }
 
@@ -36,7 +43,11 @@ public interface AvscWriterPlugin<G extends JsonGeneratorWrapper<?>> {
    * @param gen
    * @return
    */
-  default String execute(Schema.Field field, G gen) {
+  public String execute(Schema.Field field, G gen) {
     return null;
+  }
+
+  public String getPropName() {
+    return PROP_NAME;
   }
 }
