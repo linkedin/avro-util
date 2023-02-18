@@ -7,7 +7,14 @@
 package com.linkedin.avroutil1.builder;
 
 import com.linkedin.avroutil1.builder.operations.codegen.CodeGenerator;
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
+import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
+import com.linkedin.avroutil1.compatibility.RandomRecordGenerator;
+import com.linkedin.avroutil1.compatibility.RecordGenerationConfig;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -15,7 +22,16 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericDatumReader;
+import org.apache.avro.generic.GenericDatumWriter;
+import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.generic.IndexedRecord;
+import org.apache.avro.io.BinaryDecoder;
+import org.apache.avro.io.BinaryEncoder;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -244,4 +260,48 @@ public class SchemaBuilderTest {
     }
     return file;
   }
+
+  @Test
+  public void testAvroCompatibilitys() throws IOException {
+    Schema writerSchema = AvroCompatibilityHelper.parse(load("latest-in-SR.avsc"));
+    Schema readerSchemaOriginal = AvroCompatibilityHelper.parse(load("new-schema.avsc"));
+
+    String mitigatedString =
+        AvroCompatibilityHelper.toAvsc(readerSchemaOriginal, AvscGenerationConfig.CORRECT_MITIGATED_PRETTY);
+    Schema readerSchemaFinal = AvroCompatibilityHelper.parse(mitigatedString);
+
+    GenericRecord datum =
+        (GenericRecord) new RandomRecordGenerator().randomGeneric(writerSchema, RecordGenerationConfig.NO_NULLS);
+
+    GenericDatumWriter<GenericRecord> writer = new GenericDatumWriter<>(writerSchema);
+
+    // Write generic record out  with old schema
+    byte[] avroBytes;
+    try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+      BinaryEncoder encoder = AvroCompatibilityHelper.newBinaryEncoder(outputStream, false, null);
+      writer.write(datum, encoder);
+      encoder.flush();
+      avroBytes = outputStream.toByteArray();
+    }
+
+    // Attempt to read into new reader schema
+    BinaryDecoder decoder = AvroCompatibilityHelper.newBinaryDecoder(avroBytes);
+    GenericDatumReader<IndexedRecord> reader = new GenericDatumReader<>(writerSchema, readerSchemaFinal);
+
+    IndexedRecord deserialized = reader.read(null, decoder);
+    Assert.assertNotNull(deserialized);
+  }
+
+  public static String load(String path) throws IOException {
+    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
+    if (is == null) {
+      throw new IllegalArgumentException("resource " + path + " not found on context classloader");
+    }
+    try {
+      return IOUtils.toString(is, "utf-8");
+    } finally {
+      is.close();
+    }
+  }
+
 }

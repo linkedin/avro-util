@@ -1,0 +1,2600 @@
+
+{
+  "namespace": "com.linkedin.events.contentspam",
+  "name": "ClassificationAuditEvent",
+  "doc": "This event is fired from the source of classification to track the classification action taken by a system.",
+  "type": "record",
+  "fields": [
+    {
+      "name": "header",
+      "type": {
+        "namespace": "com.linkedin.events",
+        "name": "EventHeader",
+        "doc": "The basic header for every tracking event.",
+        "type": "record",
+        "fields": [
+          {
+            "name": "memberId",
+            "doc": "The LinkedIn member ID of the user initiating the action.  LinkedIn member IDs are integers greater than zero.  Guests are represented either as zero or a negative number.",
+            "type": "int",
+            "compliance": {
+              "policy": "MEMBER_ID",
+              "format": "NUMERIC",
+              "isPurgeKey": true
+            },
+            "aliases": [
+            ]
+          },
+          {
+            "name": "viewerUrn",
+            "doc": "The LinkedIn URN of the user initiating the action.  For other applications like Slideshare, this should be filled in when the LinkedIn member URN is actually known.  The LinkedIn member URN would be known, for example, when the user has linked their Slideshare account with their LinkedIn account.",
+            "type": [
+              "null",
+              "string"
+            ],
+            "compliance": {
+              "string": {
+                "policy": "MEMBER_ID",
+                "format": "URN",
+                "isPurgeKey": true
+              }
+            },
+            "default": null,
+            "aliases": [
+            ]
+          },
+          {
+            "name": "applicationViewerUrn",
+            "doc": "The Application URN of the user initiating the action.  This URN identifies the member within the particular application that the member is using, which may or may not be LinkedIn.  If the user is interacting with LinkedIn then this should be the LinkedIn URN, the same as viewerUrn.  If the member is interacting with a different site, such as Slideshare, then this should be the URN identifying the member in that site.",
+            "type": [
+              "null",
+              "string"
+            ],
+            "compliance": {
+              "string": [
+                {
+                  "policy": "MEMBER_ID",
+                  "format": "CUSTOM",
+                  "pattern": "urn:li:sales:\\((\\d+),\\d+,\\d+\\)",
+                  "isPurgeKey": true
+                },
+                {
+                  "policy": "SLIDESHARE_USER_ID",
+                  "format": "URN",
+                  "isPurgeKey": true
+                },
+                {
+                  "policy": "ENTERPRISE_PROFILE_ID",
+                  "format": "URN",
+                  "isPurgeKey": true
+                },
+                {
+                  "policy": "MEMBER_ID",
+                  "format": "URN",
+                  "isPurgeKey": true
+                },
+                {
+                  "policy": "CONTRACT_ID",
+                  "format": "CUSTOM",
+                  "pattern": "urn:li:(?:contractSeat|ts_contract_seat):\\(urn:li:(?:ts_)?contract:(\\d+),urn:li:(?:ts_)?seat:\\d+\\)",
+                  "isPurgeKey": true
+                },
+                {
+                  "policy": "SEAT_ID",
+                  "format": "CUSTOM",
+                  "pattern": "urn:li:(?:contractSeat|ts_contract_seat):\\(urn:li:(?:ts_)?contract:\\d+,urn:li:(?:ts_)?seat:(\\d+)\\)",
+                  "isPurgeKey": true
+                }
+              ]
+            },
+            "default": null,
+            "aliases": [
+            ]
+          },
+          {
+            "name": "csUserUrn",
+            "doc": "The URN of the CS user initiating the action. A CS user is essentially a LinkedIn member with elevated permissions and can perform Admin actions on a page. A non-null value would indicate CS activity on the website. This field is different from the impersonatorId. ImpersonatorId will be populated when a CS user is logged in as (or impersonating) another member. On the other hand, this field will be populated when a CS user logged in as himself has elevated permissions to perform Admin actions on the website.",
+            "type": [
+              "null",
+              "string"
+            ],
+            "compliance": {
+              "string": "NONE"
+            },
+            "default": null,
+            "aliases": [
+            ]
+          },
+          {
+            "name": "time",
+            "doc": "The time at which the event occurred from the event creator's perspective. See go/trackingtime for exact behavior.",
+            "type": "long",
+            "compliance": {
+              "policy": "EVENT_TIME"
+            },
+            "aliases": [
+            ]
+          },
+          {
+            "name": "server",
+            "doc": "The name of the server",
+            "type": "string",
+            "compliance": "NONE",
+            "aliases": [
+            ]
+          },
+          {
+            "name": "service",
+            "doc": "The name of the service. Synonymous to the com.linkedin.events.monitoring.EventHeader#container field.",
+            "type": "string",
+            "compliance": "NONE",
+            "aliases": [
+            ]
+          },
+          {
+            "name": "environment",
+            "doc": "The environment the service is running in",
+            "type": [
+              "string",
+              "null"
+            ],
+            "compliance": {
+              "string": "NONE"
+            },
+            "default": "",
+            "aliases": [
+            ]
+          },
+          {
+            "name": "guid",
+            "doc": "A unique identifier for the message",
+            "type": {
+              "name": "Guid",
+              "type": "fixed",
+              "size": 16
+            },
+            "compliance": "NONE",
+            "aliases": [
+            ]
+          },
+          {
+            "name": "treeId",
+            "doc": "Service call tree uuid. If the traceData field is nonnull, the treeId in traceData should be identical to this.",
+            "type": [
+              "null",
+              {
+                "name": "fixed_16",
+                "doc": "short datatype",
+                "type": "fixed",
+                "size": 16
+              }
+            ],
+            "compliance": {
+              "fixed_16": "NONE"
+            },
+            "default": null,
+            "aliases": [
+            ]
+          },
+          {
+            "name": "requestId",
+            "doc": "Service call request id. If the traceData field is nonnull, the requestId in traceData should be identical to this.",
+            "type": [
+              "null",
+              "int"
+            ],
+            "compliance": {
+              "int": "NONE"
+            },
+            "default": null,
+            "aliases": [
+            ]
+          },
+          {
+            "name": "impersonatorId",
+            "doc": "this is the ID of the CS Agent or Application acting on the users behalf",
+            "type": [
+              "null",
+              "string"
+            ],
+            "compliance": {
+              "string": "NONE"
+            },
+            "default": null,
+            "aliases": [
+            ]
+          },
+          {
+            "name": "version",
+            "doc": "Synonymous to the com.linkedin.events.monitoring.EventHeader#version field. The version that the service which emitted this event was at. For services in multiproducts, this usually comes in the form of {major}.{minor}.{micro} (eg. 0.1.2), however for network services, the version follows a format like so: 0.0.2000-RC8.35047",
+            "type": [
+              "null",
+              "string"
+            ],
+            "compliance": {
+              "string": "NONE"
+            },
+            "default": null,
+            "aliases": [
+            ]
+          },
+          {
+            "name": "instance",
+            "doc": "Synonymous to the com.linkedin.events.monitoring.EventHeader#instance field. The instance ID of the service (eg. i001)",
+            "type": [
+              "null",
+              "string"
+            ],
+            "compliance": {
+              "string": "NONE"
+            },
+            "default": null,
+            "aliases": [
+            ]
+          },
+          {
+            "name": "appName",
+            "doc": "Synonymous to the com.linkedin.events.monitoring.EventHeader#service field. Named 'appName' here since this is what this field actually represents, and 'service' is already used. This is also synonymous to 'appName' in Play and network apps, where on a typical page there would be a <meta name=appName content=biz> tag. For network apps, this would be the container name without the '-tomcat' suffix. So for 'profile-tomcat', it would just be 'profile'. For Play! services, it would just be the container name, such as 'polls-frontend'. For additional information, please see the wiki at go/appname",
+            "type": [
+              "null",
+              "string"
+            ],
+            "compliance": {
+              "string": "NONE"
+            },
+            "default": null,
+            "aliases": [
+            ]
+          },
+          {
+            "name": "testId",
+            "doc": "A client provided ID that uniquely identifies a particular execution of a test case.  This ID is provided by clients through an ENG_TEST_ID cookie.  The Selenium test framework automatically sets this cookie for each request.  This will be null when there is no ENG_TEST_ID provided.  See https://iwww.corp.linkedin.com/wiki/cf/display/ENGS/Selenium+Framework+Architecture+Documentation for more details on the test framework.  See https://iwww.corp.linkedin.com/wiki/cf/display/ENGS/Improving+Automated+Testability+of+Tracking+Events for details on the motiviation behind adding this test ID to the header and how it is used.",
+            "type": [
+              "null",
+              "string"
+            ],
+            "compliance": {
+              "string": "NONE"
+            },
+            "default": null,
+            "aliases": [
+            ]
+          },
+          {
+            "name": "testSegmentId",
+            "doc": "A client provided ID that uniquely identifies a section of the testing code from a  particular execution of a test case.  This ID is provided by clients through an ENG_TEST_SEGMENT_ID cookie. ",
+            "type": [
+              "null",
+              "string"
+            ],
+            "compliance": {
+              "string": "NONE"
+            },
+            "default": null,
+            "aliases": [
+            ]
+          },
+          {
+            "name": "auditHeader",
+            "doc": "Header used by kafka for auditing the data in the kafka pipeline",
+            "type": [
+              "null",
+              {
+                "name": "KafkaAuditHeader",
+                "doc": "This header records information about the context of an event as it is emitted into kafka and is intended to be used by the kafka audit application.  For more information see go/kafkaauditheader",
+                "type": "record",
+                "fields": [
+                  {
+                    "name": "time",
+                    "doc": "The time at which the event was emitted into kafka.",
+                    "type": "long",
+                    "compliance": {
+                      "policy": "EVENT_TIME"
+                    },
+                    "aliases": [
+                    ]
+                  },
+                  {
+                    "name": "server",
+                    "doc": "The fully qualified name of the host from which the event is being emitted.",
+                    "type": "string",
+                    "compliance": "NONE",
+                    "aliases": [
+                    ]
+                  },
+                  {
+                    "name": "instance",
+                    "doc": "The instance on the server from which the event is being emitted. e.g. i001",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "compliance": {
+                      "string": "NONE"
+                    },
+                    "default": null,
+                    "aliases": [
+                    ]
+                  },
+                  {
+                    "name": "appName",
+                    "doc": "The name of the application from which the event is being emitted. see go/appname",
+                    "type": "string",
+                    "compliance": "NONE",
+                    "aliases": [
+                    ]
+                  },
+                  {
+                    "name": "messageId",
+                    "doc": "A unique identifier for the message",
+                    "type": {
+                      "name": "UUID",
+                      "type": "fixed",
+                      "size": 16
+                    },
+                    "compliance": "NONE",
+                    "aliases": [
+                    ]
+                  },
+                  {
+                    "name": "auditVersion",
+                    "doc": "The version that is being used for auditing. In version 0, the audit trail buckets events into 10 minute audit windows based on the EventHeader timestamp. In version 1, the audit trail buckets events as follows: if the schema has an outer KafkaAuditHeader, use the outer audit header timestamp for bucketing; else if the EventHeader has an inner KafkaAuditHeader use that inner audit header's timestamp for bucketing",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "compliance": {
+                      "int": "NONE"
+                    },
+                    "default": null,
+                    "aliases": [
+                    ]
+                  },
+                  {
+                    "name": "fabricUrn",
+                    "doc": "The fabricUrn of the host from which the event is being emitted. Fabric Urn in the format of urn:li:fabric:{fabric_name}. See go/fabric.",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "compliance": {
+                      "string": "NONE"
+                    },
+                    "default": null,
+                    "aliases": [
+                    ]
+                  },
+                  {
+                    "name": "clusterConnectionString",
+                    "doc": "This is a String that the client uses to establish some kind of connection with the Kafka cluster. The exact format of it depends on specific versions of clients and brokers. This information could potentially identify the fabric and cluster with which the client is producing to or consuming from.",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "compliance": {
+                      "string": "NONE"
+                    },
+                    "default": null,
+                    "aliases": [
+                    ]
+                  }
+                ]
+              }
+            ],
+            "compliance": {
+              "KafkaAuditHeader": "INHERITED"
+            },
+            "default": null,
+            "aliases": [
+            ]
+          },
+          {
+            "name": "pageInstance",
+            "doc": "The instance of a page to which the request that triggered this event is responding.  For more information see go/pageinstance",
+            "type": [
+              "null",
+              {
+                "namespace": "com.linkedin.events.common",
+                "name": "PageInstance",
+                "doc": "The PageInstance identifies a unique rendering of an instance of a page.  This instance may be used to identify the set of tracking events which are involved with the rendering of a page (or a screen on a mobile app), as well as actions and interactions with that page. For additional information, please see the wiki at go/pageinstance.",
+                "type": "record",
+                "fields": [
+                  {
+                    "name": "pageUrn",
+                    "doc": "The page entity. Example: urn:li:page:<pageKey>.",
+                    "type": "string",
+                    "compliance": "NONE",
+                    "aliases": [
+                    ]
+                  },
+                  {
+                    "name": "trackingId",
+                    "doc": "Uniquely identifies this rendering of the page.",
+                    "type": {
+                      "name": "TrackingId",
+                      "doc": "A UUID representing a particular instance of a trackable item.  This UUID should be propagated in all events referencing this instance of the trackable item.  For more information see: go/trackingEntityInstances",
+                      "type": "fixed",
+                      "size": 16
+                    },
+                    "compliance": "NONE",
+                    "aliases": [
+                    ]
+                  }
+                ]
+              }
+            ],
+            "compliance": {
+              "com.linkedin.events.common.PageInstance": "INHERITED"
+            },
+            "default": null,
+            "aliases": [
+            ]
+          },
+          {
+            "name": "clientApplicationInstance",
+            "doc": "The particular instance of a client application which triggered this event.  For more information see go/clientApplicationInstance",
+            "type": [
+              "null",
+              {
+                "namespace": "com.linkedin.events.common",
+                "name": "ApplicationInstance",
+                "doc": "An ApplicationInstance identifies a unique instantiation of an application.  This instance may be used to identify the set of tracking events which are emitted while this application is running.  For additional information, please see the wiki at go/applicationInstance.",
+                "type": "record",
+                "fields": [
+                  {
+                    "name": "applicationUrn",
+                    "doc": "The application. Example: urn:li:application:<identifier>.",
+                    "type": "string",
+                    "compliance": "NONE",
+                    "aliases": [
+                    ]
+                  },
+                  {
+                    "name": "version",
+                    "doc": "The internal version number of the running application in standardized version format, see go/version.",
+                    "type": "string",
+                    "compliance": "NONE",
+                    "aliases": [
+                    ]
+                  },
+                  {
+                    "name": "trackingId",
+                    "doc": "Uniquely identifies this instantiation of the application.  Created when an application is started from cold.  Preserved through application pause, suspend, loss of focus, background, etc.",
+                    "type": "TrackingId",
+                    "compliance": "NONE",
+                    "aliases": [
+                    ]
+                  }
+                ]
+              }
+            ],
+            "compliance": {
+              "com.linkedin.events.common.ApplicationInstance": "INHERITED"
+            },
+            "default": null,
+            "aliases": [
+            ]
+          },
+          {
+            "name": "originSource",
+            "doc": "If present, identifies this request as having an origin in a testing mechanism. If null, indicates a normal request from the external internet. For more information see go/originSource",
+            "type": [
+              "null",
+              {
+                "name": "OriginSource",
+                "doc": "Enum type for types of OriginSource values",
+                "type": "enum",
+                "symbols": [
+                  "QPROD"
+                ],
+                "symbolDocs": {
+                  "QPROD": "Developer initiated testing request that interacted with PROD fabrics"
+                }
+              }
+            ],
+            "compliance": {
+              "OriginSource": "NONE"
+            },
+            "default": null,
+            "aliases": [
+            ]
+          },
+          {
+            "name": "sessionUrn",
+            "doc": "If memberId field is non-zero positive number, it indicates that request is member initiated. SessionUrn represents currently logged-in session information. There are two types of URN that represent session: MemberSessionUrn or LoginSessionUrn. MemberSessionUrn is used with MemberToken V3, whereas LoginSessionUrn is used for MemberToken V5 and up. In the long run, all clients will move to LoginSessionUrn. To read more: https://iwww.corp.linkedin.com/wiki/cf/display/ENGS/Session+Tracking",
+            "type": [
+              "null",
+              "string"
+            ],
+            "compliance": {
+              "string": {
+                "policy": "UNSTRUCTURED_PII",
+                "isPurgeKey": false
+              }
+            },
+            "default": null,
+            "aliases": [
+            ]
+          },
+          {
+            "name": "traceData",
+            "doc": "Trace data containing information about the service call details of the service that produced this message. Nullable because this is an opt-in feature and is controlled via config. For more information see go/callTreeAndKafka",
+            "type": [
+              "null",
+              {
+                "name": "TraceData",
+                "doc": "Service call trace data. All information is populated from data within the Invocation Context of a service's call trace. Fields are used for tracking service call details of the service that produced this message. For more information see go/servicecallevents.",
+                "type": "record",
+                "fields": [
+                  {
+                    "name": "treeId",
+                    "doc": "Service call tree uuid.",
+                    "type": "fixed_16",
+                    "compliance": "NONE",
+                    "aliases": [
+                    ]
+                  },
+                  {
+                    "name": "requestId",
+                    "doc": "Service call request id.",
+                    "type": "int",
+                    "compliance": "NONE",
+                    "aliases": [
+                    ]
+                  },
+                  {
+                    "name": "taskId",
+                    "doc": "An identifier for the task during which this trace data was saved.",
+                    "type": "int",
+                    "compliance": "NONE",
+                    "aliases": [
+                    ]
+                  },
+                  {
+                    "name": "rpcTrace",
+                    "doc": "The service call stack leading to this service.",
+                    "type": "string",
+                    "compliance": "NONE",
+                    "aliases": [
+                    ]
+                  },
+                  {
+                    "name": "forceTraceEnabled",
+                    "doc": "Flag indicating if the service call trace has been force enabled and ServiceCallEvents were emitted.",
+                    "type": "boolean",
+                    "compliance": "NONE",
+                    "default": false,
+                    "aliases": [
+                    ]
+                  },
+                  {
+                    "name": "context",
+                    "doc": "A map containing any additional context or tags needed to support the tracing of the service call. For example, certain tags are used to indicate if the trace should be picked up by call-tree-app for visualization.",
+                    "type": {
+                      "type": "map",
+                      "values": "string"
+                    },
+                    "compliance": "NONE",
+                    "aliases": [
+                    ]
+                  },
+                  {
+                    "name": "scaleFactor",
+                    "doc": "A ratio that represents the fraction of service calls that should be traced. The value is only referenced when the service call is initiated to determine whether to enable tracing. Defaults to null for backwards compatibility, but this field should always be present.",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "compliance": "NONE",
+                    "default": null,
+                    "aliases": [
+                    ]
+                  }
+                ]
+              }
+            ],
+            "compliance": {
+              "TraceData": "INHERITED"
+            },
+            "default": null,
+            "aliases": [
+            ]
+          },
+          {
+            "name": "clientMonitoringInstanceId",
+            "doc": "A client generated Id that associates this event with other events generated in the same client tracking instance. See go/trackingdatalossrfc for more context.",
+            "type": [
+              "null",
+              "fixed_16"
+            ],
+            "compliance": {
+              "fixed_16": {
+                "policy": "NONE"
+              }
+            },
+            "default": null,
+            "aliases": [
+            ]
+          },
+          {
+            "name": "clientMonitoringInstanceEventNumber",
+            "doc": "A client provided counter that orders this event by when it was generated among the other events generated in the same client tracking instance. See go/trackingdatalossrfc for more context.",
+            "type": [
+              "null",
+              "long"
+            ],
+            "compliance": "NONE",
+            "default": null,
+            "aliases": [
+            ]
+          },
+          {
+            "name": "originalClientTime",
+            "doc": "The time the event was generated on the client, as measured by the client's clock. This field should only be populated in events fired from clients, such as a web browser or a mobile device. See http://go/trackingtime for more info and differences between the 'time' field",
+            "type": [
+              "null",
+              "long"
+            ],
+            "compliance": {
+              "long": {
+                "policy": "EVENT_TIME"
+              }
+            },
+            "default": null,
+            "aliases": [
+            ]
+          },
+          {
+            "name": "clientGlobalSequenceNumber",
+            "doc": "The global sequence number which increases in the monotonic fashion and is used for data loss analysis",
+            "type": [
+              "null",
+              "long"
+            ],
+            "compliance": "NONE",
+            "default": null,
+            "aliases": [
+            ]
+          },
+          {
+            "name": "clientTopicLocalSequenceNumber",
+            "doc": "The topic-specific sequence number which increases in the monotonic fashion and is used for data loss analysis. For example, PageViewEvent will have values 1,2,3..., and ControlInteractionEvent will also have values 1,2,3...",
+            "type": [
+              "null",
+              "long"
+            ],
+            "compliance": "NONE",
+            "default": null,
+            "aliases": [
+            ]
+          },
+          {
+            "name": "viewHierarchy",
+            "doc": "View hierarchy this event to associated with, starting with leaf node as the first element to the root node as the last. This also makes query more efficient since the leaf node view is accessed more often than the root node. Placing the leaf node as the first element makes it more accessible in queries",
+            "type": [
+              "null",
+              {
+                "type": "array",
+                "items": "string"
+              }
+            ],
+            "compliance": "NONE",
+            "default": null,
+            "aliases": [
+            ]
+          }
+        ]
+      },
+      "compliance": "INHERITED",
+      "aliases": [
+      ]
+    },
+    {
+      "name": "contentUrn",
+      "doc": "Identifier of the content that is classified.",
+      "type": "string",
+      "compliance": [
+        {
+          "policy": "MEMBER_ID",
+          "format": "URN",
+          "isPurgeKey": true
+        },
+        {
+          "policy": "COMPANY_ID",
+          "format": "URN"
+        },
+        {
+          "policy": "UGC_ID",
+          "format": "URN"
+        },
+        {
+          "policy": "GROUP_ID",
+          "format": "URN"
+        },
+        {
+          "policy": "INGESTED_CONTENT_ID",
+          "format": "URN"
+        }
+      ],
+      "aliases": [
+      ]
+    },
+    {
+      "name": "contentCreatorUrn",
+      "doc": "Urn of the content creator. It will be urn:li:member:0 when member id is not known. e.g. 3rd party articles.",
+      "type": "string",
+      "compliance": {
+        "policy": "MEMBER_ID",
+        "format": "URN",
+        "isPurgeKey": true
+      },
+      "aliases": [
+      ]
+    },
+    {
+      "name": "contentClassificationTrackingId",
+      "doc": "Unique GUID for each content that comes in for classification. This will be null in case the request was via UserFlagging flow as we don't have it there.",
+      "type": [
+        "null",
+        "com.linkedin.events.common.TrackingId"
+      ],
+      "compliance": {
+        "com.linkedin.events.common.TrackingId": "NONE"
+      },
+      "aliases": [
+      ]
+    },
+    {
+      "name": "contentSource",
+      "doc": "Identifies the source of the content to be validated. Fallback for ucfContext. Consumers should consume both fields and give preference to ucfContext. Producers should populate both this and ucfContext fields. This field will be deprecated in the near future.",
+      "type": {
+        "namespace": "com.linkedin.events",
+        "name": "ContentSource",
+        "doc": "Identifies the source of the content to be validated. FIND_SPAM_IN_TEXT_TOOL is deprecated. instead use CF_TOOLS_FIND_SPAM_IN_TEXT",
+        "type": "enum",
+        "symbols": [
+          "INBOX_NEW_MESSAGE",
+          "INBOX_REPLY",
+          "INBOX_FORWARD",
+          "INBOX_PROFILE_UPDATE",
+          "INBOX_JOB_FORWARD",
+          "INBOX_RECOMMENDATION_MESSAGE",
+          "INBOX_RECOMMENDATION_UPDATE",
+          "INBOX_COMMERCIAL_INMAIL",
+          "INBOX_LINKEDIN_ANSWERS",
+          "INBOX_INVITATION_MESSAGE",
+          "INBOX_PROFILE_FORWARD",
+          "INBOX_PROPOSAL",
+          "INBOX_MESSAGE_BETWEEN_CONNECTIONS",
+          "INBOX_GROUP",
+          "INBOX_GROUP_INVITATION",
+          "INBOX_SHARE",
+          "INBOX_GENERIC_EMAIL",
+          "INBOX_SYSTEM_MESSAGE",
+          "INBOX_REPORT_SPAM",
+          "INBOX_COMPANY_MESSAGE",
+          "INBOX_CAP_MESSAGE",
+          "GROUPS_UPLOAD_CONTACTS",
+          "GROUPS_NEW_GROUP",
+          "GROUPS_NEW_COMMENT",
+          "GROUPS_NEW_DISCUSSION",
+          "GROUPS_NEW_UNIQUE_INTRO",
+          "GROUPS_NEW_POLL",
+          "GROUPS_NEW_PROMOTION",
+          "GROUPS_REPORT_SPAM_COMMENT",
+          "GROUPS_REPORT_SPAM_DISCUSSION",
+          "GROUPS_REPLY",
+          "GROUPS_UPDATE_GROUP",
+          "REGISTRATION_JOIN",
+          "REGISTRATION_PROFILE_UPDATE",
+          "USCP",
+          "USCP_ACTIVITY",
+          "USCP_COMMENT",
+          "USCP_USER_REPORT_SPAM",
+          "USCP_ADMIN_REPORT_SPAM",
+          "USCP_USER_UNDO_REPORT_SPAM",
+          "USCP_ADMIN_UNDO_REPORT_SPAM",
+          "INVITATIONS_CONNECT",
+          "INVITATIONS_REPORT_SPAM",
+          "INVITATIONS_DECLINE",
+          "INVITATIONS_IGNORE",
+          "INVITATIONS_REPLY",
+          "PROFILE",
+          "PROFILE_BASIC_INFO",
+          "PROFILE_PATENT_UPDATE",
+          "PROFILE_SUMMARY_UPDATE",
+          "PROFILE_EDUCATION_UPDATE",
+          "PROFILE_PERSONAL_INFO_UPDATE",
+          "PROFILE_PROJECT_UPDATE",
+          "PROFILE_COURSE_UPDATE",
+          "PROFILE_EXPERIENCE_UPDATE",
+          "PROFILE_CERTIFICATION_UPDATE",
+          "PROFILE_LANGUAGE_UPDATE",
+          "PROFILE_PUBLICATION_UPDATE",
+          "PROFILE_ADDITIONAL_INFO_UPDATE",
+          "PROFILE_SKILL_UPDATE",
+          "PROFILE_VOLUNTEER_UPDATE",
+          "PROFILE_REPORT_SPAM",
+          "PROFILE_TREASURY_REPORT_SPAM",
+          "PROFILE_TREASURY_POST_NEW",
+          "PROFILE_TREASURY_POST_UPDATE",
+          "PROFILE_TREASURY_VIEW_CONTENT",
+          "PROFILE_PICTURE_REPORT_INAPPROPRIATE",
+          "PROFILE_ORGANIZATIONS",
+          "PROFILE_OCCUPATIONS",
+          "PROFILE_TEST_SCORES",
+          "PROFILE_HONORS_AND_AWARDS",
+          "PROFILE_PICTURE_INFO",
+          "PROFILE_BACKGROUND_IMAGE",
+          "SCHOOL_TREASURY_POST_NEW",
+          "SCHOOL_TREASURY_POST_UPDATE",
+          "SCHOOL_TREASURY_VIEW_CONTENT",
+          "DECISION_BOARD",
+          "DECISION_BOARD_CARD",
+          "DECISION_BOARD_ENTITY_SUGGESTION",
+          "PAL_PROFILE_IMAGE_UPLOAD",
+          "NUS_REDIRECT",
+          "NUS_REPORT_SPAM_COMMENT",
+          "NUS_REPORT_SPAM_SHARE",
+          "NUS_RICH_MEDIA_REPORT_SPAM",
+          "NUS_RICH_MEDIA_POST_NEW",
+          "NUS_RICH_MEDIA_POST_UPDATE",
+          "COMPANY_REPORT_SPAM_DESCRIPTION",
+          "COMPANY_REPORT_SPAM_RECOMMENDATION",
+          "PAYMENTS_PURCHASE",
+          "TSCP_CAMPAIGN",
+          "TSCP_CREATIVE",
+          "JOBS_CREATE",
+          "JOBS_VIEW",
+          "JOBS_APPLY",
+          "JOBS_REPORT_SPAM",
+          "PONCHO_ARTICLE",
+          "INFLUENCER_ARTICLE",
+          "INFLUENCER_REPORT_SPAM_COMMENT",
+          "TODAY_REPORT_SPAM_COMMENT",
+          "LOGIN_COOKIE_RENEWAL",
+          "RAPPORTIVE_LOGIN",
+          "PASSWORD_RESET",
+          "MEMBER_LOGIN",
+          "BOOTSTRAP",
+          "BAM_LEGACY_CLIENT",
+          "BABYLONIA_ARTICLE",
+          "BABYLONIA_VIDEO",
+          "BABYLONIA_IMAGE",
+          "BABYLONIA_RICH_MEDIA",
+          "SLIDESHARE_UGC_UPLOAD",
+          "MEDIA_SERVER_UPLOAD",
+          "MEDIA_SERVER_DOWNLOAD",
+          "USCP_USER_FLAG_ACTIVITY_SPAM",
+          "USCP_USER_UNDO_FLAG_ACTIVITY_SPAM",
+          "USCP_USER_FLAG_COMMENT_SPAM",
+          "USCP_USER_UNDO_FLAG_COMMENT_SPAM",
+          "USCP_ADMIN_FLAG_COMMENT_SPAM",
+          "USCP_ADMIN_UNDO_FLAG_COMMENT_SPAM",
+          "USCP_ADMIN_FLAG_ACTIVITY_SPAM",
+          "USCP_ADMIN_UNDO_FLAG_ACTIVITY_SPAM",
+          "PURCHASE_AUTH",
+          "MOBILE_DETECT_URLS",
+          "SHORTLINK_CREATE_LINK",
+          "SHORTLINK_RESOLVE_LINK",
+          "REDIRECT_RESOLVE_LINK",
+          "DEPO_REGISTER_REDIRECT_URL",
+          "LEO_REDIRECT",
+          "NABOOK_ACCEPT_INVITATION",
+          "UNKNOWN",
+          "SHARE_CREATE_LINK",
+          "SAS_SPONSORED_UPDATE",
+          "SAS_ADS_CREATIVE",
+          "ANTI_AUTOMATION",
+          "INBOX_MEDIA_DOWNLOAD",
+          "INBOX_MEDIA_DOWNLOAD_MOBILE",
+          "MEMBER_FILTERING",
+          "ADDRESS_BOOK",
+          "CONTACTS",
+          "SECURITY_ACCOUNT_ACTION",
+          "CSP_REDIRECT",
+          "DECISION_BOARD_SHARE",
+          "DIRECTORY_PROFILE",
+          "FIND_SPAM_IN_TEXT_TOOL",
+          "COMPANIES",
+          "JOBS_GUEST_SEARCH_KEYWORDS",
+          "CF_TOOLS_FIND_SPAM_IN_TEXT",
+          "VOYAGER_API_DETECT_URLS",
+          "SCHOOL_PROGRAM",
+          "DEPO_CREATE_APPLICATION",
+          "DEPO_UPDATE_APPLICATION",
+          "OSCAR_VIDEO",
+          "CONTENT_CREATION_PROMPT",
+          "CONTENT_CREATION_PROMPT_CAMPAIGN",
+          "ARTICLE_COMMENT",
+          "SPONSORED_INMAIL",
+          "INBOX_PROPOSAL_OPENLINK",
+          "RICH_MEDIA_IMAGE",
+          "JOBS_PREMIUM",
+          "PROFINDER_REQUEST_FOR_PROPOSALS",
+          "DIRECTORY_PROJECT",
+          "SAS_AD_FORM",
+          "VIDEO_SHARE",
+          "DIGITALMEDIA_ASSET",
+          "UGC_POST",
+          "QUESTA_QUESTION",
+          "QUESTA_ANSWER",
+          "LEARNING_CUSTOM_CONTENT",
+          "MENTORSHIP_MARKETPLACE_INTRO",
+          "MENTORSHIP_MARKETPLACE_PURPOSE",
+          "OUTLOOK_PEOPLE_CARD",
+          "SLIDESHARE_SLIDESHOW",
+          "HELP_CENTER_CONTACT_US_PAGE",
+          "SAS_SPONSORED_UPDATE_CAROUSEL",
+          "SAS_SPONSORED_UPDATE_VIDEO",
+          "SAS_DYNAMIC_AD_FOLLOW_COMPANY",
+          "SAS_DYNAMIC_AD_JOBS",
+          "SAS_DYNAMIC_AD_SPOTLIGHT",
+          "SAS_DYNAMIC_AD_WHITEPAPER_DOWNLOAD",
+          "JOBS_FREEMIUM",
+          "LEARNING_CATEGORY",
+          "DIGITALMEDIA_STATIC_ASSET",
+          "APP_ADS_PUBLISHER",
+          "WEB_ADS_PUBLISHER",
+          "JOBS_MINI",
+          "GROUPS_DEFINITION",
+          "GROUPS_POST",
+          "GROUPS_COMMENT",
+          "GROUPS_MEDIA",
+          "LYNDA_LEARNING_COLLECTION",
+          "LYNDA_LEARNING_PATH",
+          "HASHTAG",
+          "NATIVE_DOCUMENT_POST",
+          "NATIVE_DOCUMENT_TRANSCRIPT",
+          "CUSTOM_INVITATION_MESSAGE",
+          "CONTENT_SERIES",
+          "REVIEWS",
+          "INBOX_NEW_THREAD",
+          "EVENT_CONTENT",
+          "DIGITALMEDIA_STATIC_ASSET_RENDER_TIME_SCAN",
+          "JOBS_PREMIUM_OFFLINE",
+          "MARKETPLACE_OPPORTUNITY_SERVICE_MARKETPLACE",
+          "MARKETPLACE_OPPORTUNITY_CAREER_ADVICE",
+          "DIGITALMEDIA_STATIC_ASSET_GENERATED",
+          "DIGITALMEDIA_STATIC_ASSET_EXTRACTED",
+          "ADS_TRANSPARENCY_SPONSORED_UPDATE",
+          "ADS_TRANSPARENCY_SPONSORED_UPDATE_CAROUSEL",
+          "ADS_TRANSPARENCY_SPONSORED_UPDATE_VIDEO",
+          "ASSESSMENTS_TEXT_RESPONSE",
+          "MARKETPLACE_PROVIDER_SERVICE_MARKETPLACE",
+          "MARKETPLACE_PROVIDER_CAREER_ADVICE",
+          "MARKETPLACE_ENGAGEMENT_SERVICE_MARKETPLACE",
+          "MARKETPLACE_ENGAGEMENT_CAREER_ADVICE",
+          "JOB_HIRING_TEAM_MEMBER_NOTE",
+          "JOBS_PRIVATE",
+          "DIGITALMEDIA_ASSET_RENDER_TIME_SCAN",
+          "SPECTROSCOPY",
+          "SPONSORED_MESSAGE",
+          "CARE_COMMUNITY_CONTENT",
+          "CAREER_PAGES",
+          "CONTENT_SOURCE_MIGRATION",
+          "ADS_LAN",
+          "THIRD_PARTY_APPLICATION_WEBHOOK_URL",
+          "BABYLONIA_FIRST_PARTY_ARTICLE",
+          "BABYLONIA_FIRST_PARTY_VIDEO",
+          "BABYLONIA_FIRST_PARTY_IMAGE",
+          "BABYLONIA_FIRST_PARTY_RICH_MEDIA",
+          "SAS_SPONSORED_UPDATE_JOB_POSTING",
+          "ADS_TRANSPARENCY_SPONSORED_UPDATE_JOB_POSTING",
+          "FINGERPRINT_FILE_FOR_CP_DETECTION",
+          "VIDEO_ASSESSMENT_TO_CANDIDATE",
+          "VIDEO_ASSESSMENT_FROM_CANDIDATE",
+          "ZEPHYR_QUESTION",
+          "ZEPHYR_ANSWER",
+          "LEARNING_ENTERPRISE_API_DETECT_URLS",
+          "LEARNING_EMAIL_TEMPLATE",
+          "LEARNING_SERVING_VERSIONED_ARTICLE",
+          "LEARNING_SERVING_VERSIONED_AUTHOR",
+          "LEARNING_SERVING_VERSIONED_CAPTION",
+          "LEARNING_SERVING_VERSIONED_CLASSIFICATION",
+          "LEARNING_SERVING_VERSIONED_CLASSIFICATION_TYPE",
+          "LEARNING_SERVING_VERSIONED_COLLECTION",
+          "LEARNING_SERVING_VERSIONED_COURSE",
+          "LEARNING_SERVING_VERSIONED_DOCUMENT",
+          "LEARNING_SERVING_VERSIONED_EXTERNAL_IDENTITY",
+          "LEARNING_SERVING_VERSIONED_PATH",
+          "LEARNING_SERVING_VERSIONED_VIDEO",
+          "USER_POLL",
+          "SALES_ASSET_BUNDLE_CONTENT",
+          "SALES_ASSET_BUNDLE_VIEWER_PROFILE",
+          "CONTENT_GROUP_MULTI_PHOTO",
+          "CONTENT_GROUP_CAROUSEL",
+          "LIVE_VIDEO",
+          "EVENT_POST",
+          "ORGANIZATION_PRODUCT_PAGES",
+          "SAS_EVENT_AD",
+          "LEARNING_SERVING_VERSIONED_AUDIO",
+          "LEARNING_SERVING_VERSIONED_EVENT",
+          "SCREENING_QUESTIONS",
+          "DIGITALMEDIA_PHOTODNA",
+          "AUTO_CREATED_ORGANIZATIONS",
+          "UGC_EVENT_POST",
+          "UGC_COMPANY_POST",
+          "UGC_STORY_POST",
+          "UGC_EMPLOYEEBROADCASTFEED_POST",
+          "JOBS_FREEMIUM_COSMOS",
+          "SAS_AD_LIFT_TEST",
+          "MARKETPLACE_OPPORTUNITY_DEFAULT",
+          "MARKETPLACE_ENGAGEMENT_DEFAULT",
+          "SPONSORED_UPDATE_BRAND_LIFT_POLL",
+          "SPONSORED_UPDATE_NATIVE_DOCUMENT",
+          "DIGITALMEDIA_TEXT",
+          "ADS_LAN_BRAND_LIFT_POLL",
+          "PROFILE_VIDEO",
+          "JOBS_VIRAL",
+          "MEMBER_RICH_CONTENT",
+          "LEARNING_CONTENT_CAMPAIGN_ASSOCIATION",
+          "MARKET_RESEARCH_QUESTIONNAIRE",
+          "LINKEDIN_LANDING_PAGE",
+          "DIGITALMEDIA_OCR_TEXT",
+          "LEARNING_SERVING_VERSIONED_BOOK",
+          "VANITY_NAME",
+          "ADS_PROMOTION",
+          "LEAD_GEN_FORM_ORGANIC",
+          "CONTENT_GROUP_SLIDESHOW",
+          "ADS_TRANSPARENCY_SPONSORED_UPDATE_EVENT",
+          "DIGITALMEDIA_AUTO_CAPTION",
+          "DIGITALMEDIA_STICKER",
+          "DIGITALMEDIA_TEXT_OVERLAY",
+          "AUTO_GENERATED_SKILL_ARTICLE",
+          "AUTO_GENERATED_SKILL_ARTICLE_CONTRIBUTION"
+        ],
+        "default": "UNKNOWN",
+        "symbolDocs": {
+          "JOBS_GUEST_SEARCH_KEYWORDS": "Search keywords entered by a guest user for job search",
+          "CF_TOOLS_FIND_SPAM_IN_TEXT": "Should be used from Spam Classification Tool under Content Filtering Tools.",
+          "VOYAGER_API_DETECT_URLS": "Used for url validation requests sent from voyager-api.",
+          "DEPO_CREATE_APPLICATION": "Used for validating third-party application data such as name, description, logo image, etc. during application creation process.",
+          "DEPO_UPDATE_APPLICATION": "Used for validating third-party application data such as name, description, logo image, etc. during application update process.",
+          "OSCAR_VIDEO": "Videos uploaded through Oscar flow. Oscar is a project to enable creation of professionally-oriented, native video content on LinkedIn through topic-driven video conversations.",
+          "CONTENT_CREATION_PROMPT": "Prompts are created in different products across LinkedIn to encourage members to post more content.",
+          "CONTENT_CREATION_PROMPT_CAMPAIGN": "Prompts campaigns are sent to targeted members as notifications to encourage members to  post more content.",
+          "ARTICLE_COMMENT": "For comments on an article.",
+          "SPONSORED_INMAIL": "Used for UCF and review queue to indicate that content is from Sponsored InMail.",
+          "INBOX_PROPOSAL": "Content is one of the various InMail types (Recruiter, Subs, LSS), except for OpenLink inMails.",
+          "INBOX_PROPOSAL_OPENLINK": "Content is specifically an OpenLink InMail.",
+          "RICH_MEDIA_IMAGE": "Rich media images resolved by rich media summaries endpoint",
+          "JOBS_PREMIUM": "Used for online premium jobs created or updated by non-enterprise customers, i.e., those using Recruiter Lite contracts.",
+          "PROFINDER_REQUEST_FOR_PROPOSALS": "ProFinder request for proposals created by members.",
+          "SAS_AD_FORM": "Used for UCF and review queue to indicate that content is from OneClick Leadgen Form.",
+          "VIDEO_SHARE": "Deprecated. Use UGC_POST instead. Member uploaded video content along with associated metadata.",
+          "DIGITALMEDIA_ASSET": "A video asset managed, processed and served by Vector.",
+          "UGC_POST": "User generated content that is a post on LinkedIn. This is for pure feed posts. Posts inside different containers are separate sources",
+          "QUESTA_QUESTION": "Use generated questions content served by Questa platform.",
+          "QUESTA_ANSWER": "Use generated answers content served by Questa platform.",
+          "LEARNING_CUSTOM_CONTENT": "User generated content created from the Custom Content feature for LinkedIn Learning.",
+          "MENTORSHIP_MARKETPLACE_INTRO": "User generated introductory text to be shown in Mentorship Marketplace cards.",
+          "MENTORSHIP_MARKETPLACE_PURPOSE": "User generated text describing the mentorship purpose.",
+          "OUTLOOK_PEOPLE_CARD": "Represents the PeopleCard which appears in Outlook contact search.",
+          "SLIDESHARE_SLIDESHOW": "Represents details about slideshows on slideshare.",
+          "HELP_CENTER_CONTACT_US_PAGE": "Contact us flow in helpcenter.",
+          "SAS_SPONSORED_UPDATE_CAROUSEL": "Used for UCF and review queue to indicate that content is from a Sponsored Carousel.",
+          "SAS_SPONSORED_UPDATE_VIDEO": "Used for UCF and review queue to indicate that content is from a Sponsored Video.",
+          "SAS_DYNAMIC_AD_FOLLOW_COMPANY": "Used for UCF and review queue to indicate that content is from a Follow Company Dynamic Ad.",
+          "SAS_DYNAMIC_AD_JOBS": "Used for UCF and review queue to indicate that the content is from a Jobs Dynamic Ad (Work With Us, Jobs You May Be Interested In, Picture Yourself).",
+          "SAS_DYNAMIC_AD_SPOTLIGHT": "Used for UCF and review queue to indicate that the content is from a Spotlight Dynamic Ad.",
+          "SAS_DYNAMIC_AD_WHITEPAPER_DOWNLOAD": "Used for UCF and review queue to indicate that the content is from a Whitepaper Download Dynamic Ad.",
+          "JOBS_FREEMIUM": "Used for freemium jobs creation, updating and viewing. Refer to go/freemiumucf for more detailed info.",
+          "LEARNING_CATEGORY": "A word or a phrase used to categorize content on LinkedIn Learning platform.",
+          "DIGITALMEDIA_STATIC_ASSET": "A static media (image, document, etc.) asset managed, processed and served by Vector.",
+          "APP_ADS_PUBLISHER": "Used for UCF and review queue to indicate that the content is from mobile APP ads publisher",
+          "WEB_ADS_PUBLISHER": "Used for UCF and review queue to indicate that the content is from website ads publisher",
+          "JOBS_MINI": "Used for mini jobs creation, updating and viewing. Refer to go/UpRFC for more details.",
+          "GROUPS_DEFINITION": "Used for group creation and update.",
+          "GROUPS_POST": "Used for posts in groups.",
+          "GROUPS_COMMENT": "Used for post comments in groups",
+          "LYNDA_LEARNING_COLLECTION": "Learning collection created by LinkedIn Learning enterprise admin",
+          "LYNDA_LEARNING_PATH": "Learning path created by LinkedIn Learning enterprise admin",
+          "HASHTAG": "A hashtag used in a post or comment",
+          "NATIVE_DOCUMENT_POST": "Native document content that is a post on Linkedin. Native document is a document that users upload when they create a post.",
+          "NATIVE_DOCUMENT_TRANSCRIPT": "Transcript of native document content. This is the text extracted from every pages of the native document.",
+          "CUSTOM_INVITATION_MESSAGE": "User generated content created when sending out an invitation with a custom message.",
+          "CONTENT_SERIES": "Used by a LinkedIn Series, which has both text and images. Series is a way for creators to deliver serialized content (newsletters, podcasts, video series).",
+          "REVIEWS": "User generated ratings and reviews for products, services, courses, etc. Refer to go/reviewsUcfRfc for more details",
+          "INBOX_NEW_THREAD": "Indicates that the content represents a newly created Messaging Thread.",
+          "EVENT_CONTENT": "Used for validating event entity fields (event name, description etc.) during event creation process. Refer to go/event-ucf for more details. go/EventsWiki ",
+          "DIGITALMEDIA_STATIC_ASSET_RENDER_TIME_SCAN": "Used for vector non-video asset render time scan which is done at the time of serving.",
+          "JOBS_PREMIUM_OFFLINE": "Used for offline premium jobs created or updated by enterprise customers, e.g., those using Recruiter and Agency contracts. Refer to go/jobsAbusePreventionP1 for more details.",
+          "MARKETPLACE_OPPORTUNITY_SERVICE_MARKETPLACE": "Used for UCF and review queue to indicate the opportunity is from the service marketplace via the marketplace platform.",
+          "MARKETPLACE_OPPORTUNITY_CAREER_ADVICE": "Used for UCF and review queue to indicate the opportunity is from Career Advice via the marketplace platform.",
+          "DIGITALMEDIA_STATIC_ASSET_GENERATED": "Used for vector assets which are generated by a 3rd party service. For example, in Project Theseus, an image per page of the uploaded document is generated via imageMagick or something similar",
+          "DIGITALMEDIA_STATIC_ASSET_EXTRACTED": "Used for vector assets which are extracted from an enclosing entity. For example, in an uploaded document, embedded rich media can be extracted by vector and sent for UCF classification",
+          "ADS_TRANSPARENCY_SPONSORED_UPDATE": "Used for UCF and review queue to indicate that content is from a Sponsored Update. This content when reported was not being targeted and sponsored to the user and is being shown in the transparency page. More information at go/ads-on-pages",
+          "ADS_TRANSPARENCY_SPONSORED_UPDATE_CAROUSEL": "Used for UCF and review queue to indicate that content is from a Sponsored Carousel. This content when reported was not being targeted and sponsored to the user and is being shown in the transparency page. More information at go/ads-on-pages",
+          "ADS_TRANSPARENCY_SPONSORED_UPDATE_VIDEO": "Used for UCF and review queue to indicate that content is from a Sponsored Video. This content when reported was not being targeted and sponsored to the user and is being shown in the transparency page. More information at go/ads-on-pages",
+          "ASSESSMENTS_TEXT_RESPONSE": "Used for text content created by members on assessments platform.",
+          "MARKETPLACE_PROVIDER_SERVICE_MARKETPLACE": "Used for UCF and review queue to indicate the content (eg: service provider preference) is from a provider in the service marketplace via the marketplace platform.",
+          "MARKETPLACE_PROVIDER_CAREER_ADVICE": "Used for UCF and review queue to indicate the content (eg: mentor preference) is from a provider in the career advice marketplace via the marketplace platform.",
+          "MARKETPLACE_ENGAGEMENT_SERVICE_MARKETPLACE": "Used for UCF and review queue to indicate the content is from a requester/provider engagement in the service marketplace via the marketplace platform.",
+          "MARKETPLACE_ENGAGEMENT_CAREER_ADVICE": "Used for UCF and review queue to indicate the content is from a request/provider engagement in the career advice marketplace via the marketplace platform.",
+          "JOB_HIRING_TEAM_MEMBER_NOTE": "The content entered by job_hiring_team_member and is used for providing more insights about the posted job. Refer to go/uphtrfc for more details.",
+          "JOBS_PRIVATE": "Used for private jobs creation, updating and viewing. Refer to go/privateJobsRFC for more details.",
+          "DIGITALMEDIA_ASSET_RENDER_TIME_SCAN": "Used for vector video asset render time scan which is done at the time of serving.",
+          "SPECTROSCOPY": "Used for inspector extension review queue to indicate that the items are generated and sent in by the Spectroscopy offline flow. For project details, please visit go/specphase2",
+          "SPONSORED_MESSAGE": "Used for UCF and review queue to indicate that content is from Conversation Ads",
+          "CARE_COMMUNITY_CONTENT": "Used for CARE Community (Helpcenter forums) posts generated by members.",
+          "CAREER_PAGES": "Used for contents in Career Pages. Refer to go/lcpdocs for more details about Career Pages.",
+          "CONTENT_SOURCE_MIGRATION": "Only for internal use and no Ucf client should use this. Used as a placeholder content source for systems which have not completed the content source migration effort. This will be used whenever the value of the ucfContextUrn does not have a corresponding contentSource value.",
+          "ADS_LAN": "used for UCF and review queue to indicate that content is from an ad on LinkedIn Audience Network (LAN)",
+          "THIRD_PARTY_APPLICATION_WEBHOOK_URL": "Webhook URLs registered by third-party apps via develper portal (go/webhookFE)",
+          "BABYLONIA_FIRST_PARTY_ARTICLE": "First-party page ingested by Babylonia representing an article. First-party pages are pages owned by LinkedIn (e.g., linkedin.com/jobs).",
+          "BABYLONIA_FIRST_PARTY_VIDEO": "First-party page ingested by Babylonia representing a video. First-party pages are pages owned by LinkedIn (e.g., linkedin.com/jobs).",
+          "BABYLONIA_FIRST_PARTY_IMAGE": "First-party page ingested by Babylonia representing an image. First-party pages are pages owned by LinkedIn (e.g., linkedin.com/jobs).",
+          "BABYLONIA_FIRST_PARTY_RICH_MEDIA": "First-party page ingested by Babylonia representing a richmedia. First-party pages are pages owned by LinkedIn (e.g., linkedin.com/jobs).",
+          "SAS_SPONSORED_UPDATE_JOB_POSTING": "Used for UCF and review queue to indicate that content is from a Sponsored Job. This is an Ad created by advertiser and UCF needs the content type to classify for review queue. ADS_TRANSPARENCY_SPONSORED_UPDATE_JOB_POSTING is the content resource used in ads transparency page for SAS_SPONSORED_UPDATE_JOB_POSTING.",
+          "ADS_TRANSPARENCY_SPONSORED_UPDATE_JOB_POSTING": "Used for UCF and review queue to indicate that content is from a Sponsored Job. This content when reported was not being targeted and sponsored to the user and is being shown in the transparency page. More information at go/ads-on-pages",
+          "FINGERPRINT_FILE_FOR_CP_DETECTION": "Used when a fingerprint file is generated by Vector and sent to UCF for CP detection in videos.",
+          "VIDEO_ASSESSMENT_TO_CANDIDATE": "Used when a recruiter requests a candidate to take a video assessment (video recording) and the candidate sees a text or video intro from the recruiter as part of the assessment.",
+          "VIDEO_ASSESSMENT_FROM_CANDIDATE": "Used when a recruiter views a video assessment (video recording) submission from a candidate.",
+          "ZEPHYR_QUESTION": "User generated question that is only displayed on Zephyr.",
+          "ZEPHYR_ANSWER": "User generated answer that is only displayed on Zephyr.",
+          "LEARNING_ENTERPRISE_API_DETECT_URLS": "Used for url validation requests sent from learning-enterprise-api.",
+          "LEARNING_EMAIL_TEMPLATE": "Used for UCF and review queue to indicate that content is Email Template from Learning.",
+          "LEARNING_SERVING_VERSIONED_ARTICLE": "An article in the unified learning content API.",
+          "LEARNING_SERVING_VERSIONED_AUTHOR": "An author in the unified learning content API.",
+          "LEARNING_SERVING_VERSIONED_CAPTION": "A caption entity for a video or audio stream in unified learning content API.",
+          "LEARNING_SERVING_VERSIONED_CLASSIFICATION": "A classification that can be associated with different entities in the unified learning content API.",
+          "LEARNING_SERVING_VERSIONED_CLASSIFICATION_TYPE": "A classification type that categorizes the classification entity in the unified learning content API.",
+          "LEARNING_SERVING_VERSIONED_COLLECTION": "An unordered collection of learning content in the unified learning content API.",
+          "LEARNING_SERVING_VERSIONED_COURSE": "A course in the unified learning content API.",
+          "LEARNING_SERVING_VERSIONED_DOCUMENT": "A document in the unified learning content API. A document has content in the form of text and images and is meant to be a form of record.",
+          "LEARNING_SERVING_VERSIONED_EXTERNAL_IDENTITY": "An external identity that is being represented in learning content APIs. Ex. the underlying identity of a content author.",
+          "LEARNING_SERVING_VERSIONED_PATH": "A path in the unified learning content API. Path is an ordered sequence of content that grants the learner certain skills upon completion.",
+          "LEARNING_SERVING_VERSIONED_VIDEO": "A video in the unified learning content API.",
+          "USER_POLL": "A poll with a question and multiple options to vote on.",
+          "SALES_ASSET_BUNDLE_CONTENT": "Smart Links (aka Sales Bundles) content provided by the bundle's owner (e.g. title, asset names, ...)",
+          "SALES_ASSET_BUNDLE_VIEWER_PROFILE": "Profile information provided by a guest viewer of Smart Links (aka Sales Bundles) (e.g. full name, email address)",
+          "CONTENT_GROUP_MULTI_PHOTO": "Represents a collection of photos and images. This will be referenced from UGC if the content is served in feed.",
+          "CONTENT_GROUP_CAROUSEL": "Represents a collection of content, e.g., photo + text, to be rendered in carousel format. This will be referenced from UGC if the content is served in feed.",
+          "LIVE_VIDEO": "Used for UCF and review queue to indicate the content is a live video.",
+          "EVENT_POST": "Used for posts in events.",
+          "ORGANIZATION_PRODUCT_PAGES": "Used for UCF and review queue to indicate the content is a organization's product page. Refer to go/productsmarketplace for more details about product pages.",
+          "SAS_EVENT_AD": "Used for UCF and review queue to indicate that content is from a Sponsored Event.",
+          "LEARNING_SERVING_VERSIONED_AUDIO": "An audio based learning content in the unified learning content API.",
+          "LEARNING_SERVING_VERSIONED_EVENT": "A learning event in the unified learning content API.",
+          "SCREENING_QUESTIONS": "Used for UCF and review queue to indicate that the content is screening questions (e.g. How many years of work experience do you have with Java?).",
+          "DIGITALMEDIA_PHOTODNA": "Used to indicate UCF call for PhotoDna hashes from Vector.",
+          "AUTO_CREATED_ORGANIZATIONS": "Used for UCF to indicate that the content is an organization that is auto created by data ingestion pipeline.",
+          "UGC_EVENT_POST": "Used for posts in an event page. This is one of the container in UGC.",
+          "UGC_COMPANY_POST": "Used for posts in a company page. This is one of the container in UGC.",
+          "UGC_STORY_POST": "Used for story posts. This is one of the container in UGC.",
+          "UGC_EMPLOYEEBROADCASTFEED_POST": "Used for employee broadcast posts. This is one of the container in UGC.",
+          "JOBS_FREEMIUM_COSMOS": "Used for cosmos freemium jobs creation, updating and viewing. Refer to go/cosmosFreemiumWiki for more details.",
+          "SAS_AD_LIFT_TEST": "Used for UCF and review queue to indicate that content is from AdLiftTest. Refer to go/lift/design/adsreview for more details.",
+          "MARKETPLACE_OPPORTUNITY_DEFAULT": "Used for UCF and review queue to indicate the opportunity. This can be shared by marketplaces in nafasi platform which only require default checks. (go/nafasi-content-source)",
+          "MARKETPLACE_ENGAGEMENT_DEFAULT": "Used for UCF and review queue to indicate the engagement. This can be shared by marketplaces in nafasi platform which only require default checks. (go/nafasi-content-source)",
+          "SPONSORED_UPDATE_BRAND_LIFT_POLL": "Used for UCF (go/ucf) and review queue to indicate that content is from brand lift poll ads of Sponsored Update.",
+          "SPONSORED_UPDATE_NATIVE_DOCUMENT": "Ad based on Native document content that is a post on Linkedin. Check NATIVE_DOCUMENT_POST enum and go/sponsorednativedocuments for more details.",
+          "DIGITALMEDIA_TEXT": "Used to indicate the content is text string from Vector.",
+          "ADS_LAN_BRAND_LIFT_POLL": "Used for UCF (go/ucf) to indicate that content is from brand lift poll ads of Linkedin Audience Network. (go/lan-blp-design)",
+          "PROFILE_VIDEO": "Used for UCF and review queue to indicate content is a member profile video.",
+          "JOBS_VIRAL": "Used for scoring of viral jobs in UCF and review queue. A job is said to be viral if it gains certain number of views or applications in the specified time. This threshold can be different for different job sources like paid or ingested jobs (go/viral-job-scoring)",
+          "MEMBER_RICH_CONTENT": "Used for UCF and review queue to indicate content is either an ingested content or an asset or an activity or linkedin article.",
+          "LEARNING_CONTENT_CAMPAIGN_ASSOCIATION": "Learning admins can promote specific content to various parts of the Learner Experience (go/admincute for more details), including setting that a contextual message for that content in a user-generated field; this description can be found in the CurationTargetContentAssociation",
+          "MARKET_RESEARCH_QUESTIONNAIRE": "A questionnaire with a collection of groups and questions for users to respond to for market research.",
+          "LINKEDIN_LANDING_PAGE": "Used for UCF (Universal Content Filtering - for more info go/ucf) and review queue to indicate content is from Linkedin Landing Page. Linkedin Landing Page is a product that Recruiters and Talent Brand Advertisers use to build a pipeline of candidates for outreach. Refer to go/llpms2/rfc for more details.",
+          "DIGITALMEDIA_OCR_TEXT": "Used for OCR text extracted from images by Vector",
+          "LEARNING_SERVING_VERSIONED_BOOK": "A book in the unified learning content API.",
+          "VANITY_NAME": "Used for UCF and review queue to indicate the content is a vanity name in the Identity VanityIndex table.",
+          "ADS_PROMOTION": "Used for UCF and review queue to indicate that the content is from an internal Promotion (also commonly known as galapagos). For more information on the design, please refer to go/galapagos/promo-review-process",
+          "LEAD_GEN_FORM_ORGANIC": "Used for UCF and review queue to indicate that the content is from Lead Gen Form and it is used in organic use case. For more information to the design, please refer to go/lgf/review/organic",
+          "CONTENT_GROUP_SLIDESHOW": "Represents a collection of videos and images. This will be referenced from UGC if the content is served in feed.",
+          "ADS_TRANSPARENCY_SPONSORED_UPDATE_EVENT": "Used for UCF and review queue to indicate that content is from a Sponsored Event. This content when reported was not being targeted and sponsored to the user and is being shown in the transparency page. More information at go/ads-on-pages",
+          "DIGITALMEDIA_AUTO_CAPTION": "Used for UCF integration to indicate the content is of text type extracted from the audio/video",
+          "DIGITALMEDIA_STICKER": "Used for UCF integration to indicate the content is of Sticker type. StickerData contains StickerLink which definitely has a url and the text is optional. UCF scans will run on both the url and the text.",
+          "DIGITALMEDIA_TEXT_OVERLAY": "Used for UCF integration to indicate that the content is of text type extracted from the posts that has text overlays",
+          "AUTO_GENERATED_SKILL_ARTICLE": "Used for UCF integration to indicate that the content is an auto-generated LinkedIn skill article, see more at https://go/projectX",
+          "AUTO_GENERATED_SKILL_ARTICLE_CONTRIBUTION": "Used for UCF integration to indicate that the content is a contribution for a LinkedIn skill article, see more at https://go/projectX",
+          "UNKNOWN": "ContentSource is unknown. Value should not be used and is added for forward compatibility only. Adding to pass the validation: go/rule-doc%20dmrc/AvroEnumsShouldHaveDefault"
+        }
+      },
+      "compliance": "NONE",
+      "aliases": [
+      ]
+    },
+    {
+      "name": "spamClassifierExplanations",
+      "doc": "Explanations by Spam Classifiers.",
+      "type": {
+        "type": "array",
+        "items": {
+          "namespace": "com.linkedin.events.ucv",
+          "name": "ClassificationExplanation",
+          "doc": "Explanation of what classification is shown.",
+          "type": "record",
+          "fields": [
+            {
+              "name": "classifierId",
+              "doc": "Id of classifier.",
+              "type": "string",
+              "compliance": "NONE",
+              "aliases": [
+              ]
+            },
+            {
+              "name": "classifierVersion",
+              "doc": "version of classifier.",
+              "type": "string",
+              "compliance": "NONE",
+              "aliases": [
+              ]
+            },
+            {
+              "name": "classificationType",
+              "doc": "What classification type the content belongs to.",
+              "type": {
+                "namespace": "com.linkedin.events.contentspam",
+                "name": "SpamType",
+                "doc": "Enum representing the different types of spam we can classify. BAM owns this definition, it is in common so that it can be included in both messages and tracking events.  Refer to https://iwww.corp.linkedin.com/wiki/cf/display/ENGS/BAM+SpamType for the symbol definitions",
+                "type": "enum",
+                "symbols": [
+                  "ADULT",
+                  "JOB",
+                  "EVENT",
+                  "UCV_SPAMMER",
+                  "PROMOTION",
+                  "OTHER_SPAM",
+                  "BADURL_MALWARE",
+                  "BADURL_PHISHING",
+                  "BADURL_SPAM",
+                  "NEW_MEMBER_LIX_BLOCKED",
+                  "BULK_SPAM",
+                  "PROFANITY",
+                  "PORN",
+                  "DUPLICATES",
+                  "COMMENT_META",
+                  "UBIQUITY_SPAM",
+                  "UBIQUITY_LOWQUALITY",
+                  "USER_FLAGGED_SPAM",
+                  "TOO_MANY_CAPS",
+                  "LANGUAGE_MISMATCH",
+                  "BAD_MEDIA",
+                  "MONEY_FRAUD",
+                  "TOS_VIOLATION",
+                  "COMMERCIAL",
+                  "SPAM_HASHES",
+                  "THREATS_OF_VIOLENCE",
+                  "IRRELEVANT",
+                  "GRATUITOUSLY_SHOCKING",
+                  "HARASSMENT",
+                  "IMPERSONATION",
+                  "PUZZLE",
+                  "MEME",
+                  "MEME_QUOTE_WITH_AUTHOR",
+                  "MEME_IRRELEVANT",
+                  "ADULT_NUDE_ART",
+                  "ADULT_BIKINI_LINGERIE",
+                  "ADULT_MEDICAL",
+                  "ADULT_IRRELEVANT",
+                  "SHOCKING",
+                  "SHOCKING_GLOBAL_EVENT",
+                  "SHOCKING_PERSONAL",
+                  "OFFENSIVE",
+                  "OFFENSIVE_PROFANITY",
+                  "PERSONAL",
+                  "PERSONAL_RELIGIOUS_BELIEF",
+                  "PERSONAL_POLITICAL_BELIEF",
+                  "PERSONAL_PHOTO",
+                  "PERSONAL_PLEA",
+                  "PERSONAL_SELF_PROMOTION",
+                  "PERSONAL_NON_PAID_FOR_JOB_POSTING",
+                  "OTHER_LOW_QUALITY",
+                  "MALWARE",
+                  "PHISHING",
+                  "GORE",
+                  "HATE_SPEECH",
+                  "PERSONAL_VIDEO",
+                  "AUDIO_LOW_QUALITY",
+                  "MUSIC_VIDEO",
+                  "MOVIE_VIDEO",
+                  "AUDIO_SPAM",
+                  "POTENTIAL_CHILD_PORN",
+                  "COPYRIGHT_VIOLATION",
+                  "COPYRIGHT_VIOLATION_AUDIO",
+                  "COPYRIGHT_VIOLATION_VIDEO",
+                  "FAKE_NEWS",
+                  "LOW_QUALITY_NEWS",
+                  "UNWANTED_ADVANCES",
+                  "TERRORISM",
+                  "EXTREME_VIOLENCE",
+                  "DEROGATORY",
+                  "VIOLATION_OF_HUMAN_DIGNITY",
+                  "GENOCIDE_DENIAL",
+                  "INFLAMMATORY_CONTENT",
+                  "INCITEMENT_OF_VIOLENCE",
+                  "HARASSMENT_SEXUAL",
+                  "HARASSMENT_NONSEXUAL",
+                  "EGREGIOUS_HARASSMENT_SEXUAL",
+                  "EGREGIOUS_HARASSMENT_NONSEXUAL",
+                  "DISCRIMINATION",
+                  "MISREPRESENTATION",
+                  "GREY_ZONE_CONTENT",
+                  "RED_ZONE_AUTHOR_CONTENT",
+                  "AUSTRIAN_LAW_VIOLATION",
+                  "ATO_SESSION_GENERATED_CONTENT",
+                  "MISINFORMATION_DISPUTED_HARM",
+                  "ILLEGAL_REGULATED_COMMERCIAL",
+                  "MISLEADING_CTA",
+                  "GRAPHIC_CONTENT",
+                  "GRAPHIC_NE",
+                  "GRAPHIC_NE_LQ",
+                  "MONEY_SCAM_DECEPTIVE",
+                  "MONEY_SCAM_WFH",
+                  "MONEY_SCAM_UPFRONT_PAYMENT",
+                  "MONEY_SCAM_IMPERSONATION",
+                  "MONEY_SCAM_PHISHING",
+                  "INFERIOR_INCOMPLETE",
+                  "INFERIOR_MULTIPLE_LISTINGS",
+                  "INFERIOR_BROKEN_LINK",
+                  "INFERIOR_COMPANY_MISMATCH",
+                  "INFERIOR_MISLEADING_POSITION",
+                  "INFERIOR_JOB_ALREADY_CLOSED",
+                  "DRUGS",
+                  "ALCOHOL",
+                  "GAMBLING",
+                  "FRANCHISES",
+                  "MLM",
+                  "WEAPONS",
+                  "CRYPTO_CURRENCY",
+                  "PROMOTION_SALE_PRODUCT_SERVICE",
+                  "PROMOTION_SELF_PROMOTION",
+                  "PROMOTION_TRAINING_COURSES",
+                  "DISCRIMINATION_RACE",
+                  "DISCRIMINATION_AGE",
+                  "DISCRIMINATION_SEX",
+                  "DISCRIMINATION_NATIONALITY",
+                  "DISCRIMINATION_MARITAL_STATUS",
+                  "DISCRIMINATION_MILITARY",
+                  "PROHIBITED_TRAFFICKING",
+                  "DISCRIMINATION_OTHER",
+                  "INFERIOR_NAME_FIELD_VIOLATION",
+                  "INFERIOR_OTHER",
+                  "INFERIOR_TEST_CONTENT",
+                  "MONEY_SCAM_ATO",
+                  "MONEY_SCAM_OTHER",
+                  "PROMOTION_OTHER",
+                  "NEAR",
+                  "HUMAN_BODY",
+                  "FAKE_ENGAGEMENT",
+                  "ALCOHOL_TOBACCO",
+                  "CIRCUMVENTION",
+                  "ANIMALS",
+                  "PHARMA",
+                  "MOB",
+                  "FABRICATED",
+                  "COUNTERFEIT",
+                  "PRECIOUS",
+                  "OCCULT",
+                  "HUMAN_EXPLOIT",
+                  "ILLEGAL_DRUG",
+                  "MONETIZATION_CSE",
+                  "RECREATIONAL_DRUG",
+                  "LOTTERY",
+                  "SPAM_TYPE_MIGRATION",
+                  "INAUTHENTIC_UNORIGINAL_CONTENT",
+                  "UNKNOWN",
+                  "TOXIC_CONVERSATION",
+                  "GRAY_TONE",
+                  "MONEY_SCAM_IDENTITY",
+                  "MONEY_SCAM_JOB",
+                  "MONEY_SCAM_FINANCE",
+                  "MONEY_SCAM_FREE_MONEY",
+                  "MONEY_SCAM_INHERITANCE",
+                  "MONEY_SCAM_OFF_PLATFORM",
+                  "CHILD_ABUSE_SEXUAL",
+                  "OTHER_CHILD_NUDITY",
+                  "CHILD_ABUSE_NON_SEXUAL",
+                  "TRUST_AWARE_TREATMENT_COMMENT_EXPERIMENT_1",
+                  "TRUST_AWARE_TREATMENT_COMMENT_EXPERIMENT_2",
+                  "TRUST_AWARE_TREATMENT_COMMENT_EXPERIMENT_3",
+                  "TRUST_AWARE_TREATMENT_COMMENT_EXPERIMENT_4",
+                  "TRUST_AWARE_TREATMENT_COMMENT_EXPERIMENT_5",
+                  "TRUST_AWARE_TREATMENT_COMMENT",
+                  "GRAY_ZONE_EXPERIMENT_1",
+                  "GRAY_ZONE_EXPERIMENT_2",
+                  "GRAY_ZONE_EXPERIMENT_3",
+                  "GRAY_ZONE_EXPERIMENT_4",
+                  "GRAY_ZONE_EXPERIMENT_5",
+                  "TRADEMARK",
+                  "DEFAMATION",
+                  "LEGAL_TAKEDOWN",
+                  "BRAND_ABUSE_LINKEDIN",
+                  "ADULT_ACTIVITIES",
+                  "THREATS_OF_VIOLENCE_SELF_HARM_SUICIDE"
+                ],
+                "default": "UNKNOWN",
+                "symbolDocs": {
+                  "ADULT": "Content containing adult or obscene information.",
+                  "PROFANITY": "Profane attack",
+                  "TOO_MANY_CAPS": "Content with too many words with all capital letters.",
+                  "LANGUAGE_MISMATCH": "Content whose language does not match its parent's language.",
+                  "BAD_MEDIA": "Content contains a bad media.",
+                  "MONEY_FRAUD": "For Nigerian and 409 scams related to money frauds.",
+                  "TOS_VIOLATION": "For Terms of Service violations.",
+                  "COMMERCIAL": "For commercial spam/scams.",
+                  "SPAM_HASHES": "For content caught by hashes deemed to be indicative of spam.",
+                  "THREATS_OF_VIOLENCE": "For content having threats of voilence.",
+                  "IRRELEVANT": "For contextually irrelevant content",
+                  "GRATUITOUSLY_SHOCKING": "For graphic content shown for the purpose of shocking others",
+                  "HARASSMENT": "For content to disturb persistently; torment, as with troubles or cares; bother continually; pester; persecute",
+                  "IMPERSONATION": "For member content (usually the name and company) that is impersonating another account",
+                  "PUZZLE": "Content indicating Puzzle category",
+                  "MEME": "Content of type MEME that doesn't fit any other finer label of MEME subset",
+                  "MEME_QUOTE_WITH_AUTHOR": "MEME image containing a direct quote or reference from author",
+                  "MEME_IRRELEVANT": "MEME image with contextually irrelevant information",
+                  "ADULT_NUDE_ART": "Adult content with nude art",
+                  "ADULT_BIKINI_LINGERIE": "Adult content showing bikini or lingerie",
+                  "ADULT_MEDICAL": "Adult content showing medicine related data",
+                  "ADULT_IRRELEVANT": "Adult content with contextually irrelevant data",
+                  "SHOCKING": "Content that is shocking and doesnt fit subcategories in this list",
+                  "SHOCKING_GLOBAL_EVENT": "Global event that generates shock",
+                  "SHOCKING_PERSONAL": "Personal event that generates shock",
+                  "OFFENSIVE": "Content that is offensive and doesnt fit subcategories",
+                  "OFFENSIVE_PROFANITY": "Offensive Profanity usually hurtful to other entities",
+                  "PERSONAL": "Content that is personal and doesnt fit subcategories",
+                  "PERSONAL_RELIGIOUS_BELIEF": "Personal Religious beliefs provided in contextually irrelevant setup",
+                  "PERSONAL_POLITICAL_BELIEF": "Personal Political beliefs provided in contextually irrelevant setup",
+                  "PERSONAL_PHOTO": "Personal photo that is contextually irrelevant",
+                  "PERSONAL_PLEA": "Personal Plea for help from people or entities",
+                  "PERSONAL_SELF_PROMOTION": "Personal Self promotion that is contextually irrelevant ",
+                  "PERSONAL_NON_PAID_FOR_JOB_POSTING": "Personal job posting that is contextually irrelevant",
+                  "OTHER_LOW_QUALITY": "Any other lowquality label that does not fit into other specific criteria listed here",
+                  "MALWARE": "Content contains malware of any kind, used to represent cases that don't match any other finer grained types here.",
+                  "PHISHING": "Content contains phishing attempt of any kind, used to represent cases that don't match any other finer grained types here.",
+                  "GORE": "Any shocking incident or item, often used for violent content.",
+                  "HATE_SPEECH": "For content to demonstrate considerable hate or ill feelings against anyone or any thing",
+                  "PERSONAL_VIDEO": "Personal video that is contextually irrelevant",
+                  "AUDIO_LOW_QUALITY": "Audio content deemed to be low quality based on content policy",
+                  "MUSIC_VIDEO": "Video content that qualifies as music-video based on content policy",
+                  "MOVIE_VIDEO": "Video content that qualifies as movie-video based on content policy",
+                  "AUDIO_SPAM": "Audio content deemed as SPAM based on content policy",
+                  "POTENTIAL_CHILD_PORN": "Content that can be deemed as potential child porn, these need to normally routed to separate reviewers for immediate review.",
+                  "COPYRIGHT_VIOLATION": "Content that is deemed to be copyright violation to some other content. These typically go through more stringent verifications and should not be used lightly. Only workflows that have verified the violation are advised to use this value. This will be used for content which is neither audio nor video.",
+                  "COPYRIGHT_VIOLATION_AUDIO": "Granular label of COPYRIGHT_VIOLATION for marking audio of the content to be infringing copyright of some other audio content",
+                  "COPYRIGHT_VIOLATION_VIDEO": "Granular label of COPYRIGHT_VIOLATION for marking video of the content to be infringing copyright of some other video content",
+                  "FAKE_NEWS": "News deemed to be fake based on content policy",
+                  "LOW_QUALITY_NEWS": "News deemed to be low quality based on content policy",
+                  "UNWANTED_ADVANCES": "All pick-up lines and flirty messages commenting on the physicality of the recipient",
+                  "TERRORISM": "Engaging in, promoting, or supporting violence by non-governmental organizations and/or individuals targeting civilians, property, infrastructure, or key resources, with the intent to create terror or spread fear among non-combatant masses of people, governments or organizations, in order to achieve goals that are political, religious, ethnic, or ideological in nature",
+                  "EXTREME_VIOLENCE": "Content that graphically depicts criminal acts.  LinkedIn does not allow any type of material that involves violent acts against a person",
+                  "DEROGATORY": "Content intended to provoke and  stir negative opinions against protected groups that states inferiority but is not extreme enough to be hate speech.",
+                  "VIOLATION_OF_HUMAN_DIGNITY": "Content related to practices that violate human dignity include torture, rape, social exclusion, labor exploitation, bonded labor, and slavery",
+                  "GENOCIDE_DENIAL": "Content denying occurrence of crimes against humanity or genocide, e.g. holocaust denial. LinkedIn does not allow publishing this content on the platform.",
+                  "INFLAMMATORY_CONTENT": "Content intended to provoke and  stir negative opinions against non-protected groups that states inferiority but is not regarded as hate speech",
+                  "INCITEMENT_OF_VIOLENCE": "Refers to content that glorifies or incites violence. Ex. encouraging others to commit violence at a particular place or time",
+                  "HARASSMENT_SEXUAL": "Harassment (sexual) is a type of harassment that contains sexual expressions of attraction, desire or requests for a personal relationship, marriage, and/or romantic connection. Ex. compliments or sweet-talking",
+                  "HARASSMENT_NONSEXUAL": "Verbal attacks targeted at an individual for personal reasons.  Ex. name-calling",
+                  "EGREGIOUS_HARASSMENT_SEXUAL": "Expressions of desire or intent to engage in sexual behavior, sexual activity, sex acts, make sexual advances or exchange sexual favors. Ex: sexualized body parts",
+                  "EGREGIOUS_HARASSMENT_NONSEXUAL": "Consists of extreme verbal abuses characterized by personal attacks on moral character and/or attempts to extort for personal gain. Ex. man-whore",
+                  "DISCRIMINATION": "Applicable to discriminatory content (Ethnicity/Race/Gender/Age/Religion). Eg Job with male only criteria.",
+                  "MISREPRESENTATION": "Applicable to content with incorrect/incomplete/no information. Eg Job with incorrect company name.",
+                  "GREY_ZONE_CONTENT": "(DEPRECATED - replaced by GRAY_TONE). Content that uses a dismissive, unconstructive or derisive tone. The content does not violate professional community policies, it damages relationships and close down or devolve conversations. Ex: Google is the demon",
+                  "RED_ZONE_AUTHOR_CONTENT": "Content authored by a member believed to be high-risk for producing red-zone content (e.g., hateful rhetoric). Reflects author’s reputation score at the time that the content was created/updated.",
+                  "AUSTRIAN_LAW_VIOLATION": "Content in violation of specific Austrian laws but not in violation of Professional Community Policies (PCP) will receive this label. The label will only be shown as an option for Abuse and Content Enforcement (ACE) if the content being reviewed was reported from an Austrian IP address.",
+                  "ATO_SESSION_GENERATED_CONTENT": "Content that is generated by a bad actor in an account takeover session is marked as bad using this label, during the account damage recovery process. For example, messages sent by a bad actor in an account takeover session",
+                  "MISINFORMATION_DISPUTED_HARM": "Content related to sensitive political or socially divisive topics that cannot be established as true or false but may cause physical harm or lead to violence. For example, claims that 5g is unhealthy for people.",
+                  "ILLEGAL_REGULATED_COMMERCIAL": "Content that promotes, facilitates access or attempts to sell illegal and/or regulated items or otherwise engage in prohibited commercial activity.",
+                  "MISLEADING_CTA": "Novel double-tap content & other misrepresentation of LinkedIn features to garner engagement.",
+                  "GRAPHIC_CONTENT": "Graphic or gruesome media depicting blood, gore, serious injury.",
+                  "GRAPHIC_NE": "Graphic or gruesome media posted in newsworthy context.",
+                  "GRAPHIC_NE_LQ": "Graphic or gruesome media posted by reputable news source.",
+                  "MONEY_SCAM_DECEPTIVE": "Content with intent to lure people with a promise of easy money for little to no effort and no skills required;Eg. job listing advertising becoming a money mule",
+                  "MONEY_SCAM_WFH": "WFH jobs with no skills requirements, no experience, promise of high income, etc.",
+                  "MONEY_SCAM_UPFRONT_PAYMENT": "Content or job requiring upfront payment for access to job or something",
+                  "MONEY_SCAM_IMPERSONATION": "Impersonator posing as known brand recruiter; they impersonate the company’s recruiter by using the company logo and provide a method to contact them about a job via email",
+                  "MONEY_SCAM_PHISHING": "Intent is to do money scam by collecting PII info",
+                  "INFERIOR_INCOMPLETE": "Incomplete content. Eg. Jobs with no job description or incomplete job description",
+                  "INFERIOR_MULTIPLE_LISTINGS": "More than one job in the job posting",
+                  "INFERIOR_BROKEN_LINK": "External link in the content will throw an error or the external link will not work",
+                  "INFERIOR_COMPANY_MISMATCH": "This is to capture ingested jobs that are tagged to a wrong company",
+                  "INFERIOR_MISLEADING_POSITION": "Posting with false or misleading position or with a fictitious company; or job poster accidentally select the incorrect company page; Job posting that clearly conceals or omits important information concerning the job being posted",
+                  "INFERIOR_JOB_ALREADY_CLOSED": "Sometimes the external link will work but the job is already closed",
+                  "DRUGS": "Content related to or promoting the sale or use of drugs. ",
+                  "ALCOHOL": "Content related to or promoting the sale or use of alcohol. (This shouldn't be confused for positions such as bartending)",
+                  "GAMBLING": "Content promoting gambling or sweepstakes",
+                  "FRANCHISES": "Content promoting false business investment opportunities",
+                  "MLM": "Content promoting for Pyramid selling, Network or referral marketing, Companies that make their money primarily off non-salaried workers. This label encompasses both pyramid schemes and MLMs",
+                  "WEAPONS": "Content related to the promotion, use or sale of weapons, ammunition, fireworks or any other violent product or service",
+                  "CRYPTO_CURRENCY": "Content related to or promoting the buying, selling or trading of cryptocurrencies",
+                  "PROMOTION_SALE_PRODUCT_SERVICE": "Promotional jobs are job posts that LinkedIn reasonably believes are intended to sell services or products provided by the company and are not primarily intended to offer a legitimate job opportunity (either employment or consulting) for a specific role.",
+                  "PROMOTION_SELF_PROMOTION": "Self promotion, promotion of self or business",
+                  "PROMOTION_TRAINING_COURSES": "Promotion or selling of training courses",
+                  "DISCRIMINATION_RACE": "Discriminatory content related to Race",
+                  "DISCRIMINATION_AGE": "Discriminatory content related to age",
+                  "DISCRIMINATION_SEX": "Discriminatory content related to Sex/gender",
+                  "DISCRIMINATION_NATIONALITY": "Discriminatory content related to National Origin or requiring Native language speaker",
+                  "DISCRIMINATION_MARITAL_STATUS": "Discriminatory content related to Marital status",
+                  "DISCRIMINATION_MILITARY": "Discriminatory content related to Military or veteran status",
+                  "PROHIBITED_TRAFFICKING": "Content related to smuggling or trafficking of any kind",
+                  "DISCRIMINATION_OTHER": "Discriminatory content not falling under any pre-defined DISCRIMINATION_* SpamType.",
+                  "INFERIOR_NAME_FIELD_VIOLATION": "Content with invalid field value. Eg. name as Tall Guy or company name as Bad Boyz (see go/profilepolicy).",
+                  "INFERIOR_OTHER": "Any low quality content that fall under inferior content but not falling under any pre-defined INFERIOR_* SpamType.",
+                  "INFERIOR_TEST_CONTENT": "Content created for testing purpose.",
+                  "MONEY_SCAM_ATO": "Content posted from taken over account with intent to do money scam.",
+                  "MONEY_SCAM_OTHER": "Content with intent to do money scam but not falling under any pre-defined MONEY_SCAM_* SpamType.",
+                  "PROMOTION_OTHER": "Promotional content not falling under any pre-defined PROMOTION_* SpamType.",
+                  "NEAR": "Label(newsworthy, education, awareness-raising, research) applied on sensitive content which some members find inappropriate while still being allowed to view by affirming their intent - e.g. by clicking on interstitial blurb etc. (see go/interstitial)",
+                  "HUMAN_BODY": "Content related to human body parts and fluids, eg. organs, blood, urine, looking for organ donors etc.",
+                  "FAKE_ENGAGEMENT": "Content related to fake engagement and/or virality hacks, eg. double tap.",
+                  "ALCOHOL_TOBACCO": "Content related to alcohol, tobacco and related paraphernalia, eg. rolling paper, hookah, electronic cigarettes etc.",
+                  "CIRCUMVENTION": "Content related to hacking and circumvention, eg. hacking software, instructions on hacking, distribution of hacked material, circumventing to get unauthorised free access to video games, software, or other websites that otherwise require payment, use of automated systems and/or bots that scrape data, artificially inflate engagement/metrics etc.",
+                  "ANIMALS": "Content related to live animals, livestock, endangered species and animal parts, eg. fur, skin, ivory, bones, horns, carcasses, sale of raw meat for consumption etc.",
+                  "PHARMA": "Content related to pharmaceuticals, eg. prescription products, ingestible supplements, weight loss products, vitamins, protein powders, sexual enhancement drugs, herbal medication, steroids, medical face creams, medical devices that make health/medical claims intended to affect the structure or function of the body, or to diagnose, cure, mitigate, treat or prevent disease etc.",
+                  "MOB": "Content related to international bride services or mail order bride, like catalog listing women for men to select for marriage.",
+                  "FABRICATED": "Content related to fabricated official documents and/or financial instruments, eg. fake educational and/or professional certifications, sale of scraped data, proxy test-taking, instructions on creating forged official documents etc.",
+                  "COUNTERFEIT": "Content related to non-genuine items advertised as genuine, items listed as replicas/imitation of the real item such as counterfeit Rolex watches, pirated software.",
+                  "PRECIOUS": "Content related to purchase/ sale of precious gems, Oil & Gas, eg. purchase/ sale of gold diamonds, platinum etc, purchase/ sale of fuel etc.",
+                  "OCCULT": "Content related to occult pursuits/ fortune telling, eg. content related to occult pursuits/ fortune telling, dream interpretations, individual horoscopes, spell craft, black magic, love spells, witchcraft etc.",
+                  "HUMAN_EXPLOIT": "Content related to human exploitation and criminal sex acts, eg. extortion, sextortion, sex trafficking, human trafficking etc.. Refer go/911 and escalate to ask_inv@linkedin.com prior to enforcing.",
+                  "ILLEGAL_DRUG": "Content related to illegal drugs like opioids, cocaine, meth, heroin, opium, amphetamines, MDMA, GHB, LSD etc.",
+                  "MONETIZATION_CSE": "Content related to monetization/exploitation of a current sensitive event. Refer to the CSE policy/ PPE policy for more details.",
+                  "RECREATIONAL_DRUG": "Content related to recreational drugs and paraphernalia, cannabis and its components such as CBD.",
+                  "LOTTERY": "Content related to sweepstakes and lotteries.",
+                  "SPAM_TYPE_MIGRATION": "A dummy value only intended for the migration of SpamType to ContentClassificationType (CCT) Urn. This value will only be set for the consumers which have stopped reading SpamType in favour of CCT Urn. Refer go/spamtype2cct for more details.",
+                  "INAUTHENTIC_UNORIGINAL_CONTENT": "Content created by author by copying other people's work.",
+                  "UNKNOWN": "This value means a reader has encountered a record produced by a newer schema with spamType values unknown to it",
+                  "TOXIC_CONVERSATION": "Posts or any content where the conversation (like comment thread) has several toxic content or comments. Toxic content could be of following types Grey Tone, Inflammatory, Harassment. This is a superset of all such spam types.",
+                  "GRAY_TONE": "Content that uses a dismissive, unconstructive or derisive tone. The content does not violate professional community policies, it damages relationships and close down or devolve conversations. This is replacing GREY_ZONE_CONTENT (which is being deprecated).",
+                  "MONEY_SCAM_IDENTITY": "For scams where an individual fakes their identity to lure members into an online relationship and asks them to send money or personal data, for eg. fake romance scams.",
+                  "MONEY_SCAM_JOB": "Content where the intent is to do money scam through job postings.",
+                  "MONEY_SCAM_FINANCE": "For investment scams with promise of high reward.",
+                  "MONEY_SCAM_FREE_MONEY": "For scams that play on people’s desire for free money. Includes content that claims unrealistically huge sums of money or cash prizes from fraudulent accounts.",
+                  "MONEY_SCAM_INHERITANCE": "For scams that involve claims to huge sums of money as part of an inheritance.",
+                  "MONEY_SCAM_OFF_PLATFORM": "Content that tries to take the user off LinkedIn to some other platform with the intent to do money scam.",
+                  "CHILD_ABUSE_SEXUAL": "Child Sexual Abuse Material, this includes child sexual abuse imagery, solicitation, facilitation, grooming and extortion.",
+                  "OTHER_CHILD_NUDITY": "Depictions of nude children are prohibited, including content that depicts fully or partially nude children in a non-sexualized way.",
+                  "CHILD_ABUSE_NON_SEXUAL": "Any act against a child that may result in imminent or serious physical harm and/or exploitation.",
+                  "TRUST_AWARE_TREATMENT_COMMENT_EXPERIMENT_1": "Experiment on Trust Aware Treatment for Comments. Soon to be deprecated. We will deprecate it on 31st March 2023. You can reach out to ask_ucf@ for further questions/clarifications.",
+                  "TRUST_AWARE_TREATMENT_COMMENT_EXPERIMENT_2": "Experiment on Trust Aware Treatment for Comments. Soon to be deprecated. We will deprecate it on 31st March 2023. You can reach out to ask_ucf@ for further questions/clarifications.",
+                  "TRUST_AWARE_TREATMENT_COMMENT_EXPERIMENT_3": "Experiment on Trust Aware Treatment for Comments. Soon to be deprecated. We will deprecate it on 31st March 2023. You can reach out to ask_ucf@ for further questions/clarifications.",
+                  "TRUST_AWARE_TREATMENT_COMMENT_EXPERIMENT_4": "Experiment on Trust Aware Treatment for Comments. Soon to be deprecated. We will deprecate it on 31st March 2023. You can reach out to ask_ucf@ for further questions/clarifications.",
+                  "TRUST_AWARE_TREATMENT_COMMENT_EXPERIMENT_5": "Experiment on Trust Aware Treatment for Comments. Soon to be deprecated. We will deprecate it on 31st March 2023. You can reach out to ask_ucf@ for further questions/clarifications.",
+                  "TRUST_AWARE_TREATMENT_COMMENT": "Trust Aware Treatment for Comments.",
+                  "GRAY_ZONE_EXPERIMENT_1": "Experiment on Gray Zone content. Soon to be deprecated. We will deprecate it on 31st March 2023. You can reach out to ask_ucf@ for further questions/clarifications.",
+                  "GRAY_ZONE_EXPERIMENT_2": "Experiment on Gray Zone content. Soon to be deprecated. We will deprecate it on 31st March 2023. You can reach out to ask_ucf@ for further questions/clarifications.",
+                  "GRAY_ZONE_EXPERIMENT_3": "Experiment on Gray Zone content. Soon to be deprecated. We will deprecate it on 31st March 2023. You can reach out to ask_ucf@ for further questions/clarifications.",
+                  "GRAY_ZONE_EXPERIMENT_4": "Experiment on Gray Zone content Soon to be deprecated. We will deprecate it on 31st March 2023. You can reach out to ask_ucf@ for further questions/clarifications.",
+                  "GRAY_ZONE_EXPERIMENT_5": "Experiment on Gray Zone content. Soon to be deprecated. We will deprecate it on 31st March 2023. You can reach out to ask_ucf@ for further questions/clarifications.",
+                  "TRADEMARK": "Content identified as IP infringement of Trademark. These typically go through more stringent verifications and should not be used lightly. Only workflows that have verified the violation are advised to use this value.",
+                  "DEFAMATION": "Content identified in a Defamation claim. These typically go through more stringent verifications and should not be used lightly. Only workflows that have verified the violation are advised to use this value.",
+                  "LEGAL_TAKEDOWN": "Content identified as sensitive, confidential or otherwise through legal process, such as proprietary information, trade secrets, or the result of a court issues or government take-down order. These typically go through more stringent verifications and should not be used lightly. Only workflows that have verified the violation are advised to use this value.",
+                  "BRAND_ABUSE_LINKEDIN": "Content identified as misuse of the LinkedIn Brand.",
+                  "ADULT_ACTIVITIES": "Content related to escort, prostitution services, and erotic massages.",
+                  "THREATS_OF_VIOLENCE_SELF_HARM_SUICIDE": "Content identified as containing threats of violence including imminent harm, empty claims and/or hyperbolic threats of harming oneself."
+                }
+              },
+              "compliance": "NONE",
+              "aliases": [
+              ]
+            },
+            {
+              "name": "score",
+              "doc": "Confidence score from the classifier.",
+              "type": "double",
+              "compliance": "NONE",
+              "aliases": [
+              ]
+            },
+            {
+              "name": "confidence",
+              "doc": "List of confidence (Insignificant, High, Med, Low etc).",
+              "type": {
+                "namespace": "com.linkedin.events.contentspam",
+                "name": "SpamConfidence",
+                "doc": "Enum representing the ordinal confidence values on a classification. BAM owns this definition, it is in common so that it can be included in both messages and tracking events.",
+                "type": "enum",
+                "symbols": [
+                  "LOW",
+                  "MED",
+                  "HIGH",
+                  "INSIGNIFICANT"
+                ],
+                "symbolDocs": {
+                  "LOW": "Content is classified in positive class with confidence low.",
+                  "MED": "Content is classified in positive class with confidence medium.",
+                  "HIGH": "Content is classified in positive class with confidence high.",
+                  "INSIGNIFICANT": "Content is classified in negative class."
+                }
+              },
+              "compliance": "NONE",
+              "aliases": [
+              ]
+            },
+            {
+              "name": "executionStatus",
+              "doc": "Status of the execution of the classifier.",
+              "type": [
+                "null",
+                {
+                  "name": "ClassficationExecutionStatus",
+                  "doc": "Enum symbols corresponding to the execution status of the classifier.",
+                  "type": "enum",
+                  "symbols": [
+                    "SUCCESS",
+                    "FAILURE"
+                  ],
+                  "symbolDocs": {
+                    "SUCCESS": "Classifier was able to classify the content successfully",
+                    "FAILURE": "Classifier was unable to classify the content. Internally classifier should re-try for soft errors encountered but for hard errors it would send FAILURE."
+                  }
+                }
+              ],
+              "compliance": {
+                "ClassficationExecutionStatus": "NONE"
+              },
+              "default": null,
+              "aliases": [
+              ]
+            },
+            {
+              "name": "classifierMetadata",
+              "doc": "Metadata from the classifiers such as details regarding MinorExplicit Classification. Can be extended to add more metadata when required.",
+              "type": [
+                "null",
+                {
+                  "name": "ClassifierMetadata",
+                  "doc": "Contains metadata of different classifiers (related to duplicate detection,java regex patterns etc) that run during the content classification process for spam and low quality content detection.",
+                  "type": "record",
+                  "fields": [
+                    {
+                      "name": "minorExplicitClassificationMetadataArray",
+                      "doc": "Contains metadata (like mediaUrn detected as MinorExplicit, Match type, etc) from classifiers which detect minor explicit content, for all mediaUrns in the content. This will be (1) null if no classifier ran for MinorExplicit content, (2) Empty array if no MinorExplicit content was detected, (3) An array with the metadata from Minor Explicit classifier.",
+                      "type": [
+                        "null",
+                        {
+                          "type": "array",
+                          "items": {
+                            "name": "MinorExplicitClassificationMetadata",
+                            "doc": "Contains the metadata from the minor explicit classifier.",
+                            "type": "record",
+                            "fields": [
+                              {
+                                "name": "mediaUrn",
+                                "doc": "Identifier of the content found MinorExplicit by the classifier.",
+                                "type": "string",
+                                "compliance": "NONE",
+                                "aliases": [
+                                ]
+                              },
+                              {
+                                "name": "matchType",
+                                "doc": "Match type for the minor explicit.",
+                                "type": {
+                                  "name": "MinorExplicitMatchType",
+                                  "doc": "Enum symbols corresponding to match type of the minor explicit content.",
+                                  "type": "enum",
+                                  "symbols": [
+                                    "NCMEC_HASHES",
+                                    "NCMEC_INDUSTRY_HASHES"
+                                  ],
+                                  "symbolDocs": {
+                                    "NCMEC_HASHES": "Marked as Minor explicit because of a hit in NCMEC hashes.",
+                                    "NCMEC_INDUSTRY_HASHES": "Marked as Minor explicit because of a hit in NCMEC Industry hashes."
+                                  }
+                                },
+                                "compliance": "NONE",
+                                "aliases": [
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "compliance": {
+                        "array": "INHERITED"
+                      },
+                      "default": null,
+                      "aliases": [
+                      ]
+                    },
+                    {
+                      "name": "description",
+                      "doc": "Details about facts/features provided by the classifiers which are to be displayed to the reviewers for content review. This information will be used to avoid review misses due to unavailability of facts during manual review. Example - a text blurb containing information about the features or facts like SiftScore, CountryMismatch, etc. This will be used by the 'description' field of ContentSpamOutcomeDetail.",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "compliance": {
+                        "string": "NONE"
+                      },
+                      "default": null,
+                      "aliases": [
+                      ]
+                    },
+                    {
+                      "name": "nearDuplicateDocumentMetadata",
+                      "doc": "Metadata of nearDuplicateDocuments found for the nearDuplicateDetection classifier (blade-runner). This will be null if nearDuplicateDocument Classifier is not configured for the content or If nearDuplicateDocument classifier has no positive response.",
+                      "type": [
+                        "null",
+                        {
+                          "namespace": "com.linkedin.events.contentspam",
+                          "name": "NearDuplicateDocumentMetadata",
+                          "doc": "Contains the metadata for nearDuplicateDocuments found for the nearDuplicateDetection classifier (blade-runner).",
+                          "type": "record",
+                          "fields": [
+                            {
+                              "name": "velocityNearDuplicateDocumentCount",
+                              "doc": "Stores the Number of nearDuplicateDocuments found in Blade-runner against VELOCITY_CONTENT domain for identifying the velocity of the content at a given time.VELOCITY_CONTENT is an ENUM used for separating the data stored in Blade-runner. Content stored under VELOCITY_CONTENT domain is a short-lived data. More details: http://go/br-velocity",
+                              "type": "int",
+                              "compliance": "NONE",
+                              "aliases": [
+                              ]
+                            }
+                          ]
+                        }
+                      ],
+                      "compliance": {
+                        "NearDuplicateDocumentMetadata": "INHERITED"
+                      },
+                      "default": null,
+                      "aliases": [
+                      ]
+                    },
+                    {
+                      "name": "postProcessingSteps",
+                      "doc": "Contains the configuration for the post processing steps that should run for enrichment/classification.",
+                      "type": [
+                        "null",
+                        {
+                          "type": "array",
+                          "items": {
+                            "name": "PostProcessingConfiguration",
+                            "doc": "This specifies the config for executing the configured post processing step. These steps will be configured as part of fast serve configuration.",
+                            "type": "record",
+                            "fields": [
+                              {
+                                "name": "trustLabsConfiguration",
+                                "doc": "This represents the configuration which will used while executing the post processing step to enrich classifier response by calling TrustLabs. This field would be null when either TrustLabsEnrichment post processing step isn't required or when some other post processing step is being executed.",
+                                "type": [
+                                  "null",
+                                  {
+                                    "name": "TrustLabsEnrichmentConfig",
+                                    "doc": "This contains the configuration for the Trust Labs enrichment post processing step. More details can be found on go/vajra",
+                                    "type": "record",
+                                    "fields": [
+                                      {
+                                        "name": "maxClassifierScoreLimitToAcceptOverride",
+                                        "doc": "This represents the score of the original classifier below which the next step executor can override the result. eg if classifier scare was below this threshold and next step classifiers result comes out to not spam then the overall result will be considered non spam.",
+                                        "type": "float",
+                                        "compliance": "NONE",
+                                        "aliases": [
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "compliance": {
+                                  "TrustLabsEnrichmentConfig": "INHERITED"
+                                },
+                                "aliases": [
+                                ]
+                              },
+                              {
+                                "name": "nearDuplicateDocumentCreationConfiguration",
+                                "doc": "This represents the configuration which will be used while executing the post processing step of calling Blade Runner to create NearDuplicateDocument. This field would be null when either NearDuplicateDocumentCreation post processing step isn't required or when some other post processing step is being executed.",
+                                "type": [
+                                  "null",
+                                  {
+                                    "name": "NearDuplicateDocumentCreationConfiguration",
+                                    "doc": "This contains the configuration which will be used while executing the post processing step of calling Blade Runner to create NearDuplicateDocument.",
+                                    "type": "record",
+                                    "fields": [
+                                      {
+                                        "name": "nearDuplicateDocument",
+                                        "doc": "This represents the details of a near duplicate document which will be created in Blade Runner.",
+                                        "type": {
+                                          "namespace": "com.linkedin.events.contentfilter",
+                                          "name": "NearDuplicateDocument",
+                                          "doc": "Container for details of a near duplicate document. Each near dupe document is associated with a particular type of hashing scheme based on domain and content source",
+                                          "type": "record",
+                                          "fields": [
+                                            {
+                                              "name": "contentUrn",
+                                              "doc": "Identifier of the content which is to be treated as a near duplicate. This would be 'urn:li:reviewItem:<id>' in case of bad domain content",
+                                              "type": "string",
+                                              "compliance": "NONE",
+                                              "aliases": [
+                                              ]
+                                            },
+                                            {
+                                              "name": "domain",
+                                              "doc": "Domain of near duplicate content. Example - Bad Content domain is used for near duplicate document detection in case of bad documents and it uses schemes for the same.",
+                                              "type": {
+                                                "name": "ContentDomain",
+                                                "doc": "Enum of domains of near duplicate content like BAD_CONTENT which is used for near duplicate detection in case of bad documents etc.",
+                                                "type": "enum",
+                                                "symbols": [
+                                                  "BAD_CONTENT",
+                                                  "VIRAL_CONTENT",
+                                                  "USER_FLAGGED_CONTENT",
+                                                  "VELOCITY_CONTENT",
+                                                  "HANDLES_CONTENT",
+                                                  "FB_CONTENT",
+                                                  "RECLASSIFICATION_CONTENT",
+                                                  "HOSTED_SEARCH_CONTENT",
+                                                  "UNKNOWN",
+                                                  "REVIEW_QUEUE_CONTENT"
+                                                ],
+                                                "symbolDocs": {
+                                                  "BAD_CONTENT": "Domain of the caller for use case of bad content. It basically points to metadata and hashing scheme which are used for bad near duplicate content detection.",
+                                                  "VIRAL_CONTENT": "Domain of the caller for the use case of viral content. It basically points to data stored for known spam/unprofessional viral content.",
+                                                  "USER_FLAGGED_CONTENT": "Domain of the caller for the use case of user flagged content. It points to the data stored for content flagged by users. It will be used as a trigger to take action on the content.",
+                                                  "VELOCITY_CONTENT": "Domain of the caller for the use case of velocity content. Velocity refers to number of similar content created in a specified time window. This domain points to the stored data which could potentially be a spam vector and is used to take action on high velocity content similar to stored content.",
+                                                  "HANDLES_CONTENT": "Domain of the caller for use case of handles where content will be deduplicate based on canonicalized version of handles it contains. Handles refer to url, phone number, email, etc. present in user generated content. This will be used to take action on newly created content which contains the same handle.",
+                                                  "FB_CONTENT": "Domain of the caller for use case of matching incoming content with FB threat exchange data. It basically points to the data pulled from Facebook's threat exchange API. Data corresponding to this will be matched against all the incoming data to identify Spam. For More details go/fbdomain.",
+                                                  "RECLASSIFICATION_CONTENT": "Domain of the caller for the use case of storing the incoming content for the purpose of reclassification using blade-runner.",
+                                                  "HOSTED_SEARCH_CONTENT": "Domain of the caller for the use case of semantic near duplicate detection using Zelda/HostedSearch Infra. The incoming classification requests would be processed inside blade-runner and return matched near duplicate documents.",
+                                                  "UNKNOWN": "Default unknown unit type for forward compatibility.",
+                                                  "REVIEW_QUEUE_CONTENT": "Domain of the caller for the use case of identifying and eliminating duplicate content within Review Queue. It points to content stored in Review Queue."
+                                                }
+                                              },
+                                              "compliance": "NONE",
+                                              "aliases": [
+                                              ]
+                                            },
+                                            {
+                                              "name": "metadata",
+                                              "doc": "The metadata associated with the near duplicate content. It contains content source and domain specific metadata. Example - For Bad content domain, it would contain information whether the content is spam and human labels associated with it.",
+                                              "type": {
+                                                "name": "NearDuplicateDocumentMetadata",
+                                                "doc": "Metadata associated with the near duplicate content. It contains content creator urn, content source and domain specific metadata. Example - For Bad content domain, it would contain information whether the content is spam and human labels associated with it.",
+                                                "type": "record",
+                                                "fields": [
+                                                  {
+                                                    "name": "contentSource",
+                                                    "doc": "Content source of the near duplicate document. Fallback for ucfContext. Consumers should consume both fields and give preference to ucfContext. Producers should populate both this and ucfContext fields. This field will be deprecated in the near future.",
+                                                    "type": "com.linkedin.events.ContentSource",
+                                                    "compliance": "NONE",
+                                                    "aliases": [
+                                                    ]
+                                                  },
+                                                  {
+                                                    "name": "badContentDomainMetadata",
+                                                    "doc": "The metadata associated with bad near duplicate content.",
+                                                    "type": [
+                                                      "null",
+                                                      {
+                                                        "name": "BadContentDomainMetadata",
+                                                        "doc": "Metadata associated with the near duplicate content for bad content domain. Bad Content domain is used for near duplicate document detection in case of bad documents.",
+                                                        "type": "record",
+                                                        "fields": [
+                                                          {
+                                                            "name": "isSpam",
+                                                            "doc": "The quality of the content whether it is spam or not spam.",
+                                                            "type": "boolean",
+                                                            "compliance": "NONE",
+                                                            "aliases": [
+                                                            ]
+                                                          },
+                                                          {
+                                                            "name": "humanLabels",
+                                                            "doc": "The labels associated with the content when it is marked as spam. This is null when the content is clean and does not have any spam labels associated with it.",
+                                                            "type": [
+                                                              "null",
+                                                              {
+                                                                "type": "array",
+                                                                "items": "com.linkedin.events.contentspam.SpamType"
+                                                              }
+                                                            ],
+                                                            "compliance": {
+                                                              "array": "NONE"
+                                                            },
+                                                            "default": null,
+                                                            "aliases": [
+                                                            ]
+                                                          },
+                                                          {
+                                                            "name": "isLowQuality",
+                                                            "doc": "The quality of the content whether it is low quality or not.",
+                                                            "type": [
+                                                              "null",
+                                                              "boolean"
+                                                            ],
+                                                            "compliance": {
+                                                              "boolean": "NONE"
+                                                            },
+                                                            "default": null,
+                                                            "aliases": [
+                                                            ]
+                                                          },
+                                                          {
+                                                            "name": "lowQualityLabels",
+                                                            "doc": "The labels associated with the content when it is marked as low quality. This is null when the content is not low quality.",
+                                                            "type": [
+                                                              "null",
+                                                              {
+                                                                "type": "array",
+                                                                "items": "com.linkedin.events.contentspam.SpamType"
+                                                              }
+                                                            ],
+                                                            "compliance": {
+                                                              "array": "NONE"
+                                                            },
+                                                            "default": null,
+                                                            "aliases": [
+                                                            ]
+                                                          }
+                                                        ]
+                                                      }
+                                                    ],
+                                                    "compliance": {
+                                                      "BadContentDomainMetadata": "INHERITED"
+                                                    },
+                                                    "default": null,
+                                                    "aliases": [
+                                                    ]
+                                                  },
+                                                  {
+                                                    "name": "viralContentDomainMetadata",
+                                                    "doc": "The metadata associated with viral near duplicate content.",
+                                                    "type": [
+                                                      "null",
+                                                      {
+                                                        "name": "ViralContentDomainMetadata",
+                                                        "doc": "Metadata associated with the near duplicate content for viral domain. Viral domain points to data stored for known spam/unprofessional viral content.",
+                                                        "type": "record",
+                                                        "fields": [
+                                                          {
+                                                            "name": "viralObjectLabel",
+                                                            "doc": "The label assigned to the viral object used to signify whether the object is spam or unprofessional.",
+                                                            "type": {
+                                                              "name": "ViralObjectLabel",
+                                                              "type": "enum",
+                                                              "symbols": [
+                                                                "UNPROFESSIONAL",
+                                                                "SPAM"
+                                                              ],
+                                                              "symbolDocs": {
+                                                                "UNPROFESSIONAL": "Viral object which are unprofessional and can not be considered as spam. Example- religious, gore etc. ",
+                                                                "SPAM": "Viral object which are really spam and should never be shown to the user like Adult etc."
+                                                              }
+                                                            },
+                                                            "compliance": "NONE",
+                                                            "aliases": [
+                                                            ]
+                                                          }
+                                                        ]
+                                                      }
+                                                    ],
+                                                    "compliance": {
+                                                      "ViralContentDomainMetadata": "INHERITED"
+                                                    },
+                                                    "default": null,
+                                                    "aliases": [
+                                                    ]
+                                                  },
+                                                  {
+                                                    "name": "handlesContentDomainMetadata",
+                                                    "doc": "The metadata associated with member-handle near duplicate content.",
+                                                    "type": [
+                                                      "null",
+                                                      {
+                                                        "name": "HandlesContentDomainMetadata",
+                                                        "doc": "Metadata associated with the near duplicate content for handles content domain. Handles content domain is used for detection of member handles like phone numbers, emails, etc. based on the classification of content they appeared in.",
+                                                        "type": "record",
+                                                        "fields": [
+                                                          {
+                                                            "name": "isSpam",
+                                                            "doc": "The quality of the content whether it is spam or not spam.",
+                                                            "type": "boolean",
+                                                            "compliance": "NONE",
+                                                            "default": false,
+                                                            "aliases": [
+                                                            ]
+                                                          },
+                                                          {
+                                                            "name": "spamClassificationLabels",
+                                                            "doc": "The labels associated with the content when it is marked as spam. This is null when the content is clean and does not have any spam labels associated with it.",
+                                                            "type": [
+                                                              "null",
+                                                              {
+                                                                "type": "array",
+                                                                "items": "com.linkedin.events.contentspam.SpamType"
+                                                              }
+                                                            ],
+                                                            "compliance": {
+                                                              "array": "NONE"
+                                                            },
+                                                            "default": null,
+                                                            "aliases": [
+                                                            ]
+                                                          },
+                                                          {
+                                                            "name": "isLowQuality",
+                                                            "doc": "The quality of the content whether it is low quality or not.",
+                                                            "type": "boolean",
+                                                            "compliance": "NONE",
+                                                            "default": false,
+                                                            "aliases": [
+                                                            ]
+                                                          },
+                                                          {
+                                                            "name": "lowQualityClassificationLabels",
+                                                            "doc": "The labels associated with the content when it is marked as low quality. This is null when the content is not low quality.",
+                                                            "type": [
+                                                              "null",
+                                                              {
+                                                                "type": "array",
+                                                                "items": "com.linkedin.events.contentspam.SpamType"
+                                                              }
+                                                            ],
+                                                            "compliance": {
+                                                              "array": "NONE"
+                                                            },
+                                                            "default": null,
+                                                            "aliases": [
+                                                            ]
+                                                          },
+                                                          {
+                                                            "name": "system",
+                                                            "doc": "Determines the classification system, machine or human, that was responsible for adding this particular entry into blade-runner",
+                                                            "type": {
+                                                              "namespace": "com.linkedin.events.ucv",
+                                                              "name": "ClassificationSystem",
+                                                              "doc": "Enum representing the name of the system that made the classification. The enums are in increasing precedence order from top to bottom in symbol docs",
+                                                              "type": "enum",
+                                                              "symbols": [
+                                                                "MACHINE_ASYNC",
+                                                                "MACHINE_SYNC",
+                                                                "HUMAN",
+                                                                "HUMAN_DERIVED",
+                                                                "RULES_ENGINE",
+                                                                "MACHINE_NEARLINE",
+                                                                "MACHINE_OFFLINE",
+                                                                "MACHINE_AUTOREVIEW"
+                                                              ],
+                                                              "symbolDocs": {
+                                                                "MACHINE_SYNC": "A machine algorithm in SYNC made this classification",
+                                                                "MACHINE_ASYNC": "A machine algorithm in ASYNC flow made this classification. Aggregator service, on receiving machine_async request, makes blocking call to various services, which run classifiers on the content, and on receipt of response from these, the aggregator will respond back to domain with CCR update message",
+                                                                "MACHINE_NEARLINE": "A machine algorithm in nearline flow made this classification, eg: samza processors",
+                                                                "MACHINE_OFFLINE": "A machine algorithm in offline flow made this classification, eg: azkaban jobs",
+                                                                "RULES_ENGINE": "A set of rules in rules engine made this classification",
+                                                                "HUMAN_DERIVED": "When an automatic job derives the classification of a content based on classification of other content. For ex, this can happen in the case where an offline / nearline job takes down all activities when the image contained within the activities are marked as spam by human",
+                                                                "HUMAN": "A human made this classification (always has precedence over machine classifications)",
+                                                                "MACHINE_AUTOREVIEW": "A machine classification from the iReview system. This system is guaranteed to have near human precision, and can override other machine classification, but not human classification"
+                                                              }
+                                                            },
+                                                            "compliance": "NONE",
+                                                            "aliases": [
+                                                            ]
+                                                          }
+                                                        ]
+                                                      }
+                                                    ],
+                                                    "compliance": {
+                                                      "HandlesContentDomainMetadata": "INHERITED"
+                                                    },
+                                                    "default": null,
+                                                    "aliases": [
+                                                    ]
+                                                  },
+                                                  {
+                                                    "name": "ucfContextUrn",
+                                                    "doc": "UCF client application context which identifies ucf classification use case of incoming input. This will replace contentSource field. Refer to go/ucf/appContext for more details. Example: urn:li:ucfContext:PROFILE",
+                                                    "type": [
+                                                      "null",
+                                                      "string"
+                                                    ],
+                                                    "compliance": {
+                                                      "string": "NONE"
+                                                    },
+                                                    "default": null,
+                                                    "aliases": [
+                                                    ]
+                                                  },
+                                                  {
+                                                    "name": "reviewQueueContentDomainMetadata",
+                                                    "doc": "The metadata associated with Review queue near duplicate seed content. This will be null when the content domain was not REVIEW_QUEUE_CONTENT.",
+                                                    "type": [
+                                                      "null",
+                                                      {
+                                                        "name": "ReviewQueueContentDomainMetadata",
+                                                        "doc": "This Metadata is for REVIEW_QUEUE_CONTENT domain and it is associated with the content of Review Queue.The primary use case of this domain is to identify and eliminate duplicate content within review queue",
+                                                        "type": "record",
+                                                        "fields": [
+                                                          {
+                                                            "name": "reviewTreatment",
+                                                            "doc": "Captures Review decision from review queue on this content. Will be null for content which is not reviewed. ",
+                                                            "type": [
+                                                              "null",
+                                                              {
+                                                                "name": "ContentReviewTreatment",
+                                                                "doc": "This record contains details about treatment and respective policy label applied by reviewer for a content",
+                                                                "type": "record",
+                                                                "fields": [
+                                                                  {
+                                                                    "name": "treatment",
+                                                                    "doc": "The type of treatment applied to a content e.g. SPAM/LOW_QUALITY/CLEAR",
+                                                                    "type": {
+                                                                      "name": "Treatment",
+                                                                      "doc": "Type of treatment label assigned to a content.",
+                                                                      "type": "enum",
+                                                                      "symbols": [
+                                                                        "SPAM",
+                                                                        "LOW_QUALITY",
+                                                                        "CLEAR"
+                                                                      ],
+                                                                      "symbolDocs": {
+                                                                        "SPAM": "Spam treatment label",
+                                                                        "LOW_QUALITY": "Low Quality treatment label",
+                                                                        "CLEAR": "Clear treatment label"
+                                                                      }
+                                                                    },
+                                                                    "compliance": "NONE",
+                                                                    "aliases": [
+                                                                    ]
+                                                                  },
+                                                                  {
+                                                                    "name": "policyLabelUrns",
+                                                                    "doc": "CCT urn i.e. the labels associated with the content when it is marked as low quality/spam. Uniquely identifies a content classification type. For e.g: urn:li:contentClassificationType:MONEY_FRAUD, urn:li:contentClassificationType:ADULT. This array of policyLabelUrns will be empty when the content is clean.",
+                                                                    "type": {
+                                                                      "type": "array",
+                                                                      "items": "string"
+                                                                    },
+                                                                    "compliance": "NONE",
+                                                                    "aliases": [
+                                                                    ]
+                                                                  }
+                                                                ]
+                                                              }
+                                                            ],
+                                                            "compliance": {
+                                                              "ContentReviewTreatment": "INHERITED"
+                                                            },
+                                                            "default": null,
+                                                            "aliases": [
+                                                            ]
+                                                          },
+                                                          {
+                                                            "name": "reviewState",
+                                                            "doc": "Indicates the review and labeling state of the content in the review queue system. This field is used to track the progress of the content review and labeling process, whether it was reviewed manually, automatically or not reviewed yet",
+                                                            "type": {
+                                                              "name": "ContentReviewState",
+                                                              "doc": "Indicates the review and labeling state of the content in the Review queue system. This enum is used to track the progress of the content review and labeling process.",
+                                                              "type": "enum",
+                                                              "symbols": [
+                                                                "UNKNOWN",
+                                                                "HUMAN_REVIEWED",
+                                                                "PENDING_REVIEW",
+                                                                "AUTO_LABELLED"
+                                                              ],
+                                                              "default": "UNKNOWN",
+                                                              "compliance": "NONE",
+                                                              "symbolDocs": {
+                                                                "UNKNOWN": "This is provided as default value for forwards compatibility.",
+                                                                "HUMAN_REVIEWED": "Indicates the content has been reviewed manually by a reviewer in review queue",
+                                                                "PENDING_REVIEW": "Indicates the content has been not reviewed in review queue. ",
+                                                                "AUTO_LABELLED": "Indicates the  content has been reviewed  automatically and the content's label had been added automatically and not by a human reviewer."
+                                                              }
+                                                            },
+                                                            "compliance": "NONE",
+                                                            "aliases": [
+                                                            ]
+                                                          },
+                                                          {
+                                                            "name": "lastModifiedTime",
+                                                            "doc": "The timestamp of the last modification of the content's review status in milliseconds epoch.",
+                                                            "type": "long",
+                                                            "compliance": "NONE",
+                                                            "aliases": [
+                                                            ]
+                                                          }
+                                                        ]
+                                                      }
+                                                    ],
+                                                    "compliance": {
+                                                      "ReviewQueueContentDomainMetadata": "INHERITED"
+                                                    },
+                                                    "default": null,
+                                                    "aliases": [
+                                                    ]
+                                                  }
+                                                ]
+                                              },
+                                              "compliance": "INHERITED",
+                                              "aliases": [
+                                              ]
+                                            },
+                                            {
+                                              "name": "similarityScore",
+                                              "doc": "The similarity score of the document for the given content. It will be in the range from [0,1]. This field wouldn't be present for document creation.",
+                                              "type": [
+                                                "null",
+                                                "double"
+                                              ],
+                                              "compliance": "NONE",
+                                              "default": null,
+                                              "aliases": [
+                                              ]
+                                            },
+                                            {
+                                              "name": "reviewerUrn",
+                                              "doc": "The urn of the reviewer of the document who labeled the content as spam/lq. This field wouldn't be present for document creation.",
+                                              "type": [
+                                                "null",
+                                                "string"
+                                              ],
+                                              "compliance": "NONE",
+                                              "default": null,
+                                              "aliases": [
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        "compliance": "INHERITED",
+                                        "aliases": [
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "compliance": {
+                                  "NearDuplicateDocumentCreationConfiguration": "INHERITED"
+                                },
+                                "default": null,
+                                "aliases": [
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "compliance": {
+                        "array": "INHERITED"
+                      },
+                      "default": null,
+                      "aliases": [
+                      ]
+                    },
+                    {
+                      "name": "postProcessingResponse",
+                      "doc": "Metadata about the response gathered after the post processing is complete. This will be populated when the classifiers has configured post execution steps.",
+                      "type": [
+                        "null",
+                        {
+                          "type": "array",
+                          "items": {
+                            "name": "PostProcessingResponse",
+                            "doc": "Contains the response metadata after completion of a single post processing step.",
+                            "type": "record",
+                            "fields": [
+                              {
+                                "name": "trustLabsEnrichmentResponse",
+                                "doc": "Contains the response from the source which was configured for post processing. This field would be null when either TrustLabsEnrichment processing step isn't configured or when some other post processing step is being executed.",
+                                "type": [
+                                  "null",
+                                  {
+                                    "name": "TrustLabsEnrichmentResponse",
+                                    "doc": "This contains the auxiliary information fetched as part of post processing enrichment from the TrustLabs.",
+                                    "type": "record",
+                                    "fields": [
+                                      {
+                                        "name": "score",
+                                        "doc": "Contains the classification score if any provided by auxiliary information source.",
+                                        "type": "double",
+                                        "compliance": "NONE",
+                                        "aliases": [
+                                        ]
+                                      },
+                                      {
+                                        "name": "details",
+                                        "doc": "Contains the enrichment details provided by trust labs eg. urls incase content was misinformation,fake news etc. This can be null when trust labs doesnt have sufficient information.",
+                                        "type": [
+                                          "null",
+                                          "string"
+                                        ],
+                                        "compliance": {
+                                          "string": "NONE"
+                                        },
+                                        "aliases": [
+                                        ]
+                                      },
+                                      {
+                                        "name": "evidenceUrls",
+                                        "doc": "Contains the url evidence list provided by Trust Labs in case label is misinformation.",
+                                        "type": {
+                                          "type": "array",
+                                          "items": "string"
+                                        },
+                                        "compliance": "NONE",
+                                        "aliases": [
+                                        ]
+                                      },
+                                      {
+                                        "name": "labels",
+                                        "doc": "Contains the list of classification labels provided by the auxiliary information source. It will be null when no label is provided by source.",
+                                        "type": {
+                                          "type": "array",
+                                          "items": {
+                                            "name": "TrustLabsContentLabel",
+                                            "doc": "The name of the auxiliary classification label provided by an information source TrustLabs for the content.",
+                                            "type": "enum",
+                                            "symbols": [
+                                              "MISINFORMATION",
+                                              "SPAM",
+                                              "OBJECTIONABLE"
+                                            ],
+                                            "symbolDocs": {
+                                              "MISINFORMATION": "This represents that the content was misinformation,",
+                                              "SPAM": "This represents that the content was spam.",
+                                              "OBJECTIONABLE": "This represents that the content was objectionable."
+                                            }
+                                          }
+                                        },
+                                        "compliance": "NONE",
+                                        "aliases": [
+                                        ]
+                                      },
+                                      {
+                                        "name": "referenceId",
+                                        "doc": "Contains the unique string request reference id provided by trust labs. Trust labs stores the response linked to the reference id for 30 days. This field is null as default for backward compatibility.See go/vajra for more details.",
+                                        "type": [
+                                          "null",
+                                          "string"
+                                        ],
+                                        "compliance": {
+                                          "string": "NONE"
+                                        },
+                                        "default": null,
+                                        "aliases": [
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "compliance": {
+                                  "TrustLabsEnrichmentResponse": "INHERITED"
+                                },
+                                "aliases": [
+                                ]
+                              },
+                              {
+                                "name": "nearDuplicateDocumentCreationResponse",
+                                "doc": "Contains the response from the nearDuplicateDocumentCreation processor. This field would be null when either NearDuplicateDocumentCreation processing step isn't configured or when some other post processing step is being executed.",
+                                "type": [
+                                  "null",
+                                  {
+                                    "name": "NearDuplicateDocumentCreationResponse",
+                                    "doc": "This contains the response from the nearDuplicateDocumentCreation processor.",
+                                    "type": "record",
+                                    "fields": [
+                                      {
+                                        "name": "contentUrn",
+                                        "doc": "Identifier of the content which was passed as input to the NearDuplicateDocumentCreation processor. In the case where no contentUrn was passed, Blade Runner generates a new urn for the document and returns it.",
+                                        "type": "string",
+                                        "compliance": "NONE",
+                                        "aliases": [
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "compliance": {
+                                  "NearDuplicateDocumentCreationResponse": "INHERITED"
+                                },
+                                "default": null,
+                                "aliases": [
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "compliance": {
+                        "array": "INHERITED"
+                      },
+                      "default": null,
+                      "aliases": [
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "compliance": {
+                "ClassifierMetadata": "INHERITED"
+              },
+              "default": null,
+              "aliases": [
+              ]
+            },
+            {
+              "name": "experimentId",
+              "doc": "Identifier of the experiment running for a combination of classifierId and classifier version. It represents the n in the nth experiment. `experimentId` will be null when no experiment is running. go/firebolt/rfcs/ucfexperimentation for details",
+              "type": [
+                "null",
+                "int"
+              ],
+              "compliance": "NONE",
+              "default": null,
+              "aliases": [
+              ]
+            },
+            {
+              "name": "contentClassificationTypeUrn",
+              "doc": "Granular Classification Label Urn for this classification e.g., urn:li:contentClassificationType:MONEY_FRAUD. It has been kept optional to make it backward compatible change. Once the migration from classificationType to ContentClassificationType, this field should be treated as always required field.",
+              "type": [
+                "null",
+                "string"
+              ],
+              "compliance": "NONE",
+              "default": null,
+              "aliases": [
+              ]
+            }
+          ]
+        }
+      },
+      "compliance": "INHERITED",
+      "default": [
+      ],
+      "aliases": [
+      ]
+    },
+    {
+      "name": "lowQualityClassifierExplanations",
+      "doc": "Explanations by Low Quality Classifiers.",
+      "type": {
+        "type": "array",
+        "items": "com.linkedin.events.ucv.ClassificationExplanation"
+      },
+      "compliance": "INHERITED",
+      "default": [
+      ],
+      "aliases": [
+      ]
+    },
+    {
+      "name": "system",
+      "doc": "Indicates the name of the system which acted on the content.",
+      "type": {
+        "name": "SystemName",
+        "doc": "Enum representing the name of the system that made the classification.  The enums are in increasing precedence order from top to bottom in symbol docs",
+        "type": "enum",
+        "symbols": [
+          "MACHINE_ASYNC_BAM",
+          "MACHINE_SYNC_BAM",
+          "HUMAN",
+          "HUMAN_DERIVED",
+          "RULES_ENGINE",
+          "MACHINE_NEARLINE",
+          "MACHINE_OFFLINE",
+          "MACHINE_AUTOREVIEW"
+        ],
+        "symbolDocs": {
+          "MACHINE_SYNC_BAM": "A machine algorithm in SYNC BAM made this classification",
+          "MACHINE_ASYNC_BAM": "A machine algorithm in ASYNC flow made this classification. Aggregator service, on receiving machine_async request, makes blocking call to various services, which run classifiers on the content, and on receipt of response from these, the aggregator will respond back to domain with CCR update message",
+          "MACHINE_NEARLINE": "A machine algorithm in nearline flow made this classification, eg: samza processors",
+          "MACHINE_OFFLINE": "A machine algorithm in offline flow made this classification, eg: azkaban jobs",
+          "RULES_ENGINE": "A set of rules in rules engine made this classification",
+          "HUMAN_DERIVED": "When an automatic job derives the classification of a content based on classification of other content. For ex, this can happen in the case where an offline / nearline job takes down all activities when the image contained within the activities are marked as spam by human",
+          "HUMAN": "A human made this classification (always has precedence over machine classifications)",
+          "MACHINE_AUTOREVIEW": "A machine classification from the iReview system. This system is guaranteed to have near human precision, and can override other machine classification, but not human classification"
+        }
+      },
+      "compliance": "NONE",
+      "aliases": [
+      ]
+    },
+    {
+      "name": "spamClassifierExplanationsForReview",
+      "doc": "Explanations of classifiers which have asked that this content be sent for manual review with the intention of marking this content as spam.",
+      "type": {
+        "type": "array",
+        "items": "com.linkedin.events.ucv.ClassificationExplanation"
+      },
+      "compliance": "INHERITED",
+      "default": [
+      ],
+      "aliases": [
+      ]
+    },
+    {
+      "name": "lowQualityClassifierExplanationsForReview",
+      "doc": "Explanations of classifiers which have asked that this content be sent for manual review with the intention of marking this content as low quality.",
+      "type": {
+        "type": "array",
+        "items": "com.linkedin.events.ucv.ClassificationExplanation"
+      },
+      "compliance": "INHERITED",
+      "default": [
+      ],
+      "aliases": [
+      ]
+    },
+    {
+      "name": "contentClassificationFlow",
+      "doc": "Specifies the type of classification flow, nearline or offline, which ran and led to the triggering of this event.",
+      "type": {
+        "namespace": "com.linkedin.events.ucv",
+        "name": "ContentClassificationFlow",
+        "doc": "This identifies the content classification flow to be triggered by either of Synchronous, Async, User flagging, Nearline, Offline or Human reviewer. Asynchronous, User flagging, Nearline, Offline and Human reviewer triggered flows respond by either kafka or a callback method. Flows triggered by sync and async rest call are run for each new content creation. Flow triggered by user flagging is executed when a content is flagged. Flow triggered by nealine is executed when nearline classifiers provide content classification result for a particular content. Flow triggered by offline is executed when offline classifiers or human derived clean up jobs provide content classification result for a particular content. Flow triggered by human reviewer is executed when reviewer takes a classification decision for a particular content",
+        "type": "enum",
+        "symbols": [
+          "SYNC",
+          "ASYNC",
+          "USER_FLAGGING",
+          "NEARLINE",
+          "OFFLINE",
+          "HUMAN_REVIEWER"
+        ],
+        "symbolDocs": {
+          "SYNC": "Synchronous flow, triggered by rest request with isSynchronous field set to true",
+          "ASYNC": "Asynchronous flow, triggered by rest request with isSynchronous field set to false",
+          "USER_FLAGGING": "User flagging flow, that triggers when content is flagged by any linkedin member",
+          "NEARLINE": "This flow is triggered when any nearline machine classifier provides content classification result for a particular content, for example samza processors",
+          "OFFLINE": "This flow is triggered when any offline machine classifier or human derived clean up job provides content classification result for a particular content",
+          "HUMAN_REVIEWER": "This flow is triggered when human reviewer takes any action on the content. This can be from review queue or spam tool"
+        }
+      },
+      "compliance": "NONE",
+      "aliases": [
+      ]
+    },
+    {
+      "name": "contentType",
+      "doc": "Type of content that has been classified by the classifier firing this message. This will be null for legacy classifiers which do not have a concept of content type.",
+      "type": [
+        "null",
+        {
+          "namespace": "com.linkedin.messages.contentfilter",
+          "name": "ContentType",
+          "doc": "Represents the type of content",
+          "type": "enum",
+          "symbols": [
+            "TEXT",
+            "IMAGE",
+            "VIDEO",
+            "WHOLE"
+          ],
+          "symbolDocs": {
+            "TEXT": "Textual content",
+            "IMAGE": "Image content",
+            "VIDEO": "Video content",
+            "WHOLE": "Whole content. Example: activity having both text and media content"
+          }
+        }
+      ],
+      "compliance": {
+        "com.linkedin.messages.contentfilter.ContentType": "NONE"
+      },
+      "aliases": [
+      ]
+    },
+    {
+      "name": "ucfContextUrn",
+      "doc": "UCF client application context which identifies ucf classification use case of incoming input. This will replace contentSource field. Refer to go/ucf/appContext for more details. Example: urn:li:ucfContext:PROFILE",
+      "type": [
+        "null",
+        "string"
+      ],
+      "compliance": {
+        "string": "NONE"
+      },
+      "default": null,
+      "aliases": [
+      ]
+    },
+    {
+      "name": "passiveExplanations",
+      "doc": "Explanations of passive classifier. This will capture the classifier explanations (spam/lowQuality) of the classifier that will not take any action on the content. Default value is kept as null in case the classifier has no passive explanations",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": "com.linkedin.events.ucv.ClassificationExplanation"
+        }
+      ],
+      "compliance": {
+        "array": "INHERITED"
+      },
+      "default": null,
+      "aliases": [
+      ]
+    }
+  ]
+}
