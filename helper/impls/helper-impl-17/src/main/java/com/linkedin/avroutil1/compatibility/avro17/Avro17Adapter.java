@@ -424,26 +424,18 @@ public class Avro17Adapter implements AvroAdapter {
 
   @Override
   public List<String> getAllPropNames(Schema schema) {
-    // Handle Old avro 1.7 without JsonProperties as superClass
-    try {
-      schema.getClass().getMethod("getJsonProps");
-      // If successful, then use the method.
+    if (Avro17Utils.isIsAtLeast173()) {
       return new ArrayList<>(schema.getJsonProps().keySet());
-    } catch (NoSuchMethodException e) {
-      // else it is on old avro 1.7
+    } else {
       return new ArrayList<>(schema.getProps().keySet());
     }
   }
 
   @Override
   public List<String> getAllPropNames(Schema.Field field) {
-    // Handle Old avro 1.7 without JsonProperties as superClass
-    try {
-      field.getClass().getMethod("getJsonProps");
-      // If successful, then use the method.
+    if (Avro17Utils.isIsAtLeast173()) {
       return new ArrayList<>(field.getJsonProps().keySet());
-    } catch (NoSuchMethodException e) {
-      // else it is on old avro 1.7
+    } else {
       return new ArrayList<>(field.props().keySet());
     }
   }

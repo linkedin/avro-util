@@ -44,12 +44,12 @@ public class AvroUtilSchemaNormalization {
    * @return parsing canonical form of the schema
    */
   public static String getCanonicalForm(Schema schema, AvscGenerationConfig config, List<AvscWriterPlugin> schemaPlugins) {
-    if (AvroCompatibilityHelper.getRuntimeAvroCompilerVersion().laterThan(AvroVersion.AVRO_1_4)) {
+    if (AvroCompatibilityHelper.getRuntimeAvroCompilerVersion().laterThan(AvroVersion.AVRO_1_6)) {
       AvscWriter writer = AvroCompatibilityHelper.getAvscWriter(config, schemaPlugins);
       return writer.toAvsc(schema);
     }
     else {
-      throw new UnsupportedOperationException("Canonicalize need avro > 1.4");
+      throw new UnsupportedOperationException("Canonicalize need avro >= 1.7");
     }
   }
 
