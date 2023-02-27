@@ -1548,7 +1548,7 @@ public class SpecificRecordClassGenerator {
       if (SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.STRING, field.getSchema())) {
         Class<?> fieldClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(AvroType.STRING,
             config.getDefaultMethodStringRepresentation(), false);
-        switchBuilder.addStatement("case $L: return com.linkedin.avroutil1.compatibility.StringConverterUtil.get$L($L)", fieldIndex++, fieldClass.getSimpleName(), escapedFieldName);
+        switchBuilder.addStatement("case $L: return com.linkedin.avroutil1.compatibility.StringConverterUtil.get$L(this.$L)", fieldIndex++, fieldClass.getSimpleName(), escapedFieldName);
       } else if (SpecificRecordGeneratorUtil.isListTransformerApplicableForSchema(field.getSchema())) {
         switchBuilder.addStatement(
             "case $L: return com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.get$LList(this.$L)",
