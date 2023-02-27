@@ -110,7 +110,6 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
             gen.flush();
             return writer.toString();
         } catch (IOException e) {
-            e.printStackTrace();
             throw new AvroRuntimeException(e);
         }
     }
