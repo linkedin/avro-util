@@ -4,43 +4,46 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1.compatibility.avro19;
+package com.linkedin.avroutil1.compatibility.avro17;
 
-import com.fasterxml.jackson.core.JsonGenerator;
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
 import com.linkedin.avroutil1.compatibility.ConfigurableSchemaComparator;
-import com.linkedin.avroutil1.compatibility.Jackson2JsonGeneratorWrapper;
+import com.linkedin.avroutil1.compatibility.Jackson1JsonGeneratorWrapper;
+import com.linkedin.avroutil1.compatibility.Jackson1Utils;
 import com.linkedin.avroutil1.compatibility.JsonGeneratorWrapper;
 import com.linkedin.avroutil1.compatibility.SchemaComparisonConfiguration;
+import com.linkedin.avroutil1.compatibility.SchemaNormalization;
 import com.linkedin.avroutil1.normalization.AvroUtilSchemaNormalization;
 import com.linkedin.avroutil1.normalization.AvscWriterPlugin;
 import com.linkedin.avroutil1.testcommon.TestUtil;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
-import java.util.TreeMap;
+import java.util.TreeSet;
 import org.apache.avro.Schema;
-import org.apache.avro.util.internal.JacksonUtils;
+import org.codehaus.jackson.JsonGenerator;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 
-public class AvroUtilSchemaNormalizationTest19 {
+public class AvroUtilSchemaNormalizationTest17 {
 
   @Test
   public void testCanonicalizeBareBones() throws IOException {
     Schema schema = Schema.parse(TestUtil.load("Record1.avsc"));
     String str = AvroUtilSchemaNormalization.getCanonicalForm(schema, AvscGenerationConfig.CANONICAL_ONELINE, null);
     Schema canonicalizedSchema = Schema.parse(str);
-    Schema schemaFromAvroNormalizer = Schema.parse(org.apache.avro.SchemaNormalization.toParsingForm(schema));
+    Schema schemaFromAvroNormalizer = Schema.parse(SchemaNormalization.toParsingForm(schema));
 
     Schema schemaWithoutSpecialStrProp = Schema.parse(TestUtil.load("RecordWithoutSpecialStrProp.avsc"));
     String strWithoutSpecialStrProp = AvroUtilSchemaNormalization.getCanonicalForm(schemaWithoutSpecialStrProp, AvscGenerationConfig.CANONICAL_ONELINE, null);
     Schema canonicalizedSchemaWithoutSpecialStrProp = Schema.parse(strWithoutSpecialStrProp);
-    Schema schemaFromAvroNormalizerWithoutSpecialStrProp = Schema.parse(org.apache.avro.SchemaNormalization.toParsingForm(schemaWithoutSpecialStrProp));
+    Schema schemaFromAvroNormalizerWithoutSpecialStrProp = Schema.parse(SchemaNormalization.toParsingForm(schemaWithoutSpecialStrProp));
 
     //  Equal
     Assert.assertTrue(ConfigurableSchemaComparator.equals(canonicalizedSchemaWithoutSpecialStrProp, schemaFromAvroNormalizerWithoutSpecialStrProp, SchemaComparisonConfiguration.STRICT));
@@ -60,11 +63,11 @@ public class AvroUtilSchemaNormalizationTest19 {
     Assert.assertNull(canonicalizedSchema.getFields().get(2).schema().getDoc());
 
     // Default value existed
-    Assert.assertTrue(schema.getFields().get(2).hasDefaultValue());
-    Assert.assertTrue(schema.getFields().get(3).hasDefaultValue());
+    Assert.assertTrue(schema.getFields().get(2).defaultValue() != null);
+    Assert.assertTrue(schema.getFields().get(3).defaultValue() != null);
     // No default value
-    Assert.assertFalse(canonicalizedSchema.getFields().get(2).hasDefaultValue());
-    Assert.assertFalse(canonicalizedSchema.getFields().get(3).hasDefaultValue());
+    Assert.assertFalse(canonicalizedSchema.getFields().get(2).defaultValue() != null);
+    Assert.assertFalse(canonicalizedSchema.getFields().get(3).defaultValue() != null);
 
     // Doesn't copy top level record alias
     Assert.assertTrue(schema.getAliases().contains("com.acme.record_alias"));
@@ -75,12 +78,12 @@ public class AvroUtilSchemaNormalizationTest19 {
     Assert.assertFalse(canonicalizedSchema.getFields().get(2).schema().getAliases().contains("com.acme.field_type_alias"));
 
     // Doesn't copy field level aliases
-    Assert.assertTrue(schema.getFields().get(3).aliases().contains("field_alias"));
-    Assert.assertFalse(canonicalizedSchema.getFields().get(3).aliases().contains("field_alias"));
+    Assert.assertTrue(AvroCompatibilityHelper.getFieldAliases(schema.getFields().get(3)).contains("field_alias"));
+    Assert.assertFalse(AvroCompatibilityHelper.getFieldAliases(canonicalizedSchema.getFields().get(3)).contains("field_alias"));
 
     // Doesn't copy specified junk json/extra json props from Field
-    Assert.assertNotNull(schema.getFields().get(3).schema().getFields().get(0).getObjectProp("very_important"));
-    Assert.assertNull(canonicalizedSchema.getFields().get(3).schema().getFields().get(0).getObjectProp("very_important"));
+    Assert.assertNotNull(schema.getFields().get(3).schema().getFields().get(0).getJsonProp("very_important"));
+    Assert.assertNull(canonicalizedSchema.getFields().get(3).schema().getFields().get(0).getJsonProp("very_important"));
 
     // Ignores other junk json/extra json props from field level
     Assert.assertNotNull(schema.getFields().get(1).getProp("not_important_stuff"));
@@ -91,8 +94,8 @@ public class AvroUtilSchemaNormalizationTest19 {
     Assert.assertNull(canonicalizedSchema.getProp("record_level_junk_json"));
 
     // Doesn't copy specified junk json/extra json props from Top level record
-    Assert.assertNotNull(schema.getObjectProp("record_level_important_json"));
-    Assert.assertNull(canonicalizedSchema.getObjectProp("record_level_important_json"));
+    Assert.assertNotNull(schema.getProp("record_level_important_json"));
+    Assert.assertNull(canonicalizedSchema.getProp("record_level_important_json"));
   }
 
   @Test
@@ -102,9 +105,9 @@ public class AvroUtilSchemaNormalizationTest19 {
     Schema canonicalizedSchema = Schema.parse(str);
 
     //Copies default value
-    Assert.assertFalse(canonicalizedSchema.getFields().get(0).hasDefaultValue());
-    Assert.assertEquals(canonicalizedSchema.getFields().get(2).defaultVal(), "A");
-    Assert.assertEquals(canonicalizedSchema.getFields().get(3).defaultVal().toString(), "{innerLongField=420}");
+    Assert.assertFalse(canonicalizedSchema.getFields().get(0).defaultValue() != null);
+    Assert.assertEquals(canonicalizedSchema.getFields().get(2).defaultValue(), schema.getFields().get(2).defaultValue());
+    Assert.assertEquals(canonicalizedSchema.getFields().get(3).defaultValue().toString(), schema.getFields().get(3).defaultValue().toString());
 
     // Copies top level record alias, fully qualified and sorted
     Assert.assertTrue(canonicalizedSchema.getAliases().toString().equals("[com.acme.a_record_alias, com.acme.record_alias]"));
@@ -113,7 +116,7 @@ public class AvroUtilSchemaNormalizationTest19 {
     Assert.assertTrue(canonicalizedSchema.getFields().get(2).schema().getAliases().toString().equals("[com.acme.Afield_type_alias, com.acme.field_type_alias]"));
 
     // Copies field level aliases, and is now sorted
-    Assert.assertTrue(canonicalizedSchema.getFields().get(3).aliases().toString().equals("[afield_alias, field_alias]"));
+    Assert.assertTrue(AvroCompatibilityHelper.getFieldAliases(canonicalizedSchema.getFields().get(3)).toString().equals("[afield_alias, field_alias]"));
   }
 
   @Test
@@ -127,20 +130,23 @@ public class AvroUtilSchemaNormalizationTest19 {
     Schema canonicalizedSchema = Schema.parse(str);
 
     // copied all props, sorted by key
-    Assert.assertEquals(new TreeMap(schema.getObjectProps()), canonicalizedSchema.getObjectProps());
+    Assert.assertEquals(new ArrayList(new TreeSet(AvroCompatibilityHelper.getAllPropNames(schema))),
+        new ArrayList(AvroCompatibilityHelper.getAllPropNames(canonicalizedSchema)));
 
     // for fields
     for(int fieldPos = 0; fieldPos < schema.getFields().size(); fieldPos ++) {
       Schema.Field field = schema.getFields().get(fieldPos);
       Schema.Field canonicalizedField = canonicalizedSchema.getFields().get(fieldPos);
 
-      if(field.hasProps()) {
-        Assert.assertEquals(new TreeMap<>(field.getObjectProps()), canonicalizedField.getObjectProps());
+      if(!AvroCompatibilityHelper.getAllPropNames(field).isEmpty()) {
+        Assert.assertEquals(new ArrayList<>(new TreeSet<>(AvroCompatibilityHelper.getAllPropNames(field))),
+            new ArrayList(AvroCompatibilityHelper.getAllPropNames(canonicalizedField)));
       }
 
       // and for field schemas
-      if(field.schema().hasProps()) {
-        Assert.assertEquals(new TreeMap<>(field.schema().getObjectProps()), canonicalizedField.schema().getObjectProps());
+      if(!AvroCompatibilityHelper.getAllPropNames(field.schema()).isEmpty()) {
+        Assert.assertEquals(new ArrayList(new TreeSet<>(AvroCompatibilityHelper.getAllPropNames(field.schema()))),
+            new ArrayList(AvroCompatibilityHelper.getAllPropNames(canonicalizedField.schema())));
       }
     }
 
@@ -154,9 +160,9 @@ public class AvroUtilSchemaNormalizationTest19 {
     Schema canonicalizedSchema = Schema.parse(str);
 
     //Copies default value
-    Assert.assertFalse(canonicalizedSchema.getFields().get(0).hasDefaultValue());
-    Assert.assertEquals(canonicalizedSchema.getFields().get(2).defaultVal(), "A");
-    Assert.assertEquals(canonicalizedSchema.getFields().get(3).defaultVal().toString(), "{innerLongField=420}");
+    Assert.assertFalse(canonicalizedSchema.getFields().get(0).defaultValue() != null);
+    Assert.assertEquals(canonicalizedSchema.getFields().get(2).defaultValue(), schema.getFields().get(2).defaultValue());
+    Assert.assertEquals(canonicalizedSchema.getFields().get(3).defaultValue().toString(), schema.getFields().get(3).defaultValue().toString());
 
     // Copies top level record alias, fully qualified and sorted
     Assert.assertTrue(canonicalizedSchema.getAliases().toString().equals("[com.acme.a_record_alias, com.acme.record_alias]"));
@@ -165,7 +171,7 @@ public class AvroUtilSchemaNormalizationTest19 {
     Assert.assertTrue(canonicalizedSchema.getFields().get(2).schema().getAliases().toString().equals("[com.acme.Afield_type_alias, com.acme.field_type_alias]"));
 
     // Copies field level aliases, and is now sorted
-    Assert.assertTrue(canonicalizedSchema.getFields().get(3).aliases().toString().equals("[afield_alias, field_alias]"));
+    Assert.assertTrue(AvroCompatibilityHelper.getFieldAliases(canonicalizedSchema.getFields().get(3)).toString().equals("[afield_alias, field_alias]"));
 
     // Copies Schema level property
     Assert.assertEquals(canonicalizedSchema.getProp("record_level_important_json"),
@@ -175,7 +181,11 @@ public class AvroUtilSchemaNormalizationTest19 {
     Assert.assertEquals(canonicalizedSchema.getField("recordField")
         .schema()
         .getField("innerLongField")
-        .getObjectProp("very_important").toString(), "[important_stuff_1, important_stuff_2]");
+        .getJsonProp("very_important"),
+        schema.getField("recordField")
+            .schema()
+            .getField("innerLongField")
+            .getJsonProp("very_important"));
   }
 
   @Test
@@ -552,10 +562,10 @@ public class AvroUtilSchemaNormalizationTest19 {
        super(prop_name);
     }
 
-    private void writeProp(String propName, Object prop, Jackson2JsonGeneratorWrapper gen){
+    private void writeProp(String propName, Object prop, Jackson1JsonGeneratorWrapper gen){
       JsonGenerator delegate = gen.getDelegate();
       try {
-        delegate.writeObjectField(propName, JacksonUtils.toJsonNode(prop));
+        delegate.writeObjectField(propName, Jackson1Utils.toJsonNode(prop));
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -564,13 +574,11 @@ public class AvroUtilSchemaNormalizationTest19 {
 
     @Override
     public String execute(Schema schema, JsonGeneratorWrapper gen) {
-      if (schema.hasProps()) {
-        String prop = schema.getProp(PROP_NAME);
-        if(prop == null) {
-          return null;
-        }
-        writeProp(PROP_NAME, prop, (Jackson2JsonGeneratorWrapper) gen);
+      String prop = schema.getProp(PROP_NAME);
+      if (prop == null) {
+        return null;
       }
+      writeProp(PROP_NAME, prop, (Jackson1JsonGeneratorWrapper) gen);
       return PROP_NAME;
     }
   }
@@ -581,10 +589,10 @@ public class AvroUtilSchemaNormalizationTest19 {
       super(prop_name);
     }
 
-    private void writeProp(String propName, Object prop, Jackson2JsonGeneratorWrapper gen){
+    private void writeProp(String propName, Object prop, Jackson1JsonGeneratorWrapper gen){
       JsonGenerator delegate = gen.getDelegate();
       try {
-        delegate.writeObjectField(propName, JacksonUtils.toJsonNode(prop));
+        delegate.writeObjectField(propName, Jackson1Utils.toJsonNode(prop));
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -592,13 +600,11 @@ public class AvroUtilSchemaNormalizationTest19 {
 
     @Override
     public String execute(Schema.Field field, JsonGeneratorWrapper gen) {
-      if (field.hasProps()) {
-        Object prop = field.getObjectProp(PROP_NAME);
-        if(prop == null) {
-          return null;
-        }
-        writeProp(PROP_NAME, prop, (Jackson2JsonGeneratorWrapper) gen);
+      Object prop = field.getJsonProp(PROP_NAME);
+      if (prop == null) {
+        return null;
       }
+      writeProp(PROP_NAME, prop, (Jackson1JsonGeneratorWrapper) gen);
       return PROP_NAME;
     }
   }

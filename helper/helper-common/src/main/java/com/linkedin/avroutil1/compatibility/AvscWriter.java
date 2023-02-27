@@ -22,6 +22,14 @@ import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 
 public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
+
+    /**
+     * List of json props to be included even if no special plugin is provided and retainNonClaimedProps is false
+     */
+    private final Set<String> SPECIAL_JSON_PROPS = new TreeSet<String>() {{
+        add("avro.java.string");
+    }};
+
     protected final List<AvscWriterPlugin> _plugins;
 
     /**
@@ -60,6 +68,10 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
      * true includes alias values provided in for all the schemas, including top level record.
      */
     public final boolean retainSchemaAliases;
+    /***
+     * true includes explicit namespace values in all named types and subtypes.
+     */
+    public final boolean writeNamespaceExplicitly;
 
     protected AvscWriter(boolean pretty, boolean preAvro702, boolean addAliasesForAvro702) {
         this.pretty = pretty;
@@ -70,11 +82,12 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
         this.retainFieldAliases = true;
         this.retainNonClaimedProps = true;
         this.retainDefaults = true;
+        this.writeNamespaceExplicitly = false;
         _plugins = new ArrayList<AvscWriterPlugin>(0);
     }
 
     protected AvscWriter(boolean pretty, boolean preAvro702, boolean addAliasesForAvro702, boolean retainDefaults,
-        boolean retainDocs, boolean retainFieldAliases, boolean retainNonClaimedProps, boolean retainSchemaAliases,
+        boolean retainDocs, boolean retainFieldAliases, boolean retainNonClaimedProps, boolean retainSchemaAliases, boolean writeNamespaceExplicitly,
         List<AvscWriterPlugin> plugins) {
         this.pretty = pretty;
         this.preAvro702 = preAvro702;
@@ -84,6 +97,7 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
         this.retainFieldAliases = retainFieldAliases;
         this.retainNonClaimedProps = retainNonClaimedProps;
         this.retainDefaults = retainDefaults;
+        this.writeNamespaceExplicitly = writeNamespaceExplicitly;
         this._plugins = plugins == null ? Collections.emptyList() : plugins;
     }
 
@@ -109,6 +123,7 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
         G gen
     ) throws IOException {
         Avro702Data avro702Data;
+        Set<String> allJsonPropNames = getAllJsonPropNamesSortedFromSchema(getAllPropNames(schema));
         switch (schema.getType()) {
             case ENUM:
                 //taken from EnumSchema.toJson() in avro 1.11
@@ -126,11 +141,8 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                 if(retainDefaults) {
                     writeEnumDefault(schema, gen);
                 }
-                Set<String> claimedPropsEnum = executeAvscWriterPluginsForSchema(schema, gen);
-
-                if(retainNonClaimedProps) {
-                    writeProps(schema, gen, claimedPropsEnum);
-                }
+                writeProps(schema, gen, allJsonPropNames);
+                executeAvscWriterPluginsForSchema(schema, gen);
 
                 aliasesToJson(schema, avro702Data.getExtraAliases(), gen, retainSchemaAliases);
                 if (retainDocs && schema.getDoc() != null) {
@@ -148,11 +160,10 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                 gen.writeStringField("type", "fixed");
                 gen.writeNumberField("size", schema.getFixedSize());
 
-                Set<String> claimedPropsFixed = executeAvscWriterPluginsForSchema(schema, gen);
 
-                if(retainNonClaimedProps) {
-                    writeProps(schema, gen, claimedPropsFixed);
-                }
+                writeProps(schema, gen, allJsonPropNames);
+
+                executeAvscWriterPluginsForSchema(schema, gen);
 
                 aliasesToJson(schema, avro702Data.getExtraAliases(), gen, retainSchemaAliases);
                 if (retainDocs && schema.getDoc() != null) {
@@ -189,11 +200,9 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                         gen
                     );
                 }
-                Set<String> claimedPropsRecord = executeAvscWriterPluginsForSchema(schema, gen);
 
-                if(retainNonClaimedProps) {
-                    writeProps(schema, gen, claimedPropsRecord);
-                }
+                writeProps(schema, gen, allJsonPropNames);
+                executeAvscWriterPluginsForSchema(schema, gen);
 
                 aliasesToJson(schema, avro702Data.getExtraAliases(), gen, retainSchemaAliases);
                 if (retainDocs && schema.getDoc() != null) {
@@ -209,11 +218,10 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                 gen.writeStringField("type", "array");
                 gen.writeFieldName("items");
                 toJson(schema.getElementType(), names, contextNamespaceWhenParsed, contextNamespaceWhenParsedUnder702, gen);
-                Set<String> claimedPropsArray = executeAvscWriterPluginsForSchema(schema, gen);
 
-                if(retainNonClaimedProps) {
-                    writeProps(schema, gen, claimedPropsArray);
-                }
+                writeProps(schema, gen, allJsonPropNames);
+                executeAvscWriterPluginsForSchema(schema, gen);
+
                 gen.writeEndObject();
                 break;
             case MAP:
@@ -222,11 +230,10 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                 gen.writeStringField("type", "map");
                 gen.writeFieldName("values");
                 toJson(schema.getValueType(), names, contextNamespaceWhenParsed, contextNamespaceWhenParsedUnder702, gen);
-                Set<String> claimedPropsMap = executeAvscWriterPluginsForSchema(schema, gen);
 
-                if(retainNonClaimedProps) {
-                    writeProps(schema, gen, claimedPropsMap);
-                }
+                writeProps(schema, gen, allJsonPropNames);
+                executeAvscWriterPluginsForSchema(schema, gen);
+
                 gen.writeEndObject();
                 break;
             case UNION:
@@ -235,10 +242,10 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                 for (Schema type : schema.getTypes()) {
                     toJson(type, names, contextNamespaceWhenParsed, contextNamespaceWhenParsedUnder702, gen);
                 }
-                Set<String> claimedPropsUnion = executeAvscWriterPluginsForSchema(schema, gen);
-                if(retainNonClaimedProps) {
-                    writeProps(schema, gen, claimedPropsUnion);
-                }
+
+                writeProps(schema, gen, allJsonPropNames);
+                executeAvscWriterPluginsForSchema(schema, gen);
+
                 gen.writeEndArray();
                 break;
             default:
@@ -248,14 +255,34 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                 } else {
                     gen.writeStartObject();
                     gen.writeStringField("type", schema.getName());
-                    Set<String> claimedProps = executeAvscWriterPluginsForSchema(schema, gen);
-
-                    if(retainNonClaimedProps) {
-                        writeProps(schema, gen, claimedProps);
-                    }
+                    writeProps(schema, gen, allJsonPropNames);
+                    executeAvscWriterPluginsForSchema(schema, gen);
                     gen.writeEndObject();
                 }
         }
+    }
+
+    /***
+     * Adds exceptional prop names if they are available, allJsonProps if retainNonClaimedProps is true and removes
+     * already claimed props via plugins
+     * @param propNames
+     * @return
+     */
+    private Set<String> getAllJsonPropNamesSortedFromSchema(List<String> propNames) {
+        Set<String> allJsonPropNames = new TreeSet<>();
+        for(String jsonProp : SPECIAL_JSON_PROPS) {
+            if(propNames.contains(jsonProp)) {
+                allJsonPropNames.add(jsonProp);
+            }
+        }
+
+        if(retainNonClaimedProps) {
+            allJsonPropNames.addAll(propNames);
+        }
+        for(AvscWriterPlugin plugin : _plugins) {
+            allJsonPropNames.remove(plugin.getPropName());
+        }
+        return allJsonPropNames;
     }
 
     /***
@@ -364,6 +391,8 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
         gen.writeStartArray();
         List<Schema.Field> fields = schema.getFields();
         for (Schema.Field f : fields) {
+
+            Set<String> allJsonPropNames = getAllJsonPropNamesSortedFromSchema(getAllPropNames(f));
             gen.writeStartObject();
             gen.writeStringField("name", f.name());
             gen.writeFieldName("type");
@@ -389,10 +418,8 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                     gen.writeEndArray();
                 }
             }
-            Set<String> claimedProps = executeAvscWriterPluginsForField(f, gen);
-            if(retainNonClaimedProps) {
-                writeProps(f, gen, claimedProps);
-            }
+            writeProps(f, gen, allJsonPropNames);
+            executeAvscWriterPluginsForField(f, gen);
             gen.writeEndObject();
         }
         gen.writeEndArray();
@@ -422,7 +449,8 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
         G gen
     ) throws IOException {
         AvroName name = AvroName.of(schema);
-        return name.writeName(names, preAvro702, contextNamespaceWhenParsed, contextNamespaceWhenParsedUnder702, gen);
+        return name.writeName(names, preAvro702, contextNamespaceWhenParsed, contextNamespaceWhenParsedUnder702, gen,
+            writeNamespaceExplicitly);
     }
 
     //json generator methods (will vary by jackson version across different avro versions)
@@ -434,26 +462,30 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
     protected abstract boolean hasProps(Schema schema);
 
     /***
-     * Write all json props from schema, except the keys provided in claimedProps
+     * Write json props from schema, for the keys provided in propNames
      * @param schema
      * @param gen
-     * @param claimedProps
+     * @param propNames
      * @throws IOException
      */
-    protected abstract void writeProps(Schema schema, G gen, Set<String> claimedProps) throws IOException;
+    protected abstract void writeProps(Schema schema, G gen, Set<String> propNames) throws IOException;
 
     /***
-     * Write all json props from field, except the keys provided in claimedProps
+     * Write json props from field, for the keys provided in propNames
      * @param field
      * @param gen
-     * @param claimedProps
+     * @param propNames
      * @throws IOException
      */
-    protected abstract void writeProps(Schema.Field field, G gen, Set<String> claimedProps) throws IOException;
+    protected abstract void writeProps(Schema.Field field, G gen, Set<String> propNames) throws IOException;
 
     protected abstract void writeDefaultValue(Schema.Field field, G gen) throws IOException;
 
     protected abstract void writeEnumDefault(Schema enumSchema, G gen) throws IOException;
 
     protected abstract Set<String> getAliases(Schema.Field field);
+
+    protected abstract List<String> getAllPropNames(Schema schema);
+
+    protected abstract List<String> getAllPropNames(Schema.Field field);
 }

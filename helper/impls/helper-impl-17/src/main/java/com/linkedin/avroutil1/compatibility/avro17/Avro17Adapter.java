@@ -424,12 +424,28 @@ public class Avro17Adapter implements AvroAdapter {
 
   @Override
   public List<String> getAllPropNames(Schema schema) {
-    return new ArrayList<>(schema.getJsonProps().keySet());
+    // Handle Old avro 1.7 without JsonProperties as superClass
+    try {
+      schema.getClass().getMethod("getJsonProps");
+      // If successful, then use the method.
+      return new ArrayList<>(schema.getJsonProps().keySet());
+    } catch (NoSuchMethodException e) {
+      // else it is on old avro 1.7
+      return new ArrayList<>(schema.getProps().keySet());
+    }
   }
 
   @Override
   public List<String> getAllPropNames(Schema.Field field) {
-    return new ArrayList<>(field.getJsonProps().keySet());
+    // Handle Old avro 1.7 without JsonProperties as superClass
+    try {
+      field.getClass().getMethod("getJsonProps");
+      // If successful, then use the method.
+      return new ArrayList<>(field.getJsonProps().keySet());
+    } catch (NoSuchMethodException e) {
+      // else it is on old avro 1.7
+      return new ArrayList<>(field.props().keySet());
+    }
   }
 
   @Override
@@ -465,9 +481,8 @@ public class Avro17Adapter implements AvroAdapter {
   @Override
   public AvscWriter getAvscWriter(AvscGenerationConfig config, List<AvscWriterPlugin> schemaPlugins) {
     boolean usePre702Logic = config.getRetainPreAvro702Logic().orElse(Boolean.FALSE);
-    return new Avro17AvscWriter(config.isPrettyPrint(), usePre702Logic, config.isAddAvro702Aliases(),
-        config.retainDefaults, config.retainDocs, config.retainFieldAliases, config.retainNonClaimedProps,
-        config.retainSchemaAliases, schemaPlugins);
+    return new Avro17AvscWriter(config.isPrettyPrint(), usePre702Logic, config.isAddAvro702Aliases(), config.retainDefaults, config
+        .retainDocs, config.retainFieldAliases, config.retainNonClaimedProps, config.retainSchemaAliases, config.writeNamespaceExplicitly, schemaPlugins);
   }
 
   @Override

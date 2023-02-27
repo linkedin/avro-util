@@ -476,9 +476,8 @@ public class Avro16Adapter implements AvroAdapter {
   @Override
   public AvscWriter getAvscWriter(AvscGenerationConfig config, List<AvscWriterPlugin> schemaPlugins) {
     boolean usePre702Logic = config.getRetainPreAvro702Logic().orElse(Boolean.FALSE);
-    return new Avro16AvscWriter(config.isPrettyPrint(), usePre702Logic, config.isAddAvro702Aliases(),
-        config.retainDefaults, config.retainDocs, config.retainFieldAliases, config.retainNonClaimedProps,
-        config.retainSchemaAliases, schemaPlugins);
+    return new Avro16AvscWriter(config.isPrettyPrint(), usePre702Logic, config.isAddAvro702Aliases(), config.retainDefaults, config
+        .retainDocs, config.retainFieldAliases, config.retainNonClaimedProps, config.retainSchemaAliases, config.writeNamespaceExplicitly, schemaPlugins);
   }
 
   @Override

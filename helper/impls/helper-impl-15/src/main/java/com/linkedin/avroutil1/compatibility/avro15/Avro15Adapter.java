@@ -508,7 +508,7 @@ public class Avro15Adapter implements AvroAdapter {
     boolean usePre702Logic = config.getRetainPreAvro702Logic().orElse(Boolean.FALSE);
     return new Avro15AvscWriter(config.isPrettyPrint(), usePre702Logic, config.isAddAvro702Aliases(),
         config.retainDefaults, config.retainDocs, config.retainFieldAliases, config.retainNonClaimedProps,
-        config.retainSchemaAliases, schemaPlugins);
+        config.retainSchemaAliases, config.writeNamespaceExplicitly, schemaPlugins);
   }
 
   @Override

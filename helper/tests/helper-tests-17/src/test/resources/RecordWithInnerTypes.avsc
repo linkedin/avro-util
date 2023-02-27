@@ -1,8 +1,8 @@
 {
   "type": "record",
   "namespace": "com.acme",
-  "name": "RecordWithStuff",
-  "doc": "Different doc1",
+  "name": "RecordWithInnerTypes",
+  "doc": "Here is a great overall doc",
   "fields": [
     {
       "name": "strTest",
@@ -12,26 +12,21 @@
       }
     },
     {
-      "name": "nullWithoutDefault",
-      "type": "null",
-      "not_important_stuff" : "an apple a day!",
-      "another_non_important_json" : "decreases apple count by 1."
-    },
-    {
       "name": "enumField",
       "type": {
         "type": "enum",
         "name": "EnumForHasDefaults",
+        "doc" : "Should contain parent's namespace",
         "symbols": ["A", "B"]
-      },
-      "default": "A"
+      }
     },
     {
       "name": "recordField",
-      "doc": "Different doc2",
+      "aliases": ["field_alias", "afield_alias"],
       "type": {
         "type": "record",
-        "name": "RecordForHasDefaults",
+        "namespace": "com.my.own.special",
+        "name": "SpecialRecordName",
         "fields": [
           {
             "name": "innerLongField",
@@ -40,12 +35,7 @@
             "very_important" : ["important_stuff_1", "important_stuff_2"]
           }
         ]
-      },
-      "default": {
-        "innerLongField": 420
       }
     }
-  ],
-  "record_level_junk_json": "Non important text",
-  "record_level_important_json": "Really important space exploration plans"
+  ]
 }

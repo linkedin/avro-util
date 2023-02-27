@@ -89,16 +89,16 @@ public class AvscGenerationConfig {
      * Apache Avro :  <a href="https://avro.apache.org/docs/1.7.7/api/java/org/apache/avro/SchemaNormalization.html">Avro Spec</a>
      */
     public static final AvscGenerationConfig CANONICAL_ONELINE = new AvscGenerationConfig(
-        false, false, false, Optional.of(Boolean.TRUE), true, false,
-    false, false, false, false);
+        false, false, false, Optional.of(Boolean.FALSE), false, false,
+    false, false, false, false, true);
 
     /**
      * Broad Canonical form of avro, includes defaults and field / schema aliases
      * Apache Avro.
      */
     public static final AvscGenerationConfig CANONICAL_BROAD_ONELINE = new AvscGenerationConfig(
-        false, false, false, Optional.of(Boolean.TRUE), true, true,
-        false, true, false, true);
+        false, false, false, Optional.of(Boolean.FALSE), false, true,
+        false, true, false, true, true);
 
     /**
      * if this value is set to true, and the rest of the values on this config object
@@ -154,6 +154,10 @@ public class AvscGenerationConfig {
      * true includes alias values provided in for all the schemas, including top level record.
      */
     public final boolean retainSchemaAliases;
+    /***
+     * true includes explicit namespace values in all named types and subtypes.
+     */
+    public final boolean writeNamespaceExplicitly;
 
 
     public AvscGenerationConfig(
@@ -178,6 +182,7 @@ public class AvscGenerationConfig {
         this.retainFieldAliases = true;
         this.retainNonClaimedProps = true;
         this.retainSchemaAliases = true;
+        this.writeNamespaceExplicitly = false;
     }
 
     public AvscGenerationConfig(
@@ -191,7 +196,8 @@ public class AvscGenerationConfig {
         boolean retainDocs,
         boolean retainFieldAliases,
         boolean retainNonClaimedProps,
-        boolean retainSchemaAliases
+        boolean retainSchemaAliases,
+        boolean writeNamespaceExplicitly
     ) {
         //noinspection OptionalAssignedToNull
         if (retainPreAvro702Logic == null) {
@@ -207,7 +213,7 @@ public class AvscGenerationConfig {
         this.retainFieldAliases = retainFieldAliases;
         this.retainNonClaimedProps = retainNonClaimedProps;
         this.retainSchemaAliases = retainSchemaAliases;
-
+        this.writeNamespaceExplicitly = writeNamespaceExplicitly;
     }
 
     public boolean isPreferUseOfRuntimeAvro() {

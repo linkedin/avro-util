@@ -33,9 +33,9 @@ public class Avro18AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
 
     public Avro18AvscWriter(boolean pretty, boolean preAvro702, boolean addAliasesForAvro702, boolean retainDefaults,
         boolean retainDocs, boolean retainFieldAliases, boolean retainNonClaimedProps, boolean retainSchemaAliases,
-        List<AvscWriterPlugin> schemaPlugins) {
+        boolean writeNamespaceExplicitly, List<AvscWriterPlugin> schemaPlugins) {
         super(pretty, preAvro702, addAliasesForAvro702, retainDefaults, retainDocs, retainFieldAliases,
-            retainNonClaimedProps, retainSchemaAliases, schemaPlugins);
+            retainNonClaimedProps, retainSchemaAliases, writeNamespaceExplicitly, schemaPlugins);
     }
 
     @Override
@@ -54,13 +54,15 @@ public class Avro18AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
     }
 
     @Override
-    protected void writeProps(Schema schema, Jackson1JsonGeneratorWrapper gen, Set<String> claimedProps) throws IOException {
+    protected void writeProps(Schema schema, Jackson1JsonGeneratorWrapper gen, Set<String> propNames) throws IOException {
         Map<String, JsonNode> props = schema.getJsonProps();
         if (props == null || props.isEmpty()) {
             return;
         }
-        Map<String, JsonNode> sortedProps = new TreeMap<>(props);
-        claimedProps.stream().map(sortedProps::remove);
+        Map<String, JsonNode> sortedProps = new TreeMap<>();
+        for(String propName : propNames) {
+            sortedProps.put(propName, props.get(propName));
+        }
         //write all props except "default" for enums
         if (schema.getType() == Schema.Type.ENUM) {
             writeProps(sortedProps, gen, s -> !"default".equals(s));
@@ -70,11 +72,13 @@ public class Avro18AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
     }
 
     @Override
-    protected void writeProps(Schema.Field field, Jackson1JsonGeneratorWrapper gen, Set<String> claimedProps) throws IOException {
+    protected void writeProps(Schema.Field field, Jackson1JsonGeneratorWrapper gen, Set<String> propNames) throws IOException {
         Map<String, JsonNode> props = field.getJsonProps();
         if (props != null && !props.isEmpty()) {
-            Map<String, JsonNode> sortedProps = new TreeMap<>(props);
-            claimedProps.stream().map(sortedProps::remove);
+            Map<String, JsonNode> sortedProps = new TreeMap<>();
+            for(String propName : propNames) {
+                sortedProps.put(propName, props.get(propName));
+            }
             writeProps(sortedProps, gen);
         }
     }
@@ -103,6 +107,16 @@ public class Avro18AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
     @Override
     protected Set<String> getAliases(Schema.Field field) {
         return field.aliases();
+    }
+
+    @Override
+    protected List<String> getAllPropNames(Schema schema) {
+        return new Avro18Adapter().getAllPropNames(schema);
+    }
+
+    @Override
+    protected List<String> getAllPropNames(Schema.Field field) {
+        return new Avro18Adapter().getAllPropNames(field);
     }
 
     private void writeProps(Map<String, JsonNode> props, Jackson1JsonGeneratorWrapper gen) throws IOException {

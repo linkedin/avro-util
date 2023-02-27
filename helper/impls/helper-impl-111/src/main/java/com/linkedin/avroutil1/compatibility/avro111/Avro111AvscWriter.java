@@ -33,9 +33,9 @@ public class Avro111AvscWriter extends AvscWriter<Jackson2JsonGeneratorWrapper> 
     }
     public Avro111AvscWriter(boolean pretty, boolean preAvro702, boolean addAliasesForAvro702, boolean retainDefaults,
         boolean retainDocs, boolean retainFieldAliases, boolean retainNonClaimedProps, boolean retainSchemaAliases,
-        List<AvscWriterPlugin> schemaPlugins) {
+        boolean writeNamespaceExplicitly, List<AvscWriterPlugin> schemaPlugins) {
         super(pretty, preAvro702, addAliasesForAvro702, retainDefaults, retainDocs, retainFieldAliases,
-            retainNonClaimedProps, retainSchemaAliases, schemaPlugins);
+            retainNonClaimedProps, retainSchemaAliases, writeNamespaceExplicitly, schemaPlugins);
     }
 
     @Override
@@ -53,21 +53,23 @@ public class Avro111AvscWriter extends AvscWriter<Jackson2JsonGeneratorWrapper> 
     }
 
     @Override
-    protected void writeProps(Schema schema, Jackson2JsonGeneratorWrapper gen, Set<String> claimedProps) throws IOException {
-        Map<String, Object> props = schema.getObjectProps();
-        if (props != null && !props.isEmpty()) {
-            Map<String, Object> sortedProps = new TreeMap<>(props);
-            claimedProps.stream().map(sortedProps::remove);
-            writeProps(sortedProps, gen);
-        }
+    protected void writeProps(Schema schema, Jackson2JsonGeneratorWrapper gen, Set<String> propNames) throws IOException {
+        writeAllowedProps(gen, propNames, schema.getObjectProps());
     }
 
     @Override
-    protected void writeProps(Schema.Field field, Jackson2JsonGeneratorWrapper gen, Set<String> claimedProps) throws IOException {
-        Map<String, Object> props = field.getObjectProps();
+    protected void writeProps(Schema.Field field, Jackson2JsonGeneratorWrapper gen, Set<String> propNames) throws IOException {
+        writeAllowedProps(gen, propNames, field.getObjectProps());
+    }
+
+    private void writeAllowedProps(Jackson2JsonGeneratorWrapper gen, Set<String> allowedProps,
+        Map<String, Object> objectProps) throws IOException {
+        Map<String, Object> props = objectProps;
         if (props != null && !props.isEmpty()) {
-            Map<String, Object> sortedProps = new TreeMap<>(props);
-            claimedProps.stream().map(sortedProps::remove);
+            Map<String, Object> sortedProps = new TreeMap<>();
+            for(String propName : allowedProps) {
+                sortedProps.put(propName, props.get(propName));
+            }
             writeProps(sortedProps, gen);
         }
     }
@@ -95,6 +97,16 @@ public class Avro111AvscWriter extends AvscWriter<Jackson2JsonGeneratorWrapper> 
     @Override
     protected Set<String> getAliases(Schema.Field field) {
         return field.aliases();
+    }
+
+    @Override
+    protected List<String> getAllPropNames(Schema schema) {
+        return new Avro111Adapter().getAllPropNames(schema);
+    }
+
+    @Override
+    protected List<String> getAllPropNames(Schema.Field field) {
+        return new Avro111Adapter().getAllPropNames(field);
     }
 
     private void writeProps(Map<String, Object> props, Jackson2JsonGeneratorWrapper gen) throws IOException {

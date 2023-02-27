@@ -1,18 +1,13 @@
 {
   "type": "record",
   "namespace": "com.acme",
-  "name": "RecordWithStuff",
-  "doc": "Different doc1",
+  "name": "RecordWithStuff2",
+  "doc": "Here is a great overall doc",
+  "aliases": ["record_alias", "a_record_alias"],
   "fields": [
     {
-      "name": "strTest",
-      "type": {
-        "type": "string",
-        "avro.java.string": "String"
-      }
-    },
-    {
       "name": "nullWithoutDefault",
+      "doc" : "yup.. extra doc",
       "type": "null",
       "not_important_stuff" : "an apple a day!",
       "another_non_important_json" : "decreases apple count by 1."
@@ -22,13 +17,15 @@
       "type": {
         "type": "enum",
         "name": "EnumForHasDefaults",
-        "symbols": ["A", "B"]
+        "doc" : "yup.. extra doc inside internal type",
+        "symbols": ["A", "B"],
+        "aliases": ["field_type_alias", "Afield_type_alias"]
       },
       "default": "A"
     },
     {
       "name": "recordField",
-      "doc": "Different doc2",
+      "aliases": ["field_alias", "afield_alias"],
       "type": {
         "type": "record",
         "name": "RecordForHasDefaults",

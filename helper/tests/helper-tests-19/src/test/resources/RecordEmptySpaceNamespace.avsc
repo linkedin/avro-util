@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "RecordEmptySpaceNamespace",
+  "doc": "Here is a great overall doc",
+  "namespace": "",
+  "fields": [
+    {
+      "name": "strTest",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+      }
+    }
+  ]
+}
