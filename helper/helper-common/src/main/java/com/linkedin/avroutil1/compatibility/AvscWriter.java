@@ -14,8 +14,9 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import org.apache.avro.AvroRuntimeException;
@@ -292,17 +293,20 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
      * @throws UnsupportedOperationException of 2+ plugins provided for same json prop
      */
     private Set<String> executeAvscWriterPluginsForSchema(Schema schema, G gen) {
-        Set<String> claimedProps = new HashSet<>();
-        for (AvscWriterPlugin plugin : _plugins) {
-            String propName = plugin.getPropName();
-            if (claimedProps.contains(propName)) {
-                throw new UnsupportedOperationException("Multiple AvscWriterPlugin(s) defined for " + propName
-                    + " Only 1 plugin per Json property allowed.");
+        Map<String, String> claimedPropsToPluginNameMap = new HashMap<>();
+        if (_plugins != null) {
+            for (AvscWriterPlugin plugin : _plugins) {
+                String propName = plugin.getPropName();
+                if (claimedPropsToPluginNameMap.containsKey(propName)) {
+                    throw new UnsupportedOperationException(
+                        "AvscWriterPlugin " + claimedPropsToPluginNameMap.get(propName) + " already defined for "
+                            + propName + ". Only 1 plugin per Json property allowed.");
+                }
+                claimedPropsToPluginNameMap.put(propName, plugin.getClass().getSimpleName());
+                plugin.execute(schema, gen);
             }
-            claimedProps.add(propName);
-            plugin.execute(schema, gen);
         }
-        return claimedProps;
+        return claimedPropsToPluginNameMap.keySet();
     }
 
     /***
@@ -313,17 +317,20 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
      * @throws UnsupportedOperationException of 2+ plugins provided for same json prop
      */
     private Set<String> executeAvscWriterPluginsForField(Schema.Field field, G gen) {
-        Set<String> claimedProps = new HashSet<>();
-        for (AvscWriterPlugin plugin : _plugins) {
-            String propName = plugin.getPropName();
-            if (claimedProps.contains(propName)) {
-                throw new UnsupportedOperationException("Multiple AvscWriterPlugin(s) defined for " + propName
-                    + " Only 1 plugin per Json property allowed.");
+        Map<String, String> claimedPropsToPluginNameMap = new HashMap<>();
+        if (_plugins != null) {
+            for (AvscWriterPlugin plugin : _plugins) {
+                String propName = plugin.getPropName();
+                if (claimedPropsToPluginNameMap.containsKey(propName)) {
+                    throw new UnsupportedOperationException(
+                        "AvscWriterPlugin " + claimedPropsToPluginNameMap.get(propName) + " already defined for "
+                            + propName + ". Only 1 plugin per Json property allowed.");
+                }
+                claimedPropsToPluginNameMap.put(propName, plugin.getClass().getSimpleName());
+                plugin.execute(field, gen);
             }
-            claimedProps.add(propName);
-            plugin.execute(field, gen);
         }
-        return claimedProps;
+        return claimedPropsToPluginNameMap.keySet();
     }
 
     protected void aliasesToJson(Schema schema, List<AvroName> extraAliases, G gen, boolean retainSchemaAliases) throws IOException {
