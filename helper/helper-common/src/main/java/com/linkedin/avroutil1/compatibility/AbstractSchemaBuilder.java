@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.avro.Schema;
 
 
@@ -230,23 +231,75 @@ public abstract class AbstractSchemaBuilder implements SchemaBuilder {
                 validateNames();
                 result = Schema.createRecord(_name, _doc, _namespace, _isError);
                 if (_fields != null && !_fields.isEmpty()) {
-                    result.setFields(cloneFields(_fields));
+                    List<Schema.Field> fields = _fields.stream()
+                        .map(field -> _adapter.newFieldBuilder(field)
+                            .setSchema(fixInnerNamespace(field.schema(), _namespace))
+                            .build())
+                        .collect(Collectors.toList());
+
+                    result.setFields(fields);
                 }
                 break;
             case ARRAY:
-                result = Schema.createArray(_elementSchema);
+                result = Schema.createArray(fixInnerNamespace(_elementSchema, _namespace));
                 break;
             case MAP:
-                result = Schema.createMap(_valueSchema);
+                result = Schema.createMap(fixInnerNamespace(_valueSchema, _namespace));
                 break;
             case UNION:
                 validateUnionBranches();
-                result = Schema.createUnion(_unionBranches);
+                List<Schema> unionBranches = _unionBranches.stream()
+                    .map(schema -> fixInnerNamespace(schema, _namespace))
+                    .collect(Collectors.toList());
+                result = Schema.createUnion(unionBranches);
                 break;
             default:
                 throw new UnsupportedOperationException("unhandled type " + _type);
         }
         setPropsInternal(result);
+        return result;
+    }
+
+    private Schema fixInnerNamespace(Schema schema, String parentNamespace) {
+        Schema result = schema;
+
+        switch (schema.getType()) {
+            case FIXED:
+            case ENUM:
+            case RECORD:
+                if (schema.getNamespace() == null && parentNamespace != null) {
+                    result = _adapter.newSchemaBuilder(schema).setNamespace(parentNamespace).build();
+                }
+                break;
+            case ARRAY:
+                if (parentNamespace != null) {
+                    result = _adapter.newSchemaBuilder(null)
+                        .setType(Schema.Type.ARRAY)
+                        .setElementType(schema.getElementType())
+                        .setNamespace(parentNamespace)
+                        .build();
+                }
+                break;
+            case MAP:
+                if (parentNamespace != null) {
+                    result = _adapter.newSchemaBuilder(null)
+                        .setType(Schema.Type.MAP)
+                        .setValueType(schema.getValueType())
+                        .setNamespace(parentNamespace)
+                        .build();
+                }
+                break;
+            case UNION:
+                if (parentNamespace != null) {
+                    result = _adapter.newSchemaBuilder(null)
+                        .setType(Schema.Type.UNION)
+                        .setUnionBranches(schema.getTypes())
+                        .setNamespace(parentNamespace)
+                        .build();
+                }
+                break;
+        }
+
         return result;
     }
 
