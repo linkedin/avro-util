@@ -30,26 +30,51 @@ public abstract class AbstractSchemaBuilder implements SchemaBuilder {
     protected List<String> _symbols;
     protected String _defaultSymbol;
     //used for records
-    protected List<Schema.Field> _fields;
+    protected List<Schema.Field> _fields = null;
     //used for arrays
     protected Schema _elementSchema;
     //used for maps
     protected Schema _valueSchema;
     //used for unions
     protected List<Schema> _unionBranches;
+    //if nested named schema inherit namespace from ancestor
+    private boolean _inheritNamespace = false;
 
     protected AbstractSchemaBuilder(AvroAdapter _adapter, Schema original) {
         this._adapter = _adapter;
         if (original != null) {
             _type = original.getType();
-            _name = original.getName();
-            _namespace = original.getNamespace();
-            _doc = original.getDoc();
-            _isError = original.isError();
-            //make a copy of fields so its mutable
-            _fields = new ArrayList<>(original.getFields());
-        } else {
-            _fields = null;
+
+            switch (_type) {
+                case FIXED:
+                    _name = original.getName();
+                    _doc = original.getDoc();
+                    _namespace = original.getNamespace();
+                    _size = original.getFixedSize();
+                    break;
+                case ENUM:
+                    _name = original.getName();
+                    _doc = original.getDoc();
+                    _namespace = original.getNamespace();
+                    _symbols = original.getEnumSymbols();
+                    break;
+                case RECORD:
+                    _name = original.getName();
+                    _doc = original.getDoc();
+                    _namespace = original.getNamespace();
+                    _isError = original.isError();
+                    _fields = new ArrayList<>(original.getFields());
+                    break;
+                case ARRAY:
+                    _elementSchema = original.getElementType();
+                    break;
+                case MAP:
+                    _valueSchema = original.getValueType();
+                    break;
+                case UNION:
+                    _unionBranches = original.getTypes();
+                    break;
+            }
         }
     }
 
@@ -150,6 +175,12 @@ public abstract class AbstractSchemaBuilder implements SchemaBuilder {
         return this;
     }
 
+    @Override
+    public SchemaBuilder setInheritNamespace(boolean inheritNamespace) {
+        _inheritNamespace = inheritNamespace;
+        return this;
+    }
+
     /**
      * {@link Schema.Field} has a position ("pos") property that is set when its added to a schema.
      * this means we need to clone fields to add them to another schema
@@ -233,7 +264,7 @@ public abstract class AbstractSchemaBuilder implements SchemaBuilder {
                 if (_fields != null && !_fields.isEmpty()) {
                     List<Schema.Field> fields = _fields.stream()
                         .map(field -> _adapter.newFieldBuilder(field)
-                            .setSchema(fixInnerNamespace(field.schema(), _namespace))
+                            .setSchema(inheritNamespace(field.schema()))
                             .build())
                         .collect(Collectors.toList());
 
@@ -241,15 +272,15 @@ public abstract class AbstractSchemaBuilder implements SchemaBuilder {
                 }
                 break;
             case ARRAY:
-                result = Schema.createArray(fixInnerNamespace(_elementSchema, _namespace));
+                result = Schema.createArray(inheritNamespace(_elementSchema));
                 break;
             case MAP:
-                result = Schema.createMap(fixInnerNamespace(_valueSchema, _namespace));
+                result = Schema.createMap(inheritNamespace(_valueSchema));
                 break;
             case UNION:
                 validateUnionBranches();
                 List<Schema> unionBranches = _unionBranches.stream()
-                    .map(schema -> fixInnerNamespace(schema, _namespace))
+                    .map(this::inheritNamespace)
                     .collect(Collectors.toList());
                 result = Schema.createUnion(unionBranches);
                 break;
@@ -260,47 +291,24 @@ public abstract class AbstractSchemaBuilder implements SchemaBuilder {
         return result;
     }
 
-    private Schema fixInnerNamespace(Schema schema, String parentNamespace) {
-        Schema result = schema;
-
-        switch (schema.getType()) {
-            case FIXED:
-            case ENUM:
-            case RECORD:
-                if (schema.getNamespace() == null && parentNamespace != null) {
-                    result = _adapter.newSchemaBuilder(schema).setNamespace(parentNamespace).build();
-                }
-                break;
-            case ARRAY:
-                if (parentNamespace != null) {
-                    result = _adapter.newSchemaBuilder(null)
-                        .setType(Schema.Type.ARRAY)
-                        .setElementType(schema.getElementType())
-                        .setNamespace(parentNamespace)
-                        .build();
-                }
-                break;
-            case MAP:
-                if (parentNamespace != null) {
-                    result = _adapter.newSchemaBuilder(null)
-                        .setType(Schema.Type.MAP)
-                        .setValueType(schema.getValueType())
-                        .setNamespace(parentNamespace)
-                        .build();
-                }
-                break;
-            case UNION:
-                if (parentNamespace != null) {
-                    result = _adapter.newSchemaBuilder(null)
-                        .setType(Schema.Type.UNION)
-                        .setUnionBranches(schema.getTypes())
-                        .setNamespace(parentNamespace)
-                        .build();
-                }
-                break;
+    private Schema inheritNamespace(Schema schema) {
+        if (!_inheritNamespace) {
+            return schema;
         }
 
-        return result;
+        SchemaBuilder schemaBuilder = _adapter.newSchemaBuilder(schema).setInheritNamespace(_inheritNamespace);
+
+        //NamedSchema inherits parent's namespace only if it does not have namespace
+        Schema.Type schemaType = schema.getType();
+        if (schemaType == Schema.Type.FIXED || schemaType == Schema.Type.ENUM || schemaType == Schema.Type.RECORD) {
+            if (schema.getNamespace() == null) {
+                schemaBuilder.setNamespace(_namespace);
+            }
+        } else {
+            schemaBuilder.setNamespace(_namespace);
+        }
+
+        return schemaBuilder.build();
     }
 
     protected Schema buildEnumSchemaInternal() {
