@@ -22,8 +22,8 @@ public class SchemaBuilderNamespaceInheritTest {
     return new Object[][]{
         {"allavro/ComplexRecord.avsc", "allavro/ComplexRecordInherit.avsc", true},
         {"allavro/ComplexRecordInnerNamespace.avsc", "allavro/ComplexRecordInnerNamespaceInherit.avsc", true},
-        {"allavro/ComplexRecord.avsc", null, false},
-        {"allavro/ComplexRecordInnerNamespace.avsc", null, false}
+        {"allavro/ComplexRecord.avsc", "allavro/ComplexRecordNoInherit.avsc", false},
+        {"allavro/ComplexRecordInnerNamespace.avsc", "allavro/ComplexRecordInnerNamespaceNoInherit.avsc", false}
     };
   }
 
@@ -43,13 +43,9 @@ public class SchemaBuilderNamespaceInheritTest {
 
     validateSchema(originalSchema, newSchema, nameSpace, inheritNamespace, 0);
 
-    // print new schema to avsc to verify, the generated avsc are different for different avro versions without namespace
-    // inheritance. So we only verify when inheritNamespace is enabled.
-    if (inheritNamespace) {
-      String newAvsc = AvroCompatibilityHelper.toAvsc(newSchema, AvscGenerationConfig.CORRECT_PRETTY);
-      String targetAvsc = TestUtil.load(resultAvscFile);
-      Assert.assertEquals(newAvsc, targetAvsc);
-    }
+    String newAvsc = AvroCompatibilityHelper.toAvsc(newSchema, AvscGenerationConfig.CORRECT_PRETTY);
+    String targetAvsc = TestUtil.load(resultAvscFile);
+    Assert.assertEquals(newAvsc, targetAvsc);
   }
 
   private void validateSchema(Schema originalSchema, Schema newSchema, String parentNameSpace, boolean inheritNamespace,
