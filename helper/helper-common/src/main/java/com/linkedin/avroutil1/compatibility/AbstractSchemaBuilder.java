@@ -299,8 +299,7 @@ public abstract class AbstractSchemaBuilder implements SchemaBuilder {
         SchemaBuilder schemaBuilder = _adapter.newSchemaBuilder(schema).setInheritNamespace(_inheritNamespace);
 
         //NamedSchema inherits parent's namespace only if it does not have namespace
-        Schema.Type schemaType = schema.getType();
-        if (schemaType == Schema.Type.FIXED || schemaType == Schema.Type.ENUM || schemaType == Schema.Type.RECORD) {
+        if (HelperConsts.NAMED_TYPES.contains(schema.getType())) {
             if (schema.getNamespace() == null) {
                 schemaBuilder.setNamespace(_namespace);
             }
