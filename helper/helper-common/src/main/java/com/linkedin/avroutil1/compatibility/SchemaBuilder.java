@@ -37,6 +37,13 @@ public interface SchemaBuilder {
     SchemaBuilder setNamespace(String namespace);
 
     /**
+     * sets whether nested named schemas use their ancestor's namespace if the nested schemas do not have namespace
+     * @param inheritNamespace true if nested schemas inherit ancestor's namespace, false otherwise
+     * @return this builder
+     */
+    SchemaBuilder setInheritNamespace(boolean inheritNamespace);
+
+    /**
      * sets the element type for the (array) schema being built
      * @param elementSchema schema of array elements
      * @return the builder

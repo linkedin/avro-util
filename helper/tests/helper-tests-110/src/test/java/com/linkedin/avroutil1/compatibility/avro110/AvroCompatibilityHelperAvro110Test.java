@@ -74,5 +74,4 @@ public class AvroCompatibilityHelperAvro110Test {
         (List<List<String>>) AvroCompatibilityHelper.createSchemaField("arrayOfArrayWithDefault", field.schema(), "", field.defaultVal()).defaultVal();
     Assert.assertEquals(actualListValue.get(0).get(0), "dummyElement");
   }
-
 }

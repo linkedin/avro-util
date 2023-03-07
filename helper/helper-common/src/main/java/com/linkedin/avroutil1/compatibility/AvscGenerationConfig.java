@@ -37,13 +37,13 @@ public class AvscGenerationConfig {
      * always generates correct, pretty-printed avsc. delegates this to runtime avro where possible
      */
     public static final AvscGenerationConfig CORRECT_PRETTY = new AvscGenerationConfig(
-            true, false, true, Optional.of(Boolean.FALSE), false
+            false, false, true, Optional.of(Boolean.FALSE), false
     );
     /**
      * always generates correct, one-line avsc. delegates this to runtime avro where possible
      */
     public static final AvscGenerationConfig CORRECT_ONELINE = new AvscGenerationConfig(
-            true, false, true, Optional.of(Boolean.FALSE), false
+            false, false, true, Optional.of(Boolean.FALSE), false
     );
     /**
      * always generates correct, pretty avsc, with aliases fo "bad" fullnames for better compatibility with avro 1.4

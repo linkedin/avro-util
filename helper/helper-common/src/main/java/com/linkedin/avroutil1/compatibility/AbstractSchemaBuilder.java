@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.avro.Schema;
 
 
@@ -29,26 +30,51 @@ public abstract class AbstractSchemaBuilder implements SchemaBuilder {
     protected List<String> _symbols;
     protected String _defaultSymbol;
     //used for records
-    protected List<Schema.Field> _fields;
+    protected List<Schema.Field> _fields = null;
     //used for arrays
     protected Schema _elementSchema;
     //used for maps
     protected Schema _valueSchema;
     //used for unions
     protected List<Schema> _unionBranches;
+    //if nested named schema inherit namespace from ancestor
+    private boolean _inheritNamespace = false;
 
     protected AbstractSchemaBuilder(AvroAdapter _adapter, Schema original) {
         this._adapter = _adapter;
         if (original != null) {
             _type = original.getType();
-            _name = original.getName();
-            _namespace = original.getNamespace();
-            _doc = original.getDoc();
-            _isError = original.isError();
-            //make a copy of fields so its mutable
-            _fields = new ArrayList<>(original.getFields());
-        } else {
-            _fields = null;
+
+            switch (_type) {
+                case FIXED:
+                    _name = original.getName();
+                    _doc = original.getDoc();
+                    _namespace = original.getNamespace();
+                    _size = original.getFixedSize();
+                    break;
+                case ENUM:
+                    _name = original.getName();
+                    _doc = original.getDoc();
+                    _namespace = original.getNamespace();
+                    _symbols = original.getEnumSymbols();
+                    break;
+                case RECORD:
+                    _name = original.getName();
+                    _doc = original.getDoc();
+                    _namespace = original.getNamespace();
+                    _isError = original.isError();
+                    _fields = new ArrayList<>(original.getFields());
+                    break;
+                case ARRAY:
+                    _elementSchema = original.getElementType();
+                    break;
+                case MAP:
+                    _valueSchema = original.getValueType();
+                    break;
+                case UNION:
+                    _unionBranches = original.getTypes();
+                    break;
+            }
         }
     }
 
@@ -149,6 +175,12 @@ public abstract class AbstractSchemaBuilder implements SchemaBuilder {
         return this;
     }
 
+    @Override
+    public SchemaBuilder setInheritNamespace(boolean inheritNamespace) {
+        _inheritNamespace = inheritNamespace;
+        return this;
+    }
+
     /**
      * {@link Schema.Field} has a position ("pos") property that is set when its added to a schema.
      * this means we need to clone fields to add them to another schema
@@ -230,24 +262,52 @@ public abstract class AbstractSchemaBuilder implements SchemaBuilder {
                 validateNames();
                 result = Schema.createRecord(_name, _doc, _namespace, _isError);
                 if (_fields != null && !_fields.isEmpty()) {
-                    result.setFields(cloneFields(_fields));
+                    List<Schema.Field> fields = _fields.stream()
+                        .map(field -> _adapter.newFieldBuilder(field)
+                            .setSchema(inheritNamespace(field.schema()))
+                            .build())
+                        .collect(Collectors.toList());
+
+                    result.setFields(fields);
                 }
                 break;
             case ARRAY:
-                result = Schema.createArray(_elementSchema);
+                result = Schema.createArray(inheritNamespace(_elementSchema));
                 break;
             case MAP:
-                result = Schema.createMap(_valueSchema);
+                result = Schema.createMap(inheritNamespace(_valueSchema));
                 break;
             case UNION:
                 validateUnionBranches();
-                result = Schema.createUnion(_unionBranches);
+                List<Schema> unionBranches = _unionBranches.stream()
+                    .map(this::inheritNamespace)
+                    .collect(Collectors.toList());
+                result = Schema.createUnion(unionBranches);
                 break;
             default:
                 throw new UnsupportedOperationException("unhandled type " + _type);
         }
         setPropsInternal(result);
         return result;
+    }
+
+    private Schema inheritNamespace(Schema schema) {
+        if (!_inheritNamespace) {
+            return schema;
+        }
+
+        SchemaBuilder schemaBuilder = _adapter.newSchemaBuilder(schema).setInheritNamespace(_inheritNamespace);
+
+        //NamedSchema inherits parent's namespace only if it does not have namespace
+        if (HelperConsts.NAMED_TYPES.contains(schema.getType())) {
+            if (schema.getNamespace() == null) {
+                schemaBuilder.setNamespace(_namespace);
+            }
+        } else {
+            schemaBuilder.setNamespace(_namespace);
+        }
+
+        return schemaBuilder.build();
     }
 
     protected Schema buildEnumSchemaInternal() {
