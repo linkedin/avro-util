@@ -169,11 +169,7 @@ public class SchemaBuilderTest {
     }
 
     @Test(dataProvider = "TestSchemeBuildWithEmptyFieldProvider")
-<<<<<<< HEAD
-    public void testSchemaBuilderWithNamespaceInherit(String originalAvscFile) throws Exception {
-=======
     public void testSchemaBuilderWithEmptyField(String originalAvscFile) throws Exception {
->>>>>>> 47330ade (Update SchemaBuilderTest.java)
         String originalAvsc = TestUtil.load(originalAvscFile);
         Schema originalSchema = AvroCompatibilityHelper.parse(originalAvsc);
         Schema newSchema = AvroCompatibilityHelper.newSchema(originalSchema).setType(Schema.Type.RECORD).build();
