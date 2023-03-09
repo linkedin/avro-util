@@ -44,15 +44,33 @@
       ]
     },
     {
-      "name": "unionWithMapRecord",
-      "type": {
-        "type":"map",
-        "values": {
-          "name": "testRecord4",
+      "name": "unionWithNestedField",
+      "type": [
+        "null",
+        {
           "type": "record",
-          "fields": []
+          "name": "testRecord4",
+          "fields": [
+            {
+              "name": "testUnion",
+              "type": [
+                "null",
+                {
+                  "type": "map",
+                  "values": {
+                    "type": "array",
+                    "items": {
+                      "type": "record",
+                      "name": "testRecord5",
+                      "fields": []
+                    }
+                  }
+                }
+              ]
+            }
+          ]
         }
-      }
+      ]
     }
   ]
 }
