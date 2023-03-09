@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import org.apache.avro.Schema;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 public class SchemaBuilderTest {
