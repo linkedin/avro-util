@@ -149,7 +149,7 @@ public abstract class AbstractSchemaBuilder implements SchemaBuilder {
 
     @Override
     public SchemaBuilder removeField(String fieldName) {
-        if (fieldName == null || fieldName.isEmpty()) {
+        if (fieldName == null) {
             throw new IllegalArgumentException("argument cannot be null or empty");
         }
         int index = fieldPositionByName(fieldName, false);

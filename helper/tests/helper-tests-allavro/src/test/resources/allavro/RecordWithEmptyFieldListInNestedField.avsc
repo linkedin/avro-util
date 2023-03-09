@@ -1,0 +1,58 @@
+{
+  "type": "record",
+  "namespace": "allavro",
+  "name": "RecordWithEmptyFieldListInNestedField",
+  "fields": [
+    {
+      "name":"unionWithArray",
+      "type":[
+        "null",
+        {
+          "type":"array",
+          "items":
+          {
+            "type":"record",
+            "name":"testRecord1",
+            "fields":[]
+          }
+        }
+      ]
+    },
+    {
+      "name": "unionWithRecord",
+      "type": [
+        "null",
+        {
+          "fields": [],
+          "name": "testRecord2",
+          "type": "record"
+        }
+      ]
+    },
+    {
+      "name": "unionWithMap",
+      "type": [
+        "null",
+        {
+          "type": "map",
+          "values": {
+            "type": "record",
+            "name": "testRecord3",
+            "fields": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "unionWithMapRecord",
+      "type": {
+        "type":"map",
+        "values": {
+          "name": "testRecord4",
+          "type": "record",
+          "fields": []
+        }
+      }
+    }
+  ]
+}

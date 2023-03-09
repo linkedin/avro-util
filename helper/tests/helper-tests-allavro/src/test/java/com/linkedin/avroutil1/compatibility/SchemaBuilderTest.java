@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import org.apache.avro.Schema;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 public class SchemaBuilderTest {
@@ -158,5 +159,21 @@ public class SchemaBuilderTest {
         //this is fine
         AvroCompatibilityHelper.newSchema(null).setType(Schema.Type.UNION)
             .setUnionBranches(Arrays.asList(recordSchema1, recordSchema2)).build();
+    }
+
+    @DataProvider
+    private Object[][] TestSchemeBuildWithEmptyFieldProvider() {
+        return new Object[][]{
+            {"allavro/RecordWithEmptyFieldList.avsc"},
+            {"allavro/RecordWithEmptyFieldListInNestedField.avsc"}
+        };
+    }
+
+    @Test(dataProvider = "TestSchemeBuildWithEmptyFieldProvider")
+    public void testSchemaBuilderWithEmptyField(String originalAvscFile) throws Exception {
+        String originalAvsc = TestUtil.load(originalAvscFile);
+        Schema originalSchema = AvroCompatibilityHelper.parse(originalAvsc);
+        Schema newSchema = AvroCompatibilityHelper.newSchema(originalSchema).setType(Schema.Type.RECORD).build();
+        Assert.assertEquals(newSchema, originalSchema);
     }
 }
