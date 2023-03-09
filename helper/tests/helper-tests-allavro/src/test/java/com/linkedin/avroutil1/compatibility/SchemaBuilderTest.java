@@ -159,4 +159,20 @@ public class SchemaBuilderTest {
         AvroCompatibilityHelper.newSchema(null).setType(Schema.Type.UNION)
             .setUnionBranches(Arrays.asList(recordSchema1, recordSchema2)).build();
     }
+
+    @DataProvider
+    private Object[][] TestSchemeBuildWithNamespaceInheritProvider() {
+        return new Object[][]{
+            {"allavro/RecordWithEmptyFieldList.avsc"},
+            {"allavro/RecordWithEmptyFieldListInNestedField.avsc"}
+        };
+    }
+
+    @Test(dataProvider = "TestSchemeBuildWithNamespaceInheritProvider")
+    public void testSchemaBuilderWithNamespaceInherit(String originalAvscFile) throws Exception {
+        String originalAvsc = TestUtil.load(originalAvscFile);
+        Schema originalSchema = AvroCompatibilityHelper.parse(originalAvsc);
+        Schema newSchema = AvroCompatibilityHelper.newSchema(originalSchema).setType(Schema.Type.RECORD).build();
+        Assert.assertEquals(newSchema, originalSchema);
+    }
 }
