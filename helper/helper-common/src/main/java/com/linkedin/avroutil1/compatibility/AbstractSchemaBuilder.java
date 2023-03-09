@@ -261,7 +261,7 @@ public abstract class AbstractSchemaBuilder implements SchemaBuilder {
             case RECORD:
                 validateNames();
                 result = Schema.createRecord(_name, _doc, _namespace, _isError);
-                if (_fields != null && !_fields.isEmpty()) {
+                if (_fields != null) {
                     List<Schema.Field> fields = _fields.stream()
                         .map(field -> _adapter.newFieldBuilder(field)
                             .setSchema(inheritNamespace(field.schema()))
