@@ -161,14 +161,22 @@ public class SchemaBuilderTest {
     }
 
     @DataProvider
+<<<<<<< HEAD
     private Object[][] TestSchemeBuildWithEmptyFieldProvider() {
+=======
+    private Object[][] TestSchemeBuildWithNamespaceInheritProvider() {
+>>>>>>> dbfefe580447b4cbb1dfa3add8b7cf987a08af2c
         return new Object[][]{
             {"allavro/RecordWithEmptyFieldList.avsc"},
             {"allavro/RecordWithEmptyFieldListInNestedField.avsc"}
         };
     }
 
+<<<<<<< HEAD
     @Test(dataProvider = "TestSchemeBuildWithEmptyFieldProvider")
+=======
+    @Test(dataProvider = "TestSchemeBuildWithNamespaceInheritProvider")
+>>>>>>> dbfefe580447b4cbb1dfa3add8b7cf987a08af2c
     public void testSchemaBuilderWithNamespaceInherit(String originalAvscFile) throws Exception {
         String originalAvsc = TestUtil.load(originalAvscFile);
         Schema originalSchema = AvroCompatibilityHelper.parse(originalAvsc);
