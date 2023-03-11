@@ -90,7 +90,7 @@ public class AvscGenerationConfig {
      */
     public static final AvscGenerationConfig CANONICAL_ONELINE = new AvscGenerationConfig(
         false, false, false, Optional.of(Boolean.FALSE), false, false,
-    false, false, false, false, true);
+    false, false, false, false, true, false);
 
     /**
      * Broad Canonical form of avro, includes defaults and field / schema aliases
@@ -98,7 +98,7 @@ public class AvscGenerationConfig {
      */
     public static final AvscGenerationConfig CANONICAL_BROAD_ONELINE = new AvscGenerationConfig(
         false, false, false, Optional.of(Boolean.FALSE), false, true,
-        false, true, false, true, true);
+        false, true, false, true, true, false);
 
     /**
      * if this value is set to true, and the rest of the values on this config object
@@ -158,6 +158,10 @@ public class AvscGenerationConfig {
      * true includes explicit namespace values in all named types and subtypes.
      */
     public final boolean writeNamespaceExplicitly;
+    /***
+     * true to write namespace relative to parent namespace. False writes full namespace.
+     */
+    public final boolean writeRelativeNamespace;
 
 
     public AvscGenerationConfig(
@@ -183,6 +187,7 @@ public class AvscGenerationConfig {
         this.retainNonClaimedProps = true;
         this.retainSchemaAliases = true;
         this.writeNamespaceExplicitly = false;
+        this.writeRelativeNamespace = true;
     }
 
     public AvscGenerationConfig(
@@ -197,7 +202,8 @@ public class AvscGenerationConfig {
         boolean retainFieldAliases,
         boolean retainNonClaimedProps,
         boolean retainSchemaAliases,
-        boolean writeNamespaceExplicitly
+        boolean writeNamespaceExplicitly,
+        boolean writeRelativeNamespace
     ) {
         //noinspection OptionalAssignedToNull
         if (retainPreAvro702Logic == null) {
@@ -214,6 +220,7 @@ public class AvscGenerationConfig {
         this.retainNonClaimedProps = retainNonClaimedProps;
         this.retainSchemaAliases = retainSchemaAliases;
         this.writeNamespaceExplicitly = writeNamespaceExplicitly;
+        this.writeRelativeNamespace = writeRelativeNamespace;
     }
 
     public boolean isPreferUseOfRuntimeAvro() {

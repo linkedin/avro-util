@@ -123,7 +123,7 @@ public class AvroUtilSchemaNormalizationTest17 {
   public void testCanonicalStrictWithNonSpecificJsonIncluded() throws IOException {
     AvscGenerationConfig config = new AvscGenerationConfig(
         false, false, false, Optional.of(Boolean.TRUE), false, false,
-        false, false, true, false, true);
+        false, false, true, false, true, false);
 
     Schema schema = Schema.parse(TestUtil.load("Record1.avsc"));
     String str = AvroUtilSchemaNormalization.getCanonicalForm(schema, config, null);
@@ -555,6 +555,166 @@ public class AvroUtilSchemaNormalizationTest17 {
     Assert.assertTrue(canonicalFormBroad.contains("{\"name\":\"EnumForHasDefaults\",\"namespace\":\"com.acme\""));
     Assert.assertTrue(canonicalFormBroad.contains("{\"name\":\"SpecialRecordName\",\"namespace\":\"com.my.own.special\""));
 
+  }
+
+  /***
+   * Test that written avsc follows the following order:
+   * "name"
+   * "namespace"
+   * "type"
+   * "fields"
+   * "symbols"
+   * "items"
+   * "values"
+   * "size"
+   * "default"
+   * "order"
+   * "aliases"
+   * "doc"
+   * "included json - via plugins in order of plugins"
+   * "extra json - alphabetically sorted by key"
+   * @throws IOException
+   */
+  @Test
+  public void testOrder() throws IOException {
+
+    AvscGenerationConfig config = new AvscGenerationConfig(
+        false, false, false, Optional.of(Boolean.TRUE), false, true,
+        true, true, true, true, true, false);
+
+    String expectedForm =
+        "{"
+            + "\"name\":\"OrderTester\","
+            + "\"namespace\":\"vs14\","
+            + "\"type\":\"record\","
+            + "\"fields\":["
+            + "{"
+            + "\"name\":\"stringField\","
+            + "\"type\":\"string\","
+            + "\"doc\":\"Doc\","
+            + "\"very_important\":[\"important_stuff_1\",\"important_stuff_2\"],"
+            + "\"another_non_important_json\":\"decreases apple count by 1.\","
+            + "\"not_important_stuff\":\"an apple a day!\""
+            + "},"
+            + "{"
+            + "\"name\":\"exception\","
+            + "\"type\":\"float\","
+            + "\"doc\":\"Doc\","
+            + "\"a_very_important\":[\"important_stuff_1\",\"important_stuff_2\"],"
+            + "\"very_important\":[\"important_stuff_1\","
+            + "\"important_stuff_2\"],\"another_non_important_json\":\"decreases apple count by 1.\","
+            + "\"not_important_stuff\":\"an apple a day!\""
+            + "},"
+            + "{"
+            + "\"name\":\"dbl\","
+            + "\"type\":\"double\","
+            + "\"doc\":\"Doc\","
+            + "\"very_important\":[\"important_stuff_1\",\"important_stuff_2\"]"
+            + ",\"another_non_important_json\":\"decreases apple count by 1.\","
+            + "\"not_important_stuff\":\"an apple a day!\""
+            + "},"
+            + "{"
+            + "\"name\":\"isTrue\","
+            + "\"type\":\"boolean\","
+            + "\"doc\":\"Doc\","
+            + "\"very_important\":[\"important_stuff_1\",\"important_stuff_2\"],"
+            + "\"another_non_important_json\":\"decreases apple count by 1.\","
+            + "\"not_important_stuff\":\"an apple a day!\""
+            + "},"
+            + "{"
+            + "\"name\":\"arrayOfStrings\","
+            + "\"type\":"
+            + "{"
+            + "\"type\":\"array\","
+            + "\"items\":\"string\""
+            + "},"
+            + "\"doc\":\"Doc\","
+            + "\"very_important\":[\"important_stuff_1\",\"important_stuff_2\"],"
+            + "\"another_non_important_json\":\"decreases apple count by 1.\","
+            + "\"not_important_stuff\":\"an apple a day!\""
+            + "},"
+            + "{"
+            + "\"name\":\"min\","
+            + "\"type\":"
+            + "{"
+            + "\"name\":\"Amount\","
+            + "\"type\":\"record\","
+            + "\"fields\":["
+            + "{"
+            + "\"name\":\"currencyCode\","
+            + "\"type\":\"string\","
+            + "\"doc\":\"Currency code v$\""
+            + "},"
+            + "{"
+            + "\"name\":\"amount\","
+            + "\"type\":\"string\","
+            + "\"doc\":\"The amount of money as a real number string, See https://docs.oracle.com/javase/8/docs/api/java/math/BigDecimal.html#BigDecimal-java.lang.String-\""
+            + "}"
+            + "],"
+            + "\"aliases\":["
+            + "\"banana.MoneyAmount\",\"ms14.MoneyAmount\",\"vs14.MoneyAmount\",\"vs14.NoNamespace\"],"
+            + "\"doc\":\"Represents an amount of money\""
+            + "},"
+            + "\"doc\":\"Minimum value\","
+            + "\"very_important\":[\"important_stuff_1\",\"important_stuff_2\"],"
+            + "\"another_non_important_json\":\"decreases apple count by 1.\","
+            + "\"not_important_stuff\":\"an apple a day!\""
+            + "},"
+            + "{"
+            + "\"name\":\"mapOfStrings\","
+            + "\"type\":{"
+            + "\"type\":\"map\","
+            + "\"values\":\"string\""
+            + "},"
+            + "\"doc\":\"Doc\","
+            + "\"very_important\":[\"important_stuff_1\",\"important_stuff_2\"],"
+            + "\"another_non_important_json\":\"decreases apple count by 1.\","
+            + "\"not_important_stuff\":\"an apple a day!\""
+            + "},"
+            + "{"
+            + "\"name\":\"fixedType\","
+            + "\"type\":"
+            + "{"
+            + "\"name\":\"RandomFixedName\","
+            + "\"type\":\"fixed\","
+            + "\"size\":16,"
+            + "\"doc\":\"Doc\""
+            + "},"
+            + "\"doc\":\"Doc\","
+            + "\"very_important\":[\"important_stuff_1\",\"important_stuff_2\"],"
+            + "\"another_non_important_json\":\"decreases apple count by 1.\","
+            + "\"not_important_stuff\":\"an apple a day!\""
+            + "},"
+            + "{"
+            + "\"name\":\"unionOfArray\","
+            + "\"type\":"
+            + "[\"null\",{"
+            + "\"type\":\"array\","
+            + "\"items\":\"string\""
+            + "}],"
+            + "\"doc\":\"Doc\","
+            + "\"very_important\":[\"important_stuff_1\",\"important_stuff_2\"],"
+            + "\"another_non_important_json\":\"decreases apple count by 1.\","
+            + "\"not_important_stuff\":\"an apple a day!\""
+            + "}],"
+            + "\"record_level_important_json\":\"Really important space exploration plans\","
+            + "\"a_record_level_important_json\":\"Really important space exploration plans\","
+            + "\"a_record_level_junk_json\":\"Non important text. Put me first\","
+            + "\"record_level_junk_json\":\"Non important text\""
+            + "}";
+
+    Schema schema = Schema.parse(TestUtil.load("OrderTester.avsc"));
+    String str = AvroUtilSchemaNormalization.getCanonicalForm(schema, config,
+        Arrays.asList(
+            // non sorted order, output expect in the same order as plugins
+            new SchemaLevelPlugin("record_level_important_json"),
+            new SchemaLevelPlugin("a_record_level_important_json"),
+            // sorted order, output expect in the same order as plugins
+            new FieldLevelPlugin("a_very_important"),
+            new FieldLevelPlugin("very_important")
+        ));
+
+    Assert.assertEquals(str, expectedForm);
   }
 
   private class SchemaLevelPlugin extends AvscWriterPlugin {

@@ -1,0 +1,155 @@
+{
+  "type": "record",
+  "name": "OrderTester",
+  "namespace": "vs14",
+  "record_level_junk_json": "Non important text",
+  "a_record_level_junk_json": "Non important text. Put me first",
+  "a_record_level_important_json": "Really important space exploration plans",
+  "record_level_important_json": "Really important space exploration plans",
+  "fields": [
+    {
+      "doc": "Doc",
+      "name": "stringField",
+      "type": "string",
+      "very_important": [
+        "important_stuff_1",
+        "important_stuff_2"
+      ],
+      "not_important_stuff": "an apple a day!",
+      "another_non_important_json": "decreases apple count by 1."
+    },
+    {
+      "doc": "Doc",
+      "name": "exception",
+      "type": "float",
+      "very_important": [
+        "important_stuff_1",
+        "important_stuff_2"
+      ],
+      "a_very_important": [
+        "important_stuff_1",
+        "important_stuff_2"
+      ],
+      "not_important_stuff": "an apple a day!",
+      "another_non_important_json": "decreases apple count by 1."
+    },
+    {
+      "name": "dbl",
+      "type": "double",
+      "doc": "Doc",
+      "very_important": [
+        "important_stuff_1",
+        "important_stuff_2"
+      ],
+      "not_important_stuff": "an apple a day!",
+      "another_non_important_json": "decreases apple count by 1."
+    },
+    {
+      "name": "isTrue",
+      "type": "boolean",
+      "doc": "Doc",
+      "very_important": [
+        "important_stuff_1",
+        "important_stuff_2"
+      ],
+      "not_important_stuff": "an apple a day!",
+      "another_non_important_json": "decreases apple count by 1."
+    },
+    {
+      "name": "arrayOfStrings",
+      "type": {
+        "type": "array",
+        "items": "string"
+      },
+      "doc": "Doc",
+      "very_important": [
+        "important_stuff_1",
+        "important_stuff_2"
+      ],
+      "not_important_stuff": "an apple a day!",
+      "another_non_important_json": "decreases apple count by 1."
+    },
+    {
+      "name": "min",
+      "doc": "Minimum value",
+      "type": {
+        "type": "record",
+        "name": "Amount",
+        "namespace": "vs14",
+        "doc": "Represents an amount of money",
+        "fields": [
+          {
+            "name": "currencyCode",
+            "type": "string",
+            "doc": "Currency code v$"
+          },
+          {
+            "doc": "The amount of money as a real number string, See https://docs.oracle.com/javase/8/docs/api/java/math/BigDecimal.html#BigDecimal-java.lang.String-",
+            "name": "amount",
+            "type": "string"
+          }
+        ],
+        "aliases": [
+          "vs14.MoneyAmount",
+          "ms14.MoneyAmount",
+          "banana.MoneyAmount",
+          "NoNamespace"
+        ]
+      },
+      "very_important": [
+        "important_stuff_1",
+        "important_stuff_2"
+      ],
+      "not_important_stuff": "an apple a day!",
+      "another_non_important_json": "decreases apple count by 1."
+    },
+    {
+      "name": "mapOfStrings",
+      "type": {
+        "type": "map",
+        "values": "string",
+        "doc": "Doc"
+      },
+      "very_important": [
+        "important_stuff_1",
+        "important_stuff_2"
+      ],
+      "not_important_stuff": "an apple a day!",
+      "another_non_important_json": "decreases apple count by 1.",
+      "doc": "Doc"
+    },
+    {
+      "name": "fixedType",
+      "doc": "Doc",
+      "type": {
+        "doc": "Doc",
+        "name": "RandomFixedName",
+        "type": "fixed",
+        "size": 16
+      },
+      "very_important": [
+        "important_stuff_1",
+        "important_stuff_2"
+      ],
+      "not_important_stuff": "an apple a day!",
+      "another_non_important_json": "decreases apple count by 1."
+    },
+    {
+      "name": "unionOfArray",
+      "doc": "Doc",
+      "very_important": [
+        "important_stuff_1",
+        "important_stuff_2"
+      ],
+      "not_important_stuff": "an apple a day!",
+      "another_non_important_json": "decreases apple count by 1.",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": "string"
+        }
+      ]
+    }
+  ]
+}

@@ -33,9 +33,10 @@ public class Avro111AvscWriter extends AvscWriter<Jackson2JsonGeneratorWrapper> 
     }
     public Avro111AvscWriter(boolean pretty, boolean preAvro702, boolean addAliasesForAvro702, boolean retainDefaults,
         boolean retainDocs, boolean retainFieldAliases, boolean retainNonClaimedProps, boolean retainSchemaAliases,
-        boolean writeNamespaceExplicitly, List<AvscWriterPlugin> schemaPlugins) {
+        boolean writeNamespaceExplicitly, boolean writeRelativeNamespace, List<AvscWriterPlugin> schemaPlugins) {
         super(pretty, preAvro702, addAliasesForAvro702, retainDefaults, retainDocs, retainFieldAliases,
-            retainNonClaimedProps, retainSchemaAliases, writeNamespaceExplicitly, schemaPlugins);
+            retainNonClaimedProps, retainSchemaAliases, writeNamespaceExplicitly, writeRelativeNamespace,
+            schemaPlugins);
     }
 
     @Override

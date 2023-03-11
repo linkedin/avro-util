@@ -77,6 +77,10 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
      * true includes explicit namespace values in all named types and subtypes.
      */
     public final boolean writeNamespaceExplicitly;
+    /***
+     * true to write namespace relative to parent namespace. False writes full namespace.
+     */
+    public final boolean writeRelativeNamespace;
 
     protected AvscWriter(boolean pretty, boolean preAvro702, boolean addAliasesForAvro702) {
         this.pretty = pretty;
@@ -88,12 +92,13 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
         this.retainNonClaimedProps = true;
         this.retainDefaults = true;
         this.writeNamespaceExplicitly = false;
+        this.writeRelativeNamespace = true;
         _plugins = new ArrayList<AvscWriterPlugin>(0);
     }
 
     protected AvscWriter(boolean pretty, boolean preAvro702, boolean addAliasesForAvro702, boolean retainDefaults,
-        boolean retainDocs, boolean retainFieldAliases, boolean retainNonClaimedProps, boolean retainSchemaAliases, boolean writeNamespaceExplicitly,
-        List<AvscWriterPlugin> plugins) {
+        boolean retainDocs, boolean retainFieldAliases, boolean retainNonClaimedProps, boolean retainSchemaAliases,
+        boolean writeNamespaceExplicitly, boolean writeRelativeNamespace, List<AvscWriterPlugin> plugins) {
         this.pretty = pretty;
         this.preAvro702 = preAvro702;
         this.addAliasesForAvro702 = addAliasesForAvro702;
@@ -103,6 +108,7 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
         this.retainNonClaimedProps = retainNonClaimedProps;
         this.retainDefaults = retainDefaults;
         this.writeNamespaceExplicitly = writeNamespaceExplicitly;
+        this.writeRelativeNamespace = writeRelativeNamespace;
         this._plugins = plugins == null ? Collections.emptyList() : plugins;
     }
 
@@ -171,8 +177,9 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                 if (retainDocs && schema.getDoc() != null) {
                     gen.writeStringField("doc", schema.getDoc());
                 }
+                claimedProps = executeAvscWriterPluginsForSchema(schema, gen);
+                claimedProps.forEach(allJsonPropNames::remove);
                 writeProps(schema, gen, allJsonPropNames);
-                executeAvscWriterPluginsForSchema(schema, gen);
                 gen.writeEndObject();
                 break;
             case RECORD:
@@ -208,8 +215,9 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                 if (retainDocs && schema.getDoc() != null) {
                     gen.writeStringField("doc", schema.getDoc());
                 }
+                claimedProps = executeAvscWriterPluginsForSchema(schema, gen);
+                claimedProps.forEach(allJsonPropNames::remove);
                 writeProps(schema, gen, allJsonPropNames);
-                executeAvscWriterPluginsForSchema(schema, gen);
                 gen.writeEndObject();
                 //avro 1.4 never restores namespace, so we never restore space
                 names.correctSpace(savedCorrectSpace); //always restore correct namespace
@@ -221,8 +229,9 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                 gen.writeFieldName("items");
                 toJson(schema.getElementType(), names, contextNamespaceWhenParsed, contextNamespaceWhenParsedUnder702, gen);
 
+                claimedProps = executeAvscWriterPluginsForSchema(schema, gen);
+                claimedProps.forEach(allJsonPropNames::remove);
                 writeProps(schema, gen, allJsonPropNames);
-                executeAvscWriterPluginsForSchema(schema, gen);
 
                 gen.writeEndObject();
                 break;
@@ -233,8 +242,9 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                 gen.writeFieldName("values");
                 toJson(schema.getValueType(), names, contextNamespaceWhenParsed, contextNamespaceWhenParsedUnder702, gen);
 
+                claimedProps = executeAvscWriterPluginsForSchema(schema, gen);
+                claimedProps.forEach(allJsonPropNames::remove);
                 writeProps(schema, gen, allJsonPropNames);
-                executeAvscWriterPluginsForSchema(schema, gen);
 
                 gen.writeEndObject();
                 break;
@@ -245,8 +255,9 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                     toJson(type, names, contextNamespaceWhenParsed, contextNamespaceWhenParsedUnder702, gen);
                 }
 
+                claimedProps = executeAvscWriterPluginsForSchema(schema, gen);
+                claimedProps.forEach(allJsonPropNames::remove);
                 writeProps(schema, gen, allJsonPropNames);
-                executeAvscWriterPluginsForSchema(schema, gen);
 
                 gen.writeEndArray();
                 break;
@@ -366,25 +377,31 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
             if (addAliasesForAvro702 && extraAliases != null && extraAliases.contains(alias)) {
                 //always emit any avro-702 related aliases as fullnames
                 gen.writeString(alias.getFull());
-            } else {
+            } else if(writeRelativeNamespace) {
                 String relative = alias.getQualified(referenceNamespace);
                 gen.writeString(relative);
+            } else {
+                // write full namespace
+                gen.writeString(alias.getFull());
             }
         }
         gen.writeEndArray();
     }
 
     /***
-     * Checks if each alias in aliases has a namespace.name, adds parent namespace if not present
-     * @param aliases
-     * @param namespace
+     * Checks if each alias in aliases has a namespace.name, adds parent namespace if alias doesn't contain a namespace
+     * treats null parent namespace as empty string.
+     * @param aliases list of provided namespaces
+     * @param namespace parent namespace
      * @return sorted fully qualified aliases set
      */
     private Set<String> getSortedFullyQualifiedSchemaAliases(Set<String> aliases, String namespace) {
         if(aliases == null) return null;
+        // treat null as empty string
+        namespace = namespace == null ? "" : namespace;
         Set<String> sortedAliases = new TreeSet<>();
         for(String alias : aliases) {
-            if(alias.contains(namespace)) {
+            if(alias.contains(".")) {
                 sortedAliases.add(alias);
             } else {
                 sortedAliases.add(namespace + "." + alias);
