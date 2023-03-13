@@ -129,7 +129,7 @@ public class SchemaNormalization {
     Schema.Type st = s.getType();
     switch (st) {
       default: // boolean, bytes, double, float, int, long, null, string
-        return o.append('"').append(st.name()).append('"');
+        return o.append('"').append(st.name().toLowerCase()).append('"');
       case UNION:
         o.append('[');
         for (Schema b : s.getTypes()) {
@@ -142,7 +142,7 @@ public class SchemaNormalization {
         return o.append(']');
       case ARRAY:
       case MAP:
-        o.append("{\"type\":\"").append(st.name()).append("\"");
+        o.append("{\"type\":\"").append(st.name().toLowerCase()).append("\"");
         if (st == Schema.Type.ARRAY)
           build(env, s.getElementType(), o.append(",\"items\":"));
         else
@@ -157,7 +157,7 @@ public class SchemaNormalization {
         String qname = "\"" + name + "\"";
         env.put(name, qname);
         o.append("{\"name\":").append(qname);
-        o.append(",\"type\":\"").append(st.name()).append("\"");
+        o.append(",\"type\":\"").append(st.name().toLowerCase()).append("\"");
         if (st == Schema.Type.ENUM) {
           o.append(",\"symbols\":[");
           for (String enumSymbol : s.getEnumSymbols()) {

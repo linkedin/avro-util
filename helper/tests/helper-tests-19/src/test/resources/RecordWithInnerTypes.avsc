@@ -1,0 +1,41 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "RecordWithInnerTypes",
+  "doc": "Here is a great overall doc",
+  "fields": [
+    {
+      "name": "strTest",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+      }
+    },
+    {
+      "name": "enumField",
+      "type": {
+        "type": "enum",
+        "name": "EnumForHasDefaults",
+        "doc" : "Should contain parent's namespace",
+        "symbols": ["A", "B"]
+      }
+    },
+    {
+      "name": "recordField",
+      "aliases": ["field_alias", "afield_alias"],
+      "type": {
+        "type": "record",
+        "namespace": "com.my.own.special",
+        "name": "SpecialRecordName",
+        "fields": [
+          {
+            "name": "innerLongField",
+            "type": "long",
+            "default": 42,
+            "very_important" : ["important_stuff_1", "important_stuff_2"]
+          }
+        ]
+      }
+    }
+  ]
+}

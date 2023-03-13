@@ -14,6 +14,7 @@ import com.linkedin.avroutil1.compatibility.avro16.Avro16Adapter;
 import com.linkedin.avroutil1.compatibility.avro17.Avro17Adapter;
 import com.linkedin.avroutil1.compatibility.avro18.Avro18Adapter;
 import com.linkedin.avroutil1.compatibility.avro19.Avro19Adapter;
+import com.linkedin.avroutil1.normalization.AvscWriterPlugin;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +22,7 @@ import java.io.InputStreamReader;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
+import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -1141,6 +1143,15 @@ public class AvroCompatibilityHelper  extends AvroCompatibilityHelperCommon{
       }
     }
     return false;
+  }
+
+  public static AvscWriter getAvscWriter(AvscGenerationConfig config, List<AvscWriterPlugin> schemaPlugins) {
+    return ADAPTER.getAvscWriter(config, schemaPlugins);
+  }
+
+  public static JsonGeneratorWrapper getJsonGeneratorInstance(AvscGenerationConfig config, List<AvscWriterPlugin> plugins)
+      throws IOException {
+    return ADAPTER.getAvscWriter(config, plugins).createJsonGenerator(new StringWriter());
   }
 
   /**

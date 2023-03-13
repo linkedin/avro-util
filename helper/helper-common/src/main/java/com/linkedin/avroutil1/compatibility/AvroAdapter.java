@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.compatibility;
 
+import com.linkedin.avroutil1.normalization.AvscWriterPlugin;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInput;
@@ -192,6 +193,15 @@ public interface AvroAdapter {
    * @return the given schema as avsc
    */
   String toAvsc(Schema schema, AvscGenerationConfig config);
+
+  /***
+   * Instantiates and returns com.linkedin.avroutil1.compatibility.AvroWriter for the provided configs, plugin list
+   * and runtime avro version.
+   * @param config
+   * @param schemaPlugins can be an empty list or null
+   * @return
+   */
+  AvscWriter getAvscWriter(AvscGenerationConfig config, List<AvscWriterPlugin> schemaPlugins);
 
   default boolean isSusceptibleToAvro702(Schema schema) {
     //this implementation is slow, as it completely serializes the schema and parses it back again

@@ -7,9 +7,9 @@
 package com.linkedin.avroutil1.compatibility.avro19;
 
 import com.linkedin.avroutil1.Pojo;
-import com.linkedin.avroutil1.testcommon.TestUtil;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
+import com.linkedin.avroutil1.testcommon.TestUtil;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -74,4 +74,5 @@ public class AvroCompatibilityHelperAvro19Test {
         (List<List<String>>) AvroCompatibilityHelper.createSchemaField("arrayOfArrayWithDefault", field.schema(), "", field.defaultVal()).defaultVal();
     Assert.assertEquals(actualListValue.get(0).get(0), "dummyElement");
   }
+
 }

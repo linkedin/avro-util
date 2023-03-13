@@ -9,10 +9,13 @@ package com.linkedin.avroutil1.compatibility.avro16;
 import com.linkedin.avroutil1.compatibility.AvscWriter;
 import com.linkedin.avroutil1.compatibility.Jackson1JsonGeneratorWrapper;
 import com.linkedin.avroutil1.compatibility.Jackson1Utils;
+import com.linkedin.avroutil1.normalization.AvscWriterPlugin;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.function.Predicate;
 import org.apache.avro.Schema;
 import org.codehaus.jackson.JsonFactory;
@@ -26,6 +29,14 @@ public class Avro16AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
 
     public Avro16AvscWriter(boolean pretty, boolean preAvro702, boolean addAliasesForAvro702) {
         super(pretty, preAvro702, addAliasesForAvro702);
+    }
+
+    public Avro16AvscWriter(boolean pretty, boolean preAvro702, boolean addAliasesForAvro702, boolean retainDefaults,
+        boolean retainDocs, boolean retainFieldAliases, boolean retainNonClaimedProps, boolean retainSchemaAliases,
+        boolean writeNamespaceExplicitly, boolean writeRelativeNamespace, List<AvscWriterPlugin> schemaPlugins) {
+        super(pretty, preAvro702, addAliasesForAvro702, retainDefaults, retainDocs, retainFieldAliases,
+            retainNonClaimedProps, retainSchemaAliases, writeNamespaceExplicitly, writeRelativeNamespace,
+            schemaPlugins);
     }
 
     @Override
@@ -44,20 +55,30 @@ public class Avro16AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
     }
 
     @Override
-    protected void writeProps(Schema schema, Jackson1JsonGeneratorWrapper gen) throws IOException {
-        Map<String, String> props = schema.getProps();
+    protected void writeProps(Schema schema, Jackson1JsonGeneratorWrapper gen, Set<String> propNames) throws IOException {
+        Map<String, String> sortedProps = new TreeMap<>();
+        for(String propName : propNames) {
+            sortedProps.put(propName, schema.getProps().get(propName));
+        }
         //write all props except "default" for enums
         if (schema.getType() == Schema.Type.ENUM) {
-            writeProps(props, gen, s -> !"default".equals(s));
+            writeProps(sortedProps, gen, s -> !"default".equals(s));
         } else {
-            writeProps(props, gen);
+            writeProps(sortedProps, gen);
         }
     }
 
     @Override
-    protected void writeProps(Schema.Field field, Jackson1JsonGeneratorWrapper gen) throws IOException {
+    protected void writeProps(Schema.Field field, Jackson1JsonGeneratorWrapper gen, Set<String> propNames) throws IOException {
         Map<String, String> props = field.props();
-        writeProps(props, gen);
+        if (props != null) {
+            Map<String, String> sortedProps = new TreeMap<>();
+            for(String propName : propNames) {
+                sortedProps.put(propName, props.get(propName));
+            }
+            writeProps(sortedProps, gen);
+        }
+
     }
 
     @Override
@@ -84,6 +105,16 @@ public class Avro16AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
     @Override
     protected Set<String> getAliases(Schema.Field field) {
         return field.aliases();
+    }
+
+    @Override
+    protected List<String> getAllPropNames(Schema schema) {
+        return new Avro16Adapter().getAllPropNames(schema);
+    }
+
+    @Override
+    protected List<String> getAllPropNames(Schema.Field field) {
+        return new Avro16Adapter().getAllPropNames(field);
     }
 
     private void writeProps(Map<String, String> props, Jackson1JsonGeneratorWrapper gen) throws IOException {

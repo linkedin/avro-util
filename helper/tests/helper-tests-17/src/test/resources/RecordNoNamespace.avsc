@@ -1,0 +1,14 @@
+{
+  "type": "record",
+  "name": "RecordNoNamespace",
+  "doc": "Here is a great overall doc",
+  "fields": [
+    {
+      "name": "strTest",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+      }
+    }
+  ]
+}

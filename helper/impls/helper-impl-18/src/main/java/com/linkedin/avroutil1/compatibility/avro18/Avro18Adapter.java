@@ -11,6 +11,7 @@ import com.linkedin.avroutil1.compatibility.AvroGeneratedSourceCode;
 import com.linkedin.avroutil1.compatibility.AvroSchemaUtil;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
 import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
+import com.linkedin.avroutil1.compatibility.AvscWriter;
 import com.linkedin.avroutil1.compatibility.CodeGenerationConfig;
 import com.linkedin.avroutil1.compatibility.CodeTransformations;
 import com.linkedin.avroutil1.compatibility.ExceptionUtils;
@@ -28,6 +29,7 @@ import com.linkedin.avroutil1.compatibility.avro18.codec.CachedResolvingDecoder;
 import com.linkedin.avroutil1.compatibility.avro18.codec.CompatibleJsonDecoder;
 import com.linkedin.avroutil1.compatibility.avro18.codec.CompatibleJsonEncoder;
 import com.linkedin.avroutil1.compatibility.backports.ObjectInputToInputStreamAdapter;
+import com.linkedin.avroutil1.normalization.AvscWriterPlugin;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaNormalization;
@@ -464,6 +466,14 @@ public class Avro18Adapter implements AvroAdapter {
           new Avro18AvscWriter(config.isPrettyPrint(), usePre702Logic, config.isAddAvro702Aliases());
       return writer.toAvsc(schema);
     }
+  }
+
+  @Override
+  public AvscWriter getAvscWriter(AvscGenerationConfig config, List<AvscWriterPlugin> schemaPlugins) {
+    boolean usePre702Logic = config.getRetainPreAvro702Logic().orElse(Boolean.FALSE);
+    return new Avro18AvscWriter(config.isPrettyPrint(), usePre702Logic, config.isAddAvro702Aliases(),
+        config.retainDefaults, config.retainDocs, config.retainFieldAliases, config.retainNonClaimedProps,
+        config.retainSchemaAliases, config.writeNamespaceExplicitly, config.writeRelativeNamespace, schemaPlugins);
   }
 
   @Override

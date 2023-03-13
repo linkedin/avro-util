@@ -163,6 +163,82 @@ public class AvroName {
         );
     }
 
+    /**
+     * writes this name (as a name prop and optionally a namespace prop) to an underlying json genrator
+     * @param names the set of "known fullnames" and current "inherited" namespace used by the current avsc
+     *              generation operation
+     * @param preAvro702 true to emit the same output as avro 1.4 would (before avro-702 was fixed in 1.5+)
+     * @param namespaceWhenParsed the context namespace at this point under correct output
+     * @param namespaceWhen702 the context namespace at this point under pre-avro-702 output
+     * @param gen json output to write to
+     * @param writeNamespaceExplicitly true to write namespaces even if empty (null namespace renders "")
+     * @return information about what was actually done and how ancient vs modern avro would emit this named type
+     * @throws IOException
+     */
+    public Avro702Data writeName(
+        AvroNames names,
+        boolean preAvro702,
+        String namespaceWhenParsed,
+        String namespaceWhen702,
+        JsonGeneratorWrapper<?> gen,
+        boolean writeNamespaceExplicitly
+    ) throws IOException {
+        //always emit a name (if we have one?)
+        if (name != null) {
+            gen.writeStringField("name", name);
+        }
+
+        String cleanNamespace = space == null ? "" : space;
+
+        //what would ancient avro do?
+        String contextNamespaceAfter702;
+        boolean shouldEmitNSPre702 = shouldEmitNamespace(names.badSpace());
+        if (shouldEmitNSPre702) {
+            contextNamespaceAfter702 = cleanNamespace;
+        } else {
+            contextNamespaceAfter702 = namespaceWhen702;
+        }
+
+        //what would modern avro do?
+        String contextNamespaceAfter;
+        boolean shouldEmitNSNormally = writeNamespaceExplicitly || shouldEmitNamespace(names.correctSpace());
+        if (shouldEmitNSNormally) {
+            contextNamespaceAfter = cleanNamespace;
+        } else {
+            contextNamespaceAfter = namespaceWhenParsed;
+        }
+
+        //what should we do?
+        boolean emitNS = preAvro702 ? shouldEmitNSPre702 : shouldEmitNSNormally;
+        if (emitNS) {
+            gen.writeStringField("namespace", cleanNamespace);
+        }
+
+        //how will Schema.parse() read the output of ancient and modern avro?
+        AvroName fullnameWhenParsed = new AvroName(this.name, contextNamespaceAfter);
+        AvroName fullnameWhenParsedUnder702 = new AvroName(this.name, contextNamespaceAfter702);
+
+        //how will Schema.parse() read our actual output?
+        AvroName asWritten = preAvro702 ? fullnameWhenParsedUnder702 : fullnameWhenParsed;
+
+        List<AvroName> aliases = new ArrayList<>(0);
+        if (!fullnameWhenParsed.equals(fullnameWhenParsedUnder702)) {
+            if (preAvro702) {
+                aliases.add(fullnameWhenParsed);
+            } else {
+                aliases.add(fullnameWhenParsedUnder702);
+            }
+        }
+
+        return new Avro702Data(
+            this,
+            asWritten,
+            aliases,
+            contextNamespaceAfter,
+            contextNamespaceAfter702
+        );
+    }
+
     public String getQualified(String defaultSpace) {
         return (space == null || space.equals(defaultSpace)) ? name : full;
     }
