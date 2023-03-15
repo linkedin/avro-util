@@ -1,7 +1,7 @@
 {
-  "type" : "record",
   "name" : "ComplexRecord",
   "namespace" : "TopNamespace",
+  "type" : "record",
   "fields" : [ {
     "name" : "longField",
     "type" : "long",
@@ -9,8 +9,8 @@
   }, {
     "name" : "fixedField",
     "type" : {
-      "type" : "fixed",
       "name" : "FixedSchema",
+      "type" : "fixed",
       "size" : 100
     },
     "doc" : "fixed type"
@@ -19,17 +19,17 @@
     "type" : [ "null", {
       "type" : "array",
       "items" : {
-        "type" : "record",
         "name" : "innerRecord",
         "namespace" : "InnerNamespace",
+        "type" : "record",
         "fields" : [ {
           "name" : "stringField",
           "type" : "string"
         }, {
           "name" : "unionWithEnum",
           "type" : [ "null", "int", {
-            "type" : "enum",
             "name" : "enumField",
+            "type" : "enum",
             "symbols" : [ "A", "B" ]
           } ]
         }, {
@@ -37,8 +37,8 @@
           "type" : {
             "type" : "map",
             "values" : {
-              "type" : "record",
               "name" : "mapUnionRecord",
+              "type" : "record",
               "fields" : [ {
                 "name" : "stringField",
                 "type" : [ "null", "string" ],
