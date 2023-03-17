@@ -352,8 +352,8 @@ public class BufferBackedPrimitiveFloatList extends AbstractList<Float>
     StringBuilder buffer = new StringBuilder();
     buffer.append("[");
     int count = 0;
-    for (Float e : this) {
-      buffer.append(e == null ? "null" : e.toString());
+    for (int i = 0; i < size; i++) {
+      buffer.append(getPrimitive(i));
       if (++count < size()) {
         buffer.append(", ");
       }
