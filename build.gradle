@@ -66,10 +66,6 @@ subprojects {
     compileJava {
       sourceCompatibility = '1.8'
       targetCompatibility = '1.8'
-      //This flag is only supported and required when building with JDK11
-      if (JavaVersion.current() == JavaVersion.VERSION_11) {
-        options.compilerArgs.addAll(['--release', '8'])
-      }
     }
 
     test {

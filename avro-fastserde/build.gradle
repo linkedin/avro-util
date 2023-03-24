@@ -3,9 +3,10 @@
  * Licensed under the BSD 2-Clause License (the "License").
  * See License in the project root for license information.
  */
+
 plugins {
   id "java-library"
-  id "me.champeau.jmh" version "0.6.6"
+  id "me.champeau.gradle.jmh" version "0.5.0"
 }
 
 configurations {
@@ -67,8 +68,11 @@ if (USE_AVRO_1_4) {
   USE_AVRO_1_10 = false
 }
 
+
+
 jmh {
   profilers = ['gc', 'pauses']
+  duplicateClassesStrategy = 'warn'
   clean {
     delete "$buildDir/jmh-generated-classes"
     delete "$buildDir/jmh-generated-sources"
@@ -82,36 +86,8 @@ sourceSets {
     compileClasspath += test.output
     runtimeClasspath += test.output
   }
-  //This block is only supported and required when building with JDK11
-  if (JavaVersion.current() == JavaVersion.VERSION_11) {
-    java11 {
-      java {
-        srcDirs = ['src/main/java11']
-      }
-    }
-  }
 }
 
-//This block is only supported and required when building with JDK11
-if (JavaVersion.current() == JavaVersion.VERSION_11) {
-  compileJava11Java {
-    sourceCompatibility = 11
-    targetCompatibility = 11
-    options.compilerArgs.addAll(['--release', '11'])
-  }
-  jar {
-    into('META-INF/versions/11') {
-      from sourceSets.java11.output
-    }
-
-    manifest {
-      attributes(
-          "Manifest-Version": "1.0",
-          "Multi-Release": true
-      )
-    }
-  }
-}
 dependencies {
   implementation project(":helper:helper")
 
@@ -132,8 +108,8 @@ dependencies {
 
   testImplementation 'org.testng:testng:6.14.3'
   testImplementation 'org.slf4j:slf4j-simple:1.7.14'
-  jmhImplementation "org.openjdk.jmh:jmh-core:1.34"
-  jmhAnnotationProcessor "org.openjdk.jmh:jmh-generator-annprocess:1.34"
+  jmhImplementation "org.openjdk.jmh:jmh-core:1.19"
+  jmhAnnotationProcessor "org.openjdk.jmh:jmh-generator-annprocess:1.19"
 
   avro1_4 (AVRO_1_4) {
     exclude group: "org.mortbay.jetty"
@@ -169,11 +145,6 @@ dependencies {
     exclude group: "org.slf4j"
   }
   codegenCompile project(":avro-fastserde")
-  if (JavaVersion.current() == JavaVersion.VERSION_11) {
-    java11Implementation files(sourceSets.main.output.classesDirs)
-    java11Implementation AVRO_LIB
-    java11Implementation "org.apache.commons:commons-lang3:3.4"
-  }
 }
 
 compileJmhJava {
@@ -193,17 +164,10 @@ for (String avroVersion : avroVersions) {
     testLogging {
       events "passed", "skipped", "failed"
     }
-    //Classpath override for JDK11 build, we add JDK11 classes in front of other entities
-    //so unit tests will use platform specific classes
-    if (JavaVersion.current() == JavaVersion.VERSION_11) {
-      classpath = project.sourceSets.java11.output.classesDirs + project.sourceSets.test.runtimeClasspath.filter {
-        File file -> !(file.name.contains("avro") && !file.name.contains("helper"))
-      }.plus(configurations."avro${avroVersion}")
-    } else {
-      classpath = project.sourceSets.test.runtimeClasspath.filter {
-        File file -> !(file.name.contains("avro") && !file.name.contains("helper"))
-      }.plus(configurations."avro${avroVersion}")
-    }
+
+    classpath = project.sourceSets.test.runtimeClasspath.filter {
+      File file -> !(file.name.contains("avro") && !file.name.contains("helper"))
+    }.plus (configurations."avro${avroVersion}")
 
     def gradleIsFun = avroVersion
 
@@ -294,45 +258,37 @@ compileTestJava.dependsOn whetherToCompileAvroClasses1_10
 // Need to create several similar tasks since gradle will only run the same task at most once,
 // but we need to clean up and re-compile for each Avro version since the avro classes will be
 // generated with every Avro version.
-
-//Clean task deletes JDK11 classes, so for JDK11 build we need to generate them again before each test
-def gradleCommand = []
-if (JavaVersion.current() == JavaVersion.VERSION_11) {
-  gradleCommand = ['./gradlew', 'avro-fastserde:clean', ':avro-fastserde:java11Classes', 'avro-fastserde:testClasses']
-} else {
-  gradleCommand = ['./gradlew', 'avro-fastserde:clean', 'avro-fastserde:testClasses']
-}
 task cleanupAndRebuildTestsForAvro1_4(type:Exec) {
   workingDir '../'
-  commandLine gradleCommand + '-PUSE_AVRO_1_4'
+  commandLine './gradlew', 'avro-fastserde:clean', 'avro-fastserde:testClasses', '-PUSE_AVRO_1_4'
 }
 task cleanupAndRebuildTestsForAvro1_5(type:Exec) {
   workingDir '../'
-  commandLine gradleCommand + '-PUSE_AVRO_1_5'
+  commandLine './gradlew', 'avro-fastserde:clean', 'avro-fastserde:testClasses', '-PUSE_AVRO_1_5'
 }
 task cleanupAndRebuildTestsForAvro1_6(type:Exec) {
   workingDir '../'
-  commandLine gradleCommand + '-PUSE_AVRO_1_6'
+  commandLine './gradlew', 'avro-fastserde:clean', 'avro-fastserde:testClasses', '-PUSE_AVRO_1_6'
 }
 task cleanupAndRebuildTestsForAvro1_7(type:Exec) {
   workingDir '../'
-  commandLine gradleCommand + '-PUSE_AVRO_1_7'
+  commandLine './gradlew', 'avro-fastserde:clean', 'avro-fastserde:testClasses', '-PUSE_AVRO_1_7'
 }
 task cleanupAndRebuildTestsForAvro1_8(type:Exec) {
   workingDir '../'
-  commandLine gradleCommand + '-PUSE_AVRO_1_8'
+  commandLine './gradlew', 'avro-fastserde:clean', 'avro-fastserde:testClasses', '-PUSE_AVRO_1_8'
 }
 task cleanupAndRebuildTestsForAvro1_9(type:Exec) {
   workingDir '../'
-  commandLine gradleCommand + '-PUSE_AVRO_1_9'
+  commandLine './gradlew', 'avro-fastserde:clean', 'avro-fastserde:testClasses', '-PUSE_AVRO_1_9'
 }
 task cleanupAndRebuildTestsForAvro1_10(type:Exec) {
   workingDir '../'
-  commandLine gradleCommand + '-PUSE_AVRO_1_10'
+  commandLine './gradlew', 'avro-fastserde:clean', 'avro-fastserde:testClasses', '-PUSE_AVRO_1_10'
 }
 task cleanupAndRebuildTestsForAvro1_11(type:Exec) {
   workingDir '../'
-  commandLine gradleCommand + '-PUSE_AVRO_1_11'
+  commandLine './gradlew', 'avro-fastserde:clean', 'avro-fastserde:testClasses', '-PUSE_AVRO_1_11'
 }
 cleanupAndRebuildTestsForAvro1_4.dependsOn generateAvroClasses1_4
 cleanupAndRebuildTestsForAvro1_5.dependsOn generateAvroClasses1_5
