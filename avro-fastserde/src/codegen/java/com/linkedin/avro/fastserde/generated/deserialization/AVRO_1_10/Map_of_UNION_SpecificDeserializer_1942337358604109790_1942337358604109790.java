@@ -12,7 +12,7 @@ import com.linkedin.avro.api.PrimitiveDoubleList;
 import com.linkedin.avro.api.PrimitiveFloatList;
 import com.linkedin.avro.api.PrimitiveIntList;
 import com.linkedin.avro.api.PrimitiveLongList;
-import com.linkedin.avro.fastserde.BufferBackedPrimitiveFloatList;
+import com.linkedin.avro.fastserde.ByteBufferBackedPrimitiveFloatList;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import com.linkedin.avro.fastserde.generated.avro.TestEnum;
 import com.linkedin.avro.fastserde.generated.avro.TestFixed;
@@ -943,7 +943,7 @@ public class Map_of_UNION_SpecificDeserializer_1942337358604109790_1942337358604
         throws IOException
     {
         PrimitiveFloatList floatArray0 = null;
-        floatArray0 = ((PrimitiveFloatList) BufferBackedPrimitiveFloatList.readPrimitiveFloatArray(TestRecord.get(35), (decoder)));
+        floatArray0 = ((PrimitiveFloatList) ByteBufferBackedPrimitiveFloatList.readPrimitiveFloatArray(TestRecord.get(35), (decoder)));
         TestRecord.put(35, floatArray0);
         PrimitiveIntList intArray0 = null;
         long chunkLen19 = (decoder.readArrayStart());

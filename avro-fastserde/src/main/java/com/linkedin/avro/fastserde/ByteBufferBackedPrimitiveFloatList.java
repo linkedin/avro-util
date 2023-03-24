@@ -34,7 +34,7 @@ import org.apache.avro.io.Decoder;
  *
  *   TODO: Provide arrays for other primitive types.
  */
-public class BufferBackedPrimitiveFloatList extends AbstractList<Float>
+public class ByteBufferBackedPrimitiveFloatList extends AbstractList<Float>
     implements GenericArray<Float>, Comparable<GenericArray<Float>>, PrimitiveFloatList {
   private static final float[] EMPTY = new float[0];
   private static final int FLOAT_SIZE = Float.BYTES;
@@ -45,7 +45,7 @@ public class BufferBackedPrimitiveFloatList extends AbstractList<Float>
   private boolean isCached = false;
   private CompositeByteBuffer byteBuffer;
 
-  public BufferBackedPrimitiveFloatList(int capacity) {
+  public ByteBufferBackedPrimitiveFloatList(int capacity) {
     if (capacity != 0) {
       elements = new float[capacity];
     }
@@ -53,7 +53,7 @@ public class BufferBackedPrimitiveFloatList extends AbstractList<Float>
     byteBuffer = new CompositeByteBuffer(capacity != 0);
   }
 
-  public BufferBackedPrimitiveFloatList(Collection<Float> c) {
+  public ByteBufferBackedPrimitiveFloatList(Collection<Float> c) {
     if (c != null) {
       elements = new float[c.size()];
       addAll(c);
@@ -62,13 +62,13 @@ public class BufferBackedPrimitiveFloatList extends AbstractList<Float>
   }
 
   /**
-   * Instantiate (or re-use) and populate a {@link BufferBackedPrimitiveFloatList} from a {@link org.apache.avro.io.Decoder}.
+   * Instantiate (or re-use) and populate a {@link ByteBufferBackedPrimitiveFloatList} from a {@link org.apache.avro.io.Decoder}.
    *
    * N.B.: the caller must ensure the data is of the appropriate type by calling {@link #isFloatArray(Schema)}.
    *
-   * @param old old {@link BufferBackedPrimitiveFloatList} to reuse
+   * @param old old {@link ByteBufferBackedPrimitiveFloatList} to reuse
    * @param in {@link org.apache.avro.io.Decoder} to read new list from
-   * @return a {@link BufferBackedPrimitiveFloatList} with data, possibly the old argument reused
+   * @return a {@link ByteBufferBackedPrimitiveFloatList} with data, possibly the old argument reused
    * @throws IOException on io errors
    */
   public static Object readPrimitiveFloatArray(Object old, Decoder in) throws IOException {
@@ -76,7 +76,7 @@ public class BufferBackedPrimitiveFloatList extends AbstractList<Float>
     long totalLength = 0;
 
     if (length > 0) {
-      BufferBackedPrimitiveFloatList array = (BufferBackedPrimitiveFloatList) newPrimitiveFloatArray(old);
+      ByteBufferBackedPrimitiveFloatList array = (ByteBufferBackedPrimitiveFloatList) newPrimitiveFloatArray(old);
       int index = 0;
 
       do {
@@ -91,7 +91,7 @@ public class BufferBackedPrimitiveFloatList extends AbstractList<Float>
       array.size = (int) totalLength;
       return array;
     } else {
-      return new BufferBackedPrimitiveFloatList(0);
+      return new ByteBufferBackedPrimitiveFloatList(0);
     }
   }
 
@@ -101,7 +101,7 @@ public class BufferBackedPrimitiveFloatList extends AbstractList<Float>
    * @param list
    * @param totalSize
    */
-  private static void setupElements(BufferBackedPrimitiveFloatList list, int totalSize) {
+  private static void setupElements(ByteBufferBackedPrimitiveFloatList list, int totalSize) {
     if (list.elements.length != 0) {
       if (totalSize <= list.getCapacity()) {
         // reuse the float array directly
@@ -118,7 +118,7 @@ public class BufferBackedPrimitiveFloatList extends AbstractList<Float>
 
   /**
      * @param expected {@link Schema} to inspect
-     * @return true if the {@code expected} SCHEMA is of the right type to decode as a {@link BufferBackedPrimitiveFloatList}
+     * @return true if the {@code expected} SCHEMA is of the right type to decode as a {@link ByteBufferBackedPrimitiveFloatList}
      *         false otherwise
      */
   public static boolean isFloatArray(Schema expected) {
@@ -127,15 +127,15 @@ public class BufferBackedPrimitiveFloatList extends AbstractList<Float>
   }
 
   private static Object newPrimitiveFloatArray(Object old) {
-    if (old instanceof BufferBackedPrimitiveFloatList) {
-      BufferBackedPrimitiveFloatList oldFloatList = (BufferBackedPrimitiveFloatList) old;
+    if (old instanceof ByteBufferBackedPrimitiveFloatList) {
+      ByteBufferBackedPrimitiveFloatList oldFloatList = (ByteBufferBackedPrimitiveFloatList) old;
       oldFloatList.byteBuffer.clear();
       oldFloatList.isCached = false;
       oldFloatList.size = 0;
       return oldFloatList;
     } else {
       // Just a place holder, will set up the elements later.
-      return new BufferBackedPrimitiveFloatList(0);
+      return new ByteBufferBackedPrimitiveFloatList(0);
     }
   }
 
@@ -297,8 +297,8 @@ public class BufferBackedPrimitiveFloatList extends AbstractList<Float>
   @Override
   public int compareTo(GenericArray<Float> that) {
     cacheFromByteBuffer();
-    if (that instanceof BufferBackedPrimitiveFloatList) {
-      BufferBackedPrimitiveFloatList thatPrimitiveList = (BufferBackedPrimitiveFloatList) that;
+    if (that instanceof ByteBufferBackedPrimitiveFloatList) {
+      ByteBufferBackedPrimitiveFloatList thatPrimitiveList = (ByteBufferBackedPrimitiveFloatList) that;
       if (this.size == thatPrimitiveList.size) {
         for (int i = 0; i < this.size; i++) {
           int compare = Float.compare(this.elements[i], thatPrimitiveList.elements[i]);
