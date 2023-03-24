@@ -73,12 +73,7 @@ public class AvroCodecUtil {
         InputStream is = new ByteArrayInputStream(jsonSerialized.getBytes(StandardCharsets.UTF_8));
         Decoder decoder = AvroCompatibilityHelper.newCompatibleJsonDecoder(writerSchema, is);
         GenericDatumReader<GenericRecord> reader = new GenericDatumReader<>(writerSchema, readerSchema);
-        GenericRecord result = reader.read(null, decoder);
-        //make sure everything was read out
-        if (is.available() != 0) {
-            throw new IllegalStateException("leftover bytes in input. schema given likely partial?");
-        }
-        return result;
+        return reader.read(null, decoder);
     }
 
     public static <T> T deserializeAsSpecific(byte[] binarySerialized, Schema writerSchema, Class<T> specificRecordClass) throws IOException {
