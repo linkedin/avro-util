@@ -6,6 +6,11 @@
 
 package com.linkedin.avroutil1.compatibility;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
@@ -75,10 +80,40 @@ public class AvroCodecUtil {
         GenericDatumReader<GenericRecord> reader = new GenericDatumReader<>(writerSchema, readerSchema);
         GenericRecord result = reader.read(null, decoder);
         //make sure everything was read out
-        if (is.available() != 0) {
+        if (bytesLeftoverJson(is)) {
             throw new IllegalStateException("leftover bytes in input. schema given likely partial?");
         }
         return result;
+    }
+
+    /**
+     * Check if bytes leftover in the inputStream after reading by Json parser.
+     * Json parser may leave the '}' in inputStream, so single '}' in the inputStream should be ignored.
+     * ' ', '\t', and '\n' should be ignored.
+     */
+    public static boolean bytesLeftoverJson(InputStream inputStream) throws IOException {
+        if (inputStream.available() == 0) {
+            return false;
+        }
+
+        Set<Character> skippedCharacters = new HashSet<>(Arrays.asList(' ', '\t', '\n'));
+
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+        boolean rightBracefound = false;
+
+        int r;
+        while ((r = bufferedReader.read()) != -1) {
+            char ch = (char) r;
+            if (ch == '}') {
+                if (rightBracefound) {
+                    return true;
+                }
+                rightBracefound = true;
+            } else if (!skippedCharacters.contains(ch)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static <T> T deserializeAsSpecific(byte[] binarySerialized, Schema writerSchema, Class<T> specificRecordClass) throws IOException {
