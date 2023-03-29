@@ -24,13 +24,6 @@ jmh {
   }
 }
 
-task tst {
-  doLast{
-    project(":fastserde:avro-fastserde-tests110").configurations.each {
-      println it
-    }
-  }
-}
 dependencies {
   jmh project(":fastserde:avro-fastserde")
   jmh testFixtures(project(":fastserde:avro-fastserde-tests110"))

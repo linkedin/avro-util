@@ -13,11 +13,6 @@ configurations {
 }
 
 sourceSets {
-  main {
-    java {
-      srcDir "${rootProject.projectDir}/fastserde/avro-fastserde/src/main/java"
-    }
-  }
   test {
     java {
       srcDir "src/test/java"
@@ -37,8 +32,8 @@ dependencies {
     exclude group: "org.slf4j"
   }
 
-  testRuntime ("org.apache.avro:avro:1.8.2") {
-    exclude group: "org.slf4j"
+  testCompile (project(":fastserde:avro-fastserde")) {
+    exclude group: "org.apache.avro"
   }
 
   testImplementation 'org.testng:testng:6.14.3'
