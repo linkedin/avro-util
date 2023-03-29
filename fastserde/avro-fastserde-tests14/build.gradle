@@ -11,8 +11,11 @@ plugins {
 sourceSets {
   test {
     java {
-      srcDir "src/test/java"
+      srcDir "$rootProject.projectDir/fastserde/avro-fastserde-tests-common/src/test/java"
       srcDir "$buildDir/generated/avro"
+    }
+    resources {
+      srcDir "$rootProject.projectDir/fastserde/avro-fastserde-tests-common/src/test/resources"
     }
   }
 }
@@ -72,10 +75,10 @@ task runVanillaAvroCodegen {
 
   dependsOn downloadAvro
   // define input and output files so we can have incremental build when nothing changes
-  inputs.dir("src/test/avro")
+  inputs.dir("$rootProject.projectDir/fastserde/avro-fastserde-tests-common/src/test/avro")
   outputs.dir("$buildDir/generated/avro")
 
-  fileTree(dir: 'src/test/avro', include:'**/*.avsc').each { file ->
+  fileTree(dir: "$rootProject.projectDir/fastserde/avro-fastserde-tests-common/src/test/avro", include:'**/*.avsc').each { file ->
     doLast {
       javaexec {
         classpath = files("$buildDir/avro-tools-1.4.0.jar")
