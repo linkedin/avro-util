@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "BenchmarkSchema",
+  "namespace": "com.linkedin.avro.fastserde.generated.avro",
+  "doc": "JMH micro benchmark schema template",
+  "fields": [
+    {
+      "name": "testArray",
+      "type": {
+        "type": "array",
+        "items": "double"
+      }
+    }
+  ]
+}

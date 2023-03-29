@@ -1,0 +1,83 @@
+/*
+ * Copyright 2020 LinkedIn Corp.
+ * Licensed under the BSD 2-Clause License (the "License").
+ * See License in the project root for license information.
+ */
+
+plugins {
+  id "java-library"
+}
+
+configurations {
+  codegen
+}
+
+sourceSets {
+  main {
+    java {
+      srcDir "${rootProject.projectDir}/fastserde/avro-fastserde/src/main/java"
+    }
+  }
+  test {
+    java {
+      srcDir "src/test/java"
+      srcDir "$buildDir/generated/avro"
+    }
+  }
+}
+
+dependencies {
+  implementation project(":helper:helper")
+
+  implementation "org.slf4j:slf4j-api:1.7.14"
+  implementation "org.apache.commons:commons-lang3:3.4"
+  implementation "com.sun.codemodel:codemodel:2.6"
+
+  compile ("org.apache.avro:avro:1.7.7") {
+    exclude group: "org.slf4j"
+  }
+
+  testRuntime ("org.apache.avro:avro:1.7.7") {
+    exclude group: "org.slf4j"
+  }
+
+  testImplementation 'org.testng:testng:6.14.3'
+  testImplementation 'org.slf4j:slf4j-simple:1.7.14'
+
+  codegen project(":helper:helper")
+  codegen "org.apache.avro:avro-tools:1.7.7"
+  codegen "org.apache.avro:avro-compiler:1.7.7"
+}
+
+test {
+  testLogging.showStandardStreams = false
+
+  useTestNG() {
+    excludeGroups "perfTest"
+  }
+
+  testLogging {
+    events "failed"
+  }
+}
+
+task runVanillaAvroCodegen {
+  description = 'generate specific classes using vanilla avro'
+
+  dependsOn configurations.codegen
+  // define input and output files so we can have incremental build when nothing changes
+  inputs.dir("src/test/avro")
+  outputs.dir("$buildDir/generated/avro")
+
+  fileTree(dir: 'src/test/avro', include:'**/*.avsc').each { file ->
+    doLast {
+      javaexec {
+        classpath = configurations.codegen
+        main = 'org.apache.avro.tool.Main'
+        args = ["compile", "schema", file.getAbsolutePath(), "$buildDir/generated/avro"]
+      }
+    }
+  }
+}
+
+compileTestJava.dependsOn runVanillaAvroCodegen

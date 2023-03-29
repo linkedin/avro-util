@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "name": "RecordWithLargeUnionField",
+  "namespace": "com.linkedin.avro.fastserde.generated.avro",
+  "fields": [
+    {
+      "name": "unionField",
+      "type": ["string", "int", "bytes"],
+      "default": "more than 50 letters aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ]
+}

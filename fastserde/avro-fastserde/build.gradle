@@ -1,0 +1,110 @@
+/*
+ * Copyright 2020 LinkedIn Corp.
+ * Licensed under the BSD 2-Clause License (the "License").
+ * See License in the project root for license information.
+ */
+
+plugins {
+  id "java-library"
+}
+
+dependencies {
+  implementation project(":helper:helper")
+
+  implementation "org.slf4j:slf4j-api:1.7.14"
+  implementation "org.apache.commons:commons-lang3:3.4"
+  implementation "com.sun.codemodel:codemodel:2.6"
+
+  compile ("org.apache.avro:avro:1.10.2") {
+    exclude group: "org.slf4j"
+  }
+}
+
+//custom publishing code to export a dependency on "helper-all":
+publishing {
+  publications {
+    "$project.name"(MavenPublication) {
+      groupId project.group
+      artifactId project.name
+      version project.version
+
+      from components.java
+      artifact sourceJar
+      artifact javadocJar
+      artifact testJar
+
+      //we strive to meet https://central.sonatype.org/pages/requirements.html
+      pom {
+        name = 'Avro Util'
+        description = 'utilities for writing code that works across major avro versions'
+        url = 'https://github.com/linkedin/avro-util'
+
+        licenses {
+          license {
+            name = 'BSD 2-Clause'
+            url = 'https://raw.githubusercontent.com/linkedin/avro-util/master/LICENSE'
+          }
+        }
+        developers {
+          developer {
+            id = 'radai-rosenblatt'
+            name = 'Radai Rosenblatt'
+            email = 'radai.rosenblatt@gmail.com'
+            organization = 'LinkedIn'
+            organizationUrl = 'linkedin.com'
+          }
+          developer {
+            id = 'abhishekmendhekar'
+            name = 'Abhishek Mendhekar'
+            organization = 'LinkedIn'
+            organizationUrl = 'linkedin.com'
+          }
+          developer {
+            id = 'jimhe'
+            name = 'Jim He'
+            email = 'jimjhe@gmail.com'
+            organization = 'LinkedIn'
+            organizationUrl = 'linkedin.com'
+          }
+          developer {
+            id = 'ghosthack'
+            name = 'Adrian Fernandez'
+            email = 'adrian@ghosthack.com'
+            organization = 'LinkedIn'
+            organizationUrl = 'linkedin.com'
+          }
+        }
+        scm {
+          connection = 'scm:git:git://github.com:linkedin/avro-util.git'
+          developerConnection = 'scm:git:ssh://github.com:linkedin/avro-util.git'
+          url = 'https://github.com/linkedin/avro-util'
+        }
+      }
+
+      //remove the dependency on helper, and replace with one on helper-all
+      pom.withXml {
+        Node dependenciesNode = (Node) (asNode().dependencies[0])
+        Collection<Node> dependencyNodes = dependenciesNode.children()
+        List<Node> toRemove = new ArrayList<>()
+
+        for (Node o : dependencyNodes) {
+          if ("$project.group" == o.groupId[0].text() && "helper" == o.artifactId[0].text()) {
+            toRemove.add(o)
+          }
+        }
+
+        for (Node o : toRemove) {
+          dependencyNodes.remove(o)
+        }
+
+        def dependencyNode = dependenciesNode.appendNode('dependency')
+        dependencyNode.appendNode('groupId', "$project.group")
+        dependencyNode.appendNode('artifactId', "helper-all")
+        dependencyNode.appendNode('version', "$project.version")
+        dependencyNode.appendNode('scope', "compile")
+      }
+    }
+  }
+
+  //repositories inherited from parent build.gradle
+}

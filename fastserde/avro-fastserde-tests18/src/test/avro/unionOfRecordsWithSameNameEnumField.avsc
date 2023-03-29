@@ -1,0 +1,46 @@
+{
+  "type": "record",
+  "name": "UnionOfRecordsWithSameNameEnumField",
+  "namespace": "com.linkedin.avro.fastserde.generated.avro",
+  "fields": [
+    {
+      "name": "unionField",
+      "type": [
+        {
+          "type": "record",
+          "name": "MyRecordV1",
+          "fields": [
+            {
+              "name": "enumField",
+              "type": {
+                "type": "enum",
+                "name": "MyEnumV1",
+                "symbols": [
+                  "VAL1",
+                  "VAL2"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "MyRecordV2",
+          "fields": [
+            {
+              "name": "enumField",
+              "type": {
+                "type": "enum",
+                "name": "MyEnumV2",
+                "symbols": [
+                  "VAL1",
+                  "VAL3"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

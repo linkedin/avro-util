@@ -1,0 +1,362 @@
+{
+  "type": "record",
+  "name": "TestRecord",
+  "namespace": "com.linkedin.avro.fastserde.generated.avro",
+  "doc": null,
+  "fields": [
+    {
+      "name": "testInt",
+      "type": "int"
+    },
+    {
+      "name": "testIntUnion",
+      "type": [
+        "null",
+        "int"
+      ],
+      "default": null
+    },
+    {
+      "name": "testLong",
+      "type": "long"
+    },
+    {
+      "name": "testLongUnion",
+      "type": [
+        "null",
+        "long"
+      ],
+      "default": null
+    },
+    {
+      "name": "testDouble",
+      "type": "double"
+    },
+    {
+      "name": "testDoubleUnion",
+      "type": [
+        "null",
+        "double"
+      ],
+      "default": null
+    },
+    {
+      "name": "testFloat",
+      "type": "float"
+    },
+    {
+      "name": "testFloatUnion",
+      "type": [
+        "null",
+        "float"
+      ],
+      "default": null
+    },
+    {
+      "name": "testBoolean",
+      "type": "boolean"
+    },
+    {
+      "name": "testBooleanUnion",
+      "type": [
+        "null",
+        "boolean"
+      ],
+      "default": null
+    },
+    {
+      "name": "testBytes",
+      "type": "bytes"
+    },
+    {
+      "name": "testBytesUnion",
+      "type": [
+        "null",
+        "bytes"
+      ],
+      "default": null
+    },
+    {
+      "name": "testString",
+      "type": "string"
+    },
+    {
+      "name": "testStringUnion",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "aliases": [
+        "testStringAlias"
+      ]
+    },
+    {
+      "name": "testFixed",
+      "type": {
+        "type": "fixed",
+        "name": "TestFixed",
+        "size": 1
+      }
+    },
+    {
+      "name": "testFixedUnion",
+      "type": [
+        "null",
+        "TestFixed"
+      ],
+      "default": null
+    },
+    {
+      "name": "testFixedArray",
+      "type": {
+        "type": "array",
+        "items": "TestFixed"
+      }
+    },
+    {
+      "name": "testFixedUnionArray",
+      "type": {
+        "type": "array",
+        "items": [
+          "null",
+          "TestFixed"
+        ]
+      }
+    },
+    {
+      "name": "testEnum",
+      "type": {
+        "type": "enum",
+        "name": "TestEnum",
+        "doc": null,
+        "symbols": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E"
+        ]
+      },
+      "doc": null
+    },
+    {
+      "name": "testEnumUnion",
+      "type": [
+        "null",
+        "TestEnum"
+      ],
+      "default": null
+    },
+    {
+      "name": "testEnumArray",
+      "type": {
+        "type": "array",
+        "items": "TestEnum"
+      }
+    },
+    {
+      "name": "testEnumUnionArray",
+      "type": {
+        "type": "array",
+        "items": [
+          "null",
+          "TestEnum"
+        ]
+      }
+    },
+    {
+      "name": "subRecordUnion",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "SubRecord",
+          "doc": null,
+          "fields": [
+            {
+              "name": "subField",
+              "type": [
+                "null",
+                "string"
+              ],
+              "default": null
+            },
+            {
+              "name": "anotherField",
+              "type": [
+                "null",
+                "string"
+              ],
+              "default": null
+            }
+          ]
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "subRecord",
+      "type": "SubRecord"
+    },
+    {
+      "name": "recordsArray",
+      "type": {
+        "type": "array",
+        "items": "SubRecord"
+      }
+    },
+    {
+      "name": "recordsMap",
+      "type": {
+        "type": "map",
+        "values": "SubRecord"
+      }
+    },
+    {
+      "name": "recordsArrayUnion",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": [
+            "null",
+            "SubRecord"
+          ]
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "recordsMapUnion",
+      "type": [
+        "null",
+        {
+          "type": "map",
+          "values": [
+            "null",
+            "SubRecord"
+          ]
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "recordsArrayMap",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "map",
+          "values": [
+            "null",
+            "SubRecord"
+          ]
+        }
+      }
+    },
+    {
+      "name": "recordsMapArray",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "array",
+          "items": [
+            "null",
+            "SubRecord"
+          ]
+        }
+      }
+    },
+    {
+      "name": "recordsArrayMapUnion",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": {
+            "type": "map",
+            "values": [
+              "null",
+              "SubRecord"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "recordsMapArrayUnion",
+      "type": [
+        "null",
+        {
+          "type": "map",
+          "values": {
+            "type": "array",
+            "items": [
+              "null",
+              "SubRecord"
+            ]
+          }
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "union",
+      "type": [
+        "null",
+        "SubRecord",
+        "string",
+        "int"
+      ],
+      "default": null
+    },
+    {
+      "name": "booleanArray",
+      "type": {
+        "type": "array",
+        "items": "boolean"
+      },
+      "default": []
+    },
+    {
+      "name": "doubleArray",
+      "type": {
+        "type": "array",
+        "items": "double"
+      },
+      "default": []
+    },
+    {
+      "name": "floatArray",
+      "type": {
+        "type": "array",
+        "items": "float"
+      },
+      "default": []
+    },
+    {
+      "name": "intArray",
+      "type": {
+        "type": "array",
+        "items": "int"
+      },
+      "default": []
+    },
+    {
+      "name": "longArray",
+      "type": {
+        "type": "array",
+        "items": "long"
+      },
+      "default": []
+    },
+    {
+      "name": "stringArray",
+      "type": {
+        "type": "array",
+        "items": "string"
+      },
+      "default": []
+    }
+  ]
+}

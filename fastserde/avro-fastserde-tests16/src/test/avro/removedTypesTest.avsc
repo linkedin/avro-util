@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "name": "RemovedTypesTestRecord",
+  "namespace": "com.linkedin.avro.fastserde.generated.avro",
+  "doc": null,
+  "fields": [
+    {
+      "name": "field",
+      "type": "string"
+    }
+  ]
+}
