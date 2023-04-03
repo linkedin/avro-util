@@ -214,7 +214,7 @@ public final class FastSerdeTestsSupport {
   }
 
   public static File getCodeGenDirectory() throws IOException {
-    Path codeGenOutput = Paths.get("./src/codegen/java/");
+    Path codeGenOutput = Paths.get("./build/codegen/java/");
     File dir;
     if (Files.notExists(codeGenOutput)) {
       dir = Files.createDirectories(codeGenOutput).toFile();

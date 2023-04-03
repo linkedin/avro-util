@@ -55,9 +55,6 @@ include 'helper:tests:helper-tests-110'
 include 'helper:tests:helper-tests-111'
 include 'helper:tests:helper-tests-111_0'
 
-//fast avro
-include 'avro-fastserde'
-
 //spotbugs plugin
 include 'spotbugs-plugin'
 
@@ -83,3 +80,14 @@ include 'avro-builder:tests:codegen-no-utf8-in-putbyindex'
 include 'avro-builder:tests:tests-allavro'
 
 include 'demos:spotbugs-demo'
+
+include 'fastserde:avro-fastserde'
+include 'fastserde:avro-fastserde-jmh'
+include 'fastserde:avro-fastserde-tests14'
+include 'fastserde:avro-fastserde-tests15'
+include 'fastserde:avro-fastserde-tests16'
+include 'fastserde:avro-fastserde-tests17'
+include 'fastserde:avro-fastserde-tests18'
+include 'fastserde:avro-fastserde-tests19'
+include 'fastserde:avro-fastserde-tests110'
+include 'fastserde:avro-fastserde-tests111'

@@ -513,7 +513,7 @@ public class FastDeserializerDefaultsTest {
 
   @SuppressWarnings("unchecked")
   private <T> T decodeSpecificSlow(Schema readerSchema, Schema writerSchema, Decoder decoder) {
-    org.apache.avro.io.DatumReader<T> datumReader = new SpecificDatumReader<>(writerSchema, readerSchema);
+      org.apache.avro.io.DatumReader<T> datumReader = new SpecificDatumReader<>(writerSchema, readerSchema);
     try {
       return datumReader.read(null, decoder);
     } catch (IOException e) {
