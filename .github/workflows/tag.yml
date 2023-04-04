@@ -6,7 +6,7 @@ on:
       - '*'
 
 jobs:
-  gradle-java8:
+  gradle-java11:
     name: Java 11 release
     runs-on: ubuntu-latest
     steps:
@@ -16,7 +16,7 @@ jobs:
         # bring in all history because the gradle versions plugin needs to "walk back" to the closest ancestor tag
         # to figure out what version this is. optimizing this is left as a challenge to future committers
         fetch-depth: 0
-    - name: Set up JDK 111
+    - name: Set up JDK 11
       uses: actions/setup-java@v1
       with:
         java-version: 11

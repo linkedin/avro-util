@@ -6,24 +6,19 @@
 
 plugins {
   id "java-library"
-  id "java-test-fixtures"
 }
 
-//Disable fixture publishing
-components.java.withVariantsFromConfiguration(configurations.testFixturesApiElements) { skip() }
-components.java.withVariantsFromConfiguration(configurations.testFixturesRuntimeElements) { skip() }
-
 //This block is only supported and required when building with JDK11
-if (JavaVersion.current() == JavaVersion.VERSION_11) {
+if (JavaVersion.current() >= JavaVersion.VERSION_11) {
   sourceSets {
-    testFixtures {
+    java11 {
       java {
         srcDirs = ['src/main/java11']
       }
     }
   }
 
-  compileTestFixturesJava {
+  compileJava11Java {
     sourceCompatibility = 11
     targetCompatibility = 11
     options.compilerArgs.addAll(['--release', '11'])
@@ -31,7 +26,7 @@ if (JavaVersion.current() == JavaVersion.VERSION_11) {
 
   jar {
     into('META-INF/versions/11') {
-      from sourceSets.testFixtures.output
+      from sourceSets.java11.output
     }
     manifest {
       attributes(
@@ -54,12 +49,12 @@ dependencies {
   }
 
   //This block is only supported and required when building with JDK11
-  if (JavaVersion.current() == JavaVersion.VERSION_11) {
-    testFixturesApi files(sourceSets.main.output.classesDirs)
-    testFixturesApi ("org.apache.avro:avro:1.10.2") {
+  if (JavaVersion.current() >= JavaVersion.VERSION_11) {
+    java11Implementation files(sourceSets.main.output.classesDirs)
+    java11Implementation  ("org.apache.avro:avro:1.10.2") {
       exclude group: "org.slf4j"
     }
-    testFixturesApi "org.apache.commons:commons-lang3:3.4"
+    java11Implementation "org.apache.commons:commons-lang3:3.4"
   }
 }
 
