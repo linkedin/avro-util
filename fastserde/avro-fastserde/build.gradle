@@ -6,6 +6,40 @@
 
 plugins {
   id "java-library"
+  id "java-test-fixtures"
+}
+
+//Disable fixture publishing
+components.java.withVariantsFromConfiguration(configurations.testFixturesApiElements) { skip() }
+components.java.withVariantsFromConfiguration(configurations.testFixturesRuntimeElements) { skip() }
+
+//This block is only supported and required when building with JDK11
+if (JavaVersion.current() == JavaVersion.VERSION_11) {
+  sourceSets {
+    testFixtures {
+      java {
+        srcDirs = ['src/main/java11']
+      }
+    }
+  }
+
+  compileTestFixturesJava {
+    sourceCompatibility = 11
+    targetCompatibility = 11
+    options.compilerArgs.addAll(['--release', '11'])
+  }
+
+  jar {
+    into('META-INF/versions/11') {
+      from sourceSets.testFixtures.output
+    }
+    manifest {
+      attributes(
+          "Manifest-Version": "1.0",
+          "Multi-Release": true
+      )
+    }
+  }
 }
 
 dependencies {
@@ -17,6 +51,15 @@ dependencies {
 
   compile ("org.apache.avro:avro:1.10.2") {
     exclude group: "org.slf4j"
+  }
+
+  //This block is only supported and required when building with JDK11
+  if (JavaVersion.current() == JavaVersion.VERSION_11) {
+    testFixturesApi files(sourceSets.main.output.classesDirs)
+    testFixturesApi ("org.apache.avro:avro:1.10.2") {
+      exclude group: "org.slf4j"
+    }
+    testFixturesApi "org.apache.commons:commons-lang3:3.4"
   }
 }
 

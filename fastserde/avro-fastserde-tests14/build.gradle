@@ -35,10 +35,17 @@ dependencies {
     exclude group: "com.thoughtworks.paranamer", module: "paranamer-ant"
     exclude group: "org.slf4j"
   }
+
+  //This block is only supported and required when building with JDK11
+  //Warning: It should take precedence over generic FA code
+  if (JavaVersion.current() == JavaVersion.VERSION_11) {
+    testCompile (testFixtures(project(":fastserde:avro-fastserde"))) {
+      exclude group: "org.apache.avro"
+    }
+  }
   testCompile (project(":fastserde:avro-fastserde")) {
     exclude group: "org.apache.avro"
   }
-
   testCompile ("org.apache.avro:avro:1.4.1") {
     exclude group: "org.mortbay.jetty"
     exclude group: "org.apache.velocity"
