@@ -35,10 +35,10 @@ dependencies {
     exclude group: "com.thoughtworks.paranamer", module: "paranamer-ant"
     exclude group: "org.slf4j"
   }
+
   testCompile (project(":fastserde:avro-fastserde")) {
     exclude group: "org.apache.avro"
   }
-
   testCompile ("org.apache.avro:avro:1.4.1") {
     exclude group: "org.mortbay.jetty"
     exclude group: "org.apache.velocity"
