@@ -48,6 +48,8 @@ shadowJar {
 
   //relocate commons-text to not conflict with anything that might be on a user's classpath
   relocate 'org.apache.commons', 'com.linkedin.avroutil1.compatibility.shaded.org.apache.commons'
+  //relocate zero-allocation-hashing
+  relocate 'net.openhft', 'com.linkedin.avroutil1.compatibility.shaded.net.openhft'
 }
 
 //"fat" sources jar
