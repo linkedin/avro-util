@@ -134,6 +134,10 @@ publishing {
           if ("$project.group" == o.groupId[0].text() && "helper" == o.artifactId[0].text()) {
             toRemove.add(o)
           }
+          //Also remove explicit dependency on Avro, as FaastSerde is version independent
+          if ("org.apache.avro" == o.groupId[0].text() && "avro" == o.artifactId[0].text()) {
+            toRemove.add(o)
+          }
         }
 
         for (Node o : toRemove) {
