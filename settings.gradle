@@ -15,6 +15,10 @@ buildscript {
   }
 }
 
+plugins {
+  id "com.gradle.enterprise" version "3.11.4"
+}
+
 apply plugin: 'net.vivin.gradle-semantic-build-versioning'
 
 //otherwise it defaults to the folder name
@@ -91,3 +95,10 @@ include 'fastserde:avro-fastserde-tests18'
 include 'fastserde:avro-fastserde-tests19'
 include 'fastserde:avro-fastserde-tests110'
 include 'fastserde:avro-fastserde-tests111'
+
+gradleEnterprise {
+  buildScan {
+    termsOfServiceUrl = "https://gradle.com/terms-of-service"
+    termsOfServiceAgree = "yes"
+  }
+}

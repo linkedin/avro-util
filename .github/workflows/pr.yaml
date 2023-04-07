@@ -40,7 +40,7 @@ jobs:
           key: gradle-cache-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/*.gradle') }}
       - name: Build with Gradle
         # add --info or --debug below for more details when trying to understand issues
-        run: ./gradlew clean build javadoc --stacktrace --warning-mode all --no-daemon
+        run: ./gradlew clean build javadoc --stacktrace --warning-mode all --no-daemon --parallel --scan
       - name: Generate aggregate coverage report
         run: ./gradlew codeCoverageReport --no-daemon
       - name: Upload coverage to Codecov
