@@ -290,7 +290,7 @@ public class BufferBackedPrimitiveFloatList extends AbstractList<Float>
       if (!isCached) {
         setupElements(this, this.size);
         for (int i = 0; i < size; i++) {
-          elements[i] = (float)VH.get(byteBuffer, i);
+          elements[i] = (float)VH.get(byteBuffer, i * FLOAT_SIZE);
         }
         isCached = true;
       }
