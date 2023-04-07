@@ -17,7 +17,7 @@ import org.testng.annotations.Test;
 
 public class BufferBackedPrimitiveFloatListTest {
   @Test
-  public void testPrimitiveFloatArrayAdd() throws IOException {
+  public void testPrimitiveFloatArrayCache() throws IOException {
     Schema arraySchema = Schema.createArray(Schema.create(Schema.Type.FLOAT));
     List<Float> testFloatArray = Arrays.asList(1.0f, 2.0f, 3.0f);
 
@@ -34,6 +34,8 @@ public class BufferBackedPrimitiveFloatListTest {
     BinaryDecoder decoder = DecoderFactory.defaultFactory().createBinaryDecoder(baos.toByteArray(), null);
     BufferBackedPrimitiveFloatList list = (BufferBackedPrimitiveFloatList) BufferBackedPrimitiveFloatList
         .readPrimitiveFloatArray(new Object(), decoder);
+    //Remove method will populate the cache using VH, read value by index
+    //invalidate cache and return value, we need to make sure we read values correctly
     Assert.assertEquals(list.remove(2), 3.0f);
     }
 }
