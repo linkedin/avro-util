@@ -8,6 +8,6 @@ public class UtilsTest {
 
   @Test (groups = "deserializationTest")
   public void testGenerateSourcePathFromPackageName() {
-    Assert.assertEquals(Utils.generateSourcePathFromPackageName("com.linkedin.avro"), "/com/linkedin/avro/");
+    Assert.assertEquals(Utils.generateSourcePathFromPackageName("com.linkedin.avro"), Utils.fixSeparatorsToMatchOS("/com/linkedin/avro/"));
   }
 }

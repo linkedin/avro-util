@@ -8,13 +8,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.security.CodeSource;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import org.apache.avro.Schema;
 
@@ -22,6 +18,12 @@ import org.apache.avro.Schema;
 public class Utils {
   private static final List<AvroVersion> AVRO_VERSIONS_SUPPORTED_FOR_DESERIALIZER = new ArrayList<>();
   private static final List<AvroVersion> AVRO_VERSIONS_SUPPORTED_FOR_SERIALIZER = new ArrayList<>();
+
+  private static final String REPLACEMENT_SEPARATOR = Matcher.quoteReplacement(File.separator);
+
+  private static final boolean IS_WINDOWS = System.getProperty("os.name")
+          .toLowerCase(Locale.ROOT)
+          .contains("windows");
 
   static {
     AVRO_VERSIONS_SUPPORTED_FOR_DESERIALIZER.add(AvroVersion.AVRO_1_4);
@@ -65,7 +67,10 @@ public class Utils {
 
   public static boolean isSupportedAvroVersionsForSerializer() {
     return AVRO_VERSIONS_SUPPORTED_FOR_SERIALIZER.contains(AvroCompatibilityHelper.getRuntimeAvroVersion());
+  }
 
+  public static boolean isWindows() {
+    return IS_WINDOWS;
   }
 
   public static AvroVersion getRuntimeAvroVersion() {
@@ -86,6 +91,21 @@ public class Utils {
     return pathBuilder.toString();
   }
 
+  /**
+   * given a filesystem path (assumed to use either forward or backward slashes, but not both)
+   * this returns the same path, but using the separator character that matches the current
+   * runtime OS.
+   * @param path a path using some (single) separator
+   * @return the input path, now using the separator matching the current operating system.
+   */
+  public static String fixSeparatorsToMatchOS(String path) {
+    if (path == null || path.contains(File.separator)) {
+      return path;
+    }
+
+    //noinspection RegExpRedundantEscape
+    return path.replaceAll("[\\/]", REPLACEMENT_SEPARATOR);
+  }
   /**
    * This function will produce a fingerprint for the provided schema.
    * @param schema a schema
@@ -138,7 +158,7 @@ public class Utils {
   public static String inferCompileDependencies(String existingCompileClasspath, String filePath, Set<String> knownUsedFullyQualifiedClassNameSet)
       throws IOException, ClassNotFoundException {
     Set<String> usedFullyQualifiedClassNameSet = new HashSet<>(knownUsedFullyQualifiedClassNameSet);
-    Set<String> libSet = Arrays.stream(existingCompileClasspath.split(":")).collect(Collectors.toSet());
+    Set<String> libSet = Arrays.stream(existingCompileClasspath.split(File.pathSeparator)).collect(Collectors.toSet());
     final String importPrefix = "import ";
     // collect all the necessary dependencies for compilation
     try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
@@ -154,7 +174,10 @@ public class Utils {
         }
       }
 
-      StringBuilder sb = new StringBuilder(existingCompileClasspath);
+      StringJoiner pathJoiner = new StringJoiner(File.pathSeparator);
+      if (existingCompileClasspath != null && !existingCompileClasspath.isEmpty()) {
+        pathJoiner.add(existingCompileClasspath);
+      }
       for (String requiredClass : usedFullyQualifiedClassNameSet) {
         CodeSource codeResource;
         try {
@@ -174,13 +197,17 @@ public class Utils {
         }
         if (codeResource != null) {
           String libPath = codeResource.getLocation().getFile();
+          if (isWindows() && libPath.startsWith("/")) {
+            //avoid things like "/C:/what/ever" on windows
+            libPath = libPath.substring(1);
+          }
           if (!libSet.contains(libPath)) {
-            sb.append(":").append(libPath);
+            pathJoiner.add(libPath);
             libSet.add(libPath);
           }
         }
       }
-      return sb.toString();
+      return pathJoiner.toString();
     }
   }
 }
