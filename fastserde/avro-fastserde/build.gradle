@@ -49,14 +49,14 @@ dependencies {
   implementation "org.apache.commons:commons-lang3:3.4"
   implementation "com.sun.codemodel:codemodel:2.6"
 
-  compile ("org.apache.avro:avro:1.10.2") {
+  compileOnly ("org.apache.avro:avro:1.10.2") {
     exclude group: "org.slf4j"
   }
 
   //Custom dependency set is required for JDK11 only source set
   if (JavaVersion.current() >= JavaVersion.VERSION_11) {
     java11Implementation files(sourceSets.main.output.classesDirs)
-    java11Implementation  ("org.apache.avro:avro:1.10.2") {
+    java11CompileOnly  ("org.apache.avro:avro:1.10.2") {
       exclude group: "org.slf4j"
     }
     java11Implementation "org.apache.commons:commons-lang3:3.4"
@@ -132,10 +132,6 @@ publishing {
 
         for (Node o : dependencyNodes) {
           if ("$project.group" == o.groupId[0].text() && "helper" == o.artifactId[0].text()) {
-            toRemove.add(o)
-          }
-          //Also remove explicit dependency on Avro, as FaastSerde is version independent
-          if ("org.apache.avro" == o.groupId[0].text() && "avro" == o.artifactId[0].text()) {
             toRemove.add(o)
           }
         }

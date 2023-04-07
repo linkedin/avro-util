@@ -21,13 +21,13 @@ sourceSets {
 }
 
 dependencies {
-  implementation project(":helper:helper")
+  testImplementation project(":helper:helper")
 
-  implementation "org.slf4j:slf4j-api:1.7.14"
-  implementation "org.apache.commons:commons-lang3:3.4"
-  implementation "com.sun.codemodel:codemodel:2.6"
+  testImplementation "org.slf4j:slf4j-api:1.7.14"
+  testImplementation "org.apache.commons:commons-lang3:3.4"
+  testImplementation "com.sun.codemodel:codemodel:2.6"
 
-  compile ("org.apache.avro:avro:1.4.1") {
+  testImplementation ("org.apache.avro:avro:1.4.1") {
     exclude group: "org.mortbay.jetty"
     exclude group: "org.apache.velocity"
     exclude group: "commons-lang"
@@ -36,10 +36,10 @@ dependencies {
     exclude group: "org.slf4j"
   }
 
-  testCompile (project(":fastserde:avro-fastserde")) {
+  testImplementation (project(":fastserde:avro-fastserde")) {
     exclude group: "org.apache.avro"
   }
-  testCompile ("org.apache.avro:avro:1.4.1") {
+  testImplementation ("org.apache.avro:avro:1.4.1") {
     exclude group: "org.mortbay.jetty"
     exclude group: "org.apache.velocity"
     exclude group: "commons-lang"

@@ -46,7 +46,7 @@ dependencies {
     exclude group: "com.thoughtworks.paranamer", module: "paranamer-ant"
   }
 
-  testCompile "net.javacrumbs.json-unit:json-unit-assertj:2.19.0"
+  testImplementation "net.javacrumbs.json-unit:json-unit-assertj:2.19.0"
 
   testImplementation project(":helper:helper")
 

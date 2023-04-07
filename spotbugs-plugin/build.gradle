@@ -13,8 +13,8 @@ plugins {
 dependencies {
   compileOnly "com.github.spotbugs:spotbugs:4.2.3"
 
-  testCompile project(":test-common")
-  testCompile project(":helper:tests:helper-tests-common")
+  testImplementation project(":test-common")
+  testImplementation project(":helper:tests:helper-tests-common")
 
   testImplementation project(":helper:helper")
   testImplementation "junit:junit:4.13"
