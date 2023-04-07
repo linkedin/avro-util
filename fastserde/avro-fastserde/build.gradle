@@ -49,7 +49,7 @@ dependencies {
   implementation "org.apache.commons:commons-lang3:3.4"
   implementation "com.sun.codemodel:codemodel:2.6"
 
-  compile ("org.apache.avro:avro:1.10.2") {
+  compileOnly ("org.apache.avro:avro:1.10.2") {
     exclude group: "org.slf4j"
   }
 
