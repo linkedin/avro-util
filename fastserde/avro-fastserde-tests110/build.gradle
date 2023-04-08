@@ -49,10 +49,10 @@ dependencies {
     exclude group: "org.apache.avro"
   }
 
-  testImplementation 'org.testng:testng:6.14.3'
+  testImplementation 'org.testng:testng:7.5'
   testImplementation 'org.slf4j:slf4j-simple:1.7.14'
 
-  testFixturesApi 'org.testng:testng:6.14.3'
+  testFixturesApi 'org.testng:testng:7.5'
   testFixturesApi 'org.slf4j:slf4j-simple:1.7.14'
   testFixturesApi ("org.apache.avro:avro:1.10.2") {
     exclude group: "org.slf4j"
