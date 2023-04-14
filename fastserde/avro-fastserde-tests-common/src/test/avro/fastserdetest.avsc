@@ -358,13 +358,13 @@
       },
       "default": []
     },
-    {     
-      "name": "testNestedArray",
+    {
+      "name": "nestedArray",
       "type": [
         "null",
         {
           "type": "record",
-          "name": "NestedArray",
+          "name": "NestedArrayRecord",
           "fields": [
             {
               "name": "results",
