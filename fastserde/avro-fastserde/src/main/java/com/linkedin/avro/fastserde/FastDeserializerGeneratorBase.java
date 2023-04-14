@@ -13,6 +13,7 @@ import org.apache.avro.util.Utf8;
 
 /** TODO all of this could be moved to {@link FastDeserializerGenerator} */
 public abstract class FastDeserializerGeneratorBase<T> extends FastSerdeBase {
+
   protected static final Symbol EMPTY_SYMBOL = new Symbol(Symbol.Kind.TERMINAL, new Symbol[]{}) {};
   protected static final Symbol END_SYMBOL = new Symbol(Symbol.Kind.TERMINAL, new Symbol[]{}) {};
   protected final Schema writer;
@@ -85,6 +86,16 @@ public abstract class FastDeserializerGeneratorBase<T> extends FastSerdeBase {
     while (actionIterator.hasNext()) {
       Symbol symbol = actionIterator.next();
 
+      if (Symbol.Kind.REPEATER.equals(symbol.kind)
+          && "array-end"
+          .equals(
+              getSymbolPrintName(
+                  ((Symbol.Repeater) symbol)
+                      .end))) {
+        actionIterator = Arrays.asList(reverseSymbolArray(symbol.production)).listIterator();
+        break;
+      }
+
       if (symbol instanceof Symbol.ErrorAction) {
         throw new FastDeserializerGeneratorException(((Symbol.ErrorAction) symbol).msg);
       }
@@ -139,17 +150,6 @@ public abstract class FastDeserializerGeneratorBase<T> extends FastSerdeBase {
 
     while (symbolIterator.hasNext()) {
       Symbol symbol = symbolIterator.next();
-/*
-      if (Symbol.Kind.REPEATER.equals(symbol.kind)
-          && "array-end"
-          .equals(
-              getSymbolPrintName(
-                  ((Symbol.Repeater) symbol)
-                      .end))) {
-        symbolIterator = Arrays.asList(reverseSymbolArray(symbol.production)).listIterator();
-        break;
-      }
-*/
 
       if (symbol instanceof Symbol.ErrorAction) {
         throw new FastDeserializerGeneratorException(((Symbol.ErrorAction) symbol).msg);

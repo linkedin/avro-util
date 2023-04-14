@@ -357,38 +357,6 @@
         "items": "string"
       },
       "default": []
-    },
-    {
-      "name": "nestedArray",
-      "type": [
-        "null",
-        {
-          "type": "record",
-          "name": "NestedArrayRecord",
-          "fields": [
-            {
-              "name": "results",
-              "type": {
-                "type": "array",
-                "items": {
-                  "type": "array",
-                  "items": {
-                    "name": "items",
-                    "type": "record",
-                    "fields": [
-                      {
-                        "name": "item",
-                        "type": "string"
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          ]
-        }
-      ],
-      "default": null
     }
   ]
 }

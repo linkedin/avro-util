@@ -1,0 +1,26 @@
+{
+   "namespace": "com.linkedin.avro.fastserde.generated.avro",
+    "name": "NestedArrayTest",
+    "type": "record",
+    "fields": [
+        {
+            "name": "NestedArrayItems",
+            "type": {
+                "type": "array",
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "name": "NestedArrayItem",
+                        "type": "record",
+                        "fields": [
+                            {
+                                "name": "ItemName",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}
