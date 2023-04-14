@@ -139,7 +139,7 @@ public abstract class FastDeserializerGeneratorBase<T> extends FastSerdeBase {
 
     while (symbolIterator.hasNext()) {
       Symbol symbol = symbolIterator.next();
-
+/*
       if (Symbol.Kind.REPEATER.equals(symbol.kind)
           && "array-end"
           .equals(
@@ -149,6 +149,7 @@ public abstract class FastDeserializerGeneratorBase<T> extends FastSerdeBase {
         symbolIterator = Arrays.asList(reverseSymbolArray(symbol.production)).listIterator();
         break;
       }
+*/
 
       if (symbol instanceof Symbol.ErrorAction) {
         throw new FastDeserializerGeneratorException(((Symbol.ErrorAction) symbol).msg);
