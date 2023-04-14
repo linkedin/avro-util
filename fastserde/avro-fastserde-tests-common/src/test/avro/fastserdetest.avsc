@@ -5,27 +5,6 @@
   "doc": null,
   "fields": [
     {
-      "type": "record",
-      "name": "testNestedArray",
-      "doc": null,
-      "type": {
-         "type": "array",
-         "items": {
-            "type": "array",
-            "items": {
-               "name": "NestedArrayItem",
-               "type": "record",
-               "fields": [
-                   {
-                     "name": "ItemName",
-                     "type": "string"
-                   }
-               ]
-            }
-         }
-      }
-    },
-    {
       "name": "testInt",
       "type": "int"
     },
@@ -378,6 +357,38 @@
         "items": "string"
       },
       "default": []
+    },
+    {     
+      "name": "testNestedArray",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "NestedArray",
+          "fields": [
+            {
+              "name": "results",
+              "type": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "name": "items",
+                    "type": "record",
+                    "fields": [
+                      {
+                        "name": "item",
+                        "type": "string"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "default": null
     }
   ]
 }
