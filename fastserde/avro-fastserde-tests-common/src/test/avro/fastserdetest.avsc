@@ -5,6 +5,23 @@
   "doc": null,
   "fields": [
     {
+      "name", "testNestedArray",
+      "type": {
+         "type": "array",
+         "items": {
+            "type": "array",
+            "items": {
+               "name": "NestedArrayItem",
+               "type": "record",
+               "fields": [
+                  "name": "ItemName",
+                  "type": "string"
+               ]
+            }
+         }
+      }
+    },
+    {
       "name": "testInt",
       "type": "int"
     },
