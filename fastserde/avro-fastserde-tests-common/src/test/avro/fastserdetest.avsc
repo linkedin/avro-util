@@ -5,7 +5,9 @@
   "doc": null,
   "fields": [
     {
-      "name", "testNestedArray",
+      "type": "record",
+      "name": "testNestedArray",
+      "doc": null,
       "type": {
          "type": "array",
          "items": {
@@ -14,8 +16,10 @@
                "name": "NestedArrayItem",
                "type": "record",
                "fields": [
-                  "name": "ItemName",
-                  "type": "string"
+                   {
+                     "name": "ItemName",
+                     "type": "string"
+                   }
                ]
             }
          }
