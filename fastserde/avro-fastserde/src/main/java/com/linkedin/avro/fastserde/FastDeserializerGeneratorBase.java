@@ -140,6 +140,16 @@ public abstract class FastDeserializerGeneratorBase<T> extends FastSerdeBase {
     while (symbolIterator.hasNext()) {
       Symbol symbol = symbolIterator.next();
 
+      if (com.linkedin.testing.avro.fastserde.backport.Symbol.Kind.REPEATER.equals(symbol.kind)
+          && "array-end"
+          .equals(
+              getSymbolPrintName(
+                  ((com.linkedin.testing.avro.fastserde.backport.Symbol.Repeater) symbol)
+                      .end))) {
+        actionIterator = Arrays.asList(reverseSymbolArray(symbol.production)).listIterator();
+        break;
+      }
+
       if (symbol instanceof Symbol.ErrorAction) {
         throw new FastDeserializerGeneratorException(((Symbol.ErrorAction) symbol).msg);
       }

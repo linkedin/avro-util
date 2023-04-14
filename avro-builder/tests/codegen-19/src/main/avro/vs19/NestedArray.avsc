@@ -1,0 +1,27 @@
+{
+    "type": "record",
+    "namespace": "vs19",
+    "name": "Nested Array",
+    "doc": "Nested array example",
+    "fields": [
+        {
+            "name": "NestedArrayItems",
+            "type": {
+                "type": "array",
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "name": "NestedArrayItem",
+                        "type": "record",
+                        "fields": [
+                            {
+                                "name": "ItemName",
+                                "type": "string"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}
