@@ -20,7 +20,7 @@ public class FastNestedArrayTest {
 
     List<NestedArrayItem> items = new ArrayList<>();
     NestedArrayItem item = new NestedArrayItem();
-    FastSerdeTestsSupport.setField(item, "itemName", "itemName");
+    FastSerdeTestsSupport.setField(item, "ItemName", "itemName");
     FastSerdeTestsSupport.setField(nestedArrayTest, "NestedArrayItems", Collections.singletonList(items));
 
     Decoder decoder = FastSerdeTestsSupport.specificDataAsDecoder(nestedArrayTest, NestedArrayTest.SCHEMA$);
