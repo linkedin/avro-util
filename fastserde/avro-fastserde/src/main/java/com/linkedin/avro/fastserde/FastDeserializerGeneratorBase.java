@@ -13,7 +13,6 @@ import org.apache.avro.util.Utf8;
 
 /** TODO all of this could be moved to {@link FastDeserializerGenerator} */
 public abstract class FastDeserializerGeneratorBase<T> extends FastSerdeBase {
-
   protected static final Symbol EMPTY_SYMBOL = new Symbol(Symbol.Kind.TERMINAL, new Symbol[]{}) {};
   protected static final Symbol END_SYMBOL = new Symbol(Symbol.Kind.TERMINAL, new Symbol[]{}) {};
   protected final Schema writer;
