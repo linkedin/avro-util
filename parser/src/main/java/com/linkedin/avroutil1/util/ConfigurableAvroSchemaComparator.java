@@ -18,11 +18,14 @@ import com.linkedin.avroutil1.model.AvroMapSchema;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
 import com.linkedin.avroutil1.model.AvroRecordSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
+import com.linkedin.avroutil1.model.AvroSchemaDifference;
+import com.linkedin.avroutil1.model.AvroSchemaDifferenceType;
 import com.linkedin.avroutil1.model.AvroSchemaField;
 import com.linkedin.avroutil1.model.AvroType;
 import com.linkedin.avroutil1.model.AvroUnionSchema;
 import com.linkedin.avroutil1.model.SchemaOrRef;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -39,11 +42,24 @@ public class ConfigurableAvroSchemaComparator {
   public static boolean equals(AvroSchema a, AvroSchema b, SchemaComparisonConfiguration config) {
     validateConfig(config);
     Set<SeenPair> seen = new HashSet<>(3);
+    List<AvroSchemaDifference> differences = new ArrayList<>();
     try {
-      return equals(a, b, config, seen);
+      equals(a, b, config, seen, differences);
+      return differences.isEmpty();
     } catch (IOException e) {
       return false;
     }
+  }
+
+  public static List<AvroSchemaDifference> findDifference(AvroSchema a, AvroSchema b, SchemaComparisonConfiguration config) {
+    validateConfig(config);
+    Set<SeenPair> seen = new HashSet<>(3);
+    List<AvroSchemaDifference> differences = new ArrayList<>();
+    try {
+      equals(a, b, config, seen, differences);
+    } catch (IOException ignored) {
+    }
+    return differences;
   }
 
   private static void validateConfig(SchemaComparisonConfiguration config) {
@@ -57,25 +73,26 @@ public class ConfigurableAvroSchemaComparator {
     }
   }
 
-  private static boolean equals(AvroSchema a, AvroSchema b, SchemaComparisonConfiguration config, Set<SeenPair> seen)
+  private static void equals(AvroSchema a, AvroSchema b, SchemaComparisonConfiguration config, Set<SeenPair> seen, List<AvroSchemaDifference> differences)
       throws IOException {
     if (a == null && b == null) {
-      return true;
+      return;
     }
     if (a == null || b == null) {
-      return false;
+      differences.add(new AvroSchemaDifference(null, null,
+          AvroSchemaDifferenceType.NULL_SCHEMA, "Either schemaA or schemaB is null"));
+      return;
     }
     AvroType type = a.type();
     if (!Objects.equals(type, b.type())) {
-      return false;
+      differences.add(new AvroSchemaDifference(a.getCodeLocation(), b.getCodeLocation(), AvroSchemaDifferenceType.TYPE_MISMATCH,
+          String.format("Type %s in schemaA does not match with with type %s in schemaB", a, b)));
+      return;
     }
 
-    boolean considerJsonStringProps = config.isCompareStringJsonProps();
-    boolean considerJsonNonStringProps = config.isCompareNonStringJsonProps();
     boolean considerAliases = config.isCompareAliases();
-
     switch (type) {
-      //all of these have nothing more to compare by beyond their type (and we ignore props)
+      // primitive types (all of these have nothing more to compare apart from their types)
       case NULL:
       case BOOLEAN:
       case INT:
@@ -84,63 +101,135 @@ public class ConfigurableAvroSchemaComparator {
       case DOUBLE:
       case STRING:
       case BYTES:
-        return true;
+        break;
 
-      //named types
-
+      // named types
       case ENUM:
-        return ((AvroEnumSchema) a).getFullName().equals(((AvroEnumSchema) b).getFullName()) && (!considerAliases || hasSameAliases((AvroEnumSchema) a, (AvroEnumSchema) b))
-            //list comparison is sensitive to order
-            && ((AvroEnumSchema) a).getSymbols().equals(((AvroEnumSchema) b).getSymbols());
+        AvroEnumSchema enumA = (AvroEnumSchema) a;
+        AvroEnumSchema enumB = (AvroEnumSchema) b;
+
+        // Compare fullName of enum fields in schemaA and schemaB
+        String enumFullNameA = enumA.getFullName();
+        String enumFullNameB = enumB.getFullName();
+        if (!enumFullNameA.equals(enumFullNameB)) {
+          AvroSchemaDifference difference = new AvroSchemaDifference(a.getCodeLocation(), b.getCodeLocation(), AvroSchemaDifferenceType.ENUM_NAME_MISMATCH,
+              String.format("Name for Enum field %s in schemaA does not match with name enum field %s in schemaB",
+                  enumFullNameA, enumFullNameB));
+          differences.add(difference);
+        }
+
+        // Compare aliases of enum fields in schemaA and schemaB
+        if (considerAliases && !hasSameAliases(enumA, enumB)) {
+          AvroSchemaDifference difference = new AvroSchemaDifference(a.getCodeLocation(), b.getCodeLocation(), AvroSchemaDifferenceType.ALIASES_MISMATCH,
+              String.format("Aliases for enum field %s in schemaA does not match with aliases for enum field %s in schemaB",
+                  enumFullNameA, enumFullNameB));
+          differences.add(difference);
+        }
+
+        // Compare symbols of enum fields in schemaA and schemaB
+        if (!enumA.getSymbols().equals(enumB.getSymbols())) {
+          AvroSchemaDifference difference = new AvroSchemaDifference(a.getCodeLocation(), b.getCodeLocation(), AvroSchemaDifferenceType.ENUM_SYMBOL_MISMATCH,
+              String.format("Symbols %s of enum field %s in schemaA does not match with symbols %s of enum field %s in schemaB",
+                            enumA.getSymbols().toString(), enumFullNameA,
+                            enumB.getSymbols().toString(), enumFullNameB));
+          differences.add(difference);
+        }
+        break;
+
       case FIXED:
-        return ((AvroFixedSchema) a).getFullName().equals(((AvroFixedSchema) b).getFullName()) && (!considerAliases
-            || hasSameAliases((AvroFixedSchema) a, (AvroFixedSchema) b))
-            && ((AvroFixedSchema) a).getSize() == ((AvroFixedSchema) b).getSize();
+        AvroFixedSchema fixedA = (AvroFixedSchema) a;
+        AvroFixedSchema fixedB = (AvroFixedSchema) b;
+
+        // Compare fullName of fixed fields in schemaA and schemaB
+        String fixedFullNameA = fixedA.getFullName();
+        String fixedFullNameB = fixedB.getFullName();
+        if (!fixedFullNameA.equals(fixedFullNameB)) {
+          AvroSchemaDifference difference = new AvroSchemaDifference(a.getCodeLocation(), b.getCodeLocation(), AvroSchemaDifferenceType.FIXED_NAME_MISMATCH,
+              String.format("Name for fixed field %s in schemaA does not match with name of fixed field %s in schemaB",
+                            fixedFullNameA, fixedFullNameB));
+          differences.add(difference);
+        }
+
+        // Compare aliases of fixed fields in schemaA and schemaB
+        if (!(!considerAliases || hasSameAliases((AvroFixedSchema) a, (AvroFixedSchema) b))) {
+          AvroSchemaDifference difference = new AvroSchemaDifference(a.getCodeLocation(), b.getCodeLocation(), AvroSchemaDifferenceType.ALIASES_MISMATCH,
+              String.format("Aliases for fixed field %s in schemaA does not match with the aliases for fixed field %s in schemaB",
+                            fixedFullNameA, fixedFullNameB));
+          differences.add(difference);
+        }
+
+        // Compare size of fixed fields in schemaA and schemaB
+        if ((fixedA.getSize() != fixedB.getSize())) {
+          AvroSchemaDifference difference = new AvroSchemaDifference(a.getCodeLocation(), b.getCodeLocation(), AvroSchemaDifferenceType.FIXED_SIZE_MISMATCH,
+              String.format("Size for fixed field %s in schemaA does not match with the size for fixed field %s in schemaB",
+                            fixedFullNameA, fixedFullNameB));
+          differences.add(difference);
+        }
+        break;
+
       case RECORD:
-        return recordSchemaEquals((AvroRecordSchema) a, (AvroRecordSchema) b, config, seen);
+        recordSchemaEquals((AvroRecordSchema) a, (AvroRecordSchema) b, config, seen, differences);
+        break;
 
-      //collections and union
-
+      // collections and union
       case ARRAY:
-        return equals(((AvroArraySchema) a).getValueSchema(), ((AvroArraySchema) b).getValueSchema(), config, seen);
+        equals(((AvroArraySchema) a).getValueSchema(), ((AvroArraySchema) b).getValueSchema(), config, seen, differences);
+        break;
       case MAP:
-        return equals(((AvroMapSchema) a).getValueSchema(), ((AvroMapSchema) b).getValueSchema(), config, seen);
+        equals(((AvroMapSchema) a).getValueSchema(), ((AvroMapSchema) b).getValueSchema(), config, seen, differences);
+        break;
       case UNION:
         List<SchemaOrRef> aBranches = ((AvroUnionSchema) a).getTypes();
         List<SchemaOrRef> bBranches = ((AvroUnionSchema) b).getTypes();
         if (aBranches.size() != bBranches.size()) {
-          return false;
+          AvroSchemaDifference difference =
+              new AvroSchemaDifference(a.getCodeLocation(), b.getCodeLocation(), AvroSchemaDifferenceType.UNION_SIZE_MISMATCH,
+                  String.format("Size for union field %d from schemaA does not match with size for union field %d from schemaB",
+                                aBranches.size(), bBranches.size()));
+          differences.add(difference);
+          return;
         }
+        // We check for the union branches only if the size is equal
         for (int i = 0; i < aBranches.size(); i++) {
           SchemaOrRef aBranch = aBranches.get(i);
           SchemaOrRef bBranch = bBranches.get(i);
-          if (!equals(aBranch, bBranch, config, seen)) {
-            return false;
-          }
+          equals(aBranch, bBranch, config, seen, differences);
         }
-        return true;
+        break;
       default:
-        throw new IllegalStateException("unhandled: " + type);
+        throw new IllegalStateException("Unhandled type: " + type);
     }
   }
 
-  private static boolean equals(SchemaOrRef aBranch, SchemaOrRef bBranch, SchemaComparisonConfiguration config, Set<SeenPair> seen)
+  private static void equals(SchemaOrRef aBranch, SchemaOrRef bBranch, SchemaComparisonConfiguration config, Set<SeenPair> seen, List<AvroSchemaDifference> differences)
       throws IOException {
     if (aBranch.getSchema() != null) {
-      return equals(aBranch.getSchema(), bBranch.getSchema(), config, seen);
+      equals(aBranch.getSchema(), bBranch.getSchema(), config, seen, differences);
     }
-    return aBranch.getRef() != null && aBranch.getRef().equals(bBranch.getRef());
+    if (aBranch.getRef() != null && !aBranch.getRef().equals(bBranch.getRef())) {
+      AvroSchemaDifference difference =
+          new AvroSchemaDifference(aBranch.getCodeLocation(), bBranch.getCodeLocation(), AvroSchemaDifferenceType.SCHEMA_REFERENCE_MISMATCH,
+              String.format("Schema ref %s in schemaA does not match with the schema ref %s in schemaB",
+                  aBranch.getRef(), bBranch.getRef()));
+      differences.add(difference);
+    }
   }
 
-  private static boolean recordSchemaEquals(AvroRecordSchema a, AvroRecordSchema b, SchemaComparisonConfiguration config, Set<SeenPair> seen)
-      throws IOException {
+  private static void recordSchemaEquals(AvroRecordSchema a,
+      AvroRecordSchema b,
+      SchemaComparisonConfiguration config,
+      Set<SeenPair> seen,
+      List<AvroSchemaDifference> differences) throws IOException {
     if (!a.getFullName().equals(b.getFullName())) {
-      return false;
+      AvroSchemaDifference difference =
+          new AvroSchemaDifference(a.getCodeLocation(), b.getCodeLocation(), AvroSchemaDifferenceType.RECORD_NAME_MISMATCH,
+              String.format("Name of the %s in schemaA does not match with name of the %s in schemaB", a, b));
+      differences.add(difference);
     }
-    //loop protection for self-referencing schemas
+    // loop protection for self-referencing schemas
     SeenPair pair = new SeenPair(a, b);
     if (seen.contains(pair)) {
-      return true;
+      return;
     }
     seen.add(pair);
 
@@ -148,51 +237,96 @@ public class ConfigurableAvroSchemaComparator {
     boolean considerJsonNonStringProps = config.isCompareNonStringJsonProps();
     boolean considerAliases = config.isCompareAliases();
     boolean considerJsonProps = considerJsonStringProps || considerJsonNonStringProps;
-    boolean compareIntToFLoatDefaults = config.isCompareIntToFloatDefaults();
 
     try {
       if (considerAliases && !hasSameAliases(a, b)) {
-        return false;
+        AvroSchemaDifference difference =
+            new AvroSchemaDifference(a.getCodeLocation(), b.getCodeLocation(), AvroSchemaDifferenceType.ALIASES_MISMATCH,
+                String.format("Aliases for %s in schemaA does not match with the aliases for %s in schemaB", a, b));
+        differences.add(difference);
       }
 
       if (considerJsonProps && !hasSameObjectProps(a, b, considerJsonStringProps, considerJsonNonStringProps)) {
-        return false;
+        AvroSchemaDifference difference =
+            new AvroSchemaDifference(a.getCodeLocation(), b.getCodeLocation(), AvroSchemaDifferenceType.JSON_PROPERTY_MISMATCH,
+                String.format("Json properties of %s in schemaA does not match with the json properties of %s in schemaB", a, b));
+        differences.add(difference);
       }
 
       List<AvroSchemaField> aFields = a.getFields();
       List<AvroSchemaField> bFields = b.getFields();
       if (aFields.size() != bFields.size()) {
-        return false;
+        AvroSchemaDifference difference =
+            new AvroSchemaDifference(a.getCodeLocation(), b.getCodeLocation(), AvroSchemaDifferenceType.RECORD_FIELD_COUNT_MISMATCH,
+                String.format("Number of fields %d in %s schemaA does not match with the number of fields %d in %s in schemaB",
+                              aFields.size(), a, bFields.size(), b));
+        differences.add(difference);
       }
-      for (int i = 0; i < aFields.size(); i++) {
+      int numberOfCommonFields = Math.min(aFields.size(), bFields.size());
+      for (int i = 0; i < numberOfCommonFields; i++) {
         AvroSchemaField aField = aFields.get(i);
         AvroSchemaField bField = bFields.get(i);
 
         if (!aField.getName().equals(bField.getName())) {
-          return false;
+          AvroSchemaDifference difference = new AvroSchemaDifference(aField.getCodeLocation(), bField.getCodeLocation(),
+              AvroSchemaDifferenceType.RECORD_FIELD_NAME_MISMATCH,
+              String.format("Name for field %s in %s in schemaA does not match with field %s in %s in schemaB",
+                            aField.getName(), a, bField.getName(), b));
+          differences.add(difference);
         }
-        if (!equals(aField.getSchema(), bField.getSchema(), config, seen)) {
-          return false;
-        }
+        equals(aField.getSchema(), bField.getSchema(), config, seen, differences);
+
         if (aField.hasDefaultValue() && bField.hasDefaultValue()) {
           if (!aField.getDefaultValue().equals(bField.getDefaultValue())) {
-            return false;
+            AvroSchemaDifference difference = new AvroSchemaDifference(aField.getCodeLocation(), bField.getCodeLocation(),
+                AvroSchemaDifferenceType.RECORD_DEFAULT_VALUE_MISMATCH,
+                String.format("Default value %s for field %s in %s in schemaA does not match with default value %s field %s in %s in schemaB",
+                    aField.getDefaultValue(), aField.getName(), a,
+                    bField.getDefaultValue(), bField.getName(), b));
+            differences.add(difference);
           }
         } else if (aField.hasDefaultValue() || bField.hasDefaultValue()) {
-          //means one field has a default value and the other does not
-          return false;
+          AvroSchemaDifference difference = new AvroSchemaDifference(aField.getCodeLocation(), bField.getCodeLocation(),
+              AvroSchemaDifferenceType.DEFAULT_VALUE_MISSING,
+              String.format("Either field %s in %s in schemaA or field %s in %s in schemaB has missing default value",
+                            aField.getName(), a, bField.getName(), b));
+          differences.add(difference);
         }
         if (!Objects.equals(aField.getPosition(), bField.getPosition())) {
-          return false;
+          AvroSchemaDifference difference = new AvroSchemaDifference(aField.getCodeLocation(), bField.getCodeLocation(),
+              AvroSchemaDifferenceType.RECORD_FIELD_POSITION_MISMATCH,
+              String.format("Position %d for field %s in %s in schemaA does not match with position %d field %s in %s in schemaB",
+                  aField.getPosition(), aField.getName(), a, bField.getPosition(), bField.getName(), b));
+          differences.add(difference);
         }
         if (considerJsonProps && !hasSameObjectProps(aField, bField, considerJsonStringProps, considerJsonNonStringProps)) {
-          return false;
+          AvroSchemaDifference difference = new AvroSchemaDifference(aField.getCodeLocation(), bField.getCodeLocation(),
+              AvroSchemaDifferenceType.JSON_PROPERTY_MISMATCH,
+              String.format("Json properties of %s in schemaA does not match with the json properties of %s in schemaB", a, b));
+          differences.add(difference);
         }
         if (considerAliases && !hasSameAliases(aField, bField)) {
-          return false;
+          AvroSchemaDifference difference = new AvroSchemaDifference(aField.getCodeLocation(), bField.getCodeLocation(),
+              AvroSchemaDifferenceType.ALIASES_MISMATCH,
+              String.format("Aliases for %s in schemaA does not match with the aliases for %s in schemaB", a, b));
+          differences.add(difference);
         }
       }
-      return true;
+      // If there is size mismatch between the schemas, we add the additional fields in the differences
+      for (int i = numberOfCommonFields; i < aFields.size(); i++) {
+        AvroSchemaField aField = aFields.get(i);
+        AvroSchemaDifference difference = new AvroSchemaDifference(aField.getCodeLocation(), null,
+            AvroSchemaDifferenceType.ADDITIONAL_FIELD,
+            String.format("Additional field %s found in schemaA", aField.getName()));
+        differences.add(difference);
+      }
+      for (int i = numberOfCommonFields; i < bFields.size(); i++) {
+        AvroSchemaField bField = bFields.get(i);
+        AvroSchemaDifference difference = new AvroSchemaDifference(null, bField.getCodeLocation(),
+            AvroSchemaDifferenceType.ADDITIONAL_FIELD,
+            String.format("Additional field %s found in schemaB", bField.getName()));
+        differences.add(difference);
+      }
     } finally {
       seen.remove(pair);
     }
@@ -221,9 +355,8 @@ public class ConfigurableAvroSchemaComparator {
     return !b.hasProperties();
   }
 
-  private static boolean hasSameObjectProps (AvroSchemaField a, AvroSchemaField b,boolean compareStringProps,
-
-  boolean compareNonStringProps) throws IOException {
+  private static boolean hasSameObjectProps (AvroSchemaField a, AvroSchemaField b, boolean compareStringProps,
+      boolean compareNonStringProps) throws IOException {
     return hasSameObjectProps(a.getSchema(), b.getSchema(), compareStringProps, compareNonStringProps);
   }
 
@@ -256,5 +389,4 @@ public class ConfigurableAvroSchemaComparator {
       return System.identityHashCode(s1) + System.identityHashCode(s2);
     }
   }
-
 }
