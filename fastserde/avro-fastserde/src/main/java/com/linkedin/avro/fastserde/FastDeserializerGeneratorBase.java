@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.ListIterator;
+import java.util.Optional;
 import org.apache.avro.Schema;
 import com.linkedin.avro.fastserde.backport.Symbol;
 import org.apache.avro.util.Utf8;
@@ -71,6 +72,17 @@ public abstract class FastDeserializerGeneratorBase<T> extends FastSerdeBase {
 
   public abstract FastDeserializer<T> generateDeserializer();
 
+  /**
+   * Retrieve the symbols associated with the FieldAction necessary
+   * to generate code to populate the field.
+   *
+   * When processing a nested array ( an array directly inside
+   * another array ) return the symbol.production to navigate the
+   * nested array properly.
+   *
+   * @param action FieldAction being process
+   * @return list of symbols associated with the input FieldAction
+   */
   protected ListIterator<Symbol> actionIterator(FieldAction action) {
     ListIterator<Symbol> actionIterator = null;
 
@@ -84,6 +96,14 @@ public abstract class FastDeserializerGeneratorBase<T> extends FastSerdeBase {
 
     while (actionIterator.hasNext()) {
       Symbol symbol = actionIterator.next();
+
+      if (Symbol.Kind.REPEATER.equals(symbol.kind)  &&
+          Symbol.Kind.TERMINAL.equals(((Symbol.Repeater)symbol).end)
+          && "array-end"
+          .equals(((Symbol.Repeater)symbol).end.toString())) {
+        actionIterator = Arrays.asList(reverseSymbolArray(symbol.production)).listIterator();
+        break;
+      }
 
       if (symbol instanceof Symbol.ErrorAction) {
         throw new FastDeserializerGeneratorException(((Symbol.ErrorAction) symbol).msg);
