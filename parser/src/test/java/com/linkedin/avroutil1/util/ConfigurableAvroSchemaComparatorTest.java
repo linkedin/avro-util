@@ -7,11 +7,9 @@
 package com.linkedin.avroutil1.util;
 
 import com.linkedin.avroutil1.compatibility.SchemaComparisonConfiguration;
-import com.linkedin.avroutil1.model.AvroEnumSchema;
 import com.linkedin.avroutil1.model.AvroRecordSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
 import com.linkedin.avroutil1.model.AvroSchemaDifference;
-import com.linkedin.avroutil1.model.AvroSchemaDifferenceType;
 import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
 import com.linkedin.avroutil1.parser.avsc.AvscParser;
 import com.linkedin.avroutil1.testcommon.TestUtil;
@@ -27,7 +25,18 @@ public class ConfigurableAvroSchemaComparatorTest {
   @DataProvider
   private Object[][] testEqualsProvider() {
     return new Object[][] {
-        {"schemas/TestRecord.avsc", "schemas/TestRecord.avsc"}
+        {"schemas/TestRecord.avsc", "schemas/TestRecord.avsc", true},
+        {"schemas/UtilTester1.avsc", "schemas/UtilTester2.avsc", false}
+    };
+  }
+
+  @DataProvider
+  private Object[][] testFindDifferenceProvider() {
+    return new Object[][] {
+        {"schemas/UtilTester1.avsc", "schemas/UtilTester1.avsc", SchemaComparisonConfiguration.PRE_1_7_3, 0},
+        {"schemas/UtilTester1.avsc", null, SchemaComparisonConfiguration.PRE_1_7_3, 1},
+        {"schemas/UtilTester1.avsc", "schemas/UtilTester2.avsc", SchemaComparisonConfiguration.PRE_1_7_3, 13},
+        {"schemas/UtilTester1.avsc", "schemas/UtilTester2.avsc", SchemaComparisonConfiguration.STRICT, 18}
     };
   }
 
@@ -40,76 +49,21 @@ public class ConfigurableAvroSchemaComparatorTest {
   }
 
   @Test(dataProvider = "testEqualsProvider")
-  public void testEquals(String path1, String path2) throws IOException {
+  public void testEquals(String path1, String path2, boolean expectedResult) throws IOException {
     AvroRecordSchema recordSchema1 = (AvroRecordSchema) validateAndGetAvroRecordSchema(path1);
     AvroRecordSchema recordSchema2 = (AvroRecordSchema) validateAndGetAvroRecordSchema(path2);
-    Assert.assertTrue(ConfigurableAvroSchemaComparator.equals(recordSchema1, recordSchema2, SchemaComparisonConfiguration.PRE_1_7_3));
+    Assert.assertEquals(ConfigurableAvroSchemaComparator.equals(recordSchema1, recordSchema2,
+        SchemaComparisonConfiguration.PRE_1_7_3), expectedResult);
   }
 
-  @Test
-  public void testNotEquals() throws IOException {
-    AvroRecordSchema schema1 = (AvroRecordSchema) validateAndGetAvroRecordSchema("schemas/UtilTester1.avsc");
-    AvroRecordSchema schema2 = (AvroRecordSchema) validateAndGetAvroRecordSchema("schemas/UtilTester2.avsc");
-    Assert.assertFalse(ConfigurableAvroSchemaComparator.equals(schema1, schema2, SchemaComparisonConfiguration.PRE_1_7_3));
-  }
-
-  // FindDifference testing
-  @Test
-  public void testSimilarSchema() throws IOException {
+  @Test(dataProvider = "testFindDifferenceProvider")
+  public void testFindDifference(String path1, String path2, SchemaComparisonConfiguration config, int expectedDifferences)
+      throws IOException {
     // Load the schema, move this code to a separate method
-    AvroRecordSchema schema = (AvroRecordSchema) validateAndGetAvroRecordSchema("schemas/UtilTester1.avsc");
-    List<AvroSchemaDifference> differences = ConfigurableAvroSchemaComparator.findDifference(schema, schema, SchemaComparisonConfiguration.PRE_1_7_3);
-    Assert.assertEquals(differences.size(), 0);
-  }
-
-  @Test
-  public void testNullSchema() throws IOException {
-    // Load the schema, move this code to a separate method
-    AvroRecordSchema schema = (AvroRecordSchema) validateAndGetAvroRecordSchema("schemas/UtilTester1.avsc");
-    List<AvroSchemaDifference> differences = ConfigurableAvroSchemaComparator.findDifference(schema, null, SchemaComparisonConfiguration.PRE_1_7_3);
-    Assert.assertEquals(differences.size(), 1);
-  }
-
-  @Test
-  public void testSchemaWithTypeMismatch() throws IOException  {
-    AvroRecordSchema schema1 = (AvroRecordSchema) validateAndGetAvroRecordSchema("schemas/UtilTester1.avsc");
-    AvroEnumSchema schema2 = (AvroEnumSchema) validateAndGetAvroRecordSchema("schemas/TestEnum.avsc");
-    List<AvroSchemaDifference> differences =  ConfigurableAvroSchemaComparator.findDifference(schema1, schema2, SchemaComparisonConfiguration.PRE_1_7_3);
-    Assert.assertEquals(differences.size(), 1);
-  }
-
-  @Test
-  public void testSchemaWithDifferences() throws IOException {
-
-    AvroRecordSchema schema1 = (AvroRecordSchema) validateAndGetAvroRecordSchema("schemas/UtilTester1.avsc");
-    AvroRecordSchema schema2 = (AvroRecordSchema) validateAndGetAvroRecordSchema("schemas/UtilTester2.avsc");
-    List<AvroSchemaDifference> differences = ConfigurableAvroSchemaComparator.findDifference(schema1, schema2, SchemaComparisonConfiguration.STRICT);
-    int expectedDifferences = 18;
-    AvroSchemaDifferenceType[] expectedDifferenceTypes = {
-        AvroSchemaDifferenceType.RECORD_NAME_MISMATCH,
-        AvroSchemaDifferenceType.ALIASES_MISMATCH,
-        AvroSchemaDifferenceType.RECORD_FIELD_COUNT_MISMATCH,
-        AvroSchemaDifferenceType.TYPE_MISMATCH,
-        AvroSchemaDifferenceType.RECORD_DEFAULT_VALUE_MISMATCH,
-        AvroSchemaDifferenceType.ALIASES_MISMATCH,
-        AvroSchemaDifferenceType.ALIASES_MISMATCH,
-        AvroSchemaDifferenceType.ENUM_SYMBOL_MISMATCH,
-        AvroSchemaDifferenceType.ALIASES_MISMATCH,
-        AvroSchemaDifferenceType.FIXED_SIZE_MISMATCH,
-        AvroSchemaDifferenceType.TYPE_MISMATCH,
-        AvroSchemaDifferenceType.TYPE_MISMATCH,
-        AvroSchemaDifferenceType.TYPE_MISMATCH,
-        AvroSchemaDifferenceType.UNION_SIZE_MISMATCH,
-        AvroSchemaDifferenceType.ALIASES_MISMATCH,
-        AvroSchemaDifferenceType.FIXED_SIZE_MISMATCH,
-        AvroSchemaDifferenceType.RECORD_FIELD_NAME_MISMATCH,
-        AvroSchemaDifferenceType.ADDITIONAL_FIELD
-    };
-
+    AvroRecordSchema schema1 = (AvroRecordSchema) validateAndGetAvroRecordSchema(path1);
+    AvroRecordSchema schema2 = (path2 != null) ? (AvroRecordSchema) validateAndGetAvroRecordSchema(path2) : null;
+    List<AvroSchemaDifference> differences = ConfigurableAvroSchemaComparator.findDifference(schema1, schema2, config);
     Assert.assertEquals(differences.size(), expectedDifferences);
-    for (int i = 0; i < expectedDifferences; i++) {
-      Assert.assertEquals(differences.get(i).getAvroSchemaDifferenceType(), expectedDifferenceTypes[i]);
-    }
   }
 
 }

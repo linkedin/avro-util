@@ -99,11 +99,6 @@ public enum AvroSchemaDifferenceType {
   /**
    * Additional field found in schema A or schema B.
    */
-  ADDITIONAL_FIELD,
-
-  /**
-   * Unknown difference type.
-   */
-  UNKNOWN
+  ADDITIONAL_FIELD
 
 }

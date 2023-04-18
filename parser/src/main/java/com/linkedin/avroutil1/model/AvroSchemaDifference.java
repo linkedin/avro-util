@@ -76,7 +76,7 @@ public class AvroSchemaDifference {
    */
   @Override
   public String toString() {
-    return "Type: " + avroSchemaDifferenceType.toString() +
+    return "[" + avroSchemaDifferenceType.toString() + "] " +
         ", SchemaALocation: " + ((schemaALocation != null) ? schemaALocation.toString() : "null") +
         ", SchemaBLocation: " + ((schemaBLocation != null) ? schemaBLocation.toString() : "null") +
         ", DifferenceSummary: " + differenceSummary;
