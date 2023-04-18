@@ -58,6 +58,7 @@ public class ConfigurableAvroSchemaComparator {
     try {
       equals(a, b, config, seen, differences);
     } catch (IOException ignored) {
+      // ignored
     }
     return differences;
   }
