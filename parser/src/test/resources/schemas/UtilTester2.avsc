@@ -1,0 +1,112 @@
+{
+  "type": "record",
+  "namespace": "vs14",
+  "name": "UtilTester2",
+  "fields": [
+    {
+      "name": "primitiveTypeMismatch",
+      "type": "double",
+      "default": 1
+    },
+    {
+      "name": "enumMismatch",
+      "type": {
+        "name": "enumMismatch",
+        "type": "enum",
+        "symbols": [
+          "A", "B", "C", "D"
+        ]
+      }
+    },
+    {
+      "name": "fixedMismatch",
+      "type": {
+        "name": "fixedMismatch",
+        "type": "fixed",
+        "size": 2,
+        "aliases": ["fixedAliases_schemaB"]
+      }
+    },
+    {
+      "name": "arrayMismatch",
+      "type": {
+        "type": "array",
+        "items": "double"
+      }
+    },
+    {
+      "name": "mapMismatch",
+      "type": {
+        "type": "map",
+        "values": "double"
+      }
+    },
+    {
+      "name": "unionMismatch",
+      "type": ["null", "int", "double"]
+    },
+    {
+      "name": "unionSizeMismatch",
+      "type": ["null", "int", "float", "string"]
+    },
+    {
+      "name" : "min",
+      "doc" : "Minimum value",
+      "type" : {
+        "type" : "record",
+        "name" : "Amount",
+        "namespace" : "vs14",
+        "doc" : "Represents an amount of money",
+        "fields" : [ {
+          "name" : "currencyCode",
+          "type" : "string",
+          "doc" : "Currency code v$"
+        }, {
+          "name" : "amount",
+          "type" : "string",
+          "doc" : "The amount of money as a real number string, See https://docs.oracle.com/javase/8/docs/api/java/math/BigDecimal.html#BigDecimal-java.lang.String-"
+        } ],
+        "aliases": [
+          "vs14.MoneyAmount"
+        ]
+      }
+    },
+    {
+      "name": "arrayOfRecord",
+      "type": {
+        "type": "array",
+        "items": "vs14.Amount"
+      }
+    },
+    {
+      "name": "mapOfRecord",
+      "type": {
+        "type": "map",
+        "values": "vs14.Amount"
+      }
+    },
+    {
+      "name": "wierdUnion",
+      "type": ["null", "int", "long", "string", "vs14.Amount", "vs14.fixedMismatch", {
+        "type": "array",
+        "items": "string"
+      }]
+    },
+    {
+      "name": "unionOfArray",
+      "type": ["null", {
+        "type": "array",
+        "items": "string"
+      }
+      ]
+    },
+    {
+      "name": "unionOfString",
+      "type": ["null", "string"]
+    },
+    {
+      "name": "intFieldNameChanged",
+      "type": "int"
+    }
+  ]
+}
