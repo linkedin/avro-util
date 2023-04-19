@@ -72,11 +72,6 @@ public enum AvroSchemaDifferenceType {
   RECORD_NAME_MISMATCH,
 
   /**
-   * Record field count mismatch between schema A and schema B.
-   */
-  RECORD_FIELD_COUNT_MISMATCH,
-
-  /**
    * Record field name mismatch between schema A and schema B.
    */
   RECORD_FIELD_NAME_MISMATCH,
@@ -87,9 +82,9 @@ public enum AvroSchemaDifferenceType {
   RECORD_DEFAULT_VALUE_MISMATCH,
 
   /**
-   * Default value missing in schema A or schema B.
+   * Default value mismatch in schema A or schema B.
    */
-  DEFAULT_VALUE_MISSING,
+  DEFAULT_VALUE_MISMATCH,
 
   /**
    * Record field position mismatch between schema A and schema B.

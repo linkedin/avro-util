@@ -41,7 +41,7 @@ public class ConfigurableAvroSchemaComparator {
 
   /**
    * Compares two AvroSchema objects for equality using the specified SchemaComparisonConfiguration. This method is high
-   * performant and return on the first found mismatch.
+   * performant and return false on the first found mismatch, and if there is no mismatch, it returns true.
    *
    * @param a The first {@link AvroSchema} to compare.
    * @param b The second {@link AvroSchema} to compare.
@@ -304,14 +304,6 @@ public class ConfigurableAvroSchemaComparator {
 
       List<AvroSchemaField> aFields = a.getFields();
       List<AvroSchemaField> bFields = b.getFields();
-      if (aFields.size() != bFields.size()) {
-        AvroSchemaDifference difference =
-            new AvroSchemaDifference(a.getCodeLocation(), b.getCodeLocation(), AvroSchemaDifferenceType.RECORD_FIELD_COUNT_MISMATCH,
-                String.format("Number of fields %d in %s schemaA does not match with the number of fields %d in %s in schemaB",
-                              aFields.size(), a, bFields.size(), b));
-        differences.add(difference);
-        if (fastFail) return;
-      }
       int numberOfCommonFields = Math.min(aFields.size(), bFields.size());
       for (int i = 0; i < numberOfCommonFields; i++) {
         if (fastFail && !differences.isEmpty()) {
@@ -341,7 +333,7 @@ public class ConfigurableAvroSchemaComparator {
           }
         } else if (aField.hasDefaultValue() || bField.hasDefaultValue()) {
           AvroSchemaDifference difference = new AvroSchemaDifference(aField.getCodeLocation(), bField.getCodeLocation(),
-              AvroSchemaDifferenceType.DEFAULT_VALUE_MISSING,
+              AvroSchemaDifferenceType.DEFAULT_VALUE_MISMATCH,
               String.format("Either field %s in %s in schemaA or field %s in %s in schemaB has missing default value",
                             aField.getName(), a, bField.getName(), b));
           differences.add(difference);

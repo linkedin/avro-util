@@ -35,8 +35,8 @@ public class ConfigurableAvroSchemaComparatorTest {
     return new Object[][] {
         {"schemas/UtilTester1.avsc", "schemas/UtilTester1.avsc", SchemaComparisonConfiguration.PRE_1_7_3, 0},
         {"schemas/UtilTester1.avsc", null, SchemaComparisonConfiguration.PRE_1_7_3, 1},
-        {"schemas/UtilTester1.avsc", "schemas/UtilTester2.avsc", SchemaComparisonConfiguration.PRE_1_7_3, 13},
-        {"schemas/UtilTester1.avsc", "schemas/UtilTester2.avsc", SchemaComparisonConfiguration.STRICT, 18}
+        {"schemas/UtilTester1.avsc", "schemas/UtilTester2.avsc", SchemaComparisonConfiguration.PRE_1_7_3, 12},
+        {"schemas/UtilTester1.avsc", "schemas/UtilTester2.avsc", SchemaComparisonConfiguration.STRICT, 17}
     };
   }
 
