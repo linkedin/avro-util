@@ -4,7 +4,6 @@ import com.linkedin.avro.fastserde.generated.avro.NestedArrayItem;
 import com.linkedin.avro.fastserde.generated.avro.NestedArrayTest;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.apache.avro.io.Decoder;
 import org.testng.Assert;
@@ -16,12 +15,17 @@ public class FastNestedArrayTest {
   @Test
   public void testExample() throws Exception {
 
-     NestedArrayTest nestedArrayTest = new NestedArrayTest();
+    NestedArrayTest nestedArrayTest = new NestedArrayTest();
 
-    List<NestedArrayItem> items = new ArrayList<>();
     NestedArrayItem item = new NestedArrayItem();
     FastSerdeTestsSupport.setField(item, "ItemName", "itemName");
-    FastSerdeTestsSupport.setField(nestedArrayTest, "NestedArrayItems", Collections.singletonList(items));
+
+    List<NestedArrayItem> nestedArrayItem = new ArrayList<>();
+    nestedArrayItem.add(item);
+    List<List<NestedArrayItem>> nestedArrayItems = new ArrayList<>();
+    nestedArrayItems.add(nestedArrayItem);
+
+    FastSerdeTestsSupport.setField(nestedArrayTest, "NestedArrayItems", nestedArrayItems);
 
     Decoder decoder = FastSerdeTestsSupport.specificDataAsDecoder(nestedArrayTest, NestedArrayTest.SCHEMA$);
 
@@ -32,6 +36,10 @@ public class FastNestedArrayTest {
 
     NestedArrayTest actual = fastDeserializer.deserialize(decoder);
 
-    Assert.assertEquals(actual, nestedArrayTest);
+    List<List<NestedArrayItem>> actualNestedArrayItems =
+        (List<List<NestedArrayItem>>) FastSerdeTestsSupport.getField(actual,"NestedArrayItems");
+    Assert.assertEquals(1, actualNestedArrayItems.size());
+    Assert.assertEquals(1, actualNestedArrayItems.get(0).size());
+    Assert.assertEquals("itemName", String.valueOf(FastSerdeTestsSupport.getField(actualNestedArrayItems.get(0).get(0),"ItemName")));
   }
 }
