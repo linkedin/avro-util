@@ -45,5 +45,6 @@
         "specialAnnotation": "myAnnotation"
       }
     }
-  ]
+  ],
+  "specialAnnotation": "myAnnotation"
 }

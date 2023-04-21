@@ -15,6 +15,7 @@ import com.linkedin.avroutil1.parser.avsc.AvscParser;
 import com.linkedin.avroutil1.testcommon.TestUtil;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -69,23 +70,29 @@ public class ConfigurableAvroSchemaComparatorTest {
     // test that json props are compared correctly in fields
     AvroRecordSchema schema1 = (AvroRecordSchema) validateAndGetAvroRecordSchema("schemas/TestJsonPropsInFields1.avsc");
     AvroRecordSchema schema2 = (AvroRecordSchema) validateAndGetAvroRecordSchema("schemas/TestJsonPropsInFields2.avsc");
-    List<AvroSchemaDifference> differences =
-        ConfigurableAvroSchemaComparator.findDifference(schema1, schema2, SchemaComparisonConfiguration.STRICT);
-    Assert.assertEquals(differences.size(), 5);
-    Assert.assertEquals(differences.get(0).toString(),
+    List<String> differences =
+        ConfigurableAvroSchemaComparator.findDifference(schema1, schema2, SchemaComparisonConfiguration.STRICT)
+            .stream()
+            .map(diff -> diff.toString())
+            .collect(Collectors.toList());
+    Assert.assertEquals(differences.size(), 6);
+    Assert.assertTrue(differences.contains(
+        "[JSON_PROPERTY_MISMATCH] Json properties of record vs14.UtilTester1 in schemaA does not match with the json properties of record vs14.UtilTester1 in schemaB\n"
+            + "SchemaALocation: lines 1-42. SchemaBLocation: lines 1-50"));
+    Assert.assertTrue(differences.contains(
         "[JSON_PROPERTY_MISMATCH] Json properties of field \"fieldJsonPropMismatch\" in schemaA does not match with the json properties in schemaB\n"
-            + "SchemaALocation: lines 6-9. SchemaBLocation: lines 6-10");
-    Assert.assertEquals(differences.get(1).toString(),
+            + "SchemaALocation: lines 6-9. SchemaBLocation: lines 6-10"));
+    Assert.assertTrue(differences.contains(
         "[JSON_PROPERTY_MISMATCH] Json properties of float in schemaA does not match with the json properties of float in schemaB\n"
-            + "SchemaALocation: line 12 columns 17-22. SchemaBLocation: lines 13-16");
-    Assert.assertEquals(differences.get(2).toString(),
+            + "SchemaALocation: line 12 columns 17-22. SchemaBLocation: lines 13-16"));
+    Assert.assertTrue(differences.contains(
         "[JSON_PROPERTY_MISMATCH] Json properties of float[] in schemaA does not match with the json properties of float[] in schemaB\n"
-            + "SchemaALocation: lines 16-19. SchemaBLocation: lines 20-24");
-    Assert.assertEquals(differences.get(3).toString(),
+            + "SchemaALocation: lines 16-19. SchemaBLocation: lines 20-24"));
+    Assert.assertTrue(differences.contains(
         "[JSON_PROPERTY_MISMATCH] Json properties of enum vs14.EnumJsonPropMismatch in schemaA does not match with the json properties of enum vs14.EnumJsonPropMismatch in schemaB\n"
-            + "SchemaALocation: lines 23-31. SchemaBLocation: lines 28-37");
-    Assert.assertEquals(differences.get(4).toString(),
+            + "SchemaALocation: lines 23-31. SchemaBLocation: lines 28-37"));
+    Assert.assertTrue(differences.contains(
         "[JSON_PROPERTY_MISMATCH] Json properties of fixed vs14.FixedJsonPropMismatch in schemaA does not match with the json properties of fixed vs14.FixedJsonPropMismatch in schemaB\n"
-            + "SchemaALocation: lines 35-39. SchemaBLocation: lines 41-46");
+            + "SchemaALocation: lines 35-39. SchemaBLocation: lines 41-46"));
   }
 }
