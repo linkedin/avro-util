@@ -1,0 +1,42 @@
+{
+  "type": "record",
+  "namespace": "vs14",
+  "name": "UtilTester1",
+  "fields": [
+    {
+      "name": "fieldJsonPropMismatch",
+      "type": "string"
+    },
+    {
+      "name": "primitiveJsonPropMismatch",
+      "type": "float"
+    },
+    {
+      "name": "arrayJsonPropMismatch",
+      "type": {
+        "type": "array",
+        "items": "float"
+      }
+    },
+    {
+      "name": "enumJsonPropMismatch",
+      "type": {
+        "type": "enum",
+        "name": "EnumJsonPropMismatch",
+        "symbols": [
+          "A",
+          "B",
+          "C"
+        ]
+      }
+    },
+    {
+      "name": "fixedJsonPropMismatch",
+      "type": {
+        "type": "fixed",
+        "name": "FixedJsonPropMismatch",
+        "size": 16
+      }
+    }
+  ]
+}
