@@ -22,6 +22,28 @@
         "specialAnnotation": "myAnnotation",
         "items": "float"
       }
+    },
+    {
+      "name": "enumJsonPropMismatch",
+      "type": {
+        "type": "enum",
+        "name": "EnumJsonPropMismatch",
+        "symbols": [
+          "A",
+          "B",
+          "C"
+        ],
+        "specialAnnotation": "myAnnotation"
+      }
+    },
+    {
+      "name": "fixedJsonPropMismatch",
+      "type": {
+        "type": "fixed",
+        "name": "FixedJsonPropMismatch",
+        "size": 16,
+        "specialAnnotation": "myAnnotation"
+      }
     }
   ]
 }

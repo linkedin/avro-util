@@ -71,7 +71,7 @@ public class ConfigurableAvroSchemaComparatorTest {
     AvroRecordSchema schema2 = (AvroRecordSchema) validateAndGetAvroRecordSchema("schemas/TestJsonPropsInFields2.avsc");
     List<AvroSchemaDifference> differences =
         ConfigurableAvroSchemaComparator.findDifference(schema1, schema2, SchemaComparisonConfiguration.STRICT);
-    Assert.assertEquals(differences.size(), 3);
+    Assert.assertEquals(differences.size(), 5);
     Assert.assertEquals(differences.get(0).toString(),
         "[JSON_PROPERTY_MISMATCH] Json properties of field \"fieldJsonPropMismatch\" in schemaA does not match with the json properties in schemaB\n"
             + "SchemaALocation: lines 6-9. SchemaBLocation: lines 6-10");
@@ -81,5 +81,11 @@ public class ConfigurableAvroSchemaComparatorTest {
     Assert.assertEquals(differences.get(2).toString(),
         "[JSON_PROPERTY_MISMATCH] Json properties of float[] in schemaA does not match with the json properties of float[] in schemaB\n"
             + "SchemaALocation: lines 16-19. SchemaBLocation: lines 20-24");
+    Assert.assertEquals(differences.get(3).toString(),
+        "[JSON_PROPERTY_MISMATCH] Json properties of enum vs14.EnumJsonPropMismatch in schemaA does not match with the json properties of enum vs14.EnumJsonPropMismatch in schemaB\n"
+            + "SchemaALocation: lines 23-31. SchemaBLocation: lines 28-37");
+    Assert.assertEquals(differences.get(4).toString(),
+        "[JSON_PROPERTY_MISMATCH] Json properties of fixed vs14.FixedJsonPropMismatch in schemaA does not match with the json properties of fixed vs14.FixedJsonPropMismatch in schemaB\n"
+            + "SchemaALocation: lines 35-39. SchemaBLocation: lines 41-46");
   }
 }

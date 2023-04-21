@@ -17,6 +17,26 @@
         "type": "array",
         "items": "float"
       }
+    },
+    {
+      "name": "enumJsonPropMismatch",
+      "type": {
+        "type": "enum",
+        "name": "EnumJsonPropMismatch",
+        "symbols": [
+          "A",
+          "B",
+          "C"
+        ]
+      }
+    },
+    {
+      "name": "fixedJsonPropMismatch",
+      "type": {
+        "type": "fixed",
+        "name": "FixedJsonPropMismatch",
+        "size": 16
+      }
     }
   ]
 }
