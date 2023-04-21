@@ -42,10 +42,8 @@ public class AvroSchemaDifference {
    * @param avroSchemaDifferenceType  The AvroSchemaDifferenceType representing the type of difference
    * @param differenceSummary         The summary of the difference between the schemas
    */
-  public AvroSchemaDifference(CodeLocation schemaALocation,
-                              CodeLocation schemaBLocation,
-                              AvroSchemaDifferenceType avroSchemaDifferenceType,
-                              String differenceSummary) {
+  public AvroSchemaDifference(CodeLocation schemaALocation, CodeLocation schemaBLocation,
+      AvroSchemaDifferenceType avroSchemaDifferenceType, String differenceSummary) {
     this.schemaALocation = schemaALocation;
     this.schemaBLocation = schemaBLocation;
     this.avroSchemaDifferenceType = avroSchemaDifferenceType;
@@ -76,9 +74,8 @@ public class AvroSchemaDifference {
    */
   @Override
   public String toString() {
-    return "[" + avroSchemaDifferenceType.toString() + "] " +
-        ", SchemaALocation: " + ((schemaALocation != null) ? schemaALocation.toString() : "null") +
-        ", SchemaBLocation: " + ((schemaBLocation != null) ? schemaBLocation.toString() : "null") +
-        ", DifferenceSummary: " + differenceSummary;
+    return "[" + avroSchemaDifferenceType.toString() + "] " + differenceSummary
+        + "\nSchemaALocation: " + ((schemaALocation != null) ? schemaALocation.toString() : "null")
+        + ". SchemaBLocation: " + ((schemaBLocation != null) ? schemaBLocation.toString() : "null");
   }
 }

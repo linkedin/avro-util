@@ -1,0 +1,27 @@
+{
+  "type": "record",
+  "namespace": "vs14",
+  "name": "UtilTester1",
+  "fields": [
+    {
+      "name": "fieldJsonPropMismatch",
+      "type": "string",
+      "specialAnnotation": "myAnnotation"
+    },
+    {
+      "name": "primitiveJsonPropMismatch",
+      "type": {
+        "type": "float",
+        "specialAnnotation": "myAnnotation"
+      }
+    },
+    {
+      "name": "arrayJsonPropMismatch",
+      "type": {
+        "type": "array",
+        "specialAnnotation": "myAnnotation",
+        "items": "float"
+      }
+    }
+  ]
+}
