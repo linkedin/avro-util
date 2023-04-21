@@ -19,6 +19,8 @@ dependencies {
     implementation "org.apache.logging.log4j:log4j-api:2.17.1"
     implementation "com.beust:jcommander:1.78"
     implementation "org.apache.ant:ant:1.10.7"
+    testImplementation "com.fasterxml.jackson.core:jackson-core:2.10.2"
+    testImplementation "com.fasterxml.jackson.core:jackson-databind:2.10.2"
 
     compileOnly ("org.apache.avro:avro:1.4.1") {
         exclude group: "org.mortbay.jetty"
