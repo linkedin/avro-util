@@ -113,13 +113,14 @@ public class ConfigurableAvroSchemaComparator {
     boolean considerJsonStringProps = config.isCompareStringJsonProps();
     boolean considerJsonNonStringProps = config.isCompareNonStringJsonProps();
     boolean considerJsonProps = considerJsonStringProps || considerJsonNonStringProps;
+    Set<String> jsonPropNamesToIgnore = config.getJsonPropNamesToIgnore();
 
-    if (considerJsonProps && !hasSameObjectProps(a, b, considerJsonStringProps,
-        considerJsonNonStringProps)) {
+    if (considerJsonProps && !hasSameObjectProps(a, b, considerJsonStringProps, considerJsonNonStringProps,
+        jsonPropNamesToIgnore)) {
       AvroSchemaDifference difference = new AvroSchemaDifference(a.getCodeLocation(), b.getCodeLocation(),
           AvroSchemaDifferenceType.JSON_PROPERTY_MISMATCH,
-          String.format("Json properties of %s in schemaA does not match with the json properties of %s in schemaB",
-              a, b));
+          String.format("Json properties of %s in schemaA does not match with the json properties of %s in schemaB", a,
+              b));
       differences.add(difference);
       if (fastFail) {
         return;
@@ -301,6 +302,7 @@ public class ConfigurableAvroSchemaComparator {
     boolean considerJsonNonStringProps = config.isCompareNonStringJsonProps();
     boolean considerAliases = config.isCompareAliases();
     boolean considerJsonProps = considerJsonStringProps || considerJsonNonStringProps;
+    Set<String> jsonPropNamesToIgnore = config.getJsonPropNamesToIgnore();
 
     try {
       if (considerAliases && !hasSameAliases(a, b)) {
@@ -367,11 +369,11 @@ public class ConfigurableAvroSchemaComparator {
           }
         }
         if (considerJsonProps && !hasSameObjectProps(aField, bField, considerJsonStringProps,
-            considerJsonNonStringProps)) {
+            considerJsonNonStringProps, jsonPropNamesToIgnore)) {
           AvroSchemaDifference difference = new AvroSchemaDifference(aField.getCodeLocation(), bField.getCodeLocation(),
-              AvroSchemaDifferenceType.JSON_PROPERTY_MISMATCH,
-              String.format("Json properties of field \"%s\" in schemaA does not match with the json properties in schemaB",
-                  aField.getName(), bField.getName()));
+              AvroSchemaDifferenceType.JSON_PROPERTY_MISMATCH, String.format(
+              "Json properties of field \"%s\" in schemaA does not match with the json properties in schemaB",
+              aField.getName(), bField.getName()));
           differences.add(difference);
           if (fastFail) {
             return;
@@ -425,20 +427,22 @@ public class ConfigurableAvroSchemaComparator {
   }
 
   private static boolean hasSameObjectProps(JsonPropertiesContainer aPropContainer,
-      JsonPropertiesContainer bPropContainer, boolean compareStringProps, boolean compareNonStringProps)
-      throws IOException {
-    if (aPropContainer.hasProperties()) {
-      Map<String, JsonNode> aProperties = getObjectProps(aPropContainer, aPropContainer.propertyNames());
-      Map<String, JsonNode> bProperties = getObjectProps(bPropContainer, bPropContainer.propertyNames());
-      return Jackson2Utils.compareJsonProperties(aProperties, bProperties, compareStringProps,
-          compareNonStringProps);
-    } return !bPropContainer.hasProperties();
+      JsonPropertiesContainer bPropContainer, boolean compareStringProps, boolean compareNonStringProps,
+      Set<String> jsonPropNamesToIgnore) {
+      Map<String, JsonNode> aProperties =
+          getObjectProps(aPropContainer, aPropContainer.propertyNames(), jsonPropNamesToIgnore);
+      Map<String, JsonNode> bProperties =
+          getObjectProps(bPropContainer, bPropContainer.propertyNames(), jsonPropNamesToIgnore);
+      return Jackson2Utils.compareJsonProperties(aProperties, bProperties, compareStringProps, compareNonStringProps);
   }
 
   private static Map<String, JsonNode> getObjectProps(JsonPropertiesContainer jsonPropertiesContainer,
-      Set<String> propNames) throws IOException {
+      Set<String> propNames, Set<String> jsonPropNamesToIgnore) {
     Map<String, JsonNode> propMap = new HashMap<>(propNames.size());
     for (String propName : propNames) {
+      if (jsonPropNamesToIgnore.contains(propName)) {
+        continue;
+      }
       propMap.put(propName,
           Jackson2Utils.toJsonNode(jsonPropertiesContainer.getPropertyAsJsonLiteral(propName), false));
     }
