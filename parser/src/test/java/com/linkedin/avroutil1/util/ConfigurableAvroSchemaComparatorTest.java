@@ -14,7 +14,9 @@ import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
 import com.linkedin.avroutil1.parser.avsc.AvscParser;
 import com.linkedin.avroutil1.testcommon.TestUtil;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -73,7 +75,7 @@ public class ConfigurableAvroSchemaComparatorTest {
     List<String> differences =
         ConfigurableAvroSchemaComparator.findDifference(schema1, schema2, SchemaComparisonConfiguration.STRICT)
             .stream()
-            .map(diff -> diff.toString())
+            .map(AvroSchemaDifference::toString)
             .collect(Collectors.toList());
     Assert.assertEquals(differences.size(), 6);
     Assert.assertTrue(differences.contains(
@@ -94,5 +96,17 @@ public class ConfigurableAvroSchemaComparatorTest {
     Assert.assertTrue(differences.contains(
         "[JSON_PROPERTY_MISMATCH] Json properties of fixed vs14.FixedJsonPropMismatch in schemaA does not match with the json properties of fixed vs14.FixedJsonPropMismatch in schemaB\n"
             + "SchemaALocation: lines 35-39. SchemaBLocation: lines 41-46"));
+  }
+
+  @Test
+  public void testJsonPropsWithIgnorePropsByName() throws IOException {
+    // test that json props are compared correctly in fields
+    AvroRecordSchema schema1 = (AvroRecordSchema) validateAndGetAvroRecordSchema("schemas/TestJsonPropsInFields1.avsc");
+    AvroRecordSchema schema2 = (AvroRecordSchema) validateAndGetAvroRecordSchema("schemas/TestJsonPropsInFields2.avsc");
+    Set<String> jsonPropNamesToIgnore = new HashSet<>();
+    jsonPropNamesToIgnore.add("specialAnnotation");
+    List<AvroSchemaDifference> differences = ConfigurableAvroSchemaComparator.findDifference(schema1, schema2,
+            SchemaComparisonConfiguration.STRICT.jsonPropNamesToIgnore(jsonPropNamesToIgnore));
+    Assert.assertEquals(differences.size(), 0);
   }
 }
