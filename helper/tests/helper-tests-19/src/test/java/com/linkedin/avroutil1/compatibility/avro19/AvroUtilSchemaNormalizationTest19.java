@@ -712,26 +712,24 @@ public class AvroUtilSchemaNormalizationTest19 {
        super(prop_name);
     }
 
-    private void writeProp(String propName, Object prop, Jackson2JsonGeneratorWrapper gen){
+    private void writeProp(String propName, Object prop, Jackson2JsonGeneratorWrapper gen) {
       JsonGenerator delegate = gen.getDelegate();
       try {
         delegate.writeObjectField(propName, JacksonUtils.toJsonNode(prop));
       } catch (IOException e) {
         e.printStackTrace();
       }
-
     }
 
     @Override
-    public String execute(Schema schema, JsonGeneratorWrapper gen) {
+    public void execute(Schema schema, JsonGeneratorWrapper gen) {
       if (schema.hasProps()) {
         String prop = schema.getProp(PROP_NAME);
-        if(prop == null) {
-          return null;
+        if (prop == null) {
+          return;
         }
         writeProp(PROP_NAME, prop, (Jackson2JsonGeneratorWrapper) gen);
       }
-      return PROP_NAME;
     }
   }
 
@@ -751,15 +749,14 @@ public class AvroUtilSchemaNormalizationTest19 {
     }
 
     @Override
-    public String execute(Schema.Field field, JsonGeneratorWrapper gen) {
+    public void execute(Schema.Field field, JsonGeneratorWrapper gen) {
       if (field.hasProps()) {
         Object prop = field.getObjectProp(PROP_NAME);
-        if(prop == null) {
-          return null;
+        if (prop == null) {
+          return;
         }
         writeProp(PROP_NAME, prop, (Jackson2JsonGeneratorWrapper) gen);
       }
-      return PROP_NAME;
     }
   }
 

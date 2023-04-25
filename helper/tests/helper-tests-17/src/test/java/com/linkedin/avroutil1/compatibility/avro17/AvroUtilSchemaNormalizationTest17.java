@@ -733,13 +733,12 @@ public class AvroUtilSchemaNormalizationTest17 {
     }
 
     @Override
-    public String execute(Schema schema, JsonGeneratorWrapper gen) {
+    public void execute(Schema schema, JsonGeneratorWrapper gen) {
       String prop = schema.getProp(PROP_NAME);
       if (prop == null) {
-        return null;
+        return;
       }
       writeProp(PROP_NAME, prop, (Jackson1JsonGeneratorWrapper) gen);
-      return PROP_NAME;
     }
   }
 
@@ -759,13 +758,12 @@ public class AvroUtilSchemaNormalizationTest17 {
     }
 
     @Override
-    public String execute(Schema.Field field, JsonGeneratorWrapper gen) {
+    public void execute(Schema.Field field, JsonGeneratorWrapper gen) {
       Object prop = field.getJsonProp(PROP_NAME);
       if (prop == null) {
-        return null;
+        return;
       }
       writeProp(PROP_NAME, prop, (Jackson1JsonGeneratorWrapper) gen);
-      return PROP_NAME;
     }
   }
 

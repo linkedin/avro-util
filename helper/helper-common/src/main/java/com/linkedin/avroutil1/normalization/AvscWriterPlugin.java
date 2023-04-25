@@ -22,29 +22,22 @@ public abstract class AvscWriterPlugin<G extends JsonGeneratorWrapper<?>> {
     PROP_NAME = prop_name;
   }
 
-  enum AvscWriterPluginLevel {
-    SCHEMA,
-    FIELD
-  }
-
   /**
-   * returns the handled JSON property name
+   * operate on the schema normalizing any json properties as needed
    * @param schema
    * @param gen
    * @return
    */
-  public String execute(Schema schema, G gen) {
-    return null;
+  public void execute(Schema schema, G gen) {
   }
 
   /**
-   * returns the handled JSON property name for Schema.Field
+   * operate on the field normalizing any json properties as needed
    * @param field
    * @param gen
    * @return
    */
-  public String execute(Schema.Field field, G gen) {
-    return null;
+  public void execute(Schema.Field field, G gen) {
   }
 
   public String getPropName() {
