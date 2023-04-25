@@ -7,6 +7,7 @@
 package com.linkedin.avroutil1.normalization;
 
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelperCommon;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
 import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
 import com.linkedin.avroutil1.compatibility.AvscWriter;
@@ -44,7 +45,7 @@ public class AvroUtilSchemaNormalization {
    * @return parsing canonical form of the schema
    */
   public static String getCanonicalForm(Schema schema, AvscGenerationConfig config, List<AvscWriterPlugin> schemaPlugins) {
-    if (AvroCompatibilityHelper.getRuntimeAvroCompilerVersion().laterThan(AvroVersion.AVRO_1_6)) {
+    if (AvroCompatibilityHelperCommon.getRuntimeAvroVersion().laterThan(AvroVersion.AVRO_1_6)) {
       AvscWriter writer = AvroCompatibilityHelper.getAvscWriter(config, schemaPlugins);
       return writer.toAvsc(schema);
     }
