@@ -132,7 +132,26 @@ public class AvroUtilCodeGenOp implements Operation {
         }
       }
     }
-    // TODO: check and throw if schemas defined in the filesystem (parsedFiles) have duplicates on the classpath.
+    // check and throw if schemas defined in the filesystem (parsedFiles) are not equal if also defined on the classpath.
+    if (cpLookup != null) {
+      for (AvscParseResult parsedFile : parsedFiles) {
+        for (Map.Entry<String, AvroNamedSchema> entrySet : parsedFile.getDefinedNamedSchemas().entrySet()) {
+          AvroNamedSchema schema = entrySet.getValue();
+          String fullName = entrySet.getKey();
+          Schema cpSchema = cpLookup.getByName(fullName);
+          if (cpSchema != null) {
+            // check if the schema on classpath is the same as the one we are trying to generate
+            AvroSchema avroSchemaFromClasspath = (new AvscParser()).parse(cpSchema.toString()).getTopLevelSchema();
+            boolean areEqual = ConfigurableAvroSchemaComparator.equals(avroSchemaFromClasspath, schema,
+                SchemaComparisonConfiguration.STRICT);
+            if (!areEqual) {
+              throw new IllegalStateException("Schema with name " + fullName
+                  + " is defined in the filesystem and on the classpath, but the two schemas are not equal.");
+            }
+          }
+        }
+      }
+    }
 
     //resolve any references across files that are part of this op (anything left would be external)
     context.resolveReferences();
@@ -336,14 +355,7 @@ public class AvroUtilCodeGenOp implements Operation {
       return false;
     }
 
-    Schema classpathSchema = cpLookup.getByName(schema.getFullName());
-    if (classpathSchema != null) {
-      // check if the schema on classpath is the same as the one we are trying to generate
-      AvroSchema avroSchemaFromClasspath = (new AvscParser()).parse(classpathSchema.toString()).getTopLevelSchema();
-      return ConfigurableAvroSchemaComparator.equals(avroSchemaFromClasspath, schema,
-          SchemaComparisonConfiguration.STRICT);
-    }
-    return false;
+    return cpLookup.getByName(schema.getFullName()) != null;
   }
 
   private void writeJavaFilesToDisk(Collection<JavaFileObject> javaClassFiles, File outputFolder) {

@@ -173,6 +173,29 @@ public class SchemaBuilderTest {
   }
 
   @Test
+  public void testWhenSameFQCNNotEqualOnClasspathAndInline() throws Exception {
+    File simpleProjectRoot = new File(locateTestProjectsRoot(), "test-classpath-and-inline-schemas-are-not-equal");
+    File inputFolder = new File(simpleProjectRoot, "input");
+    File outputFolder = new File(simpleProjectRoot, "output");
+    if (outputFolder.exists()) { //clear output
+      FileUtils.deleteDirectory(outputFolder);
+    }
+    //run the builder
+    Assert.assertThrows(java.lang.IllegalStateException.class,
+      () -> SchemaBuilder.main(new String[] {
+        "--input", inputFolder.getAbsolutePath(),
+        "--output", outputFolder.getAbsolutePath(),
+        "--generator", CodeGenerator.AVRO_UTIL.name(),
+        "--includeClasspath", Boolean.toString(true),
+        "--skipCodegenIfSchemaOnClasspath", Boolean.toString(true)
+    }));
+  }
+
+
+
+
+
+  @Test
   public void testImportableSchemasUsingOwnCodegen() throws Exception {
     File simpleProjectRoot = new File(locateTestProjectsRoot(), "test-includes-option");
     File inputFolder = new File(simpleProjectRoot, "input");
