@@ -16,6 +16,7 @@ import com.linkedin.avroutil1.codegen.SpecificRecordGenerationConfig;
 import com.linkedin.avroutil1.codegen.SpecificRecordGeneratorUtil;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
+import com.linkedin.avroutil1.compatibility.SchemaComparisonConfiguration;
 import com.linkedin.avroutil1.model.AvroJavaStringRepresentation;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
@@ -25,6 +26,7 @@ import com.linkedin.avroutil1.model.SchemaOrRef;
 import com.linkedin.avroutil1.parser.avsc.AvroParseContext;
 import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
 import com.linkedin.avroutil1.parser.avsc.AvscParser;
+import com.linkedin.avroutil1.util.ConfigurableAvroSchemaComparator;
 import com.linkedin.avroutil1.writer.avsc.AvscSchemaWriter;
 import com.linkedin.avroutil1.writer.avsc.AvscWriterConfig;
 import java.io.File;
@@ -243,6 +245,11 @@ public class AvroUtilCodeGenOp implements Operation {
         try {
 
           if (!alreadyGeneratedSchemas.contains(namedSchema.getFullName())) {
+            // skip codegen if schema is on classpath and config says to skip
+            if (config.shouldSkipCodegenIfSchemaOnClasspath() && doesSchemaExistOnClasspath(namedSchema, cpLookup)) {
+              continue;
+            }
+
             //top level schema
             alreadyGeneratedSchemas.add(namedSchema.getFullName());
             generatedSpecificClasses.add(generator.generateSpecificClass(namedSchema,
@@ -255,6 +262,12 @@ public class AvroUtilCodeGenOp implements Operation {
             internalSchemaList = SpecificRecordGeneratorUtil.getNestedInternalSchemaList(namedSchema);
             for (AvroNamedSchema namedInternalSchema : internalSchemaList) {
               if (!alreadyGeneratedSchemas.contains(namedInternalSchema.getFullName())) {
+                // skip codegen for nested schemas if schema is on classpath and config says to skip
+                if (config.shouldSkipCodegenIfSchemaOnClasspath() && doesSchemaExistOnClasspath(namedInternalSchema,
+                    cpLookup)) {
+                  continue;
+                }
+
                 generatedSpecificClasses.add(generator.generateSpecificClass(namedInternalSchema,
                     SpecificRecordGenerationConfig.getBroadCompatibilitySpecificRecordGenerationConfig(
                         AvroJavaStringRepresentation.fromJson(config.getStringRepresentation().toString()),
@@ -316,6 +329,21 @@ public class AvroUtilCodeGenOp implements Operation {
       parsedFiles.add(fileParseResult);
     }
     return parsedFiles;
+  }
+
+  private boolean doesSchemaExistOnClasspath(AvroNamedSchema schema, ClasspathSchemaSet cpLookup) {
+    if (cpLookup == null) {
+      return false;
+    }
+
+    Schema classpathSchema = cpLookup.getByName(schema.getFullName());
+    if (classpathSchema != null) {
+      // check if the schema on classpath is the same as the one we are trying to generate
+      AvroSchema avroSchemaFromClasspath = (new AvscParser()).parse(classpathSchema.toString()).getTopLevelSchema();
+      return ConfigurableAvroSchemaComparator.equals(avroSchemaFromClasspath, schema,
+          SchemaComparisonConfiguration.STRICT);
+    }
+    return false;
   }
 
   private void writeJavaFilesToDisk(Collection<JavaFileObject> javaClassFiles, File outputFolder) {
