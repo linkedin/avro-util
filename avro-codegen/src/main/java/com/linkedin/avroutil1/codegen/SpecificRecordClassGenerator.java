@@ -50,6 +50,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.StringJoiner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.stream.Collectors;
 import javax.lang.model.element.Modifier;
 import javax.tools.JavaFileObject;
@@ -59,6 +61,7 @@ import javax.tools.JavaFileObject;
  * generates java classes out of avro schemas.
  */
 public class SpecificRecordClassGenerator {
+  private static final Logger LOGGER = LoggerFactory.getLogger(SpecificRecordClassGenerator.class);
 
   private int sizeValCounter = -1;
 
@@ -1159,6 +1162,9 @@ public class SpecificRecordClassGenerator {
               .endControlFlow();
 
           serializedCodeBlock = codeBlockBuilder.build().toString();
+        } else {
+          LOGGER.warn("Unions with Zero types are not recommended and poorly supported. "
+              + "Please consider using a nullable field instead. Field name: " + fieldName);
         }
         break;
       case RECORD:

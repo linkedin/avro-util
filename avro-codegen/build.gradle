@@ -17,6 +17,7 @@ dependencies {
     implementation "com.squareup:javapoet:1.13.0"
     implementation "commons-io:commons-io:2.6"
     implementation "org.apache.logging.log4j:log4j-api:2.17.1"
+    implementation "org.slf4j:slf4j-api:1.7.14"
     implementation "com.beust:jcommander:1.78"
     implementation "org.apache.ant:ant:1.10.7"
     testImplementation "com.fasterxml.jackson.core:jackson-core:2.10.2"
