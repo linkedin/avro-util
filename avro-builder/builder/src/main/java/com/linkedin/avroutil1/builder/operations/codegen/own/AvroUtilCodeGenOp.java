@@ -297,7 +297,7 @@ public class AvroUtilCodeGenOp implements Operation {
             }
           }
         } catch (Exception e) {
-          throw new InternalError("failed to generate class for " + fullname, e);
+          throw new RuntimeException("failed to generate class for " + fullname, e);
         }
       }
       writeJavaFilesToDisk(generatedSpecificClasses, config.getOutputSpecificRecordClassesRoot());
