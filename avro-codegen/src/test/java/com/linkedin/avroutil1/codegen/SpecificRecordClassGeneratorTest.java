@@ -190,6 +190,5 @@ public class SpecificRecordClassGeneratorTest {
     JavaFileObject javaFileObject =
         generator.generateSpecificClass(schema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
     CompilerHelper.assertCompiles(javaFileObject);
-
   }
 }

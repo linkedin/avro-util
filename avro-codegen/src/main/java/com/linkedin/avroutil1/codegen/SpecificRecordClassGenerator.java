@@ -1140,24 +1140,26 @@ public class SpecificRecordClassGenerator {
 
       case UNION:
         int numberOfUnionMembers = ((AvroUnionSchema) fieldSchema).getTypes().size();
-        codeBlockBuilder.beginControlFlow("switch(in.readIndex())");
-        for (int i = 0; i < numberOfUnionMembers; i++) {
+        if (numberOfUnionMembers > 0) {
+          codeBlockBuilder.beginControlFlow("switch(in.readIndex())");
+          for (int i = 0; i < numberOfUnionMembers; i++) {
 
-          SchemaOrRef unionMember = ((AvroUnionSchema) fieldSchema).getTypes().get(i);
-          codeBlockBuilder.addStatement("case $L: ", i);
-          codeBlockBuilder.addStatement(
-              getSerializedCustomDecodeBlock(config, unionMember.getSchema(), unionMember.getSchema().type(), fieldName,
-                  schemaFieldName, arrayOption + ".getTypes().get(" + i + ")" ));
-          if (unionMember.getSchema().type().equals(AvroType.NULL)) {
-            codeBlockBuilder.addStatement("$L = null", fieldName);
+            SchemaOrRef unionMember = ((AvroUnionSchema) fieldSchema).getTypes().get(i);
+            codeBlockBuilder.addStatement("case $L: ", i);
+            codeBlockBuilder.addStatement(
+                getSerializedCustomDecodeBlock(config, unionMember.getSchema(), unionMember.getSchema().type(),
+                    fieldName, schemaFieldName, arrayOption + ".getTypes().get(" + i + ")"));
+            if (unionMember.getSchema().type().equals(AvroType.NULL)) {
+              codeBlockBuilder.addStatement("$L = null", fieldName);
+            }
+            codeBlockBuilder.addStatement("break");
           }
-          codeBlockBuilder.addStatement("break");
-        }
-        codeBlockBuilder.addStatement("default:")
-            .addStatement("throw new $T($S)", IndexOutOfBoundsException.class, "Union IndexOutOfBounds")
-            .endControlFlow();
+          codeBlockBuilder.addStatement("default:")
+              .addStatement("throw new $T($S)", IndexOutOfBoundsException.class, "Union IndexOutOfBounds")
+              .endControlFlow();
 
-        serializedCodeBlock = codeBlockBuilder.build().toString();
+          serializedCodeBlock = codeBlockBuilder.build().toString();
+        }
         break;
       case RECORD:
         TypeName className = SpecificRecordGeneratorUtil.getTypeName(fieldSchema, fieldType, true,
@@ -1322,42 +1324,43 @@ public class SpecificRecordClassGenerator {
         break;
       case UNION:
         int numberOfUnionMembers = ((AvroUnionSchema) fieldSchema).getTypes().size();
+        if (numberOfUnionMembers > 0) {
+          for (int i = 0; i < numberOfUnionMembers; i++) {
+            AvroSchema unionMemberSchema = ((AvroUnionSchema) fieldSchema).getTypes().get(i).getSchema();
+            Class<?> unionMemberType =
+                SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(unionMemberSchema.type(),
+                    config.getDefaultFieldStringRepresentation(), true);
+            TypeName unionMemberTypeName =
+                SpecificRecordGeneratorUtil.getTypeName(unionMemberSchema, unionMemberSchema.type(), false,
+                    config.getDefaultFieldStringRepresentation());
 
-        for (int i = 0; i < numberOfUnionMembers; i++) {
-          AvroSchema unionMemberSchema = ((AvroUnionSchema) fieldSchema).getTypes().get(i).getSchema();
-          Class<?> unionMemberType =
-              SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(unionMemberSchema.type(),
-                  config.getDefaultFieldStringRepresentation(), true);
-          TypeName unionMemberTypeName =
-              SpecificRecordGeneratorUtil.getTypeName(unionMemberSchema, unionMemberSchema.type(), false,
-                  config.getDefaultFieldStringRepresentation());
-
-          if (i == 0) {
-            if (unionMemberSchema.type().equals(AvroType.NULL)) {
-              codeBlockBuilder.beginControlFlow("if ($L == null) ", fieldName);
+            if (i == 0) {
+              if (unionMemberSchema.type().equals(AvroType.NULL)) {
+                codeBlockBuilder.beginControlFlow("if ($L == null) ", fieldName);
+              } else {
+                codeBlockBuilder.beginControlFlow("if ($L instanceof $T) ", fieldName,
+                    unionMemberType != null ? unionMemberType : unionMemberTypeName);
+              }
             } else {
-              codeBlockBuilder.beginControlFlow("if ($L instanceof $T) ", fieldName,
-                  unionMemberType != null ? unionMemberType : unionMemberTypeName);
+              codeBlockBuilder.endControlFlow();
+              if (unionMemberSchema.type().equals(AvroType.NULL)) {
+                codeBlockBuilder.beginControlFlow(" else if ($L == null) ", fieldName);
+              } else {
+                codeBlockBuilder.beginControlFlow(" else if ($L instanceof $T) ", fieldName,
+                    unionMemberType != null ? unionMemberType : unionMemberTypeName);
+              }
             }
-          } else {
-            codeBlockBuilder.endControlFlow();
-            if (unionMemberSchema.type().equals(AvroType.NULL)) {
-              codeBlockBuilder.beginControlFlow(" else if ($L == null) ", fieldName);
-            } else {
-              codeBlockBuilder.beginControlFlow(" else if ($L instanceof $T) ", fieldName,
-                  unionMemberType != null ? unionMemberType : unionMemberTypeName);
-            }
+            codeBlockBuilder.addStatement("out.writeIndex($L)", i)
+                .addStatement(
+                    getSerializedCustomEncodeBlock(config, unionMemberSchema, unionMemberSchema.type(), fieldName));
           }
-          codeBlockBuilder.addStatement("out.writeIndex($L)", i)
-              .addStatement(getSerializedCustomEncodeBlock(config, unionMemberSchema, unionMemberSchema.type(),
-                   fieldName));
-        }
-        codeBlockBuilder.endControlFlow()
-            .beginControlFlow("else")
-            .addStatement("throw new $T($S)", IllegalArgumentException.class, "Value does not match any union member")
-            .endControlFlow();
+          codeBlockBuilder.endControlFlow()
+              .beginControlFlow("else")
+              .addStatement("throw new $T($S)", IllegalArgumentException.class, "Value does not match any union member")
+              .endControlFlow();
 
         serializedCodeBlock = codeBlockBuilder.build().toString();
+        }
         break;
       case RECORD:
         TypeName className = SpecificRecordGeneratorUtil.getTypeName(fieldSchema, fieldType, true,
