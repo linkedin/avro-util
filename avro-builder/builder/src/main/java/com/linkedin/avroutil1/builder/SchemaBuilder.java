@@ -235,7 +235,8 @@ public class SchemaBuilder {
         methodStringRepresentation,
         minAvroVer,
         handleAvro702,
-        handleUtf8EncodingInPutByIndex
+        handleUtf8EncodingInPutByIndex,
+        skipCodegenIfSchemaOnClasspath
     );
 
     opConfig.validateParameters();
