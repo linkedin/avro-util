@@ -9,7 +9,6 @@ package com.linkedin.avroutil1.builder;
 import com.linkedin.avroutil1.builder.operations.codegen.CodeGenerator;
 import java.io.File;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -125,8 +124,8 @@ public class SchemaBuilderTest {
   }
 
   @Test
-  public void testWithImportsOnBothClasspathAndInFile() throws Exception {
-    File simpleProjectRoot = new File(locateTestProjectsRoot(), "classpath-dup-project");
+  public void testWithImportsFromClasspath_skipLocallyDefined() throws Exception {
+    File simpleProjectRoot = new File(locateTestProjectsRoot(), "classpath-project-with-skip");
     File inputFolder = new File(simpleProjectRoot, "input");
     File outputFolder = new File(simpleProjectRoot, "output");
     if (outputFolder.exists()) { //clear output
@@ -137,17 +136,38 @@ public class SchemaBuilderTest {
         "--input", inputFolder.getAbsolutePath(),
         "--output", outputFolder.getAbsolutePath(),
         "--generator", CodeGenerator.AVRO_UTIL.name(),
-        "--includeClasspath", Boolean.toString(true)
+        "--includeClasspath", Boolean.toString(true),
+        "--skipCodegenIfSchemaOnClasspath", Boolean.toString(true)
     });
     //see output was generated
     List<Path> javaFiles = Files.find(outputFolder.toPath(), 5,
-        (path, basicFileAttributes) -> path.getFileName().toString().endsWith("SchemaWithClasspathImport.java")
+        (path, basicFileAttributes) -> path.getFileName().toString().endsWith(".java")
     ).collect(Collectors.toList());
     Assert.assertEquals(javaFiles.size(), 1);
-    String fileContents = new String(Files.readAllBytes(javaFiles.get(0)), StandardCharsets.UTF_8);
-    // This field name exists in the schema that's in the filesystem and does not exist in the schema on the classpath.
-    Assert.assertTrue(fileContents.contains("lookAtMe"));
   }
+
+  @Test
+  public void testWhenSameFQCNNotEqualOnClasspathAndInline() throws Exception {
+    File simpleProjectRoot = new File(locateTestProjectsRoot(), "test-classpath-and-inline-schemas-are-not-equal");
+    File inputFolder = new File(simpleProjectRoot, "input");
+    File outputFolder = new File(simpleProjectRoot, "output");
+    if (outputFolder.exists()) { //clear output
+      FileUtils.deleteDirectory(outputFolder);
+    }
+    //run the builder
+    Assert.assertThrows(java.lang.IllegalStateException.class,
+      () -> SchemaBuilder.main(new String[] {
+        "--input", inputFolder.getAbsolutePath(),
+        "--output", outputFolder.getAbsolutePath(),
+        "--generator", CodeGenerator.AVRO_UTIL.name(),
+        "--includeClasspath", Boolean.toString(true),
+        "--skipCodegenIfSchemaOnClasspath", Boolean.toString(true)
+    }));
+  }
+
+
+
+
 
   @Test
   public void testImportableSchemasUsingOwnCodegen() throws Exception {

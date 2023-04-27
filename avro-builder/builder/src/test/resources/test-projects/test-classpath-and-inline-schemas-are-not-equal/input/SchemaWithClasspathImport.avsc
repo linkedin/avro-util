@@ -1,0 +1,23 @@
+{
+  "type": "record",
+  "name": "SchemaWithClasspathImport",
+  "namespace": "com.linkedin.test",
+  "doc": "this test has the same FQCN on the classpath and defined locally with different schemas. it should fail to build",
+  "fields": [
+    {
+      "name": "date",
+      "type": {
+        "type": "record",
+        "name": "SimpleRecord",
+        "namespace": "build.generated",
+        "fields": [
+          {
+            "name": "fieldIsDifferentThanTheFieldDefinedOnTheClasspath",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ]
+}
+

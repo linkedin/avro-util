@@ -45,6 +45,7 @@ public class CodeGenOpConfig {
   AvroVersion minAvroVersion;
   boolean avro702Handling;
   boolean utf8EncodingPutByIndex;
+  boolean skipCodegenIfSchemaOnClasspath;
 
   public CodeGenOpConfig(
       List<File> inputRoots,
@@ -130,6 +131,37 @@ public class CodeGenOpConfig {
     this.avro702Handling = avro702Handling;
     this.utf8EncodingPutByIndex = handleUtf8EncodingInPutByIndex;
   }
+
+  public CodeGenOpConfig(List<File> inputRoots,
+      List<File> nonImportableSourceRoots,
+      boolean includeClasspath,
+      File outputSpecificRecordClassesRoot,
+      File outputExpandedSchemasRoot,
+      CodeGenerator generatorType,
+      DuplicateSchemaBehaviour dupBehaviour,
+      List<String> duplicateSchemasToIgnore,
+      StringRepresentation stringRepresentation,
+      StringRepresentation methodStringRepresentation,
+      AvroVersion minAvroVersion,
+      boolean avro702Handling,
+      boolean handleUtf8EncodingInPutByIndex,
+      boolean skipCodegenIfSchemaOnClasspath) {
+    this.inputRoots = inputRoots;
+    this.nonImportableSourceRoots = nonImportableSourceRoots;
+    this.includeClasspath = includeClasspath;
+    this.outputSpecificRecordClassesRoot = outputSpecificRecordClassesRoot;
+    this.outputExpandedSchemasRoot = outputExpandedSchemasRoot;
+    this.generatorType = generatorType;
+    this.dupBehaviour = dupBehaviour;
+    this.duplicateSchemasToIgnore = duplicateSchemasToIgnore;
+    this.stringRepresentation = stringRepresentation;
+    this.methodStringRepresentation = methodStringRepresentation;
+    this.minAvroVersion = minAvroVersion;
+    this.avro702Handling = avro702Handling;
+    this.utf8EncodingPutByIndex = handleUtf8EncodingInPutByIndex;
+    this.skipCodegenIfSchemaOnClasspath = skipCodegenIfSchemaOnClasspath;
+  }
+
 
   /**
    * validates all input parameters (set at construction time)
@@ -232,6 +264,10 @@ public class CodeGenOpConfig {
   }
   public boolean isUtf8EncodingPutByIndexEnabled() {
     return utf8EncodingPutByIndex;
+  }
+
+  public boolean shouldSkipCodegenIfSchemaOnClasspath() {
+    return skipCodegenIfSchemaOnClasspath;
   }
 
   private void validateInput(Collection<File> files, String desc) {

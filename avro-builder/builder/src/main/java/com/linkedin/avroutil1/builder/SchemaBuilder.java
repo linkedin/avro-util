@@ -93,6 +93,13 @@ public class SchemaBuilder {
         .defaultsTo("true")
         .describedAs("true/false");
 
+    OptionSpec<String> skipCodegenIfSchemaOnClasspathOpt = parser.accepts("skipCodegenIfSchemaOnClasspath",
+            "skips codegen for a schema if it is already present in the classpath. Only applicable for AVRO_UTIL generator."
+                + " Use with care! Make sure your classpath only contains the schemas you want to use.")
+        .withOptionalArg()
+        .defaultsTo("false")
+        .describedAs("true/false");
+
     //allow plugins to add CLI options
     for (BuilderPlugin plugin : plugins) {
       plugin.customizeCLI(parser);
@@ -202,6 +209,12 @@ public class SchemaBuilder {
       handleUtf8EncodingInPutByIndex = Boolean.TRUE.equals(Boolean.parseBoolean(value));
     }
 
+    boolean skipCodegenIfSchemaOnClasspath = true;
+    if (options.has(skipCodegenIfSchemaOnClasspathOpt)) {
+      String value = options.valueOf(enableUtf8EncodingInPutByIndex);
+      skipCodegenIfSchemaOnClasspath = Boolean.TRUE.equals(Boolean.parseBoolean(value));
+    }
+
     //allow plugins to parse and validate their own added options
     for (BuilderPlugin plugin : plugins) {
       plugin.parseAndValidateOptions(options);
@@ -222,7 +235,8 @@ public class SchemaBuilder {
         methodStringRepresentation,
         minAvroVer,
         handleAvro702,
-        handleUtf8EncodingInPutByIndex
+        handleUtf8EncodingInPutByIndex,
+        skipCodegenIfSchemaOnClasspath
     );
 
     opConfig.validateParameters();

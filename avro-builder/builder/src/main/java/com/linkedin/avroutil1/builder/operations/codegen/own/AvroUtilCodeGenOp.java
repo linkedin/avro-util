@@ -16,6 +16,7 @@ import com.linkedin.avroutil1.codegen.SpecificRecordGenerationConfig;
 import com.linkedin.avroutil1.codegen.SpecificRecordGeneratorUtil;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
+import com.linkedin.avroutil1.compatibility.SchemaComparisonConfiguration;
 import com.linkedin.avroutil1.model.AvroJavaStringRepresentation;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
@@ -25,6 +26,7 @@ import com.linkedin.avroutil1.model.SchemaOrRef;
 import com.linkedin.avroutil1.parser.avsc.AvroParseContext;
 import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
 import com.linkedin.avroutil1.parser.avsc.AvscParser;
+import com.linkedin.avroutil1.util.ConfigurableAvroSchemaComparator;
 import com.linkedin.avroutil1.writer.avsc.AvscSchemaWriter;
 import com.linkedin.avroutil1.writer.avsc.AvscWriterConfig;
 import java.io.File;
@@ -130,7 +132,26 @@ public class AvroUtilCodeGenOp implements Operation {
         }
       }
     }
-    // TODO: check and throw if schemas defined in the filesystem (parsedFiles) have duplicates on the classpath.
+    // check and throw if schemas defined in the filesystem (parsedFiles) are not equal if also defined on the classpath.
+    if (cpLookup != null) {
+      for (AvscParseResult parsedFile : parsedFiles) {
+        for (Map.Entry<String, AvroNamedSchema> entrySet : parsedFile.getDefinedNamedSchemas().entrySet()) {
+          AvroNamedSchema schema = entrySet.getValue();
+          String fullName = entrySet.getKey();
+          Schema cpSchema = cpLookup.getByName(fullName);
+          if (cpSchema != null) {
+            // check if the schema on classpath is the same as the one we are trying to generate
+            AvroSchema avroSchemaFromClasspath = (new AvscParser()).parse(cpSchema.toString()).getTopLevelSchema();
+            boolean areEqual = ConfigurableAvroSchemaComparator.equals(avroSchemaFromClasspath, schema,
+                SchemaComparisonConfiguration.STRICT);
+            if (!areEqual) {
+              throw new IllegalStateException("Schema with name " + fullName
+                  + " is defined in the filesystem and on the classpath, but the two schemas are not equal.");
+            }
+          }
+        }
+      }
+    }
 
     //resolve any references across files that are part of this op (anything left would be external)
     context.resolveReferences();
@@ -243,6 +264,11 @@ public class AvroUtilCodeGenOp implements Operation {
         try {
 
           if (!alreadyGeneratedSchemas.contains(namedSchema.getFullName())) {
+            // skip codegen if schema is on classpath and config says to skip
+            if (config.shouldSkipCodegenIfSchemaOnClasspath() && doesSchemaExistOnClasspath(namedSchema, cpLookup)) {
+              continue;
+            }
+
             //top level schema
             alreadyGeneratedSchemas.add(namedSchema.getFullName());
             generatedSpecificClasses.add(generator.generateSpecificClass(namedSchema,
@@ -255,6 +281,12 @@ public class AvroUtilCodeGenOp implements Operation {
             internalSchemaList = SpecificRecordGeneratorUtil.getNestedInternalSchemaList(namedSchema);
             for (AvroNamedSchema namedInternalSchema : internalSchemaList) {
               if (!alreadyGeneratedSchemas.contains(namedInternalSchema.getFullName())) {
+                // skip codegen for nested schemas if schema is on classpath and config says to skip
+                if (config.shouldSkipCodegenIfSchemaOnClasspath() && doesSchemaExistOnClasspath(namedInternalSchema,
+                    cpLookup)) {
+                  continue;
+                }
+
                 generatedSpecificClasses.add(generator.generateSpecificClass(namedInternalSchema,
                     SpecificRecordGenerationConfig.getBroadCompatibilitySpecificRecordGenerationConfig(
                         AvroJavaStringRepresentation.fromJson(config.getStringRepresentation().toString()),
@@ -316,6 +348,14 @@ public class AvroUtilCodeGenOp implements Operation {
       parsedFiles.add(fileParseResult);
     }
     return parsedFiles;
+  }
+
+  private boolean doesSchemaExistOnClasspath(AvroNamedSchema schema, ClasspathSchemaSet cpLookup) {
+    if (cpLookup == null) {
+      return false;
+    }
+
+    return cpLookup.getByName(schema.getFullName()) != null;
   }
 
   private void writeJavaFilesToDisk(Collection<JavaFileObject> javaClassFiles, File outputFolder) {
