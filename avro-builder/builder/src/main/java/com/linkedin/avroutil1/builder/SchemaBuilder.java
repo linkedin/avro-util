@@ -209,9 +209,9 @@ public class SchemaBuilder {
       handleUtf8EncodingInPutByIndex = Boolean.TRUE.equals(Boolean.parseBoolean(value));
     }
 
-    boolean skipCodegenIfSchemaOnClasspath = true;
+    boolean skipCodegenIfSchemaOnClasspath = false;
     if (options.has(skipCodegenIfSchemaOnClasspathOpt)) {
-      String value = options.valueOf(enableUtf8EncodingInPutByIndex);
+      String value = options.valueOf(skipCodegenIfSchemaOnClasspathOpt);
       skipCodegenIfSchemaOnClasspath = Boolean.TRUE.equals(Boolean.parseBoolean(value));
     }
 
