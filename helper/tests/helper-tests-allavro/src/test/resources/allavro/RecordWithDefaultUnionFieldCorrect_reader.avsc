@@ -19,8 +19,7 @@
         ]
       },
       "default": {
-        "f1": "default",
-        "f2": "\u0000"
+        "f1": "default"
       }
     }
   ]

@@ -102,7 +102,7 @@ public class AvroWireFormatCompatibilityTest {
   }
 
   @Test
-  public void testDefaultRecordsUnionFieldMustBeFirstElement() throws Exception {
+  public void demonstrateDefaultRecordsUnionFieldMustBeFirstElement() throws Exception {
     Schema writerSchema =
         AvroCompatibilityHelper.parse(TestUtil.load("allavro/RecordWithDefaultUnionField_writer.avsc"));
     GenericData.Record record = new GenericData.Record(writerSchema);
