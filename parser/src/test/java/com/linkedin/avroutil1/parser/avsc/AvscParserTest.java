@@ -73,6 +73,16 @@ public class AvscParserTest {
     }
 
     @Test
+    public void testRecordDefaults() throws Exception {
+        String avsc = TestUtil.load("schemas/RecordDefault.avsc");
+//        AvscParser parser = new AvscParser();
+//        AvscParseResult result = parser.parse(avsc);
+//        Schema schema = new Schema.Parser().parse(avsc);
+//        Assert.assertNull(result.getParseError());
+//        Assert.assertTrue(result.getParseError() instanceof AvroSyntaxException);
+    }
+
+    @Test
     public void testParseInvalidDoc() throws Exception {
         String avsc = TestUtil.load("schemas/TestInvalidDocRecord.avsc");
         AvscParser parser = new AvscParser();
