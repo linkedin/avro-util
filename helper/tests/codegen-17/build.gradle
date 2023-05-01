@@ -124,6 +124,7 @@ jar {
   //resource generation output. has to be explicitly included in the jar because
   //"processResources" ran before this was generated
   from "$buildDir/generated/resources"
+  duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
 //TODO - figure out why these must be done manually
