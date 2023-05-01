@@ -9,7 +9,9 @@ package com.linkedin.avroutil1.compatibility;
 import com.linkedin.avroutil1.testcommon.TestUtil;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
+import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.Decoder;
@@ -97,5 +99,40 @@ public class AvroWireFormatCompatibilityTest {
     Assert.assertEquals(deserialized2.get(schema.getField("longField").pos()), 2L);
     Assert.assertEquals(deserialized2.get(schema.getField("floatField").pos()), 3.0f);
     Assert.assertEquals(deserialized2.get(schema.getField("doubleField").pos()), 4.0d);
+  }
+
+  @Test
+  public void testDefaultRecordsUnionFieldMustBeFirstElement() throws Exception {
+    Schema writerSchema =
+        AvroCompatibilityHelper.parse(TestUtil.load("allavro/RecordWithDefaultUnionField_writer.avsc"));
+    GenericData.Record record = new GenericData.Record(writerSchema);
+    byte[] bytes = AvroCodecUtil.serializeBinary(record);
+
+    // uses 1st field (correct)
+    Schema correctReaderSchema =
+        AvroCompatibilityHelper.parse(TestUtil.load("allavro/RecordWithDefaultUnionFieldCorrect_reader.avsc"));
+    GenericRecord deserializedGenericRecord =
+        AvroCodecUtil.deserializeAsGeneric(bytes, writerSchema, correctReaderSchema);
+    Assert.assertEquals(deserializedGenericRecord.get("mainField").toString(), "{\"f1\": \"default\"}");
+
+    // tries to use 2nd field as default (object notation)
+    Schema incorrectReaderSchemaUsingObjectNotation = AvroCompatibilityHelper.parse(
+        TestUtil.load("allavro/RecordWithDefaultUnionFieldIncorrectObjectNotation_reader.avsc"));
+    try {
+      AvroCodecUtil.deserializeAsGeneric(bytes, writerSchema, incorrectReaderSchemaUsingObjectNotation);
+      Assert.fail("Expected exception");
+    } catch (Exception e) {
+      Assert.assertTrue(e.getClass().getName().contains("AvroTypeException"));
+    }
+
+    // tries to use 2nd field as default (flat notation)
+    Schema incorrectReaderSchemaUsingFlatNotation = AvroCompatibilityHelper.parse(
+        TestUtil.load("allavro/RecordWithDefaultUnionFieldIncorrectFlatNotation_reader.avsc"));
+    try {
+      AvroCodecUtil.deserializeAsGeneric(bytes, writerSchema, incorrectReaderSchemaUsingFlatNotation);
+      Assert.fail("Expected exception");
+    } catch (Exception e) {
+      Assert.assertTrue(e.getClass().getName().contains("AvroTypeException"));
+    }
   }
 }

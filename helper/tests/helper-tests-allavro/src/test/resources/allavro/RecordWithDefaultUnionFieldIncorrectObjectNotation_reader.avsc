@@ -1,0 +1,28 @@
+{
+  "type": "record",
+  "name": "SchemaWithRecordDefault",
+  "fields": [
+    {
+      "name": "mainField",
+      "type": {
+        "type": "record",
+        "name": "InnerRecord",
+        "fields": [
+          {
+            "name": "f1",
+            "type": [
+              "string",
+              "int",
+              "null"
+            ]
+          }
+        ]
+      },
+      "default": {
+        "f1": {
+          "int": 1
+        }
+      }
+    }
+  ]
+}
