@@ -857,44 +857,12 @@ public class AvscParser {
                         AvroUnionSchema unionSchema = (AvroUnionSchema) fieldSchema;
                         //union values are encoded as a json object {"<branch>" : <value>}
                         //except for null
-                        JsonValue.ValueType valueType = fieldLiteral.getValueType();
-                        int branchNumber;
-                        switch (valueType) {
-                            case NULL:
-                                branchNumber = unionSchema.resolve(AvroType.NULL);
-                                literal = fieldLiteral;
-                                break;
-                            case OBJECT:
-                                Set<Map.Entry<String, JsonValue>> unionObjectProps = ((JsonObjectExt) fieldLiteral).entrySet();
-                                if (unionObjectProps.size() != 1) {
-                                    //TODO - provide more details (union object expected to only have a single prop)
-                                    issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
-                                        literalNode.toString(), avroType, fieldName);
-                                    return new LiteralOrIssue(issue);
-                                }
-                                Map.Entry<String, JsonValue> discriminatorEntry = unionObjectProps.iterator().next();
-                                String discriminator = discriminatorEntry.getKey();
-                                literal = (JsonValueExt) discriminatorEntry.getValue();
-                                AvroType literalType = AvroType.fromTypeName(discriminator);
-                                if (literalType != null) {
-                                    branchNumber = unionSchema.resolve(literalType);
-                                } else {
-                                    //assume fullname then
-                                    branchNumber = unionSchema.resolve(discriminator);
-                                }
-                                break;
-                            default:
-                                issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
-                                    literalNode.toString(), avroType, fieldName);
-                                return new LiteralOrIssue(issue);
-
-                        }
-                        if (branchNumber < 0) {
+                        if (unionSchema.getTypes().size() == 0) {
                             issue = AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode),
                                 literalNode.toString(), avroType, fieldName);
                             return new LiteralOrIssue(issue);
                         }
-                        literalSchema = unionSchema.getTypes().get(branchNumber).getSchema();
+                        literalSchema = unionSchema.getTypes().get(0).getSchema();
                     }
                     LiteralOrIssue fieldValueOrIssue = parseLiteral(literal, literalSchema, fieldName, context);
                     if (fieldValueOrIssue.getIssue() != null) {

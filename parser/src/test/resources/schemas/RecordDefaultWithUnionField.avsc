@@ -1,0 +1,45 @@
+{
+  "type": "record",
+  "name": "SchemaWithRecordDefault",
+  "fields": [
+    {
+      "name": "mainField",
+      "type": {
+        "type": "record",
+        "name": "InnerRecord",
+        "fields": [
+          {
+            "name": "f1",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          {
+            "name": "f2",
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          {
+            "name": "f3",
+            "type": {
+              "type": "enum",
+              "name": "MyEnum",
+              "symbols": [
+                "Enum1",
+                "Enum2"
+              ]
+            }
+          }
+        ]
+      },
+      "default": {
+        "f1": "someString",
+        "f2": null,
+        "f3": "Enum1"
+      }
+    }
+  ]
+}

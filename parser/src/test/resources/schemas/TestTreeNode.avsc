@@ -13,8 +13,9 @@
         "null"
       ],
       "default": [
-        {"children" : {"array": []}},
-        {"children" : null}
+        {
+          "children": []
+        }
       ]
     }
   ]
