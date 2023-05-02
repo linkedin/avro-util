@@ -32,23 +32,13 @@
                 "Enum2"
               ]
             }
-          },
-          {
-            "name": "f4",
-            "type": [
-              "null",
-              "string"
-            ]
           }
         ]
       },
       "default": {
         "f1": "someString",
         "f2": null,
-        "f3": "Enum1",
-        "f4": {
-          "string": "someString"
-        }
+        "f3": "Enum1"
       }
     }
   ]

@@ -17,6 +17,7 @@ import com.linkedin.avroutil1.model.AvroLogicalType;
 import com.linkedin.avroutil1.model.AvroMapLiteral;
 import com.linkedin.avroutil1.model.AvroMapSchema;
 import com.linkedin.avroutil1.model.AvroPrimitiveSchema;
+import com.linkedin.avroutil1.model.AvroRecordLiteral;
 import com.linkedin.avroutil1.model.AvroRecordSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
 import com.linkedin.avroutil1.model.AvroSchemaField;
@@ -74,14 +75,14 @@ public class AvscParserTest {
 
     @Test
     public void testRecordDefaults() throws Exception {
-        String avsc = TestUtil.load("schemas/RecordDefault.avsc");
-//        AvscParser parser = new AvscParser();
-//        AvscParseResult result = parser.parse(avsc);
-//        Schema schema = new Schema.Parser().parse(avsc);
-//        Assert.assertNull(result.getParseError());
-//        Assert.assertTrue(result.getParseError() instanceof AvroSyntaxException);
+        String avsc = TestUtil.load("schemas/RecordDefaultWithUnionField.avsc");
+        AvscParser parser = new AvscParser();
+        AvscParseResult result = parser.parse(avsc);
+        Assert.assertNull(result.getParseError());
+        AvroRecordLiteral defaultFieldValue =
+            (AvroRecordLiteral) ((AvroRecordSchema) result.getTopLevelSchema()).getFields().get(0).getDefaultValue();
+        Assert.assertEquals(defaultFieldValue.getValue().toString(), "{f2=null, f3=Enum1, f1=someString}");
     }
-
     @Test
     public void testParseInvalidDoc() throws Exception {
         String avsc = TestUtil.load("schemas/TestInvalidDocRecord.avsc");
