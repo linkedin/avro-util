@@ -65,7 +65,8 @@ public class AvroWireFormatCompatibilityTest {
     try {
       IndexedRecord deserialized2 = reader.read(null, wrongVanillaDecoder);
       //succeeds under 1.7+
-      Assert.assertTrue(avroVersion.laterThan(AvroVersion.AVRO_1_6), "parsing of wrong json numeral literals expected to fail under " + avroVersion);
+      Assert.assertTrue(avroVersion.laterThan(AvroVersion.AVRO_1_6),
+          "parsing of wrong json numeral literals expected to fail under " + avroVersion);
 
       Assert.assertEquals(deserialized2.get(schema.getField("intField").pos()), 1);
       Assert.assertEquals(deserialized2.get(schema.getField("longField").pos()), 2L);
@@ -73,7 +74,8 @@ public class AvroWireFormatCompatibilityTest {
       Assert.assertEquals(deserialized2.get(schema.getField("doubleField").pos()), 4.0d);
     } catch (AvroTypeException expected) {
       //fails under < 1.7
-      Assert.assertTrue(avroVersion.earlierThan(AvroVersion.AVRO_1_7), "parsing of wrong json numeral literals expected to succeed under " + avroVersion);
+      Assert.assertTrue(avroVersion.earlierThan(AvroVersion.AVRO_1_7),
+          "parsing of wrong json numeral literals expected to succeed under " + avroVersion);
     }
   }
 
@@ -134,5 +136,22 @@ public class AvroWireFormatCompatibilityTest {
     } catch (Exception e) {
       Assert.assertTrue(e.getClass().getName().contains("AvroTypeException"));
     }
+  }
+
+  @Test
+  public void demonstrateTypeWideningWithinUnionField() throws Exception {
+    // write using record with union[null, int] field
+    Schema writerSchema =
+        AvroCompatibilityHelper.parse(TestUtil.load("allavro/WidenIntToLongInUnionField_writer.avsc"));
+    GenericData.Record record = new GenericData.Record(writerSchema);
+    record.put("f1", 1);
+    byte[] bytes = AvroCodecUtil.serializeBinary(record);
+
+    // read using record with union[null, long] field
+    Schema readerSchemaWithLong =
+        AvroCompatibilityHelper.parse(TestUtil.load("allavro/WidenIntToLongInUnionField_reader.avsc"));
+    GenericRecord deserializedGenericRecord =
+        AvroCodecUtil.deserializeAsGeneric(bytes, writerSchema, readerSchemaWithLong);
+    Assert.assertEquals(deserializedGenericRecord.get(0), 1L);
   }
 }

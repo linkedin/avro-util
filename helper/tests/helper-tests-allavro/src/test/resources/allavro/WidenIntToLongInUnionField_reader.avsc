@@ -1,0 +1,14 @@
+{
+  "name": "WidenIntToLongInUnionField",
+  "type": "record",
+  "fields": [
+    {
+      "name": "f1",
+      "type": [
+        "null",
+        "long"
+      ],
+      "default": null
+    }
+  ]
+}
