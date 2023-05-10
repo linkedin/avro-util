@@ -1,7 +1,7 @@
 {
+  "type" : "record",
   "name" : "ComplexRecord",
   "namespace" : "TopNamespace",
-  "type" : "record",
   "fields" : [ {
     "name" : "longField",
     "type" : "long",

@@ -90,7 +90,7 @@ public class AvscGenerationConfig {
      */
     public static final AvscGenerationConfig CANONICAL_ONELINE = new AvscGenerationConfig(
         false, false, false, Optional.of(Boolean.FALSE), false, false,
-    false, false, false, false, true, false);
+    false, false, false, false, true, false, false);
 
     /**
      * Broad Canonical form of avro, includes defaults and field / schema aliases
@@ -98,7 +98,7 @@ public class AvscGenerationConfig {
      */
     public static final AvscGenerationConfig CANONICAL_BROAD_ONELINE = new AvscGenerationConfig(
         false, false, false, Optional.of(Boolean.FALSE), false, true,
-        false, true, false, true, true, false);
+        false, true, false, true, true, false, false);
 
     /**
      * if this value is set to true, and the rest of the values on this config object
@@ -162,6 +162,10 @@ public class AvscGenerationConfig {
      * true to write namespace relative to parent namespace. False writes full namespace.
      */
     public final boolean writeRelativeNamespace;
+    /**
+     * true to write using legacy AvscWriter, order of fields may be non-deterministic
+     */
+    public final boolean isLegacy;
 
 
     public AvscGenerationConfig(
@@ -188,6 +192,7 @@ public class AvscGenerationConfig {
         this.retainSchemaAliases = true;
         this.writeNamespaceExplicitly = false;
         this.writeRelativeNamespace = true;
+        this.isLegacy = true;
     }
 
     public AvscGenerationConfig(
@@ -221,6 +226,42 @@ public class AvscGenerationConfig {
         this.retainSchemaAliases = retainSchemaAliases;
         this.writeNamespaceExplicitly = writeNamespaceExplicitly;
         this.writeRelativeNamespace = writeRelativeNamespace;
+        this.isLegacy = true;
+    }
+
+    public AvscGenerationConfig(
+        boolean preferUseOfRuntimeAvro,
+        boolean forceUseOfRuntimeAvro,
+        boolean prettyPrint,
+        @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+        Optional<Boolean> retainPreAvro702Logic,
+        boolean addAvro702Aliases,
+        boolean retainDefaults,
+        boolean retainDocs,
+        boolean retainFieldAliases,
+        boolean retainNonClaimedProps,
+        boolean retainSchemaAliases,
+        boolean writeNamespaceExplicitly,
+        boolean writeRelativeNamespace,
+        boolean isLegacy
+    ) {
+        //noinspection OptionalAssignedToNull
+        if (retainPreAvro702Logic == null) {
+            throw new IllegalArgumentException("retainPreAvro702Logic cannot be null");
+        }
+        this.preferUseOfRuntimeAvro = preferUseOfRuntimeAvro;
+        this.forceUseOfRuntimeAvro = forceUseOfRuntimeAvro;
+        this.prettyPrint = prettyPrint;
+        this.retainPreAvro702Logic = retainPreAvro702Logic;
+        this.addAvro702Aliases = addAvro702Aliases;
+        this.retainDefaults = retainDefaults;
+        this.retainDocs = retainDocs;
+        this.retainFieldAliases = retainFieldAliases;
+        this.retainNonClaimedProps = retainNonClaimedProps;
+        this.retainSchemaAliases = retainSchemaAliases;
+        this.writeNamespaceExplicitly = writeNamespaceExplicitly;
+        this.writeRelativeNamespace = writeRelativeNamespace;
+        this.isLegacy = isLegacy;
     }
 
     public boolean isPreferUseOfRuntimeAvro() {

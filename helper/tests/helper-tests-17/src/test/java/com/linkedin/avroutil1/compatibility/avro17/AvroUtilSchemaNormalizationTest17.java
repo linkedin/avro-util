@@ -123,7 +123,7 @@ public class AvroUtilSchemaNormalizationTest17 {
   public void testCanonicalStrictWithNonSpecificJsonIncluded() throws IOException {
     AvscGenerationConfig config = new AvscGenerationConfig(
         false, false, false, Optional.of(Boolean.TRUE), false, false,
-        false, false, true, false, true, false);
+        false, false, true, false, true, false, false);
 
     Schema schema = Schema.parse(TestUtil.load("Record1.avsc"));
     String str = AvroUtilSchemaNormalization.getCanonicalForm(schema, config, null);
@@ -580,7 +580,7 @@ public class AvroUtilSchemaNormalizationTest17 {
 
     AvscGenerationConfig config = new AvscGenerationConfig(
         false, false, false, Optional.of(Boolean.TRUE), false, true,
-        true, true, true, true, true, false);
+        true, true, true, true, true, false, false);
 
     String expectedForm =
         "{"

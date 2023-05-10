@@ -57,6 +57,14 @@ public class Avro15AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
             schemaPlugins);
     }
 
+    public Avro15AvscWriter(boolean pretty, boolean preAvro702, boolean addAliasesForAvro702, boolean retainDefaults,
+        boolean retainDocs, boolean retainFieldAliases, boolean retainNonClaimedProps, boolean retainSchemaAliases,
+        boolean writeNamespaceExplicitly, boolean writeRelativeNamespace, boolean isLegacy,
+        List<AvscWriterPlugin> schemaPlugins) {
+        super(pretty, preAvro702, addAliasesForAvro702, retainDefaults, retainDocs, retainFieldAliases,
+            retainNonClaimedProps, retainSchemaAliases, writeNamespaceExplicitly, writeRelativeNamespace, isLegacy,
+            schemaPlugins);
+    }
     @Override
     protected Jackson1JsonGeneratorWrapper createJsonGenerator(StringWriter writer) throws IOException {
         JsonGenerator gen = FACTORY.createJsonGenerator(writer);
@@ -175,5 +183,22 @@ public class Avro15AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
                 gen.writeStringField(propName, entry.getValue());
             }
         }
+    }
+
+    @Override
+    protected void writePropsLegacy(Schema schema, Jackson1JsonGeneratorWrapper gen) throws IOException {
+        Map<String, String> props = getProps(schema);
+        //write all props except "default" for enums
+        if (schema.getType() == Schema.Type.ENUM) {
+            writeProps(props, gen, s -> !"default".equals(s));
+        } else {
+            writeProps(props, gen);
+        }
+    }
+
+    @Override
+    protected void writePropsLegacy(Schema.Field field, Jackson1JsonGeneratorWrapper gen) throws IOException {
+        Map<String, String> props = getProps(field);
+        writeProps(props, gen);
     }
 }
