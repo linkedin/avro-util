@@ -244,7 +244,7 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                 gen.writeStartObject();
                 gen.writeStringField("type", "array");
                 gen.writeFieldName("items");
-                toJson(schema.getElementType(), names, contextNamespaceWhenParsed, contextNamespaceWhenParsedUnder702, gen);
+                toJsonLegacy(schema.getElementType(), names, contextNamespaceWhenParsed, contextNamespaceWhenParsedUnder702, gen);
                 writePropsLegacy(schema, gen);
                 gen.writeEndObject();
                 break;
@@ -253,7 +253,7 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                 gen.writeStartObject();
                 gen.writeStringField("type", "map");
                 gen.writeFieldName("values");
-                toJson(schema.getValueType(), names, contextNamespaceWhenParsed, contextNamespaceWhenParsedUnder702, gen);
+                toJsonLegacy(schema.getValueType(), names, contextNamespaceWhenParsed, contextNamespaceWhenParsedUnder702, gen);
                 writePropsLegacy(schema, gen);
                 gen.writeEndObject();
                 break;
@@ -261,7 +261,7 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                 //taken from UnionSchema.toJson() in avro 1.11
                 gen.writeStartArray();
                 for (Schema type : schema.getTypes()) {
-                    toJson(type, names, contextNamespaceWhenParsed, contextNamespaceWhenParsedUnder702, gen);
+                    toJsonLegacy(type, names, contextNamespaceWhenParsed, contextNamespaceWhenParsedUnder702, gen);
                 }
                 gen.writeEndArray();
                 break;
@@ -614,7 +614,7 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
             gen.writeStartObject();
             gen.writeStringField("name", f.name());
             gen.writeFieldName("type");
-            toJson(f.schema(), names, contextNamespaceWhenParsed, contextNamespaceWhenParsedUnder702, gen);
+            toJsonLegacy(f.schema(), names, contextNamespaceWhenParsed, contextNamespaceWhenParsedUnder702, gen);
             if (f.doc() != null) {
                 gen.writeStringField("doc", f.doc());
             }

@@ -9,9 +9,9 @@
   }, {
     "name" : "fixedField",
     "type" : {
+      "type" : "fixed",
       "name" : "FixedSchema",
       "namespace" : "",
-      "type" : "fixed",
       "size" : 100
     },
     "doc" : "fixed type"
@@ -20,17 +20,17 @@
     "type" : [ "null", {
       "type" : "array",
       "items" : {
+        "type" : "record",
         "name" : "innerRecord",
         "namespace" : "InnerNamespace",
-        "type" : "record",
         "fields" : [ {
           "name" : "stringField",
           "type" : "string"
         }, {
           "name" : "unionWithEnum",
           "type" : [ "null", "int", {
-            "name" : "enumField",
             "type" : "enum",
+            "name" : "enumField",
             "symbols" : [ "A", "B" ]
           } ]
         }, {
@@ -38,8 +38,8 @@
           "type" : {
             "type" : "map",
             "values" : {
-              "name" : "mapUnionRecord",
               "type" : "record",
+              "name" : "mapUnionRecord",
               "fields" : [ {
                 "name" : "stringField",
                 "type" : [ "null", "string" ],
