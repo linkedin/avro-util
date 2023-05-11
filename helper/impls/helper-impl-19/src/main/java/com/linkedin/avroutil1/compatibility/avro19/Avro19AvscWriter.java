@@ -40,6 +40,15 @@ public class Avro19AvscWriter extends AvscWriter<Jackson2JsonGeneratorWrapper> {
             schemaPlugins);
     }
 
+    public Avro19AvscWriter(boolean pretty, boolean preAvro702, boolean addAliasesForAvro702, boolean retainDefaults,
+        boolean retainDocs, boolean retainFieldAliases, boolean retainNonClaimedProps, boolean retainSchemaAliases,
+        boolean writeNamespaceExplicitly, boolean writeRelativeNamespace, boolean isLegacy,
+        List<AvscWriterPlugin> schemaPlugins) {
+        super(pretty, preAvro702, addAliasesForAvro702, retainDefaults, retainDocs, retainFieldAliases,
+            retainNonClaimedProps, retainSchemaAliases, writeNamespaceExplicitly, writeRelativeNamespace, isLegacy,
+            schemaPlugins);
+    }
+
     @Override
     protected Jackson2JsonGeneratorWrapper createJsonGenerator(StringWriter writer) throws IOException {
         JsonGenerator gen = FACTORY.createGenerator(writer);
@@ -118,6 +127,20 @@ public class Avro19AvscWriter extends AvscWriter<Jackson2JsonGeneratorWrapper> {
             delegate.writeObjectField(entry.getKey(), JacksonUtils.toJsonNode(o));
         }
     }
+    @Override
+    protected void writePropsLegacy(Schema schema, Jackson2JsonGeneratorWrapper gen) throws IOException {
+        Map<String, Object> props = schema.getObjectProps();
+        if (props != null && !props.isEmpty()) {
+            writeProps(props, gen);
+        }
+    }
 
+    @Override
+    protected void writePropsLegacy(Schema.Field field, Jackson2JsonGeneratorWrapper gen) throws IOException {
+        Map<String, Object> props = field.getObjectProps();
+        if (props != null && !props.isEmpty()) {
+            writeProps(props, gen);
+        }
+    }
 
 }

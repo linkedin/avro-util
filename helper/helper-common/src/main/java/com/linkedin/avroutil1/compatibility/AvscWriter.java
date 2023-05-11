@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -81,6 +82,10 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
      * true to write namespace relative to parent namespace. False writes full namespace.
      */
     public final boolean writeRelativeNamespace;
+    /**
+     * true to write using legacy AvscWriter, order of fields may be non-deterministic
+     */
+    public final boolean isLegacy;
 
     protected AvscWriter(boolean pretty, boolean preAvro702, boolean addAliasesForAvro702) {
         this.pretty = pretty;
@@ -93,6 +98,7 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
         this.retainDefaults = true;
         this.writeNamespaceExplicitly = false;
         this.writeRelativeNamespace = true;
+        this.isLegacy = true;
         _plugins = new ArrayList<AvscWriterPlugin>(0);
     }
 
@@ -109,6 +115,25 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
         this.retainDefaults = retainDefaults;
         this.writeNamespaceExplicitly = writeNamespaceExplicitly;
         this.writeRelativeNamespace = writeRelativeNamespace;
+        this.isLegacy = true;
+        this._plugins = plugins == null ? Collections.emptyList() : plugins;
+    }
+
+    protected AvscWriter(boolean pretty, boolean preAvro702, boolean addAliasesForAvro702, boolean retainDefaults,
+        boolean retainDocs, boolean retainFieldAliases, boolean retainNonClaimedProps, boolean retainSchemaAliases,
+        boolean writeNamespaceExplicitly, boolean writeRelativeNamespace, boolean isLegacy,
+        List<AvscWriterPlugin> plugins) {
+        this.pretty = pretty;
+        this.preAvro702 = preAvro702;
+        this.addAliasesForAvro702 = addAliasesForAvro702;
+        this.retainDocs = retainDocs;
+        this.retainSchemaAliases = retainSchemaAliases;
+        this.retainFieldAliases = retainFieldAliases;
+        this.retainNonClaimedProps = retainNonClaimedProps;
+        this.retainDefaults = retainDefaults;
+        this.writeNamespaceExplicitly = writeNamespaceExplicitly;
+        this.writeRelativeNamespace = writeRelativeNamespace;
+        this.isLegacy = isLegacy;
         this._plugins = plugins == null ? Collections.emptyList() : plugins;
     }
 
@@ -117,11 +142,139 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
             AvroNames names = new AvroNames();
             StringWriter writer = new StringWriter();
             G gen = createJsonGenerator(writer);
-            toJson(schema, names, "", "", gen);
+            if(isLegacy) {
+                toJsonLegacy(schema, names, "", "", gen);
+            } else {
+                toJson(schema, names, "", "", gen);
+            }
+
             gen.flush();
             return writer.toString();
         } catch (IOException e) {
             throw new AvroRuntimeException(e);
+        }
+    }
+
+    protected void toJsonLegacy(
+        Schema schema,
+        AvroNames names,
+        String contextNamespaceWhenParsed,
+        String contextNamespaceWhenParsedUnder702,
+        G gen
+    ) throws IOException {
+        Avro702Data avro702Data;
+        switch (schema.getType()) {
+            case ENUM:
+                //taken from EnumSchema.toJson() in avro 1.11
+                if (writeNameRef(schema, names, gen)) {
+                    return;
+                }
+                gen.writeStartObject();
+                gen.writeStringField("type", "enum");
+                avro702Data = writeName(schema, names, contextNamespaceWhenParsed, contextNamespaceWhenParsedUnder702, gen);
+                if (schema.getDoc() != null) {
+                    gen.writeStringField("doc", schema.getDoc());
+                }
+                gen.writeArrayFieldStart("symbols");
+                for (String symbol : schema.getEnumSymbols()) {
+                    gen.writeString(symbol);
+                }
+                gen.writeEndArray();
+                writeEnumDefault(schema, gen);
+                writePropsLegacy(schema, gen);
+                aliasesToJsonLegacy(schema, avro702Data.getExtraAliases(), gen);
+                gen.writeEndObject();
+                break;
+            case FIXED:
+                //taken from FixedSchema.toJson() in avro 1.11
+                if (writeNameRef(schema, names, gen)) {
+                    return;
+                }
+                gen.writeStartObject();
+                gen.writeStringField("type", "fixed");
+                avro702Data = writeName(schema, names, contextNamespaceWhenParsed, contextNamespaceWhenParsedUnder702, gen);
+                if (schema.getDoc() != null) {
+                    gen.writeStringField("doc", schema.getDoc());
+                }
+                gen.writeNumberField("size", schema.getFixedSize());
+                writePropsLegacy(schema, gen);
+                aliasesToJsonLegacy(schema, avro702Data.getExtraAliases(), gen);
+                gen.writeEndObject();
+                break;
+            case RECORD:
+                //taken from RecordSchema.toJson() in avro 1.11
+                if (writeNameRef(schema, names, gen)) {
+                    return;
+                }
+                gen.writeStartObject();
+                gen.writeStringField("type", schema.isError() ? "error" : "record");
+                avro702Data = writeName(schema, names, contextNamespaceWhenParsed, contextNamespaceWhenParsedUnder702, gen);
+                AvroName name = AvroName.of(schema);
+
+                //save current namespaces - both 1.4 and correct one
+                String savedBadSpace = names.badSpace(); //save avro-702 mode namespace
+                String savedCorrectSpace = names.correctSpace(); //save correct namespace
+                //avro 1.4 only ever sets namespace if the current is null
+                if (savedBadSpace == null) {
+                    names.badSpace(name.getSpace());
+                }
+                names.correctSpace(name.getSpace()); //always update correct namespace
+
+                if (schema.getDoc() != null) {
+                    gen.writeStringField("doc", schema.getDoc());
+                }
+                if (schema.getFields() != null) {
+                    gen.writeFieldName("fields");
+                    fieldsToJsonLegacy(
+                        schema,
+                        names,
+                        avro702Data.getNamespaceWhenParsing(),
+                        avro702Data.getNamespaceWhenParsing702(),
+                        gen
+                    );
+                }
+                writePropsLegacy(schema, gen);
+                aliasesToJsonLegacy(schema, avro702Data.getExtraAliases(), gen);
+                gen.writeEndObject();
+                //avro 1.4 never restores namespace, so we never restore space
+                names.correctSpace(savedCorrectSpace); //always restore correct namespace
+                break;
+            case ARRAY:
+                //taken from ArraySchema.toJson() in avro 1.11
+                gen.writeStartObject();
+                gen.writeStringField("type", "array");
+                gen.writeFieldName("items");
+                toJsonLegacy(schema.getElementType(), names, contextNamespaceWhenParsed, contextNamespaceWhenParsedUnder702, gen);
+                writePropsLegacy(schema, gen);
+                gen.writeEndObject();
+                break;
+            case MAP:
+                //taken from MapSchema.toJson() in avro 1.11
+                gen.writeStartObject();
+                gen.writeStringField("type", "map");
+                gen.writeFieldName("values");
+                toJsonLegacy(schema.getValueType(), names, contextNamespaceWhenParsed, contextNamespaceWhenParsedUnder702, gen);
+                writePropsLegacy(schema, gen);
+                gen.writeEndObject();
+                break;
+            case UNION:
+                //taken from UnionSchema.toJson() in avro 1.11
+                gen.writeStartArray();
+                for (Schema type : schema.getTypes()) {
+                    toJsonLegacy(type, names, contextNamespaceWhenParsed, contextNamespaceWhenParsedUnder702, gen);
+                }
+                gen.writeEndArray();
+                break;
+            default:
+                //all other schema types (taken from Schema.toJson() in avro 1.11)
+                if (!hasProps(schema)) { // no props defined
+                    gen.writeString(schema.getName()); // just write name
+                } else {
+                    gen.writeStartObject();
+                    gen.writeStringField("type", schema.getName());
+                    writePropsLegacy(schema, gen);
+                    gen.writeEndObject();
+                }
         }
     }
 
@@ -152,7 +305,7 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                 if(retainDefaults) {
                     writeEnumDefault(schema, gen);
                 }
-                aliasesToJson(schema, avro702Data.getExtraAliases(), gen, retainSchemaAliases);
+                aliasesToJsonLegacy(schema, avro702Data.getExtraAliases(), gen, retainSchemaAliases);
                 if (retainDocs && schema.getDoc() != null) {
                     gen.writeStringField("doc", schema.getDoc());
                 }
@@ -173,7 +326,7 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                 gen.writeNumberField("size", schema.getFixedSize());
 
 
-                aliasesToJson(schema, avro702Data.getExtraAliases(), gen, retainSchemaAliases);
+                aliasesToJsonLegacy(schema, avro702Data.getExtraAliases(), gen, retainSchemaAliases);
                 if (retainDocs && schema.getDoc() != null) {
                     gen.writeStringField("doc", schema.getDoc());
                 }
@@ -211,7 +364,7 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                         gen
                     );
                 }
-                aliasesToJson(schema, avro702Data.getExtraAliases(), gen, retainSchemaAliases);
+                aliasesToJsonLegacy(schema, avro702Data.getExtraAliases(), gen, retainSchemaAliases);
                 if (retainDocs && schema.getDoc() != null) {
                     gen.writeStringField("doc", schema.getDoc());
                 }
@@ -350,7 +503,45 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
         return claimedProps;
     }
 
-    protected void aliasesToJson(Schema schema, List<AvroName> extraAliases, G gen, boolean retainSchemaAliases) throws IOException {
+    protected void aliasesToJsonLegacy(Schema schema, List<AvroName> extraAliases, G gen) throws IOException {
+        Set<String> userDefinedAliases = schema.getAliases();
+        Set<String> allAliases = userDefinedAliases; //could be null
+        if (addAliasesForAvro702 && extraAliases != null) {
+            allAliases = new HashSet<>();
+            if (userDefinedAliases != null) {
+                allAliases.addAll(userDefinedAliases);
+            }
+            for (AvroName extraAlias : extraAliases) {
+                allAliases.add(extraAlias.getFull());
+            }
+        }
+        if (allAliases == null || allAliases.isEmpty()) {
+            return;
+        }
+        AvroName name = AvroName.of(schema);
+        //"context" namespace for aliases is the fullname of the names type on which they are defined
+        //except for the extra alias. scenarios where extraAlias is used are those where the "effective"
+        //name of this schema (or its correct form) is different to its full name, so we want
+        //to very explicitly use the fullname of the alias for those.
+        String referenceNamespace = name.getSpace();
+        gen.writeFieldName("aliases");
+        gen.writeStartArray();
+        //TODO - avro702 may have an impact on (regular) aliases, meaning we may need to
+        // add yet more aliases to account for those!
+        for (String s : allAliases) {
+            AvroName alias = new AvroName(s, null);
+            if (addAliasesForAvro702 && extraAliases != null && extraAliases.contains(alias)) {
+                //always emit any avro-702 related aliases as fullnames
+                gen.writeString(alias.getFull());
+            } else {
+                String relative = alias.getQualified(referenceNamespace);
+                gen.writeString(relative);
+            }
+        }
+        gen.writeEndArray();
+    }
+
+    protected void aliasesToJsonLegacy(Schema schema, List<AvroName> extraAliases, G gen, boolean retainSchemaAliases) throws IOException {
         Set<String> userDefinedAliases =
             retainSchemaAliases ? getSortedFullyQualifiedSchemaAliases(schema.getAliases(), schema.getNamespace()) : null;
         Set<String> allAliases = userDefinedAliases == null ? new TreeSet<>() : userDefinedAliases;
@@ -408,6 +599,42 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
             }
         }
         return sortedAliases;
+    }
+
+    protected void fieldsToJsonLegacy(
+        Schema schema,
+        AvroNames names,
+        String contextNamespaceWhenParsed,
+        String contextNamespaceWhenParsedUnder702,
+        G gen
+    ) throws IOException {
+        gen.writeStartArray();
+        List<Schema.Field> fields = schema.getFields();
+        for (Schema.Field f : fields) {
+            gen.writeStartObject();
+            gen.writeStringField("name", f.name());
+            gen.writeFieldName("type");
+            toJsonLegacy(f.schema(), names, contextNamespaceWhenParsed, contextNamespaceWhenParsedUnder702, gen);
+            if (f.doc() != null) {
+                gen.writeStringField("doc", f.doc());
+            }
+            writeDefaultValue(f, gen);
+            if (f.order() != Schema.Field.Order.ASCENDING) {
+                gen.writeStringField("order", f.order().name());
+            }
+            Set<String> aliases = getAliases(f);
+            if (aliases != null && aliases.size() != 0) {
+                gen.writeFieldName("aliases");
+                gen.writeStartArray();
+                for (String alias : aliases) {
+                    gen.writeString(alias);
+                }
+                gen.writeEndArray();
+            }
+            writePropsLegacy(f, gen);
+            gen.writeEndObject();
+        }
+        gen.writeEndArray();
     }
 
     protected void fieldsToJson(
@@ -501,6 +728,9 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
      * @throws IOException
      */
     protected abstract void writeProps(Schema schema, G gen, Set<String> propNames) throws IOException;
+
+    protected abstract void writePropsLegacy(Schema schema, G gen) throws IOException;
+    protected abstract void writePropsLegacy(Schema.Field field, G gen) throws IOException;
 
     /***
      * Write json props from field, for the keys provided in propNames
