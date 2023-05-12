@@ -1,0 +1,6 @@
+{
+  "type" : "fixed",
+  "namespace": "com.linkedin.test",
+  "name" : "SimpleFixed",
+  "size" : 3
+}

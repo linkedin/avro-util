@@ -1,0 +1,23 @@
+{
+  "type" : "record",
+  "namespace": "com.linkedin.test",
+  "name" : "ExampleRecord",
+  "fields": [
+    {
+      "name": "enumField",
+      "type": {
+        "type": "enum",
+        "name": "ExampleEnum",
+        "symbols": ["A", "B"]
+      }
+    },
+    {
+      "name": "fixedField",
+      "type": {
+        "type": "fixed",
+        "name": "ExampleFixed",
+        "size": 7
+      }
+    }
+  ]
+}

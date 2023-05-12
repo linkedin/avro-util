@@ -1,0 +1,6 @@
+All files in this directory are included into avro_jar.jar for testing resolver path in jar
+
+The jar file include:
+- an avsc file
+- a directory contains a avsc file
+- a non avsc file

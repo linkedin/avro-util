@@ -54,6 +54,9 @@ public class SchemaBuilder {
     OptionSpec<String> outputOpt = parser.accepts("output", "Directory to put output code [REQUIRED]")
         .withRequiredArg().required()
         .describedAs("dir");
+    OptionSpec<String> resolverPathOpt = parser.accepts("resolverPath", "Resolver path for dependent schemas")
+        .withOptionalArg()
+        .describedAs("file");
     OptionSpec<String> expandedSchemas = parser.accepts("expandedSchemas", "Directory for dumping expanded schemas")
         .withOptionalArg()
         .describedAs("dir");
@@ -130,6 +133,11 @@ public class SchemaBuilder {
       if (Boolean.TRUE.equals(Boolean.parseBoolean(value))) {
         includeFromClasspath = true;
       }
+    }
+
+    List<File> resolverPath = null;
+    if (options.has(resolverPathOpt)) {
+      resolverPath = AvroSchemaBuilderUtils.toFiles(options.valuesOf(resolverPathOpt));
     }
 
     File outputDir = new File(options.valueOf(outputOpt));
@@ -228,6 +236,7 @@ public class SchemaBuilder {
         includeFromClasspath,
         outputDir,
         expandedSchemasDir,
+        resolverPath,
         generatorType,
         dupBehaviour,
         duplicateClassesToIgnore,

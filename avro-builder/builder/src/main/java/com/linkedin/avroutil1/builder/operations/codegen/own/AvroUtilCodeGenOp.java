@@ -11,6 +11,8 @@ import com.linkedin.avroutil1.builder.operations.OperationContext;
 import com.linkedin.avroutil1.builder.operations.codegen.CodeGenOpConfig;
 import com.linkedin.avroutil1.builder.operations.codegen.util.AvscFileFinderUtil;
 import com.linkedin.avroutil1.builder.operations.codegen.vanilla.ClasspathSchemaSet;
+import com.linkedin.avroutil1.builder.operations.codegen.vanilla.ResolverPathSchemaSet;
+import com.linkedin.avroutil1.builder.operations.codegen.vanilla.SchemaSet;
 import com.linkedin.avroutil1.codegen.SpecificRecordClassGenerator;
 import com.linkedin.avroutil1.codegen.SpecificRecordGenerationConfig;
 import com.linkedin.avroutil1.codegen.SpecificRecordGeneratorUtil;
@@ -100,10 +102,13 @@ public class AvroUtilCodeGenOp implements Operation {
     AvroParseContext context = new AvroParseContext();
     Set<AvscParseResult> parsedFiles = new HashSet<>();
 
-    //build a classpath SchemaSet if classpath (cp) lookup is turned on
-    ClasspathSchemaSet cpLookup = null;
-    if (config.isIncludeClasspath()) {
-      cpLookup = new ClasspathSchemaSet();
+    SchemaSet lookupSchemaSet = null;
+    if (config.getResolverPath() != null) {
+      //build a resolver path SchemaSet if ResolverPath is set
+      lookupSchemaSet = new ResolverPathSchemaSet(config.getResolverPath());
+    } else if (config.isIncludeClasspath()) {
+      //build a classpath SchemaSet if classpath (cp) lookup is turned on
+      lookupSchemaSet = new ClasspathSchemaSet();
     }
     parsedFiles.addAll(parseAvscFiles(avscFiles, true, context));
     parsedFiles.addAll(parseAvscFiles(nonImportableFiles, false, context));
@@ -115,14 +120,14 @@ public class AvroUtilCodeGenOp implements Operation {
         String ref = externalReference.getRef();
         String inheritedRef = externalReference.getInheritedName();
         if (!context.getAllNamedSchemas().containsKey(inheritedRef) && !context.getAllNamedSchemas().containsKey(ref)
-            && cpLookup != null) {
-          Schema referencedSchema = cpLookup.getByName(ref);
+            && lookupSchemaSet != null) {
+          Schema referencedSchema = lookupSchemaSet.getByName(ref);
           if (referencedSchema != null) {
             AvscParseResult referencedParseResult =
                 parser.parse(AvroCompatibilityHelper.toAvsc(referencedSchema, AvscGenerationConfig.CORRECT_PRETTY));
             context.add(referencedParseResult, true);
           } else {
-            Schema inheritedReferencedSchema = cpLookup.getByName(inheritedRef);
+            Schema inheritedReferencedSchema = lookupSchemaSet.getByName(inheritedRef);
             if (inheritedReferencedSchema != null) {
               AvscParseResult referencedParseResult = parser.parse(
                   AvroCompatibilityHelper.toAvsc(inheritedReferencedSchema, AvscGenerationConfig.CORRECT_PRETTY));
@@ -133,12 +138,12 @@ public class AvroUtilCodeGenOp implements Operation {
       }
     }
     // check and throw if schemas defined in the filesystem (parsedFiles) are not equal if also defined on the classpath.
-    if (cpLookup != null) {
+    if (lookupSchemaSet != null) {
       for (AvscParseResult parsedFile : parsedFiles) {
         for (Map.Entry<String, AvroNamedSchema> entrySet : parsedFile.getDefinedNamedSchemas().entrySet()) {
           AvroNamedSchema schema = entrySet.getValue();
           String fullName = entrySet.getKey();
-          Schema cpSchema = cpLookup.getByName(fullName);
+          Schema cpSchema = lookupSchemaSet.getByName(fullName);
           if (cpSchema != null) {
             // check if the schema on classpath is the same as the one we are trying to generate
             AvroSchema avroSchemaFromClasspath = (new AvscParser()).parse(cpSchema.toString()).getTopLevelSchema();
@@ -265,7 +270,7 @@ public class AvroUtilCodeGenOp implements Operation {
 
           if (!alreadyGeneratedSchemas.contains(namedSchema.getFullName())) {
             // skip codegen if schema is on classpath and config says to skip
-            if (config.shouldSkipCodegenIfSchemaOnClasspath() && doesSchemaExistOnClasspath(namedSchema, cpLookup)) {
+            if (config.shouldSkipCodegenIfSchemaOnClasspath() && doesSchemaExistOnClasspath(namedSchema, lookupSchemaSet)) {
               continue;
             }
 
@@ -283,7 +288,7 @@ public class AvroUtilCodeGenOp implements Operation {
               if (!alreadyGeneratedSchemas.contains(namedInternalSchema.getFullName())) {
                 // skip codegen for nested schemas if schema is on classpath and config says to skip
                 if (config.shouldSkipCodegenIfSchemaOnClasspath() && doesSchemaExistOnClasspath(namedInternalSchema,
-                    cpLookup)) {
+                    lookupSchemaSet)) {
                   continue;
                 }
 
@@ -347,12 +352,12 @@ public class AvroUtilCodeGenOp implements Operation {
     return parsedFiles;
   }
 
-  private boolean doesSchemaExistOnClasspath(AvroNamedSchema schema, ClasspathSchemaSet cpLookup) {
-    if (cpLookup == null) {
+  private boolean doesSchemaExistOnClasspath(AvroNamedSchema schema, SchemaSet schemaSet) {
+    if (schemaSet == null) {
       return false;
     }
 
-    return cpLookup.getByName(schema.getFullName()) != null;
+    return schemaSet.getByName(schema.getFullName()) != null;
   }
 
   private void writeJavaFilesToDisk(Collection<JavaFileObject> javaClassFiles, File outputFolder) {
