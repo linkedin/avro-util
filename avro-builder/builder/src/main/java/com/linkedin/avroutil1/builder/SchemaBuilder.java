@@ -140,6 +140,10 @@ public class SchemaBuilder {
       resolverPath = AvroSchemaBuilderUtils.toFiles(options.valuesOf(resolverPathOpt));
     }
 
+    if (includeFromClasspath && resolverPath != null) {
+      throw new IllegalStateException("The \"includeClasspath\" and \"resolverPath\" are mutually exclusive");
+    }
+
     File outputDir = new File(options.valueOf(outputOpt));
 
     File expandedSchemasDir = null;

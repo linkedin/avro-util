@@ -187,9 +187,25 @@ public class SchemaBuilderTest {
     }));
   }
 
-
-
-
+  @Test
+  public void testIncludeClasspathAndResolverPathMutuallyExclusive() throws Exception {
+    File simpleProjectRoot = new File(locateTestProjectsRoot(), "resolverpath-project");
+    File inputFolder = new File(simpleProjectRoot, "input");
+    File resolverFolder = new File(simpleProjectRoot, "resolverPath");
+    File outputFolder = new File(simpleProjectRoot, "output");
+    if (outputFolder.exists()) { //clear output
+      FileUtils.deleteDirectory(outputFolder);
+    }
+    //run the builder
+    Assert.assertThrows(java.lang.IllegalStateException.class,
+        () -> SchemaBuilder.main(new String[] {
+            "--input", inputFolder.getAbsolutePath(),
+            "--output", outputFolder.getAbsolutePath(),
+            "--generator", CodeGenerator.AVRO_UTIL.name(),
+            "--includeClasspath", Boolean.toString(true),
+            "--resolverPath", resolverFolder.getAbsolutePath()
+        }));
+  }
 
   @Test
   public void testImportableSchemasUsingOwnCodegen() throws Exception {
