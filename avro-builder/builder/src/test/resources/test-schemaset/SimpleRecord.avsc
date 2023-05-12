@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "namespace": "com.linkedin.test",
+  "name": "SimpleRecord",
+  "fields": [
+    {
+      "name": "stringField",
+      "type": "string"
+    }
+  ]
+}

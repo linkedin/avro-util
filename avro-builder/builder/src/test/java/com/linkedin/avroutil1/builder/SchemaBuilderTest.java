@@ -124,6 +124,28 @@ public class SchemaBuilderTest {
   }
 
   @Test
+  public void testWithImportsFromResolverPath() throws Exception {
+    File simpleProjectRoot = new File(locateTestProjectsRoot(), "resolverpath-project");
+    File inputFolder = new File(simpleProjectRoot, "input");
+    File resolverFolder = new File(simpleProjectRoot, "resolverPath");
+    File outputFolder = new File(simpleProjectRoot, "output");
+    if (outputFolder.exists()) { //clear output
+      FileUtils.deleteDirectory(outputFolder);
+    }
+    //run the builder
+    SchemaBuilder.main(new String[]{
+            "--input", inputFolder.getAbsolutePath(),
+            "--output", outputFolder.getAbsolutePath(),
+            "--generator", CodeGenerator.AVRO_UTIL.name(),
+            "--resolverPath", resolverFolder.getAbsolutePath()
+        });
+    //see output was generated
+    List<Path> javaFiles = Files.find(outputFolder.toPath(), 5,
+        (path, basicFileAttributes) -> path.getFileName().toString().endsWith(".java")).collect(Collectors.toList());
+    Assert.assertEquals(javaFiles.size(), 1);
+  }
+
+  @Test
   public void testWithImportsFromClasspath_skipLocallyDefined() throws Exception {
     File simpleProjectRoot = new File(locateTestProjectsRoot(), "classpath-project-with-skip");
     File inputFolder = new File(simpleProjectRoot, "input");
@@ -165,9 +187,25 @@ public class SchemaBuilderTest {
     }));
   }
 
-
-
-
+  @Test
+  public void testIncludeClasspathAndResolverPathMutuallyExclusive() throws Exception {
+    File simpleProjectRoot = new File(locateTestProjectsRoot(), "resolverpath-project");
+    File inputFolder = new File(simpleProjectRoot, "input");
+    File resolverFolder = new File(simpleProjectRoot, "resolverPath");
+    File outputFolder = new File(simpleProjectRoot, "output");
+    if (outputFolder.exists()) { //clear output
+      FileUtils.deleteDirectory(outputFolder);
+    }
+    //run the builder
+    Assert.assertThrows(java.lang.IllegalStateException.class,
+        () -> SchemaBuilder.main(new String[] {
+            "--input", inputFolder.getAbsolutePath(),
+            "--output", outputFolder.getAbsolutePath(),
+            "--generator", CodeGenerator.AVRO_UTIL.name(),
+            "--includeClasspath", Boolean.toString(true),
+            "--resolverPath", resolverFolder.getAbsolutePath()
+        }));
+  }
 
   @Test
   public void testImportableSchemasUsingOwnCodegen() throws Exception {

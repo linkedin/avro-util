@@ -33,6 +33,9 @@ public class CodeGenOpConfig {
   File outputSpecificRecordClassesRoot;
   File outputExpandedSchemasRoot;
 
+  //resolverPath
+  List<File> resolverPath = null;
+
   //other knobs
 
   CodeGenerator generatorType;
@@ -47,6 +50,7 @@ public class CodeGenOpConfig {
   boolean utf8EncodingPutByIndex;
   boolean skipCodegenIfSchemaOnClasspath;
 
+  @Deprecated
   public CodeGenOpConfig(
       List<File> inputRoots,
       List<File> nonImportableSourceRoots,
@@ -75,6 +79,7 @@ public class CodeGenOpConfig {
     this.utf8EncodingPutByIndex = true;
   }
 
+  @Deprecated
   public CodeGenOpConfig(
       List<File> inputRoots,
       List<File> nonImportableSourceRoots,
@@ -104,6 +109,7 @@ public class CodeGenOpConfig {
     this.utf8EncodingPutByIndex = true;
   }
 
+  @Deprecated
   public CodeGenOpConfig(List<File> inputRoots,
       List<File> nonImportableSourceRoots,
       boolean includeClasspath,
@@ -132,6 +138,7 @@ public class CodeGenOpConfig {
     this.utf8EncodingPutByIndex = handleUtf8EncodingInPutByIndex;
   }
 
+  @Deprecated
   public CodeGenOpConfig(List<File> inputRoots,
       List<File> nonImportableSourceRoots,
       boolean includeClasspath,
@@ -162,6 +169,37 @@ public class CodeGenOpConfig {
     this.skipCodegenIfSchemaOnClasspath = skipCodegenIfSchemaOnClasspath;
   }
 
+  public CodeGenOpConfig(List<File> inputRoots,
+      List<File> nonImportableSourceRoots,
+      boolean includeClasspath,
+      File outputSpecificRecordClassesRoot,
+      File outputExpandedSchemasRoot,
+      List<File> resolverPath,
+      CodeGenerator generatorType,
+      DuplicateSchemaBehaviour dupBehaviour,
+      List<String> duplicateSchemasToIgnore,
+      StringRepresentation stringRepresentation,
+      StringRepresentation methodStringRepresentation,
+      AvroVersion minAvroVersion,
+      boolean avro702Handling,
+      boolean handleUtf8EncodingInPutByIndex,
+      boolean skipCodegenIfSchemaOnClasspath) {
+    this.inputRoots = inputRoots;
+    this.nonImportableSourceRoots = nonImportableSourceRoots;
+    this.includeClasspath = includeClasspath;
+    this.outputSpecificRecordClassesRoot = outputSpecificRecordClassesRoot;
+    this.outputExpandedSchemasRoot = outputExpandedSchemasRoot;
+    this.resolverPath = resolverPath;
+    this.generatorType = generatorType;
+    this.dupBehaviour = dupBehaviour;
+    this.duplicateSchemasToIgnore = duplicateSchemasToIgnore;
+    this.stringRepresentation = stringRepresentation;
+    this.methodStringRepresentation = methodStringRepresentation;
+    this.minAvroVersion = minAvroVersion;
+    this.avro702Handling = avro702Handling;
+    this.utf8EncodingPutByIndex = handleUtf8EncodingInPutByIndex;
+    this.skipCodegenIfSchemaOnClasspath = skipCodegenIfSchemaOnClasspath;
+  }
 
   /**
    * validates all input parameters (set at construction time)
@@ -225,6 +263,10 @@ public class CodeGenOpConfig {
 
   public boolean isIncludeClasspath() {
     return includeClasspath;
+  }
+
+  public List<File> getResolverPath() {
+    return resolverPath;
   }
 
   public File getOutputSpecificRecordClassesRoot() {

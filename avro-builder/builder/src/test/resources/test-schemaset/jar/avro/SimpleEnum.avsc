@@ -1,0 +1,6 @@
+{
+  "type": "enum",
+  "namespace": "com.linkedin.test",
+  "name": "SimpleEnum",
+  "symbols": ["A", "B"]
+}

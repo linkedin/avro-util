@@ -1,0 +1,48 @@
+{
+  "type": "record",
+  "namespace": "com.linkedin.test",
+  "name": "HasSimpleDefaults",
+  "fields": [
+    {
+      "name": "nullWithoutDefault",
+      "type": "null"
+    },
+    {
+      "name": "nullField",
+      "type": "null",
+      "default": null
+    },
+    {
+      "name": "boolWithoutDefault",
+      "type": "boolean"
+    },
+    {
+      "name": "boolField",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "name": "strField",
+      "type": "string",
+      "default": "default"
+    },
+    {
+      "name": "unionWithNullDefault",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "unionWithNullNoDefault",
+      "type": ["null", "string"]
+    },
+    {
+      "name": "unionWithStringDefault",
+      "type": ["string", "null"],
+      "default": "def"
+    },
+    {
+      "name": "unionWithStringNoDefault",
+      "type": ["string", "null"]
+    }
+  ]
+}
