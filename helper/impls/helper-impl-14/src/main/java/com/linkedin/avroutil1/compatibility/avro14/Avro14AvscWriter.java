@@ -186,8 +186,10 @@ public class Avro14AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
         }
     }
     @Override
-    protected void writePropsLegacy(Schema schema, Jackson1JsonGeneratorWrapper gen) throws IOException {
+    protected void writePropsLegacy(Schema schema, Jackson1JsonGeneratorWrapper gen, Set<String> propNames)
+        throws IOException {
         Map<String, String> props = getProps(schema);
+        props.entrySet().removeIf(e -> !propNames.contains(e.getKey()));
         //write all props except "default" for enums
         if (schema.getType() == Schema.Type.ENUM) {
             writeProps(props, gen, s -> !"default".equals(s));
@@ -197,8 +199,10 @@ public class Avro14AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
     }
 
     @Override
-    protected void writePropsLegacy(Schema.Field field, Jackson1JsonGeneratorWrapper gen) throws IOException {
+    protected void writePropsLegacy(Schema.Field field, Jackson1JsonGeneratorWrapper gen, Set<String> propNames)
+        throws IOException {
         Map<String, String> props = getProps(field);
+        props.entrySet().removeIf(e -> !propNames.contains(e.getKey()));
         writeProps(props, gen);
     }
 }

@@ -12,6 +12,7 @@ import com.linkedin.avroutil1.compatibility.Jackson1Utils;
 import com.linkedin.avroutil1.normalization.AvscWriterPlugin;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -148,11 +149,13 @@ public class Avro17AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
     }
 
     @Override
-    protected void writePropsLegacy(Schema schema, Jackson1JsonGeneratorWrapper gen) throws IOException {
+    protected void writePropsLegacy(Schema schema, Jackson1JsonGeneratorWrapper gen, Set<String> propNames) throws IOException {
         Map<String, JsonNode> props = Avro17Utils.getProps(schema);
         if (props == null || props.isEmpty()) {
             return;
         }
+        props = new LinkedHashMap<>(props);
+        props.entrySet().removeIf(e -> !propNames.contains(e.getKey()));
         //write all props except "default" for enums
         if (schema.getType() == Schema.Type.ENUM) {
             writeProps(props, gen, s -> !"default".equals(s));
@@ -162,9 +165,14 @@ public class Avro17AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
     }
 
     @Override
-    protected void writePropsLegacy(Schema.Field field, Jackson1JsonGeneratorWrapper gen) throws IOException {
+    protected void writePropsLegacy(Schema.Field field, Jackson1JsonGeneratorWrapper gen, Set<String> propNames) throws IOException {
         Map<String, JsonNode> props = Avro17Utils.getProps(field);
-        if (props != null && !props.isEmpty()) {
+        if(props == null) {
+            return;
+        }
+        props = new LinkedHashMap<>(props);
+        props.entrySet().removeIf(e -> !propNames.contains(e.getKey()));
+        if (!props.isEmpty()) {
             writeProps(props, gen);
         }
     }

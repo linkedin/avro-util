@@ -16,6 +16,7 @@ import com.linkedin.avroutil1.compatibility.Jackson2Utils;
 import com.linkedin.avroutil1.normalization.AvscWriterPlugin;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -128,16 +129,20 @@ public class Avro19AvscWriter extends AvscWriter<Jackson2JsonGeneratorWrapper> {
         }
     }
     @Override
-    protected void writePropsLegacy(Schema schema, Jackson2JsonGeneratorWrapper gen) throws IOException {
-        Map<String, Object> props = schema.getObjectProps();
+    protected void writePropsLegacy(Schema schema, Jackson2JsonGeneratorWrapper gen, Set<String> propNames)
+        throws IOException {
+        Map<String, Object> props = new LinkedHashMap<>(schema.getObjectProps());
+        props.entrySet().removeIf(e -> !propNames.contains(e.getKey()));
         if (props != null && !props.isEmpty()) {
             writeProps(props, gen);
         }
     }
 
     @Override
-    protected void writePropsLegacy(Schema.Field field, Jackson2JsonGeneratorWrapper gen) throws IOException {
-        Map<String, Object> props = field.getObjectProps();
+    protected void writePropsLegacy(Schema.Field field, Jackson2JsonGeneratorWrapper gen, Set<String> propNames)
+        throws IOException {
+        Map<String, Object> props = new LinkedHashMap<>(field.getObjectProps());
+        props.entrySet().removeIf(e -> !propNames.contains(e.getKey()));
         if (props != null && !props.isEmpty()) {
             writeProps(props, gen);
         }

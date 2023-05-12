@@ -44,9 +44,10 @@ public class AvroUtilSchemaNormalization {
    * @param schemaPlugins List of AvscWriterPlugins to be applied on the schema during avsc generation
    * @return parsing canonical form of the schema
    */
-  public static String getCanonicalForm(Schema schema, AvscGenerationConfig config, List<AvscWriterPlugin> schemaPlugins) {
+  public static String getCanonicalForm(Schema schema, AvscGenerationConfig config,
+      List<AvscWriterPlugin> schemaPlugins) {
     if (AvroCompatibilityHelperCommon.getRuntimeAvroVersion().laterThan(AvroVersion.AVRO_1_6)) {
-      AvscWriter writer = AvroCompatibilityHelper.getAvscWriter(config, schemaPlugins);
+      AvscWriter writer = AvroCompatibilityHelper.getAvscWriter(getNonLegacyConfig(config), schemaPlugins);
       return writer.toAvsc(schema);
     }
     else {
@@ -64,7 +65,7 @@ public class AvroUtilSchemaNormalization {
    */
   public static byte[] parsingFingerprint(FingerprintingAlgo fpName, Schema s, AvscGenerationConfig config,
       List<AvscWriterPlugin> plugins) throws NoSuchAlgorithmException {
-    return fingerprint(fpName, getCanonicalForm(s, config, plugins).getBytes(StandardCharsets.UTF_8));
+    return fingerprint(fpName, getCanonicalForm(s, getNonLegacyConfig(config), plugins).getBytes(StandardCharsets.UTF_8));
   }
 
   /**
@@ -160,5 +161,18 @@ public class AvroUtilSchemaNormalization {
     ByteBuffer bb = ByteBuffer.allocate(longArray.length * Long.BYTES);
     bb.asLongBuffer().put(longArray);
     return bb.array();
+  }
+
+  /**
+   * Converts config to non legacy. Keeps all options except isLegacy which turns to false
+   * @param config config to be converted to non legacy.
+   * @return non legacy config
+   */
+  private static AvscGenerationConfig getNonLegacyConfig(AvscGenerationConfig config) {
+    return new AvscGenerationConfig(config.isPreferUseOfRuntimeAvro(), config.isForceUseOfRuntimeAvro(),
+        config.isPrettyPrint(), config.getRetainPreAvro702Logic(), config.isAddAvro702Aliases(),
+        config.retainDefaults, config.retainDocs, config.retainFieldAliases, config.retainNonClaimedProps,
+        config.retainSchemaAliases, config.writeNamespaceExplicitly, config.writeRelativeNamespace,
+        false);
   }
 }

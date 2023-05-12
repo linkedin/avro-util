@@ -163,6 +163,7 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
         G gen
     ) throws IOException {
         Avro702Data avro702Data;
+        Set<String> allJsonPropNames = getAllJsonPropNamesSortedFromSchema(getAllPropNames(schema));
         switch (schema.getType()) {
             case ENUM:
                 //taken from EnumSchema.toJson() in avro 1.11
@@ -181,7 +182,9 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                 }
                 gen.writeEndArray();
                 writeEnumDefault(schema, gen);
-                writePropsLegacy(schema, gen);
+                List<String> claimedProps = executeAvscWriterPluginsForSchema(schema, gen);
+                claimedProps.forEach(allJsonPropNames::remove);
+                writePropsLegacy(schema, gen, allJsonPropNames);
                 aliasesToJsonLegacy(schema, avro702Data.getExtraAliases(), gen);
                 gen.writeEndObject();
                 break;
@@ -197,7 +200,9 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                     gen.writeStringField("doc", schema.getDoc());
                 }
                 gen.writeNumberField("size", schema.getFixedSize());
-                writePropsLegacy(schema, gen);
+                claimedProps = executeAvscWriterPluginsForSchema(schema, gen);
+                claimedProps.forEach(allJsonPropNames::remove);
+                writePropsLegacy(schema, gen, allJsonPropNames);
                 aliasesToJsonLegacy(schema, avro702Data.getExtraAliases(), gen);
                 gen.writeEndObject();
                 break;
@@ -233,7 +238,9 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                         gen
                     );
                 }
-                writePropsLegacy(schema, gen);
+                claimedProps = executeAvscWriterPluginsForSchema(schema, gen);
+                claimedProps.forEach(allJsonPropNames::remove);
+                writePropsLegacy(schema, gen, allJsonPropNames);
                 aliasesToJsonLegacy(schema, avro702Data.getExtraAliases(), gen);
                 gen.writeEndObject();
                 //avro 1.4 never restores namespace, so we never restore space
@@ -245,7 +252,9 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                 gen.writeStringField("type", "array");
                 gen.writeFieldName("items");
                 toJsonLegacy(schema.getElementType(), names, contextNamespaceWhenParsed, contextNamespaceWhenParsedUnder702, gen);
-                writePropsLegacy(schema, gen);
+                claimedProps = executeAvscWriterPluginsForSchema(schema, gen);
+                claimedProps.forEach(allJsonPropNames::remove);
+                writePropsLegacy(schema, gen, allJsonPropNames);
                 gen.writeEndObject();
                 break;
             case MAP:
@@ -254,7 +263,9 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                 gen.writeStringField("type", "map");
                 gen.writeFieldName("values");
                 toJsonLegacy(schema.getValueType(), names, contextNamespaceWhenParsed, contextNamespaceWhenParsedUnder702, gen);
-                writePropsLegacy(schema, gen);
+                claimedProps = executeAvscWriterPluginsForSchema(schema, gen);
+                claimedProps.forEach(allJsonPropNames::remove);
+                writePropsLegacy(schema, gen, allJsonPropNames);
                 gen.writeEndObject();
                 break;
             case UNION:
@@ -272,7 +283,7 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                 } else {
                     gen.writeStartObject();
                     gen.writeStringField("type", schema.getName());
-                    writePropsLegacy(schema, gen);
+                    writePropsLegacy(schema, gen, allJsonPropNames);
                     gen.writeEndObject();
                 }
         }
@@ -611,6 +622,7 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
         gen.writeStartArray();
         List<Schema.Field> fields = schema.getFields();
         for (Schema.Field f : fields) {
+            Set<String> allJsonPropNames = getAllJsonPropNamesSortedFromSchema(getAllPropNames(f));
             gen.writeStartObject();
             gen.writeStringField("name", f.name());
             gen.writeFieldName("type");
@@ -631,7 +643,9 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
                 }
                 gen.writeEndArray();
             }
-            writePropsLegacy(f, gen);
+            List<String> claimedProps = executeAvscWriterPluginsForField(f, gen);
+            claimedProps.forEach(allJsonPropNames::remove);
+            writePropsLegacy(f, gen, allJsonPropNames);
             gen.writeEndObject();
         }
         gen.writeEndArray();
@@ -729,8 +743,8 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
      */
     protected abstract void writeProps(Schema schema, G gen, Set<String> propNames) throws IOException;
 
-    protected abstract void writePropsLegacy(Schema schema, G gen) throws IOException;
-    protected abstract void writePropsLegacy(Schema.Field field, G gen) throws IOException;
+    protected abstract void writePropsLegacy(Schema schema, G gen, Set<String> propNames) throws IOException;
+    protected abstract void writePropsLegacy(Schema.Field field, G gen, Set<String> propNames) throws IOException;
 
     /***
      * Write json props from field, for the keys provided in propNames
