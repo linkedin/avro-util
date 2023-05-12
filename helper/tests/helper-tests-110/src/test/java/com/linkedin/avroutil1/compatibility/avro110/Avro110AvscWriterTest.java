@@ -22,11 +22,16 @@ import org.testng.annotations.Test;
 
 
 public class Avro110AvscWriterTest {
-
+  @Test
+  public void testVanilla() throws IOException {
+    Schema schema = Schema.parse(TestUtil.load("RecordWithFieldProps.avsc"));
+    String serialized = AvroCompatibilityHelper.getAvscWriter(AvscGenerationConfig.VANILLA_ONELINE, null).toAvsc(schema);
+    Assert.assertEquals(serialized, schema.toString());
+  }
   @Test
   public void testLegacyOneLine() throws IOException {
     // Avro 1.10 gets all props including int, null, boolean, object, string etc
-    String expected = "{\"type\":\"record\",\"name\":\"RecordWithFieldProps\",\"namespace\":\"com.acme\",\"doc\":\"A perfectly normal record with field props\",\"fields\":[{\"name\":\"stringField\",\"type\":\"string\",\"nestedJsonProp\":\"{\\\"innerKey\\\" : \\\"innerValue\\\"}\",\"boolProp\":true,\"nullProp\":null,\"objectProp\":{\"a\":\"b\",\"c\":\"d\"},\"floatProp\":42.42,\"intProp\":42,\"stringProp\":\"stringValue\"},{\"name\":\"intField\",\"type\":\"int\"}],\"schemaStringProp\":\"stringyMcStringface\",\"schemaNullProp\":null,\"schemaBoolProp\":false,\"schemaIntProp\":24,\"schemaNestedJsonProp\":\"{\\\"innerKey\\\" : \\\"innerValue\\\"}\",\"schemaFloatProp\":1.2,\"schemaObjectProp\":{\"e\":\"f\",\"g\":\"h\"}}";
+    String expected = "{\"type\":\"record\",\"name\":\"RecordWithFieldProps\",\"namespace\":\"com.acme\",\"doc\":\"A perfectly normal record with field props\",\"fields\":[{\"name\":\"stringField\",\"type\":\"string\",\"stringProp\":\"stringValue\",\"intProp\":42,\"floatProp\":42.42,\"nullProp\":null,\"boolProp\":true,\"objectProp\":{\"a\":\"b\",\"c\":\"d\"},\"nestedJsonProp\":\"{\\\"innerKey\\\" : \\\"innerValue\\\"}\"},{\"name\":\"intField\",\"type\":\"int\"}],\"schemaStringProp\":\"stringyMcStringface\",\"schemaIntProp\":24,\"schemaFloatProp\":1.2,\"schemaNullProp\":null,\"schemaBoolProp\":false,\"schemaObjectProp\":{\"e\":\"f\",\"g\":\"h\"},\"schemaNestedJsonProp\":\"{\\\"innerKey\\\" : \\\"innerValue\\\"}\"}";
     Schema schema = Schema.parse(TestUtil.load("RecordWithFieldProps.avsc"));
     String serialized = AvroCompatibilityHelper.getAvscWriter(AvscGenerationConfig.LEGACY_ONELINE, null).toAvsc(schema);
     Assert.assertEquals(serialized, expected);
@@ -35,13 +40,13 @@ public class Avro110AvscWriterTest {
   @Test
   public void testLegacyOneLineWithFieldPlugin() throws IOException {
     // Avro 1.10 gets all props including int, null, boolean, object, string etc
-    // field's stringProp before nestedJsonProp as stringProp is being handled by plugin.
+    // field's objectProp before stringProp as objectProp is being handled by plugin.
     // schema's schemaNestedJsonProp before other props as it is handled by plugin
     String expected =
-        "{\"type\":\"record\",\"name\":\"RecordWithFieldProps\",\"namespace\":\"com.acme\",\"doc\":\"A perfectly normal record with field props\",\"fields\":[{\"name\":\"stringField\",\"type\":\"string\",\"stringProp\":\"stringValue\",\"nestedJsonProp\":\"{\\\"innerKey\\\" : \\\"innerValue\\\"}\",\"boolProp\":true,\"nullProp\":null,\"objectProp\":{\"a\":\"b\",\"c\":\"d\"},\"floatProp\":42.42,\"intProp\":42},{\"name\":\"intField\",\"type\":\"int\"}],\"schemaNestedJsonProp\":\"{\\\"innerKey\\\" : \\\"innerValue\\\"}\",\"schemaStringProp\":\"stringyMcStringface\",\"schemaNullProp\":null,\"schemaBoolProp\":false,\"schemaIntProp\":24,\"schemaFloatProp\":1.2,\"schemaObjectProp\":{\"e\":\"f\",\"g\":\"h\"}}" ;
+        "{\"type\":\"record\",\"name\":\"RecordWithFieldProps\",\"namespace\":\"com.acme\",\"doc\":\"A perfectly normal record with field props\",\"fields\":[{\"name\":\"stringField\",\"type\":\"string\",\"objectProp\":{\"a\":\"b\",\"c\":\"d\"},\"stringProp\":\"stringValue\",\"intProp\":42,\"floatProp\":42.42,\"nullProp\":null,\"boolProp\":true,\"nestedJsonProp\":\"{\\\"innerKey\\\" : \\\"innerValue\\\"}\"},{\"name\":\"intField\",\"type\":\"int\"}],\"schemaNestedJsonProp\":\"{\\\"innerKey\\\" : \\\"innerValue\\\"}\",\"schemaStringProp\":\"stringyMcStringface\",\"schemaIntProp\":24,\"schemaFloatProp\":1.2,\"schemaNullProp\":null,\"schemaBoolProp\":false,\"schemaObjectProp\":{\"e\":\"f\",\"g\":\"h\"}}";
     Schema schema = Schema.parse(TestUtil.load("RecordWithFieldProps.avsc"));
     String serialized = AvroCompatibilityHelper.getAvscWriter(AvscGenerationConfig.LEGACY_ONELINE,
-            Arrays.asList(new FieldLevelPlugin("stringProp"), new SchemaLevelPlugin("schemaNestedJsonProp")))
+            Arrays.asList(new FieldLevelPlugin("objectProp"), new SchemaLevelPlugin("schemaNestedJsonProp")))
         .toAvsc(schema);
     Assert.assertEquals(serialized, expected);
   }

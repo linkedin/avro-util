@@ -12,7 +12,7 @@ import com.linkedin.avroutil1.compatibility.Jackson1Utils;
 import com.linkedin.avroutil1.normalization.AvscWriterPlugin;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -154,7 +154,7 @@ public class Avro18AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
         if (props == null || props.isEmpty()) {
             return;
         }
-        props = new HashMap<>(props);
+        props = new LinkedHashMap<>(props);
         props.entrySet().removeIf(e -> !propNames.contains(e.getKey()));
         //write all props except "default" for enums
         if (schema.getType() == Schema.Type.ENUM) {
@@ -170,7 +170,7 @@ public class Avro18AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
         if (props == null) {
             return;
         }
-        props = new HashMap<>(props);
+        props = new LinkedHashMap<>(props);
         props.entrySet().removeIf(e -> !propNames.contains(e.getKey()));
         if (!props.isEmpty()) {
             writeProps(props, gen);
