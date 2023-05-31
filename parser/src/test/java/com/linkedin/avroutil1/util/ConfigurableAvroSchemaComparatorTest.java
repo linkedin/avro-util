@@ -15,7 +15,6 @@ import com.linkedin.avroutil1.parser.avsc.AvscParser;
 import com.linkedin.avroutil1.testcommon.TestUtil;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,7 +28,8 @@ public class ConfigurableAvroSchemaComparatorTest {
 
   @DataProvider
   private Object[][] testEqualsProvider() {
-    return new Object[][]{
+    return new Object[][]{{"schemas/TestRecord.avsc", "schemas/TestRecord.avsc", true},
+        {"schemas/UtilTester1.avsc", "schemas/UtilTester2.avsc", false},
         {"schemas/DefaultValues.avsc", "schemas/DefaultValues2.avsc", true}
     };
   }

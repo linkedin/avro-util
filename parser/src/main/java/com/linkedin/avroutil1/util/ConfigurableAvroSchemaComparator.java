@@ -15,7 +15,6 @@ import com.linkedin.avroutil1.model.AvroArraySchema;
 import com.linkedin.avroutil1.model.AvroBytesLiteral;
 import com.linkedin.avroutil1.model.AvroEnumSchema;
 import com.linkedin.avroutil1.model.AvroFixedSchema;
-import com.linkedin.avroutil1.model.AvroLiteral;
 import com.linkedin.avroutil1.model.AvroMapSchema;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
 import com.linkedin.avroutil1.model.AvroRecordSchema;
