@@ -339,6 +339,7 @@ public class ConfigurableAvroSchemaComparator {
         equals(aField.getSchema(), bField.getSchema(), config, seen, differences, fastFail);
 
         if (aField.hasDefaultValue() && bField.hasDefaultValue()) {
+          // Byte arrays need to be decoded before evaluation. Different "looking" byte arrays can represent the same value
           if (AvroType.BYTES.equals(aField.getSchema().type())) {
             AvroBytesLiteral aFieldDefaultLiteral = (AvroBytesLiteral) aField.getDefaultValue();
             AvroBytesLiteral bFieldDefaultLiteral = (AvroBytesLiteral) bField.getDefaultValue();
