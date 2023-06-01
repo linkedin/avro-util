@@ -14,6 +14,7 @@ import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
 import com.linkedin.avroutil1.parser.avsc.AvscParser;
 import com.linkedin.avroutil1.testcommon.TestUtil;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,7 +29,9 @@ public class ConfigurableAvroSchemaComparatorTest {
   @DataProvider
   private Object[][] testEqualsProvider() {
     return new Object[][]{{"schemas/TestRecord.avsc", "schemas/TestRecord.avsc", true},
-        {"schemas/UtilTester1.avsc", "schemas/UtilTester2.avsc", false}};
+        {"schemas/UtilTester1.avsc", "schemas/UtilTester2.avsc", false},
+        {"schemas/DefaultValues.avsc", "schemas/DefaultValues2.avsc", true}
+    };
   }
 
   @DataProvider
@@ -52,8 +55,15 @@ public class ConfigurableAvroSchemaComparatorTest {
   public void testEquals(String path1, String path2, boolean expectedResult) throws IOException {
     AvroRecordSchema recordSchema1 = (AvroRecordSchema) validateAndGetAvroRecordSchema(path1);
     AvroRecordSchema recordSchema2 = (AvroRecordSchema) validateAndGetAvroRecordSchema(path2);
-    Assert.assertEquals(
-        ConfigurableAvroSchemaComparator.equals(recordSchema1, recordSchema2, SchemaComparisonConfiguration.PRE_1_7_3),
+
+    SchemaComparisonConfiguration comparisonConfiguration =
+        new SchemaComparisonConfiguration(true, false, false, false, true, false, new HashSet(
+            Arrays.asList("li.data.proto.numberFieldType", "li.data.proto.fieldNumber",
+                "li.data.proto.fullyQualifiedName", "li.data.proto.enumValueNumbers")));
+
+    ConfigurableAvroSchemaComparator.findDifference(recordSchema1, recordSchema2, comparisonConfiguration);
+
+    Assert.assertEquals(ConfigurableAvroSchemaComparator.equals(recordSchema1, recordSchema2, comparisonConfiguration),
         expectedResult);
   }
 

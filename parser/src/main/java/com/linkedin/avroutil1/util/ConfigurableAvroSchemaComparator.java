@@ -12,6 +12,7 @@ import com.linkedin.avroutil1.compatibility.AvroVersion;
 import com.linkedin.avroutil1.compatibility.Jackson2Utils;
 import com.linkedin.avroutil1.compatibility.SchemaComparisonConfiguration;
 import com.linkedin.avroutil1.model.AvroArraySchema;
+import com.linkedin.avroutil1.model.AvroBytesLiteral;
 import com.linkedin.avroutil1.model.AvroEnumSchema;
 import com.linkedin.avroutil1.model.AvroFixedSchema;
 import com.linkedin.avroutil1.model.AvroMapSchema;
@@ -26,6 +27,7 @@ import com.linkedin.avroutil1.model.AvroUnionSchema;
 import com.linkedin.avroutil1.model.JsonPropertiesContainer;
 import com.linkedin.avroutil1.model.SchemaOrRef;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -337,7 +339,23 @@ public class ConfigurableAvroSchemaComparator {
         equals(aField.getSchema(), bField.getSchema(), config, seen, differences, fastFail);
 
         if (aField.hasDefaultValue() && bField.hasDefaultValue()) {
-          if (!aField.getDefaultValue().equals(bField.getDefaultValue())) {
+          // Byte arrays need to be decoded before evaluation. Different "looking" byte arrays can represent the same value
+          if (AvroType.BYTES.equals(aField.getSchema().type())) {
+            AvroBytesLiteral aFieldDefaultLiteral = (AvroBytesLiteral) aField.getDefaultValue();
+            AvroBytesLiteral bFieldDefaultLiteral = (AvroBytesLiteral) bField.getDefaultValue();
+            if (!new String(aFieldDefaultLiteral.getValue(), StandardCharsets.UTF_8).equals(
+                new String(bFieldDefaultLiteral.getValue(), StandardCharsets.UTF_8))) {
+              AvroSchemaDifference difference =
+                  new AvroSchemaDifference(aField.getCodeLocation(), bField.getCodeLocation(),
+                      AvroSchemaDifferenceType.RECORD_DEFAULT_VALUE_MISMATCH, String.format(
+                      "Default value %s for bytes type field %s in %s in schemaA does not match with default value %s field %s in %s in schemaB",
+                      aField.getDefaultValue(), aField.getName(), a, bField.getDefaultValue(), bField.getName(), b));
+              differences.add(difference);
+              if (fastFail) {
+                return;
+              }
+            }
+          } else if (!aField.getDefaultValue().equals(bField.getDefaultValue())) {
             AvroSchemaDifference difference =
                 new AvroSchemaDifference(aField.getCodeLocation(), bField.getCodeLocation(),
                     AvroSchemaDifferenceType.RECORD_DEFAULT_VALUE_MISMATCH, String.format(
