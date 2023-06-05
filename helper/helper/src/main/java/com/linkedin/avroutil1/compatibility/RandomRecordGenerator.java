@@ -146,9 +146,7 @@ public class RandomRecordGenerator {
         }
         return map;
       case UNION:
-        if (context.hasHitMaxRecursiveDepth() && of.getTypes()
-            .stream()
-            .anyMatch(schema -> schema.getType().equals( Schema.Type.NULL))) {
+        if (context.hasHitMaxRecursiveDepth() && AvroSchemaUtil.isNullAValidDefaultForSchema(of)) {
           return null;
         }
         context.pushPath(of);
