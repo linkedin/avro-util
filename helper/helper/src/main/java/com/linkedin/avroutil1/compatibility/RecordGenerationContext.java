@@ -17,11 +17,14 @@ import org.apache.avro.Schema;
 public class RecordGenerationContext {
   private final RecordGenerationConfig config;
 
+  private final int MAX_DEPTH = 100;
+  private boolean hasHitMaxDepth = false;
+
   public RecordGenerationContext(RecordGenerationConfig config) {
     this.config = config;
   }
 
-  //TODO - replacce with JsonPath in the future if that ever happens
+  //TODO - replace with JsonPath in the future if that ever happens
   private final List<Schema> path = new ArrayList<>();
 
   public RecordGenerationConfig getConfig() {
@@ -33,6 +36,17 @@ public class RecordGenerationContext {
       throw new IllegalArgumentException("path required");
     }
     this.path.add(path);
+  }
+
+  public boolean hasHitMaxDepth() {
+    if (hasHitMaxDepth) {
+      return true;
+    }
+
+    if (path.size() > MAX_DEPTH) {
+      this.hasHitMaxDepth = true;
+    }
+    return hasHitMaxDepth;
   }
 
   public Schema popPath() {

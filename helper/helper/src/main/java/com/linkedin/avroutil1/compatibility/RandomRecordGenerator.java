@@ -113,6 +113,9 @@ public class RandomRecordGenerator {
         }
         return record;
       case ARRAY:
+        if (context.hasHitMaxDepth()) {
+          return new GenericData.Array<>(0, of);
+        }
         context.pushPath(of);
         size = random.nextInt(11); //[0, 10]
         GenericData.Array<Object> array = new GenericData.Array<>(size, of);
@@ -126,6 +129,9 @@ public class RandomRecordGenerator {
         }
         return array;
       case MAP:
+        if (context.hasHitMaxDepth()) {
+          return new HashMap<>(0);
+        }
         context.pushPath(of);
         size = random.nextInt(11); //[0, 10]
         HashMap<CharSequence, Object> map = new HashMap<>(size);
@@ -140,6 +146,11 @@ public class RandomRecordGenerator {
         }
         return map;
       case UNION:
+        if (context.hasHitMaxDepth() && of.getTypes()
+            .stream()
+            .anyMatch(schema -> schema.getType().equals( Schema.Type.NULL))) {
+          return null;
+        }
         context.pushPath(of);
         List<Schema> acceptableBranches = narrowDownUnionBranches(of, of.getTypes(), context);
         index = random.nextInt(acceptableBranches.size());

@@ -17,7 +17,6 @@ dependencies {
     //implementation "org.glassfish:jakarta.json:2.0.1"
 
     //old location of json-p
-    api 'javax.json:javax.json-api:1.1'
     implementation 'org.glassfish:javax.json:1.1'
 
     testImplementation project(":test-common")
