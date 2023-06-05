@@ -7,7 +7,9 @@
 package com.linkedin.avroutil1.compatibility;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.avro.Schema;
 
 
@@ -24,6 +26,7 @@ public class RecordGenerationContext {
 
   //TODO - replace with JsonPath in the future if that ever happens
   private final List<Schema> path = new ArrayList<>();
+  private final Map<String, Integer> pathOccurrences = new HashMap<>();
 
   public RecordGenerationConfig getConfig() {
     return config;
@@ -34,6 +37,10 @@ public class RecordGenerationContext {
       throw new IllegalArgumentException("path required");
     }
     this.path.add(path);
+    if (path.getType().equals(Schema.Type.RECORD)) {
+      String pathName = path.getFullName();
+      pathOccurrences.put(pathName, pathOccurrences.getOrDefault(pathName, 0) + 1);
+    }
   }
 
   /**
@@ -47,21 +54,16 @@ public class RecordGenerationContext {
     }
 
     String currentSchemaName = path.get(path.size() - 1).getFullName();
-    int numberOfOccurrences = 0;
-    for (Schema schema : path) {
-      if (schema.getType() == Schema.Type.RECORD && schema.getFullName().equals(currentSchemaName)) {
-        numberOfOccurrences++;
-      }
-      if (numberOfOccurrences >= MAX_DEPTH) {
-        return true;
-      }
-    }
-    return false;
+    return pathOccurrences.getOrDefault(currentSchemaName, 0) >= MAX_DEPTH;
   }
 
   public Schema popPath() {
     if (path.isEmpty()) {
       throw new IllegalStateException("this is a bug");
+    }
+    if (path.get(path.size() - 1).getType() == Schema.Type.RECORD) {
+      String pathName = path.get(path.size() - 1).getFullName();
+      pathOccurrences.computeIfPresent(pathName, (k, v) -> v - 1);
     }
     return path.remove(path.size() - 1);
   }
