@@ -1,0 +1,31 @@
+{
+  "type": "record",
+  "name": "RecursiveRecord",
+  "fields": [
+    {
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "name": "children",
+      "type": {
+        "type": "array",
+        "items": "RecursiveRecord"
+      }
+    },
+    {
+      "name": "parent",
+      "type": [
+        "null",
+        "RecursiveRecord"
+      ]
+    },
+    {
+      "name": "siblings",
+      "type": {
+        "type": "map",
+        "values": "RecursiveRecord"
+      }
+    }
+  ]
+}

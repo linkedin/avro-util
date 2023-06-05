@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.compatibility;
 
+import com.linkedin.avroutil1.testcommon.TestUtil;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericRecord;
 import org.testng.Assert;
@@ -24,6 +25,12 @@ public class RandomRecordGeneratorTest {
     testSpecific(under19.RecordWithReservedFields.class);
     testSpecific(under110.RecordWithReservedFields.class);
     testSpecific(under111.RecordWithReservedFields.class);
+  }
+
+  @Test
+  public void testRecursiveCollections() throws Exception {
+    Schema randomRecord = Schema.parse(TestUtil.load("allavro/RecursiveRecord.avsc"));
+    testGeneric(randomRecord);
   }
 
   @Test
