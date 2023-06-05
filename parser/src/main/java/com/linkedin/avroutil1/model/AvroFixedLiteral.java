@@ -6,6 +6,9 @@
 
 package com.linkedin.avroutil1.model;
 
+import java.util.Arrays;
+
+
 public class AvroFixedLiteral extends AvroLiteral {
     private final byte[] value;
 
@@ -34,6 +37,7 @@ public class AvroFixedLiteral extends AvroLiteral {
 
     @Override
     public boolean equals(Object literal) {
-        return literal instanceof AvroFixedLiteral && this.value == ((AvroFixedLiteral) literal).getValue();
+        return literal instanceof AvroFixedLiteral && Arrays.equals(this.value,
+            ((AvroFixedLiteral) literal).getValue());
     }
 }

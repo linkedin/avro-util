@@ -119,4 +119,13 @@ public class ConfigurableAvroSchemaComparatorTest {
             SchemaComparisonConfiguration.STRICT.jsonPropNamesToIgnore(jsonPropNamesToIgnore));
     Assert.assertEquals(differences.size(), 0);
   }
+
+  @Test
+  public void testEqualityOfSameRecord() throws IOException {
+    AvroRecordSchema schema1 =
+        (AvroRecordSchema) validateAndGetAvroRecordSchema("schemas/TestRecordWithDefaultValues.avsc");
+    AvroRecordSchema schema2 =
+        (AvroRecordSchema) validateAndGetAvroRecordSchema("schemas/TestRecordWithDefaultValues.avsc");
+    Assert.assertTrue(ConfigurableAvroSchemaComparator.equals(schema1, schema2, SchemaComparisonConfiguration.STRICT));
+  }
 }
