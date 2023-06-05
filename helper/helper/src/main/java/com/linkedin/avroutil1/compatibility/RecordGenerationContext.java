@@ -16,9 +16,7 @@ import org.apache.avro.Schema;
  */
 public class RecordGenerationContext {
   private final RecordGenerationConfig config;
-
-  private final int MAX_DEPTH = 100;
-  private boolean hasHitMaxDepth = false;
+  private final int MAX_DEPTH = 3;
 
   public RecordGenerationContext(RecordGenerationConfig config) {
     this.config = config;
@@ -38,15 +36,27 @@ public class RecordGenerationContext {
     this.path.add(path);
   }
 
-  public boolean hasHitMaxDepth() {
-    if (hasHitMaxDepth) {
-      return true;
+  /**
+   * Checks if the current schema has been recursively-generated beyond the max recursive depth.
+   * Only applies to records since only records can be recursive.
+   */
+  public boolean hasHitMaxRecursiveDepth() {
+    Schema currSchema = path.get(path.size() - 1);
+    if (currSchema.getType() != Schema.Type.RECORD) {
+      return false;
     }
 
-    if (path.size() > MAX_DEPTH) {
-      this.hasHitMaxDepth = true;
+    String currentSchemaName = path.get(path.size() - 1).getFullName();
+    int numberOfOccurrences = 0;
+    for (Schema schema : path) {
+      if (schema.getType() == Schema.Type.RECORD && schema.getFullName().equals(currentSchemaName)) {
+        numberOfOccurrences++;
+      }
+      if (numberOfOccurrences >= MAX_DEPTH) {
+        return true;
+      }
     }
-    return hasHitMaxDepth;
+    return false;
   }
 
   public Schema popPath() {

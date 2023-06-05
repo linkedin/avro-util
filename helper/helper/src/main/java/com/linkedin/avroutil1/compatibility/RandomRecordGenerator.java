@@ -113,7 +113,7 @@ public class RandomRecordGenerator {
         }
         return record;
       case ARRAY:
-        if (context.hasHitMaxDepth()) {
+        if (context.hasHitMaxRecursiveDepth()) {
           return new GenericData.Array<>(0, of);
         }
         context.pushPath(of);
@@ -129,7 +129,7 @@ public class RandomRecordGenerator {
         }
         return array;
       case MAP:
-        if (context.hasHitMaxDepth()) {
+        if (context.hasHitMaxRecursiveDepth()) {
           return new HashMap<>(0);
         }
         context.pushPath(of);
@@ -146,7 +146,7 @@ public class RandomRecordGenerator {
         }
         return map;
       case UNION:
-        if (context.hasHitMaxDepth() && of.getTypes()
+        if (context.hasHitMaxRecursiveDepth() && of.getTypes()
             .stream()
             .anyMatch(schema -> schema.getType().equals( Schema.Type.NULL))) {
           return null;
