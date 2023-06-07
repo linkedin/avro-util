@@ -56,7 +56,8 @@ public class SchemaBuilder {
         .describedAs("dir");
     OptionSpec<String> resolverPathOpt = parser.accepts("resolverPath", "Resolver path for dependent schemas")
         .withOptionalArg()
-        .describedAs("file");
+        .describedAs("file")
+        .withValuesSeparatedBy(File.pathSeparatorChar);
     OptionSpec<String> expandedSchemas = parser.accepts("expandedSchemas", "Directory for dumping expanded schemas")
         .withOptionalArg()
         .describedAs("dir");

@@ -11,6 +11,9 @@ import java.io.File;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -128,6 +131,7 @@ public class SchemaBuilderTest {
     File simpleProjectRoot = new File(locateTestProjectsRoot(), "resolverpath-project");
     File inputFolder = new File(simpleProjectRoot, "input");
     File resolverFolder = new File(simpleProjectRoot, "resolverPath");
+    File resolverZip = new File(simpleProjectRoot, "avro_zip.zip");
     File outputFolder = new File(simpleProjectRoot, "output");
     if (outputFolder.exists()) { //clear output
       FileUtils.deleteDirectory(outputFolder);
@@ -137,7 +141,7 @@ public class SchemaBuilderTest {
             "--input", inputFolder.getAbsolutePath(),
             "--output", outputFolder.getAbsolutePath(),
             "--generator", CodeGenerator.AVRO_UTIL.name(),
-            "--resolverPath", resolverFolder.getAbsolutePath()
+            "--resolverPath", String.join(File.pathSeparator, resolverFolder.getAbsolutePath(), resolverZip.getAbsolutePath())
         });
     //see output was generated
     List<Path> javaFiles = Files.find(outputFolder.toPath(), 5,
