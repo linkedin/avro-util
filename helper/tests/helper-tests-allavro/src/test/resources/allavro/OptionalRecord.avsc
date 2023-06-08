@@ -1,0 +1,17 @@
+{
+  "type": "record",
+  "name": "OptionalRecord",
+  "fields": [
+    {
+      "name": "optionalField",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "name": "requiredField",
+      "type": "string"
+    }
+  ]
+}

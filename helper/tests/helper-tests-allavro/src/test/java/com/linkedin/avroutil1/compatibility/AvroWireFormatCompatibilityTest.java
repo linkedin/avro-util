@@ -7,6 +7,8 @@
 package com.linkedin.avroutil1.compatibility;
 
 import com.linkedin.avroutil1.testcommon.TestUtil;
+import java.io.IOException;
+import java.util.Arrays;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -16,6 +18,7 @@ import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.io.JsonDecoder;
+import org.assertj.core.api.Assertions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -153,5 +156,23 @@ public class AvroWireFormatCompatibilityTest {
     GenericRecord deserializedGenericRecord =
         AvroCodecUtil.deserializeAsGeneric(bytes, writerSchema, readerSchemaWithLong);
     Assert.assertEquals(deserializedGenericRecord.get(0), 1L);
+  }
+
+  @Test
+  public void demonstrateWritingNullsDoesNotChangeBytes() throws IOException {
+    Schema schema =
+        AvroCompatibilityHelper.parse(TestUtil.load("allavro/OptionalRecord.avsc"));
+    GenericData.Record explicitNulls = new GenericData.Record(schema);
+    explicitNulls.put("optionalField", null);
+    explicitNulls.put("requiredField", "");
+    byte[] explicitBytes = AvroCodecUtil.serializeBinary(explicitNulls);
+
+
+    GenericData.Record nonExplicitNulls = new GenericData.Record(schema);
+    nonExplicitNulls.put("optionalField", null);
+    nonExplicitNulls.put("requiredField", "");
+    byte[] nonExplicitBytes = AvroCodecUtil.serializeBinary(explicitNulls);
+
+    Assertions.assertThat(Arrays.equals(explicitBytes, nonExplicitBytes)).isTrue();
   }
 }
