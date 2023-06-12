@@ -467,6 +467,7 @@ public class SpecificRecordClassGenerator {
         FieldSpec.Builder fieldBuilder = getFieldSpecBuilder(field, config).addModifiers(accessModifier);
         if(config.hasPublicFields()) {
           fieldBuilder.addAnnotation(Deprecated.class);
+          fieldBuilder.addJavadoc("@deprecated public fields are deprecated. Please use setters/getters.");
         }
         classBuilder.addField(fieldBuilder.build());
 
