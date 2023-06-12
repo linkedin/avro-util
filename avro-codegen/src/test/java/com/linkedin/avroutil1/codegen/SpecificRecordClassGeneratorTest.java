@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.codegen;
 
+import com.linkedin.avroutil1.compatibility.StringUtils;
 import com.linkedin.avroutil1.model.AvroEnumSchema;
 import com.linkedin.avroutil1.model.AvroFixedSchema;
 import com.linkedin.avroutil1.model.AvroRecordSchema;
@@ -13,6 +14,7 @@ import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
 import com.linkedin.avroutil1.parser.avsc.AvscParser;
 import com.linkedin.avroutil1.testcommon.TestUtil;
 import com.linkedin.avroutil1.testutil.CompilerHelper;
+import java.io.IOException;
 import javax.tools.JavaFileObject;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -190,5 +192,21 @@ public class SpecificRecordClassGeneratorTest {
     JavaFileObject javaFileObject =
         generator.generateSpecificClass(schema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
     CompilerHelper.assertCompiles(javaFileObject);
+  }
+
+  @Test
+  public void testHasDeprecatedFieldsComment() throws IOException, ClassNotFoundException {
+    String avsc = TestUtil.load("schemas/BuilderTester.avsc");
+    SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
+    AvscParser parser = new AvscParser();
+    AvscParseResult result = parser.parse(avsc);
+    Assert.assertNull(result.getParseError());
+    AvroRecordSchema schema  = (AvroRecordSchema) result.getTopLevelSchema();
+
+    JavaFileObject javaFileObject =
+        generator.generateSpecificClass(schema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
+    Assert.assertEquals(StringUtils.countMatches(javaFileObject.getCharContent(false).toString(),
+            "/**\n" + "   * @deprecated public fields are deprecated. Please use setters/getters.\n" + "   */"),
+        schema.getFields().size());
   }
 }
