@@ -1032,7 +1032,7 @@ public class SpecificRecordClassGenerator {
       case ENUM:
         TypeName enumClassName = SpecificRecordGeneratorUtil.getTypeName(fieldSchema, AvroType.ENUM, true, config.getDefaultFieldStringRepresentation());
         serializedCodeBlock =
-            String.format("%s = %s.values()[in.readEnum()]", fieldName, enumClassName.toString());
+            String.format("%s = com.linkedin.avroutil1.Enums.getConstant(%s.class, in.readEnum())", fieldName, enumClassName.toString());
         break;
       case FIXED:
         codeBlockBuilder.beginControlFlow("if ($L == null)", fieldName)
