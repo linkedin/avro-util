@@ -10,6 +10,7 @@ import com.linkedin.avro.fastserde.primitive.PrimitiveDoubleArrayList;
 import com.linkedin.avro.fastserde.primitive.PrimitiveFloatArrayList;
 import com.linkedin.avro.fastserde.primitive.PrimitiveIntArrayList;
 import com.linkedin.avro.fastserde.primitive.PrimitiveLongArrayList;
+import com.linkedin.avroutil1.Enums;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
@@ -463,7 +464,8 @@ public class SchemaAssistant {
             .arg(getSchemaExpr.invoke("getEnumSymbols").invoke("get").arg(indexExpr));
       }
     } else {
-      return codeModel.ref(AvroCompatibilityHelper.getSchemaFullName(enumSchema)).staticInvoke("values").component(indexExpr);
+      JClass enumClass = codeModel.ref(AvroCompatibilityHelper.getSchemaFullName(enumSchema));
+      return codeModel.ref(Enums.class).staticInvoke("getConstant").arg(enumClass.dotclass()).arg(indexExpr);
     }
   }
 
