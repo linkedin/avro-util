@@ -353,7 +353,7 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
             "Default value for field \"" + field.getName() + "\" is a malformed avro " + type.toTypeName()
                 + " default value. Default value: " + ((AvscUnparsedLiteral) literal).getDefaultValueNode().toString());
       } else {
-        // unions are commonly
+        // union defaults are commonly malformed so add what the likely issue is in the error msg
         throw new IllegalArgumentException("Default value for union field \"" + field.getName()
             + "\" should be the type of the 1st schema in the union. Default value: "
             + ((AvscUnparsedLiteral) literal).getDefaultValueNode().toString());
