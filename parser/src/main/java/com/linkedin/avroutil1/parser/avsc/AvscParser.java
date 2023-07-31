@@ -400,10 +400,11 @@ public class AvscParser {
                             }
                             LiteralOrIssue defaultValueOrIssue = parseLiteral(fieldDefaultValueNode, defaultValueExpectedSchema, fieldName.getValue(), context);
                             if (defaultValueOrIssue.getIssue() == null) {
-                                //TODO - allow parsing default values that are branch != 0 (and add an issue)
                                 defaultValue = defaultValueOrIssue.getLiteral();
                             } else {
                                 context.addIssue(defaultValueOrIssue.getIssue());
+                                defaultValue = new AvscUnparsedLiteral(fieldDefaultValueNode,
+                                    defaultValueOrIssue.getIssue().getLocation());
                             }
                             //TODO - handle issues
                         } else {

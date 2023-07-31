@@ -1,0 +1,30 @@
+{
+  "type": "record",
+  "name": "User",
+  "fields": [
+    {
+      "name": "name",
+      "type": {
+        "type": "record",
+        "name": "Name",
+        "fields": [
+          {
+            "name": "first",
+            "type": "string"
+          },
+          {
+            "name": "last",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "recursive",
+      "type": "Name",
+      "default": {
+        "first": null
+      }
+    }
+  ]
+}
