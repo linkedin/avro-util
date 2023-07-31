@@ -402,7 +402,6 @@ public class AvscParser {
                             if (defaultValueOrIssue.getIssue() == null) {
                                 defaultValue = defaultValueOrIssue.getLiteral();
                             } else {
-                                context.addIssue(defaultValueOrIssue.getIssue());
                                 defaultValue = new AvscUnparsedLiteral(fieldDefaultValueNode,
                                     defaultValueOrIssue.getIssue().getLocation());
                             }
