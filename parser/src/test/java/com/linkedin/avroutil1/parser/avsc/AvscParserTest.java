@@ -265,7 +265,7 @@ public class AvscParserTest {
             List<AvscIssue> issuesWithField = result.getIssues(field);
             Assert.assertFalse(issuesWithField.isEmpty(), "field " + field.getName() + " has no issues?!");
             Assert.assertFalse(issuesWithField.stream().noneMatch(issue -> issue.getMessage().contains("default value")));
-            Assert.assertNull(field.getDefaultValue());
+            Assert.assertTrue(field.getDefaultValue() instanceof AvscUnparsedLiteral);
         }
     }
 

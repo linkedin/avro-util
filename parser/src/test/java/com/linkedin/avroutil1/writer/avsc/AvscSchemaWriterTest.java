@@ -93,6 +93,27 @@ public class AvscSchemaWriterTest {
     testParsingCycle(avsc);
   }
 
+  @Test
+  void testBadDefaultValues() throws IOException {
+    String recordAvsc = TestUtil.load("schemas/badDefaultValues/BadRecord.avsc");
+    Assert.assertThrows(IllegalArgumentException.class, () -> testAvscWriterForBadSchema(recordAvsc));
+
+    String unionAvsc = TestUtil.load("schemas/badDefaultValues/BadUnion.avsc");
+    Assert.assertThrows(IllegalArgumentException.class, () -> testAvscWriterForBadSchema(unionAvsc));
+
+    String badPrimitiveUnionAvsc = TestUtil.load("schemas/badDefaultValues/BadPrimitiveUnion.avsc");
+    Assert.assertThrows(IllegalArgumentException.class, () -> testAvscWriterForBadSchema(badPrimitiveUnionAvsc));
+  }
+
+  void testAvscWriterForBadSchema(String avsc) {
+    AvscParser parser = new AvscParser();
+    AvscParseResult parseResults = parser.parse(avsc);
+    AvroSchema parsed = parseResults.getTopLevelSchema();
+    Assert.assertNotNull(parsed);
+    AvscSchemaWriter writer = new AvscSchemaWriter();
+    writer.writeSingle(parsed);
+  }
+
   /**
    * given an avsc, parses and re-prints it using our code
    * and compares the result to vanilla avro.

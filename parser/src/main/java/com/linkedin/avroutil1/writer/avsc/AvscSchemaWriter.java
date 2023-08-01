@@ -34,6 +34,7 @@ import com.linkedin.avroutil1.model.AvroType;
 import com.linkedin.avroutil1.model.AvroUnionSchema;
 import com.linkedin.avroutil1.model.JsonPropertiesContainer;
 import com.linkedin.avroutil1.model.SchemaOrRef;
+import com.linkedin.avroutil1.parser.avsc.AvscUnparsedLiteral;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
@@ -324,7 +325,7 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
 
       if (field.hasDefaultValue()) {
         AvroLiteral defaultValue = field.getDefaultValue();
-        JsonValue defaultValueLiteral = writeDefaultValue(fieldSchema, defaultValue);
+        JsonValue defaultValueLiteral = writeDefaultValue(fieldSchema, defaultValue, field);
         fieldBuilder.add("default", defaultValueLiteral);
       }
       //TODO - order
@@ -340,10 +341,25 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
     output.add("fields", arrayBuilder);
   }
 
-  protected JsonValue writeDefaultValue(AvroSchema fieldSchema, AvroLiteral literal) {
-    AvroType type = fieldSchema.type();
+  protected JsonValue writeDefaultValue(AvroSchema schemaForLiteral, AvroLiteral literal, AvroSchemaField field) {
+    AvroType type = schemaForLiteral.type();
     String temp;
     AvroSchema valueSchema;
+
+    // if literal is of type AvscUnparsedLiteral, throw an exception
+    if (literal instanceof AvscUnparsedLiteral) {
+      if (!type.equals(AvroType.UNION)) {
+        throw new IllegalArgumentException(
+            "Default value for field \"" + field.getName() + "\" is a malformed avro " + type.toTypeName()
+                + " default value. Default value: " + ((AvscUnparsedLiteral) literal).getDefaultValueNode().toString());
+      } else {
+        // union defaults are commonly malformed so add what the likely issue is in the error msg
+        throw new IllegalArgumentException("Default value for union field \"" + field.getName()
+            + "\" should be the type of the 1st schema in the union. Default value: "
+            + ((AvscUnparsedLiteral) literal).getDefaultValueNode().toString());
+      }
+    }
+
     switch (type) {
       case NULL:
         //noinspection unused (kept as a sanity check)
@@ -389,7 +405,7 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
         valueSchema = arraySchema.getValueSchema();
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         for  (AvroLiteral element : array) {
-          JsonValue serializedElement = writeDefaultValue(valueSchema, element);
+          JsonValue serializedElement = writeDefaultValue(valueSchema, element, field);
           arrayBuilder.add(serializedElement);
         }
         return arrayBuilder.build();
@@ -400,23 +416,23 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
         valueSchema = mapSchema.getValueSchema();
         JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
         for (Map.Entry<String, AvroLiteral> entry : map.entrySet()) {
-          JsonValue serializedValue = writeDefaultValue(valueSchema, entry.getValue());
+          JsonValue serializedValue = writeDefaultValue(valueSchema, entry.getValue(), field);
           objectBuilder.add(entry.getKey(), serializedValue);
         }
         return objectBuilder.build();
       case UNION:
         //default values for unions must be of the 1st type in the union
-        AvroUnionSchema unionSchema = (AvroUnionSchema) fieldSchema;
+        AvroUnionSchema unionSchema = (AvroUnionSchema) schemaForLiteral;
         AvroSchema firstBranchSchema = unionSchema.getTypes().get(0).getSchema();
-        return writeDefaultValue(firstBranchSchema, literal);
+        return writeDefaultValue(firstBranchSchema, literal, field);
       case RECORD:
-        AvroRecordSchema recordSchema = (AvroRecordSchema) fieldSchema;
+        AvroRecordSchema recordSchema = (AvroRecordSchema) schemaForLiteral;
         JsonObjectBuilder recordObjectBuilder = Json.createObjectBuilder();
         Map<String, AvroLiteral> recordLiteralMap = ((AvroRecordLiteral) literal).getValue();
 
-        for (AvroSchemaField field : recordSchema.getFields()) {
-          recordObjectBuilder.add(field.getName(),
-              writeDefaultValue(field.getSchema(), recordLiteralMap.get(field.getName())));
+        for (AvroSchemaField innerField : recordSchema.getFields()) {
+          recordObjectBuilder.add(innerField.getName(),
+              writeDefaultValue(innerField.getSchema(), recordLiteralMap.get(innerField.getName()), field));
         }
         return recordObjectBuilder.build();
       default:
