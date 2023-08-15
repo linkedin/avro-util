@@ -1,0 +1,17 @@
+{
+  "namespace": "com.linkedin.avro.fastserde.generated.avro",
+  "type": "record",
+  "name": "NestedMapTest",
+  "fields": [
+    {
+      "name": "mapField",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "map",
+          "values": "long"
+        }
+      }
+    }
+  ]
+}

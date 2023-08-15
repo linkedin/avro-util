@@ -914,8 +914,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       }
 
       Symbol valuesActionSymbol = null;
-      for (int i = action.getSymbol().production.length - 1; i >= 0; --i) {
-        Symbol symbol = action.getSymbol().production[i];
+      for (Symbol symbol : action.getSymbol().production) {
         if (Symbol.Kind.REPEATER.equals(symbol.kind) && "map-end".equals(
             getSymbolPrintName(((Symbol.Repeater) symbol).end))) {
           valuesActionSymbol = symbol;

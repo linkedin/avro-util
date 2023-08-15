@@ -1,0 +1,63 @@
+{
+  "namespace": "com.linkedin.avro.fastserde.generated.avro",
+  "type": "record",
+  "name": "NestedMapInRecordTest",
+  "fields": [
+    {
+      "name": "mapField",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "record",
+          "name": "InternalRecordField",
+          "fields": [
+            {
+              "name": "internalMapField",
+              "type": {
+                "type": "map",
+                "values": {
+                  "name": "NestedMapRecordItem",
+                  "type": "record",
+                  "fields": [
+                    {
+                      "name": "ItemName",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "internalNullableLong1",
+              "type": [
+                "null",
+                "long"
+              ]
+            },
+            {
+              "name": "internalNullableLong2",
+              "type": [
+                "null",
+                "long"
+              ]
+            },
+            {
+              "name": "internalNullableLong3",
+              "type": [
+                "null",
+                "long"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "nullableLong1",
+      "type": [
+        "null",
+        "long"
+      ]
+    }
+  ]
+}
