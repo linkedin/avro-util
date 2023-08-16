@@ -961,7 +961,7 @@ public class SpecificRecordClassGenerator {
 
   private void addCustomDecodeMethod(MethodSpec.Builder customDecodeBuilder, AvroRecordSchema recordSchema,
       SpecificRecordGenerationConfig config, TypeSpec.Builder classBuilder) {
-    int blockSize = 5, fieldCounter = 0, chunkCounter = 0;
+    int blockSize = 25, fieldCounter = 0, chunkCounter = 0;
     // reset var counter
     sizeValCounter = -1;
     customDecodeBuilder.addStatement(
