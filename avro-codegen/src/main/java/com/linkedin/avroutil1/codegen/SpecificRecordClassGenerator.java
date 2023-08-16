@@ -961,7 +961,7 @@ public class SpecificRecordClassGenerator {
 
   private void addCustomDecodeMethod(MethodSpec.Builder customDecodeBuilder, AvroRecordSchema recordSchema,
       SpecificRecordGenerationConfig config, TypeSpec.Builder classBuilder) {
-    int blockSize = 2, fieldCounter = 0, chunkCounter = 0;
+    int blockSize = 5, fieldCounter = 0, chunkCounter = 0;
     // reset var counter
     sizeValCounter = -1;
     customDecodeBuilder.addStatement(
@@ -1008,7 +1008,7 @@ public class SpecificRecordClassGenerator {
           .addException(IOException.class)
           .addModifiers(Modifier.PUBLIC);
 
-      customDecodeChunkMethod.beginControlFlow("for( int i = 0; i< $L; i++)", recordSchema.getFields().size())
+      customDecodeChunkMethod.beginControlFlow("for( int i = $L; i< $L; i++)", fieldCounter, Math.min(blockSize * chunkCounter + blockSize, recordSchema.getFields().size()))
           .beginControlFlow("switch(fieldOrder[i].pos())");
 
       for (; fieldCounter < Math.min(blockSize * chunkCounter + blockSize, recordSchema.getFields().size());
