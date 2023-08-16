@@ -969,7 +969,7 @@ public class SpecificRecordClassGenerator {
         .beginControlFlow("if (fieldOrder == null)");
 
     while (fieldCounter < recordSchema.getFields().size()) {
-      String chunkMethodName = "customDecodeIfChunk" + chunkCounter;
+      String chunkMethodName = "customDecodeWithoutFieldOrderChunk" + chunkCounter;
       // add call to new method.
       customDecodeBuilder.addStatement(chunkMethodName + "(in)");
       // create new method
@@ -998,7 +998,7 @@ public class SpecificRecordClassGenerator {
         .beginControlFlow("else");
 
     while (fieldCounter < recordSchema.getFields().size()) {
-      String chunkMethodName = "customDecodeElseChunk" + chunkCounter;
+      String chunkMethodName = "customDecodeWithFieldOrderChunk" + chunkCounter;
       // add call to new method.
       customDecodeBuilder.addStatement(chunkMethodName + "(in, fieldOrder)");
       // create new method
