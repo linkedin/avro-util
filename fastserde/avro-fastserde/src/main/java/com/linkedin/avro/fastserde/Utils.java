@@ -2,7 +2,6 @@ package com.linkedin.avro.fastserde;
 
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
-import com.linkedin.avroutil1.compatibility.SchemaNormalization;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -39,7 +38,7 @@ public class Utils {
   }
 
   // Cache the mapping between Schema and the corresponding fingerprint
-  private static final Map<Schema, Long> SCHEMA_IDS_CACHE = new ConcurrentHashMap<>();
+  private static final Map<Schema, Integer> SCHEMA_IDS_CACHE = new ConcurrentHashMap<>();
 
   private Utils() {
   }
@@ -108,13 +107,14 @@ public class Utils {
   }
   /**
    * This function will produce a fingerprint for the provided schema.
+   *
    * @param schema a schema
    * @return fingerprint for the given schema
    */
-  public static Long getSchemaFingerprint(Schema schema) {
-    Long schemaId = SCHEMA_IDS_CACHE.get(schema);
+  public static int getSchemaFingerprint(Schema schema) {
+    Integer schemaId = SCHEMA_IDS_CACHE.get(schema);
     if (schemaId == null) {
-      schemaId = SchemaNormalization.parsingFingerprint64(schema);
+      schemaId = schema.toString().hashCode();
       SCHEMA_IDS_CACHE.put(schema, schemaId);
     }
 

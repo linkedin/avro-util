@@ -70,8 +70,8 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
   private static final Supplier<JExpression> EMPTY_SUPPLIER = () -> JExpr._null();
 
   private JMethod constructor;
-  private Map<Long, Schema> schemaMap = new HashMap<>();
-  private Map<Long, JVar> schemaVarMap = new HashMap<>();
+  private Map<Integer, Schema> schemaMap = new HashMap<>();
+  private Map<Integer, JVar> schemaVarMap = new HashMap<>();
   private Map<String, JMethod> deserializeMethodMap = new HashMap<>();
   private Map<String, JMethod> skipMethodMap = new HashMap<>();
   private Map<JMethod, Set<Class<? extends Exception>>> exceptionFromMethodMap = new HashMap<>();
@@ -1246,11 +1246,12 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
      */
     if (SchemaAssistant.isComplexType(valueSchema) || Schema.Type.ENUM.equals(valueSchema.getType())
         || Schema.Type.FIXED.equals(valueSchema.getType())) {
-      long schemaId = Utils.getSchemaFingerprint(valueSchema);
-      if (schemaVarMap.get(schemaId) != null) {
-        return schemaVarMap.get(schemaId);
+      int schemaId = Utils.getSchemaFingerprint(valueSchema);
+      JVar schemaVar = schemaVarMap.get(schemaId);
+      if (schemaVar != null) {
+        return schemaVar;
       } else {
-        JVar schemaVar = generatedClass.field(JMod.PRIVATE | JMod.FINAL, Schema.class,
+        schemaVar = generatedClass.field(JMod.PRIVATE | JMod.FINAL, Schema.class,
             getUniqueName(StringUtils.uncapitalize(variableName)));
         constructor.body().assign(JExpr.refthis(schemaVar.name()), getValueType);
 
@@ -1266,7 +1267,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     registerSchema(writerSchema, Utils.getSchemaFingerprint(writerSchema), schemaVar);
   }
 
-  private void registerSchema(final Schema writerSchema, long schemaId, JVar schemaVar) {
+  private void registerSchema(final Schema writerSchema, int schemaId, JVar schemaVar) {
     if ((Schema.Type.RECORD.equals(writerSchema.getType()) || Schema.Type.ENUM.equals(writerSchema.getType())
         // TODO: Do we need `ARRAY` type here?
         || Schema.Type.FIXED.equals(writerSchema.getType()) || Schema.Type.ARRAY.equals(writerSchema.getType()))
@@ -1327,8 +1328,9 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
   }
 
   private JExpression getSchemaExpr(Schema schema) {
-    Long index = Utils.getSchemaFingerprint(schema);
-    return (useGenericTypes && schemaVarMap.containsKey(index)) ? schemaVarMap.get(index) : JExpr._null();
+    int index = Utils.getSchemaFingerprint(schema);
+    JVar schemaVar = schemaVarMap.get(index);
+    return (useGenericTypes && schemaVar != null) ? schemaVar : JExpr._null();
   }
 
   private Supplier<JExpression> potentiallyCacheInvocation(Supplier<JExpression> jExpressionSupplier, JBlock body, String variableNamePrefix) {

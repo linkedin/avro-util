@@ -224,34 +224,48 @@ public class FastStringableTest {
     stringMap.put("ddd", "eee");
     record.put("testStringMap", stringMap);
 
-    Decoder decoder = writeWithFastAvro(record, writerSchema, false);
+    Decoder decoder1 = writeWithFastAvro(record, writerSchema, false);
+    Decoder decoder2 = writeWithFastAvro(record, writerSchema, false);
 
-    GenericRecord afterDecoding;
+    GenericRecord afterDecodingWithJavaString, afterDecodingWithoutJavaString;
     if (whetherUseFastDeserializer) {
-      afterDecoding = readWithFastAvro(writerSchema, readerSchema, decoder, false);
+      afterDecodingWithJavaString = readWithFastAvro(writerSchema, readerSchema, decoder1, false);
+      afterDecodingWithoutJavaString = readWithFastAvro(writerSchema, writerSchema, decoder2, false);
     } else {
-      afterDecoding = readWithSlowAvro(writerSchema, readerSchema, decoder, false);
+      afterDecodingWithJavaString = readWithSlowAvro(writerSchema, readerSchema, decoder1, false);
+      afterDecodingWithoutJavaString = readWithSlowAvro(writerSchema, writerSchema, decoder2, false);
     }
 
     if (Utils.isAbleToSupportJavaStrings()){
-      Assert.assertTrue(afterDecoding.get(0) instanceof String, "String is expected, but got: " + afterDecoding.get(0).getClass());
-      Assert.assertTrue(afterDecoding.get(1) instanceof String, "String is expected, but got: " + afterDecoding.get(0).getClass());
-      Assert.assertTrue(((GenericData.Array<Object>) afterDecoding.get(2)).get(0) instanceof String,
-          "String is expected, but got: " + ((GenericData.Array<Object>) afterDecoding.get(2)).get(0).getClass());
-      Assert.assertTrue(((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next() instanceof String,
-          "String is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next().getClass());
-      Assert.assertTrue(((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next() instanceof String,
-          "String is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next().getClass());
+      Assert.assertTrue(afterDecodingWithJavaString.get(0) instanceof String, "String is expected, but got: " + afterDecodingWithJavaString.get(0).getClass());
+      Assert.assertTrue(afterDecodingWithJavaString.get(1) instanceof String, "String is expected, but got: " + afterDecodingWithJavaString.get(0).getClass());
+      Assert.assertTrue(((GenericData.Array<Object>) afterDecodingWithJavaString.get(2)).get(0) instanceof String,
+          "String is expected, but got: " + ((GenericData.Array<Object>) afterDecodingWithJavaString.get(2)).get(0).getClass());
+      Assert.assertTrue(((Map<Object, Object>) afterDecodingWithJavaString.get(3)).keySet().iterator().next() instanceof String,
+          "String is expected, but got: " + ((Map<Object, Object>) afterDecodingWithJavaString.get(3)).keySet().iterator().next().getClass());
+      Assert.assertTrue(((Map<Object, Object>) afterDecodingWithJavaString.get(3)).values().iterator().next() instanceof String,
+          "String is expected, but got: " + ((Map<Object, Object>) afterDecodingWithJavaString.get(3)).values().iterator().next().getClass());
     }  else {
-      Assert.assertTrue(afterDecoding.get(0) instanceof Utf8, "Utf8 is expected, but got: " + afterDecoding.get(0).getClass());
-      Assert.assertTrue(afterDecoding.get(1) instanceof Utf8, "Utf8 is expected, but got: " + afterDecoding.get(0).getClass());
-      Assert.assertTrue(((GenericData.Array<Object>) afterDecoding.get(2)).get(0) instanceof Utf8,
-          "Utf8 is expected, but got: " + ((GenericData.Array<Object>) afterDecoding.get(2)).get(0).getClass());
-      Assert.assertTrue(((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next() instanceof Utf8,
-          "Utf8 is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).keySet().iterator().next().getClass());
-      Assert.assertTrue(((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next() instanceof Utf8,
-          "Utf8 is expected, but got: " + ((Map<Object, Object>) afterDecoding.get(3)).values().iterator().next().getClass());
+      Assert.assertTrue(afterDecodingWithJavaString.get(0) instanceof Utf8, "Utf8 is expected, but got: " + afterDecodingWithJavaString.get(0).getClass());
+      Assert.assertTrue(afterDecodingWithJavaString.get(1) instanceof Utf8, "Utf8 is expected, but got: " + afterDecodingWithJavaString.get(0).getClass());
+      Assert.assertTrue(((GenericData.Array<Object>) afterDecodingWithJavaString.get(2)).get(0) instanceof Utf8,
+          "Utf8 is expected, but got: " + ((GenericData.Array<Object>) afterDecodingWithJavaString.get(2)).get(0).getClass());
+      Assert.assertTrue(((Map<Object, Object>) afterDecodingWithJavaString.get(3)).keySet().iterator().next() instanceof Utf8,
+          "Utf8 is expected, but got: " + ((Map<Object, Object>) afterDecodingWithJavaString.get(3)).keySet().iterator().next().getClass());
+      Assert.assertTrue(((Map<Object, Object>) afterDecodingWithJavaString.get(3)).values().iterator().next() instanceof Utf8,
+          "Utf8 is expected, but got: " + ((Map<Object, Object>) afterDecodingWithJavaString.get(3)).values().iterator().next().getClass());
     }
+
+    // Regardless of the above, we should also be able to decode to Utf8 within the same JVM that already decoded Java Strings
+    Assert.assertTrue(afterDecodingWithoutJavaString.get(0) instanceof Utf8, "Utf8 is expected, but got: " + afterDecodingWithoutJavaString.get(0).getClass());
+    Assert.assertTrue(afterDecodingWithoutJavaString.get(1) instanceof Utf8, "Utf8 is expected, but got: " + afterDecodingWithoutJavaString.get(0).getClass());
+    Assert.assertTrue(((GenericData.Array<Object>) afterDecodingWithoutJavaString.get(2)).get(0) instanceof Utf8,
+        "Utf8 is expected, but got: " + ((GenericData.Array<Object>) afterDecodingWithoutJavaString.get(2)).get(0).getClass());
+    Assert.assertTrue(((Map<Object, Object>) afterDecodingWithoutJavaString.get(3)).keySet().iterator().next() instanceof Utf8,
+        "Utf8 is expected, but got: " + ((Map<Object, Object>) afterDecodingWithoutJavaString.get(3)).keySet().iterator().next().getClass());
+    Assert.assertTrue(((Map<Object, Object>) afterDecodingWithoutJavaString.get(3)).values().iterator().next() instanceof Utf8,
+        "Utf8 is expected, but got: " + ((Map<Object, Object>) afterDecodingWithoutJavaString.get(3)).values().iterator().next().getClass());
+
   }
 
 
