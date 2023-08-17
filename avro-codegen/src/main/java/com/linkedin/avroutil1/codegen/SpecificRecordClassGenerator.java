@@ -26,6 +26,7 @@ import com.linkedin.avroutil1.model.AvroUnionSchema;
 import com.linkedin.avroutil1.model.SchemaOrRef;
 import com.linkedin.avroutil1.writer.avsc.AvscSchemaWriter;
 import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
@@ -517,7 +518,7 @@ public class SpecificRecordClassGenerator {
           .addParameter(SpecificRecordGeneratorUtil.CLASSNAME_RESOLVING_DECODER, "in")
           .addException(IOException.class)
           .addModifiers(Modifier.PUBLIC);
-      addCustomDecodeMethod(customDecodeBuilder, recordSchema, config);
+      addCustomDecodeMethod(customDecodeBuilder, recordSchema, config, classBuilder);
       classBuilder.addMethod(customDecodeBuilder.build());
     }
 
@@ -959,41 +960,78 @@ public class SpecificRecordClassGenerator {
   }
 
   private void addCustomDecodeMethod(MethodSpec.Builder customDecodeBuilder, AvroRecordSchema recordSchema,
-      SpecificRecordGenerationConfig config) {
+      SpecificRecordGenerationConfig config, TypeSpec.Builder classBuilder) {
+    int blockSize = 25, fieldCounter = 0, chunkCounter = 0;
     // reset var counter
     sizeValCounter = -1;
     customDecodeBuilder.addStatement(
             "org.apache.avro.Schema.Field[] fieldOrder = (com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.areFieldsReordered(getSchema())) ? in.readFieldOrder() : null")
         .beginControlFlow("if (fieldOrder == null)");
-    for(AvroSchemaField field : recordSchema.getFields()) {
-      String escapedFieldName = getFieldNameWithSuffix(field);
-      customDecodeBuilder.addStatement(getSerializedCustomDecodeBlock(config, field.getSchemaOrRef().getSchema(),
-          field.getSchemaOrRef().getSchema().type(), "this." + replaceSingleDollarSignWithDouble(escapedFieldName),
-          "this." + replaceSingleDollarSignWithDouble(escapedFieldName), StringUtils.EMPTY_STRING));
+
+    while (fieldCounter < recordSchema.getFields().size()) {
+      String chunkMethodName = "customDecodeWithoutFieldOrderChunk" + chunkCounter;
+      // add call to new method.
+      customDecodeBuilder.addStatement(chunkMethodName + "(in)");
+      // create new method
+      MethodSpec.Builder customDecodeChunkMethod = MethodSpec.methodBuilder(chunkMethodName)
+          .addParameter(SpecificRecordGeneratorUtil.CLASSNAME_RESOLVING_DECODER, "in")
+          .addException(IOException.class)
+          .addModifiers(Modifier.PUBLIC);
+      for (; fieldCounter < Math.min(blockSize * chunkCounter + blockSize, recordSchema.getFields().size());
+          fieldCounter++) {
+        AvroSchemaField field = recordSchema.getField(fieldCounter);
+        String escapedFieldName = getFieldNameWithSuffix(field);
+        customDecodeChunkMethod.addStatement(getSerializedCustomDecodeBlock(config, field.getSchemaOrRef().getSchema(),
+            field.getSchemaOrRef().getSchema().type(), "this." + replaceSingleDollarSignWithDouble(escapedFieldName),
+            "this." + replaceSingleDollarSignWithDouble(escapedFieldName), StringUtils.EMPTY_STRING));
+      }
+      chunkCounter++;
+      classBuilder.addMethod(customDecodeChunkMethod.build());
     }
+
     // reset var counter
     sizeValCounter = -1;
     int fieldIndex = 0;
+    fieldCounter = 0;
+    chunkCounter = 0;
     customDecodeBuilder.endControlFlow()
-        .beginControlFlow("else")
-        .beginControlFlow("for( int i = 0; i< $L; i++)", recordSchema.getFields().size())
-        .beginControlFlow("switch(fieldOrder[i].pos())");
-    for(AvroSchemaField field : recordSchema.getFields()) {
-      String escapedFieldName = getFieldNameWithSuffix(field);
-      customDecodeBuilder
-          .addStatement(String.format("case %s: ",fieldIndex++)+ getSerializedCustomDecodeBlock(config,
-              field.getSchemaOrRef().getSchema(), field.getSchemaOrRef().getSchema().type(),
-              "this." + replaceSingleDollarSignWithDouble(escapedFieldName),
-              "this." + replaceSingleDollarSignWithDouble(escapedFieldName), StringUtils.EMPTY_STRING))
-          .addStatement("break");
+        .beginControlFlow("else");
+
+    while (fieldCounter < recordSchema.getFields().size()) {
+      String chunkMethodName = "customDecodeWithFieldOrderChunk" + chunkCounter;
+      // add call to new method.
+      customDecodeBuilder.addStatement(chunkMethodName + "(in, fieldOrder)");
+      // create new method
+      MethodSpec.Builder customDecodeChunkMethod = MethodSpec.methodBuilder(chunkMethodName)
+          .addParameter(SpecificRecordGeneratorUtil.CLASSNAME_RESOLVING_DECODER, "in")
+          .addParameter(ArrayTypeName.of(SpecificRecordGeneratorUtil.CLASSNAME_SCHEMA_FIELD), "fieldOrder")
+          .addException(IOException.class)
+          .addModifiers(Modifier.PUBLIC);
+
+      customDecodeChunkMethod.beginControlFlow("for( int i = $L; i< $L; i++)", fieldCounter, Math.min(blockSize * chunkCounter + blockSize, recordSchema.getFields().size()))
+          .beginControlFlow("switch(fieldOrder[i].pos())");
+
+      for (; fieldCounter < Math.min(blockSize * chunkCounter + blockSize, recordSchema.getFields().size());
+          fieldCounter++) {
+        AvroSchemaField field = recordSchema.getField(fieldCounter);
+        String escapedFieldName = getFieldNameWithSuffix(field);
+        customDecodeChunkMethod.addStatement(String.format("case %s: ",fieldIndex++)+ getSerializedCustomDecodeBlock(config,
+                field.getSchemaOrRef().getSchema(), field.getSchemaOrRef().getSchema().type(),
+                "this." + replaceSingleDollarSignWithDouble(escapedFieldName),
+                "this." + replaceSingleDollarSignWithDouble(escapedFieldName), StringUtils.EMPTY_STRING))
+            .addStatement("break");
+      }
+      customDecodeChunkMethod
+          //switch
+          .endControlFlow()
+          //for
+          .endControlFlow();
+
+      chunkCounter++;
+      classBuilder.addMethod(customDecodeChunkMethod.build());
     }
-    customDecodeBuilder
-        //switch
-        .endControlFlow()
-        //for
-        .endControlFlow()
         //else
-        .endControlFlow();
+    customDecodeBuilder.endControlFlow();
 
   }
 

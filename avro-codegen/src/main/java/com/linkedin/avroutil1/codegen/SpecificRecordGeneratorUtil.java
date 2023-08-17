@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.apache.avro.Schema;
 import org.apache.avro.reflect.Nullable;
 import org.apache.avro.util.Utf8;
 
@@ -52,6 +53,7 @@ public class SpecificRecordGeneratorUtil {
   public static final String AVRO_GEN_COMMENT = "GENERATED CODE by avro-util";
 
   public static final ClassName CLASSNAME_SCHEMA = ClassName.get("org.apache.avro", "Schema");
+  public static final ClassName CLASSNAME_SCHEMA_FIELD = ClassName.get(Schema.Field.class);
   public static final ClassName CLASSNAME_SPECIFIC_DATA = ClassName.get("org.apache.avro.specific", "SpecificData");
   public static final ClassName CLASSNAME_SPECIFIC_RECORD = ClassName.get("org.apache.avro.specific", "SpecificRecord");
   public static final ClassName CLASSNAME_SPECIFIC_RECORD_BASE = ClassName.get("org.apache.avro.specific", "SpecificRecordBase");
