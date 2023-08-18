@@ -2,12 +2,14 @@ package com.linkedin.avro.fastserde;
 
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
-import com.linkedin.avroutil1.compatibility.SchemaNormalization;
+import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.security.CodeSource;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
@@ -39,7 +41,7 @@ public class Utils {
   }
 
   // Cache the mapping between Schema and the corresponding fingerprint
-  private static final Map<Schema, Long> SCHEMA_IDS_CACHE = new ConcurrentHashMap<>();
+  private static final Map<Schema, Integer> SCHEMA_IDS_CACHE = new ConcurrentHashMap<>();
 
   private Utils() {
   }
@@ -108,13 +110,26 @@ public class Utils {
   }
   /**
    * This function will produce a fingerprint for the provided schema.
+   *
    * @param schema a schema
    * @return fingerprint for the given schema
    */
-  public static Long getSchemaFingerprint(Schema schema) {
-    Long schemaId = SCHEMA_IDS_CACHE.get(schema);
+  public static int getSchemaFingerprint(Schema schema) {
+    Integer schemaId = SCHEMA_IDS_CACHE.get(schema);
     if (schemaId == null) {
-      schemaId = SchemaNormalization.parsingFingerprint64(schema);
+      String schemaString = AvroCompatibilityHelper.toAvsc(schema, AvscGenerationConfig.CORRECT_ONELINE);
+      try {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        byte[] digest = md.digest(schemaString.getBytes());
+        int scratchPad = 0;
+        for (int i = 0; i < digest.length; i++) {
+          scratchPad = (scratchPad * 256 + (digest[i] & 0xFF));
+        }
+        schemaId = scratchPad;
+      } catch (NoSuchAlgorithmException e) {
+        schemaId = schemaString.hashCode();
+      }
+
       SCHEMA_IDS_CACHE.put(schema, schemaId);
     }
 

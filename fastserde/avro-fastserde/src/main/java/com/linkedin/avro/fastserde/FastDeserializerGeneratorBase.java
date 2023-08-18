@@ -37,8 +37,8 @@ public abstract class FastDeserializerGeneratorBase<T> extends FastSerdeBase {
   }
 
   public static String getClassName(Schema writerSchema, Schema readerSchema, String description) {
-    Long writerSchemaId = Math.abs(Utils.getSchemaFingerprint(writerSchema));
-    Long readerSchemaId = Math.abs(Utils.getSchemaFingerprint(readerSchema));
+    int writerSchemaId = Math.abs(Utils.getSchemaFingerprint(writerSchema));
+    int readerSchemaId = Math.abs(Utils.getSchemaFingerprint(readerSchema));
     String typeName = SchemaAssistant.getTypeName(readerSchema);
     return typeName + SEP + description + "Deserializer" + SEP + writerSchemaId + SEP + readerSchemaId;
   }

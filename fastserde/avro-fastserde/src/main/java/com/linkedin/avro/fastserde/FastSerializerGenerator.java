@@ -34,7 +34,7 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
   /**
    * Enum schema mapping for Avro-1.4 to record schema id and corresponding schema JVar.
    */
-  private final Map<Long, JVar> enumSchemaVarMap = new HashMap<>();
+  private final Map<Integer, JVar> enumSchemaVarMap = new HashMap<>();
 
 
   public FastSerializerGenerator(boolean useGenericTypes, Schema schema, File destination, ClassLoader classLoader,
@@ -44,7 +44,7 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
   }
 
   public static String getClassName(Schema schema, String description) {
-    Long schemaId = Math.abs(Utils.getSchemaFingerprint(schema));
+    int schemaId = Math.abs(Utils.getSchemaFingerprint(schema));
     String typeName = SchemaAssistant.getTypeName(schema);
     return typeName + SEP + description + "Serializer" + SEP + schemaId;
   }
