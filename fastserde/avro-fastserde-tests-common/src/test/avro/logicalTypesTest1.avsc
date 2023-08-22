@@ -1,0 +1,171 @@
+{
+  "type": "record",
+  "name": "FastSerdeLogicalTypesTest1",
+  "namespace": "com.linkedin.avro.fastserde.generated.avro",
+  "doc": "Used in tests to confirm fast-serde supports logical-types",
+  "fields": [
+    {
+      "name": "unionOfArrayAndMap",
+      "type": [
+        {
+          "type": "array",
+          "items": {
+            "type": "int",
+            "logicalType": "time-millis"
+          }
+        },
+        {
+          "type": "map",
+          "values": {
+            "type": "int",
+            "logicalType": "date"
+          }
+        }
+      ]
+    },
+    {
+      "name": "timestampMillisMap",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "long",
+          "logicalType": "timestamp-millis"
+        }
+      }
+    },
+    {
+      "name": "nullableArrayOfDates",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": {
+            "type": "int",
+            "logicalType": "date"
+          }
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "arrayOfDates",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "int",
+          "logicalType": "date"
+        }
+      }
+    },
+    {
+      "name": "unionOfDecimalOrDate",
+      "type": [
+        {
+          "type": "bytes",
+          "logicalType": "decimal",
+          "precision": 4,
+          "scale": 2
+        },
+        {
+          "type": "int",
+          "logicalType": "date"
+        }
+      ]
+    },
+    {
+      "name": "uuidField",
+      "type": {
+        "type": "string",
+        "logicalType": "uuid"
+      }
+    },
+    {
+      "name": "timestampMillisField",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }
+    },
+    {
+      "name": "timestampMicrosField",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-micros"
+      }
+    },
+    {
+      "name": "timeMillisField",
+      "type": {
+        "type": "int",
+        "logicalType": "time-millis"
+      }
+    },
+    {
+      "name": "timeMicrosField",
+      "type": {
+        "type": "long",
+        "logicalType": "time-micros"
+      }
+    },
+    {
+      "name": "dateField",
+      "type": {
+        "type": "int",
+        "logicalType": "date"
+      }
+    },
+    {
+      "name": "nestedLocalTimestampMillis",
+      "type": {
+        "name": "LocalTimestampRecord",
+        "type": "record",
+        "fields": [
+          {
+            "name": "nestedTimestamp",
+            "type": {
+              "type": "long",
+              "logicalType": "local-timestamp-millis"
+            }
+          },
+          {
+            "name": "nullableNestedTimestamp",
+            "type": [
+              "null",
+              {
+                "type": "long",
+                "logicalType": "local-timestamp-millis"
+              }
+            ]
+          },
+          {
+            "name": "nullableUnionOfDateAndLocalTimestamp",
+            "type": [
+              "null",
+              {
+                "type": "int",
+                "logicalType": "date"
+              },
+              {
+                "type": "long",
+                "logicalType": "local-timestamp-millis"
+              }
+            ]
+          },
+          {
+            "name": "unionOfDateAndLocalTimestamp",
+            "type": [
+              {
+                "type": "int",
+                "logicalType": "date"
+              },
+              {
+                "type": "long",
+                "logicalType": "local-timestamp-millis"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
