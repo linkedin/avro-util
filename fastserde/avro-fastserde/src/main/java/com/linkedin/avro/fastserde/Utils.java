@@ -11,12 +11,22 @@ import java.io.IOException;
 import java.security.CodeSource;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
+import javax.lang.model.SourceVersion;
+
 import org.apache.avro.Schema;
+import org.apache.commons.lang3.StringUtils;
 
 
 public class Utils {
@@ -233,5 +243,20 @@ public class Utils {
       }
       return pathJoiner.toString();
     }
+  }
+
+  public static String toValidJavaIdentifier(String javaIdentifier) {
+    if (StringUtils.isBlank(javaIdentifier)) {
+      throw new NullPointerException("Expected not-blank identifier!");
+    }
+
+    javaIdentifier = StringUtils.deleteWhitespace(javaIdentifier)
+            .replaceAll("\\W+", "_");
+
+    if (!SourceVersion.isIdentifier(javaIdentifier) || SourceVersion.isKeyword(javaIdentifier)) {
+      javaIdentifier = "a_" + javaIdentifier;
+    }
+
+    return javaIdentifier;
   }
 }
