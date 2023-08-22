@@ -67,14 +67,14 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
    * and Avro treats null as a sentinel value indicating that it should
    * instantiate a new object instead of re-using.
    */
-  private static final Supplier<JExpression> EMPTY_SUPPLIER = () -> JExpr._null();
+  private static final Supplier<JExpression> EMPTY_SUPPLIER = JExpr::_null;
 
   private JMethod constructor;
-  private Map<Integer, Schema> schemaMap = new HashMap<>();
-  private Map<Integer, JVar> schemaVarMap = new HashMap<>();
-  private Map<String, JMethod> deserializeMethodMap = new HashMap<>();
-  private Map<String, JMethod> skipMethodMap = new HashMap<>();
-  private Map<JMethod, Set<Class<? extends Exception>>> exceptionFromMethodMap = new HashMap<>();
+  private final Map<Integer, Schema> schemaMap = new HashMap<>();
+  private final Map<Integer, JVar> schemaVarMap = new HashMap<>();
+  private final Map<String, JMethod> deserializeMethodMap = new HashMap<>();
+  private final Map<String, JMethod> skipMethodMap = new HashMap<>();
+  private final Map<JMethod, Set<Class<? extends Exception>>> exceptionFromMethodMap = new HashMap<>();
 
   FastDeserializerGenerator(boolean useGenericTypes, Schema writer, Schema reader, File destination,
       ClassLoader classLoader, String compileClassPath, U modelData) {
@@ -1240,7 +1240,8 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
     if (!useGenericTypes) {
       return null;
     }
-    /**
+
+    /*
      * TODO: In theory, we should only need Record, Enum and Fixed here since only these types require
      * schema for the corresponding object initialization in Generic mode.
      */

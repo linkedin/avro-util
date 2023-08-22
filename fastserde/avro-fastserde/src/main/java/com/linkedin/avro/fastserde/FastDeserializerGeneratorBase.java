@@ -6,7 +6,6 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.ListIterator;
-import java.util.Optional;
 import org.apache.avro.Schema;
 import com.linkedin.avro.fastserde.backport.Symbol;
 
