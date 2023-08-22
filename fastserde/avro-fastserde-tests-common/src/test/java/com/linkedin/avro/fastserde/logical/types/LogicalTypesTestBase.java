@@ -111,11 +111,11 @@ public abstract class LogicalTypesTestBase {
 
         @SuppressWarnings("unchecked")
         FastSerializer<T> fastGenericSerializer = (FastSerializer<T>) fastSerdeCache
-                .buildFastGenericSerializer(data.getSchema());
+                .buildFastGenericSerializer(data.getSchema(), copyConversions(data.getSpecificData(), new GenericData()));
 
         @SuppressWarnings("unchecked")
         FastSerializer<T> fastSpecificSerializer = (FastSerializer<T>) fastSerdeCache
-                .buildFastSpecificSerializer(data.getSchema());
+                .buildFastSpecificSerializer(data.getSchema(), copyConversions(data.getSpecificData(), new SpecificData()));
 
         GenericDatumWriter<T> genericDatumWriter = new GenericDatumWriter<>(
                 data.getSchema(), copyConversions(data.getSpecificData(), new GenericData()));
@@ -160,11 +160,11 @@ public abstract class LogicalTypesTestBase {
 
         @SuppressWarnings("unchecked")
         FastDeserializer<GenericData.Record> fastGenericDeserializer = (FastDeserializer<GenericData.Record>) fastSerdeCache
-                .buildFastGenericDeserializer(schema, schema);
+                .buildFastGenericDeserializer(schema, schema, copyConversions(data.getSpecificData(), new GenericData()));
 
         @SuppressWarnings("unchecked")
         FastDeserializer<T> fastSpecificDeserializer = (FastDeserializer<T>) fastSerdeCache
-                .buildFastSpecificDeserializer(schema, schema);
+                .buildFastSpecificDeserializer(schema, schema, copyConversions(data.getSpecificData(), new SpecificData()));
 
         GenericDatumReader<GenericData.Record> genericDatumReader = new GenericDatumReader<>(
                 schema, schema, copyConversions(data.getSpecificData(), new GenericData()));

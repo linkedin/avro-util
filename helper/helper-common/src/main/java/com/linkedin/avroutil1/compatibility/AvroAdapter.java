@@ -78,6 +78,10 @@ public interface AvroAdapter {
 
   <T> SpecificDatumReader<T> newAliasAwareSpecificDatumReader(Schema writer, Class<T> readerClass);
 
+  DatumWriter<?> newGenericDatumWriter(Schema writer, GenericData genericData);
+
+  DatumReader<?> newGenericDatumReader(Schema writer, Schema reader, GenericData genericData);
+
   DatumWriter<?> newSpecificDatumWriter(Schema writer, SpecificData specificData);
 
   DatumReader<?> newSpecificDatumReader(Schema writer, Schema reader, SpecificData specificData);

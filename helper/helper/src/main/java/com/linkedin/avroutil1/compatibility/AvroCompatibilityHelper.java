@@ -352,6 +352,16 @@ public class AvroCompatibilityHelper  extends AvroCompatibilityHelperCommon{
     return ADAPTER.newAliasAwareSpecificDatumReader(writerSchema, readerClass);
   }
 
+  public static DatumWriter newGenericDatumWriter(Schema schema, GenericData genericData) {
+    assertAvroAvailable();
+    return ADAPTER.newGenericDatumWriter(schema, genericData);
+  }
+
+  public static DatumReader newGenericDatumReader(Schema writer, Schema reader, GenericData genericData) {
+    assertAvroAvailable();
+    return ADAPTER.newGenericDatumReader(writer, reader, genericData);
+  }
+
   public static DatumWriter newSpecificDatumWriter(Schema schema, SpecificData specificData) {
     assertAvroAvailable();
     return ADAPTER.newSpecificDatumWriter(schema, specificData);

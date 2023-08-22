@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.io.DatumReader;
 import org.apache.avro.io.Decoder;
 import org.slf4j.Logger;
@@ -13,12 +14,13 @@ import org.slf4j.LoggerFactory;
 /**
  * Generic {@link DatumReader} backed by generated deserialization code.
  */
-public class FastGenericDatumReader<T> implements DatumReader<T> {
+public class FastGenericDatumReader<T, U extends GenericData> implements DatumReader<T> {
   private static final Logger LOGGER = LoggerFactory.getLogger(FastGenericDatumReader.class);
 
   private Schema writerSchema;
   private Schema readerSchema;
-  private FastSerdeCache cache;
+  private final FastSerdeCache cache;
+  private final U modelData;
 
   private final AtomicReference<FastDeserializer<T>> cachedFastDeserializer = new AtomicReference<>();
 
@@ -35,12 +37,17 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
   }
 
   public FastGenericDatumReader(Schema writerSchema, Schema readerSchema, FastSerdeCache cache) {
+    this(writerSchema, readerSchema, cache, null);
+  }
+
+  public FastGenericDatumReader(Schema writerSchema, Schema readerSchema, FastSerdeCache cache, U modelData) {
     this.writerSchema = writerSchema;
     this.readerSchema = readerSchema;
     this.cache = cache != null ? cache : FastSerdeCache.getDefaultInstance();
+    this.modelData = modelData;
 
     if (!Utils.isSupportedAvroVersionsForDeserializer()) {
-      this.cachedFastDeserializer.set(getRegularAvroImpl(writerSchema, readerSchema));
+      this.cachedFastDeserializer.set(getRegularAvroImpl(writerSchema, readerSchema, modelData));
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(
             "Current avro version: " + Utils.getRuntimeAvroVersion() + " is not supported, and only the following"
@@ -49,7 +56,7 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
       }
     } else if (!FastSerdeCache.isSupportedForFastDeserializer(readerSchema.getType())) {
       // For unsupported schema type, we won't try to fetch it from FastSerdeCache since it is inefficient.
-      this.cachedFastDeserializer.set(getRegularAvroImpl(writerSchema, readerSchema));
+      this.cachedFastDeserializer.set(getRegularAvroImpl(writerSchema, readerSchema, modelData));
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Skip the FastGenericDeserializer generation since read schema type: " + readerSchema.getType()
             + " is not supported");
@@ -69,14 +76,13 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public T read(T reuse, Decoder in) throws IOException {
-    FastDeserializer<T> fastDeserializer = null;
+    FastDeserializer<T> fastDeserializer;
 
     if (cachedFastDeserializer.get() != null) {
       fastDeserializer = cachedFastDeserializer.get();
     } else {
-      fastDeserializer = getFastDeserializerFromCache(cache, writerSchema, readerSchema);
+      fastDeserializer = getFastDeserializerFromCache(cache, writerSchema, readerSchema, modelData);
       if (!FastSerdeCache.isFastDeserializer(fastDeserializer)) {
         // don't cache
       } else {
@@ -93,25 +99,26 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
 
   public CompletableFuture<FastDeserializer<T>> getFastDeserializer() {
     return cachedFastDeserializer.get() != null ? CompletableFuture.completedFuture(cachedFastDeserializer.get())
-        : getFastDeserializer(cache, writerSchema, readerSchema).thenApply(d -> {
+        : getFastDeserializer(cache, writerSchema, readerSchema, modelData).thenApply(d -> {
           cachedFastDeserializer.compareAndSet(null, d);
           return d;
         });
   }
 
   protected CompletableFuture<FastDeserializer<T>> getFastDeserializer(FastSerdeCache fastSerdeCache,
-      Schema writerSchema, Schema readerSchema) {
-    return fastSerdeCache.getFastGenericDeserializerAsync(writerSchema, readerSchema)
+      Schema writerSchema, Schema readerSchema, U modelData) {
+    return fastSerdeCache.getFastGenericDeserializerAsync(writerSchema, readerSchema, modelData)
         .thenApply(d -> (FastDeserializer<T>) d);
   }
 
+  @SuppressWarnings("unchecked")
   protected FastDeserializer<T> getFastDeserializerFromCache(FastSerdeCache fastSerdeCache, Schema writerSchema,
-      Schema readerSchema) {
-    return (FastDeserializer<T>) fastSerdeCache.getFastGenericDeserializer(writerSchema, readerSchema);
+      Schema readerSchema, U modelData) {
+    return (FastDeserializer<T>) fastSerdeCache.getFastGenericDeserializer(writerSchema, readerSchema, modelData);
   }
 
-  protected FastDeserializer<T> getRegularAvroImpl(Schema writerSchema, Schema readerSchema) {
-    return new FastSerdeCache.FastDeserializerWithAvroGenericImpl<>(writerSchema, readerSchema);
+  protected FastDeserializer<T> getRegularAvroImpl(Schema writerSchema, Schema readerSchema, U modelData) {
+    return new FastSerdeCache.FastDeserializerWithAvroGenericImpl<>(writerSchema, readerSchema, modelData);
   }
 
   /**

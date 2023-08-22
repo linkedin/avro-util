@@ -364,7 +364,7 @@ public class FastSpecificSerializerGeneratorTest {
 
     try {
       FastSpecificSerializerGenerator<T> fastSpecificSerializerGenerator =
-          new FastSpecificSerializerGenerator<>(schema, tempDir, classLoader, null);
+          new FastSpecificSerializerGenerator<>(schema, tempDir, classLoader, null, null);
       FastSerializer<T> fastSerializer = fastSpecificSerializerGenerator.generateSerializer();
       fastSerializer.serialize(data, binaryEncoder);
       binaryEncoder.flush();

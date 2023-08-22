@@ -17,6 +17,7 @@ import java.util.function.Consumer;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ import static com.linkedin.avro.fastserde.Utils.*;
 /**
  * Utilities used by both serialization and deserialization code.
  */
-public abstract class FastSerdeBase {
+public abstract class FastSerdeBase<T extends GenericData> {
   private static final Logger LOGGER = LoggerFactory.getLogger(FastSerdeBase.class);
   protected static final String SEP = "_";
   public static final String GENERATED_PACKAGE_NAME_PREFIX = "com.linkedin.avro.fastserde.generated.";
@@ -41,26 +42,32 @@ public abstract class FastSerdeBase {
   protected final String generatedPackageName;
   protected final JCodeModel codeModel = new JCodeModel();
   protected final boolean useGenericTypes;
-  protected final SchemaAssistant schemaAssistant;
+  protected final SchemaAssistant<T> schemaAssistant;
   protected final File destination;
   protected final ClassLoader classLoader;
   protected final String compileClassPath;
+  /**
+   * Contains information regarding conversion classes used by logical types feature.
+   * In case of specific Avro class it is just its MODEL$ field.
+   */
+  protected final T modelData;
   protected JDefinedClass generatedClass;
 
   public FastSerdeBase(String description, boolean useGenericTypes, Class defaultStringClass, File destination, ClassLoader classLoader,
-      String compileClassPath, boolean isForSerializer) {
+      String compileClassPath, T modelData, boolean isForSerializer) {
     this.useGenericTypes = useGenericTypes;
-    this.schemaAssistant = new SchemaAssistant(codeModel, useGenericTypes, defaultStringClass, isForSerializer);
+    this.schemaAssistant = new SchemaAssistant<>(codeModel, useGenericTypes, defaultStringClass, modelData, isForSerializer);
     this.destination = destination;
     this.classLoader = classLoader;
     this.compileClassPath = (null == compileClassPath ? "" : compileClassPath);
+    this.modelData = modelData;
     this.generatedPackageName = GENERATED_PACKAGE_NAME_PREFIX + description + "." + AvroCompatibilityHelper.getRuntimeAvroVersion().name();
     this.generatedSourcesPath = generateSourcePathFromPackageName(generatedPackageName);
   }
 
   /**
    * A function to generate unique names, such as those of variables and functions, within the scope
-   * of the this class instance (i.e. per serializer of a given schema or deserializer of a given
+   * of this class instance (i.e. per serializer of a given schema or deserializer of a given
    * schema pair).
    *
    * @param prefix String to serve as a prefix for the unique name
@@ -109,7 +116,7 @@ public abstract class FastSerdeBase {
 
     JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
     if (null == compiler) {
-      /**
+      /*
        * If the above function returns null, it is very likely that the env setting: "JAVA_HOME" is not being setup properly.
        */
       throw new FastSerdeGeneratorException("Couldn't locate java compiler at runtime, please double check your env "

@@ -568,7 +568,7 @@ public class FastGenericSerializerGeneratorTest {
 
     try {
       FastGenericSerializerGenerator<T> fastGenericSerializerGenerator =
-          new FastGenericSerializerGenerator<>(schema, tempDir, classLoader, null);
+          new FastGenericSerializerGenerator<>(schema, tempDir, classLoader, null, null);
       FastSerializer<T> fastSerializer = fastGenericSerializerGenerator.generateSerializer();
       fastSerializer.serialize(data, binaryEncoder);
       binaryEncoder.flush();

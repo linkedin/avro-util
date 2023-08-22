@@ -148,7 +148,7 @@ public class FastDeserializerGeneratorForReuseTest {
   public void testFastGenericDeserializerGenerator() throws Exception {
     FastSerdeCache cache = FastSerdeCache.getDefaultInstance();
     FastDeserializer<GenericRecord> deserializer =
-        (FastDeserializer<GenericRecord>) cache.buildFastGenericDeserializer(COMPLICATE_SCHEMA, COMPLICATE_SCHEMA);
+        (FastDeserializer<GenericRecord>) cache.buildFastGenericDeserializer(COMPLICATE_SCHEMA, COMPLICATE_SCHEMA, null);
 
     // Generate a record
     GenericRecord record = newComplicateRecord('0');
@@ -180,7 +180,7 @@ public class FastDeserializerGeneratorForReuseTest {
     Schema oldRecordSchema = Schema.parse(schemaString);
     FastSerdeCache cache = FastSerdeCache.getDefaultInstance();
     FastDeserializer<GenericRecord> deserializer =
-        (FastDeserializer<GenericRecord>) cache.buildFastGenericDeserializer(oldRecordSchema, oldRecordSchema);
+        (FastDeserializer<GenericRecord>) cache.buildFastGenericDeserializer(oldRecordSchema, oldRecordSchema, null);
 
     GenericData.Record record = new GenericData.Record(oldRecordSchema);
     ArrayList<Float> arrayList = new ArrayList();
@@ -225,7 +225,7 @@ public class FastDeserializerGeneratorForReuseTest {
     Schema oldRecordSchema = Schema.parse(schemaString);
     FastSerdeCache cache = FastSerdeCache.getDefaultInstance();
     FastDeserializer<GenericRecord> deserializer =
-        (FastDeserializer<GenericRecord>) cache.buildFastGenericDeserializer(oldRecordSchema, oldRecordSchema);
+        (FastDeserializer<GenericRecord>) cache.buildFastGenericDeserializer(oldRecordSchema, oldRecordSchema, null);
 
     GenericData.Record record = new GenericData.Record(oldRecordSchema);
     record.put("int_field", 10);

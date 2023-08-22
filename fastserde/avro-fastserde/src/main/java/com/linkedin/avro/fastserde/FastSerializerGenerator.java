@@ -19,12 +19,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.util.Utf8;
 import org.apache.commons.lang3.StringUtils;
 
 
-public class FastSerializerGenerator<T> extends FastSerdeBase {
+public class FastSerializerGenerator<T, U extends GenericData> extends FastSerdeBase<U> {
 
   private static final String ENCODER = "encoder";
   protected final Schema schema;
@@ -36,10 +37,9 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
    */
   private final Map<Integer, JVar> enumSchemaVarMap = new HashMap<>();
 
-
   public FastSerializerGenerator(boolean useGenericTypes, Schema schema, File destination, ClassLoader classLoader,
-      String compileClassPath) {
-    super("serialization", useGenericTypes, CharSequence.class, destination, classLoader, compileClassPath, true);
+      String compileClassPath, U modelData) {
+    super("serialization", useGenericTypes, CharSequence.class, destination, classLoader, compileClassPath, modelData,true);
     this.schema = schema;
   }
 

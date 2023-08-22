@@ -43,7 +43,7 @@ import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.util.Utf8;
 
 
-public class SchemaAssistant {
+public class SchemaAssistant<T extends GenericData> {
   // The following constants are not available in avro-1.4
   public static final String CLASS_PROP = "java-class";
   public static final String KEY_CLASS_PROP = "java-key-class";
@@ -62,6 +62,9 @@ public class SchemaAssistant {
    * the libraries, which define those classes, and put them in the compile classpath.
    */
   private final Set<String> fullyQualifiedClassNameSet = new HashSet<>();
+
+  private final T modelData;
+
   /**
    * Whether this schema assistant is for serializer generation or not.
    * The reason to differentiate serializer from de-serializer is that for some Avro features, such as java string property,
@@ -69,7 +72,8 @@ public class SchemaAssistant {
    */
   private final boolean isForSerializer;
 
-  public SchemaAssistant(JCodeModel codeModel, boolean useGenericTypes, Class defaultStringClass, boolean isForSerializer) {
+  public SchemaAssistant(JCodeModel codeModel, boolean useGenericTypes, Class defaultStringClass,
+          T modelData, boolean isForSerializer) {
     this.codeModel = codeModel;
     this.useGenericTypes = useGenericTypes;
     /**
@@ -77,6 +81,7 @@ public class SchemaAssistant {
      */
     this.exceptionsFromStringable = new TreeSet<>(Comparator.comparing(Class::getCanonicalName));
     this.defaultStringType = codeModel.ref(defaultStringClass);
+    this.modelData = modelData;
     this.isForSerializer = isForSerializer;
   }
 
