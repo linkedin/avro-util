@@ -12,6 +12,9 @@ public class FastGenericSerializerGeneratorTest_shouldWriteFixed_GenericSerializ
 {
 
 
+    public FastGenericSerializerGeneratorTest_shouldWriteFixed_GenericSerializer_69494836() {
+    }
+
     public void serialize(IndexedRecord data, Encoder encoder)
         throws IOException
     {
@@ -33,6 +36,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteFixed_GenericSerializ
         }
         List<org.apache.avro.generic.GenericData.Fixed> testFixedArray0 = ((List<org.apache.avro.generic.GenericData.Fixed> ) data.get(2));
         (encoder).writeArrayStart();
+        Object array0 = testFixedArray0;
         if ((testFixedArray0 == null)||testFixedArray0 .isEmpty()) {
             (encoder).setItemCount(0);
         } else {
@@ -45,6 +49,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteFixed_GenericSerializ
         (encoder).writeArrayEnd();
         List<org.apache.avro.generic.GenericData.Fixed> testFixedUnionArray0 = ((List<org.apache.avro.generic.GenericData.Fixed> ) data.get(3));
         (encoder).writeArrayStart();
+        Object array1 = testFixedUnionArray0;
         if ((testFixedUnionArray0 == null)||testFixedUnionArray0 .isEmpty()) {
             (encoder).setItemCount(0);
         } else {

@@ -54,7 +54,8 @@ public class TestRecord_GenericDeserializer_2067768137_2067768137
             do {
                 for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
                     Utf8 key0 = (decoder.readString(null));
-                    map_field1 .put(key0, (decoder).readString(null));
+                    Utf8 charSequence0 = (decoder).readString(null);
+                    map_field1 .put(key0, charSequence0);
                 }
                 chunkLen0 = (decoder.mapNext());
             } while (chunkLen0 > 0);

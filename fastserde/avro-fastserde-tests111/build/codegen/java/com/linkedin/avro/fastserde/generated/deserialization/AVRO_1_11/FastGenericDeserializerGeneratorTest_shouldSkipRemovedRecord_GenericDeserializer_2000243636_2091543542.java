@@ -4,6 +4,7 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 import java.io.IOException;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.util.Utf8;
@@ -13,10 +14,12 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord_Generi
 {
 
     private final Schema readerSchema;
+    private final GenericData modelData;
     private final Schema subRecord10;
 
-    public FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord_GenericDeserializer_2000243636_2091543542(Schema readerSchema) {
+    public FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord_GenericDeserializer_2000243636_2091543542(Schema readerSchema, GenericData modelData) {
         this.readerSchema = readerSchema;
+        this.modelData = modelData;
         this.subRecord10 = readerSchema.getField("subRecord1").schema();
     }
 
@@ -33,7 +36,7 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord_Generi
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
             FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord = ((IndexedRecord)(reuse));
         } else {
-            FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord = new GenericData.Record(readerSchema);
         }
         FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.put(0, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.get(0), (decoder)));
         populate_FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord0((FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord), (decoder));
@@ -48,14 +51,16 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord_Generi
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == subRecord10)) {
             subRecord = ((IndexedRecord)(reuse));
         } else {
-            subRecord = new org.apache.avro.generic.GenericData.Record(subRecord10);
+            subRecord = new GenericData.Record(subRecord10);
         }
+        Utf8 charSequence0;
         Object oldString0 = subRecord.get(0);
         if (oldString0 instanceof Utf8) {
-            subRecord.put(0, (decoder).readString(((Utf8) oldString0)));
+            charSequence0 = (decoder).readString(((Utf8) oldString0));
         } else {
-            subRecord.put(0, (decoder).readString(null));
+            charSequence0 = (decoder).readString(null);
         }
+        subRecord.put(0, charSequence0);
         populate_subRecord0((subRecord), (decoder));
         return subRecord;
     }
@@ -63,12 +68,14 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord_Generi
     private void populate_subRecord0(IndexedRecord subRecord, Decoder decoder)
         throws IOException
     {
+        Utf8 charSequence1;
         Object oldString1 = subRecord.get(1);
         if (oldString1 instanceof Utf8) {
-            subRecord.put(1, (decoder).readString(((Utf8) oldString1)));
+            charSequence1 = (decoder).readString(((Utf8) oldString1));
         } else {
-            subRecord.put(1, (decoder).readString(null));
+            charSequence1 = (decoder).readString(null);
         }
+        subRecord.put(1, charSequence1);
     }
 
     private void populate_FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord, Decoder decoder)

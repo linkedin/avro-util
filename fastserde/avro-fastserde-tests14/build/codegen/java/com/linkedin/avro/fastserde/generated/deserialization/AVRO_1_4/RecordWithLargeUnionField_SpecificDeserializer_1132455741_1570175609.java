@@ -35,12 +35,14 @@ public class RecordWithLargeUnionField_SpecificDeserializer_1132455741_157017560
         }
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
+            Utf8 charSequence0;
             Object oldString0 = RecordWithLargeUnionField.get(0);
             if (oldString0 instanceof Utf8) {
-                RecordWithLargeUnionField.put(0, (decoder).readString(((Utf8) oldString0)));
+                charSequence0 = (decoder).readString(((Utf8) oldString0));
             } else {
-                RecordWithLargeUnionField.put(0, (decoder).readString(null));
+                charSequence0 = (decoder).readString(null);
             }
+            RecordWithLargeUnionField.put(0, charSequence0);
         } else {
             if (unionIndex0 == 1) {
                 RecordWithLargeUnionField.put(0, (decoder.readInt()));

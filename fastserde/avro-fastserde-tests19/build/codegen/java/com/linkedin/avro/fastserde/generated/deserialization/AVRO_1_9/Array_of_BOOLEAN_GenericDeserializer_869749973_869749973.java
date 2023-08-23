@@ -7,6 +7,7 @@ import com.linkedin.avro.api.PrimitiveBooleanList;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import com.linkedin.avro.fastserde.primitive.PrimitiveBooleanArrayList;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.io.Decoder;
 
 public class Array_of_BOOLEAN_GenericDeserializer_869749973_869749973
@@ -14,9 +15,11 @@ public class Array_of_BOOLEAN_GenericDeserializer_869749973_869749973
 {
 
     private final Schema readerSchema;
+    private final GenericData modelData;
 
-    public Array_of_BOOLEAN_GenericDeserializer_869749973_869749973(Schema readerSchema) {
+    public Array_of_BOOLEAN_GenericDeserializer_869749973_869749973(Schema readerSchema, GenericData modelData) {
         this.readerSchema = readerSchema;
+        this.modelData = modelData;
     }
 
     public List<Boolean> deserialize(List<Boolean> reuse, Decoder decoder)

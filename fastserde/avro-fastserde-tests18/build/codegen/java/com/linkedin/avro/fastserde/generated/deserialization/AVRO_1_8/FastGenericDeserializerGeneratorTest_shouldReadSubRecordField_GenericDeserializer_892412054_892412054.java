@@ -71,12 +71,14 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordField_Gener
             subRecord.put(0, null);
         } else {
             if (unionIndex1 == 1) {
+                Utf8 charSequence0;
                 Object oldString0 = subRecord.get(0);
                 if (oldString0 instanceof Utf8) {
-                    subRecord.put(0, (decoder).readString(((Utf8) oldString0)));
+                    charSequence0 = (decoder).readString(((Utf8) oldString0));
                 } else {
-                    subRecord.put(0, (decoder).readString(null));
+                    charSequence0 = (decoder).readString(null);
                 }
+                subRecord.put(0, charSequence0);
             } else {
                 throw new RuntimeException(("Illegal union index for 'subField': "+ unionIndex1));
             }
@@ -94,12 +96,14 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordField_Gener
             FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(2, null);
         } else {
             if (unionIndex2 == 1) {
+                Utf8 charSequence1;
                 Object oldString1 = FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(2);
                 if (oldString1 instanceof Utf8) {
-                    FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(2, (decoder).readString(((Utf8) oldString1)));
+                    charSequence1 = (decoder).readString(((Utf8) oldString1));
                 } else {
-                    FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(2, (decoder).readString(null));
+                    charSequence1 = (decoder).readString(null);
                 }
+                FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(2, charSequence1);
             } else {
                 throw new RuntimeException(("Illegal union index for 'field': "+ unionIndex2));
             }

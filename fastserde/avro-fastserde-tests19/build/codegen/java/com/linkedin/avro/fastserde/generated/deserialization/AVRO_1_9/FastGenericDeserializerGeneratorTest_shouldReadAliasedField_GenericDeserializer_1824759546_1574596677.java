@@ -4,6 +4,7 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_9;
 import java.io.IOException;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.util.Utf8;
@@ -13,11 +14,13 @@ public class FastGenericDeserializerGeneratorTest_shouldReadAliasedField_Generic
 {
 
     private final Schema readerSchema;
+    private final GenericData modelData;
     private final Schema testString0;
     private final Schema testStringUnionAlias0;
 
-    public FastGenericDeserializerGeneratorTest_shouldReadAliasedField_GenericDeserializer_1824759546_1574596677(Schema readerSchema) {
+    public FastGenericDeserializerGeneratorTest_shouldReadAliasedField_GenericDeserializer_1824759546_1574596677(Schema readerSchema, GenericData modelData) {
         this.readerSchema = readerSchema;
+        this.modelData = modelData;
         this.testString0 = readerSchema.getField("testString").schema();
         this.testStringUnionAlias0 = readerSchema.getField("testStringUnionAlias").schema();
     }
@@ -35,7 +38,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadAliasedField_Generic
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
             FastGenericDeserializerGeneratorTest_shouldReadAliasedField = ((IndexedRecord)(reuse));
         } else {
-            FastGenericDeserializerGeneratorTest_shouldReadAliasedField = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            FastGenericDeserializerGeneratorTest_shouldReadAliasedField = new GenericData.Record(readerSchema);
         }
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
@@ -43,12 +46,14 @@ public class FastGenericDeserializerGeneratorTest_shouldReadAliasedField_Generic
             FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(0, null);
         } else {
             if (unionIndex0 == 1) {
+                Utf8 charSequence0;
                 Object oldString0 = FastGenericDeserializerGeneratorTest_shouldReadAliasedField.get(0);
                 if (oldString0 instanceof Utf8) {
-                    FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(0, (decoder).readString(((Utf8) oldString0)));
+                    charSequence0 = (decoder).readString(((Utf8) oldString0));
                 } else {
-                    FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(0, (decoder).readString(null));
+                    charSequence0 = (decoder).readString(null);
                 }
+                FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(0, charSequence0);
             } else {
                 throw new RuntimeException(("Illegal union index for 'testString': "+ unionIndex0));
             }
@@ -66,12 +71,14 @@ public class FastGenericDeserializerGeneratorTest_shouldReadAliasedField_Generic
             FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(1, null);
         } else {
             if (unionIndex1 == 1) {
+                Utf8 charSequence1;
                 Object oldString1 = FastGenericDeserializerGeneratorTest_shouldReadAliasedField.get(1);
                 if (oldString1 instanceof Utf8) {
-                    FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(1, (decoder).readString(((Utf8) oldString1)));
+                    charSequence1 = (decoder).readString(((Utf8) oldString1));
                 } else {
-                    FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(1, (decoder).readString(null));
+                    charSequence1 = (decoder).readString(null);
                 }
+                FastGenericDeserializerGeneratorTest_shouldReadAliasedField.put(1, charSequence1);
             } else {
                 throw new RuntimeException(("Illegal union index for 'testStringUnionAlias': "+ unionIndex1));
             }

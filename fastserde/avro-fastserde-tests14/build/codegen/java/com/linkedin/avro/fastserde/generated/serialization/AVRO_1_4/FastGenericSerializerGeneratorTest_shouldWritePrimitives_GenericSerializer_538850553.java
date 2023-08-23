@@ -13,6 +13,9 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
 {
 
 
+    public FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSerializer_538850553() {
+    }
+
     public void serialize(IndexedRecord data, Encoder encoder)
         throws IOException
     {
@@ -40,10 +43,10 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
             (encoder).writeIndex(0);
             (encoder).writeInt(((Integer) testFlippedIntUnion0));
         }
-        if (data.get(3) instanceof Utf8) {
-            (encoder).writeString(((Utf8) data.get(3)));
+        if (((CharSequence) data.get(3)) instanceof Utf8) {
+            (encoder).writeString(((Utf8)((CharSequence) data.get(3))));
         } else {
-            (encoder).writeString(data.get(3).toString());
+            (encoder).writeString(((CharSequence) data.get(3)).toString());
         }
         CharSequence testStringUnion0 = ((CharSequence) data.get(4));
         if (testStringUnion0 == null) {
@@ -51,10 +54,10 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
             (encoder).writeNull();
         } else {
             (encoder).writeIndex(1);
-            if (testStringUnion0 instanceof Utf8) {
-                (encoder).writeString(((Utf8) testStringUnion0));
+            if (((CharSequence) testStringUnion0) instanceof Utf8) {
+                (encoder).writeString(((Utf8)((CharSequence) testStringUnion0)));
             } else {
-                (encoder).writeString(testStringUnion0 .toString());
+                (encoder).writeString(((CharSequence) testStringUnion0).toString());
             }
         }
         (encoder).writeLong(((Long) data.get(5)));

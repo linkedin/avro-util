@@ -7,6 +7,7 @@ import com.linkedin.avro.fastserde.FastDeserializer;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
 
@@ -15,10 +16,12 @@ public class Array_of_record_GenericDeserializer_737896117_414397267
 {
 
     private final Schema readerSchema;
+    private final GenericData modelData;
     private final Schema unionOptionArrayElemSchema0;
 
-    public Array_of_record_GenericDeserializer_737896117_414397267(Schema readerSchema) {
+    public Array_of_record_GenericDeserializer_737896117_414397267(Schema readerSchema, GenericData modelData) {
         this.readerSchema = readerSchema;
+        this.modelData = modelData;
         this.unionOptionArrayElemSchema0 = readerSchema.getElementType();
     }
 
@@ -36,7 +39,7 @@ public class Array_of_record_GenericDeserializer_737896117_414397267
                     unionOption0 = ((List)(reuse));
                     unionOption0 .clear();
                 } else {
-                    unionOption0 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen0), readerSchema);
+                    unionOption0 = new GenericData.Array<IndexedRecord>(((int) chunkLen0), readerSchema);
                 }
                 while (chunkLen0 > 0) {
                     for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
@@ -62,7 +65,7 @@ public class Array_of_record_GenericDeserializer_737896117_414397267
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == unionOptionArrayElemSchema0)) {
             record = ((IndexedRecord)(reuse));
         } else {
-            record = new org.apache.avro.generic.GenericData.Record(unionOptionArrayElemSchema0);
+            record = new GenericData.Record(unionOptionArrayElemSchema0);
         }
         record.put(0, (decoder.readInt()));
         return record;

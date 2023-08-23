@@ -4,6 +4,7 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_9;
 import java.io.IOException;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.util.Utf8;
@@ -13,10 +14,12 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingT
 {
 
     private final Schema readerSchema;
+    private final GenericData modelData;
     private final Schema test0;
 
-    public FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString_GenericDeserializer_1986844009_611693319(Schema readerSchema) {
+    public FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString_GenericDeserializer_1986844009_611693319(Schema readerSchema, GenericData modelData) {
         this.readerSchema = readerSchema;
+        this.modelData = modelData;
         this.test0 = readerSchema.getField("test").schema();
     }
 
@@ -33,7 +36,7 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingT
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
             FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString = ((IndexedRecord)(reuse));
         } else {
-            FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString = new GenericData.Record(readerSchema);
         }
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
@@ -41,12 +44,14 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingT
             FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString.put(0, null);
         } else {
             if (unionIndex0 == 1) {
+                Utf8 charSequence0;
                 Object oldString0 = FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString.get(0);
                 if (oldString0 instanceof Utf8) {
-                    FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString.put(0, (decoder).readString(((Utf8) oldString0)));
+                    charSequence0 = (decoder).readString(((Utf8) oldString0));
                 } else {
-                    FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString.put(0, (decoder).readString(null));
+                    charSequence0 = (decoder).readString(null);
                 }
+                FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString.put(0, charSequence0);
             } else {
                 if (unionIndex0 == 2) {
                     FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString.put(0, (decoder.readInt()));

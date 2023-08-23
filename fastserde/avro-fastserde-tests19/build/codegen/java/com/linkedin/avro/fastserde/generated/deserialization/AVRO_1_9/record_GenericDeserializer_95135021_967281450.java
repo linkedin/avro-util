@@ -7,6 +7,7 @@ import java.util.Map;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.util.Utf8;
@@ -16,10 +17,12 @@ public class record_GenericDeserializer_95135021_967281450
 {
 
     private final Schema readerSchema;
+    private final GenericData modelData;
     private final Schema someInts0;
 
-    public record_GenericDeserializer_95135021_967281450(Schema readerSchema) {
+    public record_GenericDeserializer_95135021_967281450(Schema readerSchema, GenericData modelData) {
         this.readerSchema = readerSchema;
+        this.modelData = modelData;
         this.someInts0 = readerSchema.getField("someInts").schema();
     }
 
@@ -36,7 +39,7 @@ public class record_GenericDeserializer_95135021_967281450
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
             record = ((IndexedRecord)(reuse));
         } else {
-            record = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            record = new GenericData.Record(readerSchema);
         }
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {

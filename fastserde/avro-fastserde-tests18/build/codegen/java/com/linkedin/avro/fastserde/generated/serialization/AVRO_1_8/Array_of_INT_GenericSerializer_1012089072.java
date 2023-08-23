@@ -12,17 +12,20 @@ public class Array_of_INT_GenericSerializer_1012089072
 {
 
 
+    public Array_of_INT_GenericSerializer_1012089072() {
+    }
+
     public void serialize(List<Integer> data, Encoder encoder)
         throws IOException
     {
         (encoder).writeArrayStart();
+        Object array0 = data;
         if ((data == null)||data.isEmpty()) {
             (encoder).setItemCount(0);
         } else {
             (encoder).setItemCount(data.size());
-            if (data instanceof PrimitiveIntList) {
-                PrimitiveIntList primitiveList0 = null;
-                primitiveList0 = ((PrimitiveIntList) data);
+            if (array0 instanceof PrimitiveIntList) {
+                PrimitiveIntList primitiveList0 = ((PrimitiveIntList) array0);
                 for (int counter0 = 0; (counter0 <primitiveList0 .size()); counter0 ++) {
                     (encoder).startItem();
                     (encoder).writeInt(primitiveList0 .getPrimitive(counter0));

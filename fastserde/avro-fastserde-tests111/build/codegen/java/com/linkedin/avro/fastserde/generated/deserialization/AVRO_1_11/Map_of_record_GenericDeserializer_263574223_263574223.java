@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.util.Utf8;
@@ -15,11 +16,13 @@ public class Map_of_record_GenericDeserializer_263574223_263574223
 {
 
     private final Schema readerSchema;
+    private final GenericData modelData;
     private final Schema mapMapValueSchema0;
     private final Schema field0;
 
-    public Map_of_record_GenericDeserializer_263574223_263574223(Schema readerSchema) {
+    public Map_of_record_GenericDeserializer_263574223_263574223(Schema readerSchema, GenericData modelData) {
         this.readerSchema = readerSchema;
+        this.modelData = modelData;
         this.mapMapValueSchema0 = readerSchema.getValueType();
         this.field0 = mapMapValueSchema0 .getField("field").schema();
     }
@@ -60,7 +63,7 @@ public class Map_of_record_GenericDeserializer_263574223_263574223
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == mapMapValueSchema0)) {
             record = ((IndexedRecord)(reuse));
         } else {
-            record = new org.apache.avro.generic.GenericData.Record(mapMapValueSchema0);
+            record = new GenericData.Record(mapMapValueSchema0);
         }
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
@@ -68,12 +71,14 @@ public class Map_of_record_GenericDeserializer_263574223_263574223
             record.put(0, null);
         } else {
             if (unionIndex0 == 1) {
+                Utf8 charSequence0;
                 Object oldString0 = record.get(0);
                 if (oldString0 instanceof Utf8) {
-                    record.put(0, (decoder).readString(((Utf8) oldString0)));
+                    charSequence0 = (decoder).readString(((Utf8) oldString0));
                 } else {
-                    record.put(0, (decoder).readString(null));
+                    charSequence0 = (decoder).readString(null);
                 }
+                record.put(0, charSequence0);
             } else {
                 throw new RuntimeException(("Illegal union index for 'field': "+ unionIndex0));
             }

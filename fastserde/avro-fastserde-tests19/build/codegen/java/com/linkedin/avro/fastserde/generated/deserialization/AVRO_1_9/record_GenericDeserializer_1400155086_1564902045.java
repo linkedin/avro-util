@@ -4,6 +4,7 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_9;
 import java.io.IOException;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
 
@@ -12,11 +13,13 @@ public class record_GenericDeserializer_1400155086_1564902045
 {
 
     private final Schema readerSchema;
+    private final GenericData modelData;
     private final Schema subRecord0;
     private final Schema subRecordRecordSchema0;
 
-    public record_GenericDeserializer_1400155086_1564902045(Schema readerSchema) {
+    public record_GenericDeserializer_1400155086_1564902045(Schema readerSchema, GenericData modelData) {
         this.readerSchema = readerSchema;
+        this.modelData = modelData;
         this.subRecord0 = readerSchema.getField("subRecord").schema();
         this.subRecordRecordSchema0 = subRecord0 .getTypes().get(1);
     }
@@ -34,7 +37,7 @@ public class record_GenericDeserializer_1400155086_1564902045
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
             record = ((IndexedRecord)(reuse));
         } else {
-            record = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            record = new GenericData.Record(readerSchema);
         }
         record.put(0, deserializesubRecord0(record.get(0), (decoder)));
         return record;
@@ -47,7 +50,7 @@ public class record_GenericDeserializer_1400155086_1564902045
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == subRecordRecordSchema0)) {
             subRecord = ((IndexedRecord)(reuse));
         } else {
-            subRecord = new org.apache.avro.generic.GenericData.Record(subRecordRecordSchema0);
+            subRecord = new GenericData.Record(subRecordRecordSchema0);
         }
         subRecord.put(0, (decoder.readInt()));
         populate_subRecord0((subRecord), (decoder));

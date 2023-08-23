@@ -50,12 +50,14 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord_Generi
         } else {
             subRecord = new org.apache.avro.generic.GenericData.Record(subRecord10);
         }
+        Utf8 charSequence0;
         Object oldString0 = subRecord.get(0);
         if (oldString0 instanceof Utf8) {
-            subRecord.put(0, (decoder).readString(((Utf8) oldString0)));
+            charSequence0 = (decoder).readString(((Utf8) oldString0));
         } else {
-            subRecord.put(0, (decoder).readString(null));
+            charSequence0 = (decoder).readString(null);
         }
+        subRecord.put(0, charSequence0);
         populate_subRecord0((subRecord), (decoder));
         return subRecord;
     }
@@ -63,12 +65,14 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord_Generi
     private void populate_subRecord0(IndexedRecord subRecord, Decoder decoder)
         throws IOException
     {
+        Utf8 charSequence1;
         Object oldString1 = subRecord.get(1);
         if (oldString1 instanceof Utf8) {
-            subRecord.put(1, (decoder).readString(((Utf8) oldString1)));
+            charSequence1 = (decoder).readString(((Utf8) oldString1));
         } else {
-            subRecord.put(1, (decoder).readString(null));
+            charSequence1 = (decoder).readString(null);
         }
+        subRecord.put(1, charSequence1);
     }
 
     private void populate_FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord, Decoder decoder)

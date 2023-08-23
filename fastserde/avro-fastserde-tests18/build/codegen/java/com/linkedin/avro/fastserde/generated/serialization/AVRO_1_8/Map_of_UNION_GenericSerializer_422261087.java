@@ -13,6 +13,9 @@ public class Map_of_UNION_GenericSerializer_422261087
 {
 
 
+    public Map_of_UNION_GenericSerializer_422261087() {
+    }
+
     public void serialize(Map<CharSequence, IndexedRecord> data, Encoder encoder)
         throws IOException
     {
@@ -50,10 +53,10 @@ public class Map_of_UNION_GenericSerializer_422261087
             (encoder).writeNull();
         } else {
             (encoder).writeIndex(1);
-            if (field0 instanceof Utf8) {
-                (encoder).writeString(((Utf8) field0));
+            if (((CharSequence) field0) instanceof Utf8) {
+                (encoder).writeString(((Utf8)((CharSequence) field0)));
             } else {
-                (encoder).writeString(field0 .toString());
+                (encoder).writeString(((CharSequence) field0).toString());
             }
         }
     }

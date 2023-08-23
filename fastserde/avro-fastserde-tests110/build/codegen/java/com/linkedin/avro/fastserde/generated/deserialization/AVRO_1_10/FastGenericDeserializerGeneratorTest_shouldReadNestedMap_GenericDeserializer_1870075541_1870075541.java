@@ -9,6 +9,7 @@ import com.linkedin.avro.api.PrimitiveIntList;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import com.linkedin.avro.fastserde.primitive.PrimitiveIntArrayList;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.util.Utf8;
@@ -18,12 +19,14 @@ public class FastGenericDeserializerGeneratorTest_shouldReadNestedMap_GenericDes
 {
 
     private final Schema readerSchema;
+    private final GenericData modelData;
     private final Schema mapField0;
     private final Schema mapFieldMapValueSchema0;
     private final Schema mapFieldValueMapValueSchema0;
 
-    public FastGenericDeserializerGeneratorTest_shouldReadNestedMap_GenericDeserializer_1870075541_1870075541(Schema readerSchema) {
+    public FastGenericDeserializerGeneratorTest_shouldReadNestedMap_GenericDeserializer_1870075541_1870075541(Schema readerSchema, GenericData modelData) {
         this.readerSchema = readerSchema;
+        this.modelData = modelData;
         this.mapField0 = readerSchema.getField("mapField").schema();
         this.mapFieldMapValueSchema0 = mapField0 .getValueType();
         this.mapFieldValueMapValueSchema0 = mapFieldMapValueSchema0 .getValueType();
@@ -42,7 +45,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadNestedMap_GenericDes
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
             FastGenericDeserializerGeneratorTest_shouldReadNestedMap = ((IndexedRecord)(reuse));
         } else {
-            FastGenericDeserializerGeneratorTest_shouldReadNestedMap = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            FastGenericDeserializerGeneratorTest_shouldReadNestedMap = new GenericData.Record(readerSchema);
         }
         Map<Utf8, Map<Utf8, List<Integer>>> mapField1 = null;
         long chunkLen0 = (decoder.readMapStart());

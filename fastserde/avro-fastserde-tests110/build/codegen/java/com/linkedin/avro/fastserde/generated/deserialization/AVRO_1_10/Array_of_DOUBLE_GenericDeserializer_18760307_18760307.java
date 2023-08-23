@@ -7,6 +7,7 @@ import com.linkedin.avro.api.PrimitiveDoubleList;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import com.linkedin.avro.fastserde.primitive.PrimitiveDoubleArrayList;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.io.Decoder;
 
 public class Array_of_DOUBLE_GenericDeserializer_18760307_18760307
@@ -14,9 +15,11 @@ public class Array_of_DOUBLE_GenericDeserializer_18760307_18760307
 {
 
     private final Schema readerSchema;
+    private final GenericData modelData;
 
-    public Array_of_DOUBLE_GenericDeserializer_18760307_18760307(Schema readerSchema) {
+    public Array_of_DOUBLE_GenericDeserializer_18760307_18760307(Schema readerSchema, GenericData modelData) {
         this.readerSchema = readerSchema;
+        this.modelData = modelData;
     }
 
     public List<Double> deserialize(List<Double> reuse, Decoder decoder)

@@ -8,6 +8,7 @@ import java.util.Map;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.util.Utf8;
@@ -17,6 +18,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
 {
 
     private final Schema readerSchema;
+    private final GenericData modelData;
     private final Schema recordsArray0;
     private final Schema recordsArrayArrayElemSchema0;
     private final Schema subField0;
@@ -28,8 +30,9 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
     private final Schema recordsMapUnionOptionSchema0;
     private final Schema recordsMapUnionOptionMapValueSchema0;
 
-    public FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField_GenericDeserializer_962180565_962180565(Schema readerSchema) {
+    public FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField_GenericDeserializer_962180565_962180565(Schema readerSchema, GenericData modelData) {
         this.readerSchema = readerSchema;
+        this.modelData = modelData;
         this.recordsArray0 = readerSchema.getField("recordsArray").schema();
         this.recordsArrayArrayElemSchema0 = recordsArray0 .getElementType();
         this.subField0 = recordsArrayArrayElemSchema0 .getField("subField").schema();
@@ -55,7 +58,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
             FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField = ((IndexedRecord)(reuse));
         } else {
-            FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField = new GenericData.Record(readerSchema);
         }
         List<IndexedRecord> recordsArray1 = null;
         long chunkLen0 = (decoder.readArrayStart());
@@ -64,7 +67,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
             recordsArray1 = ((List) oldArray0);
             recordsArray1 .clear();
         } else {
-            recordsArray1 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen0), recordsArray0);
+            recordsArray1 = new GenericData.Array<IndexedRecord>(((int) chunkLen0), recordsArray0);
         }
         while (chunkLen0 > 0) {
             for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
@@ -89,7 +92,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == recordsArrayArrayElemSchema0)) {
             subRecord = ((IndexedRecord)(reuse));
         } else {
-            subRecord = new org.apache.avro.generic.GenericData.Record(recordsArrayArrayElemSchema0);
+            subRecord = new GenericData.Record(recordsArrayArrayElemSchema0);
         }
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
@@ -97,12 +100,14 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
             subRecord.put(0, null);
         } else {
             if (unionIndex0 == 1) {
+                Utf8 charSequence0;
                 Object oldString0 = subRecord.get(0);
                 if (oldString0 instanceof Utf8) {
-                    subRecord.put(0, (decoder).readString(((Utf8) oldString0)));
+                    charSequence0 = (decoder).readString(((Utf8) oldString0));
                 } else {
-                    subRecord.put(0, (decoder).readString(null));
+                    charSequence0 = (decoder).readString(null);
                 }
+                subRecord.put(0, charSequence0);
             } else {
                 throw new RuntimeException(("Illegal union index for 'subField': "+ unionIndex0));
             }
@@ -151,7 +156,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
                     recordsArrayUnionOption0 = ((List) oldArray1);
                     recordsArrayUnionOption0 .clear();
                 } else {
-                    recordsArrayUnionOption0 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen2), recordsArrayUnionOptionSchema0);
+                    recordsArrayUnionOption0 = new GenericData.Array<IndexedRecord>(((int) chunkLen2), recordsArrayUnionOptionSchema0);
                 }
                 while (chunkLen2 > 0) {
                     for (int counter2 = 0; (counter2 <chunkLen2); counter2 ++) {

@@ -4,6 +4,7 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_9;
 import java.io.IOException;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.util.Utf8;
@@ -13,10 +14,12 @@ public class recordName_GenericDeserializer_1743054079_1743054079
 {
 
     private final Schema readerSchema;
+    private final GenericData modelData;
     private final Schema unionField0;
 
-    public recordName_GenericDeserializer_1743054079_1743054079(Schema readerSchema) {
+    public recordName_GenericDeserializer_1743054079_1743054079(Schema readerSchema, GenericData modelData) {
         this.readerSchema = readerSchema;
+        this.modelData = modelData;
         this.unionField0 = readerSchema.getField("unionField").schema();
     }
 
@@ -33,14 +36,16 @@ public class recordName_GenericDeserializer_1743054079_1743054079
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
             recordName = ((IndexedRecord)(reuse));
         } else {
-            recordName = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            recordName = new GenericData.Record(readerSchema);
         }
+        Utf8 charSequence0;
         Object oldString0 = recordName.get(0);
         if (oldString0 instanceof Utf8) {
-            recordName.put(0, (decoder).readString(((Utf8) oldString0)));
+            charSequence0 = (decoder).readString(((Utf8) oldString0));
         } else {
-            recordName.put(0, (decoder).readString(null));
+            charSequence0 = (decoder).readString(null);
         }
+        recordName.put(0, charSequence0);
         populate_recordName0((recordName), (decoder));
         return recordName;
     }

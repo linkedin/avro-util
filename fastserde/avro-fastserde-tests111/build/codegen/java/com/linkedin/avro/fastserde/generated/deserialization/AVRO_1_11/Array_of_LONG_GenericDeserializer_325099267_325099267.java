@@ -7,6 +7,7 @@ import com.linkedin.avro.api.PrimitiveLongList;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import com.linkedin.avro.fastserde.primitive.PrimitiveLongArrayList;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.io.Decoder;
 
 public class Array_of_LONG_GenericDeserializer_325099267_325099267
@@ -14,9 +15,11 @@ public class Array_of_LONG_GenericDeserializer_325099267_325099267
 {
 
     private final Schema readerSchema;
+    private final GenericData modelData;
 
-    public Array_of_LONG_GenericDeserializer_325099267_325099267(Schema readerSchema) {
+    public Array_of_LONG_GenericDeserializer_325099267_325099267(Schema readerSchema, GenericData modelData) {
         this.readerSchema = readerSchema;
+        this.modelData = modelData;
     }
 
     public List<Long> deserialize(List<Long> reuse, Decoder decoder)

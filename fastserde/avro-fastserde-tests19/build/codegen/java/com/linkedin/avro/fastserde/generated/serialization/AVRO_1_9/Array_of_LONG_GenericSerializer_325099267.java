@@ -5,24 +5,30 @@ import java.io.IOException;
 import java.util.List;
 import com.linkedin.avro.api.PrimitiveLongList;
 import com.linkedin.avro.fastserde.FastSerializer;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.io.Encoder;
 
 public class Array_of_LONG_GenericSerializer_325099267
     implements FastSerializer<List<Long>>
 {
 
+    private final GenericData modelData;
+
+    public Array_of_LONG_GenericSerializer_325099267(GenericData modelData) {
+        this.modelData = modelData;
+    }
 
     public void serialize(List<Long> data, Encoder encoder)
         throws IOException
     {
         (encoder).writeArrayStart();
+        Object array0 = data;
         if ((data == null)||data.isEmpty()) {
             (encoder).setItemCount(0);
         } else {
             (encoder).setItemCount(data.size());
-            if (data instanceof PrimitiveLongList) {
-                PrimitiveLongList primitiveList0 = null;
-                primitiveList0 = ((PrimitiveLongList) data);
+            if (array0 instanceof PrimitiveLongList) {
+                PrimitiveLongList primitiveList0 = ((PrimitiveLongList) array0);
                 for (int counter0 = 0; (counter0 <primitiveList0 .size()); counter0 ++) {
                     (encoder).startItem();
                     (encoder).writeLong(primitiveList0 .getPrimitive(counter0));

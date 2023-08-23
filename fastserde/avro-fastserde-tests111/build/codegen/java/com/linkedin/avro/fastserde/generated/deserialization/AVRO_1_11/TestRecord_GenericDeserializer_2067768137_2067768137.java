@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.util.Utf8;
@@ -15,10 +16,12 @@ public class TestRecord_GenericDeserializer_2067768137_2067768137
 {
 
     private final Schema readerSchema;
+    private final GenericData modelData;
     private final Schema map_field0;
 
-    public TestRecord_GenericDeserializer_2067768137_2067768137(Schema readerSchema) {
+    public TestRecord_GenericDeserializer_2067768137_2067768137(Schema readerSchema, GenericData modelData) {
         this.readerSchema = readerSchema;
+        this.modelData = modelData;
         this.map_field0 = readerSchema.getField("map_field").schema();
     }
 
@@ -35,7 +38,7 @@ public class TestRecord_GenericDeserializer_2067768137_2067768137
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
             TestRecord = ((IndexedRecord)(reuse));
         } else {
-            TestRecord = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            TestRecord = new GenericData.Record(readerSchema);
         }
         Map<Utf8, Utf8> map_field1 = null;
         long chunkLen0 = (decoder.readMapStart());
@@ -54,7 +57,8 @@ public class TestRecord_GenericDeserializer_2067768137_2067768137
             do {
                 for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
                     Utf8 key0 = (decoder.readString(null));
-                    map_field1 .put(key0, (decoder).readString(null));
+                    Utf8 charSequence0 = (decoder).readString(null);
+                    map_field1 .put(key0, charSequence0);
                 }
                 chunkLen0 = (decoder.mapNext());
             } while (chunkLen0 > 0);

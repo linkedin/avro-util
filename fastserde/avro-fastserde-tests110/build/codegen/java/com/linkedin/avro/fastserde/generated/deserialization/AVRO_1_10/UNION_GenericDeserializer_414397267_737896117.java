@@ -6,6 +6,7 @@ import java.util.List;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
 
@@ -14,11 +15,13 @@ public class UNION_GenericDeserializer_414397267_737896117
 {
 
     private final Schema readerSchema;
+    private final GenericData modelData;
     private final Schema arrayArraySchema0;
     private final Schema arrayArrayElemSchema0;
 
-    public UNION_GenericDeserializer_414397267_737896117(Schema readerSchema) {
+    public UNION_GenericDeserializer_414397267_737896117(Schema readerSchema, GenericData modelData) {
         this.readerSchema = readerSchema;
+        this.modelData = modelData;
         this.arrayArraySchema0 = readerSchema.getTypes().get(1);
         this.arrayArrayElemSchema0 = arrayArraySchema0 .getElementType();
     }
@@ -32,7 +35,7 @@ public class UNION_GenericDeserializer_414397267_737896117
             array0 = ((List)(reuse));
             array0 .clear();
         } else {
-            array0 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen0), arrayArraySchema0);
+            array0 = new GenericData.Array<IndexedRecord>(((int) chunkLen0), arrayArraySchema0);
         }
         while (chunkLen0 > 0) {
             for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
@@ -54,7 +57,7 @@ public class UNION_GenericDeserializer_414397267_737896117
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == arrayArrayElemSchema0)) {
             record = ((IndexedRecord)(reuse));
         } else {
-            record = new org.apache.avro.generic.GenericData.Record(arrayArrayElemSchema0);
+            record = new GenericData.Record(arrayArrayElemSchema0);
         }
         record.put(0, (decoder.readInt()));
         return record;

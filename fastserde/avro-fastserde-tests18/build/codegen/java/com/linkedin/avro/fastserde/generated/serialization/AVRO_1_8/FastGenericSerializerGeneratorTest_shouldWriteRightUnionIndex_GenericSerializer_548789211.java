@@ -12,6 +12,9 @@ public class FastGenericSerializerGeneratorTest_shouldWriteRightUnionIndex_Gener
 {
 
 
+    public FastGenericSerializerGeneratorTest_shouldWriteRightUnionIndex_GenericSerializer_548789211() {
+    }
+
     public void serialize(IndexedRecord data, Encoder encoder)
         throws IOException
     {
@@ -43,10 +46,10 @@ public class FastGenericSerializerGeneratorTest_shouldWriteRightUnionIndex_Gener
     public void serializeRecord10(IndexedRecord data, Encoder encoder)
         throws IOException
     {
-        if (data.get(0) instanceof Utf8) {
-            (encoder).writeString(((Utf8) data.get(0)));
+        if (((CharSequence) data.get(0)) instanceof Utf8) {
+            (encoder).writeString(((Utf8)((CharSequence) data.get(0))));
         } else {
-            (encoder).writeString(data.get(0).toString());
+            (encoder).writeString(((CharSequence) data.get(0)).toString());
         }
     }
 
@@ -54,10 +57,10 @@ public class FastGenericSerializerGeneratorTest_shouldWriteRightUnionIndex_Gener
     public void serializeRecord20(IndexedRecord data, Encoder encoder)
         throws IOException
     {
-        if (data.get(0) instanceof Utf8) {
-            (encoder).writeString(((Utf8) data.get(0)));
+        if (((CharSequence) data.get(0)) instanceof Utf8) {
+            (encoder).writeString(((Utf8)((CharSequence) data.get(0))));
         } else {
-            (encoder).writeString(data.get(0).toString());
+            (encoder).writeString(((CharSequence) data.get(0)).toString());
         }
     }
 

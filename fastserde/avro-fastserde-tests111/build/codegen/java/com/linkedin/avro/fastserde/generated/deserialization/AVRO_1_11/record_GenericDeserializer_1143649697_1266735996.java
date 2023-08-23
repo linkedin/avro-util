@@ -6,6 +6,7 @@ import com.linkedin.avro.api.PrimitiveIntList;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import com.linkedin.avro.fastserde.primitive.PrimitiveIntArrayList;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
 
@@ -14,11 +15,13 @@ public class record_GenericDeserializer_1143649697_1266735996
 {
 
     private final Schema readerSchema;
+    private final GenericData modelData;
     private final Schema someInts0;
     private final Schema someIntsArraySchema0;
 
-    public record_GenericDeserializer_1143649697_1266735996(Schema readerSchema) {
+    public record_GenericDeserializer_1143649697_1266735996(Schema readerSchema, GenericData modelData) {
         this.readerSchema = readerSchema;
+        this.modelData = modelData;
         this.someInts0 = readerSchema.getField("someInts").schema();
         this.someIntsArraySchema0 = someInts0 .getTypes().get(1);
     }
@@ -36,7 +39,7 @@ public class record_GenericDeserializer_1143649697_1266735996
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
             record = ((IndexedRecord)(reuse));
         } else {
-            record = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            record = new GenericData.Record(readerSchema);
         }
         PrimitiveIntList someInts1 = null;
         long chunkLen0 = (decoder.readArrayStart());

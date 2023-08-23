@@ -6,6 +6,7 @@ import com.linkedin.avro.fastserde.FastDeserializer;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.io.Decoder;
+import org.apache.avro.specific.SpecificData;
 import org.apache.avro.util.Utf8;
 
 public class RecordWithLargeUnionField_SpecificDeserializer_1132455741_1570175609
@@ -13,9 +14,11 @@ public class RecordWithLargeUnionField_SpecificDeserializer_1132455741_157017560
 {
 
     private final Schema readerSchema;
+    private final SpecificData modelData;
 
-    public RecordWithLargeUnionField_SpecificDeserializer_1132455741_1570175609(Schema readerSchema) {
+    public RecordWithLargeUnionField_SpecificDeserializer_1132455741_1570175609(Schema readerSchema, SpecificData modelData) {
         this.readerSchema = readerSchema;
+        this.modelData = modelData;
     }
 
     public com.linkedin.avro.fastserde.generated.avro.RecordWithLargeUnionField deserialize(com.linkedin.avro.fastserde.generated.avro.RecordWithLargeUnionField reuse, Decoder decoder)
@@ -35,12 +38,14 @@ public class RecordWithLargeUnionField_SpecificDeserializer_1132455741_157017560
         }
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
+            Utf8 charSequence0;
             Object oldString0 = RecordWithLargeUnionField.get(0);
             if (oldString0 instanceof Utf8) {
-                RecordWithLargeUnionField.put(0, (decoder).readString(((Utf8) oldString0)));
+                charSequence0 = (decoder).readString(((Utf8) oldString0));
             } else {
-                RecordWithLargeUnionField.put(0, (decoder).readString(null));
+                charSequence0 = (decoder).readString(null);
             }
+            RecordWithLargeUnionField.put(0, charSequence0);
         } else {
             if (unionIndex0 == 1) {
                 RecordWithLargeUnionField.put(0, (decoder.readInt()));

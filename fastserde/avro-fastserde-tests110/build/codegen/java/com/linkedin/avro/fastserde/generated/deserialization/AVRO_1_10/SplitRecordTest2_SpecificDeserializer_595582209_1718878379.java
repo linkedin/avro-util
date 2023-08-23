@@ -10,6 +10,7 @@ import com.linkedin.avro.fastserde.generated.avro.StringRecord;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.io.Decoder;
+import org.apache.avro.specific.SpecificData;
 import org.apache.avro.util.Utf8;
 
 public class SplitRecordTest2_SpecificDeserializer_595582209_1718878379
@@ -17,9 +18,11 @@ public class SplitRecordTest2_SpecificDeserializer_595582209_1718878379
 {
 
     private final Schema readerSchema;
+    private final SpecificData modelData;
 
-    public SplitRecordTest2_SpecificDeserializer_595582209_1718878379(Schema readerSchema) {
+    public SplitRecordTest2_SpecificDeserializer_595582209_1718878379(Schema readerSchema, SpecificData modelData) {
         this.readerSchema = readerSchema;
+        this.modelData = modelData;
     }
 
     public com.linkedin.avro.fastserde.generated.avro.SplitRecordTest2 deserialize(com.linkedin.avro.fastserde.generated.avro.SplitRecordTest2 reuse, Decoder decoder)
@@ -57,12 +60,14 @@ public class SplitRecordTest2_SpecificDeserializer_595582209_1718878379
             IntRecord.put(0, null);
         } else {
             if (unionIndex0 == 1) {
+                Utf8 charSequence0;
                 Object oldString0 = IntRecord.get(0);
                 if (oldString0 instanceof Utf8) {
-                    IntRecord.put(0, (decoder).readString(((Utf8) oldString0)));
+                    charSequence0 = (decoder).readString(((Utf8) oldString0));
                 } else {
-                    IntRecord.put(0, (decoder).readString(null));
+                    charSequence0 = (decoder).readString(null);
                 }
+                IntRecord.put(0, charSequence0);
             } else {
                 throw new RuntimeException(("Illegal union index for 'field1': "+ unionIndex0));
             }
@@ -166,12 +171,14 @@ public class SplitRecordTest2_SpecificDeserializer_595582209_1718878379
             IntRecord.put(0, null);
         } else {
             if (unionIndex4 == 1) {
+                Utf8 charSequence1;
                 Object oldString1 = IntRecord.get(0);
                 if (oldString1 instanceof Utf8) {
-                    IntRecord.put(0, (decoder).readString(((Utf8) oldString1)));
+                    charSequence1 = (decoder).readString(((Utf8) oldString1));
                 } else {
-                    IntRecord.put(0, (decoder).readString(null));
+                    charSequence1 = (decoder).readString(null);
                 }
+                IntRecord.put(0, charSequence1);
             } else {
                 throw new RuntimeException(("Illegal union index for 'field1': "+ unionIndex4));
             }

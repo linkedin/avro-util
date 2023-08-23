@@ -14,6 +14,9 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordCollectionsF
 {
 
 
+    public FastGenericSerializerGeneratorTest_shouldWriteSubRecordCollectionsField_GenericSerializer_305534728() {
+    }
+
     public void serialize(IndexedRecord data, Encoder encoder)
         throws IOException
     {
@@ -26,6 +29,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordCollectionsF
     {
         List<IndexedRecord> recordsArray0 = ((List<IndexedRecord> ) data.get(0));
         (encoder).writeArrayStart();
+        Object array0 = recordsArray0;
         if ((recordsArray0 == null)||recordsArray0 .isEmpty()) {
             (encoder).setItemCount(0);
         } else {
@@ -61,6 +65,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordCollectionsF
             if (recordsArrayUnion0 instanceof List) {
                 (encoder).writeIndex(1);
                 (encoder).writeArrayStart();
+                Object array1 = ((List<IndexedRecord> ) recordsArrayUnion0);
                 if ((((List<IndexedRecord> ) recordsArrayUnion0) == null)||((List<IndexedRecord> ) recordsArrayUnion0).isEmpty()) {
                     (encoder).setItemCount(0);
                 } else {
@@ -126,10 +131,10 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordCollectionsF
             (encoder).writeNull();
         } else {
             (encoder).writeIndex(1);
-            if (subField0 instanceof Utf8) {
-                (encoder).writeString(((Utf8) subField0));
+            if (((CharSequence) subField0) instanceof Utf8) {
+                (encoder).writeString(((Utf8)((CharSequence) subField0)));
             } else {
-                (encoder).writeString(subField0 .toString());
+                (encoder).writeString(((CharSequence) subField0).toString());
             }
         }
     }

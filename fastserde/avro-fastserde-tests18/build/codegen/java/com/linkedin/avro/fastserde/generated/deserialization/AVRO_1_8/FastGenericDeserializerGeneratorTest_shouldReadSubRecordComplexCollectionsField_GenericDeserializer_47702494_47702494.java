@@ -138,12 +138,14 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexColl
             subRecord.put(0, null);
         } else {
             if (unionIndex1 == 1) {
+                Utf8 charSequence0;
                 Object oldString0 = subRecord.get(0);
                 if (oldString0 instanceof Utf8) {
-                    subRecord.put(0, (decoder).readString(((Utf8) oldString0)));
+                    charSequence0 = (decoder).readString(((Utf8) oldString0));
                 } else {
-                    subRecord.put(0, (decoder).readString(null));
+                    charSequence0 = (decoder).readString(null);
                 }
+                subRecord.put(0, charSequence0);
             } else {
                 throw new RuntimeException(("Illegal union index for 'subField': "+ unionIndex1));
             }

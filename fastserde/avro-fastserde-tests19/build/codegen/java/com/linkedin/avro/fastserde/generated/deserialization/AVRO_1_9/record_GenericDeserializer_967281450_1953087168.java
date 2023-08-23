@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.util.Utf8;
@@ -15,12 +16,14 @@ public class record_GenericDeserializer_967281450_1953087168
 {
 
     private final Schema readerSchema;
+    private final GenericData modelData;
     private final Schema someInts0;
     private final Schema someIntsMapSchema0;
     private final Schema someIntsMapValueSchema0;
 
-    public record_GenericDeserializer_967281450_1953087168(Schema readerSchema) {
+    public record_GenericDeserializer_967281450_1953087168(Schema readerSchema, GenericData modelData) {
         this.readerSchema = readerSchema;
+        this.modelData = modelData;
         this.someInts0 = readerSchema.getField("someInts").schema();
         this.someIntsMapSchema0 = someInts0 .getTypes().get(1);
         this.someIntsMapValueSchema0 = someIntsMapSchema0 .getValueType();
@@ -39,7 +42,7 @@ public class record_GenericDeserializer_967281450_1953087168
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
             record = ((IndexedRecord)(reuse));
         } else {
-            record = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            record = new GenericData.Record(readerSchema);
         }
         Map<Utf8, Integer> someInts1 = null;
         long chunkLen0 = (decoder.readMapStart());

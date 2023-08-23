@@ -6,6 +6,7 @@ import java.util.List;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericFixed;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
@@ -15,14 +16,16 @@ public class FastGenericDeserializerGeneratorTest_shouldReadFixed_GenericDeseria
 {
 
     private final Schema readerSchema;
+    private final GenericData modelData;
     private final Schema testFixed0;
     private final Schema testFixedUnion0;
     private final Schema testFixedArray0;
     private final Schema testFixedUnionArray0;
     private final Schema testFixedUnionArrayArrayElemSchema0;
 
-    public FastGenericDeserializerGeneratorTest_shouldReadFixed_GenericDeserializer_380547189_380547189(Schema readerSchema) {
+    public FastGenericDeserializerGeneratorTest_shouldReadFixed_GenericDeserializer_380547189_380547189(Schema readerSchema, GenericData modelData) {
         this.readerSchema = readerSchema;
+        this.modelData = modelData;
         this.testFixed0 = readerSchema.getField("testFixed").schema();
         this.testFixedUnion0 = readerSchema.getField("testFixedUnion").schema();
         this.testFixedArray0 = readerSchema.getField("testFixedArray").schema();
@@ -43,7 +46,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadFixed_GenericDeseria
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
             FastGenericDeserializerGeneratorTest_shouldReadFixed = ((IndexedRecord)(reuse));
         } else {
-            FastGenericDeserializerGeneratorTest_shouldReadFixed = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            FastGenericDeserializerGeneratorTest_shouldReadFixed = new GenericData.Record(readerSchema);
         }
         byte[] testFixed1;
         Object oldFixed0 = FastGenericDeserializerGeneratorTest_shouldReadFixed.get(0);
@@ -53,7 +56,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadFixed_GenericDeseria
             testFixed1 = ( new byte[2]);
         }
         decoder.readFixed(testFixed1);
-        FastGenericDeserializerGeneratorTest_shouldReadFixed.put(0, new org.apache.avro.generic.GenericData.Fixed(testFixed0, testFixed1));
+        FastGenericDeserializerGeneratorTest_shouldReadFixed.put(0, new GenericData.Fixed(testFixed0, testFixed1));
         populate_FastGenericDeserializerGeneratorTest_shouldReadFixed0((FastGenericDeserializerGeneratorTest_shouldReadFixed), (decoder));
         populate_FastGenericDeserializerGeneratorTest_shouldReadFixed1((FastGenericDeserializerGeneratorTest_shouldReadFixed), (decoder));
         return FastGenericDeserializerGeneratorTest_shouldReadFixed;
@@ -76,19 +79,19 @@ public class FastGenericDeserializerGeneratorTest_shouldReadFixed_GenericDeseria
                     testFixed2 = ( new byte[2]);
                 }
                 decoder.readFixed(testFixed2);
-                FastGenericDeserializerGeneratorTest_shouldReadFixed.put(1, new org.apache.avro.generic.GenericData.Fixed(testFixed0, testFixed2));
+                FastGenericDeserializerGeneratorTest_shouldReadFixed.put(1, new GenericData.Fixed(testFixed0, testFixed2));
             } else {
                 throw new RuntimeException(("Illegal union index for 'testFixedUnion': "+ unionIndex0));
             }
         }
-        List<org.apache.avro.generic.GenericData.Fixed> testFixedArray1 = null;
+        List<GenericData.Fixed> testFixedArray1 = null;
         long chunkLen0 = (decoder.readArrayStart());
         Object oldArray0 = FastGenericDeserializerGeneratorTest_shouldReadFixed.get(2);
         if (oldArray0 instanceof List) {
             testFixedArray1 = ((List) oldArray0);
             testFixedArray1 .clear();
         } else {
-            testFixedArray1 = new org.apache.avro.generic.GenericData.Array<org.apache.avro.generic.GenericData.Fixed>(((int) chunkLen0), testFixedArray0);
+            testFixedArray1 = new GenericData.Array<GenericData.Fixed>(((int) chunkLen0), testFixedArray0);
         }
         while (chunkLen0 > 0) {
             for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
@@ -104,7 +107,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadFixed_GenericDeseria
                     testFixed3 = ( new byte[2]);
                 }
                 decoder.readFixed(testFixed3);
-                testFixedArray1 .add(new org.apache.avro.generic.GenericData.Fixed(testFixed0, testFixed3));
+                testFixedArray1 .add(new GenericData.Fixed(testFixed0, testFixed3));
             }
             chunkLen0 = (decoder.arrayNext());
         }
@@ -114,14 +117,14 @@ public class FastGenericDeserializerGeneratorTest_shouldReadFixed_GenericDeseria
     private void populate_FastGenericDeserializerGeneratorTest_shouldReadFixed1(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadFixed, Decoder decoder)
         throws IOException
     {
-        List<org.apache.avro.generic.GenericData.Fixed> testFixedUnionArray1 = null;
+        List<GenericData.Fixed> testFixedUnionArray1 = null;
         long chunkLen1 = (decoder.readArrayStart());
         Object oldArray1 = FastGenericDeserializerGeneratorTest_shouldReadFixed.get(3);
         if (oldArray1 instanceof List) {
             testFixedUnionArray1 = ((List) oldArray1);
             testFixedUnionArray1 .clear();
         } else {
-            testFixedUnionArray1 = new org.apache.avro.generic.GenericData.Array<org.apache.avro.generic.GenericData.Fixed>(((int) chunkLen1), testFixedUnionArray0);
+            testFixedUnionArray1 = new GenericData.Array<GenericData.Fixed>(((int) chunkLen1), testFixedUnionArray0);
         }
         while (chunkLen1 > 0) {
             for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {
@@ -143,7 +146,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadFixed_GenericDeseria
                             testFixed4 = ( new byte[2]);
                         }
                         decoder.readFixed(testFixed4);
-                        testFixedUnionArray1 .add(new org.apache.avro.generic.GenericData.Fixed(testFixed0, testFixed4));
+                        testFixedUnionArray1 .add(new GenericData.Fixed(testFixed0, testFixed4));
                     } else {
                         throw new RuntimeException(("Illegal union index for 'testFixedUnionArrayElem': "+ unionIndex1));
                     }

@@ -12,17 +12,20 @@ public class Array_of_DOUBLE_GenericSerializer_18760307
 {
 
 
+    public Array_of_DOUBLE_GenericSerializer_18760307() {
+    }
+
     public void serialize(List<Double> data, Encoder encoder)
         throws IOException
     {
         (encoder).writeArrayStart();
+        Object array0 = data;
         if ((data == null)||data.isEmpty()) {
             (encoder).setItemCount(0);
         } else {
             (encoder).setItemCount(data.size());
-            if (data instanceof PrimitiveDoubleList) {
-                PrimitiveDoubleList primitiveList0 = null;
-                primitiveList0 = ((PrimitiveDoubleList) data);
+            if (array0 instanceof PrimitiveDoubleList) {
+                PrimitiveDoubleList primitiveList0 = ((PrimitiveDoubleList) array0);
                 for (int counter0 = 0; (counter0 <primitiveList0 .size()); counter0 ++) {
                     (encoder).startItem();
                     (encoder).writeDouble(primitiveList0 .getPrimitive(counter0));

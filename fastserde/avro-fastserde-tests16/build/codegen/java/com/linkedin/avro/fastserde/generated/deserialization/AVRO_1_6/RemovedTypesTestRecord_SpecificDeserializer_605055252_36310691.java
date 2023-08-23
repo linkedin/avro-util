@@ -33,12 +33,14 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
         } else {
             RemovedTypesTestRecord = new com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord();
         }
+        Utf8 charSequence0;
         Object oldString0 = RemovedTypesTestRecord.get(0);
         if (oldString0 instanceof Utf8) {
-            RemovedTypesTestRecord.put(0, (decoder).readString(((Utf8) oldString0)));
+            charSequence0 = (decoder).readString(((Utf8) oldString0));
         } else {
-            RemovedTypesTestRecord.put(0, (decoder).readString(null));
+            charSequence0 = (decoder).readString(null);
         }
+        RemovedTypesTestRecord.put(0, charSequence0);
         populate_RemovedTypesTestRecord0((RemovedTypesTestRecord), (decoder));
         populate_RemovedTypesTestRecord1((RemovedTypesTestRecord), (decoder));
         populate_RemovedTypesTestRecord2((RemovedTypesTestRecord), (decoder));

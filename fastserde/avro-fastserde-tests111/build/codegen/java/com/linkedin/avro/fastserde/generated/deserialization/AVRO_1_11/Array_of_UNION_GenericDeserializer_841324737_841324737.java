@@ -6,6 +6,7 @@ import java.util.List;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.util.Utf8;
@@ -15,12 +16,14 @@ public class Array_of_UNION_GenericDeserializer_841324737_841324737
 {
 
     private final Schema readerSchema;
+    private final GenericData modelData;
     private final Schema arrayArrayElemSchema0;
     private final Schema arrayElemOptionSchema0;
     private final Schema field0;
 
-    public Array_of_UNION_GenericDeserializer_841324737_841324737(Schema readerSchema) {
+    public Array_of_UNION_GenericDeserializer_841324737_841324737(Schema readerSchema, GenericData modelData) {
         this.readerSchema = readerSchema;
+        this.modelData = modelData;
         this.arrayArrayElemSchema0 = readerSchema.getElementType();
         this.arrayElemOptionSchema0 = arrayArrayElemSchema0 .getTypes().get(1);
         this.field0 = arrayElemOptionSchema0 .getField("field").schema();
@@ -35,7 +38,7 @@ public class Array_of_UNION_GenericDeserializer_841324737_841324737
             array0 = ((List)(reuse));
             array0 .clear();
         } else {
-            array0 = new org.apache.avro.generic.GenericData.Array<IndexedRecord>(((int) chunkLen0), readerSchema);
+            array0 = new GenericData.Array<IndexedRecord>(((int) chunkLen0), readerSchema);
         }
         while (chunkLen0 > 0) {
             for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
@@ -67,7 +70,7 @@ public class Array_of_UNION_GenericDeserializer_841324737_841324737
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == arrayElemOptionSchema0)) {
             record = ((IndexedRecord)(reuse));
         } else {
-            record = new org.apache.avro.generic.GenericData.Record(arrayElemOptionSchema0);
+            record = new GenericData.Record(arrayElemOptionSchema0);
         }
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
@@ -75,12 +78,14 @@ public class Array_of_UNION_GenericDeserializer_841324737_841324737
             record.put(0, null);
         } else {
             if (unionIndex1 == 1) {
+                Utf8 charSequence0;
                 Object oldString0 = record.get(0);
                 if (oldString0 instanceof Utf8) {
-                    record.put(0, (decoder).readString(((Utf8) oldString0)));
+                    charSequence0 = (decoder).readString(((Utf8) oldString0));
                 } else {
-                    record.put(0, (decoder).readString(null));
+                    charSequence0 = (decoder).readString(null);
                 }
+                record.put(0, charSequence0);
             } else {
                 throw new RuntimeException(("Illegal union index for 'field': "+ unionIndex1));
             }

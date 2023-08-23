@@ -8,15 +8,18 @@ import com.linkedin.avro.fastserde.generated.avro.MyEnumV2;
 import com.linkedin.avroutil1.Enums;
 import org.apache.avro.Schema;
 import org.apache.avro.io.Decoder;
+import org.apache.avro.specific.SpecificData;
 
 public class UnionOfRecordsWithSameNameEnumField_SpecificDeserializer_1341667615_1341667615
     implements FastDeserializer<com.linkedin.avro.fastserde.generated.avro.UnionOfRecordsWithSameNameEnumField>
 {
 
     private final Schema readerSchema;
+    private final SpecificData modelData;
 
-    public UnionOfRecordsWithSameNameEnumField_SpecificDeserializer_1341667615_1341667615(Schema readerSchema) {
+    public UnionOfRecordsWithSameNameEnumField_SpecificDeserializer_1341667615_1341667615(Schema readerSchema, SpecificData modelData) {
         this.readerSchema = readerSchema;
+        this.modelData = modelData;
     }
 
     public com.linkedin.avro.fastserde.generated.avro.UnionOfRecordsWithSameNameEnumField deserialize(com.linkedin.avro.fastserde.generated.avro.UnionOfRecordsWithSameNameEnumField reuse, Decoder decoder)

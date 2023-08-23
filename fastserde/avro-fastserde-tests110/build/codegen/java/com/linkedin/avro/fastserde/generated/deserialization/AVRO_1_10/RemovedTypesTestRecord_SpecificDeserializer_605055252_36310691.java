@@ -6,6 +6,7 @@ import com.linkedin.avro.fastserde.FastDeserializer;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.io.Decoder;
+import org.apache.avro.specific.SpecificData;
 import org.apache.avro.util.Utf8;
 
 public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
@@ -13,9 +14,11 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
 {
 
     private final Schema readerSchema;
+    private final SpecificData modelData;
 
-    public RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691(Schema readerSchema) {
+    public RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691(Schema readerSchema, SpecificData modelData) {
         this.readerSchema = readerSchema;
+        this.modelData = modelData;
     }
 
     public com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord deserialize(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord reuse, Decoder decoder)
@@ -33,12 +36,14 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
         } else {
             RemovedTypesTestRecord = new com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord();
         }
+        Utf8 charSequence0;
         Object oldString0 = RemovedTypesTestRecord.get(0);
         if (oldString0 instanceof Utf8) {
-            RemovedTypesTestRecord.put(0, (decoder).readString(((Utf8) oldString0)));
+            charSequence0 = (decoder).readString(((Utf8) oldString0));
         } else {
-            RemovedTypesTestRecord.put(0, (decoder).readString(null));
+            charSequence0 = (decoder).readString(null);
         }
+        RemovedTypesTestRecord.put(0, charSequence0);
         populate_RemovedTypesTestRecord0((RemovedTypesTestRecord), (decoder));
         populate_RemovedTypesTestRecord1((RemovedTypesTestRecord), (decoder));
         populate_RemovedTypesTestRecord2((RemovedTypesTestRecord), (decoder));

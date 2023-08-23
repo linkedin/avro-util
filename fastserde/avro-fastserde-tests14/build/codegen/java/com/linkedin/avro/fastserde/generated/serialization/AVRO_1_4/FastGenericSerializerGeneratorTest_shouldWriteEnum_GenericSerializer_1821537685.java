@@ -14,6 +14,9 @@ public class FastGenericSerializerGeneratorTest_shouldWriteEnum_GenericSerialize
 
     private final Schema testEnumEnumSchema0 = Schema.parse("{\"type\":\"enum\",\"name\":\"testEnum\",\"namespace\":\"com.adpilot.utils.generated.avro\",\"symbols\":[\"A\",\"B\"]}");
 
+    public FastGenericSerializerGeneratorTest_shouldWriteEnum_GenericSerializer_1821537685() {
+    }
+
     public void serialize(IndexedRecord data, Encoder encoder)
         throws IOException
     {
@@ -35,6 +38,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteEnum_GenericSerialize
         }
         List<org.apache.avro.generic.GenericData.EnumSymbol> testEnumArray0 = ((List<org.apache.avro.generic.GenericData.EnumSymbol> ) data.get(2));
         (encoder).writeArrayStart();
+        Object array0 = testEnumArray0;
         if ((testEnumArray0 == null)||testEnumArray0 .isEmpty()) {
             (encoder).setItemCount(0);
         } else {
@@ -47,6 +51,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteEnum_GenericSerialize
         (encoder).writeArrayEnd();
         List<org.apache.avro.generic.GenericData.EnumSymbol> testEnumUnionArray0 = ((List<org.apache.avro.generic.GenericData.EnumSymbol> ) data.get(3));
         (encoder).writeArrayStart();
+        Object array1 = testEnumUnionArray0;
         if ((testEnumUnionArray0 == null)||testEnumUnionArray0 .isEmpty()) {
             (encoder).setItemCount(0);
         } else {
