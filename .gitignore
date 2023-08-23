@@ -1,5 +1,6 @@
 #gradle artifacts
 .gradle/
+build/
 
 #temp artifacts
 avro_tools/
@@ -14,11 +15,3 @@ out/
 
 #macos stuff
 **/.DS_Store
-**/build/resources
-**/build/libs
-**/build/tmp
-**/build/jacoco
-**/build/reports
-**/build/test-results
-avro-builder/tests/codegen-*/build
-helper/tests/codegen-*/build/generated/
