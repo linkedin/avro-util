@@ -49,8 +49,18 @@ public class AvroCodecUtil {
     }
 
     public static String serializeJson(IndexedRecord record, AvroVersion format) throws IOException {
+        return serializeJson(record, format, false);
+    }
+
+  /**
+   * Serialize an IndexedRecord (Generic Record or Specific Record) to json string
+   * @param record the record to serialize
+   * @param format the version of avro to use
+   * @param oneline whether to output the json in one line or pretty printed.
+   */
+    public static String serializeJson(IndexedRecord record, AvroVersion format, boolean oneline) throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        Encoder encoder = AvroCompatibilityHelper.newJsonEncoder(record.getSchema(), os, true, format);
+        Encoder encoder = AvroCompatibilityHelper.newJsonEncoder(record.getSchema(), os, !oneline, format);
         DatumWriter<IndexedRecord> writer = AvroCompatibilityHelper.isSpecificRecord(record) ?
                 new SpecificDatumWriter<>(record.getSchema())
                 : new GenericDatumWriter<>(record.getSchema());
