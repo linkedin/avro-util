@@ -143,20 +143,19 @@ public class Jackson2Utils {
    *  Enforces uniform numeric default values across Avro versions
    */
   public static JsonNode enforceUniformNumericDefaultValues(Schema.Field field, JsonNode genericDefaultValue) {
-    BigDecimal numericDefaultValue = genericDefaultValue.decimalValue();
     Schema schema = field.schema();
     // a default value for a union, must match the first element of the union
     Schema.Type defaultType = schema.getType() == UNION ? schema.getTypes().get(0).getType() : schema.getType();
 
     switch (defaultType) {
       case INT:
-        if (!isAMathematicalInteger(numericDefaultValue)) {
+        if (!isAMathematicalInteger(genericDefaultValue.decimalValue())) {
           LOGGER.warn(String.format("Invalid default value: %s for \"int\" field: %s", genericDefaultValue, field.name()));
           return genericDefaultValue;
         }
         return new IntNode(genericDefaultValue.intValue());
       case LONG:
-        if (!isAMathematicalInteger(numericDefaultValue)) {
+        if (!isAMathematicalInteger(genericDefaultValue.decimalValue())) {
           LOGGER.warn(String.format("Invalid default value: %s for \"long\" field: %s", genericDefaultValue, field.name()));
           return genericDefaultValue;
         }

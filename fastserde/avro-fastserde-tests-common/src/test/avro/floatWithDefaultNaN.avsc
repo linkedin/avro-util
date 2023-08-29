@@ -1,0 +1,13 @@
+{
+  "type": "record",
+  "name": "FloatWithDefaultNaN",
+  "namespace": "com.linkedin.avro.fastserde.generated.avro",
+  "doc": "Used to verify Utils.getSchemaFingerprint() method",
+  "fields": [
+    {
+      "name": "floatWithDefaultNaN",
+      "type": "float",
+      "default": "NaN"
+    }
+  ]
+}
