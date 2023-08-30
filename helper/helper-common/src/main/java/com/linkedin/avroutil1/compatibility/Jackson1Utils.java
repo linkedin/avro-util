@@ -210,20 +210,19 @@ public class Jackson1Utils {
    */
   public static JsonNode enforceUniformNumericDefaultValues(Schema.Field field) {
     JsonNode defaultValue = field.defaultValue();
-    BigDecimal numericValue = defaultValue.getDecimalValue();
     Schema schema = field.schema();
     // a default value for a union, must match the first element of the union
     Schema.Type defaultType = schema.getType() == UNION ? schema.getTypes().get(0).getType() : schema.getType();
 
     switch (defaultType) {
       case INT:
-        if (!isAMathematicalInteger(numericValue)) {
+        if (!isAMathematicalInteger(defaultValue.getDecimalValue())) {
           LOGGER.warn(String.format("Invalid default value: %s for \"int\" field: %s", field.defaultValue(), field.name()));
           return defaultValue;
         }
         return new IntNode(defaultValue.getNumberValue().intValue());
       case LONG:
-        if (!isAMathematicalInteger(numericValue)) {
+        if (!isAMathematicalInteger(defaultValue.getDecimalValue())) {
           LOGGER.warn(String.format("Invalid default value: %s for \"long\" field: %s", field.defaultValue(), field.name()));
           return defaultValue;
         }
