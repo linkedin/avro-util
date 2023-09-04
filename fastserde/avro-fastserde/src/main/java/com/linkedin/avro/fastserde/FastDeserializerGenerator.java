@@ -1018,7 +1018,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       if (reuseSupplier.get().equals(JExpr._null())) {
         body.assign(fixedBuffer, JExpr.direct(" new byte[" + schema.getFixedSize() + "]"));
       } else {
-        /**
+        /*
          * Here will check whether the length of the reused fixed is same as the one to be deserialized or not.
          * If not, here will initialize a new byte array to store it.
          */
