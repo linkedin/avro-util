@@ -48,7 +48,7 @@ public class CompatibleSpecificRecordBuilderBase {
    *                              accept null values.
    */
   protected void validate(Schema.Field field, Object value) {
-    if (!isValidValue(field, value) && field.defaultValue() == null) {
+    if (!isValidValue(field, value) && AvroCompatibilityHelper.getSpecificDefaultValue(field) == null) {
       throw new AvroRuntimeException("Field " + field + " does not accept null values");
     }
   }
