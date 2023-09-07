@@ -43,4 +43,7 @@ dependencies {
   testImplementation "org.apache.avro:avro-compiler:1.10.2"
   testImplementation "com.google.guava:guava:28.2-jre"
   testImplementation "org.mockito:mockito-core:3.2.4"
+
+  testImplementation group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.8.10'
+
 }
