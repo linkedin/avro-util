@@ -1,10 +1,10 @@
 /*
- * Copyright 2018 LinkedIn Corp.
+ * Copyright 2023 LinkedIn Corp.
  * Licensed under the BSD 2-Clause License (the "License").
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1.testutil;
+package com.linkedin.avroutil1.testcommon;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -27,7 +27,6 @@ import javax.tools.DiagnosticListener;
 import javax.tools.FileObject;
 import javax.tools.ForwardingJavaFileManager;
 import javax.tools.JavaCompiler;
-import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 import javax.tools.SimpleJavaFileObject;
 import javax.tools.StandardJavaFileManager;
@@ -35,12 +34,11 @@ import javax.tools.ToolProvider;
 import org.apache.commons.io.IOUtils;
 import org.testng.Assert;
 
+
 /**
  * utility class for dealing with the java compiler in unit tests
- * @deprecated Use test-common -> CommonCompilerHelper
  */
-@Deprecated
-public class CompilerHelper {
+public class CommonCompilerHelper {
 
     public static void assertCompiles(JavaFileObject sourceFile) throws Exception {
         List<JavaFileObject> fileObjects = Arrays.asList(sourceFile);
@@ -107,7 +105,7 @@ public class CompilerHelper {
 
         @Override
         public JavaFileObject getJavaFileForOutput(
-                JavaFileManager.Location location,
+                Location location,
                 String className,
                 JavaFileObject.Kind kind,
                 FileObject sibling

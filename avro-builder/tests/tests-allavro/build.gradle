@@ -97,6 +97,8 @@ dependencies {
     exclude group: "org.slf4j"
   }
 
+  testImplementation project(":test-common")
+
   avro15 "org.apache.avro:avro:1.5.4"
   avro15 "org.apache.avro:avro-compiler:1.5.4"
 

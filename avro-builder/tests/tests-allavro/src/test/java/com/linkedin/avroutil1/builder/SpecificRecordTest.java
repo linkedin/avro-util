@@ -11,10 +11,14 @@ import com.linkedin.avroutil1.compatibility.AvroRecordUtil;
 import com.linkedin.avroutil1.compatibility.RandomRecordGenerator;
 import com.linkedin.avroutil1.compatibility.RecordGenerationConfig;
 import com.linkedin.avroutil1.compatibility.StringConverterUtil;
+import com.linkedin.avroutil1.testcommon.CommonCompilerHelper;
+import java.io.File;
+import java.io.FilenameFilter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -1827,6 +1831,29 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     TestCollections.newBuilder(builder);
 
     compareIndexedRecords(instance, builder.build());
+  }
+
+  @DataProvider
+  private Object[][] testGeneratedCompilationProvider(){
+    String projectPath = System.getProperty("user.dir");
+    List<String> list = Arrays.stream(new File(projectPath + "/../").list(new FilenameFilter() {
+      @Override
+      public boolean accept(File current, String name) {
+        return name.matches("codegen-[\\w\\-]+") && new File(current, name).isDirectory();
+      }
+    })).map(dir -> projectPath + "/../" + dir + "/build/generated/sources/avro").collect(Collectors.toList());
+
+    Object[][] res = new Object[list.size()][1];
+
+    for(int i = 0; i< list.size(); i++) {
+      res[i][0] = list.get(i);
+    }
+    return res;
+  }
+
+  @Test(dataProvider = "testGeneratedCompilationProvider")
+  public void testGeneratedCompilation(String genPath) throws Exception {
+    CommonCompilerHelper.assertCompiles(Paths.get(genPath));
   }
 
   @BeforeClass
