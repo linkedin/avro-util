@@ -90,7 +90,7 @@ public class FastGenericDeserializerGeneratorTest {
     classLoader = URLClassLoader.newInstance(new URL[]{tempDir.toURI().toURL()},
         FastGenericDeserializerGeneratorTest.class.getClassLoader());
 
-    // In order to test the functionallity of the record split we set an unusually low number
+    // In order to test the functionality of the record split we set an unusually low number
     FastGenericDeserializerGenerator.setFieldsPerPopulationMethod(2);
   }
 

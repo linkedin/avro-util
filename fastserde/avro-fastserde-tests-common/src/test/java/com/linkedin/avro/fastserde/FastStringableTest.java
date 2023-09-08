@@ -59,6 +59,9 @@ public class FastStringableTest {
     tempDir = getCodeGenDirectory();
     classLoader = URLClassLoader.newInstance(new URL[]{tempDir.toURI().toURL()},
         FastDeserializerDefaultsTest.class.getClassLoader());
+
+    // In order to test the functionality of the record split we set an unusually low number
+    FastGenericSerializerGenerator.setFieldsPerRecordSerializationMethod(2);
   }
 
   StringableRecord generateRecord(URL exampleURL, URI exampleURI, File exampleFile, BigDecimal exampleBigDecimal,

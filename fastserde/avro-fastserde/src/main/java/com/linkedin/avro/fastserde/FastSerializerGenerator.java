@@ -26,6 +26,8 @@ import org.apache.commons.lang3.StringUtils;
 
 public class FastSerializerGenerator<T> extends FastSerdeBase {
 
+  private static int FIELDS_PER_RECORD_SERIALIZATION_METHOD = 20;
+
   private static final String ENCODER = "encoder";
   protected final Schema schema;
 
@@ -35,6 +37,10 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
    * Enum schema mapping for Avro-1.4 to record schema id and corresponding schema JVar.
    */
   private final Map<Integer, JVar> enumSchemaVarMap = new HashMap<>();
+
+  static void setFieldsPerRecordSerializationMethod(int fieldCount) {
+    FIELDS_PER_RECORD_SERIALIZATION_METHOD = fieldCount;
+  }
 
 
   public FastSerializerGenerator(boolean useGenericTypes, Schema schema, File destination, ClassLoader classLoader,
@@ -134,20 +140,39 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
     JMethod method = createMethod(recordSchema);
     containerBody.invoke(getMethod(recordSchema)).arg(recordExpr).arg(JExpr.direct(ENCODER));
 
-    JBlock body = method.body();
+    JBlock methodBody = method.body();
     recordExpr = method.listParams()[0];
 
+    int fieldCount = 0;
+    JBlock popMethodBody = methodBody;
+
     for (Schema.Field field : recordSchema.getFields()) {
+      /**
+       * We roll the serialization method for very large records, the initial fields are kept in the outer
+       * method as original to maintain performance for smaller records
+        */
+      fieldCount++;
+      if (fieldCount % FIELDS_PER_RECORD_SERIALIZATION_METHOD == 0) {
+        JMethod  popMethod = generatedClass.method(JMod.PRIVATE, codeModel.VOID, getUniqueName("serialize_" + StringUtils.capitalize(recordSchema.getName())));
+        popMethod._throws(IOException.class);
+        popMethod.param(schemaAssistant.classFromSchema(recordSchema), "data");
+        popMethod.param(Encoder.class, ENCODER);
+        popMethod.annotate(SuppressWarnings.class).param("value", "unchecked");
+
+        popMethodBody = popMethod.body();
+        methodBody.invoke(popMethod).arg(recordExpr).arg(JExpr.direct(ENCODER));
+      }
+
       Schema fieldSchema = field.schema();
       if (SchemaAssistant.isComplexType(fieldSchema)) {
         JClass fieldClass = schemaAssistant.classFromSchema(fieldSchema);
-        JVar containerVar = declareValueVar(field.name(), fieldSchema, body);
+        JVar containerVar = declareValueVar(field.name(), fieldSchema, popMethodBody);
         JExpression valueExpression = JExpr.invoke(recordExpr, "get").arg(JExpr.lit(field.pos()));
         containerVar.init(JExpr.cast(fieldClass, valueExpression));
 
-        processComplexType(fieldSchema, containerVar, body);
+        processComplexType(fieldSchema, containerVar, popMethodBody);
       } else {
-        processSimpleType(fieldSchema, recordExpr.invoke("get").arg(JExpr.lit(field.pos())), body);
+        processSimpleType(fieldSchema, recordExpr.invoke("get").arg(JExpr.lit(field.pos())), popMethodBody);
       }
     }
   }
