@@ -57,7 +57,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
   private static final Logger LOGGER = LoggerFactory.getLogger(FastDeserializerGenerator.class);
   private static final String DECODER = "decoder";
   private static final String VAR_NAME_FOR_REUSE = "reuse";
-  private static int FIELDS_PER_POPULATION_METHOD = 100;
+  private static int FIELDS_PER_POPULATION_METHOD = 20;
 
   // 65535 is the actual limit, 65K added for safety
   static int MAX_LENGTH_OF_STRING_LITERAL = 65000;

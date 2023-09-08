@@ -75,6 +75,9 @@ public class FastSpecificSerializerGeneratorTest {
 
     classLoader = URLClassLoader.newInstance(new URL[]{tempDir.toURI().toURL()},
         FastSpecificSerializerGeneratorTest.class.getClassLoader());
+
+    // In order to test the functionality of the record split we set an unusually low number
+    FastGenericSerializerGenerator.setFieldsPerRecordSerializationMethod(2);
   }
 
   @Test(groups = {"serializationTest"})

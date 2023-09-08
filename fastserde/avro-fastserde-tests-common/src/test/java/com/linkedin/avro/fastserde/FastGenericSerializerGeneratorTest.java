@@ -44,6 +44,9 @@ public class FastGenericSerializerGeneratorTest {
 
     classLoader = URLClassLoader.newInstance(new URL[]{tempDir.toURI().toURL()},
         FastGenericSerializerGeneratorTest.class.getClassLoader());
+
+    // In order to test the functionality of the record split we set an unusually low number
+    FastGenericSerializerGenerator.setFieldsPerRecordSerializationMethod(2);
   }
 
   @Test(groups = {"serializationTest"})
@@ -527,6 +530,26 @@ public class FastGenericSerializerGeneratorTest {
     // then
     shouldWriteArrayOfPrimitives(Schema.Type.LONG, data);
     Assert.assertTrue(primitiveApiCalled.get());
+  }
+
+  @Test(groups = {"serializationTest"})
+  public void shouldSerializeLargeRecord() {
+    int fieldCnt = 1000;
+    String fieldNamePrefix = "field_";
+    Schema.Field[] fields = new Schema.Field[fieldCnt];
+    for (int i = 0; i < fieldCnt; ++i) {
+      fields[i] = createPrimitiveFieldSchema(fieldNamePrefix + i, Schema.Type.INT);
+    }
+    Schema recordSchema = createRecord(fields);
+    GenericRecord record = new GenericData.Record(recordSchema);
+    for (int i = 0; i < fieldCnt; ++i) {
+      record.put(fieldNamePrefix + i, new Integer(i));
+    }
+
+    GenericRecord decodedRecord = decodeRecord(recordSchema, dataAsBinaryDecoder(record, recordSchema));
+    for (int i = 0; i < fieldCnt; ++i) {
+      Assert.assertEquals(decodedRecord.get(fieldNamePrefix + i), new Integer(i));
+    }
   }
 
   private <E> void shouldWriteArrayOfPrimitives(Schema.Type elementType, List<E> data) {
