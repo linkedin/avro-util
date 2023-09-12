@@ -34,7 +34,6 @@ import org.apache.avro.io.Encoder;
 import org.apache.avro.util.Utf8;
 import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import org.testng.collections.Lists;
 
@@ -150,7 +149,6 @@ public class FastGenericSerializerGeneratorTest {
         ((List<GenericData.Fixed>) record.get("testFixedUnionArray")).get(0).bytes());
   }
 
-  @Ignore
   @Test(groups = {"serializationTest"})
   public void shouldWriteSpecificRecordWithFixed() {
     // given
@@ -226,7 +224,6 @@ public class FastGenericSerializerGeneratorTest {
     Assert.assertEquals("A", ((List<GenericData.EnumSymbol>) record.get("testEnumUnionArray")).get(0).toString());
   }
 
-  @Ignore
   @Test(groups = {"serializationTest"})
   public void shouldWriteSpecificRecordWithEnums() {
     // given

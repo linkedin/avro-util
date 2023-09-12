@@ -18,7 +18,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.util.Utf8;
 import org.apache.commons.lang3.StringUtils;
@@ -367,30 +369,41 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
   private void processEnum(Schema enumSchema, JExpression enumValueExpression, JBlock body) {
     JClass enumClass = schemaAssistant.classFromSchema(enumSchema);
     JExpression enumValueCasted = JExpr.cast(enumClass, enumValueExpression);
-    JExpression valueToWrite;
+    JVar valueToWrite = body.decl(codeModel.INT, getUniqueName("valueToWrite"));
+
     if (useGenericTypes) {
+      JVar enumValue = body.decl(codeModel.ref(Object.class), getUniqueName("enumValue"), enumValueExpression);
+      JClass enumSymbolClass = codeModel.ref(GenericData.EnumSymbol.class);
+      JExpression castEnumValueToEnumSymbol = JExpr.cast(enumSymbolClass, enumValue);
+      JExpression schemaExpression;
+      JExpression enumValueToStringExpr;
+
       if (Utils.isAvro14()) {
         /*
          * In Avro-1.4, there is no way to infer/extract enum schema from {@link org.apache.avro.generic.GenericData.EnumSymbol},
          * so the serializer needs to record the schema id and the corresponding {@link org.apache.avro.Schema.EnumSchema},
          * and maintain a mapping between the schema id and EnumSchema JVar for future use.
          */
-        JVar enumSchemaVar = enumSchemaVarMap.computeIfAbsent(Utils.getSchemaFingerprint(enumSchema), s->
-            generatedClass.field(
-                JMod.PRIVATE | JMod.FINAL,
-                Schema.class,
-                getUniqueName(enumSchema.getName() + "EnumSchema"),
-                codeModel.ref(Schema.class).staticInvoke("parse").arg(enumSchema.toString()))
+        schemaExpression = enumSchemaVarMap.computeIfAbsent(Utils.getSchemaFingerprint(enumSchema), fingerprint ->
+                generatedClass.field(
+                        JMod.PRIVATE | JMod.FINAL,
+                        Schema.class,
+                        getUniqueName(enumSchema.getName() + "EnumSchema"),
+                        codeModel.ref(Schema.class).staticInvoke("parse").arg(enumSchema.toString()))
         );
-        valueToWrite = JExpr.invoke(enumSchemaVar, "getEnumOrdinal").arg(enumValueCasted.invoke("toString"));
+        enumValueToStringExpr = enumValueCasted.invoke("toString");
       } else {
-        valueToWrite = JExpr.invoke(
-            enumValueCasted.invoke("getSchema"),
-            "getEnumOrdinal"
-        ).arg(enumValueCasted.invoke("toString"));
+        schemaExpression = castEnumValueToEnumSymbol.invoke("getSchema");
+        enumValueToStringExpr = castEnumValueToEnumSymbol.invoke("toString");
       }
+
+      ifCodeGen(body, enumValue._instanceof(codeModel.ref(Enum.class)),
+              thenBlock -> thenBlock.assign(valueToWrite,
+                      JExpr.invoke(JExpr.cast(codeModel.ref(Enum.class), enumValue), "ordinal")),
+              elseBlock -> elseBlock.assign(valueToWrite,
+                      JExpr.invoke(schemaExpression, "getEnumOrdinal").arg(enumValueToStringExpr)));
     } else {
-      valueToWrite = enumValueCasted.invoke("ordinal");
+      valueToWrite.init(enumValueCasted.invoke("ordinal"));
     }
 
     body.invoke(JExpr.direct(ENCODER), "writeEnum").arg(valueToWrite);
