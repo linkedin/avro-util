@@ -81,14 +81,14 @@ public class FastGenericDeserializerGeneratorTest_shouldReadFixed_GenericDeseria
                 throw new RuntimeException(("Illegal union index for 'testFixedUnion': "+ unionIndex0));
             }
         }
-        List<org.apache.avro.generic.GenericData.Fixed> testFixedArray1 = null;
+        List<GenericFixed> testFixedArray1 = null;
         long chunkLen0 = (decoder.readArrayStart());
         Object oldArray0 = FastGenericDeserializerGeneratorTest_shouldReadFixed.get(2);
         if (oldArray0 instanceof List) {
             testFixedArray1 = ((List) oldArray0);
             testFixedArray1 .clear();
         } else {
-            testFixedArray1 = new org.apache.avro.generic.GenericData.Array<org.apache.avro.generic.GenericData.Fixed>(((int) chunkLen0), testFixedArray0);
+            testFixedArray1 = new org.apache.avro.generic.GenericData.Array<GenericFixed>(((int) chunkLen0), testFixedArray0);
         }
         while (chunkLen0 > 0) {
             for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
@@ -114,14 +114,14 @@ public class FastGenericDeserializerGeneratorTest_shouldReadFixed_GenericDeseria
     private void populate_FastGenericDeserializerGeneratorTest_shouldReadFixed1(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadFixed, Decoder decoder)
         throws IOException
     {
-        List<org.apache.avro.generic.GenericData.Fixed> testFixedUnionArray1 = null;
+        List<GenericFixed> testFixedUnionArray1 = null;
         long chunkLen1 = (decoder.readArrayStart());
         Object oldArray1 = FastGenericDeserializerGeneratorTest_shouldReadFixed.get(3);
         if (oldArray1 instanceof List) {
             testFixedUnionArray1 = ((List) oldArray1);
             testFixedUnionArray1 .clear();
         } else {
-            testFixedUnionArray1 = new org.apache.avro.generic.GenericData.Array<org.apache.avro.generic.GenericData.Fixed>(((int) chunkLen1), testFixedUnionArray0);
+            testFixedUnionArray1 = new org.apache.avro.generic.GenericData.Array<GenericFixed>(((int) chunkLen1), testFixedUnionArray0);
         }
         while (chunkLen1 > 0) {
             for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {

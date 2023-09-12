@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import com.linkedin.avro.fastserde.FastSerializer;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericEnumSymbol;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Encoder;
 
@@ -25,7 +26,14 @@ public class FastSerdeEnums_GenericSerializer_808559686
     public void serializeFastSerdeEnums0(IndexedRecord data, Encoder encoder)
         throws IOException
     {
-        (encoder).writeEnum(justSimpleEnumEnumSchema0 .getEnumOrdinal(((org.apache.avro.generic.GenericData.EnumSymbol) data.get(0)).toString()));
+        int valueToWrite0;
+        Object enumValue0 = data.get(0);
+        if (enumValue0 instanceof Enum) {
+            valueToWrite0 = ((Enum) enumValue0).ordinal();
+        } else {
+            valueToWrite0 = justSimpleEnumEnumSchema0 .getEnumOrdinal(((GenericEnumSymbol) data.get(0)).toString());
+        }
+        (encoder).writeEnum(valueToWrite0);
         serialize_FastSerdeEnums0(data, (encoder));
     }
 
@@ -33,7 +41,7 @@ public class FastSerdeEnums_GenericSerializer_808559686
     private void serialize_FastSerdeEnums0(IndexedRecord data, Encoder encoder)
         throws IOException
     {
-        List<org.apache.avro.generic.GenericData.EnumSymbol> arrayOfEnums0 = ((List<org.apache.avro.generic.GenericData.EnumSymbol> ) data.get(1));
+        List<GenericEnumSymbol> arrayOfEnums0 = ((List<GenericEnumSymbol> ) data.get(1));
         if (arrayOfEnums0 == null) {
             (encoder).writeIndex(0);
             (encoder).writeNull();
@@ -41,28 +49,42 @@ public class FastSerdeEnums_GenericSerializer_808559686
             if (arrayOfEnums0 instanceof List) {
                 (encoder).writeIndex(1);
                 (encoder).writeArrayStart();
-                if ((((List<org.apache.avro.generic.GenericData.EnumSymbol> ) arrayOfEnums0) == null)||((List<org.apache.avro.generic.GenericData.EnumSymbol> ) arrayOfEnums0).isEmpty()) {
+                if ((((List<GenericEnumSymbol> ) arrayOfEnums0) == null)||((List<GenericEnumSymbol> ) arrayOfEnums0).isEmpty()) {
                     (encoder).setItemCount(0);
                 } else {
-                    (encoder).setItemCount(((List<org.apache.avro.generic.GenericData.EnumSymbol> ) arrayOfEnums0).size());
-                    for (int counter0 = 0; (counter0 <((List<org.apache.avro.generic.GenericData.EnumSymbol> ) arrayOfEnums0).size()); counter0 ++) {
+                    (encoder).setItemCount(((List<GenericEnumSymbol> ) arrayOfEnums0).size());
+                    for (int counter0 = 0; (counter0 <((List<GenericEnumSymbol> ) arrayOfEnums0).size()); counter0 ++) {
                         (encoder).startItem();
-                        (encoder).writeEnum(justSimpleEnumEnumSchema0 .getEnumOrdinal(((org.apache.avro.generic.GenericData.EnumSymbol)((List<org.apache.avro.generic.GenericData.EnumSymbol> ) arrayOfEnums0).get(counter0)).toString()));
+                        int valueToWrite1;
+                        Object enumValue1 = ((List<GenericEnumSymbol> ) arrayOfEnums0).get(counter0);
+                        if (enumValue1 instanceof Enum) {
+                            valueToWrite1 = ((Enum) enumValue1).ordinal();
+                        } else {
+                            valueToWrite1 = justSimpleEnumEnumSchema0 .getEnumOrdinal(((GenericEnumSymbol)((List<GenericEnumSymbol> ) arrayOfEnums0).get(counter0)).toString());
+                        }
+                        (encoder).writeEnum(valueToWrite1);
                     }
                 }
                 (encoder).writeArrayEnd();
             }
         }
-        Map<CharSequence, org.apache.avro.generic.GenericData.EnumSymbol> mapOfEnums0 = ((Map<CharSequence, org.apache.avro.generic.GenericData.EnumSymbol> ) data.get(2));
+        Map<CharSequence, GenericEnumSymbol> mapOfEnums0 = ((Map<CharSequence, GenericEnumSymbol> ) data.get(2));
         (encoder).writeMapStart();
         if ((mapOfEnums0 == null)||mapOfEnums0 .isEmpty()) {
             (encoder).setItemCount(0);
         } else {
             (encoder).setItemCount(mapOfEnums0 .size());
-            for (CharSequence key0 : ((Map<CharSequence, org.apache.avro.generic.GenericData.EnumSymbol> ) mapOfEnums0).keySet()) {
+            for (CharSequence key0 : ((Map<CharSequence, GenericEnumSymbol> ) mapOfEnums0).keySet()) {
                 (encoder).startItem();
                 (encoder).writeString(key0);
-                (encoder).writeEnum(justSimpleEnumEnumSchema0 .getEnumOrdinal(((org.apache.avro.generic.GenericData.EnumSymbol) mapOfEnums0 .get(key0)).toString()));
+                int valueToWrite2;
+                Object enumValue2 = mapOfEnums0 .get(key0);
+                if (enumValue2 instanceof Enum) {
+                    valueToWrite2 = ((Enum) enumValue2).ordinal();
+                } else {
+                    valueToWrite2 = justSimpleEnumEnumSchema0 .getEnumOrdinal(((GenericEnumSymbol) mapOfEnums0 .get(key0)).toString());
+                }
+                (encoder).writeEnum(valueToWrite2);
             }
         }
         (encoder).writeMapEnd();
