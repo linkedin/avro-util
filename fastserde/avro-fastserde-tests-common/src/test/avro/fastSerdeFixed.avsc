@@ -1,0 +1,34 @@
+{
+  "type": "record",
+  "name": "FastSerdeFixed",
+  "namespace": "com.linkedin.avro.fastserde.generated.avro",
+  "doc": "Used in tests to confirm generic-FastSerializer supports fixed types",
+  "fields": [
+    {
+      "name": "fixedField",
+      "type": {
+        "name": "FixedOfSize10",
+        "type": "fixed",
+        "size": 10
+      }
+    },
+    {
+      "name": "arrayOfFixed",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": "FixedOfSize10"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "mapOfFixed",
+      "type": {
+        "type": "map",
+        "values": "FixedOfSize10"
+      }
+    }
+  ]
+}

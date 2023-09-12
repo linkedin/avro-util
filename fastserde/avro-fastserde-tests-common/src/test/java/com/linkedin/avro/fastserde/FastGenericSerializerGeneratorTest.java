@@ -5,6 +5,10 @@ import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveDoubleList;
 import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveFloatList;
 import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveIntList;
 import com.linkedin.avro.fastserde.coldstart.ColdPrimitiveLongList;
+import com.linkedin.avro.fastserde.generated.avro.FastSerdeEnums;
+import com.linkedin.avro.fastserde.generated.avro.FastSerdeFixed;
+import com.linkedin.avro.fastserde.generated.avro.FixedOfSize10;
+import com.linkedin.avro.fastserde.generated.avro.JustSimpleEnum;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -17,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
+
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericContainer;
 import org.apache.avro.generic.GenericData;
@@ -28,7 +34,9 @@ import org.apache.avro.io.Encoder;
 import org.apache.avro.util.Utf8;
 import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
+import org.testng.collections.Lists;
 
 import static com.linkedin.avro.fastserde.FastSerdeTestsSupport.*;
 
@@ -115,7 +123,7 @@ public class FastGenericSerializerGeneratorTest {
 
   @SuppressWarnings("unchecked")
   @Test(groups = {"serializationTest"})
-  public void shouldWriteFixed() {
+  public void shouldWriteGenericRecordWithFixed() {
     // given
     Schema fixedSchema = createFixedSchema("testFixed", 2);
     Schema recordSchema = createRecord(
@@ -140,6 +148,51 @@ public class FastGenericSerializerGeneratorTest {
         ((List<GenericData.Fixed>) record.get("testFixedArray")).get(0).bytes());
     Assert.assertEquals(new byte[]{0x07, 0x08},
         ((List<GenericData.Fixed>) record.get("testFixedUnionArray")).get(0).bytes());
+  }
+
+  @Ignore
+  @Test(groups = {"serializationTest"})
+  public void shouldWriteSpecificRecordWithFixed() {
+    // given
+    final byte[] bytes1 = "2023-09-07".getBytes();
+    final byte[] bytes2 = "2023-09-08".getBytes();
+    final byte[] bytes3 = "2023-09-09".getBytes();
+
+    Function<byte[], FixedOfSize10> fixedCreator = bytes -> {
+      FixedOfSize10 fixedOfSize10 = new FixedOfSize10();
+      fixedOfSize10.bytes(bytes);
+      return fixedOfSize10;
+    };
+
+    Map<CharSequence, FixedOfSize10> mapOfFixed = new HashMap<>();
+    mapOfFixed.put("day1", fixedCreator.apply(bytes1));
+    mapOfFixed.put("day2", fixedCreator.apply(bytes2));
+
+    FastSerdeFixed fastSerdeFixed = new FastSerdeFixed();
+    setField(fastSerdeFixed, "fixedField", fixedCreator.apply(bytes1));
+    setField(fastSerdeFixed, "arrayOfFixed", Lists.newArrayList(
+            fixedCreator.apply(bytes1), fixedCreator.apply(bytes2), fixedCreator.apply(bytes3)));
+    setField(fastSerdeFixed, "mapOfFixed", mapOfFixed);
+
+    // when
+    GenericRecord record = decodeRecord(fastSerdeFixed.getSchema(), dataAsBinaryDecoder(fastSerdeFixed));
+
+    // then
+    Assert.assertTrue(record.get("fixedField") instanceof GenericData.Fixed);
+    Assert.assertEquals(((GenericData.Fixed) record.get("fixedField")).bytes(), bytes1);
+
+    GenericData.Array<?> arrayOfFixed = (GenericData.Array<?>) record.get("arrayOfFixed");
+    Assert.assertEquals(arrayOfFixed.size(), 3);
+    Assert.assertTrue(arrayOfFixed.get(0) instanceof GenericData.Fixed);
+    Assert.assertEquals(((GenericData.Fixed) arrayOfFixed.get(0)).bytes(), bytes1);
+    Assert.assertEquals(((GenericData.Fixed) arrayOfFixed.get(1)).bytes(), bytes2);
+    Assert.assertEquals(((GenericData.Fixed) arrayOfFixed.get(2)).bytes(), bytes3);
+
+    @SuppressWarnings("unchecked")
+    Map<CharSequence, GenericData.Fixed> deserializedMapOfFixed = (Map<CharSequence, GenericData.Fixed>) record.get("mapOfFixed");
+    Assert.assertEquals(deserializedMapOfFixed.size(), 2);
+    Assert.assertEquals(deserializedMapOfFixed.get(new Utf8("day1")).bytes(), bytes1);
+    Assert.assertEquals(deserializedMapOfFixed.get(new Utf8("day2")).bytes(), bytes2);
   }
 
   @SuppressWarnings("unchecked")
@@ -171,6 +224,39 @@ public class FastGenericSerializerGeneratorTest {
     Assert.assertEquals("A", record.get("testEnumUnion").toString());
     Assert.assertEquals("A", ((List<GenericData.EnumSymbol>) record.get("testEnumArray")).get(0).toString());
     Assert.assertEquals("A", ((List<GenericData.EnumSymbol>) record.get("testEnumUnionArray")).get(0).toString());
+  }
+
+  @Ignore
+  @Test(groups = {"serializationTest"})
+  public void shouldWriteSpecificRecordWithEnums() {
+    // given
+    Map<CharSequence, JustSimpleEnum> mapOfEnums = new HashMap<>();
+    mapOfEnums.put("due", JustSimpleEnum.E2);
+    mapOfEnums.put("cinque", JustSimpleEnum.E5);
+
+    FastSerdeEnums fastSerdeEnums = new FastSerdeEnums();
+    setField(fastSerdeEnums, "enumField", JustSimpleEnum.E1);
+    setField(fastSerdeEnums, "arrayOfEnums", Lists.newArrayList(JustSimpleEnum.E1, JustSimpleEnum.E3, JustSimpleEnum.E4));
+    setField(fastSerdeEnums, "mapOfEnums", mapOfEnums);
+
+    // when
+    GenericRecord record = decodeRecord(fastSerdeEnums.getSchema(), dataAsBinaryDecoder(fastSerdeEnums));
+
+    // then
+    Assert.assertTrue(record.get("enumField") instanceof GenericData.EnumSymbol);
+    Assert.assertEquals(record.get("enumField").toString(), "E1");
+
+    GenericData.Array<?> arrayOfEnums = (GenericData.Array<?>) record.get("arrayOfEnums");
+    Assert.assertEquals(arrayOfEnums.size(), 3);
+    Assert.assertEquals(arrayOfEnums.get(0).toString(), JustSimpleEnum.E1.name());
+    Assert.assertEquals(arrayOfEnums.get(1).toString(), JustSimpleEnum.E3.name());
+    Assert.assertEquals(arrayOfEnums.get(2).toString(), JustSimpleEnum.E4.name());
+
+    @SuppressWarnings("unchecked")
+    Map<CharSequence, GenericData.EnumSymbol> deserializedMapOfEnums = (Map<CharSequence, GenericData.EnumSymbol>) record.get("mapOfEnums");
+    Assert.assertEquals(deserializedMapOfEnums.size(), 2);
+    Assert.assertEquals(deserializedMapOfEnums.get(new Utf8("due")).toString(), JustSimpleEnum.E2.toString());
+    Assert.assertEquals(deserializedMapOfEnums.get(new Utf8("cinque")).toString(), JustSimpleEnum.E5.toString());
   }
 
   @Test(groups = {"serializationTest"})
