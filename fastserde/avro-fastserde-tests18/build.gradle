@@ -17,6 +17,7 @@ sourceSets {
     java {
       srcDir "$rootProject.projectDir/fastserde/avro-fastserde-tests-common/src/test/java"
       srcDir "$buildDir/generated/avro"
+      exclude "com/linkedin/avro/fastserde/logical/types/**" // due to joda.time instead of java.time
     }
     resources {
       srcDir "$rootProject.projectDir/fastserde/avro-fastserde-tests-common/src/test/resources"
@@ -30,6 +31,7 @@ dependencies {
   testImplementation "org.slf4j:slf4j-api:1.7.14"
   testImplementation "org.apache.commons:commons-lang3:3.4"
   testImplementation "com.sun.codemodel:codemodel:2.6"
+  implementation "joda-time:joda-time:2.12.5"  // required by generated Avro classes with logical types
 
   testImplementation ("org.apache.avro:avro:1.8.2") {
     exclude group: "org.slf4j"

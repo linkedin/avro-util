@@ -17,6 +17,7 @@ sourceSets {
     java {
       srcDir "$rootProject.projectDir/fastserde/avro-fastserde-tests-common/src/test/java"
       srcDir "$buildDir/generated/avro"
+      exclude "com/linkedin/avro/fastserde/logical/types/**" // LogicalType available since version 1.8
     }
     resources {
       srcDir "$rootProject.projectDir/fastserde/avro-fastserde-tests-common/src/test/resources"
