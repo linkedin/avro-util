@@ -42,7 +42,7 @@ public class FastSerdeCacheTest {
   }
 
   @Test(groups = "deserializationTest")
-  public void testBuildFastGenericDeserializerSurviveFromWrongClasspath() throws Exception {
+  public void testBuildFastGenericDeserializerSurviveFromWrongClasspath() {
     String wrongClasspath = ".";
     FastSerdeCache cache = new FastSerdeCache(wrongClasspath);
     Schema testRecord = Schema.parse("{\"type\": \"record\", \"name\": \"test_record\", \"fields\":[]}");
@@ -50,21 +50,21 @@ public class FastSerdeCacheTest {
   }
 
   @Test(groups = "deserializationTest")
-  public void testBuildFastGenericDeserializerWithCorrectClasspath() throws Exception {
+  public void testBuildFastGenericDeserializerWithCorrectClasspath() {
     FastSerdeCache cache = FastSerdeCache.getDefaultInstance();
     Schema testRecord = Schema.parse("{\"type\": \"record\", \"name\": \"test_record\", \"fields\":[]}");
     cache.buildFastGenericDeserializer(testRecord, testRecord);
   }
 
   @Test(groups = "deserializationTest")
-  public void testBuildFastSpecificDeserializerSurviveFromWrongClasspath() throws Exception {
+  public void testBuildFastSpecificDeserializerSurviveFromWrongClasspath() {
     String wrongClasspath = ".";
     FastSerdeCache cache = new FastSerdeCache(wrongClasspath);
     cache.buildFastSpecificDeserializer(TestRecord.SCHEMA$, TestRecord.SCHEMA$);
   }
 
   @Test(groups = "deserializationTest")
-  public void testBuildFastSpecificDeserializerWithCorrectClasspath() throws Exception {
+  public void testBuildFastSpecificDeserializerWithCorrectClasspath() {
     FastSerdeCache cache = FastSerdeCache.getDefaultInstance();
     cache.buildFastSpecificDeserializer(TestRecord.SCHEMA$, TestRecord.SCHEMA$);
   }

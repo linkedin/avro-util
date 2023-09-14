@@ -1232,7 +1232,7 @@ public class FastGenericDeserializerGeneratorTest {
   public void shouldReadSplittedAndAliasedSubRecordFields(Implementation implementation) {
     // given
     Schema subRecordSchema = createRecord("subRecord", createPrimitiveUnionFieldSchema("intField", Schema.Type.INT), createPrimitiveUnionFieldSchema("subField", Schema.Type.STRING));
-    subRecordSchema = FastSerdeTestsSupport.addAliases(subRecordSchema, "com.adpilot.utils.generated.avro.aliasedSubRecord");
+    subRecordSchema = FastSerdeTestsSupport.addAliases(subRecordSchema, "com.linkedin.avro.fastserde.generated.avro.aliasedSubRecord");
 
     Schema recordSchema = createRecord(
         createField("record1", subRecordSchema),
@@ -1240,7 +1240,7 @@ public class FastGenericDeserializerGeneratorTest {
         createArrayFieldSchema("recordArray", subRecordSchema));
 
     Schema aliasedSubRecordSchema = createRecord("aliasedSubRecord", createPrimitiveUnionFieldSchema("subField", Schema.Type.STRING));
-    aliasedSubRecordSchema = FastSerdeTestsSupport.addAliases(aliasedSubRecordSchema, "com.adpilot.utils.generated.avro.subRecord");
+    aliasedSubRecordSchema = FastSerdeTestsSupport.addAliases(aliasedSubRecordSchema, "com.linkedin.avro.fastserde.generated.avro.subRecord");
 
     Schema splittedAndAliasedRecordSchema = createRecord(
         createField("record1", aliasedSubRecordSchema),

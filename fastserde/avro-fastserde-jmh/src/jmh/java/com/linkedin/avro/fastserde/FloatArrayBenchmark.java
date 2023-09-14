@@ -40,7 +40,7 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
  *
  * To run this benchmark:
  * <code>
- *   ./gradlew :avro-fastserde:jmh -PUSE_AVRO_18
+ *   ./gradlew :fastserde:avro-fastserde-jmh:jmh -PUSE_AVRO_18
  * </code>
  *
  */

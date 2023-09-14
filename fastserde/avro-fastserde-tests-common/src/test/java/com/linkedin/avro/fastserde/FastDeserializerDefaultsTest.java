@@ -533,7 +533,6 @@ public class FastDeserializerDefaultsTest {
     }
   }
 
-  @SuppressWarnings("unchecked")
   private <T> T decodeSpecificFast(Schema readerSchema, Schema writerSchema, Decoder decoder) {
     FastDeserializer<T> deserializer =
         new FastSpecificDeserializerGenerator(writerSchema, readerSchema, tempDir, classLoader,

@@ -65,12 +65,12 @@ public class FastDatumReaderWriterUtil {
   }
 
   public static <T> FastGenericDatumWriter<T> getFastGenericDatumWriter(Schema writerSchema) {
-    FastGenericDatumWriter<T> fastDatumWriter = null;
+    FastGenericDatumWriter<T> fastDatumWriter;
 
     // lookup cache and read lock
     reentrantReadWriteLock.readLock().lock();
     try {
-      fastDatumWriter = (FastGenericDatumWriter<T>)fastGenericDatumWriterCache.get(writerSchema);
+      fastDatumWriter = (FastGenericDatumWriter<T>) fastGenericDatumWriterCache.get(writerSchema);
     } finally {
       reentrantReadWriteLock.readLock().unlock();
     }
@@ -84,7 +84,7 @@ public class FastDatumReaderWriterUtil {
         reentrantReadWriteLock.writeLock().unlock();
       }
     }
-    return (FastGenericDatumWriter <T>) fastDatumWriter;
+    return fastDatumWriter;
   }
 
   public static <T> FastSpecificDatumReader<T> getFastSpecificDatumReader(Schema schema) {

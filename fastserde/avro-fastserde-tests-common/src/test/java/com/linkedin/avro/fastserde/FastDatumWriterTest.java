@@ -50,7 +50,7 @@ public class FastDatumWriterTest {
 
   @Test(groups = {"serializationTest"})
   @SuppressWarnings("unchecked")
-  public void shouldCreateGenericDatumWriter() throws IOException, InterruptedException {
+  public void shouldCreateGenericDatumWriter() throws IOException {
     Schema recordSchema = createRecord("TestSchema", createPrimitiveUnionFieldSchema("test", Schema.Type.STRING));
     FastGenericDatumWriter<GenericRecord> fastGenericDatumWriter = new FastGenericDatumWriter<>(recordSchema, cache);
 

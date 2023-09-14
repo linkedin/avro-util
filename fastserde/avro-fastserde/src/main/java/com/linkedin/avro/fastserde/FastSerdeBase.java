@@ -60,7 +60,7 @@ public abstract class FastSerdeBase {
 
   /**
    * A function to generate unique names, such as those of variables and functions, within the scope
-   * of the this class instance (i.e. per serializer of a given schema or deserializer of a given
+   * of this class instance (i.e. per serializer of a given schema or deserializer of a given
    * schema pair).
    *
    * @param prefix String to serve as a prefix for the unique name
@@ -109,7 +109,7 @@ public abstract class FastSerdeBase {
 
     JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
     if (null == compiler) {
-      /**
+      /*
        * If the above function returns null, it is very likely that the env setting: "JAVA_HOME" is not being setup properly.
        */
       throw new FastSerdeGeneratorException("Couldn't locate java compiler at runtime, please double check your env "

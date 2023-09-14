@@ -59,7 +59,7 @@ public final class FastSerdeTestsSupport {
   }
 
   public static Schema createRecord(String name, Schema.Field... fields) {
-    Schema schema = Schema.createRecord(name, name, "com.adpilot.utils.generated.avro", false);
+    Schema schema = Schema.createRecord(name, name, "com.linkedin.avro.fastserde.generated.avro", false);
     schema.setFields(Arrays.asList(fields));
 
     return schema;
@@ -130,15 +130,15 @@ public final class FastSerdeTestsSupport {
   }
 
   public static Schema createFixedSchema(String name, int size) {
-    return Schema.createFixed(name, "", "com.adpilot.utils.generated.avro", size);
+    return Schema.createFixed(name, "", "com.linkedin.avro.fastserde.generated.avro", size);
   }
 
   public static Schema createEnumSchema(String name, String[] ordinals) {
-    return Schema.createEnum(name, "", "com.adpilot.utils.generated.avro", Arrays.asList(ordinals));
+    return Schema.createEnum(name, "", "com.linkedin.avro.fastserde.generated.avro", Arrays.asList(ordinals));
   }
 
   public static Schema createEnumSchema(String name, String[] ordinals, String enumDefault) {
-    return AvroCompatibilityHelper.newEnumSchema(name, "", "com.adpilot.utils.generated.avro", Arrays.asList(ordinals),
+    return AvroCompatibilityHelper.newEnumSchema(name, "", "com.linkedin.avro.fastserde.generated.avro", Arrays.asList(ordinals),
         enumDefault);
   }
 

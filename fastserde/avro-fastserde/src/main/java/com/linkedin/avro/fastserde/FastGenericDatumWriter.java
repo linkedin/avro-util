@@ -48,7 +48,6 @@ public class FastGenericDatumWriter<T> implements DatumWriter<T> {
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public void write(T data, Encoder out) throws IOException {
     FastSerializer<T> fastSerializer;
     if (cachedFastSerializer != null) {
@@ -76,14 +75,13 @@ public class FastGenericDatumWriter<T> implements DatumWriter<T> {
     return new FastSerdeCache.FastSerializerWithAvroGenericImpl<>(schema);
   }
 
-  private static boolean isFastSerializer(FastSerializer serializer) {
+  private static boolean isFastSerializer(FastSerializer<?> serializer) {
     return !(serializer instanceof FastSerdeCache.FastSerializerWithAvroSpecificImpl
         || serializer instanceof FastSerdeCache.FastSerializerWithAvroGenericImpl);
   }
 
   /**
-   * Return a flag to indicate whether fast serializer is being used or not.
-   * @return
+   * @return flag to indicate whether fast serializer is being used or not
    */
   public boolean isFastSerializerUsed() {
     if (cachedFastSerializer == null) {

@@ -69,9 +69,8 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public T read(T reuse, Decoder in) throws IOException {
-    FastDeserializer<T> fastDeserializer = null;
+    FastDeserializer<T> fastDeserializer;
 
     if (cachedFastDeserializer.get() != null) {
       fastDeserializer = cachedFastDeserializer.get();
@@ -105,6 +104,7 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
         .thenApply(d -> (FastDeserializer<T>) d);
   }
 
+  @SuppressWarnings("unchecked")
   protected FastDeserializer<T> getFastDeserializerFromCache(FastSerdeCache fastSerdeCache, Schema writerSchema,
       Schema readerSchema) {
     return (FastDeserializer<T>) fastSerdeCache.getFastGenericDeserializer(writerSchema, readerSchema);

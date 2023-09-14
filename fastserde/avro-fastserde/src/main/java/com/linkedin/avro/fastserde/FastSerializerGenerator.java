@@ -150,7 +150,7 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
     JBlock popMethodBody = methodBody;
 
     for (Schema.Field field : recordSchema.getFields()) {
-      /**
+      /*
        * We roll the serialization method for very large records, the initial fields are kept in the outer
        * method as original to maintain performance for smaller records
         */
