@@ -535,7 +535,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
             fixedBytesArray.add(JExpr.lit(b));
           }
           // For specific Fixed type, Avro-1.4 will only generate the class with default constructor without params
-          JClass fixedClass = schemaAssistant.classFromSchema(schema);
+          JClass fixedClass = schemaAssistant.classFromSchema(schema, false, false, false);
           if (useGenericTypes) {
             JInvocation newFixedExpr = null;
             if (Utils.isAvro14()) {
@@ -1018,7 +1018,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       if (reuseSupplier.get().equals(JExpr._null())) {
         body.assign(fixedBuffer, JExpr.direct(" new byte[" + schema.getFixedSize() + "]"));
       } else {
-        /**
+        /*
          * Here will check whether the length of the reused fixed is same as the one to be deserialized or not.
          * If not, here will initialize a new byte array to store it.
          */
@@ -1035,7 +1035,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       }
       body.directStatement(DECODER + ".readFixed(" + fixedBuffer.name() + ");");
 
-      JClass fixedClass = schemaAssistant.classFromSchema(schema);
+      JClass fixedClass = schemaAssistant.classFromSchema(schema, false, false, false);
       if (useGenericTypes) {
         JInvocation newFixedExpr;
         if (Utils.isAvro14()) {

@@ -18,7 +18,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.util.Utf8;
 import org.apache.commons.lang3.StringUtils;
@@ -86,8 +88,9 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
       serializeMethod.param(codeModel.ref(Encoder.class), ENCODER);
       serializeMethod._throws(codeModel.ref(IOException.class));
 
+      @SuppressWarnings("unchecked")
       final Class<FastSerializer<T>> clazz = compileClass(className, schemaAssistant.getUsedFullyQualifiedClassNameSet());
-      return clazz.newInstance();
+      return clazz.getConstructor().newInstance();
     } catch (JClassAlreadyExistsException e) {
       throw new FastSerdeGeneratorException("Class: " + className + " already exists");
     } catch (Exception e) {
@@ -270,10 +273,6 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
   /**
    * Avro-1.4 doesn't provide function: "getIndexNamed", so we just create the following function
    * with the similar logic, which will work with both Avro-1.4 and Avro-1.7.
-   *
-   * @param unionSchema
-   * @param schema
-   * @return
    */
   private Integer getIndexNamedForUnion(Schema unionSchema, Schema schema) {
     if (!unionSchema.getType().equals(Schema.Type.UNION)) {
@@ -296,12 +295,12 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
 
     for (Schema schemaOption : unionSchema.getTypes()) {
       if (Schema.Type.NULL.equals(schemaOption.getType())) {
-        /**
+        /*
          * We always handle the null branch of the union first, otherwise, it leads to a bug in the
          * case where there is an optional field where the null is the second branch of the union.
          */
         JExpression condition = unionExpr.eq(JExpr._null());
-        ifBlock = ifBlock != null ? ifBlock._elseif(condition) : body._if(condition);
+        ifBlock = body._if(condition);
         JBlock thenBlock = ifBlock._then();
         thenBlock.invoke(JExpr.direct(ENCODER), "writeIndex")
             .arg(JExpr.lit(getIndexNamedForUnion(unionSchema, schemaOption)));
@@ -312,7 +311,7 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
 
     for (Schema schemaOption : unionSchema.getTypes()) {
       if (Schema.Type.NULL.equals(schemaOption.getType())) {
-        /**
+        /*
          * Since we've already added code to process the null branch, we can skip it when processing
          * the other types.
          */
@@ -322,7 +321,7 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
       JClass optionClass = schemaAssistant.classFromSchema(schemaOption);
       JClass rawOptionClass = schemaAssistant.classFromSchema(schemaOption, true, true);
       JExpression condition;
-      /**
+      /*
        * In Avro-1.4, neither GenericEnumSymbol or GenericFixed has associated schema, so we don't expect to see
        * two or more Enum types or two or more Fixed types in the same Union in generic mode since the writer couldn't
        * differentiate the Enum types or the Fixed types, but those scenarios are well supported in Avro-1.7 or above since
@@ -370,30 +369,41 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
   private void processEnum(Schema enumSchema, JExpression enumValueExpression, JBlock body) {
     JClass enumClass = schemaAssistant.classFromSchema(enumSchema);
     JExpression enumValueCasted = JExpr.cast(enumClass, enumValueExpression);
-    JExpression valueToWrite;
+    JVar valueToWrite = body.decl(codeModel.INT, getUniqueName("valueToWrite"));
+
     if (useGenericTypes) {
+      JVar enumValue = body.decl(codeModel.ref(Object.class), getUniqueName("enumValue"), enumValueExpression);
+      JClass enumSymbolClass = codeModel.ref(GenericData.EnumSymbol.class);
+      JExpression castEnumValueToEnumSymbol = JExpr.cast(enumSymbolClass, enumValue);
+      JExpression schemaExpression;
+      JExpression enumValueToStringExpr;
+
       if (Utils.isAvro14()) {
-        /**
+        /*
          * In Avro-1.4, there is no way to infer/extract enum schema from {@link org.apache.avro.generic.GenericData.EnumSymbol},
          * so the serializer needs to record the schema id and the corresponding {@link org.apache.avro.Schema.EnumSchema},
          * and maintain a mapping between the schema id and EnumSchema JVar for future use.
          */
-        JVar enumSchemaVar = enumSchemaVarMap.computeIfAbsent(Utils.getSchemaFingerprint(enumSchema), s->
-            generatedClass.field(
-                JMod.PRIVATE | JMod.FINAL,
-                Schema.class,
-                getUniqueName(enumSchema.getName() + "EnumSchema"),
-                codeModel.ref(Schema.class).staticInvoke("parse").arg(enumSchema.toString()))
+        schemaExpression = enumSchemaVarMap.computeIfAbsent(Utils.getSchemaFingerprint(enumSchema), fingerprint ->
+                generatedClass.field(
+                        JMod.PRIVATE | JMod.FINAL,
+                        Schema.class,
+                        getUniqueName(enumSchema.getName() + "EnumSchema"),
+                        codeModel.ref(Schema.class).staticInvoke("parse").arg(enumSchema.toString()))
         );
-        valueToWrite = JExpr.invoke(enumSchemaVar, "getEnumOrdinal").arg(enumValueCasted.invoke("toString"));
+        enumValueToStringExpr = enumValueCasted.invoke("toString");
       } else {
-        valueToWrite = JExpr.invoke(
-            enumValueCasted.invoke("getSchema"),
-            "getEnumOrdinal"
-        ).arg(enumValueCasted.invoke("toString"));
+        schemaExpression = castEnumValueToEnumSymbol.invoke("getSchema");
+        enumValueToStringExpr = castEnumValueToEnumSymbol.invoke("toString");
       }
+
+      ifCodeGen(body, enumValue._instanceof(codeModel.ref(Enum.class)),
+              thenBlock -> thenBlock.assign(valueToWrite,
+                      JExpr.invoke(JExpr.cast(codeModel.ref(Enum.class), enumValue), "ordinal")),
+              elseBlock -> elseBlock.assign(valueToWrite,
+                      JExpr.invoke(schemaExpression, "getEnumOrdinal").arg(enumValueToStringExpr)));
     } else {
-      valueToWrite = enumValueCasted.invoke("ordinal");
+      valueToWrite.init(enumValueCasted.invoke("ordinal"));
     }
 
     body.invoke(JExpr.direct(ENCODER), "writeEnum").arg(valueToWrite);
