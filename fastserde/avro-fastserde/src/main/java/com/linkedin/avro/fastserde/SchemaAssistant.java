@@ -12,6 +12,8 @@ import com.linkedin.avro.fastserde.primitive.PrimitiveIntArrayList;
 import com.linkedin.avro.fastserde.primitive.PrimitiveLongArrayList;
 import com.linkedin.avroutil1.Enums;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelperCommon;
+import com.linkedin.avroutil1.compatibility.AvroVersion;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
@@ -36,7 +38,13 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
+
+import org.apache.avro.Conversion;
+import org.apache.avro.Conversions;
+import org.apache.avro.LogicalType;
+import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema;
+import org.apache.avro.data.TimeConversions;
 import org.apache.avro.generic.GenericContainer;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericEnumSymbol;
@@ -282,8 +290,18 @@ public class SchemaAssistant<T extends GenericData> {
     return classFromSchema(schema, abstractType, rawType, false);
   }
 
-  /* Note that settings abstractType and rawType are not passed to subcalls */
   public JClass classFromSchema(Schema schema, boolean abstractType, boolean rawType, boolean primitiveList) {
+    return classFromSchema(schema, abstractType, rawType, primitiveList, true);
+  }
+
+  /* Note that settings abstractType and rawType are not passed to subcalls */
+  public JClass classFromSchema(Schema schema, boolean abstractType, boolean rawType, boolean primitiveList,
+          boolean allowLogicalTypes) {
+    if (allowLogicalTypes && logicalTypeEnabled(schema)) {
+      Class<?> logicalTypeClass = ((Conversion<?>) getConversion(schema.getLogicalType())).getConvertedType();
+      return codeModel.ref(logicalTypeClass);
+    }
+
     JClass outputClass;
 
     switch (schema.getType()) {
@@ -349,8 +367,10 @@ public class SchemaAssistant<T extends GenericData> {
             useGenericTypes ? codeModel.ref(GenericEnumSymbol.class) : codeModel.ref(AvroCompatibilityHelper.getSchemaFullName(schema));
         break;
       case FIXED:
-        if (useGenericTypes) {
-          outputClass =  codeModel.ref(abstractType ? GenericFixed.class : GenericData.Fixed.class);
+        if (abstractType) {
+          outputClass = codeModel.ref(GenericFixed.class);
+        } else if (useGenericTypes) {
+          outputClass = codeModel.ref(GenericData.Fixed.class);
         } else {
           outputClass = codeModel.ref(AvroCompatibilityHelper.getSchemaFullName(schema));
         }
@@ -442,6 +462,61 @@ public class SchemaAssistant<T extends GenericData> {
       }
     }
     return outputClass;
+  }
+
+  boolean logicalTypeEnabled(Schema schema) {
+//    return modelData != null && schema != null && Utils.isLogicalTypeSupported() && schema.getLogicalType() != null;
+    // TODO uuid in 1.10 no supported ??
+
+    if (modelData != null && schema != null && Utils.isLogicalTypeSupported()) {
+      if (schema.getLogicalType() == LogicalTypes.uuid()) {
+        return AvroCompatibilityHelperCommon.getRuntimeAvroVersion() == AvroVersion.AVRO_1_11;
+      } else {
+        return schema.getLogicalType() != null;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  Object getConversion(LogicalType logicalType) { // returns Objects so that this class can be loaded with older Avro versions
+    Conversion<?> conversion = modelData.getConversionFor(logicalType);
+    if (conversion != null) {
+      return conversion;
+    } else {
+      return getDefaultConversion(logicalType);
+    }
+  }
+
+  private Object getDefaultConversion(LogicalType logicalType) {
+    // used as a fallback when no conversion is provided by modelData
+    if (logicalType == null) {
+      throw new NullPointerException("Expected not-null logicalType");
+    }
+
+    switch (logicalType.getName()) {
+      case "decimal":
+        return new Conversions.DecimalConversion();
+      case "uuid":
+        return new Conversions.UUIDConversion();
+      case "date":
+        return new TimeConversions.DateConversion();
+      case "time-millis":
+        return new TimeConversions.TimeMillisConversion();
+      case "time-micros":
+        return new TimeConversions.TimeMicrosConversion();
+      case "timestamp-millis":
+        return new TimeConversions.TimestampMillisConversion();
+      case "timestamp-micros":
+        return new TimeConversions.TimestampMicrosConversion();
+      case "local-timestamp-millis":
+        return new TimeConversions.LocalTimestampMillisConversion();
+      case "local-timestamp-micros":
+        return new TimeConversions.LocalTimestampMicrosConversion();
+      case "duration": // TODO no default implementation?
+      default:
+        throw new UnsupportedOperationException("LogicalType " + logicalType.getName() + " is not supported");
+    }
   }
 
   protected JClass defaultStringType() {

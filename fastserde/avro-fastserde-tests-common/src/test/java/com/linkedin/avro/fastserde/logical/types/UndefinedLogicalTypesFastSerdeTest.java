@@ -8,14 +8,12 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.testng.Assert;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import org.testng.collections.Lists;
 
 import com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesDefined;
 import com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesUndefined;
 
-@Ignore
 public class UndefinedLogicalTypesFastSerdeTest extends LogicalTypesTestBase {
 
     private final LocalTime localTime = LocalTime.now();

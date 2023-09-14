@@ -22,7 +22,6 @@ import java.util.UUID;
 import org.apache.avro.util.Utf8;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import org.testng.collections.Lists;
 
@@ -33,7 +32,6 @@ import com.linkedin.avro.fastserde.generated.avro.LocalTimestampRecord;
 import com.linkedin.avro.fastserde.generated.avro.LocalTimestampRecordWithDefaults;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
 
-@Ignore
 public class LogicalTypesFastSerdeTest extends LogicalTypesTestBase {
 
     @DataProvider
