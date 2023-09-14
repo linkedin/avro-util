@@ -330,10 +330,10 @@ public class FastStringableTest {
     try {
       FastSerializer<T> fastSerializer;
       if (specific) {
-        FastSpecificSerializerGenerator<T> fastSpecificSerializerGenerator = new FastSpecificSerializerGenerator<>(schema, tempDir, classLoader, null);
+        FastSpecificSerializerGenerator<T> fastSpecificSerializerGenerator = new FastSpecificSerializerGenerator<>(schema, tempDir, classLoader, null, null);
         fastSerializer = fastSpecificSerializerGenerator.generateSerializer();
       } else {
-        FastGenericSerializerGenerator<T> fastGenericSerializerGenerator = new FastGenericSerializerGenerator<>(schema, tempDir, classLoader, null);
+        FastGenericSerializerGenerator<T> fastGenericSerializerGenerator = new FastGenericSerializerGenerator<>(schema, tempDir, classLoader, null, null);
         fastSerializer = fastGenericSerializerGenerator.generateSerializer();
       }
       fastSerializer.serialize(data, binaryEncoder);
@@ -348,9 +348,9 @@ public class FastStringableTest {
   public <T> T readWithFastAvro(Schema writerSchema, Schema readerSchema, Decoder decoder, boolean specific) {
     FastDeserializer<T> deserializer;
     if (specific) {
-      deserializer = new FastSpecificDeserializerGenerator<T>(writerSchema, readerSchema, tempDir, classLoader, null).generateDeserializer();
+      deserializer = new FastSpecificDeserializerGenerator<T>(writerSchema, readerSchema, tempDir, classLoader, null, null).generateDeserializer();
     } else {
-      deserializer = new FastGenericDeserializerGenerator<T>(writerSchema, readerSchema, tempDir, classLoader, null).generateDeserializer();
+      deserializer = new FastGenericDeserializerGenerator<T>(writerSchema, readerSchema, tempDir, classLoader, null, null).generateDeserializer();
     }
     try {
       return deserializer.deserialize(decoder);

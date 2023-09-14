@@ -53,8 +53,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<T> {
-  private static final Logger LOGGER = LoggerFactory.getLogger(FastDeserializerGenerator.class);
+public class FastDeserializerGenerator<T, U extends GenericData> extends FastDeserializerGeneratorBase<T, U> {
+
   private static final String DECODER = "decoder";
   private static final String VAR_NAME_FOR_REUSE = "reuse";
   private static int FIELDS_PER_POPULATION_METHOD = 20;
@@ -77,8 +77,8 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
   private final Map<JMethod, Set<Class<? extends Exception>>> exceptionFromMethodMap = new HashMap<>();
 
   FastDeserializerGenerator(boolean useGenericTypes, Schema writer, Schema reader, File destination,
-      ClassLoader classLoader, String compileClassPath) {
-    super(useGenericTypes, writer, reader, destination, classLoader, compileClassPath);
+      ClassLoader classLoader, String compileClassPath, U modelData) {
+    super(useGenericTypes, writer, reader, destination, classLoader, compileClassPath, modelData);
   }
 
   public FastDeserializer<T> generateDeserializer() {

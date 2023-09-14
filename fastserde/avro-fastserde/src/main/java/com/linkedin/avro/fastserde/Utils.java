@@ -1,6 +1,7 @@
 package com.linkedin.avro.fastserde;
 
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelperCommon;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
 import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
 import java.io.BufferedReader;
@@ -69,6 +70,13 @@ public class Utils {
 
   public static boolean isSupportedAvroVersionsForSerializer() {
     return AVRO_VERSIONS_SUPPORTED_FOR_SERIALIZER.contains(AvroCompatibilityHelper.getRuntimeAvroVersion());
+  }
+
+  public static boolean isLogicalTypeSupported() {
+    // Formally Avro_1.8 supports LogicalTypes however there are significant changes compared to versions >=1.9
+    // To see rationale simply compare imports in org.apache.avro.data.TimeConversions class between 1.8 and 1.9+
+    // Basically 1.8 uses joda.time but 1.9+ uses java.time
+    return AvroCompatibilityHelperCommon.getRuntimeAvroVersion().laterThan(AvroVersion.AVRO_1_8);
   }
 
   public static boolean isWindows() {

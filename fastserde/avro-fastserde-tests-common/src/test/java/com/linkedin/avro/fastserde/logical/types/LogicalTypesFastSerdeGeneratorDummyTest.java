@@ -62,16 +62,16 @@ public class LogicalTypesFastSerdeGeneratorDummyTest {
         GenericData genericData = toGenericModelData(specificData);
 
         new FastGenericSerializerGenerator<GenericData.Record>(
-                schema, classesDir, classLoader, null)
+                schema, classesDir, classLoader, null, genericData)
                 .generateSerializer();
         new FastSpecificSerializerGenerator<T>(
-                schema, classesDir, classLoader, null)
+                schema, classesDir, classLoader, null, specificData)
                 .generateSerializer();
         new FastGenericDeserializerGenerator<GenericData.Record>(
-                schema, schema, classesDir, classLoader, null)
+                schema, schema, classesDir, classLoader, null, genericData)
                 .generateDeserializer();
         new FastSpecificDeserializerGenerator<T>(
-                schema, schema, classesDir, classLoader, null)
+                schema, schema, classesDir, classLoader, null, specificData)
                 .generateDeserializer();
     }
 

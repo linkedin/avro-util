@@ -129,18 +129,18 @@ public abstract class LogicalTypesTestBase {
         SpecificData specificData = copyConversions(data.getSpecificData(), new SpecificData());
 
         FastSerializer<T> fastGenericSerializer = new FastGenericSerializerGenerator<T>(
-                schema, classesDir, classLoader, null)
+                schema, classesDir, classLoader, null, genericData)
                 .generateSerializer();
 
         FastSerializer<T> fastSpecificSerializer = new FastSpecificSerializerGenerator<T>(
-                schema, classesDir, classLoader, null)
+                schema, classesDir, classLoader, null, specificData)
                 .generateSerializer();
 
         FastSerdeCache.FastSerializerWithAvroGenericImpl<T> fastSerializerWithAvroGeneric =
-                new FastSerdeCache.FastSerializerWithAvroGenericImpl<>(schema);
+                new FastSerdeCache.FastSerializerWithAvroGenericImpl<>(schema, genericData);
 
         FastSerdeCache.FastSerializerWithAvroSpecificImpl<T> fastSerializerWithAvroSpecific =
-                new FastSerdeCache.FastSerializerWithAvroSpecificImpl<>(schema);
+                new FastSerdeCache.FastSerializerWithAvroSpecificImpl<>(schema, specificData);
 
         GenericDatumWriter<T> genericDatumWriter = new GenericDatumWriter<>(
                 schema, genericData);
@@ -181,26 +181,26 @@ public abstract class LogicalTypesTestBase {
         Supplier<Decoder> decoderSupplier = () -> DecoderFactory.get().binaryDecoder(bytes, null);
 
         FastDeserializer<GenericData.Record> fastGenericDeserializer = new FastGenericDeserializerGenerator<GenericData.Record>(
-                schema, schema, classesDir, classLoader, null)
+                schema, schema, classesDir, classLoader, null, genericData)
                 .generateDeserializer();
 
         FastDeserializer<T> fastSpecificDeserializer = new FastSpecificDeserializerGenerator<T>(
-                schema, schema, classesDir, classLoader, null)
+                schema, schema, classesDir, classLoader, null, specificData)
                 .generateDeserializer();
 
         FastSerdeCache.FastDeserializerWithAvroGenericImpl<GenericData.Record> fastDeserializerWithAvroGeneric =
-                new FastSerdeCache.FastDeserializerWithAvroGenericImpl<>(schema, schema);
+                new FastSerdeCache.FastDeserializerWithAvroGenericImpl<>(schema, schema, genericData);
 
         FastSerdeCache.FastDeserializerWithAvroSpecificImpl<T> fastDeserializerWithAvroSpecific =
-                new FastSerdeCache.FastDeserializerWithAvroSpecificImpl<>(schema, schema);
+                new FastSerdeCache.FastDeserializerWithAvroSpecificImpl<>(schema, schema, specificData);
 
         GenericDatumReader<GenericData.Record> genericDatumReader = new GenericDatumReader<>(schema, schema, genericData);
 
         SpecificDatumReader<T> specificDatumReader = new SpecificDatumReader<>(schema, schema, specificData);
 
-        ColdGenericDatumReader<GenericData.Record> coldGenericDatumReader = new ColdGenericDatumReader<>(schema, schema);
+        ColdGenericDatumReader<GenericData.Record> coldGenericDatumReader = ColdGenericDatumReader.of(schema, schema, genericData);
 
-        ColdSpecificDatumReader<T> coldSpecificDatumReader = new ColdSpecificDatumReader<>(schema, schema);
+        ColdSpecificDatumReader<T> coldSpecificDatumReader = ColdSpecificDatumReader.of(schema, schema, specificData);
 
         // when deserializing with different serializers/writers
         GenericData.Record deserializedWithFastGeneric = fastGenericDeserializer.deserialize(decoderSupplier.get());
