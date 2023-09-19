@@ -43,6 +43,14 @@ public class CompositeByteBuffer {
     byteBufferCount = count;
   }
 
+  int getByteBufferCount() {
+    return this.byteBufferCount;
+  }
+
+  List<ByteBuffer> getByteBuffers() {
+    return this.byteBuffers;
+  }
+
   public float getElement(int i) {
     int index = i * 4;
     // most common case:

@@ -4,6 +4,7 @@ import com.linkedin.avro.api.PrimitiveFloatList;
 import com.linkedin.avro.fastserde.backport.ResolvingGrammarGenerator;
 import com.linkedin.avro.fastserde.backport.Symbol;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
+import com.linkedin.avroutil1.compatibility.AvroVersion;
 import com.sun.codemodel.JArray;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JCatchBlock;
@@ -802,7 +803,19 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
       /* N.B.: Need to use the erasure because instanceof does not support generic types */
       ifCodeGen(parentBody, finalReuseSupplier.get()._instanceof(abstractErasedArrayClass), then2 -> {
         then2.assign(arrayVar, JExpr.cast(abstractErasedArrayClass, finalReuseSupplier.get()));
-        then2.invoke(arrayVar, "clear");
+
+        if (SchemaAssistant.isPrimitive(arraySchema.getElementType()) ||
+            Utils.getRuntimeAvroVersion().earlierThan(AvroVersion.AVRO_1_9) ) { // GenericArray in Avro-1.9 or later supports 'reset'
+          then2.invoke(arrayVar, "clear");
+        } else {
+          /**
+           * For {@link GenericArray}, 'reset' is more efficient than 'clear', since 'reset' won't
+           * clear the previous elements, but just set size to be 0.
+           */
+          ifCodeGen(then2, arrayVar._instanceof(codeModel.ref(GenericArray.class)), then3 -> {
+            then3.invoke(JExpr.cast(codeModel.ref(GenericArray.class), arrayVar), "reset");
+          }, else3 -> else3.invoke(arrayVar, "clear"));
+        }
       }, else2 -> {
         else2.assign(arrayVar, finalNewArrayExp);
       });

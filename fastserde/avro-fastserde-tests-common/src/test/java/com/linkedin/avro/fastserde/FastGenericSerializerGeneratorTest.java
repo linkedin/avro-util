@@ -12,6 +12,7 @@ import com.linkedin.avro.fastserde.generated.avro.JustSimpleEnum;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.ByteBuffer;
@@ -563,6 +564,81 @@ public class FastGenericSerializerGeneratorTest {
   }
 
   @Test(groups = {"serializationTest"})
+  public void shouldPassThroughByteBufferForArrayOfFloats() {
+    String arrayOfFloatFieldName = "array_of_float";
+    Schema recordSchema = createRecord("TestArrayOfFloats", new Schema.Field(arrayOfFloatFieldName, Schema.createArray(Schema.create(Schema.Type.FLOAT)), null, null));
+    GenericRecord record = new GenericData.Record(recordSchema);
+    record.put(arrayOfFloatFieldName, Arrays.asList(1.0f, 2.0f, 3.0f));
+
+    /**
+     * Deserialize it first by fast deserializer to check whether {@link BufferBackedPrimitiveFloatList} is being used or not.
+      */
+    GenericRecord decodedRecord = decodeRecordFast(recordSchema, dataAsBinaryDecoder(record));
+    Assert.assertTrue(decodedRecord.get(arrayOfFloatFieldName) instanceof BufferBackedPrimitiveFloatList);
+
+    class TestBufferBackedPrimitiveFloatList extends BufferBackedPrimitiveFloatList {
+
+      boolean writeFloatsCalled = false;
+      boolean writeFloatsByBackedBytesCalled = false;
+      public TestBufferBackedPrimitiveFloatList(BufferBackedPrimitiveFloatList floatList) {
+        super(0);
+        floatList.copyInternalState(this);
+      }
+
+      public void resetFlag() {
+        this.writeFloatsCalled = false;
+        this.writeFloatsByBackedBytesCalled = false;
+      }
+
+      @Override
+      public void writeFloats(Encoder encoder) throws IOException {
+        writeFloatsCalled = true;
+        super.writeFloats(encoder);
+      }
+
+      @Override
+      protected void writeFloatsByBackedBytes(Encoder encoder) throws IOException {
+        writeFloatsByBackedBytesCalled = true;
+        super.writeFloatsByBackedBytes(encoder);
+      }
+    }
+
+    TestBufferBackedPrimitiveFloatList floatListWithHook = new TestBufferBackedPrimitiveFloatList((BufferBackedPrimitiveFloatList)decodedRecord.get(arrayOfFloatFieldName));
+
+    // Replace the record field by the object with hook function
+    decodedRecord.put(arrayOfFloatFieldName, floatListWithHook);
+
+    // Serialize it with fast serializer
+    Decoder anotherDecoder = dataAsBinaryDecoder(decodedRecord, recordSchema);
+
+    Assert.assertTrue(floatListWithHook.writeFloatsCalled);
+    Assert.assertTrue(floatListWithHook.writeFloatsByBackedBytesCalled);
+
+    // Deserialize it by vanilla Avro to verify data
+    GenericRecord decodedRecord1 = decodeRecord(recordSchema, anotherDecoder);
+    List<Float> decodedFloatList1 = (List<Float>)decodedRecord1.get(arrayOfFloatFieldName);
+    Assert.assertEquals(decodedFloatList1.get(0), 1.0f);
+    Assert.assertEquals(decodedFloatList1.get(1), 2.0f);
+    Assert.assertEquals(decodedFloatList1.get(2), 3.0f);
+
+    /**
+     * Change the elements of {@link BufferBackedPrimitiveFloatList}, then pass-through bytes won't be used in fast serializer.
+     */
+    floatListWithHook.set(0, 10.0f);
+    floatListWithHook.resetFlag();
+    // Serialize it again with fast serializer
+    GenericRecord decodedRecord2 = decodeRecord(recordSchema, dataAsBinaryDecoder(decodedRecord, recordSchema));
+
+    Assert.assertTrue(floatListWithHook.writeFloatsCalled);
+    Assert.assertFalse(floatListWithHook.writeFloatsByBackedBytesCalled);
+    List<Float> decodedFloatList2 = (List<Float>)decodedRecord2.get(arrayOfFloatFieldName);
+    Assert.assertEquals(decodedFloatList2.get(0), 10.0f);
+    Assert.assertEquals(decodedFloatList2.get(1), 2.0f);
+    Assert.assertEquals(decodedFloatList2.get(2), 3.0f);
+
+  }
+
+  @Test(groups = {"serializationTest"})
   public void shouldWriteArrayOfFloats() {
     // given
     AtomicBoolean primitiveApiCalled = new AtomicBoolean(false);
@@ -693,6 +769,16 @@ public class FastGenericSerializerGeneratorTest {
     GenericDatumReader<T> datumReader = new GenericDatumReader<>(schema);
     try {
       return datumReader.read(null, decoder);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public <T> T decodeRecordFast(Schema schema, Decoder decoder) {
+    try {
+      FastGenericDeserializerGenerator<T> fastGenericDeserializerGenerator = new FastGenericDeserializerGenerator<>(schema, schema, tempDir, classLoader, null, null);
+      FastDeserializer<T> fastDeserializer = fastGenericDeserializerGenerator.generateDeserializer();
+      return fastDeserializer.deserialize(decoder);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
