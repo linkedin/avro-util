@@ -134,7 +134,7 @@ public abstract class FastSerdeBase {
        */
       LOGGER.info("Starting compilation for the generated source file: {} ", filePath);
       LOGGER.debug("The inferred compile class path for file: {} : {}", filePath, compileClassPathForCurrentFile);
-      compileResult = compiler.run(null, null, null, "-cp", compileClassPathForCurrentFile, filePath, "-XDuseUnsharedTable");
+      compileResult = compiler.run(null, null, null, "-cp", compileClassPathForCurrentFile, "-XDuseUnsharedTable", "-proc:none", filePath);
     } catch (Exception e) {
       throw new FastSerdeGeneratorException("Unable to compile:" + className + " from source file: " + filePath, e);
     }
