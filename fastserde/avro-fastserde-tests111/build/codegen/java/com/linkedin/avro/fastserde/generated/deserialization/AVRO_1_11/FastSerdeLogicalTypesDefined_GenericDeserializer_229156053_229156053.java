@@ -2,8 +2,12 @@
 package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import org.apache.avro.Conversions;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.IndexedRecord;
@@ -14,13 +18,27 @@ public class FastSerdeLogicalTypesDefined_GenericDeserializer_229156053_22915605
 {
 
     private final Schema readerSchema;
+    private final org.apache.avro.data.TimeConversions.DateConversion conversion_date = new org.apache.avro.data.TimeConversions.DateConversion();
+    private final org.apache.avro.data.TimeConversions.TimeMillisConversion conversion_time_millis = new org.apache.avro.data.TimeConversions.TimeMillisConversion();
+    private final org.apache.avro.data.TimeConversions.TimestampMillisConversion conversion_timestamp_millis = new org.apache.avro.data.TimeConversions.TimestampMillisConversion();
+    private final Schema timeMillisField0;
+    private final Schema logicalTypeSchema__419105534 = Schema.parse("{\"type\":\"int\",\"logicalType\":\"time-millis\"}");
+    private final Schema dateField0;
+    private final Schema logicalTypeSchema__59052268 = Schema.parse("{\"type\":\"int\",\"logicalType\":\"date\"}");
     private final Schema arrayOfUnionOfDateAndTimestampMillis0;
     private final Schema arrayOfUnionOfDateAndTimestampMillisArrayElemSchema0;
+    private final Schema arrayOfUnionOfDateAndTimestampMillisElemOptionSchema0;
+    private final Schema arrayOfUnionOfDateAndTimestampMillisElemOptionSchema1;
+    private final Schema logicalTypeSchema_1074306973 = Schema.parse("{\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}");
 
     public FastSerdeLogicalTypesDefined_GenericDeserializer_229156053_229156053(Schema readerSchema) {
         this.readerSchema = readerSchema;
+        this.timeMillisField0 = readerSchema.getField("timeMillisField").schema();
+        this.dateField0 = readerSchema.getField("dateField").schema();
         this.arrayOfUnionOfDateAndTimestampMillis0 = readerSchema.getField("arrayOfUnionOfDateAndTimestampMillis").schema();
         this.arrayOfUnionOfDateAndTimestampMillisArrayElemSchema0 = arrayOfUnionOfDateAndTimestampMillis0 .getElementType();
+        this.arrayOfUnionOfDateAndTimestampMillisElemOptionSchema0 = arrayOfUnionOfDateAndTimestampMillisArrayElemSchema0 .getTypes().get(0);
+        this.arrayOfUnionOfDateAndTimestampMillisElemOptionSchema1 = arrayOfUnionOfDateAndTimestampMillisArrayElemSchema0 .getTypes().get(1);
     }
 
     public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
@@ -38,7 +56,8 @@ public class FastSerdeLogicalTypesDefined_GenericDeserializer_229156053_22915605
         } else {
             FastSerdeLogicalTypesDefined = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
-        FastSerdeLogicalTypesDefined.put(0, (decoder.readInt()));
+        LocalTime convertedValue0 = ((LocalTime) Conversions.convertToLogicalType((decoder.readInt()), this.logicalTypeSchema__419105534, this.logicalTypeSchema__419105534 .getLogicalType(), this.conversion_time_millis));
+        FastSerdeLogicalTypesDefined.put(0, convertedValue0);
         populate_FastSerdeLogicalTypesDefined0((FastSerdeLogicalTypesDefined), (decoder));
         return FastSerdeLogicalTypesDefined;
     }
@@ -46,7 +65,8 @@ public class FastSerdeLogicalTypesDefined_GenericDeserializer_229156053_22915605
     private void populate_FastSerdeLogicalTypesDefined0(IndexedRecord FastSerdeLogicalTypesDefined, Decoder decoder)
         throws IOException
     {
-        FastSerdeLogicalTypesDefined.put(1, (decoder.readInt()));
+        LocalDate convertedValue1 = ((LocalDate) Conversions.convertToLogicalType((decoder.readInt()), this.logicalTypeSchema__59052268, this.logicalTypeSchema__59052268 .getLogicalType(), this.conversion_date));
+        FastSerdeLogicalTypesDefined.put(1, convertedValue1);
         List<Object> arrayOfUnionOfDateAndTimestampMillis1 = null;
         long chunkLen0 = (decoder.readArrayStart());
         Object oldArray0 = FastSerdeLogicalTypesDefined.get(2);
@@ -64,10 +84,12 @@ public class FastSerdeLogicalTypesDefined_GenericDeserializer_229156053_22915605
                 }
                 int unionIndex0 = (decoder.readIndex());
                 if (unionIndex0 == 0) {
-                    arrayOfUnionOfDateAndTimestampMillis1 .add((decoder.readInt()));
+                    LocalDate convertedValue2 = ((LocalDate) Conversions.convertToLogicalType((decoder.readInt()), this.logicalTypeSchema__59052268, this.logicalTypeSchema__59052268 .getLogicalType(), this.conversion_date));
+                    arrayOfUnionOfDateAndTimestampMillis1 .add(convertedValue2);
                 } else {
                     if (unionIndex0 == 1) {
-                        arrayOfUnionOfDateAndTimestampMillis1 .add((decoder.readLong()));
+                        Instant convertedValue3 = ((Instant) Conversions.convertToLogicalType((decoder.readLong()), this.logicalTypeSchema_1074306973, this.logicalTypeSchema_1074306973 .getLogicalType(), this.conversion_timestamp_millis));
+                        arrayOfUnionOfDateAndTimestampMillis1 .add(convertedValue3);
                     } else {
                         throw new RuntimeException(("Illegal union index for 'arrayOfUnionOfDateAndTimestampMillisElem': "+ unionIndex0));
                     }

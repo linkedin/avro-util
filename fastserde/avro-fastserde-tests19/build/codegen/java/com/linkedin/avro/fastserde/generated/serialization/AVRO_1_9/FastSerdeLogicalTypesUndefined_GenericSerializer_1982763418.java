@@ -11,6 +11,9 @@ public class FastSerdeLogicalTypesUndefined_GenericSerializer_1982763418
     implements FastSerializer<IndexedRecord>
 {
 
+    private final org.apache.avro.data.TimeConversions.TimeMicrosConversion conversion_time_micros = new org.apache.avro.data.TimeConversions.TimeMicrosConversion();
+    private final org.apache.avro.data.TimeConversions.TimestampMicrosConversion conversion_timestamp_micros = new org.apache.avro.data.TimeConversions.TimestampMicrosConversion();
+    private final org.apache.avro.Conversions.DecimalConversion conversion_decimal = new org.apache.avro.Conversions.DecimalConversion();
 
     public void serialize(IndexedRecord data, Encoder encoder)
         throws IOException

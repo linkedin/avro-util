@@ -14,6 +14,9 @@ public class FastSerdeLogicalTypesUndefined_SpecificDeserializer_1982763418_1982
 {
 
     private final Schema readerSchema;
+    private final org.apache.avro.data.TimeConversions.TimeMicrosConversion conversion_time_micros = new org.apache.avro.data.TimeConversions.TimeMicrosConversion();
+    private final org.apache.avro.data.TimeConversions.TimestampMicrosConversion conversion_timestamp_micros = new org.apache.avro.data.TimeConversions.TimestampMicrosConversion();
+    private final org.apache.avro.Conversions.DecimalConversion conversion_decimal = new org.apache.avro.Conversions.DecimalConversion();
 
     public FastSerdeLogicalTypesUndefined_SpecificDeserializer_1982763418_1982763418(Schema readerSchema) {
         this.readerSchema = readerSchema;
