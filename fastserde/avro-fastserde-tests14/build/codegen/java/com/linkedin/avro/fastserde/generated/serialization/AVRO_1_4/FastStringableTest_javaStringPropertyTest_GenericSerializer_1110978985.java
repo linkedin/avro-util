@@ -24,10 +24,10 @@ public class FastStringableTest_javaStringPropertyTest_GenericSerializer_1110978
     public void serializeFastStringableTest_javaStringPropertyTest0(IndexedRecord data, Encoder encoder)
         throws IOException
     {
-        if (data.get(0) instanceof Utf8) {
-            (encoder).writeString(((Utf8) data.get(0)));
+        if (((CharSequence) data.get(0)) instanceof Utf8) {
+            (encoder).writeString(((Utf8)((CharSequence) data.get(0))));
         } else {
-            (encoder).writeString(data.get(0).toString());
+            (encoder).writeString(((CharSequence) data.get(0)).toString());
         }
         serialize_FastStringableTest_javaStringPropertyTest0(data, (encoder));
         serialize_FastStringableTest_javaStringPropertyTest1(data, (encoder));
@@ -43,10 +43,10 @@ public class FastStringableTest_javaStringPropertyTest_GenericSerializer_1110978
             (encoder).writeNull();
         } else {
             (encoder).writeIndex(1);
-            if (testUnionString0 instanceof Utf8) {
-                (encoder).writeString(((Utf8) testUnionString0));
+            if (((CharSequence) testUnionString0) instanceof Utf8) {
+                (encoder).writeString(((Utf8)((CharSequence) testUnionString0)));
             } else {
-                (encoder).writeString(testUnionString0 .toString());
+                (encoder).writeString(((CharSequence) testUnionString0).toString());
             }
         }
         List<CharSequence> testStringArray0 = ((List<CharSequence> ) data.get(2));
@@ -80,10 +80,10 @@ public class FastStringableTest_javaStringPropertyTest_GenericSerializer_1110978
             for (CharSequence key0 : ((Map<CharSequence, CharSequence> ) testStringMap0).keySet()) {
                 (encoder).startItem();
                 (encoder).writeString(key0);
-                if (testStringMap0 .get(key0) instanceof Utf8) {
-                    (encoder).writeString(((Utf8) testStringMap0 .get(key0)));
+                if (((CharSequence) testStringMap0 .get(key0)) instanceof Utf8) {
+                    (encoder).writeString(((Utf8)((CharSequence) testStringMap0 .get(key0))));
                 } else {
-                    (encoder).writeString(testStringMap0 .get(key0).toString());
+                    (encoder).writeString(((CharSequence) testStringMap0 .get(key0)).toString());
                 }
             }
         }

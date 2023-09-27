@@ -48,12 +48,14 @@ public class FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion_
                 FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.put(0, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.get(0), (decoder)));
             } else {
                 if (unionIndex0 == 2) {
+                    Utf8 charSequence1;
                     Object oldString1 = FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.get(0);
                     if (oldString1 instanceof Utf8) {
-                        FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.put(0, (decoder).readString(((Utf8) oldString1)));
+                        charSequence1 = (decoder).readString(((Utf8) oldString1));
                     } else {
-                        FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.put(0, (decoder).readString(null));
+                        charSequence1 = (decoder).readString(null);
                     }
+                    FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.put(0, charSequence1);
                 } else {
                     if (unionIndex0 == 3) {
                         FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.put(0, (decoder.readInt()));
@@ -81,12 +83,14 @@ public class FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion_
             subRecord.put(0, null);
         } else {
             if (unionIndex1 == 1) {
+                Utf8 charSequence0;
                 Object oldString0 = subRecord.get(0);
                 if (oldString0 instanceof Utf8) {
-                    subRecord.put(0, (decoder).readString(((Utf8) oldString0)));
+                    charSequence0 = (decoder).readString(((Utf8) oldString0));
                 } else {
-                    subRecord.put(0, (decoder).readString(null));
+                    charSequence0 = (decoder).readString(null);
                 }
+                subRecord.put(0, charSequence0);
             } else {
                 throw new RuntimeException(("Illegal union index for 'subField': "+ unionIndex1));
             }

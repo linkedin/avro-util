@@ -45,10 +45,10 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordField_Generi
             (encoder).writeNull();
         } else {
             (encoder).writeIndex(1);
-            if (subField0 instanceof Utf8) {
-                (encoder).writeString(((Utf8) subField0));
+            if (((CharSequence) subField0) instanceof Utf8) {
+                (encoder).writeString(((Utf8)((CharSequence) subField0)));
             } else {
-                (encoder).writeString(subField0 .toString());
+                (encoder).writeString(((CharSequence) subField0).toString());
             }
         }
     }
@@ -65,10 +65,10 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordField_Generi
             (encoder).writeNull();
         } else {
             (encoder).writeIndex(1);
-            if (field0 instanceof Utf8) {
-                (encoder).writeString(((Utf8) field0));
+            if (((CharSequence) field0) instanceof Utf8) {
+                (encoder).writeString(((Utf8)((CharSequence) field0)));
             } else {
-                (encoder).writeString(field0 .toString());
+                (encoder).writeString(((CharSequence) field0).toString());
             }
         }
     }

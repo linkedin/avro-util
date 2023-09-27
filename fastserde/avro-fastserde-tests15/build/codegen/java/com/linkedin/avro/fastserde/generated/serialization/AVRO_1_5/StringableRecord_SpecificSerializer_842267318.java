@@ -26,10 +26,10 @@ public class StringableRecord_SpecificSerializer_842267318
     public void serializeStringableRecord0(StringableRecord data, Encoder encoder)
         throws IOException
     {
-        if (data.get(0) instanceof Utf8) {
-            (encoder).writeString(((Utf8) data.get(0)));
+        if (((CharSequence) data.get(0)) instanceof Utf8) {
+            (encoder).writeString(((Utf8)((CharSequence) data.get(0))));
         } else {
-            (encoder).writeString(data.get(0).toString());
+            (encoder).writeString(((CharSequence) data.get(0)).toString());
         }
         serialize_StringableRecord0(data, (encoder));
         serialize_StringableRecord1(data, (encoder));
@@ -42,15 +42,15 @@ public class StringableRecord_SpecificSerializer_842267318
     private void serialize_StringableRecord0(StringableRecord data, Encoder encoder)
         throws IOException
     {
-        if (data.get(1) instanceof Utf8) {
-            (encoder).writeString(((Utf8) data.get(1)));
+        if (((CharSequence) data.get(1)) instanceof Utf8) {
+            (encoder).writeString(((Utf8)((CharSequence) data.get(1))));
         } else {
-            (encoder).writeString(data.get(1).toString());
+            (encoder).writeString(((CharSequence) data.get(1)).toString());
         }
-        if (data.get(2) instanceof Utf8) {
-            (encoder).writeString(((Utf8) data.get(2)));
+        if (((CharSequence) data.get(2)) instanceof Utf8) {
+            (encoder).writeString(((Utf8)((CharSequence) data.get(2))));
         } else {
-            (encoder).writeString(data.get(2).toString());
+            (encoder).writeString(((CharSequence) data.get(2)).toString());
         }
     }
 
@@ -58,15 +58,15 @@ public class StringableRecord_SpecificSerializer_842267318
     private void serialize_StringableRecord1(StringableRecord data, Encoder encoder)
         throws IOException
     {
-        if (data.get(3) instanceof Utf8) {
-            (encoder).writeString(((Utf8) data.get(3)));
+        if (((CharSequence) data.get(3)) instanceof Utf8) {
+            (encoder).writeString(((Utf8)((CharSequence) data.get(3))));
         } else {
-            (encoder).writeString(data.get(3).toString());
+            (encoder).writeString(((CharSequence) data.get(3)).toString());
         }
-        if (data.get(4) instanceof Utf8) {
-            (encoder).writeString(((Utf8) data.get(4)));
+        if (((CharSequence) data.get(4)) instanceof Utf8) {
+            (encoder).writeString(((Utf8)((CharSequence) data.get(4))));
         } else {
-            (encoder).writeString(data.get(4).toString());
+            (encoder).writeString(((CharSequence) data.get(4)).toString());
         }
     }
 
@@ -99,10 +99,10 @@ public class StringableRecord_SpecificSerializer_842267318
             for (CharSequence key0 : ((Map<CharSequence, CharSequence> ) urlMap0).keySet()) {
                 (encoder).startItem();
                 (encoder).writeString(key0);
-                if (urlMap0 .get(key0) instanceof Utf8) {
-                    (encoder).writeString(((Utf8) urlMap0 .get(key0)));
+                if (((CharSequence) urlMap0 .get(key0)) instanceof Utf8) {
+                    (encoder).writeString(((Utf8)((CharSequence) urlMap0 .get(key0))));
                 } else {
-                    (encoder).writeString(urlMap0 .get(key0).toString());
+                    (encoder).writeString(((CharSequence) urlMap0 .get(key0)).toString());
                 }
             }
         }
@@ -123,10 +123,10 @@ public class StringableRecord_SpecificSerializer_842267318
     public void serializeStringableSubRecord0(StringableSubRecord data, Encoder encoder)
         throws IOException
     {
-        if (data.get(0) instanceof Utf8) {
-            (encoder).writeString(((Utf8) data.get(0)));
+        if (((CharSequence) data.get(0)) instanceof Utf8) {
+            (encoder).writeString(((Utf8)((CharSequence) data.get(0))));
         } else {
-            (encoder).writeString(data.get(0).toString());
+            (encoder).writeString(((CharSequence) data.get(0)).toString());
         }
         serialize_StringableSubRecord0(data, (encoder));
     }
@@ -142,10 +142,10 @@ public class StringableRecord_SpecificSerializer_842267318
         } else {
             if (nullStringIntUnion0 instanceof CharSequence) {
                 (encoder).writeIndex(1);
-                if (nullStringIntUnion0 instanceof Utf8) {
-                    (encoder).writeString(((Utf8) nullStringIntUnion0));
+                if (((CharSequence) nullStringIntUnion0) instanceof Utf8) {
+                    (encoder).writeString(((Utf8)((CharSequence) nullStringIntUnion0)));
                 } else {
-                    (encoder).writeString(nullStringIntUnion0 .toString());
+                    (encoder).writeString(((CharSequence) nullStringIntUnion0).toString());
                 }
             } else {
                 if (nullStringIntUnion0 instanceof Integer) {
@@ -174,10 +174,10 @@ public class StringableRecord_SpecificSerializer_842267318
             (encoder).writeNull();
         } else {
             (encoder).writeIndex(1);
-            if (stringUnion0 instanceof Utf8) {
-                (encoder).writeString(((Utf8) stringUnion0));
+            if (((CharSequence) stringUnion0) instanceof Utf8) {
+                (encoder).writeString(((Utf8)((CharSequence) stringUnion0)));
             } else {
-                (encoder).writeString(stringUnion0 .toString());
+                (encoder).writeString(((CharSequence) stringUnion0).toString());
             }
         }
     }

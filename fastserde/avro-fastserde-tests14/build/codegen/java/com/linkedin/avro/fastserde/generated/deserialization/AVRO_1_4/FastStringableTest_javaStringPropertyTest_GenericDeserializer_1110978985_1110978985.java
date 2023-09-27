@@ -43,12 +43,14 @@ public class FastStringableTest_javaStringPropertyTest_GenericDeserializer_11109
         } else {
             FastStringableTest_javaStringPropertyTest = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
+        Utf8 charSequence0;
         Object oldString0 = FastStringableTest_javaStringPropertyTest.get(0);
         if (oldString0 instanceof Utf8) {
-            FastStringableTest_javaStringPropertyTest.put(0, (decoder).readString(((Utf8) oldString0)));
+            charSequence0 = (decoder).readString(((Utf8) oldString0));
         } else {
-            FastStringableTest_javaStringPropertyTest.put(0, (decoder).readString(null));
+            charSequence0 = (decoder).readString(null);
         }
+        FastStringableTest_javaStringPropertyTest.put(0, charSequence0);
         populate_FastStringableTest_javaStringPropertyTest0((FastStringableTest_javaStringPropertyTest), (decoder));
         populate_FastStringableTest_javaStringPropertyTest1((FastStringableTest_javaStringPropertyTest), (decoder));
         return FastStringableTest_javaStringPropertyTest;
@@ -63,12 +65,14 @@ public class FastStringableTest_javaStringPropertyTest_GenericDeserializer_11109
             FastStringableTest_javaStringPropertyTest.put(1, null);
         } else {
             if (unionIndex0 == 1) {
+                Utf8 charSequence1;
                 Object oldString1 = FastStringableTest_javaStringPropertyTest.get(1);
                 if (oldString1 instanceof Utf8) {
-                    FastStringableTest_javaStringPropertyTest.put(1, (decoder).readString(((Utf8) oldString1)));
+                    charSequence1 = (decoder).readString(((Utf8) oldString1));
                 } else {
-                    FastStringableTest_javaStringPropertyTest.put(1, (decoder).readString(null));
+                    charSequence1 = (decoder).readString(null);
                 }
+                FastStringableTest_javaStringPropertyTest.put(1, charSequence1);
             } else {
                 throw new RuntimeException(("Illegal union index for 'testUnionString': "+ unionIndex0));
             }
@@ -88,11 +92,13 @@ public class FastStringableTest_javaStringPropertyTest_GenericDeserializer_11109
                 if (oldArray0 instanceof GenericArray) {
                     testStringArrayArrayElementReuseVar0 = ((GenericArray) oldArray0).peek();
                 }
+                Utf8 charSequence2;
                 if (testStringArrayArrayElementReuseVar0 instanceof Utf8) {
-                    testStringArray1 .add((decoder).readString(((Utf8) testStringArrayArrayElementReuseVar0)));
+                    charSequence2 = (decoder).readString(((Utf8) testStringArrayArrayElementReuseVar0));
                 } else {
-                    testStringArray1 .add((decoder).readString(null));
+                    charSequence2 = (decoder).readString(null);
                 }
+                testStringArray1 .add(charSequence2);
             }
             chunkLen0 = (decoder.arrayNext());
         }
@@ -119,7 +125,8 @@ public class FastStringableTest_javaStringPropertyTest_GenericDeserializer_11109
             do {
                 for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {
                     Utf8 key0 = (decoder.readString(null));
-                    testStringMap1 .put(key0, (decoder).readString(null));
+                    Utf8 charSequence3 = (decoder).readString(null);
+                    testStringMap1 .put(key0, charSequence3);
                 }
                 chunkLen1 = (decoder.mapNext());
             } while (chunkLen1 > 0);

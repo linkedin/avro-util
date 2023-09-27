@@ -42,7 +42,8 @@ public class FastStringableTest_javaStringPropertyTest_GenericDeserializer_11109
         } else {
             FastStringableTest_javaStringPropertyTest = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
-        FastStringableTest_javaStringPropertyTest.put(0, (decoder).readString());
+        String charSequence0 = (decoder).readString();
+        FastStringableTest_javaStringPropertyTest.put(0, charSequence0);
         populate_FastStringableTest_javaStringPropertyTest0((FastStringableTest_javaStringPropertyTest), (decoder));
         populate_FastStringableTest_javaStringPropertyTest1((FastStringableTest_javaStringPropertyTest), (decoder));
         return FastStringableTest_javaStringPropertyTest;
@@ -57,7 +58,8 @@ public class FastStringableTest_javaStringPropertyTest_GenericDeserializer_11109
             FastStringableTest_javaStringPropertyTest.put(1, null);
         } else {
             if (unionIndex0 == 1) {
-                FastStringableTest_javaStringPropertyTest.put(1, (decoder).readString());
+                String charSequence1 = (decoder).readString();
+                FastStringableTest_javaStringPropertyTest.put(1, charSequence1);
             } else {
                 throw new RuntimeException(("Illegal union index for 'testUnionString': "+ unionIndex0));
             }
@@ -77,7 +79,8 @@ public class FastStringableTest_javaStringPropertyTest_GenericDeserializer_11109
                 if (oldArray0 instanceof GenericArray) {
                     testStringArrayArrayElementReuseVar0 = ((GenericArray) oldArray0).peek();
                 }
-                testStringArray1 .add((decoder).readString());
+                String charSequence2 = (decoder).readString();
+                testStringArray1 .add(charSequence2);
             }
             chunkLen0 = (decoder.arrayNext());
         }
@@ -104,7 +107,8 @@ public class FastStringableTest_javaStringPropertyTest_GenericDeserializer_11109
             do {
                 for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {
                     String key0 = (decoder.readString());
-                    testStringMap1 .put(key0, (decoder).readString());
+                    String charSequence3 = (decoder).readString();
+                    testStringMap1 .put(key0, charSequence3);
                 }
                 chunkLen1 = (decoder.mapNext());
             } while (chunkLen1 > 0);

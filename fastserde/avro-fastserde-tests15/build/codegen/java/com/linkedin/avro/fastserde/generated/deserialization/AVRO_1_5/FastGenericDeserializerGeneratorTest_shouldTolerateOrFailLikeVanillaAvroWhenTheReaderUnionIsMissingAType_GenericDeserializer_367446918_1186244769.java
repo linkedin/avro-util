@@ -42,12 +42,14 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanill
             FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType.put(0, null);
         } else {
             if (unionIndex0 == 1) {
+                Utf8 charSequence0;
                 Object oldString0 = FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType.get(0);
                 if (oldString0 instanceof Utf8) {
-                    FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType.put(0, (decoder).readString(((Utf8) oldString0)));
+                    charSequence0 = (decoder).readString(((Utf8) oldString0));
                 } else {
-                    FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType.put(0, (decoder).readString(null));
+                    charSequence0 = (decoder).readString(null);
                 }
+                FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType.put(0, charSequence0);
             } else {
                 if (unionIndex0 == 2) {
                     throw new AvroTypeException("Found \"long\", expecting [\"null\", \"string\"]");

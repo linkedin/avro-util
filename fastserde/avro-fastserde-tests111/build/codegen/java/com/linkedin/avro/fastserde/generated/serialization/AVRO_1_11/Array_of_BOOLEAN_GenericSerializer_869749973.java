@@ -20,9 +20,9 @@ public class Array_of_BOOLEAN_GenericSerializer_869749973
             (encoder).setItemCount(0);
         } else {
             (encoder).setItemCount(data.size());
-            if (data instanceof PrimitiveBooleanList) {
-                PrimitiveBooleanList primitiveList0 = null;
-                primitiveList0 = ((PrimitiveBooleanList) data);
+            Object array0 = data;
+            if (array0 instanceof PrimitiveBooleanList) {
+                PrimitiveBooleanList primitiveList0 = ((PrimitiveBooleanList) array0);
                 for (int counter0 = 0; (counter0 <primitiveList0 .size()); counter0 ++) {
                     (encoder).startItem();
                     (encoder).writeBoolean(primitiveList0 .getPrimitive(counter0));

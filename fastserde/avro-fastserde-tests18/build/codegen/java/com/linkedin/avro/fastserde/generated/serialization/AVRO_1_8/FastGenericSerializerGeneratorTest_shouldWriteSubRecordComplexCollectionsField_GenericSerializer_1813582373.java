@@ -73,10 +73,10 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexColle
             (encoder).writeNull();
         } else {
             (encoder).writeIndex(1);
-            if (subField0 instanceof Utf8) {
-                (encoder).writeString(((Utf8) subField0));
+            if (((CharSequence) subField0) instanceof Utf8) {
+                (encoder).writeString(((Utf8)((CharSequence) subField0)));
             } else {
-                (encoder).writeString(subField0 .toString());
+                (encoder).writeString(((CharSequence) subField0).toString());
             }
         }
     }

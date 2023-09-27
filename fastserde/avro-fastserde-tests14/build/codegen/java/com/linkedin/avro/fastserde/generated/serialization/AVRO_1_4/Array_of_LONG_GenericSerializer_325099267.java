@@ -20,9 +20,9 @@ public class Array_of_LONG_GenericSerializer_325099267
             (encoder).setItemCount(0);
         } else {
             (encoder).setItemCount(data.size());
-            if (data instanceof PrimitiveLongList) {
-                PrimitiveLongList primitiveList0 = null;
-                primitiveList0 = ((PrimitiveLongList) data);
+            Object array0 = data;
+            if (array0 instanceof PrimitiveLongList) {
+                PrimitiveLongList primitiveList0 = ((PrimitiveLongList) array0);
                 for (int counter0 = 0; (counter0 <primitiveList0 .size()); counter0 ++) {
                     (encoder).startItem();
                     (encoder).writeLong(primitiveList0 .getPrimitive(counter0));

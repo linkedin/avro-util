@@ -59,10 +59,10 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
     private void serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives1(IndexedRecord data, Encoder encoder)
         throws IOException
     {
-        if (data.get(3) instanceof Utf8) {
-            (encoder).writeString(((Utf8) data.get(3)));
+        if (((CharSequence) data.get(3)) instanceof Utf8) {
+            (encoder).writeString(((Utf8)((CharSequence) data.get(3))));
         } else {
-            (encoder).writeString(data.get(3).toString());
+            (encoder).writeString(((CharSequence) data.get(3)).toString());
         }
         CharSequence testStringUnion0 = ((CharSequence) data.get(4));
         if (testStringUnion0 == null) {
@@ -70,10 +70,10 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
             (encoder).writeNull();
         } else {
             (encoder).writeIndex(1);
-            if (testStringUnion0 instanceof Utf8) {
-                (encoder).writeString(((Utf8) testStringUnion0));
+            if (((CharSequence) testStringUnion0) instanceof Utf8) {
+                (encoder).writeString(((Utf8)((CharSequence) testStringUnion0)));
             } else {
-                (encoder).writeString(testStringUnion0 .toString());
+                (encoder).writeString(((CharSequence) testStringUnion0).toString());
             }
         }
     }

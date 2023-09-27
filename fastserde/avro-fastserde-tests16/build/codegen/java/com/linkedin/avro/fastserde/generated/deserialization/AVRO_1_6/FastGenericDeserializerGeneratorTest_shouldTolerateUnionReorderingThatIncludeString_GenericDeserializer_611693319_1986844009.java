@@ -44,12 +44,14 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingT
                 FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString.put(0, (decoder.readInt()));
             } else {
                 if (unionIndex0 == 2) {
+                    Utf8 charSequence0;
                     Object oldString0 = FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString.get(0);
                     if (oldString0 instanceof Utf8) {
-                        FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString.put(0, (decoder).readString(((Utf8) oldString0)));
+                        charSequence0 = (decoder).readString(((Utf8) oldString0));
                     } else {
-                        FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString.put(0, (decoder).readString(null));
+                        charSequence0 = (decoder).readString(null);
                     }
+                    FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString.put(0, charSequence0);
                 } else {
                     throw new RuntimeException(("Illegal union index for 'test': "+ unionIndex0));
                 }

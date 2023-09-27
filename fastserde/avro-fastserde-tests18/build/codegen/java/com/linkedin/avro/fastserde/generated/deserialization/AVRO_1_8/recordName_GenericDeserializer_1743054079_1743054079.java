@@ -35,12 +35,14 @@ public class recordName_GenericDeserializer_1743054079_1743054079
         } else {
             recordName = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
+        Utf8 charSequence0;
         Object oldString0 = recordName.get(0);
         if (oldString0 instanceof Utf8) {
-            recordName.put(0, (decoder).readString(((Utf8) oldString0)));
+            charSequence0 = (decoder).readString(((Utf8) oldString0));
         } else {
-            recordName.put(0, (decoder).readString(null));
+            charSequence0 = (decoder).readString(null);
         }
+        recordName.put(0, charSequence0);
         populate_recordName0((recordName), (decoder));
         return recordName;
     }

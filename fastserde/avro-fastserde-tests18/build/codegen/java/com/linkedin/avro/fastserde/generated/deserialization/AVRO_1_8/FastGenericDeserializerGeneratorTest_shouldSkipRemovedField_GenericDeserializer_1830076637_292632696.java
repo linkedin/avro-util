@@ -59,12 +59,14 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
             FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(0, null);
         } else {
             if (unionIndex0 == 1) {
+                Utf8 charSequence0;
                 Object oldString0 = FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(0);
                 if (oldString0 instanceof Utf8) {
-                    FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(0, (decoder).readString(((Utf8) oldString0)));
+                    charSequence0 = (decoder).readString(((Utf8) oldString0));
                 } else {
-                    FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(0, (decoder).readString(null));
+                    charSequence0 = (decoder).readString(null);
                 }
+                FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(0, charSequence0);
             } else {
                 throw new RuntimeException(("Illegal union index for 'testNotRemoved': "+ unionIndex0));
             }
@@ -94,12 +96,14 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
             FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(1, null);
         } else {
             if (unionIndex2 == 1) {
+                Utf8 charSequence1;
                 Object oldString1 = FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.get(1);
                 if (oldString1 instanceof Utf8) {
-                    FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(1, (decoder).readString(((Utf8) oldString1)));
+                    charSequence1 = (decoder).readString(((Utf8) oldString1));
                 } else {
-                    FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(1, (decoder).readString(null));
+                    charSequence1 = (decoder).readString(null);
                 }
+                FastGenericDeserializerGeneratorTest_shouldSkipRemovedField.put(1, charSequence1);
             } else {
                 throw new RuntimeException(("Illegal union index for 'testNotRemoved2': "+ unionIndex2));
             }
@@ -162,12 +166,14 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
             subRecord.put(0, null);
         } else {
             if (unionIndex4 == 1) {
+                Utf8 charSequence2;
                 Object oldString2 = subRecord.get(0);
                 if (oldString2 instanceof Utf8) {
-                    subRecord.put(0, (decoder).readString(((Utf8) oldString2)));
+                    charSequence2 = (decoder).readString(((Utf8) oldString2));
                 } else {
-                    subRecord.put(0, (decoder).readString(null));
+                    charSequence2 = (decoder).readString(null);
                 }
+                subRecord.put(0, charSequence2);
             } else {
                 throw new RuntimeException(("Illegal union index for 'testNotRemoved': "+ unionIndex4));
             }
@@ -195,12 +201,14 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
             subRecord.put(1, null);
         } else {
             if (unionIndex6 == 1) {
+                Utf8 charSequence3;
                 Object oldString3 = subRecord.get(1);
                 if (oldString3 instanceof Utf8) {
-                    subRecord.put(1, (decoder).readString(((Utf8) oldString3)));
+                    charSequence3 = (decoder).readString(((Utf8) oldString3));
                 } else {
-                    subRecord.put(1, (decoder).readString(null));
+                    charSequence3 = (decoder).readString(null);
                 }
+                subRecord.put(1, charSequence3);
             } else {
                 throw new RuntimeException(("Illegal union index for 'testNotRemoved2': "+ unionIndex6));
             }
