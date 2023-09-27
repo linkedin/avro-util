@@ -41,7 +41,7 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
  *
  * To run this benchmark:
  * <code>
- *   ./gradlew :avro-fastserde:jmh -PUSE_AVRO_14/17/18
+ *   ./gradlew :fastserde:avro-fastserde-jmh:jmh -PUSE_AVRO_14/17/18/19/110/111
  * </code>
  *
  * You also can test by your own AVRO schema by replacing the contents in

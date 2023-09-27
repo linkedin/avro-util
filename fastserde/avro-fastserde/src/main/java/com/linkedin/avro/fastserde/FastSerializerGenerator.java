@@ -7,8 +7,10 @@ import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JConditional;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
+import com.sun.codemodel.JFieldRef;
 import com.sun.codemodel.JForEach;
 import com.sun.codemodel.JForLoop;
+import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
@@ -19,14 +21,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.avro.Conversion;
+import org.apache.avro.Conversions;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.io.Encoder;
+import org.apache.avro.specific.SpecificData;
 import org.apache.avro.util.Utf8;
 import org.apache.commons.lang3.StringUtils;
 
 
-public class FastSerializerGenerator<T> extends FastSerdeBase {
+public class FastSerializerGenerator<T, U extends GenericData> extends FastSerdeBase<U> {
 
   private static int FIELDS_PER_RECORD_SERIALIZATION_METHOD = 20;
 
@@ -44,10 +49,9 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
     FIELDS_PER_RECORD_SERIALIZATION_METHOD = fieldCount;
   }
 
-
   public FastSerializerGenerator(boolean useGenericTypes, Schema schema, File destination, ClassLoader classLoader,
-      String compileClassPath) {
-    super("serialization", useGenericTypes, CharSequence.class, destination, classLoader, compileClassPath, true);
+      String compileClassPath, U modelData) {
+    super("serialization", useGenericTypes, CharSequence.class, destination, classLoader, compileClassPath, modelData, true);
     this.schema = schema;
   }
 
@@ -63,6 +67,7 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
 
     try {
       generatedClass = classPackage._class(className);
+      injectConversionClasses();
 
       final JMethod serializeMethod = generatedClass.method(JMod.PUBLIC, void.class, "serialize");
       final JVar serializeMethodParam;
@@ -90,6 +95,7 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
 
       @SuppressWarnings("unchecked")
       final Class<FastSerializer<T>> clazz = compileClass(className, schemaAssistant.getUsedFullyQualifiedClassNameSet());
+
       return clazz.getConstructor().newInstance();
     } catch (JClassAlreadyExistsException e) {
       throw new FastSerdeGeneratorException("Class: " + className + " already exists");
@@ -150,7 +156,7 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
     JBlock popMethodBody = methodBody;
 
     for (Schema.Field field : recordSchema.getFields()) {
-      /**
+      /*
        * We roll the serialization method for very large records, the initial fields are kept in the outer
        * method as original to maintain performance for smaller records
         */
@@ -167,15 +173,14 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
       }
 
       Schema fieldSchema = field.schema();
+      JInvocation fieldValueGetter = recordExpr.invoke("get").arg(JExpr.lit(field.pos()));
+
       if (SchemaAssistant.isComplexType(fieldSchema)) {
         JClass fieldClass = schemaAssistant.classFromSchema(fieldSchema);
-        JVar containerVar = declareValueVar(field.name(), fieldSchema, popMethodBody);
-        JExpression valueExpression = JExpr.invoke(recordExpr, "get").arg(JExpr.lit(field.pos()));
-        containerVar.init(JExpr.cast(fieldClass, valueExpression));
-
+        JVar containerVar = popMethodBody.decl(fieldClass, getUniqueName(field.name()), JExpr.cast(fieldClass, fieldValueGetter));
         processComplexType(fieldSchema, containerVar, popMethodBody);
       } else {
-        processSimpleType(fieldSchema, recordExpr.invoke("get").arg(JExpr.lit(field.pos())), popMethodBody);
+        processSimpleType(fieldSchema, fieldValueGetter, popMethodBody);
       }
     }
   }
@@ -192,11 +197,14 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
       else1.invoke(JExpr.direct(ENCODER), "setItemCount").arg(JExpr.invoke(arrayExpr, "size"));
 
       if (SchemaAssistant.isPrimitive(arraySchema.getElementType())) {
+        // Trick added to support logical types, e.g. (List<LocalDate> instanceof PrimitiveIntList) - can't compile
+        JVar arrayVar = else1.decl(codeModel.ref(Object.class), getUniqueName("array"), arrayExpr);
         JClass primitiveListInterface = schemaAssistant.classFromSchema(arraySchema, true, false, true);
-        final JExpression primitiveListCondition = arrayExpr._instanceof(primitiveListInterface);
+        final JExpression primitiveListCondition = arrayVar._instanceof(primitiveListInterface);
+
         ifCodeGen(else1, primitiveListCondition, then2 -> {
-          final JVar primitiveList = declareValueVar("primitiveList", arraySchema, then2, true, false, true);
-          then2.assign(primitiveList, JExpr.cast(primitiveListInterface, arrayExpr));
+          final JVar primitiveList = declareValueVar("primitiveList", arraySchema, then2, true, false, true)
+                  .init(JExpr.cast(primitiveListInterface, arrayVar));
           processArrayElementLoop(arraySchema, arrayClass, primitiveList, then2, "getPrimitive");
         }, else2 -> {
           processArrayElementLoop(arraySchema, arrayClass, arrayExpr, else2, "get");
@@ -290,7 +298,7 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
     throw new RuntimeException("Unknown schema: " + schema + " in union schema: " + unionSchema);
   }
 
-  private void processUnion(final Schema unionSchema, JExpression unionExpr, JBlock body) {
+  private void processUnion(final Schema unionSchema, final JExpression unionExpr, final JBlock body) {
     JConditional ifBlock = null;
 
     for (Schema schemaOption : unionSchema.getTypes()) {
@@ -320,21 +328,31 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
 
       JClass optionClass = schemaAssistant.classFromSchema(schemaOption);
       JClass rawOptionClass = schemaAssistant.classFromSchema(schemaOption, true, true);
+      JClass optionLogicalTypeClass = logicalTypeEnabled(schemaOption)
+              ? codeModel.ref(((Conversion<?>) schemaAssistant.getConversion(schemaOption.getLogicalType())).getConvertedType())
+              : null;
+
       JExpression condition;
       /*
-       * In Avro-1.4, neither GenericEnumSymbol or GenericFixed has associated schema, so we don't expect to see
+       * In Avro-1.4, neither GenericEnumSymbol nor GenericFixed has associated schema, so we don't expect to see
        * two or more Enum types or two or more Fixed types in the same Union in generic mode since the writer couldn't
-       * differentiate the Enum types or the Fixed types, but those scenarios are well supported in Avro-1.7 or above since
+       * differentiate the Enum types or the Fixed types, but those scenarios are well-supported in Avro-1.7 or above since
        * both of them have associated 'Schema', so the serializer could recognize the right type
        * by checking the associated 'Schema' in generic mode.
        */
       if (useGenericTypes && SchemaAssistant.isNamedTypeWithSchema(schemaOption)) {
-        condition = unionExpr._instanceof(rawOptionClass).cand(JExpr.invoke(JExpr.lit(AvroCompatibilityHelper.getSchemaFullName(schemaOption)), "equals")
-            /* TODO: Replace by {@link AvroCompatibilityHelper#getSchemaFullName} */
+        if (optionLogicalTypeClass != null && schemaOption.getType() == Schema.Type.FIXED) {
+          condition = unionExpr._instanceof(optionLogicalTypeClass);
+        } else {
+          String schemaFullName = AvroCompatibilityHelper.getSchemaFullName(schemaOption);
+          condition = unionExpr._instanceof(rawOptionClass).cand(JExpr.invoke(JExpr.lit(schemaFullName), "equals")
             .arg(JExpr.invoke(JExpr.cast(optionClass, unionExpr), "getSchema").invoke("getFullName")));
+        }
       } else {
         if (unionExpr instanceof JVar && ((JVar)unionExpr).type().equals(rawOptionClass)) {
           condition = null;
+        } else if (optionLogicalTypeClass != null) {
+          condition = unionExpr._instanceof(optionLogicalTypeClass);
         } else {
           condition = unionExpr._instanceof(rawOptionClass);
         }
@@ -346,12 +364,14 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
         ifBlock = ifBlock != null ? ifBlock._elseif(condition) : body._if(condition);
         unionTypeProcessingBlock = ifBlock._then();
       }
+
       unionTypeProcessingBlock.invoke(JExpr.direct(ENCODER), "writeIndex")
           .arg(JExpr.lit(getIndexNamedForUnion(unionSchema, schemaOption)));
 
       if (schemaOption.getType().equals(Schema.Type.UNION) || schemaOption.getType().equals(Schema.Type.NULL)) {
         throw new FastSerdeGeneratorException("Incorrect union subschema processing: " + schemaOption);
       }
+
       if (SchemaAssistant.isComplexType(schemaOption)) {
         processComplexType(schemaOption, JExpr.cast(optionClass, unionExpr), unionTypeProcessingBlock);
       } else {
@@ -361,9 +381,17 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
   }
 
   private void processFixed(Schema fixedSchema, JExpression fixedValueExpression, JBlock body) {
-    JClass fixedClass = schemaAssistant.classFromSchema(fixedSchema);
+    JClass fixedClass = schemaAssistant.classFromSchema(fixedSchema, true, false, false, false);
+    JExpression fixedValueToWrite;
+
+    if (schemaAssistant.logicalTypeEnabled(fixedSchema)) {
+      fixedValueToWrite = generateConversionToRawType(fixedSchema, fixedValueExpression, body);
+    } else {
+      fixedValueToWrite = fixedValueExpression;
+    }
+
     body.invoke(JExpr.direct(ENCODER), "writeFixed")
-        .arg(JExpr.invoke(JExpr.cast(fixedClass, fixedValueExpression), "bytes"));
+        .arg(JExpr.invoke(JExpr.cast(fixedClass, fixedValueToWrite), "bytes"));
   }
 
   private void processEnum(Schema enumSchema, JExpression enumValueExpression, JBlock body) {
@@ -385,11 +413,11 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
          * and maintain a mapping between the schema id and EnumSchema JVar for future use.
          */
         schemaExpression = enumSchemaVarMap.computeIfAbsent(Utils.getSchemaFingerprint(enumSchema), fingerprint ->
-                generatedClass.field(
-                        JMod.PRIVATE | JMod.FINAL,
-                        Schema.class,
-                        getUniqueName(enumSchema.getName() + "EnumSchema"),
-                        codeModel.ref(Schema.class).staticInvoke("parse").arg(enumSchema.toString()))
+            generatedClass.field(
+                JMod.PRIVATE | JMod.FINAL,
+                Schema.class,
+                getUniqueName(enumSchema.getName() + "EnumSchema"),
+                codeModel.ref(Schema.class).staticInvoke("parse").arg(enumSchema.toString()))
         );
         enumValueToStringExpr = enumValueCasted.invoke("toString");
       } else {
@@ -429,14 +457,21 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
   }
 
   private void processPrimitive(final Schema primitiveSchema, JExpression primitiveValueExpression, JBlock body, boolean cast) {
+    JClass primitiveClass = schemaAssistant.classFromSchema(primitiveSchema, true, false, false, false);
+
     String writeFunction;
-    JClass primitiveClass = schemaAssistant.classFromSchema(primitiveSchema);
-    JExpression writeFunctionArgument = cast
-        ? JExpr.cast(primitiveClass, primitiveValueExpression)
-        : primitiveValueExpression;
+    JExpression writeFunctionArgument;
+
+    if (logicalTypeEnabled(primitiveSchema)) {
+      JVar convertedValueVar = generateConversionToRawType(primitiveSchema, primitiveValueExpression, body);
+      writeFunctionArgument = JExpr.cast(primitiveClass, convertedValueVar);
+    } else {
+      writeFunctionArgument = cast ? JExpr.cast(primitiveClass, primitiveValueExpression) : primitiveValueExpression;
+    }
+
     switch (primitiveSchema.getType()) {
       case STRING:
-        processString(primitiveSchema, primitiveValueExpression, body);
+        processString(primitiveSchema, writeFunctionArgument, body);
         return;
       case BYTES:
         writeFunction = "writeBytes";
@@ -462,6 +497,20 @@ public class FastSerializerGenerator<T> extends FastSerdeBase {
     }
 
     body.invoke(JExpr.direct(ENCODER), writeFunction).arg(writeFunctionArgument);
+  }
+
+  private JVar generateConversionToRawType(Schema schemaWithLogicalType, JExpression initialExpression, JBlock body) {
+    JVar convertedValue = body.decl(codeModel.ref(Object.class), getUniqueName("convertedValue"), initialExpression);
+    JFieldRef schemaFieldRef = injectLogicalTypeSchema(schemaWithLogicalType);
+
+    body.assign(convertedValue, codeModel.ref(Conversions.class)
+            .staticInvoke("convertToRawType")
+            .arg(convertedValue)
+            .arg(schemaFieldRef)
+            .arg(schemaFieldRef.invoke("getLogicalType"))
+            .arg(getConversionRef(schemaWithLogicalType.getLogicalType())));
+
+    return convertedValue;
   }
 
   private boolean methodAlreadyDefined(final Schema schema) {

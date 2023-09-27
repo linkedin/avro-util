@@ -36,9 +36,9 @@ public class SerDeMicroBenchmark {
     fields.forEach(field -> {
       Schema.Type type = field.schema().getType();
       if (type.equals(Schema.Type.FLOAT)) {
-        newObj.put(field.pos(), new Float(100));
+        newObj.put(field.pos(), 100f);
       } else if (type.equals(Schema.Type.INT)) {
-        newObj.put(field.pos(), new Integer(100));
+        newObj.put(field.pos(), 100);
       } else if (type.equals(Schema.Type.STRING)) {
         newObj.put(field.pos(), "testsetesttestsetestsetesttestsette");
       } else {
@@ -129,8 +129,7 @@ public class SerDeMicroBenchmark {
   @Test(dataProvider = "useFastAvroOptionsProvider", groups = {"perfTest"})
   public void testFastAvroWithMultiThread(boolean useFastAvro) throws Exception {
     byte[] serializedBytes = serializedTestObjects(1000);
-    long startInMs = System.currentTimeMillis();
-    AvroGenericDeserializer<BenchmarkTestObject> deserializer = null;
+    AvroGenericDeserializer<BenchmarkTestObject> deserializer;
     if (useFastAvro) {
       FastGenericDatumReader<BenchmarkTestObject> fastGenericDatumReader =
           new FastGenericDatumReader<>(BenchmarkTestObject.SCHEMA$);

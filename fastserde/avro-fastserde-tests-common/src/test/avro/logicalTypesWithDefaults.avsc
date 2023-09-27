@@ -1,0 +1,202 @@
+{
+  "type": "record",
+  "name": "FastSerdeLogicalTypesWithDefaults",
+  "namespace": "com.linkedin.avro.fastserde.generated.avro",
+  "doc": "Used in tests to confirm fast-serde supports logical-types",
+  "fields": [
+    {
+      "name": "unionOfArrayAndMap",
+      "type": [
+        {
+          "type": "array",
+          "items": {
+            "type": "int",
+            "logicalType": "time-millis"
+          }
+        },
+        {
+          "type": "map",
+          "values": {
+            "type": "int",
+            "logicalType": "date"
+          }
+        }
+      ],
+      "default": [654321, 7415896]
+    },
+    {
+      "name": "mapOfUnionsOfDateAndTimestampMillis",
+      "type": {
+        "type": "map",
+        "values": [
+          {
+            "type": "int",
+            "logicalType": "date"
+          },
+          {
+            "type": "long",
+            "logicalType": "timestamp-millis"
+          }
+        ]
+      },
+      "default": {"someDay": 12345, "anotherDay": 23456}
+    },
+    {
+      "name": "timestampMillisMap",
+      "type": {
+        "type": "map",
+        "values": {
+          "type": "long",
+          "logicalType": "timestamp-millis"
+        }
+      },
+      "default": {"timestampMillis1": 123456789012, "timestampMillis2": 112233445566}
+    },
+    {
+      "name": "nullableArrayOfDates",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": {
+            "type": "int",
+            "logicalType": "date"
+          }
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "arrayOfDates",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "int",
+          "logicalType": "date"
+        }
+      },
+      "default": [7777, 8888]
+    },
+    {
+      "name": "unionOfDecimalOrDate",
+      "type": [
+        {
+          "type": "bytes",
+          "logicalType": "decimal",
+          "precision": 5,
+          "scale": 2
+        },
+        {
+          "type": "int",
+          "logicalType": "date"
+        }
+      ],
+      "default": "13"
+    },
+    {
+      "name": "uuidField",
+      "type": {
+        "type": "string",
+        "logicalType": "uuid"
+      },
+      "default": "b4ddd079-a024-4cc3-ac6c-a14f174c9922"
+    },
+    {
+      "name": "timestampMillisField",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "default": 120120120120
+    },
+    {
+      "name": "timestampMicrosField",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-micros"
+      },
+      "default": 123451234512345
+    },
+    {
+      "name": "timeMillisField",
+      "type": {
+        "type": "int",
+        "logicalType": "time-millis"
+      },
+      "default": 15
+    },
+    {
+      "name": "timeMicrosField",
+      "type": {
+        "type": "long",
+        "logicalType": "time-micros"
+      },
+      "default": 16
+    },
+    {
+      "name": "dateField",
+      "type": {
+        "type": "int",
+        "logicalType": "date"
+      },
+      "default": 223344
+    },
+    {
+      "name": "nestedLocalTimestampMillis",
+      "type": {
+        "name": "LocalTimestampRecordWithDefaults",
+        "type": "record",
+        "fields": [
+          {
+            "name": "nestedTimestamp",
+            "type": {
+              "type": "long",
+              "logicalType": "local-timestamp-millis"
+            },
+            "default": 99
+          },
+          {
+            "name": "nullableNestedTimestamp",
+            "type": [
+              "null",
+              {
+                "type": "long",
+                "logicalType": "local-timestamp-millis"
+              }
+            ],
+            "default": null
+          },
+          {
+            "name": "nullableUnionOfDateAndLocalTimestamp",
+            "type": [
+              "null",
+              {
+                "type": "int",
+                "logicalType": "date"
+              },
+              {
+                "type": "long",
+                "logicalType": "local-timestamp-millis"
+              }
+            ],
+            "default": null
+          },
+          {
+            "name": "unionOfDateAndLocalTimestamp",
+            "type": [
+              {
+                "type": "int",
+                "logicalType": "date"
+              },
+              {
+                "type": "long",
+                "logicalType": "local-timestamp-millis"
+              }
+            ],
+            "default": 45678
+          }
+        ]
+      }
+    }
+  ]
+}

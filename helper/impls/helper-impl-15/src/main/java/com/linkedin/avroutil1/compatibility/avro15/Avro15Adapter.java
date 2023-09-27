@@ -26,6 +26,8 @@ import com.linkedin.avroutil1.compatibility.SkipDecoder;
 import com.linkedin.avroutil1.compatibility.StringPropertyUtils;
 import com.linkedin.avroutil1.compatibility.StringRepresentation;
 import com.linkedin.avroutil1.compatibility.avro15.backports.Avro15DefaultValuesCache;
+import com.linkedin.avroutil1.compatibility.avro15.backports.GenericDatumReaderExt;
+import com.linkedin.avroutil1.compatibility.avro15.backports.GenericDatumWriterExt;
 import com.linkedin.avroutil1.compatibility.avro15.backports.SpecificDatumReaderExt;
 import com.linkedin.avroutil1.compatibility.avro15.backports.SpecificDatumWriterExt;
 import com.linkedin.avroutil1.compatibility.avro15.codec.AliasAwareSpecificDatumReader;
@@ -225,6 +227,16 @@ public class Avro15Adapter implements AvroAdapter {
   public <T> SpecificDatumReader<T> newAliasAwareSpecificDatumReader(Schema writer, Class<T> readerClass) {
     Schema readerSchema = AvroSchemaUtil.getDeclaredSchema(readerClass);
     return new AliasAwareSpecificDatumReader<>(writer, readerSchema);
+  }
+
+  @Override
+  public DatumWriter<?> newGenericDatumWriter(Schema writer, GenericData genericData) {
+    return new GenericDatumWriterExt<>(writer, genericData);
+  }
+
+  @Override
+  public DatumReader<?> newGenericDatumReader(Schema writer, Schema reader, GenericData genericData) {
+    return new GenericDatumReaderExt<>(writer, reader, genericData);
   }
 
   @Override

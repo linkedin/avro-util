@@ -102,7 +102,7 @@ public class FastDatumReaderTest {
 
   @Test(groups = {"deserializationTest"})
   @SuppressWarnings("unchecked")
-  public void shouldCreateGenericDatumReader() throws IOException, InterruptedException {
+  public void shouldCreateGenericDatumReader() throws IOException {
     Schema recordSchema = createRecord("TestSchema", createPrimitiveUnionFieldSchema("test", Schema.Type.STRING));
     FastGenericDatumReader<GenericRecord> fastGenericDatumReader = new FastGenericDatumReader<>(recordSchema, cache);
 

@@ -1,0 +1,38 @@
+{
+  "type": "record",
+  "name": "FastSerdeLogicalTypesDefined",
+  "namespace": "com.linkedin.avro.fastserde.generated.avro",
+  "doc": "Used in tests to confirm fast-serde supports logical-types",
+  "fields": [
+    {
+      "name": "timeMillisField",
+      "type": {
+        "type": "int",
+        "logicalType": "time-millis"
+      }
+    },
+    {
+      "name": "dateField",
+      "type": {
+        "type": "int",
+        "logicalType": "date"
+      }
+    },
+    {
+      "name": "arrayOfUnionOfDateAndTimestampMillis",
+      "type": {
+        "type": "array",
+        "items": [
+          {
+            "type": "int",
+            "logicalType": "date"
+          },
+          {
+            "type": "long",
+            "logicalType": "timestamp-millis"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -36,6 +36,8 @@ import org.apache.avro.JsonProperties;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaNormalization;
 import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericDatumReader;
+import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.io.Avro111BinaryDecoderAccessUtil;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
@@ -226,6 +228,16 @@ public class Avro111Adapter implements AvroAdapter {
   public <T> SpecificDatumReader<T> newAliasAwareSpecificDatumReader(Schema writer, Class<T> readerClass) {
     Schema readerSchema = AvroSchemaUtil.getDeclaredSchema(readerClass);
     return new AliasAwareSpecificDatumReader<>(writer, readerSchema);
+  }
+
+  @Override
+  public DatumWriter<?> newGenericDatumWriter(Schema writer, GenericData genericData) {
+    return new GenericDatumWriter<>(writer, genericData);
+  }
+
+  @Override
+  public DatumReader<?> newGenericDatumReader(Schema writer, Schema reader, GenericData genericData) {
+    return new GenericDatumReader<>(writer, reader, genericData);
   }
 
   @Override

@@ -6,22 +6,23 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.ListIterator;
-import java.util.Optional;
 import org.apache.avro.Schema;
 import com.linkedin.avro.fastserde.backport.Symbol;
+
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.util.Utf8;
 
 
 /** TODO all of this could be moved to {@link FastDeserializerGenerator} */
-public abstract class FastDeserializerGeneratorBase<T> extends FastSerdeBase {
+public abstract class FastDeserializerGeneratorBase<T, U extends GenericData> extends FastSerdeBase<U> {
   protected static final Symbol EMPTY_SYMBOL = new Symbol(Symbol.Kind.TERMINAL, new Symbol[]{}) {};
   protected static final Symbol END_SYMBOL = new Symbol(Symbol.Kind.TERMINAL, new Symbol[]{}) {};
   protected final Schema writer;
   protected final Schema reader;
 
   FastDeserializerGeneratorBase(boolean useGenericTypes, Schema writer, Schema reader, File destination, ClassLoader classLoader,
-      String compileClassPath) {
-    super("deserialization", useGenericTypes, Utf8.class, destination, classLoader, compileClassPath, false);
+      String compileClassPath, U modelData) {
+    super("deserialization", useGenericTypes, Utf8.class, destination, classLoader, compileClassPath, modelData, false);
     this.writer = writer;
     this.reader = reader;
   }

@@ -112,7 +112,7 @@ public class FastDeserializerDefaultsTest {
     Schema oldRecordSchema = Schema.parse(schemaString);
     GenericDatumWriter<Object> writer = new GenericDatumWriter<>(oldRecordSchema);
     FastDeserializer deserializer = new FastGenericDeserializerGenerator(oldRecordSchema, oldRecordSchema, tempDir, classLoader,
-        null).generateDeserializer();
+        null, null).generateDeserializer();
 
     // warm up cycles
     for (int i = 0; i < 1000; i++) {
@@ -533,11 +533,10 @@ public class FastDeserializerDefaultsTest {
     }
   }
 
-  @SuppressWarnings("unchecked")
   private <T> T decodeSpecificFast(Schema readerSchema, Schema writerSchema, Decoder decoder) {
     FastDeserializer<T> deserializer =
-        new FastSpecificDeserializerGenerator(writerSchema, readerSchema, tempDir, classLoader,
-            null).generateDeserializer();
+        new FastSpecificDeserializerGenerator<T>(writerSchema, readerSchema, tempDir, classLoader,
+            null, null).generateDeserializer();
 
     try {
       return deserializer.deserialize(null, decoder);
@@ -550,7 +549,7 @@ public class FastDeserializerDefaultsTest {
   private GenericRecord decodeGenericFast(Schema readerSchema, Schema writerSchema, Decoder decoder) {
     FastDeserializer<GenericRecord> deserializer =
         new FastGenericDeserializerGenerator(writerSchema, readerSchema, tempDir, classLoader,
-            null).generateDeserializer();
+            null, null).generateDeserializer();
 
     try {
       return deserializer.deserialize(null, decoder);

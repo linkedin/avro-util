@@ -14,6 +14,7 @@ import com.sun.codemodel.JConditional;
 import com.sun.codemodel.JDoLoop;
 import com.sun.codemodel.JExpr;
 import com.sun.codemodel.JExpression;
+import com.sun.codemodel.JFieldRef;
 import com.sun.codemodel.JForLoop;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JMethod;
@@ -38,8 +39,11 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.AvroTypeException;
+import org.apache.avro.Conversion;
+import org.apache.avro.Conversions;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
@@ -47,14 +51,13 @@ import org.apache.avro.generic.GenericFixed;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
+import org.apache.avro.specific.SpecificData;
 import org.apache.avro.util.Utf8;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
-public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<T> {
-  private static final Logger LOGGER = LoggerFactory.getLogger(FastDeserializerGenerator.class);
+public class FastDeserializerGenerator<T, U extends GenericData> extends FastDeserializerGeneratorBase<T, U> {
+
   private static final String DECODER = "decoder";
   private static final String VAR_NAME_FOR_REUSE = "reuse";
   private static int FIELDS_PER_POPULATION_METHOD = 20;
@@ -67,18 +70,18 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
    * and Avro treats null as a sentinel value indicating that it should
    * instantiate a new object instead of re-using.
    */
-  private static final Supplier<JExpression> EMPTY_SUPPLIER = () -> JExpr._null();
+  private static final Supplier<JExpression> EMPTY_SUPPLIER = JExpr::_null;
 
   private JMethod constructor;
-  private Map<Integer, Schema> schemaMap = new HashMap<>();
-  private Map<Integer, JVar> schemaVarMap = new HashMap<>();
-  private Map<String, JMethod> deserializeMethodMap = new HashMap<>();
-  private Map<String, JMethod> skipMethodMap = new HashMap<>();
-  private Map<JMethod, Set<Class<? extends Exception>>> exceptionFromMethodMap = new HashMap<>();
+  private final Map<Integer, Schema> schemaMap = new HashMap<>();
+  private final Map<Integer, JVar> schemaVarMap = new HashMap<>();
+  private final Map<String, JMethod> deserializeMethodMap = new HashMap<>();
+  private final Map<String, JMethod> skipMethodMap = new HashMap<>();
+  private final Map<JMethod, Set<Class<? extends Exception>>> exceptionFromMethodMap = new HashMap<>();
 
   FastDeserializerGenerator(boolean useGenericTypes, Schema writer, Schema reader, File destination,
-      ClassLoader classLoader, String compileClassPath) {
-    super(useGenericTypes, writer, reader, destination, classLoader, compileClassPath);
+      ClassLoader classLoader, String compileClassPath, U modelData) {
+    super(useGenericTypes, writer, reader, destination, classLoader, compileClassPath, modelData);
   }
 
   public FastDeserializer<T> generateDeserializer() {
@@ -92,9 +95,10 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       constructor = generatedClass.constructor(JMod.PUBLIC);
       JVar constructorParam = constructor.param(Schema.class, "readerSchema");
       constructor.body().assign(JExpr.refthis(readerSchemaVar.name()), constructorParam);
+      injectConversionClasses();
 
       Schema aliasedWriterSchema = writer;
-      /**
+      /*
        * {@link Schema.applyAliases} is not working correctly in avro-1.4 since there is a bug in this function:
        * {@literal Schema#getFieldAlias}.
        **/
@@ -109,7 +113,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       }
 
       JClass readerSchemaClass = schemaAssistant.classFromSchema(reader);
-      /**
+      /*
        * Writer schema could be using a different namespace from the reader schema, so we should always
        * use the reader schema class for generic type.
        */
@@ -158,7 +162,9 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       deserializeMethod.param(readerSchemaClass, VAR_NAME_FOR_REUSE);
       deserializeMethod.param(Decoder.class, DECODER);
 
+      @SuppressWarnings("unchecked")
       Class<FastDeserializer<T>> clazz = compileClass(className, schemaAssistant.getUsedFullyQualifiedClassNameSet());
+
       return clazz.getConstructor(Schema.class).newInstance(reader);
     } catch (JClassAlreadyExistsException e) {
       throw new FastDeserializerGeneratorException("Class: " + className + " already exists");
@@ -752,8 +758,9 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       action = FieldAction.fromValues(arraySchema.getElementType().getType(), false, EMPTY_SYMBOL);
     }
 
-    final JVar arrayVar = action.getShouldRead() ? declareValueVar(name, effectiveArrayReaderSchema, parentBody, true, false, true) : null;
-    /**
+    final boolean useLogicalType = action.getShouldRead() && logicalTypeEnabled(effectiveArrayReaderSchema.getElementType());
+    final JVar arrayVar = action.getShouldRead() ? declareValueVar(name, effectiveArrayReaderSchema, parentBody, true, false, !useLogicalType) : null;
+    /*
      * Special optimization for float array by leveraging {@link BufferBackedPrimitiveFloatList}.
      *
      * TODO: Handle other primitive element types here.
@@ -778,12 +785,13 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     final Supplier<JExpression> finalReuseSupplier = potentiallyCacheInvocation(reuseSupplier, parentBody, "oldArray");
     if (finalAction.getShouldRead()) {
 
-      JClass arrayClass = schemaAssistant.classFromSchema(effectiveArrayReaderSchema, false, false, true);
-      JClass abstractErasedArrayClass = schemaAssistant.classFromSchema(effectiveArrayReaderSchema, true, false, true).erasure();
+      JClass arrayClass = schemaAssistant.classFromSchema(effectiveArrayReaderSchema, false, false, !useLogicalType);
+      JClass abstractErasedArrayClass = schemaAssistant.classFromSchema(effectiveArrayReaderSchema, true, false, !useLogicalType).erasure();
 
       JInvocation newArrayExp = JExpr._new(arrayClass).arg(JExpr.cast(codeModel.INT, chunkLen));
-      if (useGenericTypes && !SchemaAssistant.isPrimitive(effectiveArrayReaderSchema.getElementType())) {
-        /**
+
+      if (useGenericTypes && (useLogicalType || !SchemaAssistant.isPrimitive(effectiveArrayReaderSchema.getElementType()))) {
+        /*
          * N.B.: The ColdPrimitiveXList implementations do not take the schema as a constructor param,
          * but the {@link org.apache.avro.generic.GenericData.Array} does.
          */
@@ -791,7 +799,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       }
       JInvocation finalNewArrayExp = newArrayExp;
 
-      /** N.B.: Need to use the erasure because instanceof does not support generic types */
+      /* N.B.: Need to use the erasure because instanceof does not support generic types */
       ifCodeGen(parentBody, finalReuseSupplier.get()._instanceof(abstractErasedArrayClass), then2 -> {
         then2.assign(arrayVar, JExpr.cast(abstractErasedArrayClass, finalReuseSupplier.get()));
         then2.invoke(arrayVar, "clear");
@@ -813,6 +821,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     BiConsumer<JBlock, JExpression> putValueInArray = null;
     if (finalAction.getShouldRead()) {
       String addMethod = SchemaAssistant.isPrimitive(effectiveArrayReaderSchema.getElementType())
+              && !logicalTypeEnabled(effectiveArrayReaderSchema.getElementType())
           ? "addPrimitive"
           : "add";
       putValueInArray = (block, expression) -> block.invoke(arrayVar, addMethod).arg(expression);
@@ -864,7 +873,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       // More GC-efficient
       stringableArgExpr = JExpr.direct(DECODER + ".readString()");
     } else {
-      /**
+      /*
        * {@link BinaryDecoder#readString()} is not available in Avro 1.4 and 1.5.
        */
       stringableArgExpr = JExpr.direct(DECODER + ".readString(null).toString()");
@@ -876,7 +885,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       JBlock parentBody, FieldAction action, BiConsumer<JBlock, JExpression> putMapIntoParent,
       Supplier<JExpression> reuseSupplier) {
 
-    /**
+    /*
      * Determine the action symbol for Map value. {@link ResolvingGrammarGenerator} generates
      * resolving grammar symbols with reversed order of production sequence. If this symbol is
      * a terminal, its production list will be <code>null</code>. Otherwise the production list
@@ -1033,26 +1042,29 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
             elseBlock -> elseBlock.assign(fixedBuffer, JExpr.direct(" new byte[" + schema.getFixedSize() + "]"))
         );
       }
+
       body.directStatement(DECODER + ".readFixed(" + fixedBuffer.name() + ");");
 
-      JClass fixedClass = schemaAssistant.classFromSchema(schema, false, false, false);
+      JClass fixedClass = schemaAssistant.classFromSchema(schema, false, false, false, false);
+      JExpression valueToWrite;
+
       if (useGenericTypes) {
-        JInvocation newFixedExpr;
         if (Utils.isAvro14()) {
-          newFixedExpr = JExpr._new(fixedClass).arg(fixedBuffer);
+          valueToWrite = JExpr._new(fixedClass).arg(fixedBuffer);
         } else {
-          newFixedExpr = JExpr._new(fixedClass).arg(getSchemaExpr(schema)).arg(fixedBuffer);
+          valueToWrite = JExpr._new(fixedClass).arg(getSchemaExpr(schema)).arg(fixedBuffer);
         }
-        putFixedIntoParent.accept(body, newFixedExpr);
       } else {
         // fixed implementation in avro-1.4
         // The specific fixed type only has a constructor with empty param
-        JVar fixed = body.decl(fixedClass, getUniqueName(schema.getName()));
-        JInvocation newFixedExpr = JExpr._new(fixedClass);
-        body.assign(fixed, newFixedExpr);
+        JVar fixed = body.decl(fixedClass, getUniqueName(schema.getName()), JExpr._new(fixedClass));
         body.directStatement(fixed.name() + ".bytes(" + fixedBuffer.name() + ");");
-        putFixedIntoParent.accept(body, fixed);
+
+        valueToWrite = fixed;
       }
+
+      JExpression convertedValue = generateConversionCallIfLogicalType(valueToWrite, schema, body);
+      putFixedIntoParent.accept(body, convertedValue);
     } else {
       body.directStatement(DECODER + ".skipFixed(" + schema.getFixedSize() + ");");
     }
@@ -1091,7 +1103,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
         newEnum = schemaAssistant.getEnumValueByIndex(schema, enumValueExpr, getSchemaExpr(schema));
       } else {
 
-        /**
+        /*
          * Define a class variable to keep the mapping between the enum index from the writer schema and the corresponding
          * one in the reader schema, and there are some cases:
          * 1. If the enum index doesn't exist in this map, runtime will throw RuntimeException.
@@ -1101,7 +1113,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
 
         JVar tempEnumMappingVar = constructor.body().decl(codeModel.ref(HashMap.class),  getUniqueName("tempEnumMapping"),
             JExpr._new(codeModel.ref(HashMap.class)).arg(JExpr.lit(enumAdjustAction.adjustments.length)));
-        /**
+        /*
          * Populate the global enum mapping based on the enum adjustment.
          */
         for (int i = 0; i < enumAdjustAction.adjustments.length; i++) {
@@ -1126,19 +1138,19 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
 
         JVar lookupResult = body.decl(codeModel._ref(Object.class), getUniqueName("enumIndexLookupResult"),
             enumMappingVar.invoke("get").arg(enumIndex));
-        /**
+        /*
          * Found the enum index mapping.
          */
         JConditional ifBlock = body._if(lookupResult._instanceof(codeModel.ref(Integer.class)));
         JExpression ithValResult =
             schemaAssistant.getEnumValueByIndex(schema, JExpr.cast(codeModel.ref(Integer.class), lookupResult), getSchemaExpr(schema));
         ifBlock._then().assign((JVar) newEnum, ithValResult);
-        /**
+        /*
          * Unknown enum in reader schema.
          */
         JConditional elseIfBlock = ifBlock._elseif(lookupResult._instanceof(codeModel.ref(AvroTypeException.class)));
         elseIfBlock._then()._throw(JExpr.cast(codeModel.ref(AvroTypeException.class), lookupResult));
-        /**
+        /*
          * Unknown enum in writer schema.
          */
         elseIfBlock._else()._throw(JExpr._new(codeModel.ref(RuntimeException.class))
@@ -1150,21 +1162,26 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     }
   }
 
-  private void processBytes(JBlock body, FieldAction action, BiConsumer<JBlock, JExpression> putValueIntoParent,
-      Supplier<JExpression> reuseSupplier) {
+  private void processBytes(Schema schema, JBlock body, FieldAction action,
+          BiConsumer<JBlock, JExpression> putValueIntoParent, Supplier<JExpression> reuseSupplier) {
     if (action.getShouldRead()) {
+      JVar byteBufferVar = body.decl(codeModel.ref(ByteBuffer.class), getUniqueName("byteBuffer"));
+
       if (reuseSupplier.get().equals(JExpr._null())) {
-        putValueIntoParent.accept(body, JExpr.invoke(JExpr.direct(DECODER), "readBytes").arg(JExpr.direct("null")));
+        byteBufferVar.init(JExpr.invoke(JExpr.direct(DECODER), "readBytes").arg(JExpr.direct("null")));
       } else {
         final Supplier<JExpression> finalReuseSupplier = potentiallyCacheInvocation(reuseSupplier, body, "oldBytes");
         ifCodeGen(body,
-            finalReuseSupplier.get()._instanceof(codeModel.ref("java.nio.ByteBuffer")),
-            thenBlock -> putValueIntoParent.accept(thenBlock, JExpr.invoke(JExpr.direct(DECODER), "readBytes")
+            finalReuseSupplier.get()._instanceof(codeModel.ref(ByteBuffer.class)),
+            thenBlock -> thenBlock.assign(byteBufferVar, JExpr.invoke(JExpr.direct(DECODER), "readBytes")
                 .arg(JExpr.cast(codeModel.ref(ByteBuffer.class), finalReuseSupplier.get()))),
-            elseBlock -> putValueIntoParent.accept(elseBlock,
-                JExpr.invoke(JExpr.direct(DECODER), "readBytes").arg(JExpr.direct("null")))
+            elseBlock -> elseBlock.assign(byteBufferVar, JExpr.invoke(JExpr.direct(DECODER), "readBytes")
+                    .arg(JExpr.direct("null")))
         );
       }
+
+      JExpression finalValueVar = generateConversionCallIfLogicalType(byteBufferVar, schema, body);
+      putValueIntoParent.accept(body, finalValueVar);
     } else {
       body.directStatement(DECODER + ".skipBytes();");
     }
@@ -1174,21 +1191,27 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
       BiConsumer<JBlock, JExpression> putValueIntoParent, Supplier<JExpression> reuseSupplier) {
     if (action.getShouldRead()) {
       JClass stringClass = schemaAssistant.findStringClass(schema);
+      JVar charSequenceVar = body.decl(stringClass, getUniqueName("charSequence"));
+
       if (stringClass.equals(codeModel.ref(Utf8.class))) {
         if (reuseSupplier.equals(EMPTY_SUPPLIER)) {
-          putValueIntoParent.accept(body, JExpr.invoke(JExpr.direct(DECODER), "readString").arg(JExpr._null()));
+          charSequenceVar.init(JExpr.invoke(JExpr.direct(DECODER), "readString").arg(JExpr._null()));
         } else {
           final Supplier<JExpression> finalReuseSupplier = potentiallyCacheInvocation(reuseSupplier, body, "oldString");
           ifCodeGen(body, finalReuseSupplier.get()._instanceof(codeModel.ref(Utf8.class)),
-              thenBlock -> putValueIntoParent.accept(thenBlock, JExpr.invoke(JExpr.direct(DECODER), "readString").arg(JExpr.cast(codeModel.ref(Utf8.class), finalReuseSupplier.get()))),
-              elseBlock -> putValueIntoParent.accept(elseBlock,
+                  thenBlock -> thenBlock.assign(charSequenceVar,
+                          JExpr.invoke(JExpr.direct(DECODER), "readString").arg(JExpr.cast(codeModel.ref(Utf8.class), finalReuseSupplier.get()))),
+                  elseBlock -> elseBlock.assign(charSequenceVar,
                   JExpr.invoke(JExpr.direct(DECODER), "readString").arg(JExpr._null())));
         }
       } else if (stringClass.equals(codeModel.ref(String.class))) {
-        putValueIntoParent.accept(body, JExpr.invoke(JExpr.direct(DECODER), "readString"));
+        charSequenceVar.init(JExpr.invoke(JExpr.direct(DECODER), "readString"));
       } else {
-        putValueIntoParent.accept(body, readStringableExpression(stringClass));
+        charSequenceVar.init(readStringableExpression(stringClass));
       }
+
+      JExpression finalValueVar = generateConversionCallIfLogicalType(charSequenceVar, schema, body);
+      putValueIntoParent.accept(body, finalValueVar);
     } else {
       body.directStatement(DECODER + ".skipString();");
     }
@@ -1203,7 +1226,7 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
         processString(schema, body, action, putValueIntoParent, reuseSupplier);
         return;
       case BYTES:
-        processBytes(body, action, putValueIntoParent, reuseSupplier);
+        processBytes(schema, body, action, putValueIntoParent, reuseSupplier);
         return;
       case INT:
         readFunction = "readInt()";
@@ -1224,11 +1247,29 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
         throw new FastDeserializerGeneratorException("Unsupported primitive schema of type: " + schema.getType());
     }
 
-    JExpression primitiveValueExpression = JExpr.direct("decoder." + readFunction);
     if (action.getShouldRead()) {
-      putValueIntoParent.accept(body, primitiveValueExpression);
+    JExpression primitiveValueExpression = JExpr.direct("decoder." + readFunction);
+      JExpression finalValueVar = generateConversionCallIfLogicalType(primitiveValueExpression, schema, body);
+      putValueIntoParent.accept(body, finalValueVar);
     } else {
       body.directStatement(DECODER + "." + readFunction + ";");
+    }
+  }
+
+  private JExpression generateConversionCallIfLogicalType(JExpression rawValueVar, Schema schema, JBlock body) {
+    if (logicalTypeEnabled(schema)) {
+      JFieldRef schemaFieldRef = injectLogicalTypeSchema(schema);
+      Conversion<?> conversion = (Conversion<?>) schemaAssistant.getConversion(schema.getLogicalType());
+
+      return body.decl(codeModel.ref(conversion.getConvertedType()), getUniqueName("convertedValue"),
+              JExpr.cast(codeModel.ref(conversion.getConvertedType()), codeModel.ref(Conversions.class)
+                      .staticInvoke("convertToLogicalType")
+                      .arg(rawValueVar)
+                      .arg(schemaFieldRef)
+                      .arg(schemaFieldRef.invoke("getLogicalType"))
+                      .arg(getConversionRef(schema.getLogicalType()))));
+    } else {
+      return rawValueVar;
     }
   }
 
@@ -1240,12 +1281,15 @@ public class FastDeserializerGenerator<T> extends FastDeserializerGeneratorBase<
     if (!useGenericTypes) {
       return null;
     }
-    /**
+
+    /*
      * TODO: In theory, we should only need Record, Enum and Fixed here since only these types require
      * schema for the corresponding object initialization in Generic mode.
      */
-    if (SchemaAssistant.isComplexType(valueSchema) || Schema.Type.ENUM.equals(valueSchema.getType())
-        || Schema.Type.FIXED.equals(valueSchema.getType())) {
+    boolean shouldDeclareSchemaVar = SchemaAssistant.isComplexType(valueSchema) || logicalTypeEnabled(valueSchema)
+            || Schema.Type.ENUM.equals(valueSchema.getType()) || Schema.Type.FIXED.equals(valueSchema.getType());
+
+    if (shouldDeclareSchemaVar) {
       int schemaId = Utils.getSchemaFingerprint(valueSchema);
       JVar schemaVar = schemaVarMap.get(schemaId);
       if (schemaVar != null) {
