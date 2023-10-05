@@ -26,7 +26,6 @@ import org.apache.avro.Conversions;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.io.Encoder;
-import org.apache.avro.specific.SpecificData;
 import org.apache.avro.util.Utf8;
 import org.apache.commons.lang3.StringUtils;
 
@@ -204,8 +203,23 @@ public class FastSerializerGenerator<T, U extends GenericData> extends FastSerde
 
         ifCodeGen(else1, primitiveListCondition, then2 -> {
           final JVar primitiveList = declareValueVar("primitiveList", arraySchema, then2, true, false, true)
-                  .init(JExpr.cast(primitiveListInterface, arrayVar));
-          processArrayElementLoop(arraySchema, arrayClass, primitiveList, then2, "getPrimitive");
+              .init(JExpr.cast(primitiveListInterface, arrayVar));
+          if (arraySchema.getElementType().getType().equals(Schema.Type.FLOAT)) {
+            /**
+             * Check whether it is an instance of {@link BufferBackedPrimitiveFloatList} or not.
+             */
+            JClass bufferBackedPrimitiveFloatListClass = codeModel.ref(BufferBackedPrimitiveFloatList.class);
+            final JExpression bufferBackedPrimitiveFloatListCondition = primitiveList._instanceof(bufferBackedPrimitiveFloatListClass);
+            ifCodeGen(then2, bufferBackedPrimitiveFloatListCondition, then3 -> {
+              final JVar bufferBackedPrimitiveFloatList = then3.decl(bufferBackedPrimitiveFloatListClass,
+                  "bufferBackedPrimitiveFloatList", JExpr.cast(bufferBackedPrimitiveFloatListClass, primitiveList));
+              then3.invoke(bufferBackedPrimitiveFloatList, "writeFloats").arg(JExpr.direct(ENCODER));
+            }, else3 -> {
+              processArrayElementLoop(arraySchema, arrayClass, primitiveList, else3, "getPrimitive");
+            });
+          } else {
+            processArrayElementLoop(arraySchema, arrayClass, primitiveList, then2, "getPrimitive");
+          }
         }, else2 -> {
           processArrayElementLoop(arraySchema, arrayClass, arrayExpr, else2, "get");
         });

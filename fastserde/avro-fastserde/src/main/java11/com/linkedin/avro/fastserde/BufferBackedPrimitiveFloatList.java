@@ -2,6 +2,7 @@ package com.linkedin.avro.fastserde;
 
 import com.linkedin.avro.api.PrimitiveFloatList;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.nio.ByteOrder;
@@ -12,6 +13,7 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.io.Decoder;
+import org.apache.avro.io.Encoder;
 import org.apache.commons.lang3.ArrayUtils;
 
 
@@ -44,6 +46,7 @@ public class BufferBackedPrimitiveFloatList extends AbstractList<Float>
   private float[] elements = EMPTY;
   private boolean isCached = false;
   private byte[] byteBuffer;
+  private boolean changed = false;
 
   private static final VarHandle VH = MethodHandles.byteArrayViewVarHandle(float[].class, ByteOrder.LITTLE_ENDIAN);
 
@@ -58,6 +61,17 @@ public class BufferBackedPrimitiveFloatList extends AbstractList<Float>
       elements = new float[c.size()];
       addAll(c);
     }
+  }
+
+  /**
+   * For testing purpose.
+    */
+  public void copyInternalState(BufferBackedPrimitiveFloatList another) {
+    another.size = this.size;
+    another.elements = this.elements;
+    another.isCached = this.isCached;
+    another.byteBuffer = this.byteBuffer;
+    another.changed = this.changed;
   }
 
   /**
@@ -143,6 +157,7 @@ public class BufferBackedPrimitiveFloatList extends AbstractList<Float>
       oldFloatList.byteBuffer = null;
       oldFloatList.isCached = false;
       oldFloatList.size = 0;
+      oldFloatList.changed = false;
       return oldFloatList;
     } else {
       // Just a place holder, will set up the elements later.
@@ -228,6 +243,7 @@ public class BufferBackedPrimitiveFloatList extends AbstractList<Float>
       elements = newElements;
     }
     elements[size++] = o;
+    changed = true;
     return true;
   }
 
@@ -250,11 +266,12 @@ public class BufferBackedPrimitiveFloatList extends AbstractList<Float>
     System.arraycopy(elements, location, elements, location + 1, size - location);
     elements[location] = o;
     size++;
+    changed = true;
   }
 
   @Override
   public Float set(int i, Float o) {
-    return set(i, o);
+    return setPrimitive(i, o);
   }
 
   @Override
@@ -265,6 +282,7 @@ public class BufferBackedPrimitiveFloatList extends AbstractList<Float>
     cacheFromByteBuffer();
     float response = elements[i];
     elements[i] = o;
+    changed = true;
 
     return response;
   }
@@ -279,6 +297,7 @@ public class BufferBackedPrimitiveFloatList extends AbstractList<Float>
     --size;
     System.arraycopy(elements, i + 1, elements, i, (size - i));
     elements[size] = 0;
+    changed = true;
     return result;
   }
 
@@ -344,6 +363,29 @@ public class BufferBackedPrimitiveFloatList extends AbstractList<Float>
 
       left++;
       right--;
+    }
+    changed = true;
+  }
+
+  protected void writeFloatsByBackedBytes(Encoder encoder) throws IOException {
+    encoder.writeFixed(byteBuffer);
+  }
+
+  public void writeFloats(Encoder encoder) throws IOException {
+    if (changed) {
+      /**
+       * The backed {@link #byteBuffer} diverges from the current array, so this function will write float from
+       * {@link #elements}.
+       */
+      for (int i = 0; i < size; ++i) {
+        encoder.startItem();
+        encoder.writeFloat(elements[i]);
+      }
+    } else {
+      /**
+       * So we will write the original bytes directly.
+       */
+      writeFloatsByBackedBytes(encoder);
     }
   }
 
