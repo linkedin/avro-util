@@ -362,7 +362,7 @@ public final class FastSerdeCache {
    * @see #getFastGenericDeserializerAsync(Schema, Schema, GenericData)
    */
   public CompletableFuture<FastDeserializer<?>> getFastGenericDeserializerAsync(Schema writerSchema, Schema readerSchema) {
-    return getFastGenericDeserializerAsync(writerSchema, readerSchema);
+    return getFastGenericDeserializerAsync(writerSchema, readerSchema, null);
   }
 
   /**
@@ -450,7 +450,7 @@ public final class FastSerdeCache {
     }
 
     return new FastDeserializer<Object>() {
-      private DatumReader datumReader = new SpecificDatumReader<>(writerSchema, readerSchema);
+      private DatumReader datumReader = AvroCompatibilityHelper.newSpecificDatumReader(writerSchema, readerSchema, modelData);
 
       @Override
       public Object deserialize(Object reuse, Decoder d) throws IOException {
@@ -515,7 +515,7 @@ public final class FastSerdeCache {
     }
 
     return new FastDeserializer<Object>() {
-      private DatumReader datumReader = new GenericDatumReader<>(writerSchema, readerSchema, modelData);
+      private DatumReader datumReader = AvroCompatibilityHelper.newGenericDatumReader(writerSchema, readerSchema, modelData);
 
       @Override
       public Object deserialize(Object reuse, Decoder d) throws IOException {
