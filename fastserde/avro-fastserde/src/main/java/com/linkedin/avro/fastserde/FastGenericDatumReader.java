@@ -87,9 +87,7 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
       fastDeserializer = cachedFastDeserializer.get();
     } else {
       fastDeserializer = getFastDeserializerFromCache(cache, writerSchema, readerSchema, modelData);
-      if (!FastSerdeCache.isFastDeserializer(fastDeserializer)) {
-        // don't cache
-      } else {
+      if (FastSerdeCache.isFastDeserializer(fastDeserializer)) {
         cachedFastDeserializer.compareAndSet(null, fastDeserializer);
         if (LOGGER.isDebugEnabled()) {
           LOGGER.debug("FastGenericDeserializer was generated and cached for reader schema: ["

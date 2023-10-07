@@ -20,7 +20,7 @@ public class FastSerdeCacheTest {
     supportedSchemaTypes.add(Schema.Type.ARRAY);
 
     Map<Schema.Type, Schema> schemaTypes = new HashMap<>();
-    /**
+    /*
      * Those types could be created by {@link Schema#create(org.apache.avro.Schema.Type)} function.
      */
     schemaTypes.put(Schema.Type.RECORD, Schema.parse("{\"type\": \"record\", \"name\": \"test\", \"fields\":[]}"));

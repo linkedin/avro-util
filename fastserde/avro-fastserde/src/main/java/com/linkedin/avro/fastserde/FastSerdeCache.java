@@ -11,7 +11,6 @@ import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -31,6 +30,7 @@ import org.apache.avro.io.Decoder;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.specific.SpecificData;
 import org.apache.avro.specific.SpecificDatumReader;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,12 +61,12 @@ public final class FastSerdeCache {
   private final Map<String, FastSerializer<?>> fastGenericRecordSerializersCache =
       new FastAvroConcurrentHashMap<>();
 
-  private Executor executor;
+  private final Executor executor;
 
-  private File classesDir;
-  private ClassLoader classLoader;
+  private final File classesDir;
+  private final ClassLoader classLoader;
 
-  private Optional<String> compileClassPath;
+  private final String compileClassPath;
 
   /**
    *
@@ -74,7 +74,7 @@ public final class FastSerdeCache {
    *            custom classpath {@link Supplier}
    */
   public FastSerdeCache(Supplier<String> compileClassPathSupplier) {
-    this(compileClassPathSupplier != null ? compileClassPathSupplier.get() : null);
+    this(null, compileClassPathSupplier != null ? compileClassPathSupplier.get() : null);
   }
 
   /**
@@ -89,20 +89,7 @@ public final class FastSerdeCache {
   }
 
   public FastSerdeCache(String compileClassPath) {
-    this();
-    this.compileClassPath = Optional.ofNullable(compileClassPath);
-  }
-
-  /**
-   *
-   * @param executorService
-   *            customized {@link Executor} used by serializer/deserializer compile threads
-   * @param compileClassPath
-   *            custom classpath as string
-   */
-  public FastSerdeCache(Executor executorService, String compileClassPath) {
-    this(executorService);
-    this.compileClassPath = Optional.ofNullable(compileClassPath);
+    this(null, compileClassPath);
   }
 
   /**
@@ -111,22 +98,28 @@ public final class FastSerdeCache {
    *            customized {@link Executor} used by serializer/deserializer compile threads
    */
   public FastSerdeCache(Executor executorService) {
+    this(executorService, (String) null);
+  }
+
+  /**
+   * @param executorService
+   *            customized {@link Executor} used by serializer/deserializer compile threads
+   * @param compileClassPath
+   *            custom classpath as string
+   */
+  public FastSerdeCache(Executor executorService, String compileClassPath) {
     this.executor = executorService != null ? executorService : getDefaultExecutor();
 
     try {
       Path classesPath = Files.createTempDirectory("generated");
       classesDir = classesPath.toFile();
       classLoader =
-          URLClassLoader.newInstance(new URL[]{classesDir.toURI().toURL()}, FastSerdeCache.class.getClassLoader());
+              URLClassLoader.newInstance(new URL[]{classesDir.toURI().toURL()}, FastSerdeCache.class.getClassLoader());
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
 
-    this.compileClassPath = Optional.empty();
-  }
-
-  private FastSerdeCache() {
-    this((Executor) null);
+    this.compileClassPath = compileClassPath;
   }
 
   /**
@@ -139,36 +132,40 @@ public final class FastSerdeCache {
     if (_INSTANCE == null) {
       synchronized (FastSerdeCache.class) {
         if (_INSTANCE == null) {
-          String classPath = System.getProperty(CLASSPATH);
-          String classpathSupplierClassName = System.getProperty(CLASSPATH_SUPPLIER);
-          if (classpathSupplierClassName != null) {
-            Supplier<String> classpathSupplier = null;
-            try {
-              Class<?> classPathSupplierClass = Class.forName(classpathSupplierClassName);
-              if (Supplier.class.isAssignableFrom(classPathSupplierClass) && String.class.equals(
-                  ((ParameterizedType) classPathSupplierClass.getGenericSuperclass()).getActualTypeArguments()[0])) {
-
-                classpathSupplier = (Supplier<String>) classPathSupplierClass.newInstance();
-              } else {
-                LOGGER.warn(
-                    "classpath supplier must be subtype of java.util.function.Supplier: " + classpathSupplierClassName);
-              }
-            } catch (ReflectiveOperationException e) {
-              LOGGER.warn("unable to instantiate classpath supplier: " + classpathSupplierClassName, e);
-            }
-            _INSTANCE = new FastSerdeCache(classpathSupplier);
-          } else if (classPath != null) {
-            _INSTANCE = new FastSerdeCache(classPath);
-          } else {
-            /**
-             * The fast-class generator will figure out the compile dependencies during fast-class generation.
-             */
-            _INSTANCE = new FastSerdeCache("");
-          }
+          String compileClassPath = resolveSystemProperty(CLASSPATH_SUPPLIER, CLASSPATH);
+          /*
+           * The fast-class generator will figure out the compile dependencies during fast-class generation.
+           * `compileClassPath` extends above findings, e.g. may provide jar with custom conversions for logical types.
+           */
+          _INSTANCE = new FastSerdeCache(compileClassPath);
         }
       }
     }
     return _INSTANCE;
+  }
+
+  private static String resolveSystemProperty(String supplierPropertyName, String propertyName) {
+    String supplierClassName = System.getProperty(supplierPropertyName);
+
+    if (StringUtils.isNotBlank(supplierClassName)) {
+      Supplier<String> supplier = null;
+      try {
+        Class<?> supplierClass = Class.forName(supplierClassName);
+        if (Supplier.class.isAssignableFrom(supplierClass) && String.class.equals(
+                ((ParameterizedType) supplierClass.getGenericSuperclass()).getActualTypeArguments()[0])) {
+
+          supplier = (Supplier<String>) supplierClass.getConstructor().newInstance();
+        } else {
+          LOGGER.warn("Supplier must be subtype of java.util.function.Supplier: " + supplierClassName);
+        }
+      } catch (ReflectiveOperationException e) {
+        LOGGER.warn("Unable to instantiate supplier: " + supplierClassName, e);
+      }
+
+      return supplier != null ? supplier.get() : null;
+    }
+
+    return System.getProperty(propertyName);
   }
 
   public static boolean isSupportedForFastDeserializer(Schema.Type readerSchemaType) {
@@ -416,8 +413,7 @@ public final class FastSerdeCache {
    */
   public FastDeserializer<?> buildFastSpecificDeserializer(Schema writerSchema, Schema readerSchema, SpecificData modelData) {
     FastSpecificDeserializerGenerator<?> generator =
-        new FastSpecificDeserializerGenerator<>(writerSchema, readerSchema, classesDir, classLoader,
-            compileClassPath.orElse(null), modelData);
+        new FastSpecificDeserializerGenerator<>(writerSchema, readerSchema, classesDir, classLoader, compileClassPath, modelData);
     FastDeserializer<?> fastDeserializer = generator.generateDeserializer();
 
     if (LOGGER.isDebugEnabled()) {
@@ -481,8 +477,7 @@ public final class FastSerdeCache {
    */
   public FastDeserializer<?> buildFastGenericDeserializer(Schema writerSchema, Schema readerSchema, GenericData modelData) {
     FastGenericDeserializerGenerator<?> generator =
-        new FastGenericDeserializerGenerator<>(writerSchema, readerSchema, classesDir, classLoader,
-            compileClassPath.orElse(null), modelData);
+        new FastGenericDeserializerGenerator<>(writerSchema, readerSchema, classesDir, classLoader, compileClassPath, modelData);
 
     FastDeserializer<?> fastDeserializer = generator.generateDeserializer();
 
@@ -540,7 +535,7 @@ public final class FastSerdeCache {
           Utils.getAvroVersionsSupportedForSerializer());
     }
     FastSpecificSerializerGenerator<?> generator =
-        new FastSpecificSerializerGenerator<>(schema, classesDir, classLoader, compileClassPath.orElse(null), modelData);
+        new FastSpecificSerializerGenerator<>(schema, classesDir, classLoader, compileClassPath, modelData);
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Generated classes dir: {} and generation of specific FastSerializer is done for schema of type: {}" +
@@ -589,7 +584,7 @@ public final class FastSerdeCache {
           + Utils.getAvroVersionsSupportedForSerializer());
     }
     FastGenericSerializerGenerator<?> generator =
-        new FastGenericSerializerGenerator<>(schema, classesDir, classLoader, compileClassPath.orElse(null), modelData);
+        new FastGenericSerializerGenerator<>(schema, classesDir, classLoader, compileClassPath, modelData);
 
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Generated classes dir: {} and generation of generic FastSerializer is done for schema of type: {}" +

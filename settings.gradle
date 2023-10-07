@@ -87,6 +87,7 @@ include 'demos:spotbugs-demo'
 
 include 'fastserde:avro-fastserde'
 include 'fastserde:avro-fastserde-jmh'
+include 'fastserde:avro-fastserde-tests-common'
 include 'fastserde:avro-fastserde-tests14'
 include 'fastserde:avro-fastserde-tests15'
 include 'fastserde:avro-fastserde-tests16'
