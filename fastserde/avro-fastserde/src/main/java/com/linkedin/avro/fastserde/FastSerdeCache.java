@@ -46,6 +46,8 @@ public final class FastSerdeCache {
 
   public static final String CLASSPATH = "avro.fast.serde.classpath";
   public static final String CLASSPATH_SUPPLIER = "avro.fast.serde.classpath.supplier";
+  public static final String FAIL_FAST = "avro.fast.serde.failfast";
+  public static final String FAIL_FAST_SUPPLIER = "avro.fast.serde.failfast.supplier";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FastSerdeCache.class);
 
@@ -67,6 +69,7 @@ public final class FastSerdeCache {
   private final ClassLoader classLoader;
 
   private final String compileClassPath;
+  private final boolean failFast;
 
   /**
    *
@@ -101,13 +104,20 @@ public final class FastSerdeCache {
     this(executorService, (String) null);
   }
 
+  public FastSerdeCache(Executor executorService, String compileClassPath) {
+    this(executorService, compileClassPath, false);
+  }
+
   /**
    * @param executorService
    *            customized {@link Executor} used by serializer/deserializer compile threads
    * @param compileClassPath
    *            custom classpath as string
+   * @param failFast
+   *            'true' indicates generating always-failing Fast(de-)Serializer if fast-serde class couldn't be generated
+   *            (e.g. due to compilation error)
    */
-  public FastSerdeCache(Executor executorService, String compileClassPath) {
+  public FastSerdeCache(Executor executorService, String compileClassPath, boolean failFast) {
     this.executor = executorService != null ? executorService : getDefaultExecutor();
 
     try {
@@ -120,6 +130,7 @@ public final class FastSerdeCache {
     }
 
     this.compileClassPath = compileClassPath;
+    this.failFast = failFast;
   }
 
   /**
@@ -133,11 +144,12 @@ public final class FastSerdeCache {
       synchronized (FastSerdeCache.class) {
         if (_INSTANCE == null) {
           String compileClassPath = resolveSystemProperty(CLASSPATH_SUPPLIER, CLASSPATH);
+          String failFast = resolveSystemProperty(FAIL_FAST_SUPPLIER, FAIL_FAST);
           /*
            * The fast-class generator will figure out the compile dependencies during fast-class generation.
            * `compileClassPath` extends above findings, e.g. may provide jar with custom conversions for logical types.
            */
-          _INSTANCE = new FastSerdeCache(compileClassPath);
+          _INSTANCE = new FastSerdeCache(null, compileClassPath, Boolean.parseBoolean(failFast));
         }
       }
     }
@@ -454,6 +466,9 @@ public final class FastSerdeCache {
 
       @Override
       public Object deserialize(Object reuse, Decoder d) throws IOException {
+        if (failFast) {
+          throw new UnsupportedOperationException("Fast specific deserializer could not be generated.");
+        }
         return datumReader.read(reuse, d);
       }
     };
@@ -519,6 +534,9 @@ public final class FastSerdeCache {
 
       @Override
       public Object deserialize(Object reuse, Decoder d) throws IOException {
+        if (failFast) {
+          throw new UnsupportedOperationException("Fast generic deserializer could not be generated.");
+        }
         return datumReader.read(reuse, d);
       }
     };
@@ -568,6 +586,9 @@ public final class FastSerdeCache {
 
       @Override
       public void serialize(Object data, Encoder e) throws IOException {
+        if (failFast) {
+          throw new UnsupportedOperationException("Fast specific serializer could not be generated.");
+        }
         datumWriter.write(data, e);
       }
     };
@@ -617,6 +638,9 @@ public final class FastSerdeCache {
 
       @Override
       public void serialize(Object data, Encoder e) throws IOException {
+        if (failFast) {
+          throw new UnsupportedOperationException("Fast generic serializer could not be generated.");
+        }
         datumWriter.write(data, e);
       }
     };

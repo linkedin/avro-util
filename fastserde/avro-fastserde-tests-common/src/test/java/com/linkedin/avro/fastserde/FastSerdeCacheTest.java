@@ -1,11 +1,23 @@
 package com.linkedin.avro.fastserde;
 
+import com.linkedin.avro.fastserde.generated.avro.SimpleRecord;
 import com.linkedin.avro.fastserde.generated.avro.TestRecord;
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
+
+import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
+
 import org.apache.avro.Schema;
+import org.apache.avro.io.BinaryDecoder;
+import org.apache.avro.io.BinaryEncoder;
+import org.apache.avro.io.DatumReader;
+import org.apache.avro.io.DatumWriter;
+import org.apache.avro.specific.SpecificDatumWriter;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -67,5 +79,82 @@ public class FastSerdeCacheTest {
   public void testBuildFastSpecificDeserializerWithCorrectClasspath() {
     FastSerdeCache cache = FastSerdeCache.getDefaultInstance();
     cache.buildFastSpecificDeserializer(TestRecord.SCHEMA$, TestRecord.SCHEMA$);
+  }
+
+  @Test(groups = "serializationTest", timeOut = 5_000L,
+          expectedExceptions = UnsupportedOperationException.class,
+          expectedExceptionsMessageRegExp = "Fast specific serializer could not be generated.")
+  public void testSpecificSerializationFailsFast() throws Exception {
+    serializationShouldFailFast(FastSpecificDatumWriter::new);
+  }
+
+  @Test(groups = "serializationTest", timeOut = 5_000L,
+          expectedExceptions = UnsupportedOperationException.class,
+          expectedExceptionsMessageRegExp = "Fast generic serializer could not be generated.")
+  public void testGenericSerializationFailsFast() throws Exception {
+    serializationShouldFailFast(FastGenericDatumWriter::new);
+  }
+
+  @Test(groups = "deserializationTest", timeOut = 5_000L,
+          expectedExceptions = UnsupportedOperationException.class,
+          expectedExceptionsMessageRegExp = "Fast specific deserializer could not be generated.")
+  public void testSpecificDeserializationFailsFast() throws Exception {
+    deserializationShouldFailFast(FastSpecificDatumReader::new);
+  }
+
+  @Test(groups = "deserializationTest", timeOut = 5_000L,
+          expectedExceptions = UnsupportedOperationException.class,
+          expectedExceptionsMessageRegExp = "Fast generic deserializer could not be generated.")
+  public void testGenericDeserializationFailsFast() throws Exception {
+    deserializationShouldFailFast(FastGenericDatumReader::new);
+  }
+
+  private void serializationShouldFailFast(
+          BiFunction<Schema, FastSerdeCache, DatumWriter<SimpleRecord>> datumWriterFactory) throws Exception {
+    // given:
+    SimpleRecord data = new SimpleRecord();
+    data.put(0, "Veni, vidi, vici.");
+    FastSerdeCache cache = createCacheWithoutClassLoader();
+    DatumWriter<SimpleRecord> writer = datumWriterFactory.apply(data.getSchema(), cache);
+
+    int i = 0;
+    while (++i <= 100) {
+      BinaryEncoder encoder = AvroCompatibilityHelper.newBinaryEncoder(new ByteArrayOutputStream());
+      // should throw exception (except 1st iteration when fallback writer is always used)
+      writer.write(data, encoder);
+      Thread.sleep(50L);
+    }
+  }
+
+  private void deserializationShouldFailFast(
+          BiFunction<Schema, FastSerdeCache, DatumReader<SimpleRecord>> datumReaderFactory) throws Exception {
+    // given
+    SimpleRecord data = new SimpleRecord();
+    data.put(0, "Omnes una manet nox.");
+    FastSerdeCache cache = createCacheWithoutClassLoader();
+
+    SpecificDatumWriter<SimpleRecord> specificDatumWriter = new SpecificDatumWriter<>(data.getSchema());
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    BinaryEncoder encoder = AvroCompatibilityHelper.newBinaryEncoder(baos);
+    specificDatumWriter.write(data, encoder);
+    encoder.flush();
+
+    DatumReader<SimpleRecord> datumReader = datumReaderFactory.apply(data.getSchema(), cache);
+
+    int i = 0;
+    while (++i <= 100) {
+      BinaryDecoder decoder = AvroCompatibilityHelper.newBinaryDecoder(baos.toByteArray());
+      // should throw exception (except 1st iteration when fallback reader is always used)
+      datumReader.read(null, decoder);
+      Thread.sleep(50L);
+    }
+  }
+
+  private FastSerdeCache createCacheWithoutClassLoader() throws IllegalAccessException, NoSuchFieldException {
+    FastSerdeCache cache = new FastSerdeCache(null, null, true);
+    Field classLoaderField = cache.getClass().getDeclaredField("classLoader");
+    classLoaderField.setAccessible(true);
+    classLoaderField.set(cache, null); // so that an exception is thrown while compiling generated class
+    return cache;
   }
 }
