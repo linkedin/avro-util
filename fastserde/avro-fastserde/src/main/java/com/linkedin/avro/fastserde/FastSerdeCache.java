@@ -443,10 +443,10 @@ public final class FastSerdeCache {
     try {
       return buildFastSpecificDeserializer(writerSchema, readerSchema, modelData);
     } catch (FastDeserializerGeneratorException e) {
-      LOGGER.warn("Deserializer generation exception when generating specific FastDeserializer for writer schema: "
+      LOGGER.error("Deserializer generation exception when generating specific FastDeserializer for writer schema: "
               + "[\n{}\n] and reader schema: [\n{}\n]", writerSchema.toString(true), readerSchema.toString(true), e);
     } catch (Exception e) {
-      LOGGER.warn("Deserializer class instantiation exception", e);
+      LOGGER.error("Deserializer class instantiation exception", e);
     }
 
     return new FastDeserializer<Object>() {
@@ -508,10 +508,10 @@ public final class FastSerdeCache {
     try {
       return buildFastGenericDeserializer(writerSchema, readerSchema, modelData);
     } catch (FastDeserializerGeneratorException e) {
-      LOGGER.warn("Deserializer generation exception when generating generic FastDeserializer for writer schema: [\n"
+      LOGGER.error("Deserializer generation exception when generating generic FastDeserializer for writer schema: [\n"
           + writerSchema.toString(true) + "\n] and reader schema:[\n" + readerSchema.toString(true) + "\n]", e);
     } catch (Exception e) {
-      LOGGER.warn("Deserializer class instantiation exception:" + e);
+      LOGGER.error("Deserializer class instantiation exception:", e);
     }
 
     return new FastDeserializer<Object>() {
@@ -555,10 +555,10 @@ public final class FastSerdeCache {
       try {
         return buildFastSpecificSerializer(schema, modelData);
       } catch (FastDeserializerGeneratorException e) {
-        LOGGER.warn("Serializer generation exception when generating specific FastSerializer for schema: [\n{}\n]",
+        LOGGER.error("Serializer generation exception when generating specific FastSerializer for schema: [\n{}\n]",
             schema.toString(true), e);
       } catch (Exception e) {
-        LOGGER.warn("Serializer class instantiation exception", e);
+        LOGGER.error("Serializer class instantiation exception", e);
       }
     }
 
@@ -604,10 +604,10 @@ public final class FastSerdeCache {
       try {
         return buildFastGenericSerializer(schema, modelData);
       } catch (FastDeserializerGeneratorException e) {
-        LOGGER.warn("Serializer generation exception when generating generic FastSerializer for schema: [\n{}\n]",
+        LOGGER.error("Serializer generation exception when generating generic FastSerializer for schema: [\n{}\n]",
             schema.toString(true), e);
       } catch (Exception e) {
-        LOGGER.warn("Serializer class instantiation exception", e);
+        LOGGER.error("Serializer class instantiation exception", e);
       }
     }
 
