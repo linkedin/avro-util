@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "name": "SimpleRecord",
+  "namespace": "com.linkedin.avro.fastserde.generated.avro",
+  "fields": [
+    {
+      "name": "text",
+      "type": "string",
+      "default": "In vino veritas"
+    }
+  ]
+}
