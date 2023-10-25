@@ -1,6 +1,7 @@
 #gradle artifacts
 .gradle/
-build/
+**/build/*
+!**/avro-fastserde-tests111/build/codegen
 
 #temp artifacts
 avro_tools/
