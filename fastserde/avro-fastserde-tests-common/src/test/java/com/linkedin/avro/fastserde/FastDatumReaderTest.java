@@ -1,8 +1,14 @@
 package com.linkedin.avro.fastserde;
 
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import com.linkedin.avro.fastserde.generated.avro.TestEnum;
 import com.linkedin.avro.fastserde.generated.avro.TestRecord;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -81,7 +87,7 @@ public class FastDatumReaderTest {
         (FastDeserializer<TestRecord>) cache.getFastSpecificDeserializer(TestRecord.SCHEMA$, faultySchema);
 
     Assert.assertNotNull(fastSpecificDeserializer);
-    Assert.assertEquals(fastSpecificDeserializer.getClass().getDeclaredMethods().length, 1);
+    Assert.assertFalse(fastSpecificDeserializer.isBackedByGeneratedClass());
   }
 
   @Test(groups = {"deserializationTest"})
@@ -133,5 +139,61 @@ public class FastDatumReaderTest {
         fastGenericDatumReader.read(null, FastSerdeTestsSupport.genericDataAsDecoder(record)).get("test"));
     Assert.assertTrue(fastGenericDatumReader.isFastDeserializerUsed(), "FastGenericDatumReader should be using"
         + " Fast Deserializer when the fast deserializer generation is done.");
+  }
+
+  @Test(groups = {"deserializationTest"})
+  public void testDatumReaderWithCustomization() throws IOException, ExecutionException, InterruptedException {
+    Schema recordSchema = createRecord("TestSchema",
+        createField("testInt", Schema.create(Schema.Type.INT)),
+        createMapFieldSchema("testMap", Schema.create(Schema.Type.STRING)));
+    /**
+     * Test with special map type: {@link java.util.concurrent.ConcurrentHashMap}.
+     */
+    DatumReaderCustomization customization = new DatumReaderCustomization.Builder()
+        .setNewMapOverrideFunc( (reuse, size) -> {
+          if (reuse instanceof ConcurrentHashMap) {
+            ((ConcurrentHashMap)reuse).clear();
+            return reuse;
+          } else {
+            return new ConcurrentHashMap<>(size);
+          }
+        })
+        .build();
+    // Check cold datum Reader
+    GenericRecord record = new GenericData.Record(recordSchema);
+    record.put("testInt", new Integer(100));
+    Map<Utf8, Utf8> testMap = new HashMap<>();
+    testMap.put(new Utf8("key1"), new Utf8("value1"));
+    testMap.put(new Utf8("key2"), new Utf8("value2"));
+    record.put("testMap", testMap);
+    FastGenericDatumReader<GenericRecord> fastGenericDatumReader = new FastGenericDatumReader<>(recordSchema, recordSchema, cache, null, customization);
+    GenericRecord deserializedRecordByColdDatumReader = fastGenericDatumReader.read(null, FastSerdeTestsSupport.genericDataAsDecoder(record));
+    Assert.assertEquals(deserializedRecordByColdDatumReader.get("testInt"), new Integer(100));
+    Assert.assertEquals(deserializedRecordByColdDatumReader.get("testMap"), testMap);
+    Assert.assertTrue(deserializedRecordByColdDatumReader.get("testMap") instanceof ConcurrentHashMap);
+
+    // Block the fast deserializer generation
+    fastGenericDatumReader.getFastDeserializer().get();
+    // Decode the record by fast datum reader
+    GenericRecord deserializedRecordByFastDatumReader = fastGenericDatumReader.read(null, FastSerdeTestsSupport.genericDataAsDecoder(record));
+    Assert.assertEquals(deserializedRecordByFastDatumReader.get("testInt"), new Integer(100));
+    Assert.assertEquals(deserializedRecordByFastDatumReader.get("testMap"), testMap);
+    Assert.assertTrue(deserializedRecordByFastDatumReader.get("testMap") instanceof ConcurrentHashMap);
+
+    // Test with an empty map
+    GenericRecord recordWithEmptyMap = new GenericData.Record(recordSchema);
+    recordWithEmptyMap.put("testInt", new Integer(200));
+    recordWithEmptyMap.put("testMap", Collections.emptyMap());
+    GenericRecord deserializedRecordWithEmptyMapByFastDatumReader = fastGenericDatumReader.read(null, FastSerdeTestsSupport.genericDataAsDecoder(recordWithEmptyMap));
+    Assert.assertEquals(deserializedRecordWithEmptyMapByFastDatumReader.get("testInt"), new Integer(200));
+    Assert.assertEquals(deserializedRecordWithEmptyMapByFastDatumReader.get("testMap"), Collections.emptyMap());
+    Assert.assertTrue(deserializedRecordWithEmptyMapByFastDatumReader.get("testMap") instanceof ConcurrentHashMap);
+
+    // Generate a new fast datum reader with the same schema, but without customization
+    FastGenericDatumReader<GenericRecord> fastGenericDatumReaderWithoutCustomization = new FastGenericDatumReader<>(recordSchema, cache);
+    GenericRecord deserializedRecordByFastDatumReaderWithoutCustomization = fastGenericDatumReaderWithoutCustomization.read(null, FastSerdeTestsSupport.genericDataAsDecoder(record));
+    Assert.assertEquals(deserializedRecordByFastDatumReaderWithoutCustomization.get("testInt"), new Integer(100));
+    Assert.assertEquals(deserializedRecordByFastDatumReaderWithoutCustomization.get("testMap"), testMap);
+    Assert.assertFalse(deserializedRecordByFastDatumReaderWithoutCustomization.get("testMap") instanceof ConcurrentHashMap);
   }
 }

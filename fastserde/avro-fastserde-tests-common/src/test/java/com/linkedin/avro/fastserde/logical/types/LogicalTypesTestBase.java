@@ -2,6 +2,7 @@ package com.linkedin.avro.fastserde.logical.types;
 
 import static com.linkedin.avro.fastserde.FastSerdeTestsSupport.getCodeGenDirectory;
 
+import com.linkedin.avro.fastserde.FastSerdeUtils;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -136,11 +137,11 @@ public abstract class LogicalTypesTestBase {
                 schema, classesDir, classLoader, null, specificData)
                 .generateSerializer();
 
-        FastSerdeCache.FastSerializerWithAvroGenericImpl<T> fastSerializerWithAvroGeneric =
-                new FastSerdeCache.FastSerializerWithAvroGenericImpl<>(schema, genericData);
+        FastSerdeUtils.FastSerializerWithAvroGenericImpl<T> fastSerializerWithAvroGeneric =
+                new FastSerdeUtils.FastSerializerWithAvroGenericImpl<>(schema, genericData, null, false);
 
-        FastSerdeCache.FastSerializerWithAvroSpecificImpl<T> fastSerializerWithAvroSpecific =
-                new FastSerdeCache.FastSerializerWithAvroSpecificImpl<>(schema, specificData);
+        FastSerdeUtils.FastSerializerWithAvroSpecificImpl<T> fastSerializerWithAvroSpecific =
+                new FastSerdeUtils.FastSerializerWithAvroSpecificImpl<>(schema, specificData, null, false);
 
         GenericDatumWriter<T> genericDatumWriter = new GenericDatumWriter<>(
                 schema, genericData);
@@ -188,11 +189,11 @@ public abstract class LogicalTypesTestBase {
                 schema, schema, classesDir, classLoader, null, specificData)
                 .generateDeserializer();
 
-        FastSerdeCache.FastDeserializerWithAvroGenericImpl<GenericData.Record> fastDeserializerWithAvroGeneric =
-                new FastSerdeCache.FastDeserializerWithAvroGenericImpl<>(schema, schema, genericData);
+        FastSerdeUtils.FastDeserializerWithAvroGenericImpl<GenericData.Record> fastDeserializerWithAvroGeneric =
+                new FastSerdeUtils.FastDeserializerWithAvroGenericImpl<>(schema, schema, genericData, false);
 
-        FastSerdeCache.FastDeserializerWithAvroSpecificImpl<T> fastDeserializerWithAvroSpecific =
-                new FastSerdeCache.FastDeserializerWithAvroSpecificImpl<>(schema, schema, specificData);
+        FastSerdeUtils.FastDeserializerWithAvroSpecificImpl<T> fastDeserializerWithAvroSpecific =
+                new FastSerdeUtils.FastDeserializerWithAvroSpecificImpl<>(schema, schema, specificData, false);
 
         GenericDatumReader<GenericData.Record> genericDatumReader = new GenericDatumReader<>(schema, schema, genericData);
 

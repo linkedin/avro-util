@@ -1,5 +1,6 @@
 package com.linkedin.avro.fastserde;
 
+import com.linkedin.avro.fastserde.customized.DatumWriterCustomization;
 import java.io.IOException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -16,7 +17,9 @@ public class FastGenericDatumWriter<T> implements DatumWriter<T> {
   private static final Logger LOGGER = LoggerFactory.getLogger(FastGenericDatumWriter.class);
   private Schema writerSchema;
   private final GenericData modelData;
-  private final FastSerdeCache cache;
+  protected final FastSerdeCache cache;
+  private final DatumWriterCustomization customization;
+  private final FastSerializer<T> coldSerializer;
   private FastSerializer<T> cachedFastSerializer;
 
   public FastGenericDatumWriter(Schema schema) {
@@ -32,11 +35,16 @@ public class FastGenericDatumWriter<T> implements DatumWriter<T> {
   }
 
   public FastGenericDatumWriter(Schema schema, GenericData modelData, FastSerdeCache cache) {
+    this(schema, modelData, cache, null);
+  }
+  public FastGenericDatumWriter(Schema schema, GenericData modelData, FastSerdeCache cache, DatumWriterCustomization customization) {
     this.writerSchema = schema;
     this.modelData = modelData;
+    this.customization = customization == null ? DatumWriterCustomization.DEFAULT_DATUM_WRITER_CUSTOMIZATION : customization;
     this.cache = cache != null ? cache : FastSerdeCache.getDefaultInstance();
+    this.coldSerializer = getRegularAvroImpl(writerSchema, modelData, this.customization);
     if (!Utils.isSupportedAvroVersionsForSerializer()) {
-      this.cachedFastSerializer = getRegularAvroImpl(writerSchema, modelData);
+      this.cachedFastSerializer = coldSerializer;
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug(
             "Current avro version: " + Utils.getRuntimeAvroVersion() + " is not supported, and only the following"
@@ -45,7 +53,7 @@ public class FastGenericDatumWriter<T> implements DatumWriter<T> {
       }
     } else if (!FastSerdeCache.isSupportedForFastSerializer(schema.getType())) {
       // For unsupported schema type, we won't try to fetch it from FastSerdeCache since it is inefficient.
-      this.cachedFastSerializer = getRegularAvroImpl(writerSchema, modelData);
+      this.cachedFastSerializer = coldSerializer;
       if (LOGGER.isDebugEnabled()) {
         LOGGER.debug("Skip the FastGenericSerializer generation since read schema type: " + schema.getType()
             + " is not supported");
@@ -64,30 +72,57 @@ public class FastGenericDatumWriter<T> implements DatumWriter<T> {
     if (cachedFastSerializer != null) {
       fastSerializer = cachedFastSerializer;
     } else {
-      fastSerializer = getFastSerializerFromCache(cache, writerSchema, modelData);
-      if (isFastSerializer(fastSerializer)) {
-        cachedFastSerializer = fastSerializer;
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug("FastSerializer has been generated and cached for writer schema: [" + writerSchema + "]");
+      fastSerializer = getFastSerializerFromCache(cache, writerSchema, modelData, customization);
+
+      if (fastSerializer.hasDynamicClassGenerationDone()) {
+        if (fastSerializer.isBackedByGeneratedClass()) {
+          /**
+           * Runtime class generation is done successfully, so cache it.
+           */
+          cachedFastSerializer = fastSerializer;
+          if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("FastSerializer has been generated and cached for writer schema: [" + writerSchema + "]");
+          }
+        } else {
+          /**
+           * Runtime class generation fails, so this class will cache a newly generated cold deserializer, which will
+           * honer {@link FastSerdeCache#isFailFast()}.
+           */
+          cachedFastSerializer = getRegularAvroImplWhenGenerationFail(writerSchema, modelData, customization);
+          if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("FastGenericDeserializer generation fails, and will cache cold serializer for writer schema: [" + writerSchema + "]");
+          }
         }
+        fastSerializer = cachedFastSerializer;
+      } else {
+        /**
+         * Don't use the cached serializer since it may not support the passed customization.
+         */
+        fastSerializer = coldSerializer;
       }
     }
 
-    fastSerializer.serialize(data, out);
+    fastSerializer.serialize(data, out, customization);
   }
 
   @SuppressWarnings("unchecked")
-  protected FastSerializer<T> getFastSerializerFromCache(FastSerdeCache fastSerdeCache, Schema schema, GenericData modelData) {
-    return (FastSerializer<T>) fastSerdeCache.getFastGenericSerializer(schema, modelData);
+  protected FastSerializer<T> getFastSerializerFromCache(FastSerdeCache fastSerdeCache, Schema schema,
+      GenericData modelData, DatumWriterCustomization customization) {
+    return (FastSerializer<T>) fastSerdeCache.getFastGenericSerializer(schema, modelData, customization);
   }
 
-  protected FastSerializer<T> getRegularAvroImpl(Schema schema, GenericData modelData) {
-    return new FastSerdeCache.FastSerializerWithAvroGenericImpl<>(schema, modelData);
+  protected FastSerializer<T> getRegularAvroImpl(Schema schema, GenericData modelData,
+      DatumWriterCustomization customization) {
+    return new FastSerdeUtils.FastSerializerWithAvroGenericImpl<>(schema, modelData, customization, false);
+  }
+
+  protected FastSerializer<T> getRegularAvroImplWhenGenerationFail(Schema schema, GenericData modelData,
+      DatumWriterCustomization customization) {
+    return new FastSerdeUtils.FastSerializerWithAvroGenericImpl<>(schema, modelData, customization, cache.isFailFast(), true);
   }
 
   private static boolean isFastSerializer(FastSerializer<?> serializer) {
-    return !(serializer instanceof FastSerdeCache.FastSerializerWithAvroSpecificImpl
-        || serializer instanceof FastSerdeCache.FastSerializerWithAvroGenericImpl);
+    return serializer.isBackedByGeneratedClass();
   }
 
   /**

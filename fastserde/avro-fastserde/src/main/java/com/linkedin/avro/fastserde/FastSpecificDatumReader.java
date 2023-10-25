@@ -1,5 +1,6 @@
 package com.linkedin.avro.fastserde;
 
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import java.util.concurrent.CompletableFuture;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -38,19 +39,27 @@ public class FastSpecificDatumReader<T> extends FastGenericDatumReader<T> {
   @SuppressWarnings("unchecked")
   @Override
   protected FastDeserializer<T> getFastDeserializerFromCache(FastSerdeCache fastSerdeCache, Schema writeSchema,
-      Schema readerSchema, GenericData specificData) {
-    return (FastDeserializer<T>) fastSerdeCache.getFastSpecificDeserializer(writeSchema, readerSchema, (SpecificData) specificData);
+      Schema readerSchema, GenericData specificData, DatumReaderCustomization customization) {
+    return (FastDeserializer<T>) fastSerdeCache.getFastSpecificDeserializer(writeSchema, readerSchema, (SpecificData) specificData, customization);
   }
 
   @Override
   protected CompletableFuture<FastDeserializer<T>> getFastDeserializer(FastSerdeCache fastSerdeCache,
-      Schema writerSchema, Schema readerSchema, GenericData specificData) {
-    return fastSerdeCache.getFastSpecificDeserializerAsync(writerSchema, readerSchema, (SpecificData) specificData)
+      Schema writerSchema, Schema readerSchema, GenericData specificData, DatumReaderCustomization customization) {
+    return fastSerdeCache.getFastSpecificDeserializerAsync(writerSchema, readerSchema, (SpecificData) specificData, customization)
         .thenApply(d -> (FastDeserializer<T>) d);
   }
 
   @Override
-  protected FastDeserializer<T> getRegularAvroImpl(Schema writerSchema, Schema readerSchema, GenericData specificData) {
-    return new FastSerdeCache.FastDeserializerWithAvroSpecificImpl<>(writerSchema, readerSchema, (SpecificData) specificData);
+  protected FastDeserializer<T> getRegularAvroImpl(Schema writerSchema, Schema readerSchema,
+      GenericData modelData, DatumReaderCustomization customization) {
+    return new FastSerdeUtils.FastDeserializerWithAvroSpecificImpl<>(writerSchema, readerSchema,
+        (SpecificData)modelData, customization, false);
+  }
+
+  protected FastDeserializer<T> getRegularAvroImplWhenGenerationFail(Schema writerSchema, Schema readerSchema,
+      GenericData modelData, DatumReaderCustomization customization) {
+    return new FastSerdeUtils.FastDeserializerWithAvroSpecificImpl<>(writerSchema, readerSchema,
+        (SpecificData)modelData, customization, cache.isFailFast(), true);
   }
 }
