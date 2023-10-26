@@ -16,15 +16,15 @@ public class CustomizedSpecificDatumWriter<T> extends SpecificDatumWriter<T> {
 
   public CustomizedSpecificDatumWriter(Schema schema, SpecificData modelData, DatumWriterCustomization customization) {
     super(schema, modelData);
-
+    if (customization == null) {
+      throw new IllegalArgumentException("'customization' param should not null when constructing " +  this.getClass().getName());
+    }
     this.customization = customization;
   }
 
   @Override
   protected void writeMap(Schema schema, Object datum, Encoder out) throws IOException {
-    if (customization != null && customization.getCheckMapTypeFunction() != null) {
-      customization.getCheckMapTypeFunction().apply(datum);
-    }
+    customization.getCheckMapTypeFunction().apply(datum);
     super.writeMap(schema, datum, out);
   }
 }

@@ -2,9 +2,6 @@ package org.apache.avro.generic;
 
 import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.Schema;
-import org.apache.avro.generic.ColdDatumReaderMixIn;
-import org.apache.avro.generic.GenericData;
-import org.apache.avro.generic.GenericDatumReader;
 
 /**
  * This class will apply {@link DatumReaderCustomization} at runtime.
@@ -31,10 +28,7 @@ public class CustomizedGenericDatumReader<T> extends GenericDatumReader<T> imple
 
   @Override
   protected Object newMap(Object old, int size) {
-    if (customization.getNewMapOverrideFunc() != null) {
-      return customization.getNewMapOverrideFunc().apply(old, size);
-    }
-    return super.newMap(old, size);
+    return customization.getNewMapOverrideFunc().apply(old, size);
   }
 
   @Override

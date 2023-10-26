@@ -45,8 +45,6 @@ public class DatumReaderCustomization {
         Map retMap = null;
         if (old instanceof Map) {
           retMap = (Map)old;
-        }
-        if (retMap != null) {
           retMap.clear();
         } else {
           /**
