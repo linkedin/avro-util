@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.linkedin.avro.api.PrimitiveFloatList;
 import com.linkedin.avro.fastserde.BufferBackedPrimitiveFloatList;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
@@ -21,13 +22,13 @@ public class TestArrayOfFloats_GenericDeserializer_1408566797_1408566797
         this.array_of_float0 = readerSchema.getField("array_of_float").schema();
     }
 
-    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
+    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        return deserializeTestArrayOfFloats0((reuse), (decoder));
+        return deserializeTestArrayOfFloats0((reuse), (decoder), (customization));
     }
 
-    public IndexedRecord deserializeTestArrayOfFloats0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializeTestArrayOfFloats0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord TestArrayOfFloats;

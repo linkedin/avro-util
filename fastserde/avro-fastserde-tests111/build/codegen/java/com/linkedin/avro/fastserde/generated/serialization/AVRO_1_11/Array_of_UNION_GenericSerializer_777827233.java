@@ -4,6 +4,7 @@ package com.linkedin.avro.fastserde.generated.serialization.AVRO_1_11;
 import java.io.IOException;
 import java.util.List;
 import com.linkedin.avro.fastserde.FastSerializer;
+import com.linkedin.avro.fastserde.customized.DatumWriterCustomization;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.util.Utf8;
@@ -13,7 +14,7 @@ public class Array_of_UNION_GenericSerializer_777827233
 {
 
 
-    public void serialize(List<IndexedRecord> data, Encoder encoder)
+    public void serialize(List<IndexedRecord> data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeArrayStart();
@@ -31,7 +32,7 @@ public class Array_of_UNION_GenericSerializer_777827233
                 } else {
                     if ((union0 instanceof IndexedRecord)&&"com.linkedin.avro.fastserde.generated.avro.record".equals(((IndexedRecord) union0).getSchema().getFullName())) {
                         (encoder).writeIndex(1);
-                        serializeRecord0(((IndexedRecord) union0), (encoder));
+                        serializeRecord0(((IndexedRecord) union0), (encoder), (customization));
                     }
                 }
             }
@@ -40,7 +41,7 @@ public class Array_of_UNION_GenericSerializer_777827233
     }
 
     @SuppressWarnings("unchecked")
-    public void serializeRecord0(IndexedRecord data, Encoder encoder)
+    public void serializeRecord0(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         CharSequence field0 = ((CharSequence) data.get(0));

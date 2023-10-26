@@ -3,6 +3,7 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 
 import java.io.IOException;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.io.Decoder;
@@ -18,13 +19,13 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
         this.readerSchema = readerSchema;
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord deserialize(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord reuse, Decoder decoder)
+    public com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord deserialize(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        return deserializeRemovedTypesTestRecord0((reuse), (decoder));
+        return deserializeRemovedTypesTestRecord0((reuse), (decoder), (customization));
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord deserializeRemovedTypesTestRecord0(Object reuse, Decoder decoder)
+    public com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord deserializeRemovedTypesTestRecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord;
@@ -41,22 +42,22 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
             charSequence0 = (decoder).readString(null);
         }
         RemovedTypesTestRecord.put(0, charSequence0);
-        populate_RemovedTypesTestRecord0((RemovedTypesTestRecord), (decoder));
-        populate_RemovedTypesTestRecord1((RemovedTypesTestRecord), (decoder));
-        populate_RemovedTypesTestRecord2((RemovedTypesTestRecord), (decoder));
-        populate_RemovedTypesTestRecord3((RemovedTypesTestRecord), (decoder));
-        populate_RemovedTypesTestRecord4((RemovedTypesTestRecord), (decoder));
-        populate_RemovedTypesTestRecord5((RemovedTypesTestRecord), (decoder));
-        populate_RemovedTypesTestRecord6((RemovedTypesTestRecord), (decoder));
-        populate_RemovedTypesTestRecord7((RemovedTypesTestRecord), (decoder));
-        populate_RemovedTypesTestRecord8((RemovedTypesTestRecord), (decoder));
-        populate_RemovedTypesTestRecord9((RemovedTypesTestRecord), (decoder));
-        populate_RemovedTypesTestRecord10((RemovedTypesTestRecord), (decoder));
-        populate_RemovedTypesTestRecord11((RemovedTypesTestRecord), (decoder));
+        populate_RemovedTypesTestRecord0((RemovedTypesTestRecord), (customization), (decoder));
+        populate_RemovedTypesTestRecord1((RemovedTypesTestRecord), (customization), (decoder));
+        populate_RemovedTypesTestRecord2((RemovedTypesTestRecord), (customization), (decoder));
+        populate_RemovedTypesTestRecord3((RemovedTypesTestRecord), (customization), (decoder));
+        populate_RemovedTypesTestRecord4((RemovedTypesTestRecord), (customization), (decoder));
+        populate_RemovedTypesTestRecord5((RemovedTypesTestRecord), (customization), (decoder));
+        populate_RemovedTypesTestRecord6((RemovedTypesTestRecord), (customization), (decoder));
+        populate_RemovedTypesTestRecord7((RemovedTypesTestRecord), (customization), (decoder));
+        populate_RemovedTypesTestRecord8((RemovedTypesTestRecord), (customization), (decoder));
+        populate_RemovedTypesTestRecord9((RemovedTypesTestRecord), (customization), (decoder));
+        populate_RemovedTypesTestRecord10((RemovedTypesTestRecord), (customization), (decoder));
+        populate_RemovedTypesTestRecord11((RemovedTypesTestRecord), (customization), (decoder));
         return RemovedTypesTestRecord;
     }
 
-    private void populate_RemovedTypesTestRecord0(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, Decoder decoder)
+    private void populate_RemovedTypesTestRecord0(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         decoder.skipBytes();
@@ -73,7 +74,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
         }
     }
 
-    private void populate_RemovedTypesTestRecord1(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, Decoder decoder)
+    private void populate_RemovedTypesTestRecord1(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex0 = (decoder.readIndex());
@@ -98,7 +99,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
         }
     }
 
-    private void populate_RemovedTypesTestRecord2(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, Decoder decoder)
+    private void populate_RemovedTypesTestRecord2(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         long chunkLen2 = (decoder.readArrayStart());
@@ -142,7 +143,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
         }
     }
 
-    private void populate_RemovedTypesTestRecord3(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, Decoder decoder)
+    private void populate_RemovedTypesTestRecord3(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         decoder.skipFixed(1);
@@ -158,7 +159,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
         }
     }
 
-    private void populate_RemovedTypesTestRecord4(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, Decoder decoder)
+    private void populate_RemovedTypesTestRecord4(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         long chunkLen4 = (decoder.readArrayStart());
@@ -184,7 +185,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
         }
     }
 
-    private void populate_RemovedTypesTestRecord5(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, Decoder decoder)
+    private void populate_RemovedTypesTestRecord5(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         long chunkLen6 = (decoder.readArrayStart());
@@ -228,7 +229,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
         }
     }
 
-    private void populate_RemovedTypesTestRecord6(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, Decoder decoder)
+    private void populate_RemovedTypesTestRecord6(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         decoder.readEnum();
@@ -244,7 +245,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
         }
     }
 
-    private void populate_RemovedTypesTestRecord7(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, Decoder decoder)
+    private void populate_RemovedTypesTestRecord7(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         long chunkLen8 = (decoder.readArrayStart());
@@ -266,7 +267,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
         }
     }
 
-    private void populate_RemovedTypesTestRecord8(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, Decoder decoder)
+    private void populate_RemovedTypesTestRecord8(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         long chunkLen10 = (decoder.readArrayStart());
@@ -310,29 +311,29 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
         }
     }
 
-    private void populate_RemovedTypesTestRecord9(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, Decoder decoder)
+    private void populate_RemovedTypesTestRecord9(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
-        deserializeRemovedSubRecord0(null, (decoder));
+        deserializeRemovedSubRecord0(null, (decoder), (customization));
         int unionIndex9 = (decoder.readIndex());
         if (unionIndex9 == 0) {
             decoder.readNull();
         } else {
             if (unionIndex9 == 1) {
-                deserializeRemovedSubRecord0(null, (decoder));
+                deserializeRemovedSubRecord0(null, (decoder), (customization));
             } else {
                 throw new RuntimeException(("Illegal union index for 'removedSubRecordUnion': "+ unionIndex9));
             }
         }
     }
 
-    public void deserializeRemovedSubRecord0(Object reuse, Decoder decoder)
+    public void deserializeRemovedSubRecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         decoder.skipString();
     }
 
-    private void populate_RemovedTypesTestRecord10(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, Decoder decoder)
+    private void populate_RemovedTypesTestRecord10(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         long chunkLen12 = (decoder.readArrayStart());
@@ -342,7 +343,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
                 if (null instanceof GenericArray) {
                     removedSubRecordArrayArrayElementReuseVar0 = ((GenericArray) null).peek();
                 }
-                deserializeRemovedSubRecord0(removedSubRecordArrayArrayElementReuseVar0, (decoder));
+                deserializeRemovedSubRecord0(removedSubRecordArrayArrayElementReuseVar0, (decoder), (customization));
             }
             chunkLen12 = (decoder.arrayNext());
         }
@@ -358,7 +359,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
                     decoder.readNull();
                 } else {
                     if (unionIndex10 == 1) {
-                        deserializeRemovedSubRecord0(removedSubRecordUnionArrayArrayElementReuseVar0, (decoder));
+                        deserializeRemovedSubRecord0(removedSubRecordUnionArrayArrayElementReuseVar0, (decoder), (customization));
                     } else {
                         throw new RuntimeException(("Illegal union index for 'removedSubRecordUnionArrayElem': "+ unionIndex10));
                     }
@@ -368,7 +369,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
         }
     }
 
-    private void populate_RemovedTypesTestRecord11(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, Decoder decoder)
+    private void populate_RemovedTypesTestRecord11(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         long chunkLen14 = (decoder.readMapStart());
@@ -376,7 +377,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
             do {
                 for (int counter14 = 0; (counter14 <chunkLen14); counter14 ++) {
                     Utf8 key6 = (decoder.readString(null));
-                    deserializeRemovedSubRecord0(null, (decoder));
+                    deserializeRemovedSubRecord0(null, (decoder), (customization));
                 }
                 chunkLen14 = (decoder.mapNext());
             } while (chunkLen14 > 0);
@@ -391,7 +392,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
                         decoder.readNull();
                     } else {
                         if (unionIndex11 == 1) {
-                            deserializeRemovedSubRecord0(null, (decoder));
+                            deserializeRemovedSubRecord0(null, (decoder), (customization));
                         } else {
                             throw new RuntimeException(("Illegal union index for 'removedSubRecordUnionMapValue': "+ unionIndex11));
                         }

@@ -2,9 +2,9 @@
 package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
@@ -24,13 +24,13 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingW
         this.testOptionSchema0 = test0 .getTypes().get(1);
     }
 
-    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
+    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        return deserializeFastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps0((reuse), (decoder));
+        return deserializeFastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps0((reuse), (decoder), (customization));
     }
 
-    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps;
@@ -48,17 +48,7 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingW
                 Map<Utf8, Integer> testOption0 = null;
                 long chunkLen0 = (decoder.readMapStart());
                 if (chunkLen0 > 0) {
-                    Map<Utf8, Integer> testOptionReuse0 = null;
-                    Object oldMap0 = FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps.get(0);
-                    if (oldMap0 instanceof Map) {
-                        testOptionReuse0 = ((Map) oldMap0);
-                    }
-                    if (testOptionReuse0 != (null)) {
-                        testOptionReuse0 .clear();
-                        testOption0 = testOptionReuse0;
-                    } else {
-                        testOption0 = new HashMap<Utf8, Integer>(((int)(((chunkLen0 * 4)+ 2)/ 3)));
-                    }
+                    testOption0 = ((Map)(customization).getNewMapOverrideFunc().apply(FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps.get(0), ((int) chunkLen0)));
                     do {
                         for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
                             Utf8 key0 = (decoder.readString(null));
@@ -67,7 +57,7 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingW
                         chunkLen0 = (decoder.mapNext());
                     } while (chunkLen0 > 0);
                 } else {
-                    testOption0 = new HashMap<Utf8, Integer>(0);
+                    testOption0 = ((Map)(customization).getNewMapOverrideFunc().apply(FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps.get(0), 0));
                 }
                 FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps.put(0, testOption0);
             } else {

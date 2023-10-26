@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import com.linkedin.avro.api.PrimitiveIntList;
 import com.linkedin.avro.fastserde.FastSerializer;
+import com.linkedin.avro.fastserde.customized.DatumWriterCustomization;
 import org.apache.avro.Conversions;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
@@ -39,14 +40,14 @@ public class FastSerdeLogicalTypesTest1_GenericSerializer_1007574890
     private final Schema logicalTypeSchema__1515894331 = Schema.parse("{\"type\":\"long\",\"logicalType\":\"time-micros\"}");
     private final Schema logicalTypeSchema__250645780 = Schema.parse("{\"type\":\"long\",\"logicalType\":\"local-timestamp-millis\"}");
 
-    public void serialize(IndexedRecord data, Encoder encoder)
+    public void serialize(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
-        serializeFastSerdeLogicalTypesTest10(data, (encoder));
+        serializeFastSerdeLogicalTypesTest10(data, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    public void serializeFastSerdeLogicalTypesTest10(IndexedRecord data, Encoder encoder)
+    public void serializeFastSerdeLogicalTypesTest10(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         Object unionOfArrayAndMap0 = ((Object) data.get(0));
@@ -79,6 +80,7 @@ public class FastSerdeLogicalTypesTest1_GenericSerializer_1007574890
         } else {
             if (unionOfArrayAndMap0 instanceof Map) {
                 (encoder).writeIndex(1);
+                (customization).getCheckMapTypeFunction().apply(((Map<CharSequence, LocalDate> ) unionOfArrayAndMap0));
                 (encoder).writeMapStart();
                 if ((((Map<CharSequence, LocalDate> ) unionOfArrayAndMap0) == null)||((Map<CharSequence, LocalDate> ) unionOfArrayAndMap0).isEmpty()) {
                     (encoder).setItemCount(0);
@@ -95,19 +97,20 @@ public class FastSerdeLogicalTypesTest1_GenericSerializer_1007574890
                 (encoder).writeMapEnd();
             }
         }
-        serialize_FastSerdeLogicalTypesTest10(data, (encoder));
-        serialize_FastSerdeLogicalTypesTest11(data, (encoder));
-        serialize_FastSerdeLogicalTypesTest12(data, (encoder));
-        serialize_FastSerdeLogicalTypesTest13(data, (encoder));
-        serialize_FastSerdeLogicalTypesTest14(data, (encoder));
-        serialize_FastSerdeLogicalTypesTest15(data, (encoder));
+        serialize_FastSerdeLogicalTypesTest10(data, (encoder), (customization));
+        serialize_FastSerdeLogicalTypesTest11(data, (encoder), (customization));
+        serialize_FastSerdeLogicalTypesTest12(data, (encoder), (customization));
+        serialize_FastSerdeLogicalTypesTest13(data, (encoder), (customization));
+        serialize_FastSerdeLogicalTypesTest14(data, (encoder), (customization));
+        serialize_FastSerdeLogicalTypesTest15(data, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastSerdeLogicalTypesTest10(IndexedRecord data, Encoder encoder)
+    private void serialize_FastSerdeLogicalTypesTest10(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         Map<CharSequence, Object> mapOfUnionsOfDateAndTimestampMillis0 = ((Map<CharSequence, Object> ) data.get(1));
+        (customization).getCheckMapTypeFunction().apply(mapOfUnionsOfDateAndTimestampMillis0);
         (encoder).writeMapStart();
         if ((mapOfUnionsOfDateAndTimestampMillis0 == null)||mapOfUnionsOfDateAndTimestampMillis0 .isEmpty()) {
             (encoder).setItemCount(0);
@@ -135,6 +138,7 @@ public class FastSerdeLogicalTypesTest1_GenericSerializer_1007574890
         }
         (encoder).writeMapEnd();
         Map<CharSequence, Instant> timestampMillisMap0 = ((Map<CharSequence, Instant> ) data.get(2));
+        (customization).getCheckMapTypeFunction().apply(timestampMillisMap0);
         (encoder).writeMapStart();
         if ((timestampMillisMap0 == null)||timestampMillisMap0 .isEmpty()) {
             (encoder).setItemCount(0);
@@ -152,7 +156,7 @@ public class FastSerdeLogicalTypesTest1_GenericSerializer_1007574890
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastSerdeLogicalTypesTest11(IndexedRecord data, Encoder encoder)
+    private void serialize_FastSerdeLogicalTypesTest11(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         List<LocalDate> nullableArrayOfDates0 = ((List<LocalDate> ) data.get(3));
@@ -216,7 +220,7 @@ public class FastSerdeLogicalTypesTest1_GenericSerializer_1007574890
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastSerdeLogicalTypesTest12(IndexedRecord data, Encoder encoder)
+    private void serialize_FastSerdeLogicalTypesTest12(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         Object unionOfDecimalOrDate0 = ((Object) data.get(5));
@@ -243,7 +247,7 @@ public class FastSerdeLogicalTypesTest1_GenericSerializer_1007574890
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastSerdeLogicalTypesTest13(IndexedRecord data, Encoder encoder)
+    private void serialize_FastSerdeLogicalTypesTest13(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         Object convertedValue13 = data.get(7);
@@ -255,7 +259,7 @@ public class FastSerdeLogicalTypesTest1_GenericSerializer_1007574890
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastSerdeLogicalTypesTest14(IndexedRecord data, Encoder encoder)
+    private void serialize_FastSerdeLogicalTypesTest14(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         Object convertedValue15 = data.get(9);
@@ -267,29 +271,29 @@ public class FastSerdeLogicalTypesTest1_GenericSerializer_1007574890
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastSerdeLogicalTypesTest15(IndexedRecord data, Encoder encoder)
+    private void serialize_FastSerdeLogicalTypesTest15(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         Object convertedValue17 = data.get(11);
         convertedValue17 = Conversions.convertToRawType(convertedValue17, this.logicalTypeSchema__59052268, this.logicalTypeSchema__59052268 .getLogicalType(), this.conversion_date);
         (encoder).writeInt(((Integer) convertedValue17));
         IndexedRecord nestedLocalTimestampMillis0 = ((IndexedRecord) data.get(12));
-        serializeLocalTimestampRecord0(nestedLocalTimestampMillis0, (encoder));
+        serializeLocalTimestampRecord0(nestedLocalTimestampMillis0, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    public void serializeLocalTimestampRecord0(IndexedRecord data, Encoder encoder)
+    public void serializeLocalTimestampRecord0(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         Object convertedValue18 = data.get(0);
         convertedValue18 = Conversions.convertToRawType(convertedValue18, this.logicalTypeSchema__250645780, this.logicalTypeSchema__250645780 .getLogicalType(), this.conversion_local_timestamp_millis);
         (encoder).writeLong(((Long) convertedValue18));
-        serialize_LocalTimestampRecord0(data, (encoder));
-        serialize_LocalTimestampRecord1(data, (encoder));
+        serialize_LocalTimestampRecord0(data, (encoder), (customization));
+        serialize_LocalTimestampRecord1(data, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_LocalTimestampRecord0(IndexedRecord data, Encoder encoder)
+    private void serialize_LocalTimestampRecord0(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         LocalDateTime nullableNestedTimestamp0 = ((LocalDateTime) data.get(1));
@@ -324,7 +328,7 @@ public class FastSerdeLogicalTypesTest1_GenericSerializer_1007574890
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_LocalTimestampRecord1(IndexedRecord data, Encoder encoder)
+    private void serialize_LocalTimestampRecord1(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         Object unionOfDateAndLocalTimestamp0 = ((Object) data.get(3));

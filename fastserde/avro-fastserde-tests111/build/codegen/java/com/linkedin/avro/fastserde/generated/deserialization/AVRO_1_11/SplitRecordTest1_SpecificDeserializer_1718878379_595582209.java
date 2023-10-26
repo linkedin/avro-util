@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.io.Decoder;
@@ -20,13 +21,13 @@ public class SplitRecordTest1_SpecificDeserializer_1718878379_595582209
         this.readerSchema = readerSchema;
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.SplitRecordTest1 deserialize(com.linkedin.avro.fastserde.generated.avro.SplitRecordTest1 reuse, Decoder decoder)
+    public com.linkedin.avro.fastserde.generated.avro.SplitRecordTest1 deserialize(com.linkedin.avro.fastserde.generated.avro.SplitRecordTest1 reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        return deserializeSplitRecordTest10((reuse), (decoder));
+        return deserializeSplitRecordTest10((reuse), (decoder), (customization));
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.SplitRecordTest1 deserializeSplitRecordTest10(Object reuse, Decoder decoder)
+    public com.linkedin.avro.fastserde.generated.avro.SplitRecordTest1 deserializeSplitRecordTest10(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         com.linkedin.avro.fastserde.generated.avro.SplitRecordTest1 SplitRecordTest1;
@@ -35,12 +36,12 @@ public class SplitRecordTest1_SpecificDeserializer_1718878379_595582209
         } else {
             SplitRecordTest1 = new com.linkedin.avro.fastserde.generated.avro.SplitRecordTest1();
         }
-        SplitRecordTest1 .put(0, deserializeFullRecord0(SplitRecordTest1 .get(0), (decoder)));
-        populate_SplitRecordTest10((SplitRecordTest1), (decoder));
+        SplitRecordTest1 .put(0, deserializeFullRecord0(SplitRecordTest1 .get(0), (decoder), (customization)));
+        populate_SplitRecordTest10((SplitRecordTest1), (customization), (decoder));
         return SplitRecordTest1;
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.FullRecord deserializeFullRecord0(Object reuse, Decoder decoder)
+    public com.linkedin.avro.fastserde.generated.avro.FullRecord deserializeFullRecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         com.linkedin.avro.fastserde.generated.avro.FullRecord FullRecord;
@@ -71,10 +72,10 @@ public class SplitRecordTest1_SpecificDeserializer_1718878379_595582209
         return FullRecord;
     }
 
-    private void populate_SplitRecordTest10(com.linkedin.avro.fastserde.generated.avro.SplitRecordTest1 SplitRecordTest1, Decoder decoder)
+    private void populate_SplitRecordTest10(com.linkedin.avro.fastserde.generated.avro.SplitRecordTest1 SplitRecordTest1, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
-        SplitRecordTest1 .put(1, deserializeFullRecord1(SplitRecordTest1 .get(1), (decoder)));
+        SplitRecordTest1 .put(1, deserializeFullRecord1(SplitRecordTest1 .get(1), (decoder), (customization)));
         List<com.linkedin.avro.fastserde.generated.avro.FullRecord> record30 = null;
         long chunkLen0 = (decoder.readArrayStart());
         Object oldArray0 = SplitRecordTest1 .get(2);
@@ -94,14 +95,14 @@ public class SplitRecordTest1_SpecificDeserializer_1718878379_595582209
                 if (oldArray0 instanceof GenericArray) {
                     record3ArrayElementReuseVar0 = ((GenericArray) oldArray0).peek();
                 }
-                record30 .add(deserializeFullRecord2(record3ArrayElementReuseVar0, (decoder)));
+                record30 .add(deserializeFullRecord2(record3ArrayElementReuseVar0, (decoder), (customization)));
             }
             chunkLen0 = (decoder.arrayNext());
         }
         SplitRecordTest1 .put(2, record30);
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.FullRecord deserializeFullRecord1(Object reuse, Decoder decoder)
+    public com.linkedin.avro.fastserde.generated.avro.FullRecord deserializeFullRecord1(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         com.linkedin.avro.fastserde.generated.avro.FullRecord FullRecord;
@@ -125,7 +126,7 @@ public class SplitRecordTest1_SpecificDeserializer_1718878379_595582209
         return FullRecord;
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.FullRecord deserializeFullRecord2(Object reuse, Decoder decoder)
+    public com.linkedin.avro.fastserde.generated.avro.FullRecord deserializeFullRecord2(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         com.linkedin.avro.fastserde.generated.avro.FullRecord FullRecord;
@@ -152,11 +153,11 @@ public class SplitRecordTest1_SpecificDeserializer_1718878379_595582209
                 throw new RuntimeException(("Illegal union index for 'field1': "+ unionIndex2));
             }
         }
-        populate_FullRecord0((FullRecord), (decoder));
+        populate_FullRecord0((FullRecord), (customization), (decoder));
         return FullRecord;
     }
 
-    private void populate_FullRecord0(com.linkedin.avro.fastserde.generated.avro.FullRecord FullRecord, Decoder decoder)
+    private void populate_FullRecord0(com.linkedin.avro.fastserde.generated.avro.FullRecord FullRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex3 = (decoder.readIndex());

@@ -4,6 +4,7 @@ package com.linkedin.avro.fastserde.generated.serialization.AVRO_1_11;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import com.linkedin.avro.fastserde.FastSerializer;
+import com.linkedin.avro.fastserde.customized.DatumWriterCustomization;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.util.Utf8;
@@ -13,28 +14,28 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
 {
 
 
-    public void serialize(IndexedRecord data, Encoder encoder)
+    public void serialize(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
-        serializeFastGenericSerializerGeneratorTest_shouldWritePrimitives0(data, (encoder));
+        serializeFastGenericSerializerGeneratorTest_shouldWritePrimitives0(data, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    public void serializeFastGenericSerializerGeneratorTest_shouldWritePrimitives0(IndexedRecord data, Encoder encoder)
+    public void serializeFastGenericSerializerGeneratorTest_shouldWritePrimitives0(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(0)));
-        serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives0(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives1(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives2(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives3(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives4(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives5(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives6(data, (encoder));
+        serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives0(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives1(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives2(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives3(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives4(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives5(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives6(data, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives0(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives0(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         Integer testIntUnion0 = ((Integer) data.get(1));
@@ -56,7 +57,7 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives1(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives1(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         if (((CharSequence) data.get(3)) instanceof Utf8) {
@@ -79,7 +80,7 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives2(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives2(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeLong(((Long) data.get(5)));
@@ -94,7 +95,7 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives3(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives3(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeDouble(((Double) data.get(7)));
@@ -109,7 +110,7 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives4(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives4(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeFloat(((Float) data.get(9)));
@@ -124,7 +125,7 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives5(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives5(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeBoolean(((Boolean) data.get(11)));
@@ -139,7 +140,7 @@ public class FastGenericSerializerGeneratorTest_shouldWritePrimitives_GenericSer
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives6(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldWritePrimitives6(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeBytes(((ByteBuffer) data.get(13)));

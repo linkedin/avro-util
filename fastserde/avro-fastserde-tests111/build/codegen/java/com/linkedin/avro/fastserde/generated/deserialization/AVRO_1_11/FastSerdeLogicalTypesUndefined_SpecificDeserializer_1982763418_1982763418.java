@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.io.Decoder;
@@ -19,13 +20,13 @@ public class FastSerdeLogicalTypesUndefined_SpecificDeserializer_1982763418_1982
         this.readerSchema = readerSchema;
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesUndefined deserialize(com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesUndefined reuse, Decoder decoder)
+    public com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesUndefined deserialize(com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesUndefined reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        return deserializeFastSerdeLogicalTypesUndefined0((reuse), (decoder));
+        return deserializeFastSerdeLogicalTypesUndefined0((reuse), (decoder), (customization));
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesUndefined deserializeFastSerdeLogicalTypesUndefined0(Object reuse, Decoder decoder)
+    public com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesUndefined deserializeFastSerdeLogicalTypesUndefined0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesUndefined FastSerdeLogicalTypesUndefined;
@@ -35,11 +36,11 @@ public class FastSerdeLogicalTypesUndefined_SpecificDeserializer_1982763418_1982
             FastSerdeLogicalTypesUndefined = new com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesUndefined();
         }
         FastSerdeLogicalTypesUndefined.put(0, (decoder.readInt()));
-        populate_FastSerdeLogicalTypesUndefined0((FastSerdeLogicalTypesUndefined), (decoder));
+        populate_FastSerdeLogicalTypesUndefined0((FastSerdeLogicalTypesUndefined), (customization), (decoder));
         return FastSerdeLogicalTypesUndefined;
     }
 
-    private void populate_FastSerdeLogicalTypesUndefined0(com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesUndefined FastSerdeLogicalTypesUndefined, Decoder decoder)
+    private void populate_FastSerdeLogicalTypesUndefined0(com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesUndefined FastSerdeLogicalTypesUndefined, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         FastSerdeLogicalTypesUndefined.put(1, (decoder.readInt()));

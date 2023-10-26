@@ -3,6 +3,7 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 
 import java.io.IOException;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
@@ -20,13 +21,13 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord_Generi
         this.subRecord10 = readerSchema.getField("subRecord1").schema();
     }
 
-    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
+    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        return deserializeFastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord0((reuse), (decoder));
+        return deserializeFastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord0((reuse), (decoder), (customization));
     }
 
-    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord;
@@ -35,13 +36,13 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord_Generi
         } else {
             FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
-        FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.put(0, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.get(0), (decoder)));
-        populate_FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord0((FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord1((FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord), (decoder));
+        FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.put(0, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.get(0), (decoder), (customization)));
+        populate_FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord0((FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord1((FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord), (customization), (decoder));
         return FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord;
     }
 
-    public IndexedRecord deserializesubRecord0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializesubRecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord subRecord;
@@ -58,11 +59,11 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord_Generi
             charSequence0 = (decoder).readString(null);
         }
         subRecord.put(0, charSequence0);
-        populate_subRecord0((subRecord), (decoder));
+        populate_subRecord0((subRecord), (customization), (decoder));
         return subRecord;
     }
 
-    private void populate_subRecord0(IndexedRecord subRecord, Decoder decoder)
+    private void populate_subRecord0(IndexedRecord subRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         Utf8 charSequence1;
@@ -75,23 +76,23 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord_Generi
         subRecord.put(1, charSequence1);
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
-        deserializesubRecord20(null, (decoder));
+        deserializesubRecord20(null, (decoder), (customization));
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
         } else {
             if (unionIndex0 == 1) {
-                deserializesubRecord20(null, (decoder));
+                deserializesubRecord20(null, (decoder), (customization));
             } else {
                 throw new RuntimeException(("Illegal union index for 'subRecord3': "+ unionIndex0));
             }
         }
     }
 
-    public void deserializesubRecord20(Object reuse, Decoder decoder)
+    public void deserializesubRecord20(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         decoder.skipString();
@@ -104,10 +105,10 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord_Generi
         decoder.skipString();
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord1(IndexedRecord FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord1(IndexedRecord FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
-        FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.put(1, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.get(1), (decoder)));
+        FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.put(1, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldSkipRemovedRecord.get(1), (decoder), (customization)));
     }
 
 }

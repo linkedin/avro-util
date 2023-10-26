@@ -3,6 +3,7 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 
 import java.io.IOException;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.io.Decoder;
@@ -18,13 +19,13 @@ public class RecordWithLargeUnionField_SpecificDeserializer_1132455741_157017560
         this.readerSchema = readerSchema;
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.RecordWithLargeUnionField deserialize(com.linkedin.avro.fastserde.generated.avro.RecordWithLargeUnionField reuse, Decoder decoder)
+    public com.linkedin.avro.fastserde.generated.avro.RecordWithLargeUnionField deserialize(com.linkedin.avro.fastserde.generated.avro.RecordWithLargeUnionField reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        return deserializeRecordWithLargeUnionField0((reuse), (decoder));
+        return deserializeRecordWithLargeUnionField0((reuse), (decoder), (customization));
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.RecordWithLargeUnionField deserializeRecordWithLargeUnionField0(Object reuse, Decoder decoder)
+    public com.linkedin.avro.fastserde.generated.avro.RecordWithLargeUnionField deserializeRecordWithLargeUnionField0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         com.linkedin.avro.fastserde.generated.avro.RecordWithLargeUnionField RecordWithLargeUnionField;

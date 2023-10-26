@@ -4,6 +4,7 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 import java.io.IOException;
 import java.util.List;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.IndexedRecord;
@@ -23,13 +24,13 @@ public class FastSerdeLogicalTypesUndefined_GenericDeserializer_1982763418_19827
         this.arrayOfUnionOfDateAndTimestampMillisArrayElemSchema0 = arrayOfUnionOfDateAndTimestampMillis0 .getElementType();
     }
 
-    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
+    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        return deserializeFastSerdeLogicalTypesUndefined0((reuse), (decoder));
+        return deserializeFastSerdeLogicalTypesUndefined0((reuse), (decoder), (customization));
     }
 
-    public IndexedRecord deserializeFastSerdeLogicalTypesUndefined0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializeFastSerdeLogicalTypesUndefined0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord FastSerdeLogicalTypesUndefined;
@@ -39,11 +40,11 @@ public class FastSerdeLogicalTypesUndefined_GenericDeserializer_1982763418_19827
             FastSerdeLogicalTypesUndefined = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         FastSerdeLogicalTypesUndefined.put(0, (decoder.readInt()));
-        populate_FastSerdeLogicalTypesUndefined0((FastSerdeLogicalTypesUndefined), (decoder));
+        populate_FastSerdeLogicalTypesUndefined0((FastSerdeLogicalTypesUndefined), (customization), (decoder));
         return FastSerdeLogicalTypesUndefined;
     }
 
-    private void populate_FastSerdeLogicalTypesUndefined0(IndexedRecord FastSerdeLogicalTypesUndefined, Decoder decoder)
+    private void populate_FastSerdeLogicalTypesUndefined0(IndexedRecord FastSerdeLogicalTypesUndefined, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         FastSerdeLogicalTypesUndefined.put(1, (decoder.readInt()));

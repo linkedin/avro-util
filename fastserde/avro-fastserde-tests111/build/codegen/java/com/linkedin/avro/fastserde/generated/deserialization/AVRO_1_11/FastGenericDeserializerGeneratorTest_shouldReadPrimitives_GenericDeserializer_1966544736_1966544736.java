@@ -4,6 +4,7 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
@@ -33,13 +34,13 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
         this.testBytesUnion0 = readerSchema.getField("testBytesUnion").schema();
     }
 
-    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
+    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        return deserializeFastGenericDeserializerGeneratorTest_shouldReadPrimitives0((reuse), (decoder));
+        return deserializeFastGenericDeserializerGeneratorTest_shouldReadPrimitives0((reuse), (decoder), (customization));
     }
 
-    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadPrimitives0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadPrimitives0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPrimitives;
@@ -49,17 +50,17 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
             FastGenericDeserializerGeneratorTest_shouldReadPrimitives = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(0, (decoder.readInt()));
-        populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives0((FastGenericDeserializerGeneratorTest_shouldReadPrimitives), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives1((FastGenericDeserializerGeneratorTest_shouldReadPrimitives), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives2((FastGenericDeserializerGeneratorTest_shouldReadPrimitives), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives3((FastGenericDeserializerGeneratorTest_shouldReadPrimitives), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives4((FastGenericDeserializerGeneratorTest_shouldReadPrimitives), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives5((FastGenericDeserializerGeneratorTest_shouldReadPrimitives), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives6((FastGenericDeserializerGeneratorTest_shouldReadPrimitives), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives0((FastGenericDeserializerGeneratorTest_shouldReadPrimitives), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives1((FastGenericDeserializerGeneratorTest_shouldReadPrimitives), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives2((FastGenericDeserializerGeneratorTest_shouldReadPrimitives), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives3((FastGenericDeserializerGeneratorTest_shouldReadPrimitives), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives4((FastGenericDeserializerGeneratorTest_shouldReadPrimitives), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives5((FastGenericDeserializerGeneratorTest_shouldReadPrimitives), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives6((FastGenericDeserializerGeneratorTest_shouldReadPrimitives), (customization), (decoder));
         return FastGenericDeserializerGeneratorTest_shouldReadPrimitives;
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPrimitives, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPrimitives, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex0 = (decoder.readIndex());
@@ -83,7 +84,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(2, charSequence0);
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives1(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPrimitives, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives1(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPrimitives, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex1 = (decoder.readIndex());
@@ -107,7 +108,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(4, (decoder.readLong()));
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives2(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPrimitives, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives2(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPrimitives, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex2 = (decoder.readIndex());
@@ -124,7 +125,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(6, (decoder.readDouble()));
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives3(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPrimitives, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives3(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPrimitives, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex3 = (decoder.readIndex());
@@ -141,7 +142,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(8, (decoder.readFloat()));
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives4(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPrimitives, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives4(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPrimitives, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex4 = (decoder.readIndex());
@@ -158,7 +159,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(10, (decoder.readBoolean()));
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives5(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPrimitives, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives5(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPrimitives, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex5 = (decoder.readIndex());
@@ -182,7 +183,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
         FastGenericDeserializerGeneratorTest_shouldReadPrimitives.put(12, byteBuffer0);
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives6(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPrimitives, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadPrimitives6(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPrimitives, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex6 = (decoder.readIndex());

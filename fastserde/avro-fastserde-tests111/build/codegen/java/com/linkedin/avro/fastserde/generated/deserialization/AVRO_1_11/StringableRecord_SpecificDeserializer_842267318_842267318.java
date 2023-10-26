@@ -10,10 +10,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
@@ -30,11 +30,11 @@ public class StringableRecord_SpecificDeserializer_842267318_842267318
         this.readerSchema = readerSchema;
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.StringableRecord deserialize(com.linkedin.avro.fastserde.generated.avro.StringableRecord reuse, Decoder decoder)
+    public com.linkedin.avro.fastserde.generated.avro.StringableRecord deserialize(com.linkedin.avro.fastserde.generated.avro.StringableRecord reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         try {
-            return deserializeStringableRecord0((reuse), (decoder));
+            return deserializeStringableRecord0((reuse), (decoder), (customization));
         } catch (NumberFormatException e) {
             throw new AvroRuntimeException(e);
         } catch (MalformedURLException e) {
@@ -44,7 +44,7 @@ public class StringableRecord_SpecificDeserializer_842267318_842267318
         }
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.StringableRecord deserializeStringableRecord0(Object reuse, Decoder decoder)
+    public com.linkedin.avro.fastserde.generated.avro.StringableRecord deserializeStringableRecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException, NumberFormatException, MalformedURLException, URISyntaxException
     {
         com.linkedin.avro.fastserde.generated.avro.StringableRecord StringableRecord;
@@ -55,15 +55,15 @@ public class StringableRecord_SpecificDeserializer_842267318_842267318
         }
         BigInteger charSequence0 = new BigInteger((decoder.readString()));
         StringableRecord.put(0, charSequence0);
-        populate_StringableRecord0((StringableRecord), (decoder));
-        populate_StringableRecord1((StringableRecord), (decoder));
-        populate_StringableRecord2((StringableRecord), (decoder));
-        populate_StringableRecord3((StringableRecord), (decoder));
-        populate_StringableRecord4((StringableRecord), (decoder));
+        populate_StringableRecord0((StringableRecord), (customization), (decoder));
+        populate_StringableRecord1((StringableRecord), (customization), (decoder));
+        populate_StringableRecord2((StringableRecord), (customization), (decoder));
+        populate_StringableRecord3((StringableRecord), (customization), (decoder));
+        populate_StringableRecord4((StringableRecord), (customization), (decoder));
         return StringableRecord;
     }
 
-    private void populate_StringableRecord0(com.linkedin.avro.fastserde.generated.avro.StringableRecord StringableRecord, Decoder decoder)
+    private void populate_StringableRecord0(com.linkedin.avro.fastserde.generated.avro.StringableRecord StringableRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException, NumberFormatException, URISyntaxException
     {
         BigDecimal charSequence1 = new BigDecimal((decoder.readString()));
@@ -72,7 +72,7 @@ public class StringableRecord_SpecificDeserializer_842267318_842267318
         StringableRecord.put(2, charSequence2);
     }
 
-    private void populate_StringableRecord1(com.linkedin.avro.fastserde.generated.avro.StringableRecord StringableRecord, Decoder decoder)
+    private void populate_StringableRecord1(com.linkedin.avro.fastserde.generated.avro.StringableRecord StringableRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException, NumberFormatException, MalformedURLException, URISyntaxException
     {
         URL charSequence3 = new URL((decoder.readString()));
@@ -81,7 +81,7 @@ public class StringableRecord_SpecificDeserializer_842267318_842267318
         StringableRecord.put(4, charSequence4);
     }
 
-    private void populate_StringableRecord2(com.linkedin.avro.fastserde.generated.avro.StringableRecord StringableRecord, Decoder decoder)
+    private void populate_StringableRecord2(com.linkedin.avro.fastserde.generated.avro.StringableRecord StringableRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException, NumberFormatException, MalformedURLException, URISyntaxException
     {
         List<URL> urlArray0 = null;
@@ -112,17 +112,7 @@ public class StringableRecord_SpecificDeserializer_842267318_842267318
         Map<URL, BigInteger> urlMap0 = null;
         long chunkLen1 = (decoder.readMapStart());
         if (chunkLen1 > 0) {
-            Map<URL, BigInteger> urlMapReuse0 = null;
-            Object oldMap0 = StringableRecord.get(6);
-            if (oldMap0 instanceof Map) {
-                urlMapReuse0 = ((Map) oldMap0);
-            }
-            if (urlMapReuse0 != (null)) {
-                urlMapReuse0 .clear();
-                urlMap0 = urlMapReuse0;
-            } else {
-                urlMap0 = new HashMap<URL, BigInteger>(((int)(((chunkLen1 * 4)+ 2)/ 3)));
-            }
+            urlMap0 = ((Map)(customization).getNewMapOverrideFunc().apply(StringableRecord.get(6), ((int) chunkLen1)));
             do {
                 for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {
                     URL key0 = new URL((decoder.readString()));
@@ -132,19 +122,19 @@ public class StringableRecord_SpecificDeserializer_842267318_842267318
                 chunkLen1 = (decoder.mapNext());
             } while (chunkLen1 > 0);
         } else {
-            urlMap0 = new HashMap<URL, BigInteger>(0);
+            urlMap0 = ((Map)(customization).getNewMapOverrideFunc().apply(StringableRecord.get(6), 0));
         }
         StringableRecord.put(6, urlMap0);
     }
 
-    private void populate_StringableRecord3(com.linkedin.avro.fastserde.generated.avro.StringableRecord StringableRecord, Decoder decoder)
+    private void populate_StringableRecord3(com.linkedin.avro.fastserde.generated.avro.StringableRecord StringableRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException, NumberFormatException, MalformedURLException, URISyntaxException
     {
-        StringableRecord.put(7, deserializeStringableSubRecord0(StringableRecord.get(7), (decoder)));
-        StringableRecord.put(8, deserializeAnotherSubRecord0(StringableRecord.get(8), (decoder)));
+        StringableRecord.put(7, deserializeStringableSubRecord0(StringableRecord.get(7), (decoder), (customization)));
+        StringableRecord.put(8, deserializeAnotherSubRecord0(StringableRecord.get(8), (decoder), (customization)));
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.StringableSubRecord deserializeStringableSubRecord0(Object reuse, Decoder decoder)
+    public com.linkedin.avro.fastserde.generated.avro.StringableSubRecord deserializeStringableSubRecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException, URISyntaxException
     {
         com.linkedin.avro.fastserde.generated.avro.StringableSubRecord StringableSubRecord;
@@ -155,11 +145,11 @@ public class StringableRecord_SpecificDeserializer_842267318_842267318
         }
         URI charSequence7 = new URI((decoder.readString()));
         StringableSubRecord.put(0, charSequence7);
-        populate_StringableSubRecord0((StringableSubRecord), (decoder));
+        populate_StringableSubRecord0((StringableSubRecord), (customization), (decoder));
         return StringableSubRecord;
     }
 
-    private void populate_StringableSubRecord0(com.linkedin.avro.fastserde.generated.avro.StringableSubRecord StringableSubRecord, Decoder decoder)
+    private void populate_StringableSubRecord0(com.linkedin.avro.fastserde.generated.avro.StringableSubRecord StringableSubRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException, URISyntaxException
     {
         int unionIndex0 = (decoder.readIndex());
@@ -186,7 +176,7 @@ public class StringableRecord_SpecificDeserializer_842267318_842267318
         }
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.AnotherSubRecord deserializeAnotherSubRecord0(Object reuse, Decoder decoder)
+    public com.linkedin.avro.fastserde.generated.avro.AnotherSubRecord deserializeAnotherSubRecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException, URISyntaxException
     {
         com.linkedin.avro.fastserde.generated.avro.AnotherSubRecord AnotherSubRecord;
@@ -195,11 +185,11 @@ public class StringableRecord_SpecificDeserializer_842267318_842267318
         } else {
             AnotherSubRecord = new com.linkedin.avro.fastserde.generated.avro.AnotherSubRecord();
         }
-        AnotherSubRecord.put(0, deserializeStringableSubRecord0(AnotherSubRecord.get(0), (decoder)));
+        AnotherSubRecord.put(0, deserializeStringableSubRecord0(AnotherSubRecord.get(0), (decoder), (customization)));
         return AnotherSubRecord;
     }
 
-    private void populate_StringableRecord4(com.linkedin.avro.fastserde.generated.avro.StringableRecord StringableRecord, Decoder decoder)
+    private void populate_StringableRecord4(com.linkedin.avro.fastserde.generated.avro.StringableRecord StringableRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException, NumberFormatException, MalformedURLException, URISyntaxException
     {
         int unionIndex1 = (decoder.readIndex());

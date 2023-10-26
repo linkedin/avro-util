@@ -3,6 +3,7 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 
 import java.io.IOException;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
@@ -21,13 +22,13 @@ public class record_GenericDeserializer_711533897_1556659421
         this.subRecordRecordSchema0 = subRecord0 .getTypes().get(1);
     }
 
-    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
+    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        return deserializerecord0((reuse), (decoder));
+        return deserializerecord0((reuse), (decoder), (customization));
     }
 
-    public IndexedRecord deserializerecord0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializerecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord record;
@@ -36,11 +37,11 @@ public class record_GenericDeserializer_711533897_1556659421
         } else {
             record = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
-        record.put(0, deserializesubRecord0(record.get(0), (decoder)));
+        record.put(0, deserializesubRecord0(record.get(0), (decoder), (customization)));
         return record;
     }
 
-    public IndexedRecord deserializesubRecord0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializesubRecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord subRecord;
@@ -50,11 +51,11 @@ public class record_GenericDeserializer_711533897_1556659421
             subRecord = new org.apache.avro.generic.GenericData.Record(subRecordRecordSchema0);
         }
         subRecord.put(0, (decoder.readInt()));
-        populate_subRecord0((subRecord), (decoder));
+        populate_subRecord0((subRecord), (customization), (decoder));
         return subRecord;
     }
 
-    private void populate_subRecord0(IndexedRecord subRecord, Decoder decoder)
+    private void populate_subRecord0(IndexedRecord subRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         subRecord.put(1, (decoder.readInt()));

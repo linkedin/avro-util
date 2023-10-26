@@ -3,6 +3,7 @@ package com.linkedin.avro.fastserde.generated.serialization.AVRO_1_11;
 
 import java.io.IOException;
 import com.linkedin.avro.fastserde.FastSerializer;
+import com.linkedin.avro.fastserde.customized.DatumWriterCustomization;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.util.Utf8;
@@ -12,14 +13,14 @@ public class FastGenericSerializerGeneratorTest_shouldWriteMultipleChoiceUnion_G
 {
 
 
-    public void serialize(IndexedRecord data, Encoder encoder)
+    public void serialize(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
-        serializeFastGenericSerializerGeneratorTest_shouldWriteMultipleChoiceUnion0(data, (encoder));
+        serializeFastGenericSerializerGeneratorTest_shouldWriteMultipleChoiceUnion0(data, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    public void serializeFastGenericSerializerGeneratorTest_shouldWriteMultipleChoiceUnion0(IndexedRecord data, Encoder encoder)
+    public void serializeFastGenericSerializerGeneratorTest_shouldWriteMultipleChoiceUnion0(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         Object union0 = ((Object) data.get(0));
@@ -29,7 +30,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteMultipleChoiceUnion_G
         } else {
             if ((union0 instanceof IndexedRecord)&&"com.linkedin.avro.fastserde.generated.avro.subRecord".equals(((IndexedRecord) union0).getSchema().getFullName())) {
                 (encoder).writeIndex(1);
-                serializeSubRecord0(((IndexedRecord) union0), (encoder));
+                serializeSubRecord0(((IndexedRecord) union0), (encoder), (customization));
             } else {
                 if (union0 instanceof CharSequence) {
                     (encoder).writeIndex(2);
@@ -49,7 +50,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteMultipleChoiceUnion_G
     }
 
     @SuppressWarnings("unchecked")
-    public void serializeSubRecord0(IndexedRecord data, Encoder encoder)
+    public void serializeSubRecord0(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         CharSequence subField0 = ((CharSequence) data.get(0));

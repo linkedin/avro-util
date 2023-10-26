@@ -3,6 +3,7 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 
 import java.io.IOException;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
@@ -26,13 +27,13 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordField_Gener
         this.field0 = readerSchema.getField("field").schema();
     }
 
-    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
+    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        return deserializeFastGenericDeserializerGeneratorTest_shouldReadSubRecordField0((reuse), (decoder));
+        return deserializeFastGenericDeserializerGeneratorTest_shouldReadSubRecordField0((reuse), (decoder), (customization));
     }
 
-    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadSubRecordField0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadSubRecordField0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadSubRecordField;
@@ -47,16 +48,16 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordField_Gener
             FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(0, null);
         } else {
             if (unionIndex0 == 1) {
-                FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(0, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(0), (decoder)));
+                FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(0, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(0), (decoder), (customization)));
             } else {
                 throw new RuntimeException(("Illegal union index for 'record': "+ unionIndex0));
             }
         }
-        populate_FastGenericDeserializerGeneratorTest_shouldReadSubRecordField0((FastGenericDeserializerGeneratorTest_shouldReadSubRecordField), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadSubRecordField0((FastGenericDeserializerGeneratorTest_shouldReadSubRecordField), (customization), (decoder));
         return FastGenericDeserializerGeneratorTest_shouldReadSubRecordField;
     }
 
-    public IndexedRecord deserializesubRecord0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializesubRecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord subRecord;
@@ -86,10 +87,10 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordField_Gener
         return subRecord;
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldReadSubRecordField0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadSubRecordField, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadSubRecordField0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadSubRecordField, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
-        FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(1, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(1), (decoder)));
+        FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.put(1, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldReadSubRecordField.get(1), (decoder), (customization)));
         int unionIndex2 = (decoder.readIndex());
         if (unionIndex2 == 0) {
             decoder.readNull();

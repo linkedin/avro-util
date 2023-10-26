@@ -4,6 +4,7 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 import java.io.IOException;
 import java.util.List;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.IndexedRecord;
@@ -24,7 +25,7 @@ public class Array_of_record_GenericDeserializer_477614132_477614132
         this.field0 = arrayArrayElemSchema0 .getField("field").schema();
     }
 
-    public List<IndexedRecord> deserialize(List<IndexedRecord> reuse, Decoder decoder)
+    public List<IndexedRecord> deserialize(List<IndexedRecord> reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         List<IndexedRecord> array0 = null;
@@ -45,14 +46,14 @@ public class Array_of_record_GenericDeserializer_477614132_477614132
                 if ((reuse) instanceof GenericArray) {
                     arrayArrayElementReuseVar0 = ((GenericArray)(reuse)).peek();
                 }
-                array0 .add(deserializerecord0(arrayArrayElementReuseVar0, (decoder)));
+                array0 .add(deserializerecord0(arrayArrayElementReuseVar0, (decoder), (customization)));
             }
             chunkLen0 = (decoder.arrayNext());
         }
         return array0;
     }
 
-    public IndexedRecord deserializerecord0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializerecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord record;

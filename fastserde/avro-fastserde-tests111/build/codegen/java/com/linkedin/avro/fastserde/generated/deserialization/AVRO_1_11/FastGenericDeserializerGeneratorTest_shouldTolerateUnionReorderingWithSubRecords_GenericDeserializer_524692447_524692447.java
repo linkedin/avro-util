@@ -3,6 +3,7 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 
 import java.io.IOException;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
@@ -23,13 +24,13 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingW
         this.testOptionSchema1 = test0 .getTypes().get(2);
     }
 
-    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
+    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        return deserializeFastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords0((reuse), (decoder));
+        return deserializeFastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords0((reuse), (decoder), (customization));
     }
 
-    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords;
@@ -44,10 +45,10 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingW
             FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords.put(0, null);
         } else {
             if (unionIndex0 == 1) {
-                FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords.put(0, deserializesubRecord10(FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords.get(0), (decoder)));
+                FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords.put(0, deserializesubRecord10(FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords.get(0), (decoder), (customization)));
             } else {
                 if (unionIndex0 == 2) {
-                    FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords.put(0, deserializesubRecord20(FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords.get(0), (decoder)));
+                    FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords.put(0, deserializesubRecord20(FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords.get(0), (decoder), (customization)));
                 } else {
                     throw new RuntimeException(("Illegal union index for 'test': "+ unionIndex0));
                 }
@@ -56,7 +57,7 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingW
         return FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords;
     }
 
-    public IndexedRecord deserializesubRecord10(Object reuse, Decoder decoder)
+    public IndexedRecord deserializesubRecord10(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord subRecord1;
@@ -69,7 +70,7 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingW
         return subRecord1;
     }
 
-    public IndexedRecord deserializesubRecord20(Object reuse, Decoder decoder)
+    public IndexedRecord deserializesubRecord20(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord subRecord2;

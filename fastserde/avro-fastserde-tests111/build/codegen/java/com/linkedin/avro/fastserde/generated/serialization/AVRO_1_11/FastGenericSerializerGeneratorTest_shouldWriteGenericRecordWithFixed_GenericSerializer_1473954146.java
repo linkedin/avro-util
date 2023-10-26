@@ -4,6 +4,7 @@ package com.linkedin.avro.fastserde.generated.serialization.AVRO_1_11;
 import java.io.IOException;
 import java.util.List;
 import com.linkedin.avro.fastserde.FastSerializer;
+import com.linkedin.avro.fastserde.customized.DatumWriterCustomization;
 import org.apache.avro.generic.GenericFixed;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Encoder;
@@ -13,23 +14,23 @@ public class FastGenericSerializerGeneratorTest_shouldWriteGenericRecordWithFixe
 {
 
 
-    public void serialize(IndexedRecord data, Encoder encoder)
+    public void serialize(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
-        serializeFastGenericSerializerGeneratorTest_shouldWriteGenericRecordWithFixed0(data, (encoder));
+        serializeFastGenericSerializerGeneratorTest_shouldWriteGenericRecordWithFixed0(data, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    public void serializeFastGenericSerializerGeneratorTest_shouldWriteGenericRecordWithFixed0(IndexedRecord data, Encoder encoder)
+    public void serializeFastGenericSerializerGeneratorTest_shouldWriteGenericRecordWithFixed0(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeFixed(((GenericFixed) data.get(0)).bytes());
-        serialize_FastGenericSerializerGeneratorTest_shouldWriteGenericRecordWithFixed0(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldWriteGenericRecordWithFixed1(data, (encoder));
+        serialize_FastGenericSerializerGeneratorTest_shouldWriteGenericRecordWithFixed0(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldWriteGenericRecordWithFixed1(data, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldWriteGenericRecordWithFixed0(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldWriteGenericRecordWithFixed0(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         GenericFixed testFixedUnion0 = ((GenericFixed) data.get(1));
@@ -57,7 +58,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteGenericRecordWithFixe
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldWriteGenericRecordWithFixed1(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldWriteGenericRecordWithFixed1(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         List<GenericFixed> testFixedUnionArray0 = ((List<GenericFixed> ) data.get(3));

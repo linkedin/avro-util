@@ -2,9 +2,9 @@
 package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
@@ -26,13 +26,13 @@ public class record_GenericDeserializer_1557256887_1025741720
         this.someIntsMapValueSchema0 = someIntsMapSchema0 .getValueType();
     }
 
-    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
+    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        return deserializerecord0((reuse), (decoder));
+        return deserializerecord0((reuse), (decoder), (customization));
     }
 
-    public IndexedRecord deserializerecord0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializerecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord record;
@@ -44,17 +44,7 @@ public class record_GenericDeserializer_1557256887_1025741720
         Map<Utf8, Integer> someInts1 = null;
         long chunkLen0 = (decoder.readMapStart());
         if (chunkLen0 > 0) {
-            Map<Utf8, Integer> someIntsReuse0 = null;
-            Object oldMap0 = record.get(0);
-            if (oldMap0 instanceof Map) {
-                someIntsReuse0 = ((Map) oldMap0);
-            }
-            if (someIntsReuse0 != (null)) {
-                someIntsReuse0 .clear();
-                someInts1 = someIntsReuse0;
-            } else {
-                someInts1 = new HashMap<Utf8, Integer>(((int)(((chunkLen0 * 4)+ 2)/ 3)));
-            }
+            someInts1 = ((Map)(customization).getNewMapOverrideFunc().apply(record.get(0), ((int) chunkLen0)));
             do {
                 for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
                     Utf8 key0 = (decoder.readString(null));
@@ -63,7 +53,7 @@ public class record_GenericDeserializer_1557256887_1025741720
                 chunkLen0 = (decoder.mapNext());
             } while (chunkLen0 > 0);
         } else {
-            someInts1 = new HashMap<Utf8, Integer>(0);
+            someInts1 = ((Map)(customization).getNewMapOverrideFunc().apply(record.get(0), 0));
         }
         record.put(0, someInts1);
         return record;

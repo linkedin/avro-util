@@ -2,9 +2,9 @@
 package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
@@ -24,36 +24,27 @@ public class Map_of_record_GenericDeserializer_1677529043_1677529043
         this.field0 = mapMapValueSchema0 .getField("field").schema();
     }
 
-    public Map<Utf8, IndexedRecord> deserialize(Map<Utf8, IndexedRecord> reuse, Decoder decoder)
+    public Map<Utf8, IndexedRecord> deserialize(Map<Utf8, IndexedRecord> reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         Map<Utf8, IndexedRecord> map0 = null;
         long chunkLen0 = (decoder.readMapStart());
         if (chunkLen0 > 0) {
-            Map<Utf8, IndexedRecord> mapReuse0 = null;
-            if ((reuse) instanceof Map) {
-                mapReuse0 = ((Map)(reuse));
-            }
-            if (mapReuse0 != (null)) {
-                mapReuse0 .clear();
-                map0 = mapReuse0;
-            } else {
-                map0 = new HashMap<Utf8, IndexedRecord>(((int)(((chunkLen0 * 4)+ 2)/ 3)));
-            }
+            map0 = ((Map)(customization).getNewMapOverrideFunc().apply((reuse), ((int) chunkLen0)));
             do {
                 for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
                     Utf8 key0 = (decoder.readString(null));
-                    map0 .put(key0, deserializerecord0(null, (decoder)));
+                    map0 .put(key0, deserializerecord0(null, (decoder), (customization)));
                 }
                 chunkLen0 = (decoder.mapNext());
             } while (chunkLen0 > 0);
         } else {
-            map0 = new HashMap<Utf8, IndexedRecord>(0);
+            map0 = ((Map)(customization).getNewMapOverrideFunc().apply((reuse), 0));
         }
         return map0;
     }
 
-    public IndexedRecord deserializerecord0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializerecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord record;

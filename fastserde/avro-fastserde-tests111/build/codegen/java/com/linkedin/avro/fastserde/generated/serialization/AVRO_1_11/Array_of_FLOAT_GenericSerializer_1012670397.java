@@ -6,6 +6,7 @@ import java.util.List;
 import com.linkedin.avro.api.PrimitiveFloatList;
 import com.linkedin.avro.fastserde.BufferBackedPrimitiveFloatList;
 import com.linkedin.avro.fastserde.FastSerializer;
+import com.linkedin.avro.fastserde.customized.DatumWriterCustomization;
 import org.apache.avro.io.Encoder;
 
 public class Array_of_FLOAT_GenericSerializer_1012670397
@@ -13,7 +14,7 @@ public class Array_of_FLOAT_GenericSerializer_1012670397
 {
 
 
-    public void serialize(List<Float> data, Encoder encoder)
+    public void serialize(List<Float> data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeArrayStart();

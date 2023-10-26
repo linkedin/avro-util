@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import com.linkedin.avro.fastserde.FastSerializer;
+import com.linkedin.avro.fastserde.customized.DatumWriterCustomization;
 import com.linkedin.avro.fastserde.generated.avro.AnotherSubRecord;
 import com.linkedin.avro.fastserde.generated.avro.StringableRecord;
 import com.linkedin.avro.fastserde.generated.avro.StringableSubRecord;
@@ -21,26 +22,26 @@ public class StringableRecord_SpecificSerializer_842267318
 {
 
 
-    public void serialize(StringableRecord data, Encoder encoder)
+    public void serialize(StringableRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
-        serializeStringableRecord0(data, (encoder));
+        serializeStringableRecord0(data, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    public void serializeStringableRecord0(StringableRecord data, Encoder encoder)
+    public void serializeStringableRecord0(StringableRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeString(((BigInteger) data.get(0)).toString());
-        serialize_StringableRecord0(data, (encoder));
-        serialize_StringableRecord1(data, (encoder));
-        serialize_StringableRecord2(data, (encoder));
-        serialize_StringableRecord3(data, (encoder));
-        serialize_StringableRecord4(data, (encoder));
+        serialize_StringableRecord0(data, (encoder), (customization));
+        serialize_StringableRecord1(data, (encoder), (customization));
+        serialize_StringableRecord2(data, (encoder), (customization));
+        serialize_StringableRecord3(data, (encoder), (customization));
+        serialize_StringableRecord4(data, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_StringableRecord0(StringableRecord data, Encoder encoder)
+    private void serialize_StringableRecord0(StringableRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeString(((BigDecimal) data.get(1)).toString());
@@ -48,7 +49,7 @@ public class StringableRecord_SpecificSerializer_842267318
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_StringableRecord1(StringableRecord data, Encoder encoder)
+    private void serialize_StringableRecord1(StringableRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeString(((URL) data.get(3)).toString());
@@ -56,7 +57,7 @@ public class StringableRecord_SpecificSerializer_842267318
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_StringableRecord2(StringableRecord data, Encoder encoder)
+    private void serialize_StringableRecord2(StringableRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         List<URL> urlArray0 = ((List<URL> ) data.get(5));
@@ -72,6 +73,7 @@ public class StringableRecord_SpecificSerializer_842267318
         }
         (encoder).writeArrayEnd();
         Map<URL, BigInteger> urlMap0 = ((Map<URL, BigInteger> ) data.get(6));
+        (customization).getCheckMapTypeFunction().apply(urlMap0);
         (encoder).writeMapStart();
         if ((urlMap0 == null)||urlMap0 .isEmpty()) {
             (encoder).setItemCount(0);
@@ -88,25 +90,25 @@ public class StringableRecord_SpecificSerializer_842267318
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_StringableRecord3(StringableRecord data, Encoder encoder)
+    private void serialize_StringableRecord3(StringableRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         StringableSubRecord subRecord0 = ((StringableSubRecord) data.get(7));
-        serializeStringableSubRecord0(subRecord0, (encoder));
+        serializeStringableSubRecord0(subRecord0, (encoder), (customization));
         AnotherSubRecord subRecordWithSubRecord0 = ((AnotherSubRecord) data.get(8));
-        serializeAnotherSubRecord0(subRecordWithSubRecord0, (encoder));
+        serializeAnotherSubRecord0(subRecordWithSubRecord0, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    public void serializeStringableSubRecord0(StringableSubRecord data, Encoder encoder)
+    public void serializeStringableSubRecord0(StringableSubRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeString(((URI) data.get(0)).toString());
-        serialize_StringableSubRecord0(data, (encoder));
+        serialize_StringableSubRecord0(data, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_StringableSubRecord0(StringableSubRecord data, Encoder encoder)
+    private void serialize_StringableSubRecord0(StringableSubRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         Object nullStringIntUnion0 = ((Object) data.get(1));
@@ -131,15 +133,15 @@ public class StringableRecord_SpecificSerializer_842267318
     }
 
     @SuppressWarnings("unchecked")
-    public void serializeAnotherSubRecord0(AnotherSubRecord data, Encoder encoder)
+    public void serializeAnotherSubRecord0(AnotherSubRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         StringableSubRecord subRecord1 = ((StringableSubRecord) data.get(0));
-        serializeStringableSubRecord0(subRecord1, (encoder));
+        serializeStringableSubRecord0(subRecord1, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_StringableRecord4(StringableRecord data, Encoder encoder)
+    private void serialize_StringableRecord4(StringableRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         String stringUnion0 = ((String) data.get(9));

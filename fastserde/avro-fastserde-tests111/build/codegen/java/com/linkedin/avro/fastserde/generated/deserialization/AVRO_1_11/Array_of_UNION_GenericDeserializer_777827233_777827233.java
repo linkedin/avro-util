@@ -4,6 +4,7 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 import java.io.IOException;
 import java.util.List;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.IndexedRecord;
@@ -26,7 +27,7 @@ public class Array_of_UNION_GenericDeserializer_777827233_777827233
         this.field0 = arrayElemOptionSchema0 .getField("field").schema();
     }
 
-    public List<IndexedRecord> deserialize(List<IndexedRecord> reuse, Decoder decoder)
+    public List<IndexedRecord> deserialize(List<IndexedRecord> reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         List<IndexedRecord> array0 = null;
@@ -53,7 +54,7 @@ public class Array_of_UNION_GenericDeserializer_777827233_777827233
                     array0 .add(null);
                 } else {
                     if (unionIndex0 == 1) {
-                        array0 .add(deserializerecord0(arrayArrayElementReuseVar0, (decoder)));
+                        array0 .add(deserializerecord0(arrayArrayElementReuseVar0, (decoder), (customization)));
                     } else {
                         throw new RuntimeException(("Illegal union index for 'arrayElem': "+ unionIndex0));
                     }
@@ -64,7 +65,7 @@ public class Array_of_UNION_GenericDeserializer_777827233_777827233
         return array0;
     }
 
-    public IndexedRecord deserializerecord0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializerecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord record;

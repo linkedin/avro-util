@@ -2,10 +2,10 @@
 package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.IndexedRecord;
@@ -27,13 +27,13 @@ public class FastStringableTest_javaStringPropertyTest_GenericDeserializer_11109
         this.testStringMap0 = readerSchema.getField("testStringMap").schema();
     }
 
-    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
+    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        return deserializeFastStringableTest_javaStringPropertyTest0((reuse), (decoder));
+        return deserializeFastStringableTest_javaStringPropertyTest0((reuse), (decoder), (customization));
     }
 
-    public IndexedRecord deserializeFastStringableTest_javaStringPropertyTest0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializeFastStringableTest_javaStringPropertyTest0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord FastStringableTest_javaStringPropertyTest;
@@ -44,12 +44,12 @@ public class FastStringableTest_javaStringPropertyTest_GenericDeserializer_11109
         }
         String charSequence0 = (decoder).readString();
         FastStringableTest_javaStringPropertyTest.put(0, charSequence0);
-        populate_FastStringableTest_javaStringPropertyTest0((FastStringableTest_javaStringPropertyTest), (decoder));
-        populate_FastStringableTest_javaStringPropertyTest1((FastStringableTest_javaStringPropertyTest), (decoder));
+        populate_FastStringableTest_javaStringPropertyTest0((FastStringableTest_javaStringPropertyTest), (customization), (decoder));
+        populate_FastStringableTest_javaStringPropertyTest1((FastStringableTest_javaStringPropertyTest), (customization), (decoder));
         return FastStringableTest_javaStringPropertyTest;
     }
 
-    private void populate_FastStringableTest_javaStringPropertyTest0(IndexedRecord FastStringableTest_javaStringPropertyTest, Decoder decoder)
+    private void populate_FastStringableTest_javaStringPropertyTest0(IndexedRecord FastStringableTest_javaStringPropertyTest, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex0 = (decoder.readIndex());
@@ -91,23 +91,13 @@ public class FastStringableTest_javaStringPropertyTest_GenericDeserializer_11109
         FastStringableTest_javaStringPropertyTest.put(2, testStringArray1);
     }
 
-    private void populate_FastStringableTest_javaStringPropertyTest1(IndexedRecord FastStringableTest_javaStringPropertyTest, Decoder decoder)
+    private void populate_FastStringableTest_javaStringPropertyTest1(IndexedRecord FastStringableTest_javaStringPropertyTest, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         Map<String, String> testStringMap1 = null;
         long chunkLen1 = (decoder.readMapStart());
         if (chunkLen1 > 0) {
-            Map<String, String> testStringMapReuse0 = null;
-            Object oldMap0 = FastStringableTest_javaStringPropertyTest.get(3);
-            if (oldMap0 instanceof Map) {
-                testStringMapReuse0 = ((Map) oldMap0);
-            }
-            if (testStringMapReuse0 != (null)) {
-                testStringMapReuse0 .clear();
-                testStringMap1 = testStringMapReuse0;
-            } else {
-                testStringMap1 = new HashMap<String, String>(((int)(((chunkLen1 * 4)+ 2)/ 3)));
-            }
+            testStringMap1 = ((Map)(customization).getNewMapOverrideFunc().apply(FastStringableTest_javaStringPropertyTest.get(3), ((int) chunkLen1)));
             do {
                 for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {
                     String key0 = (decoder.readString());
@@ -117,7 +107,7 @@ public class FastStringableTest_javaStringPropertyTest_GenericDeserializer_11109
                 chunkLen1 = (decoder.mapNext());
             } while (chunkLen1 > 0);
         } else {
-            testStringMap1 = new HashMap<String, String>(0);
+            testStringMap1 = ((Map)(customization).getNewMapOverrideFunc().apply(FastStringableTest_javaStringPropertyTest.get(3), 0));
         }
         FastStringableTest_javaStringPropertyTest.put(3, testStringMap1);
     }

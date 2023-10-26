@@ -4,6 +4,7 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 import java.io.IOException;
 import java.util.List;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.IndexedRecord;
@@ -32,13 +33,13 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSu
         this.recordArray0 = readerSchema.getField("recordArray").schema();
     }
 
-    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
+    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        return deserializeFastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields0((reuse), (decoder));
+        return deserializeFastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields0((reuse), (decoder), (customization));
     }
 
-    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields;
@@ -47,12 +48,12 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSu
         } else {
             FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
-        FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields.put(0, deserializealiasedSubRecord0(FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields.get(0), (decoder)));
-        populate_FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields0((FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields), (decoder));
+        FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields.put(0, deserializealiasedSubRecord0(FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields.get(0), (decoder), (customization)));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields0((FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields), (customization), (decoder));
         return FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields;
     }
 
-    public IndexedRecord deserializealiasedSubRecord0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializealiasedSubRecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord aliasedSubRecord;
@@ -71,11 +72,11 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSu
                 throw new RuntimeException(("Illegal union index for 'intField': "+ unionIndex0));
             }
         }
-        populate_aliasedSubRecord0((aliasedSubRecord), (decoder));
+        populate_aliasedSubRecord0((aliasedSubRecord), (customization), (decoder));
         return aliasedSubRecord;
     }
 
-    private void populate_aliasedSubRecord0(IndexedRecord aliasedSubRecord, Decoder decoder)
+    private void populate_aliasedSubRecord0(IndexedRecord aliasedSubRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex1 = (decoder.readIndex());
@@ -98,10 +99,10 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSu
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
-        FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields.put(1, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields.get(1), (decoder)));
+        FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields.put(1, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields.get(1), (decoder), (customization)));
         List<IndexedRecord> recordArray1 = null;
         long chunkLen0 = (decoder.readArrayStart());
         Object oldArray0 = FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields.get(2);
@@ -121,14 +122,14 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSu
                 if (oldArray0 instanceof GenericArray) {
                     recordArrayArrayElementReuseVar0 = ((GenericArray) oldArray0).peek();
                 }
-                recordArray1 .add(deserializealiasedSubRecord0(recordArrayArrayElementReuseVar0, (decoder)));
+                recordArray1 .add(deserializealiasedSubRecord0(recordArrayArrayElementReuseVar0, (decoder), (customization)));
             }
             chunkLen0 = (decoder.arrayNext());
         }
         FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields.put(2, recordArray1);
     }
 
-    public IndexedRecord deserializesubRecord0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializesubRecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord aliasedSubRecord;
@@ -148,11 +149,11 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSu
                 throw new RuntimeException(("Illegal union index for 'intField': "+ unionIndex2));
             }
         }
-        populate_aliasedSubRecord1((aliasedSubRecord), (decoder));
+        populate_aliasedSubRecord1((aliasedSubRecord), (customization), (decoder));
         return aliasedSubRecord;
     }
 
-    private void populate_aliasedSubRecord1(IndexedRecord aliasedSubRecord, Decoder decoder)
+    private void populate_aliasedSubRecord1(IndexedRecord aliasedSubRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex3 = (decoder.readIndex());

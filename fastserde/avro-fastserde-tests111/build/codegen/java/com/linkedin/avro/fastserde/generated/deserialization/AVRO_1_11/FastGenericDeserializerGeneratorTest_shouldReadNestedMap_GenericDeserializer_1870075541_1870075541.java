@@ -2,11 +2,11 @@
 package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import com.linkedin.avro.api.PrimitiveIntList;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import com.linkedin.avro.fastserde.primitive.PrimitiveIntArrayList;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
@@ -29,13 +29,13 @@ public class FastGenericDeserializerGeneratorTest_shouldReadNestedMap_GenericDes
         this.mapFieldValueMapValueSchema0 = mapFieldMapValueSchema0 .getValueType();
     }
 
-    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
+    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        return deserializeFastGenericDeserializerGeneratorTest_shouldReadNestedMap0((reuse), (decoder));
+        return deserializeFastGenericDeserializerGeneratorTest_shouldReadNestedMap0((reuse), (decoder), (customization));
     }
 
-    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadNestedMap0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadNestedMap0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadNestedMap;
@@ -47,33 +47,14 @@ public class FastGenericDeserializerGeneratorTest_shouldReadNestedMap_GenericDes
         Map<Utf8, Map<Utf8, List<Integer>>> mapField1 = null;
         long chunkLen0 = (decoder.readMapStart());
         if (chunkLen0 > 0) {
-            Map<Utf8, Map<Utf8, List<Integer>>> mapFieldReuse0 = null;
-            Object oldMap0 = FastGenericDeserializerGeneratorTest_shouldReadNestedMap.get(0);
-            if (oldMap0 instanceof Map) {
-                mapFieldReuse0 = ((Map) oldMap0);
-            }
-            if (mapFieldReuse0 != (null)) {
-                mapFieldReuse0 .clear();
-                mapField1 = mapFieldReuse0;
-            } else {
-                mapField1 = new HashMap<Utf8, Map<Utf8, List<Integer>>>(((int)(((chunkLen0 * 4)+ 2)/ 3)));
-            }
+            mapField1 = ((Map)(customization).getNewMapOverrideFunc().apply(FastGenericDeserializerGeneratorTest_shouldReadNestedMap.get(0), ((int) chunkLen0)));
             do {
                 for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
                     Utf8 key0 = (decoder.readString(null));
                     Map<Utf8, List<Integer>> mapFieldValue0 = null;
                     long chunkLen1 = (decoder.readMapStart());
                     if (chunkLen1 > 0) {
-                        Map<Utf8, List<Integer>> mapFieldValueReuse0 = null;
-                        if (null instanceof Map) {
-                            mapFieldValueReuse0 = ((Map) null);
-                        }
-                        if (mapFieldValueReuse0 != (null)) {
-                            mapFieldValueReuse0 .clear();
-                            mapFieldValue0 = mapFieldValueReuse0;
-                        } else {
-                            mapFieldValue0 = new HashMap<Utf8, List<Integer>>(((int)(((chunkLen1 * 4)+ 2)/ 3)));
-                        }
+                        mapFieldValue0 = ((Map)(customization).getNewMapOverrideFunc().apply(null, ((int) chunkLen1)));
                         do {
                             for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {
                                 Utf8 key1 = (decoder.readString(null));
@@ -96,14 +77,14 @@ public class FastGenericDeserializerGeneratorTest_shouldReadNestedMap_GenericDes
                             chunkLen1 = (decoder.mapNext());
                         } while (chunkLen1 > 0);
                     } else {
-                        mapFieldValue0 = new HashMap<Utf8, List<Integer>>(0);
+                        mapFieldValue0 = ((Map)(customization).getNewMapOverrideFunc().apply(null, 0));
                     }
                     mapField1 .put(key0, mapFieldValue0);
                 }
                 chunkLen0 = (decoder.mapNext());
             } while (chunkLen0 > 0);
         } else {
-            mapField1 = new HashMap<Utf8, Map<Utf8, List<Integer>>>(0);
+            mapField1 = ((Map)(customization).getNewMapOverrideFunc().apply(FastGenericDeserializerGeneratorTest_shouldReadNestedMap.get(0), 0));
         }
         FastGenericDeserializerGeneratorTest_shouldReadNestedMap.put(0, mapField1);
         return FastGenericDeserializerGeneratorTest_shouldReadNestedMap;

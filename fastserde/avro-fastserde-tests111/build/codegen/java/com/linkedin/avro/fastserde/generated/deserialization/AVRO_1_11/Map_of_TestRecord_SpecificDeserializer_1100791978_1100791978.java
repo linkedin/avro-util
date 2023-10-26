@@ -4,7 +4,6 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import com.linkedin.avro.api.PrimitiveBooleanList;
@@ -14,6 +13,7 @@ import com.linkedin.avro.api.PrimitiveIntList;
 import com.linkedin.avro.api.PrimitiveLongList;
 import com.linkedin.avro.fastserde.BufferBackedPrimitiveFloatList;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import com.linkedin.avro.fastserde.generated.avro.TestEnum;
 import com.linkedin.avro.fastserde.generated.avro.TestFixed;
 import com.linkedin.avro.fastserde.primitive.PrimitiveBooleanArrayList;
@@ -37,36 +37,27 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
         this.readerSchema = readerSchema;
     }
 
-    public Map<Utf8, com.linkedin.avro.fastserde.generated.avro.TestRecord> deserialize(Map<Utf8, com.linkedin.avro.fastserde.generated.avro.TestRecord> reuse, Decoder decoder)
+    public Map<Utf8, com.linkedin.avro.fastserde.generated.avro.TestRecord> deserialize(Map<Utf8, com.linkedin.avro.fastserde.generated.avro.TestRecord> reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         Map<Utf8, com.linkedin.avro.fastserde.generated.avro.TestRecord> map0 = null;
         long chunkLen0 = (decoder.readMapStart());
         if (chunkLen0 > 0) {
-            Map<Utf8, com.linkedin.avro.fastserde.generated.avro.TestRecord> mapReuse0 = null;
-            if ((reuse) instanceof Map) {
-                mapReuse0 = ((Map)(reuse));
-            }
-            if (mapReuse0 != (null)) {
-                mapReuse0 .clear();
-                map0 = mapReuse0;
-            } else {
-                map0 = new HashMap<Utf8, com.linkedin.avro.fastserde.generated.avro.TestRecord>(((int)(((chunkLen0 * 4)+ 2)/ 3)));
-            }
+            map0 = ((Map)(customization).getNewMapOverrideFunc().apply((reuse), ((int) chunkLen0)));
             do {
                 for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
                     Utf8 key0 = (decoder.readString(null));
-                    map0 .put(key0, deserializeTestRecord0(null, (decoder)));
+                    map0 .put(key0, deserializeTestRecord0(null, (decoder), (customization)));
                 }
                 chunkLen0 = (decoder.mapNext());
             } while (chunkLen0 > 0);
         } else {
-            map0 = new HashMap<Utf8, com.linkedin.avro.fastserde.generated.avro.TestRecord>(0);
+            map0 = ((Map)(customization).getNewMapOverrideFunc().apply((reuse), 0));
         }
         return map0;
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.TestRecord deserializeTestRecord0(Object reuse, Decoder decoder)
+    public com.linkedin.avro.fastserde.generated.avro.TestRecord deserializeTestRecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord;
@@ -76,29 +67,29 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
             TestRecord = new com.linkedin.avro.fastserde.generated.avro.TestRecord();
         }
         TestRecord.put(0, (decoder.readInt()));
-        populate_TestRecord0((TestRecord), (decoder));
-        populate_TestRecord1((TestRecord), (decoder));
-        populate_TestRecord2((TestRecord), (decoder));
-        populate_TestRecord3((TestRecord), (decoder));
-        populate_TestRecord4((TestRecord), (decoder));
-        populate_TestRecord5((TestRecord), (decoder));
-        populate_TestRecord6((TestRecord), (decoder));
-        populate_TestRecord7((TestRecord), (decoder));
-        populate_TestRecord8((TestRecord), (decoder));
-        populate_TestRecord9((TestRecord), (decoder));
-        populate_TestRecord10((TestRecord), (decoder));
-        populate_TestRecord11((TestRecord), (decoder));
-        populate_TestRecord12((TestRecord), (decoder));
-        populate_TestRecord13((TestRecord), (decoder));
-        populate_TestRecord14((TestRecord), (decoder));
-        populate_TestRecord15((TestRecord), (decoder));
-        populate_TestRecord16((TestRecord), (decoder));
-        populate_TestRecord17((TestRecord), (decoder));
-        populate_TestRecord18((TestRecord), (decoder));
+        populate_TestRecord0((TestRecord), (customization), (decoder));
+        populate_TestRecord1((TestRecord), (customization), (decoder));
+        populate_TestRecord2((TestRecord), (customization), (decoder));
+        populate_TestRecord3((TestRecord), (customization), (decoder));
+        populate_TestRecord4((TestRecord), (customization), (decoder));
+        populate_TestRecord5((TestRecord), (customization), (decoder));
+        populate_TestRecord6((TestRecord), (customization), (decoder));
+        populate_TestRecord7((TestRecord), (customization), (decoder));
+        populate_TestRecord8((TestRecord), (customization), (decoder));
+        populate_TestRecord9((TestRecord), (customization), (decoder));
+        populate_TestRecord10((TestRecord), (customization), (decoder));
+        populate_TestRecord11((TestRecord), (customization), (decoder));
+        populate_TestRecord12((TestRecord), (customization), (decoder));
+        populate_TestRecord13((TestRecord), (customization), (decoder));
+        populate_TestRecord14((TestRecord), (customization), (decoder));
+        populate_TestRecord15((TestRecord), (customization), (decoder));
+        populate_TestRecord16((TestRecord), (customization), (decoder));
+        populate_TestRecord17((TestRecord), (customization), (decoder));
+        populate_TestRecord18((TestRecord), (customization), (decoder));
         return TestRecord;
     }
 
-    private void populate_TestRecord0(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+    private void populate_TestRecord0(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex0 = (decoder.readIndex());
@@ -115,7 +106,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
         TestRecord.put(2, (decoder.readLong()));
     }
 
-    private void populate_TestRecord1(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+    private void populate_TestRecord1(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex1 = (decoder.readIndex());
@@ -132,7 +123,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
         TestRecord.put(4, (decoder.readDouble()));
     }
 
-    private void populate_TestRecord2(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+    private void populate_TestRecord2(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex2 = (decoder.readIndex());
@@ -149,7 +140,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
         TestRecord.put(6, (decoder.readFloat()));
     }
 
-    private void populate_TestRecord3(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+    private void populate_TestRecord3(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex3 = (decoder.readIndex());
@@ -166,7 +157,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
         TestRecord.put(8, (decoder.readBoolean()));
     }
 
-    private void populate_TestRecord4(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+    private void populate_TestRecord4(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex4 = (decoder.readIndex());
@@ -190,7 +181,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
         TestRecord.put(10, byteBuffer0);
     }
 
-    private void populate_TestRecord5(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+    private void populate_TestRecord5(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex5 = (decoder.readIndex());
@@ -221,7 +212,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
         TestRecord.put(12, charSequence0);
     }
 
-    private void populate_TestRecord6(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+    private void populate_TestRecord6(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex6 = (decoder.readIndex());
@@ -255,7 +246,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
         TestRecord.put(14, testFixed1);
     }
 
-    private void populate_TestRecord7(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+    private void populate_TestRecord7(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex7 = (decoder.readIndex());
@@ -315,7 +306,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
         TestRecord.put(16, testFixedArray0);
     }
 
-    private void populate_TestRecord8(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+    private void populate_TestRecord8(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         List<GenericFixed> testFixedUnionArray0 = null;
@@ -365,7 +356,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
         TestRecord.put(18, Enums.getConstant(TestEnum.class, (decoder.readEnum())));
     }
 
-    private void populate_TestRecord9(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+    private void populate_TestRecord9(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex9 = (decoder.readIndex());
@@ -401,7 +392,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
         TestRecord.put(20, testEnumArray0);
     }
 
-    private void populate_TestRecord10(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+    private void populate_TestRecord10(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         List<TestEnum> testEnumUnionArray0 = null;
@@ -444,14 +435,14 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
             TestRecord.put(22, null);
         } else {
             if (unionIndex11 == 1) {
-                TestRecord.put(22, deserializeSubRecord0(TestRecord.get(22), (decoder)));
+                TestRecord.put(22, deserializeSubRecord0(TestRecord.get(22), (decoder), (customization)));
             } else {
                 throw new RuntimeException(("Illegal union index for 'subRecordUnion': "+ unionIndex11));
             }
         }
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.SubRecord deserializeSubRecord0(Object reuse, Decoder decoder)
+    public com.linkedin.avro.fastserde.generated.avro.SubRecord deserializeSubRecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         com.linkedin.avro.fastserde.generated.avro.SubRecord SubRecord;
@@ -478,11 +469,11 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
                 throw new RuntimeException(("Illegal union index for 'subField': "+ unionIndex12));
             }
         }
-        populate_SubRecord0((SubRecord), (decoder));
+        populate_SubRecord0((SubRecord), (customization), (decoder));
         return SubRecord;
     }
 
-    private void populate_SubRecord0(com.linkedin.avro.fastserde.generated.avro.SubRecord SubRecord, Decoder decoder)
+    private void populate_SubRecord0(com.linkedin.avro.fastserde.generated.avro.SubRecord SubRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex13 = (decoder.readIndex());
@@ -505,10 +496,10 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
         }
     }
 
-    private void populate_TestRecord11(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+    private void populate_TestRecord11(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
-        TestRecord.put(23, deserializeSubRecord0(TestRecord.get(23), (decoder)));
+        TestRecord.put(23, deserializeSubRecord0(TestRecord.get(23), (decoder), (customization)));
         List<com.linkedin.avro.fastserde.generated.avro.SubRecord> recordsArray0 = null;
         long chunkLen5 = (decoder.readArrayStart());
         Object oldArray4 = TestRecord.get(24);
@@ -528,39 +519,29 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
                 if (oldArray4 instanceof GenericArray) {
                     recordsArrayArrayElementReuseVar0 = ((GenericArray) oldArray4).peek();
                 }
-                recordsArray0 .add(deserializeSubRecord0(recordsArrayArrayElementReuseVar0, (decoder)));
+                recordsArray0 .add(deserializeSubRecord0(recordsArrayArrayElementReuseVar0, (decoder), (customization)));
             }
             chunkLen5 = (decoder.arrayNext());
         }
         TestRecord.put(24, recordsArray0);
     }
 
-    private void populate_TestRecord12(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+    private void populate_TestRecord12(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         Map<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord> recordsMap0 = null;
         long chunkLen6 = (decoder.readMapStart());
         if (chunkLen6 > 0) {
-            Map<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord> recordsMapReuse0 = null;
-            Object oldMap0 = TestRecord.get(25);
-            if (oldMap0 instanceof Map) {
-                recordsMapReuse0 = ((Map) oldMap0);
-            }
-            if (recordsMapReuse0 != (null)) {
-                recordsMapReuse0 .clear();
-                recordsMap0 = recordsMapReuse0;
-            } else {
-                recordsMap0 = new HashMap<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>(((int)(((chunkLen6 * 4)+ 2)/ 3)));
-            }
+            recordsMap0 = ((Map)(customization).getNewMapOverrideFunc().apply(TestRecord.get(25), ((int) chunkLen6)));
             do {
                 for (int counter6 = 0; (counter6 <chunkLen6); counter6 ++) {
                     Utf8 key1 = (decoder.readString(null));
-                    recordsMap0 .put(key1, deserializeSubRecord0(null, (decoder)));
+                    recordsMap0 .put(key1, deserializeSubRecord0(null, (decoder), (customization)));
                 }
                 chunkLen6 = (decoder.mapNext());
             } while (chunkLen6 > 0);
         } else {
-            recordsMap0 = new HashMap<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>(0);
+            recordsMap0 = ((Map)(customization).getNewMapOverrideFunc().apply(TestRecord.get(25), 0));
         }
         TestRecord.put(25, recordsMap0);
         int unionIndex14 = (decoder.readIndex());
@@ -594,7 +575,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
                             recordsArrayUnionOption0 .add(null);
                         } else {
                             if (unionIndex15 == 1) {
-                                recordsArrayUnionOption0 .add(deserializeSubRecord0(recordsArrayUnionOptionArrayElementReuseVar0, (decoder)));
+                                recordsArrayUnionOption0 .add(deserializeSubRecord0(recordsArrayUnionOptionArrayElementReuseVar0, (decoder), (customization)));
                             } else {
                                 throw new RuntimeException(("Illegal union index for 'recordsArrayUnionOptionElem': "+ unionIndex15));
                             }
@@ -609,7 +590,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
         }
     }
 
-    private void populate_TestRecord13(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+    private void populate_TestRecord13(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex16 = (decoder.readIndex());
@@ -621,17 +602,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
                 Map<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord> recordsMapUnionOption0 = null;
                 long chunkLen8 = (decoder.readMapStart());
                 if (chunkLen8 > 0) {
-                    Map<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord> recordsMapUnionOptionReuse0 = null;
-                    Object oldMap1 = TestRecord.get(27);
-                    if (oldMap1 instanceof Map) {
-                        recordsMapUnionOptionReuse0 = ((Map) oldMap1);
-                    }
-                    if (recordsMapUnionOptionReuse0 != (null)) {
-                        recordsMapUnionOptionReuse0 .clear();
-                        recordsMapUnionOption0 = recordsMapUnionOptionReuse0;
-                    } else {
-                        recordsMapUnionOption0 = new HashMap<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>(((int)(((chunkLen8 * 4)+ 2)/ 3)));
-                    }
+                    recordsMapUnionOption0 = ((Map)(customization).getNewMapOverrideFunc().apply(TestRecord.get(27), ((int) chunkLen8)));
                     do {
                         for (int counter8 = 0; (counter8 <chunkLen8); counter8 ++) {
                             Utf8 key2 = (decoder.readString(null));
@@ -641,7 +612,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
                                 recordsMapUnionOption0 .put(key2, null);
                             } else {
                                 if (unionIndex17 == 1) {
-                                    recordsMapUnionOption0 .put(key2, deserializeSubRecord0(null, (decoder)));
+                                    recordsMapUnionOption0 .put(key2, deserializeSubRecord0(null, (decoder), (customization)));
                                 } else {
                                     throw new RuntimeException(("Illegal union index for 'recordsMapUnionOptionValue': "+ unionIndex17));
                                 }
@@ -650,7 +621,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
                         chunkLen8 = (decoder.mapNext());
                     } while (chunkLen8 > 0);
                 } else {
-                    recordsMapUnionOption0 = new HashMap<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>(0);
+                    recordsMapUnionOption0 = ((Map)(customization).getNewMapOverrideFunc().apply(TestRecord.get(27), 0));
                 }
                 TestRecord.put(27, recordsMapUnionOption0);
             } else {
@@ -679,16 +650,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
                 Map<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord> recordsArrayMapElem0 = null;
                 long chunkLen10 = (decoder.readMapStart());
                 if (chunkLen10 > 0) {
-                    Map<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord> recordsArrayMapElemReuse0 = null;
-                    if (recordsArrayMapArrayElementReuseVar0 instanceof Map) {
-                        recordsArrayMapElemReuse0 = ((Map) recordsArrayMapArrayElementReuseVar0);
-                    }
-                    if (recordsArrayMapElemReuse0 != (null)) {
-                        recordsArrayMapElemReuse0 .clear();
-                        recordsArrayMapElem0 = recordsArrayMapElemReuse0;
-                    } else {
-                        recordsArrayMapElem0 = new HashMap<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>(((int)(((chunkLen10 * 4)+ 2)/ 3)));
-                    }
+                    recordsArrayMapElem0 = ((Map)(customization).getNewMapOverrideFunc().apply(recordsArrayMapArrayElementReuseVar0, ((int) chunkLen10)));
                     do {
                         for (int counter10 = 0; (counter10 <chunkLen10); counter10 ++) {
                             Utf8 key3 = (decoder.readString(null));
@@ -698,7 +660,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
                                 recordsArrayMapElem0 .put(key3, null);
                             } else {
                                 if (unionIndex18 == 1) {
-                                    recordsArrayMapElem0 .put(key3, deserializeSubRecord0(null, (decoder)));
+                                    recordsArrayMapElem0 .put(key3, deserializeSubRecord0(null, (decoder), (customization)));
                                 } else {
                                     throw new RuntimeException(("Illegal union index for 'recordsArrayMapElemValue': "+ unionIndex18));
                                 }
@@ -707,7 +669,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
                         chunkLen10 = (decoder.mapNext());
                     } while (chunkLen10 > 0);
                 } else {
-                    recordsArrayMapElem0 = new HashMap<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>(0);
+                    recordsArrayMapElem0 = ((Map)(customization).getNewMapOverrideFunc().apply(recordsArrayMapArrayElementReuseVar0, 0));
                 }
                 recordsArrayMap0 .add(recordsArrayMapElem0);
             }
@@ -716,23 +678,13 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
         TestRecord.put(28, recordsArrayMap0);
     }
 
-    private void populate_TestRecord14(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+    private void populate_TestRecord14(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         Map<Utf8, List<com.linkedin.avro.fastserde.generated.avro.SubRecord>> recordsMapArray0 = null;
         long chunkLen11 = (decoder.readMapStart());
         if (chunkLen11 > 0) {
-            Map<Utf8, List<com.linkedin.avro.fastserde.generated.avro.SubRecord>> recordsMapArrayReuse0 = null;
-            Object oldMap2 = TestRecord.get(29);
-            if (oldMap2 instanceof Map) {
-                recordsMapArrayReuse0 = ((Map) oldMap2);
-            }
-            if (recordsMapArrayReuse0 != (null)) {
-                recordsMapArrayReuse0 .clear();
-                recordsMapArray0 = recordsMapArrayReuse0;
-            } else {
-                recordsMapArray0 = new HashMap<Utf8, List<com.linkedin.avro.fastserde.generated.avro.SubRecord>>(((int)(((chunkLen11 * 4)+ 2)/ 3)));
-            }
+            recordsMapArray0 = ((Map)(customization).getNewMapOverrideFunc().apply(TestRecord.get(29), ((int) chunkLen11)));
             do {
                 for (int counter11 = 0; (counter11 <chunkLen11); counter11 ++) {
                     Utf8 key4 = (decoder.readString(null));
@@ -760,7 +712,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
                                 recordsMapArrayValue0 .add(null);
                             } else {
                                 if (unionIndex19 == 1) {
-                                    recordsMapArrayValue0 .add(deserializeSubRecord0(recordsMapArrayValueArrayElementReuseVar0, (decoder)));
+                                    recordsMapArrayValue0 .add(deserializeSubRecord0(recordsMapArrayValueArrayElementReuseVar0, (decoder), (customization)));
                                 } else {
                                     throw new RuntimeException(("Illegal union index for 'recordsMapArrayValueElem': "+ unionIndex19));
                                 }
@@ -773,7 +725,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
                 chunkLen11 = (decoder.mapNext());
             } while (chunkLen11 > 0);
         } else {
-            recordsMapArray0 = new HashMap<Utf8, List<com.linkedin.avro.fastserde.generated.avro.SubRecord>>(0);
+            recordsMapArray0 = ((Map)(customization).getNewMapOverrideFunc().apply(TestRecord.get(29), 0));
         }
         TestRecord.put(29, recordsMapArray0);
         int unionIndex20 = (decoder.readIndex());
@@ -804,16 +756,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
                         Map<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord> recordsArrayMapUnionOptionElem0 = null;
                         long chunkLen14 = (decoder.readMapStart());
                         if (chunkLen14 > 0) {
-                            Map<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord> recordsArrayMapUnionOptionElemReuse0 = null;
-                            if (recordsArrayMapUnionOptionArrayElementReuseVar0 instanceof Map) {
-                                recordsArrayMapUnionOptionElemReuse0 = ((Map) recordsArrayMapUnionOptionArrayElementReuseVar0);
-                            }
-                            if (recordsArrayMapUnionOptionElemReuse0 != (null)) {
-                                recordsArrayMapUnionOptionElemReuse0 .clear();
-                                recordsArrayMapUnionOptionElem0 = recordsArrayMapUnionOptionElemReuse0;
-                            } else {
-                                recordsArrayMapUnionOptionElem0 = new HashMap<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>(((int)(((chunkLen14 * 4)+ 2)/ 3)));
-                            }
+                            recordsArrayMapUnionOptionElem0 = ((Map)(customization).getNewMapOverrideFunc().apply(recordsArrayMapUnionOptionArrayElementReuseVar0, ((int) chunkLen14)));
                             do {
                                 for (int counter14 = 0; (counter14 <chunkLen14); counter14 ++) {
                                     Utf8 key5 = (decoder.readString(null));
@@ -823,7 +766,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
                                         recordsArrayMapUnionOptionElem0 .put(key5, null);
                                     } else {
                                         if (unionIndex21 == 1) {
-                                            recordsArrayMapUnionOptionElem0 .put(key5, deserializeSubRecord0(null, (decoder)));
+                                            recordsArrayMapUnionOptionElem0 .put(key5, deserializeSubRecord0(null, (decoder), (customization)));
                                         } else {
                                             throw new RuntimeException(("Illegal union index for 'recordsArrayMapUnionOptionElemValue': "+ unionIndex21));
                                         }
@@ -832,7 +775,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
                                 chunkLen14 = (decoder.mapNext());
                             } while (chunkLen14 > 0);
                         } else {
-                            recordsArrayMapUnionOptionElem0 = new HashMap<Utf8, com.linkedin.avro.fastserde.generated.avro.SubRecord>(0);
+                            recordsArrayMapUnionOptionElem0 = ((Map)(customization).getNewMapOverrideFunc().apply(recordsArrayMapUnionOptionArrayElementReuseVar0, 0));
                         }
                         recordsArrayMapUnionOption0 .add(recordsArrayMapUnionOptionElem0);
                     }
@@ -845,7 +788,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
         }
     }
 
-    private void populate_TestRecord15(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+    private void populate_TestRecord15(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex22 = (decoder.readIndex());
@@ -857,17 +800,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
                 Map<Utf8, List<com.linkedin.avro.fastserde.generated.avro.SubRecord>> recordsMapArrayUnionOption0 = null;
                 long chunkLen15 = (decoder.readMapStart());
                 if (chunkLen15 > 0) {
-                    Map<Utf8, List<com.linkedin.avro.fastserde.generated.avro.SubRecord>> recordsMapArrayUnionOptionReuse0 = null;
-                    Object oldMap3 = TestRecord.get(31);
-                    if (oldMap3 instanceof Map) {
-                        recordsMapArrayUnionOptionReuse0 = ((Map) oldMap3);
-                    }
-                    if (recordsMapArrayUnionOptionReuse0 != (null)) {
-                        recordsMapArrayUnionOptionReuse0 .clear();
-                        recordsMapArrayUnionOption0 = recordsMapArrayUnionOptionReuse0;
-                    } else {
-                        recordsMapArrayUnionOption0 = new HashMap<Utf8, List<com.linkedin.avro.fastserde.generated.avro.SubRecord>>(((int)(((chunkLen15 * 4)+ 2)/ 3)));
-                    }
+                    recordsMapArrayUnionOption0 = ((Map)(customization).getNewMapOverrideFunc().apply(TestRecord.get(31), ((int) chunkLen15)));
                     do {
                         for (int counter15 = 0; (counter15 <chunkLen15); counter15 ++) {
                             Utf8 key6 = (decoder.readString(null));
@@ -895,7 +828,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
                                         recordsMapArrayUnionOptionValue0 .add(null);
                                     } else {
                                         if (unionIndex23 == 1) {
-                                            recordsMapArrayUnionOptionValue0 .add(deserializeSubRecord0(recordsMapArrayUnionOptionValueArrayElementReuseVar0, (decoder)));
+                                            recordsMapArrayUnionOptionValue0 .add(deserializeSubRecord0(recordsMapArrayUnionOptionValueArrayElementReuseVar0, (decoder), (customization)));
                                         } else {
                                             throw new RuntimeException(("Illegal union index for 'recordsMapArrayUnionOptionValueElem': "+ unionIndex23));
                                         }
@@ -908,7 +841,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
                         chunkLen15 = (decoder.mapNext());
                     } while (chunkLen15 > 0);
                 } else {
-                    recordsMapArrayUnionOption0 = new HashMap<Utf8, List<com.linkedin.avro.fastserde.generated.avro.SubRecord>>(0);
+                    recordsMapArrayUnionOption0 = ((Map)(customization).getNewMapOverrideFunc().apply(TestRecord.get(31), 0));
                 }
                 TestRecord.put(31, recordsMapArrayUnionOption0);
             } else {
@@ -921,7 +854,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
             TestRecord.put(32, null);
         } else {
             if (unionIndex24 == 1) {
-                TestRecord.put(32, deserializeSubRecord0(TestRecord.get(32), (decoder)));
+                TestRecord.put(32, deserializeSubRecord0(TestRecord.get(32), (decoder), (customization)));
             } else {
                 if (unionIndex24 == 2) {
                     Utf8 charSequence4;
@@ -943,7 +876,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
         }
     }
 
-    private void populate_TestRecord16(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+    private void populate_TestRecord16(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         PrimitiveBooleanList booleanArray0 = null;
@@ -980,7 +913,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
         TestRecord.put(34, doubleArray0);
     }
 
-    private void populate_TestRecord17(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+    private void populate_TestRecord17(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         PrimitiveFloatList floatArray0 = null;
@@ -1004,7 +937,7 @@ public class Map_of_TestRecord_SpecificDeserializer_1100791978_1100791978
         TestRecord.put(36, intArray0);
     }
 
-    private void populate_TestRecord18(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, Decoder decoder)
+    private void populate_TestRecord18(com.linkedin.avro.fastserde.generated.avro.TestRecord TestRecord, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         PrimitiveLongList longArray0 = null;
