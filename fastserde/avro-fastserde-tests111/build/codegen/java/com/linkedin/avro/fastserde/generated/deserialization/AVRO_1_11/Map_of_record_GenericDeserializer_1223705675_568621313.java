@@ -2,9 +2,9 @@
 package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
@@ -23,7 +23,7 @@ public class Map_of_record_GenericDeserializer_1223705675_568621313
         this.unionOptionMapValueSchema0 = readerSchema.getValueType();
     }
 
-    public Map<Utf8, IndexedRecord> deserialize(Map<Utf8, IndexedRecord> reuse, Decoder decoder)
+    public Map<Utf8, IndexedRecord> deserialize(Map<Utf8, IndexedRecord> reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         int unionIndex0 = (decoder.readIndex());
@@ -34,25 +34,16 @@ public class Map_of_record_GenericDeserializer_1223705675_568621313
                 Map<Utf8, IndexedRecord> unionOption0 = null;
                 long chunkLen0 = (decoder.readMapStart());
                 if (chunkLen0 > 0) {
-                    Map<Utf8, IndexedRecord> unionOptionReuse0 = null;
-                    if ((reuse) instanceof Map) {
-                        unionOptionReuse0 = ((Map)(reuse));
-                    }
-                    if (unionOptionReuse0 != (null)) {
-                        unionOptionReuse0 .clear();
-                        unionOption0 = unionOptionReuse0;
-                    } else {
-                        unionOption0 = new HashMap<Utf8, IndexedRecord>(((int)(((chunkLen0 * 4)+ 2)/ 3)));
-                    }
+                    unionOption0 = ((Map)(customization).getNewMapOverrideFunc().apply((reuse), ((int) chunkLen0)));
                     do {
                         for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
                             Utf8 key0 = (decoder.readString(null));
-                            unionOption0 .put(key0, deserializerecord0(null, (decoder)));
+                            unionOption0 .put(key0, deserializerecord0(null, (decoder), (customization)));
                         }
                         chunkLen0 = (decoder.mapNext());
                     } while (chunkLen0 > 0);
                 } else {
-                    unionOption0 = new HashMap<Utf8, IndexedRecord>(0);
+                    unionOption0 = ((Map)(customization).getNewMapOverrideFunc().apply((reuse), 0));
                 }
                 return unionOption0;
             } else {
@@ -61,7 +52,7 @@ public class Map_of_record_GenericDeserializer_1223705675_568621313
         }
     }
 
-    public IndexedRecord deserializerecord0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializerecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord record;

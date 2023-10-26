@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
@@ -66,13 +67,13 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum_Gener
         this.enumMappingtestEnum3 = Collections.unmodifiableMap(tempEnumMapping3);
     }
 
-    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
+    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        return deserializeFastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum0((reuse), (decoder));
+        return deserializeFastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum0((reuse), (decoder), (customization));
     }
 
-    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum;
@@ -94,12 +95,12 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum_Gener
             }
         }
         FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum.put(0, enumValue0);
-        populate_FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum0((FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum1((FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum0((FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum1((FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum), (customization), (decoder));
         return FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum;
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex0 = (decoder.readIndex());
@@ -159,7 +160,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum_Gener
         FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum.put(2, testEnumArray1);
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum1(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum1(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadPermutatedEnum, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         List<GenericEnumSymbol> testEnumUnionArray1 = null;

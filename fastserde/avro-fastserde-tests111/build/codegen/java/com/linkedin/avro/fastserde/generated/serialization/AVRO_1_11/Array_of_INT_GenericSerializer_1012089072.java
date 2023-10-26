@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 import com.linkedin.avro.api.PrimitiveIntList;
 import com.linkedin.avro.fastserde.FastSerializer;
+import com.linkedin.avro.fastserde.customized.DatumWriterCustomization;
 import org.apache.avro.io.Encoder;
 
 public class Array_of_INT_GenericSerializer_1012089072
@@ -12,7 +13,7 @@ public class Array_of_INT_GenericSerializer_1012089072
 {
 
 
-    public void serialize(List<Integer> data, Encoder encoder)
+    public void serialize(List<Integer> data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeArrayStart();

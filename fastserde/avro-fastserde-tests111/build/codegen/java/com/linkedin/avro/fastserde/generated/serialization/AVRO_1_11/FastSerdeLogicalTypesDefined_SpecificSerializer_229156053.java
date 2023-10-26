@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import com.linkedin.avro.fastserde.FastSerializer;
+import com.linkedin.avro.fastserde.customized.DatumWriterCustomization;
 import com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesDefined;
 import org.apache.avro.Conversions;
 import org.apache.avro.Schema;
@@ -22,24 +23,24 @@ public class FastSerdeLogicalTypesDefined_SpecificSerializer_229156053
     private final Schema logicalTypeSchema__59052268 = Schema.parse("{\"type\":\"int\",\"logicalType\":\"date\"}");
     private final Schema logicalTypeSchema_1074306973 = Schema.parse("{\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}");
 
-    public void serialize(FastSerdeLogicalTypesDefined data, Encoder encoder)
+    public void serialize(FastSerdeLogicalTypesDefined data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
-        serializeFastSerdeLogicalTypesDefined0(data, (encoder));
+        serializeFastSerdeLogicalTypesDefined0(data, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    public void serializeFastSerdeLogicalTypesDefined0(FastSerdeLogicalTypesDefined data, Encoder encoder)
+    public void serializeFastSerdeLogicalTypesDefined0(FastSerdeLogicalTypesDefined data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         Object convertedValue0 = data.get(0);
         convertedValue0 = Conversions.convertToRawType(convertedValue0, this.logicalTypeSchema__419105534, this.logicalTypeSchema__419105534 .getLogicalType(), this.conversion_time_millis);
         (encoder).writeInt(((Integer) convertedValue0));
-        serialize_FastSerdeLogicalTypesDefined0(data, (encoder));
+        serialize_FastSerdeLogicalTypesDefined0(data, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastSerdeLogicalTypesDefined0(FastSerdeLogicalTypesDefined data, Encoder encoder)
+    private void serialize_FastSerdeLogicalTypesDefined0(FastSerdeLogicalTypesDefined data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         Object convertedValue1 = data.get(1);

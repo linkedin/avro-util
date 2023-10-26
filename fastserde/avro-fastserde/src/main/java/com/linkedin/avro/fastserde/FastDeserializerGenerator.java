@@ -3,6 +3,7 @@ package com.linkedin.avro.fastserde;
 import com.linkedin.avro.api.PrimitiveFloatList;
 import com.linkedin.avro.fastserde.backport.ResolvingGrammarGenerator;
 import com.linkedin.avro.fastserde.backport.Symbol;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
 import com.sun.codemodel.JArray;
@@ -38,6 +39,8 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -60,6 +63,8 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
 
   private static final String DECODER = "decoder";
   private static final String VAR_NAME_FOR_REUSE = "reuse";
+  private static final String VAR_NAME_FOR_CUSTOMIZATION = "customization";
+
   private static int FIELDS_PER_POPULATION_METHOD = 20;
 
   // 65535 is the actual limit, 65K added for safety
@@ -123,22 +128,23 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
       JBlock topLevelDeserializeBlock = new JBlock();
 
       final Supplier<JExpression> reuseSupplier = () -> JExpr.direct(VAR_NAME_FOR_REUSE);
+      final Supplier<JExpression> customizationSupplier = () -> JExpr.direct(VAR_NAME_FOR_CUSTOMIZATION);
       switch (aliasedWriterSchema.getType()) {
         case RECORD:
           processRecord(readerSchemaVar, aliasedWriterSchema.getName(), aliasedWriterSchema, reader,
-              topLevelDeserializeBlock, fieldAction, JBlock::_return, reuseSupplier);
+              topLevelDeserializeBlock, fieldAction, JBlock::_return, reuseSupplier, customizationSupplier);
           break;
         case ARRAY:
           processArray(readerSchemaVar, "array", aliasedWriterSchema, reader, topLevelDeserializeBlock, fieldAction,
-              JBlock::_return, reuseSupplier);
+              JBlock::_return, reuseSupplier, customizationSupplier);
           break;
         case MAP:
           processMap(readerSchemaVar, "map", aliasedWriterSchema, reader, topLevelDeserializeBlock, fieldAction,
-              JBlock::_return, reuseSupplier);
+              JBlock::_return, reuseSupplier, customizationSupplier);
           break;
         case UNION:
           processUnion(readerSchemaVar, "union", aliasedWriterSchema, reader, topLevelDeserializeBlock, fieldAction,
-                  JBlock::_return, reuseSupplier);
+                  JBlock::_return, reuseSupplier, customizationSupplier);
           break;
         default:
           throw new FastDeserializerGeneratorException(
@@ -161,6 +167,7 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
       deserializeMethod._throws(codeModel.ref(IOException.class));
       deserializeMethod.param(readerSchemaClass, VAR_NAME_FOR_REUSE);
       deserializeMethod.param(Decoder.class, DECODER);
+      deserializeMethod.param(DatumReaderCustomization.class, VAR_NAME_FOR_CUSTOMIZATION);
 
       @SuppressWarnings("unchecked")
       Class<FastDeserializer<T>> clazz = compileClass(className, schemaAssistant.getUsedFullyQualifiedClassNameSet());
@@ -177,23 +184,23 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
 
   private void processComplexType(JVar fieldSchemaVar, String name, Schema schema, Schema readerFieldSchema,
       JBlock methodBody, FieldAction action, BiConsumer<JBlock, JExpression> putExpressionIntoParent,
-      Supplier<JExpression> reuseSupplier) {
+      Supplier<JExpression> reuseSupplier, Supplier<JExpression> customizationSupplier) {
     switch (schema.getType()) {
       case RECORD:
         processRecord(fieldSchemaVar, schema.getName(), schema, readerFieldSchema, methodBody, action,
-            putExpressionIntoParent, reuseSupplier);
+            putExpressionIntoParent, reuseSupplier, customizationSupplier);
         break;
       case ARRAY:
         processArray(fieldSchemaVar, name, schema, readerFieldSchema, methodBody, action, putExpressionIntoParent,
-            reuseSupplier);
+            reuseSupplier, customizationSupplier);
         break;
       case MAP:
         processMap(fieldSchemaVar, name, schema, readerFieldSchema, methodBody, action, putExpressionIntoParent,
-            reuseSupplier);
+            reuseSupplier, customizationSupplier);
         break;
       case UNION:
         processUnion(fieldSchemaVar, name, schema, readerFieldSchema, methodBody, action, putExpressionIntoParent,
-            reuseSupplier);
+            reuseSupplier, customizationSupplier);
         break;
       default:
         throw new FastDeserializerGeneratorException("Incorrect complex type: " + action.getType());
@@ -222,7 +229,8 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
 
   private void processRecord(JVar recordSchemaVar, String recordName, final Schema recordWriterSchema,
       final Schema recordReaderSchema, JBlock parentBody, FieldAction recordAction,
-      BiConsumer<JBlock, JExpression> putRecordIntoParent, Supplier<JExpression> reuseSupplier) {
+      BiConsumer<JBlock, JExpression> putRecordIntoParent, Supplier<JExpression> reuseSupplier,
+      Supplier<JExpression> customizationSupplier) {
 
     Schema effectiveRecordReaderSchema = recordReaderSchema;
     if (recordAction.getShouldRead()) {
@@ -258,7 +266,8 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
     if (methodAlreadyDefined(recordWriterSchema, effectiveRecordReaderSchema, recordAction.getShouldRead())) {
       JMethod method = getMethod(recordWriterSchema, effectiveRecordReaderSchema, recordAction.getShouldRead());
       updateActualExceptions(method);
-      JExpression readingExpression = JExpr.invoke(method).arg(reuseSupplier.get()).arg(JExpr.direct(DECODER));
+      JExpression readingExpression = JExpr.invoke(method).arg(reuseSupplier.get()).arg(JExpr.direct(DECODER)).arg(
+          customizationSupplier.get());
       if (recordAction.getShouldRead()) {
         putRecordIntoParent.accept(parentBody, readingExpression);
       } else {
@@ -293,9 +302,9 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
     schemaAssistant.resetExceptionsFromStringable();
 
     if (recordAction.getShouldRead()) {
-      putRecordIntoParent.accept(parentBody, JExpr.invoke(method).arg(reuseSupplier.get()).arg(JExpr.direct(DECODER)));
+      putRecordIntoParent.accept(parentBody, JExpr.invoke(method).arg(reuseSupplier.get()).arg(JExpr.direct(DECODER)).arg(customizationSupplier.get()));
     } else {
-      parentBody.invoke(method).arg(reuseSupplier.get()).arg(JExpr.direct(DECODER));
+      parentBody.invoke(method).arg(reuseSupplier.get()).arg(JExpr.direct(DECODER)).arg(customizationSupplier.get());
     }
 
     JBlock methodBody = method.body();
@@ -351,6 +360,7 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
         popMethod._throws(IOException.class);
         if (recordAction.getShouldRead()) {
           popMethod.param(recordClass, recordName);
+          popMethod.param(codeModel.ref(DatumReaderCustomization.class), VAR_NAME_FOR_CUSTOMIZATION);
         }
         popMethod.param(Decoder.class, DECODER);
         popMethodBody = popMethod.body();
@@ -358,6 +368,7 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
         JInvocation invocation = methodBody.invoke(popMethod);
         if (recordAction.getShouldRead()) {
           invocation.arg(JExpr.direct(recordName));
+          invocation.arg(customizationSupplier.get());
         }
         invocation.arg(JExpr.direct(DECODER));
       }
@@ -384,7 +395,7 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
       }
       if (SchemaAssistant.isComplexType(field.schema())) {
         processComplexType(fieldSchemaVar, field.name(), field.schema(), readerFieldSchema, popMethodBody, action,
-            putExpressionInRecord, fieldReuseSupplier);
+            putExpressionInRecord, fieldReuseSupplier, customizationSupplier);
       } else {
         processSimpleType(field.schema(), readerFieldSchema, popMethodBody, action, putExpressionInRecord, fieldReuseSupplier);
       }
@@ -591,7 +602,8 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
 
   private void processUnion(JVar unionSchemaVar, final String name, final Schema unionSchema,
       final Schema unionReaderSchema, JBlock body, FieldAction action,
-      BiConsumer<JBlock, JExpression> putValueIntoParent, Supplier<JExpression> reuseSupplier) {
+      BiConsumer<JBlock, JExpression> putValueIntoParent, Supplier<JExpression> reuseSupplier,
+      Supplier<JExpression> customizationSupplier) {
     JVar unionIndex = body.decl(codeModel.INT, getUniqueName("unionIndex"), JExpr.direct(DECODER + ".readIndex()"));
     JConditional ifBlock = null;
 
@@ -697,7 +709,7 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
           throw new FastDeserializerGeneratorException("Union cannot be sub-type of union!");
         }
         processComplexType(optionSchemaVar, optionName, optionSchema, readerOptionSchema, thenBlock, unionAction,
-            putValueIntoParent, reuseSupplier);
+            putValueIntoParent, reuseSupplier, customizationSupplier);
       } else {
         processSimpleType(optionSchema, readerOptionSchema, thenBlock, unionAction, putValueIntoParent, reuseSupplier);
       }
@@ -709,7 +721,8 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
 
   private void processArray(JVar arraySchemaVar, final String name, final Schema arraySchema,
       final Schema arrayReaderSchema, JBlock parentBody, FieldAction action,
-      BiConsumer<JBlock, JExpression> putArrayIntoParent, Supplier<JExpression> reuseSupplier) {
+      BiConsumer<JBlock, JExpression> putArrayIntoParent, Supplier<JExpression> reuseSupplier,
+      Supplier<JExpression> customizationSupplier) {
 
     Schema effectiveArrayReaderSchema = arrayReaderSchema;
     if (action.getShouldRead()) {
@@ -862,7 +875,7 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
       String elemName = name + "Elem";
 
       processComplexType(elementSchemaVar, elemName, arraySchema.getElementType(), readerArrayElementSchema, forBody,
-          finalAction, putValueInArray, elementReuseSupplier);
+          finalAction, putValueInArray, elementReuseSupplier, customizationSupplier);
     } else {
       processSimpleType(arraySchema.getElementType(), readerArrayElementSchema, forBody, finalAction, putValueInArray, elementReuseSupplier);
     }
@@ -895,7 +908,7 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
 
   private void processMap(JVar mapSchemaVar, final String name, final Schema mapSchema, final Schema mapReaderSchema,
       JBlock parentBody, FieldAction action, BiConsumer<JBlock, JExpression> putMapIntoParent,
-      Supplier<JExpression> reuseSupplier) {
+      Supplier<JExpression> reuseSupplier, Supplier<JExpression> customizationSupplier) {
 
     /*
      * Determine the action symbol for Map value. {@link ResolvingGrammarGenerator} generates
@@ -961,31 +974,13 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
     JBlock ifBlockForChunkLenCheck = conditional._then();
 
     if (action.getShouldRead()) {
-      JVar reuse = declareValueVar(name + "Reuse", effectiveMapReaderSchema, ifBlockForChunkLenCheck);
+      Function<JExpression, Consumer<JBlock>> invokeCustomizedMapFunc =
+          sizeArg -> (block -> block.assign(mapVar,
+              JExpr.cast(codeModel.ref(Map.class),
+                  customizationSupplier.get().invoke("getNewMapOverrideFunc").invoke("apply").arg(reuseSupplier.get()).arg(sizeArg))));
 
-      // Check whether the reuse is a Map or not
-      final Supplier<JExpression> finalReuseSupplier = potentiallyCacheInvocation(reuseSupplier, ifBlockForChunkLenCheck, "oldMap");
-      ifCodeGen(ifBlockForChunkLenCheck,
-          finalReuseSupplier.get()._instanceof(codeModel.ref(Map.class)),
-          thenBlock -> thenBlock.assign(reuse, JExpr.cast(codeModel.ref(Map.class), finalReuseSupplier.get())));
-
-      // Check whether the reuse is null or not
-      final Schema finalEffectiveMapReaderSchema = effectiveMapReaderSchema;
-      ifCodeGen(ifBlockForChunkLenCheck,
-          reuse.ne(JExpr.direct("null")),
-          thenBlock -> {
-            thenBlock.invoke(reuse, "clear");
-            thenBlock.assign(mapVar, reuse);
-          },
-          // Pure integer arithmetic equivalent of (int) Math.ceil(expectedSize / 0.75).
-          // The default load factor of HashMap is 0.75 and HashMap internally ensures size is always a power of two.
-          elseBlock -> elseBlock.assign(mapVar, JExpr._new(schemaAssistant.classFromSchema(finalEffectiveMapReaderSchema, false))
-              .arg(JExpr.cast(codeModel.INT, chunkLen.mul(JExpr.lit(4)).plus(JExpr.lit(2)).div(JExpr.lit(3)))))
-      );
-
-      JBlock elseBlock = conditional._else();
-      elseBlock.assign(mapVar, JExpr._new(schemaAssistant.classFromSchema(effectiveMapReaderSchema, false))
-          .arg(JExpr.lit(0)));
+      invokeCustomizedMapFunc.apply(JExpr.cast(codeModel.INT, chunkLen)).accept(ifBlockForChunkLenCheck);
+      invokeCustomizedMapFunc.apply(JExpr.lit(0)).accept(conditional._else());
     }
 
     JDoLoop doLoop = ifBlockForChunkLenCheck._do(chunkLen.gt(JExpr.lit(0)));
@@ -1022,7 +1017,7 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
     if (SchemaAssistant.isComplexType(mapSchema.getValueType())) {
       String valueName = name + "Value";
       processComplexType(mapValueSchemaVar, valueName, mapSchema.getValueType(), readerMapValueSchema, forBody, action,
-          putValueInMap, EMPTY_SUPPLIER);
+          putValueInMap, EMPTY_SUPPLIER, customizationSupplier);
     } else {
       processSimpleType(mapSchema.getValueType(), readerMapValueSchema, forBody, action, putValueInMap, EMPTY_SUPPLIER);
     }
@@ -1377,6 +1372,7 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
     method._throws(IOException.class);
     method.param(Object.class, VAR_NAME_FOR_REUSE);
     method.param(Decoder.class, DECODER);
+    method.param(codeModel.ref(DatumReaderCustomization.class), VAR_NAME_FOR_CUSTOMIZATION);
 
     (read ? deserializeMethodMap : skipMethodMap).put(getEffectiveMethodName(writerSchema, readerSchema), method);
 

@@ -3,6 +3,7 @@ package com.linkedin.avro.fastserde.generated.serialization.AVRO_1_11;
 
 import java.io.IOException;
 import com.linkedin.avro.fastserde.FastSerializer;
+import com.linkedin.avro.fastserde.customized.DatumWriterCustomization;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Encoder;
 
@@ -11,521 +12,521 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
 {
 
 
-    public void serialize(IndexedRecord data, Encoder encoder)
+    public void serialize(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
-        serializeFastGenericSerializerGeneratorTest_shouldSerializeLargeRecord0(data, (encoder));
+        serializeFastGenericSerializerGeneratorTest_shouldSerializeLargeRecord0(data, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    public void serializeFastGenericSerializerGeneratorTest_shouldSerializeLargeRecord0(IndexedRecord data, Encoder encoder)
+    public void serializeFastGenericSerializerGeneratorTest_shouldSerializeLargeRecord0(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(0)));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord0(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord1(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord2(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord3(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord4(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord5(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord6(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord7(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord8(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord9(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord10(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord11(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord12(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord13(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord14(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord15(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord16(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord17(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord18(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord19(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord20(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord21(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord22(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord23(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord24(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord25(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord26(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord27(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord28(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord29(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord30(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord31(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord32(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord33(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord34(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord35(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord36(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord37(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord38(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord39(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord40(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord41(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord42(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord43(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord44(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord45(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord46(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord47(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord48(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord49(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord50(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord51(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord52(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord53(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord54(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord55(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord56(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord57(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord58(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord59(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord60(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord61(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord62(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord63(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord64(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord65(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord66(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord67(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord68(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord69(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord70(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord71(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord72(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord73(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord74(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord75(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord76(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord77(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord78(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord79(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord80(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord81(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord82(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord83(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord84(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord85(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord86(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord87(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord88(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord89(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord90(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord91(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord92(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord93(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord94(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord95(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord96(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord97(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord98(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord99(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord100(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord101(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord102(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord103(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord104(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord105(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord106(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord107(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord108(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord109(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord110(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord111(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord112(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord113(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord114(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord115(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord116(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord117(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord118(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord119(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord120(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord121(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord122(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord123(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord124(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord125(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord126(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord127(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord128(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord129(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord130(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord131(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord132(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord133(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord134(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord135(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord136(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord137(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord138(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord139(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord140(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord141(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord142(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord143(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord144(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord145(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord146(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord147(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord148(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord149(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord150(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord151(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord152(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord153(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord154(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord155(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord156(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord157(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord158(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord159(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord160(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord161(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord162(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord163(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord164(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord165(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord166(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord167(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord168(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord169(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord170(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord171(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord172(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord173(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord174(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord175(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord176(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord177(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord178(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord179(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord180(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord181(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord182(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord183(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord184(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord185(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord186(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord187(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord188(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord189(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord190(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord191(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord192(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord193(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord194(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord195(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord196(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord197(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord198(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord199(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord200(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord201(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord202(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord203(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord204(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord205(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord206(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord207(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord208(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord209(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord210(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord211(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord212(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord213(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord214(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord215(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord216(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord217(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord218(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord219(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord220(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord221(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord222(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord223(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord224(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord225(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord226(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord227(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord228(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord229(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord230(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord231(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord232(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord233(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord234(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord235(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord236(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord237(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord238(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord239(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord240(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord241(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord242(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord243(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord244(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord245(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord246(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord247(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord248(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord249(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord250(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord251(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord252(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord253(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord254(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord255(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord256(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord257(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord258(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord259(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord260(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord261(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord262(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord263(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord264(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord265(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord266(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord267(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord268(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord269(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord270(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord271(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord272(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord273(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord274(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord275(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord276(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord277(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord278(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord279(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord280(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord281(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord282(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord283(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord284(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord285(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord286(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord287(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord288(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord289(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord290(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord291(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord292(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord293(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord294(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord295(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord296(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord297(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord298(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord299(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord300(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord301(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord302(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord303(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord304(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord305(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord306(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord307(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord308(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord309(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord310(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord311(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord312(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord313(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord314(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord315(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord316(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord317(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord318(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord319(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord320(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord321(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord322(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord323(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord324(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord325(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord326(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord327(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord328(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord329(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord330(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord331(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord332(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord333(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord334(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord335(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord336(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord337(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord338(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord339(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord340(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord341(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord342(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord343(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord344(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord345(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord346(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord347(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord348(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord349(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord350(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord351(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord352(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord353(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord354(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord355(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord356(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord357(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord358(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord359(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord360(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord361(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord362(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord363(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord364(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord365(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord366(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord367(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord368(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord369(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord370(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord371(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord372(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord373(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord374(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord375(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord376(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord377(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord378(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord379(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord380(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord381(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord382(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord383(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord384(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord385(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord386(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord387(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord388(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord389(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord390(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord391(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord392(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord393(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord394(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord395(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord396(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord397(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord398(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord399(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord400(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord401(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord402(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord403(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord404(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord405(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord406(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord407(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord408(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord409(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord410(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord411(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord412(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord413(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord414(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord415(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord416(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord417(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord418(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord419(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord420(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord421(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord422(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord423(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord424(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord425(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord426(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord427(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord428(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord429(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord430(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord431(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord432(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord433(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord434(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord435(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord436(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord437(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord438(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord439(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord440(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord441(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord442(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord443(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord444(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord445(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord446(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord447(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord448(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord449(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord450(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord451(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord452(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord453(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord454(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord455(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord456(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord457(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord458(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord459(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord460(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord461(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord462(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord463(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord464(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord465(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord466(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord467(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord468(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord469(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord470(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord471(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord472(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord473(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord474(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord475(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord476(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord477(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord478(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord479(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord480(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord481(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord482(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord483(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord484(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord485(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord486(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord487(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord488(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord489(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord490(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord491(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord492(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord493(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord494(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord495(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord496(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord497(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord498(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord499(data, (encoder));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord0(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord1(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord2(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord3(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord4(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord5(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord6(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord7(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord8(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord9(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord10(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord11(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord12(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord13(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord14(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord15(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord16(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord17(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord18(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord19(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord20(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord21(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord22(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord23(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord24(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord25(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord26(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord27(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord28(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord29(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord30(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord31(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord32(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord33(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord34(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord35(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord36(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord37(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord38(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord39(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord40(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord41(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord42(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord43(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord44(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord45(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord46(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord47(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord48(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord49(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord50(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord51(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord52(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord53(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord54(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord55(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord56(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord57(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord58(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord59(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord60(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord61(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord62(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord63(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord64(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord65(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord66(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord67(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord68(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord69(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord70(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord71(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord72(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord73(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord74(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord75(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord76(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord77(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord78(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord79(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord80(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord81(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord82(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord83(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord84(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord85(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord86(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord87(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord88(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord89(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord90(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord91(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord92(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord93(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord94(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord95(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord96(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord97(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord98(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord99(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord100(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord101(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord102(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord103(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord104(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord105(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord106(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord107(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord108(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord109(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord110(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord111(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord112(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord113(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord114(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord115(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord116(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord117(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord118(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord119(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord120(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord121(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord122(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord123(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord124(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord125(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord126(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord127(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord128(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord129(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord130(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord131(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord132(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord133(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord134(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord135(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord136(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord137(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord138(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord139(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord140(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord141(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord142(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord143(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord144(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord145(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord146(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord147(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord148(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord149(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord150(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord151(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord152(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord153(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord154(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord155(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord156(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord157(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord158(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord159(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord160(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord161(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord162(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord163(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord164(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord165(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord166(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord167(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord168(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord169(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord170(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord171(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord172(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord173(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord174(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord175(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord176(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord177(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord178(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord179(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord180(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord181(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord182(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord183(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord184(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord185(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord186(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord187(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord188(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord189(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord190(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord191(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord192(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord193(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord194(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord195(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord196(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord197(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord198(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord199(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord200(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord201(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord202(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord203(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord204(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord205(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord206(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord207(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord208(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord209(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord210(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord211(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord212(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord213(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord214(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord215(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord216(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord217(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord218(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord219(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord220(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord221(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord222(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord223(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord224(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord225(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord226(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord227(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord228(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord229(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord230(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord231(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord232(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord233(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord234(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord235(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord236(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord237(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord238(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord239(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord240(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord241(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord242(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord243(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord244(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord245(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord246(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord247(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord248(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord249(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord250(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord251(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord252(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord253(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord254(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord255(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord256(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord257(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord258(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord259(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord260(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord261(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord262(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord263(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord264(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord265(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord266(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord267(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord268(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord269(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord270(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord271(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord272(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord273(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord274(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord275(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord276(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord277(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord278(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord279(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord280(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord281(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord282(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord283(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord284(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord285(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord286(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord287(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord288(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord289(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord290(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord291(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord292(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord293(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord294(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord295(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord296(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord297(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord298(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord299(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord300(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord301(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord302(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord303(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord304(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord305(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord306(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord307(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord308(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord309(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord310(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord311(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord312(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord313(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord314(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord315(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord316(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord317(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord318(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord319(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord320(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord321(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord322(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord323(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord324(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord325(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord326(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord327(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord328(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord329(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord330(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord331(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord332(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord333(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord334(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord335(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord336(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord337(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord338(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord339(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord340(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord341(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord342(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord343(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord344(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord345(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord346(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord347(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord348(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord349(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord350(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord351(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord352(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord353(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord354(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord355(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord356(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord357(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord358(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord359(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord360(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord361(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord362(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord363(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord364(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord365(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord366(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord367(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord368(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord369(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord370(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord371(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord372(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord373(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord374(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord375(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord376(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord377(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord378(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord379(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord380(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord381(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord382(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord383(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord384(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord385(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord386(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord387(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord388(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord389(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord390(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord391(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord392(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord393(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord394(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord395(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord396(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord397(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord398(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord399(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord400(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord401(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord402(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord403(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord404(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord405(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord406(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord407(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord408(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord409(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord410(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord411(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord412(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord413(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord414(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord415(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord416(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord417(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord418(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord419(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord420(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord421(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord422(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord423(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord424(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord425(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord426(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord427(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord428(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord429(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord430(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord431(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord432(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord433(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord434(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord435(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord436(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord437(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord438(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord439(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord440(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord441(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord442(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord443(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord444(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord445(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord446(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord447(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord448(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord449(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord450(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord451(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord452(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord453(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord454(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord455(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord456(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord457(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord458(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord459(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord460(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord461(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord462(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord463(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord464(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord465(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord466(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord467(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord468(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord469(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord470(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord471(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord472(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord473(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord474(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord475(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord476(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord477(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord478(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord479(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord480(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord481(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord482(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord483(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord484(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord485(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord486(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord487(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord488(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord489(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord490(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord491(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord492(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord493(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord494(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord495(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord496(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord497(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord498(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord499(data, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord0(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord0(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(1)));
@@ -533,7 +534,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord1(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord1(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(3)));
@@ -541,7 +542,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord2(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord2(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(5)));
@@ -549,7 +550,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord3(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord3(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(7)));
@@ -557,7 +558,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord4(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord4(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(9)));
@@ -565,7 +566,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord5(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord5(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(11)));
@@ -573,7 +574,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord6(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord6(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(13)));
@@ -581,7 +582,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord7(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord7(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(15)));
@@ -589,7 +590,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord8(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord8(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(17)));
@@ -597,7 +598,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord9(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord9(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(19)));
@@ -605,7 +606,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord10(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord10(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(21)));
@@ -613,7 +614,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord11(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord11(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(23)));
@@ -621,7 +622,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord12(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord12(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(25)));
@@ -629,7 +630,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord13(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord13(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(27)));
@@ -637,7 +638,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord14(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord14(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(29)));
@@ -645,7 +646,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord15(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord15(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(31)));
@@ -653,7 +654,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord16(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord16(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(33)));
@@ -661,7 +662,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord17(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord17(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(35)));
@@ -669,7 +670,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord18(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord18(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(37)));
@@ -677,7 +678,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord19(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord19(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(39)));
@@ -685,7 +686,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord20(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord20(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(41)));
@@ -693,7 +694,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord21(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord21(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(43)));
@@ -701,7 +702,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord22(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord22(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(45)));
@@ -709,7 +710,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord23(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord23(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(47)));
@@ -717,7 +718,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord24(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord24(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(49)));
@@ -725,7 +726,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord25(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord25(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(51)));
@@ -733,7 +734,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord26(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord26(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(53)));
@@ -741,7 +742,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord27(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord27(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(55)));
@@ -749,7 +750,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord28(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord28(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(57)));
@@ -757,7 +758,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord29(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord29(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(59)));
@@ -765,7 +766,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord30(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord30(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(61)));
@@ -773,7 +774,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord31(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord31(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(63)));
@@ -781,7 +782,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord32(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord32(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(65)));
@@ -789,7 +790,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord33(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord33(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(67)));
@@ -797,7 +798,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord34(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord34(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(69)));
@@ -805,7 +806,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord35(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord35(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(71)));
@@ -813,7 +814,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord36(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord36(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(73)));
@@ -821,7 +822,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord37(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord37(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(75)));
@@ -829,7 +830,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord38(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord38(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(77)));
@@ -837,7 +838,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord39(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord39(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(79)));
@@ -845,7 +846,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord40(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord40(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(81)));
@@ -853,7 +854,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord41(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord41(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(83)));
@@ -861,7 +862,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord42(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord42(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(85)));
@@ -869,7 +870,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord43(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord43(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(87)));
@@ -877,7 +878,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord44(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord44(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(89)));
@@ -885,7 +886,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord45(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord45(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(91)));
@@ -893,7 +894,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord46(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord46(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(93)));
@@ -901,7 +902,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord47(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord47(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(95)));
@@ -909,7 +910,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord48(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord48(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(97)));
@@ -917,7 +918,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord49(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord49(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(99)));
@@ -925,7 +926,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord50(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord50(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(101)));
@@ -933,7 +934,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord51(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord51(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(103)));
@@ -941,7 +942,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord52(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord52(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(105)));
@@ -949,7 +950,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord53(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord53(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(107)));
@@ -957,7 +958,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord54(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord54(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(109)));
@@ -965,7 +966,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord55(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord55(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(111)));
@@ -973,7 +974,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord56(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord56(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(113)));
@@ -981,7 +982,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord57(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord57(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(115)));
@@ -989,7 +990,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord58(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord58(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(117)));
@@ -997,7 +998,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord59(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord59(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(119)));
@@ -1005,7 +1006,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord60(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord60(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(121)));
@@ -1013,7 +1014,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord61(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord61(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(123)));
@@ -1021,7 +1022,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord62(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord62(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(125)));
@@ -1029,7 +1030,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord63(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord63(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(127)));
@@ -1037,7 +1038,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord64(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord64(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(129)));
@@ -1045,7 +1046,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord65(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord65(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(131)));
@@ -1053,7 +1054,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord66(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord66(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(133)));
@@ -1061,7 +1062,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord67(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord67(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(135)));
@@ -1069,7 +1070,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord68(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord68(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(137)));
@@ -1077,7 +1078,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord69(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord69(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(139)));
@@ -1085,7 +1086,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord70(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord70(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(141)));
@@ -1093,7 +1094,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord71(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord71(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(143)));
@@ -1101,7 +1102,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord72(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord72(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(145)));
@@ -1109,7 +1110,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord73(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord73(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(147)));
@@ -1117,7 +1118,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord74(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord74(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(149)));
@@ -1125,7 +1126,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord75(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord75(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(151)));
@@ -1133,7 +1134,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord76(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord76(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(153)));
@@ -1141,7 +1142,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord77(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord77(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(155)));
@@ -1149,7 +1150,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord78(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord78(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(157)));
@@ -1157,7 +1158,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord79(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord79(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(159)));
@@ -1165,7 +1166,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord80(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord80(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(161)));
@@ -1173,7 +1174,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord81(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord81(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(163)));
@@ -1181,7 +1182,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord82(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord82(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(165)));
@@ -1189,7 +1190,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord83(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord83(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(167)));
@@ -1197,7 +1198,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord84(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord84(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(169)));
@@ -1205,7 +1206,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord85(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord85(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(171)));
@@ -1213,7 +1214,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord86(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord86(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(173)));
@@ -1221,7 +1222,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord87(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord87(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(175)));
@@ -1229,7 +1230,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord88(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord88(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(177)));
@@ -1237,7 +1238,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord89(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord89(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(179)));
@@ -1245,7 +1246,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord90(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord90(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(181)));
@@ -1253,7 +1254,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord91(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord91(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(183)));
@@ -1261,7 +1262,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord92(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord92(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(185)));
@@ -1269,7 +1270,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord93(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord93(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(187)));
@@ -1277,7 +1278,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord94(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord94(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(189)));
@@ -1285,7 +1286,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord95(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord95(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(191)));
@@ -1293,7 +1294,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord96(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord96(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(193)));
@@ -1301,7 +1302,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord97(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord97(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(195)));
@@ -1309,7 +1310,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord98(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord98(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(197)));
@@ -1317,7 +1318,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord99(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord99(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(199)));
@@ -1325,7 +1326,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord100(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord100(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(201)));
@@ -1333,7 +1334,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord101(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord101(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(203)));
@@ -1341,7 +1342,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord102(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord102(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(205)));
@@ -1349,7 +1350,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord103(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord103(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(207)));
@@ -1357,7 +1358,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord104(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord104(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(209)));
@@ -1365,7 +1366,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord105(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord105(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(211)));
@@ -1373,7 +1374,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord106(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord106(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(213)));
@@ -1381,7 +1382,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord107(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord107(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(215)));
@@ -1389,7 +1390,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord108(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord108(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(217)));
@@ -1397,7 +1398,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord109(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord109(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(219)));
@@ -1405,7 +1406,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord110(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord110(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(221)));
@@ -1413,7 +1414,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord111(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord111(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(223)));
@@ -1421,7 +1422,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord112(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord112(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(225)));
@@ -1429,7 +1430,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord113(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord113(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(227)));
@@ -1437,7 +1438,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord114(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord114(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(229)));
@@ -1445,7 +1446,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord115(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord115(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(231)));
@@ -1453,7 +1454,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord116(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord116(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(233)));
@@ -1461,7 +1462,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord117(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord117(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(235)));
@@ -1469,7 +1470,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord118(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord118(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(237)));
@@ -1477,7 +1478,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord119(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord119(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(239)));
@@ -1485,7 +1486,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord120(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord120(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(241)));
@@ -1493,7 +1494,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord121(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord121(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(243)));
@@ -1501,7 +1502,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord122(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord122(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(245)));
@@ -1509,7 +1510,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord123(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord123(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(247)));
@@ -1517,7 +1518,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord124(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord124(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(249)));
@@ -1525,7 +1526,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord125(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord125(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(251)));
@@ -1533,7 +1534,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord126(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord126(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(253)));
@@ -1541,7 +1542,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord127(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord127(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(255)));
@@ -1549,7 +1550,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord128(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord128(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(257)));
@@ -1557,7 +1558,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord129(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord129(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(259)));
@@ -1565,7 +1566,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord130(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord130(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(261)));
@@ -1573,7 +1574,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord131(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord131(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(263)));
@@ -1581,7 +1582,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord132(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord132(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(265)));
@@ -1589,7 +1590,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord133(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord133(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(267)));
@@ -1597,7 +1598,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord134(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord134(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(269)));
@@ -1605,7 +1606,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord135(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord135(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(271)));
@@ -1613,7 +1614,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord136(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord136(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(273)));
@@ -1621,7 +1622,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord137(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord137(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(275)));
@@ -1629,7 +1630,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord138(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord138(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(277)));
@@ -1637,7 +1638,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord139(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord139(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(279)));
@@ -1645,7 +1646,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord140(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord140(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(281)));
@@ -1653,7 +1654,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord141(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord141(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(283)));
@@ -1661,7 +1662,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord142(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord142(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(285)));
@@ -1669,7 +1670,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord143(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord143(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(287)));
@@ -1677,7 +1678,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord144(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord144(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(289)));
@@ -1685,7 +1686,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord145(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord145(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(291)));
@@ -1693,7 +1694,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord146(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord146(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(293)));
@@ -1701,7 +1702,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord147(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord147(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(295)));
@@ -1709,7 +1710,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord148(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord148(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(297)));
@@ -1717,7 +1718,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord149(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord149(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(299)));
@@ -1725,7 +1726,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord150(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord150(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(301)));
@@ -1733,7 +1734,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord151(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord151(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(303)));
@@ -1741,7 +1742,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord152(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord152(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(305)));
@@ -1749,7 +1750,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord153(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord153(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(307)));
@@ -1757,7 +1758,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord154(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord154(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(309)));
@@ -1765,7 +1766,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord155(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord155(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(311)));
@@ -1773,7 +1774,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord156(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord156(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(313)));
@@ -1781,7 +1782,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord157(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord157(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(315)));
@@ -1789,7 +1790,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord158(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord158(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(317)));
@@ -1797,7 +1798,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord159(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord159(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(319)));
@@ -1805,7 +1806,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord160(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord160(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(321)));
@@ -1813,7 +1814,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord161(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord161(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(323)));
@@ -1821,7 +1822,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord162(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord162(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(325)));
@@ -1829,7 +1830,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord163(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord163(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(327)));
@@ -1837,7 +1838,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord164(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord164(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(329)));
@@ -1845,7 +1846,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord165(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord165(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(331)));
@@ -1853,7 +1854,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord166(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord166(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(333)));
@@ -1861,7 +1862,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord167(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord167(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(335)));
@@ -1869,7 +1870,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord168(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord168(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(337)));
@@ -1877,7 +1878,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord169(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord169(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(339)));
@@ -1885,7 +1886,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord170(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord170(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(341)));
@@ -1893,7 +1894,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord171(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord171(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(343)));
@@ -1901,7 +1902,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord172(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord172(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(345)));
@@ -1909,7 +1910,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord173(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord173(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(347)));
@@ -1917,7 +1918,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord174(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord174(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(349)));
@@ -1925,7 +1926,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord175(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord175(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(351)));
@@ -1933,7 +1934,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord176(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord176(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(353)));
@@ -1941,7 +1942,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord177(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord177(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(355)));
@@ -1949,7 +1950,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord178(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord178(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(357)));
@@ -1957,7 +1958,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord179(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord179(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(359)));
@@ -1965,7 +1966,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord180(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord180(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(361)));
@@ -1973,7 +1974,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord181(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord181(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(363)));
@@ -1981,7 +1982,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord182(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord182(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(365)));
@@ -1989,7 +1990,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord183(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord183(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(367)));
@@ -1997,7 +1998,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord184(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord184(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(369)));
@@ -2005,7 +2006,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord185(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord185(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(371)));
@@ -2013,7 +2014,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord186(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord186(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(373)));
@@ -2021,7 +2022,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord187(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord187(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(375)));
@@ -2029,7 +2030,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord188(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord188(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(377)));
@@ -2037,7 +2038,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord189(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord189(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(379)));
@@ -2045,7 +2046,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord190(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord190(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(381)));
@@ -2053,7 +2054,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord191(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord191(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(383)));
@@ -2061,7 +2062,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord192(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord192(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(385)));
@@ -2069,7 +2070,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord193(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord193(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(387)));
@@ -2077,7 +2078,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord194(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord194(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(389)));
@@ -2085,7 +2086,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord195(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord195(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(391)));
@@ -2093,7 +2094,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord196(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord196(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(393)));
@@ -2101,7 +2102,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord197(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord197(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(395)));
@@ -2109,7 +2110,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord198(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord198(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(397)));
@@ -2117,7 +2118,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord199(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord199(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(399)));
@@ -2125,7 +2126,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord200(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord200(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(401)));
@@ -2133,7 +2134,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord201(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord201(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(403)));
@@ -2141,7 +2142,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord202(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord202(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(405)));
@@ -2149,7 +2150,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord203(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord203(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(407)));
@@ -2157,7 +2158,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord204(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord204(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(409)));
@@ -2165,7 +2166,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord205(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord205(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(411)));
@@ -2173,7 +2174,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord206(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord206(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(413)));
@@ -2181,7 +2182,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord207(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord207(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(415)));
@@ -2189,7 +2190,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord208(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord208(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(417)));
@@ -2197,7 +2198,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord209(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord209(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(419)));
@@ -2205,7 +2206,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord210(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord210(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(421)));
@@ -2213,7 +2214,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord211(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord211(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(423)));
@@ -2221,7 +2222,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord212(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord212(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(425)));
@@ -2229,7 +2230,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord213(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord213(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(427)));
@@ -2237,7 +2238,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord214(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord214(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(429)));
@@ -2245,7 +2246,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord215(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord215(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(431)));
@@ -2253,7 +2254,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord216(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord216(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(433)));
@@ -2261,7 +2262,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord217(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord217(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(435)));
@@ -2269,7 +2270,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord218(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord218(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(437)));
@@ -2277,7 +2278,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord219(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord219(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(439)));
@@ -2285,7 +2286,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord220(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord220(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(441)));
@@ -2293,7 +2294,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord221(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord221(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(443)));
@@ -2301,7 +2302,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord222(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord222(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(445)));
@@ -2309,7 +2310,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord223(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord223(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(447)));
@@ -2317,7 +2318,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord224(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord224(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(449)));
@@ -2325,7 +2326,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord225(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord225(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(451)));
@@ -2333,7 +2334,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord226(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord226(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(453)));
@@ -2341,7 +2342,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord227(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord227(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(455)));
@@ -2349,7 +2350,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord228(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord228(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(457)));
@@ -2357,7 +2358,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord229(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord229(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(459)));
@@ -2365,7 +2366,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord230(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord230(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(461)));
@@ -2373,7 +2374,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord231(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord231(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(463)));
@@ -2381,7 +2382,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord232(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord232(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(465)));
@@ -2389,7 +2390,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord233(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord233(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(467)));
@@ -2397,7 +2398,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord234(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord234(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(469)));
@@ -2405,7 +2406,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord235(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord235(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(471)));
@@ -2413,7 +2414,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord236(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord236(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(473)));
@@ -2421,7 +2422,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord237(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord237(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(475)));
@@ -2429,7 +2430,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord238(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord238(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(477)));
@@ -2437,7 +2438,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord239(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord239(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(479)));
@@ -2445,7 +2446,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord240(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord240(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(481)));
@@ -2453,7 +2454,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord241(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord241(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(483)));
@@ -2461,7 +2462,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord242(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord242(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(485)));
@@ -2469,7 +2470,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord243(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord243(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(487)));
@@ -2477,7 +2478,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord244(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord244(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(489)));
@@ -2485,7 +2486,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord245(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord245(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(491)));
@@ -2493,7 +2494,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord246(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord246(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(493)));
@@ -2501,7 +2502,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord247(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord247(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(495)));
@@ -2509,7 +2510,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord248(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord248(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(497)));
@@ -2517,7 +2518,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord249(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord249(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(499)));
@@ -2525,7 +2526,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord250(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord250(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(501)));
@@ -2533,7 +2534,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord251(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord251(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(503)));
@@ -2541,7 +2542,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord252(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord252(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(505)));
@@ -2549,7 +2550,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord253(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord253(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(507)));
@@ -2557,7 +2558,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord254(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord254(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(509)));
@@ -2565,7 +2566,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord255(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord255(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(511)));
@@ -2573,7 +2574,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord256(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord256(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(513)));
@@ -2581,7 +2582,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord257(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord257(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(515)));
@@ -2589,7 +2590,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord258(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord258(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(517)));
@@ -2597,7 +2598,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord259(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord259(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(519)));
@@ -2605,7 +2606,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord260(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord260(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(521)));
@@ -2613,7 +2614,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord261(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord261(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(523)));
@@ -2621,7 +2622,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord262(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord262(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(525)));
@@ -2629,7 +2630,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord263(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord263(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(527)));
@@ -2637,7 +2638,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord264(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord264(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(529)));
@@ -2645,7 +2646,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord265(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord265(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(531)));
@@ -2653,7 +2654,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord266(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord266(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(533)));
@@ -2661,7 +2662,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord267(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord267(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(535)));
@@ -2669,7 +2670,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord268(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord268(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(537)));
@@ -2677,7 +2678,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord269(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord269(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(539)));
@@ -2685,7 +2686,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord270(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord270(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(541)));
@@ -2693,7 +2694,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord271(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord271(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(543)));
@@ -2701,7 +2702,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord272(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord272(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(545)));
@@ -2709,7 +2710,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord273(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord273(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(547)));
@@ -2717,7 +2718,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord274(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord274(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(549)));
@@ -2725,7 +2726,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord275(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord275(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(551)));
@@ -2733,7 +2734,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord276(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord276(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(553)));
@@ -2741,7 +2742,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord277(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord277(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(555)));
@@ -2749,7 +2750,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord278(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord278(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(557)));
@@ -2757,7 +2758,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord279(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord279(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(559)));
@@ -2765,7 +2766,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord280(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord280(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(561)));
@@ -2773,7 +2774,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord281(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord281(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(563)));
@@ -2781,7 +2782,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord282(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord282(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(565)));
@@ -2789,7 +2790,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord283(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord283(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(567)));
@@ -2797,7 +2798,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord284(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord284(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(569)));
@@ -2805,7 +2806,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord285(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord285(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(571)));
@@ -2813,7 +2814,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord286(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord286(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(573)));
@@ -2821,7 +2822,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord287(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord287(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(575)));
@@ -2829,7 +2830,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord288(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord288(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(577)));
@@ -2837,7 +2838,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord289(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord289(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(579)));
@@ -2845,7 +2846,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord290(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord290(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(581)));
@@ -2853,7 +2854,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord291(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord291(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(583)));
@@ -2861,7 +2862,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord292(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord292(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(585)));
@@ -2869,7 +2870,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord293(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord293(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(587)));
@@ -2877,7 +2878,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord294(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord294(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(589)));
@@ -2885,7 +2886,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord295(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord295(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(591)));
@@ -2893,7 +2894,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord296(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord296(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(593)));
@@ -2901,7 +2902,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord297(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord297(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(595)));
@@ -2909,7 +2910,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord298(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord298(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(597)));
@@ -2917,7 +2918,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord299(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord299(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(599)));
@@ -2925,7 +2926,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord300(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord300(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(601)));
@@ -2933,7 +2934,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord301(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord301(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(603)));
@@ -2941,7 +2942,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord302(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord302(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(605)));
@@ -2949,7 +2950,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord303(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord303(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(607)));
@@ -2957,7 +2958,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord304(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord304(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(609)));
@@ -2965,7 +2966,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord305(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord305(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(611)));
@@ -2973,7 +2974,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord306(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord306(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(613)));
@@ -2981,7 +2982,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord307(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord307(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(615)));
@@ -2989,7 +2990,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord308(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord308(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(617)));
@@ -2997,7 +2998,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord309(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord309(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(619)));
@@ -3005,7 +3006,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord310(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord310(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(621)));
@@ -3013,7 +3014,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord311(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord311(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(623)));
@@ -3021,7 +3022,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord312(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord312(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(625)));
@@ -3029,7 +3030,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord313(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord313(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(627)));
@@ -3037,7 +3038,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord314(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord314(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(629)));
@@ -3045,7 +3046,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord315(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord315(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(631)));
@@ -3053,7 +3054,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord316(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord316(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(633)));
@@ -3061,7 +3062,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord317(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord317(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(635)));
@@ -3069,7 +3070,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord318(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord318(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(637)));
@@ -3077,7 +3078,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord319(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord319(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(639)));
@@ -3085,7 +3086,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord320(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord320(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(641)));
@@ -3093,7 +3094,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord321(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord321(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(643)));
@@ -3101,7 +3102,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord322(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord322(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(645)));
@@ -3109,7 +3110,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord323(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord323(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(647)));
@@ -3117,7 +3118,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord324(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord324(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(649)));
@@ -3125,7 +3126,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord325(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord325(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(651)));
@@ -3133,7 +3134,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord326(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord326(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(653)));
@@ -3141,7 +3142,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord327(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord327(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(655)));
@@ -3149,7 +3150,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord328(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord328(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(657)));
@@ -3157,7 +3158,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord329(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord329(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(659)));
@@ -3165,7 +3166,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord330(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord330(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(661)));
@@ -3173,7 +3174,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord331(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord331(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(663)));
@@ -3181,7 +3182,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord332(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord332(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(665)));
@@ -3189,7 +3190,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord333(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord333(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(667)));
@@ -3197,7 +3198,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord334(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord334(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(669)));
@@ -3205,7 +3206,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord335(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord335(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(671)));
@@ -3213,7 +3214,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord336(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord336(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(673)));
@@ -3221,7 +3222,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord337(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord337(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(675)));
@@ -3229,7 +3230,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord338(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord338(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(677)));
@@ -3237,7 +3238,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord339(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord339(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(679)));
@@ -3245,7 +3246,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord340(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord340(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(681)));
@@ -3253,7 +3254,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord341(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord341(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(683)));
@@ -3261,7 +3262,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord342(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord342(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(685)));
@@ -3269,7 +3270,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord343(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord343(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(687)));
@@ -3277,7 +3278,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord344(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord344(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(689)));
@@ -3285,7 +3286,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord345(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord345(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(691)));
@@ -3293,7 +3294,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord346(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord346(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(693)));
@@ -3301,7 +3302,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord347(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord347(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(695)));
@@ -3309,7 +3310,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord348(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord348(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(697)));
@@ -3317,7 +3318,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord349(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord349(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(699)));
@@ -3325,7 +3326,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord350(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord350(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(701)));
@@ -3333,7 +3334,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord351(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord351(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(703)));
@@ -3341,7 +3342,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord352(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord352(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(705)));
@@ -3349,7 +3350,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord353(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord353(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(707)));
@@ -3357,7 +3358,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord354(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord354(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(709)));
@@ -3365,7 +3366,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord355(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord355(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(711)));
@@ -3373,7 +3374,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord356(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord356(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(713)));
@@ -3381,7 +3382,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord357(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord357(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(715)));
@@ -3389,7 +3390,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord358(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord358(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(717)));
@@ -3397,7 +3398,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord359(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord359(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(719)));
@@ -3405,7 +3406,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord360(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord360(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(721)));
@@ -3413,7 +3414,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord361(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord361(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(723)));
@@ -3421,7 +3422,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord362(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord362(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(725)));
@@ -3429,7 +3430,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord363(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord363(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(727)));
@@ -3437,7 +3438,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord364(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord364(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(729)));
@@ -3445,7 +3446,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord365(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord365(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(731)));
@@ -3453,7 +3454,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord366(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord366(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(733)));
@@ -3461,7 +3462,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord367(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord367(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(735)));
@@ -3469,7 +3470,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord368(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord368(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(737)));
@@ -3477,7 +3478,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord369(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord369(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(739)));
@@ -3485,7 +3486,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord370(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord370(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(741)));
@@ -3493,7 +3494,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord371(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord371(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(743)));
@@ -3501,7 +3502,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord372(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord372(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(745)));
@@ -3509,7 +3510,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord373(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord373(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(747)));
@@ -3517,7 +3518,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord374(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord374(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(749)));
@@ -3525,7 +3526,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord375(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord375(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(751)));
@@ -3533,7 +3534,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord376(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord376(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(753)));
@@ -3541,7 +3542,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord377(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord377(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(755)));
@@ -3549,7 +3550,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord378(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord378(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(757)));
@@ -3557,7 +3558,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord379(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord379(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(759)));
@@ -3565,7 +3566,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord380(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord380(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(761)));
@@ -3573,7 +3574,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord381(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord381(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(763)));
@@ -3581,7 +3582,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord382(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord382(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(765)));
@@ -3589,7 +3590,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord383(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord383(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(767)));
@@ -3597,7 +3598,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord384(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord384(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(769)));
@@ -3605,7 +3606,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord385(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord385(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(771)));
@@ -3613,7 +3614,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord386(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord386(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(773)));
@@ -3621,7 +3622,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord387(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord387(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(775)));
@@ -3629,7 +3630,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord388(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord388(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(777)));
@@ -3637,7 +3638,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord389(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord389(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(779)));
@@ -3645,7 +3646,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord390(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord390(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(781)));
@@ -3653,7 +3654,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord391(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord391(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(783)));
@@ -3661,7 +3662,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord392(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord392(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(785)));
@@ -3669,7 +3670,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord393(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord393(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(787)));
@@ -3677,7 +3678,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord394(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord394(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(789)));
@@ -3685,7 +3686,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord395(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord395(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(791)));
@@ -3693,7 +3694,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord396(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord396(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(793)));
@@ -3701,7 +3702,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord397(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord397(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(795)));
@@ -3709,7 +3710,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord398(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord398(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(797)));
@@ -3717,7 +3718,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord399(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord399(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(799)));
@@ -3725,7 +3726,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord400(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord400(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(801)));
@@ -3733,7 +3734,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord401(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord401(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(803)));
@@ -3741,7 +3742,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord402(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord402(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(805)));
@@ -3749,7 +3750,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord403(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord403(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(807)));
@@ -3757,7 +3758,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord404(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord404(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(809)));
@@ -3765,7 +3766,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord405(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord405(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(811)));
@@ -3773,7 +3774,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord406(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord406(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(813)));
@@ -3781,7 +3782,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord407(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord407(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(815)));
@@ -3789,7 +3790,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord408(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord408(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(817)));
@@ -3797,7 +3798,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord409(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord409(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(819)));
@@ -3805,7 +3806,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord410(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord410(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(821)));
@@ -3813,7 +3814,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord411(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord411(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(823)));
@@ -3821,7 +3822,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord412(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord412(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(825)));
@@ -3829,7 +3830,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord413(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord413(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(827)));
@@ -3837,7 +3838,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord414(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord414(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(829)));
@@ -3845,7 +3846,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord415(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord415(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(831)));
@@ -3853,7 +3854,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord416(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord416(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(833)));
@@ -3861,7 +3862,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord417(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord417(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(835)));
@@ -3869,7 +3870,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord418(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord418(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(837)));
@@ -3877,7 +3878,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord419(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord419(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(839)));
@@ -3885,7 +3886,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord420(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord420(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(841)));
@@ -3893,7 +3894,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord421(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord421(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(843)));
@@ -3901,7 +3902,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord422(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord422(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(845)));
@@ -3909,7 +3910,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord423(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord423(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(847)));
@@ -3917,7 +3918,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord424(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord424(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(849)));
@@ -3925,7 +3926,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord425(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord425(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(851)));
@@ -3933,7 +3934,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord426(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord426(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(853)));
@@ -3941,7 +3942,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord427(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord427(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(855)));
@@ -3949,7 +3950,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord428(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord428(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(857)));
@@ -3957,7 +3958,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord429(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord429(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(859)));
@@ -3965,7 +3966,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord430(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord430(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(861)));
@@ -3973,7 +3974,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord431(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord431(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(863)));
@@ -3981,7 +3982,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord432(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord432(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(865)));
@@ -3989,7 +3990,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord433(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord433(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(867)));
@@ -3997,7 +3998,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord434(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord434(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(869)));
@@ -4005,7 +4006,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord435(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord435(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(871)));
@@ -4013,7 +4014,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord436(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord436(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(873)));
@@ -4021,7 +4022,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord437(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord437(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(875)));
@@ -4029,7 +4030,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord438(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord438(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(877)));
@@ -4037,7 +4038,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord439(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord439(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(879)));
@@ -4045,7 +4046,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord440(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord440(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(881)));
@@ -4053,7 +4054,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord441(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord441(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(883)));
@@ -4061,7 +4062,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord442(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord442(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(885)));
@@ -4069,7 +4070,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord443(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord443(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(887)));
@@ -4077,7 +4078,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord444(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord444(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(889)));
@@ -4085,7 +4086,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord445(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord445(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(891)));
@@ -4093,7 +4094,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord446(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord446(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(893)));
@@ -4101,7 +4102,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord447(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord447(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(895)));
@@ -4109,7 +4110,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord448(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord448(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(897)));
@@ -4117,7 +4118,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord449(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord449(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(899)));
@@ -4125,7 +4126,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord450(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord450(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(901)));
@@ -4133,7 +4134,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord451(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord451(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(903)));
@@ -4141,7 +4142,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord452(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord452(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(905)));
@@ -4149,7 +4150,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord453(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord453(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(907)));
@@ -4157,7 +4158,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord454(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord454(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(909)));
@@ -4165,7 +4166,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord455(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord455(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(911)));
@@ -4173,7 +4174,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord456(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord456(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(913)));
@@ -4181,7 +4182,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord457(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord457(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(915)));
@@ -4189,7 +4190,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord458(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord458(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(917)));
@@ -4197,7 +4198,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord459(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord459(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(919)));
@@ -4205,7 +4206,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord460(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord460(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(921)));
@@ -4213,7 +4214,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord461(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord461(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(923)));
@@ -4221,7 +4222,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord462(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord462(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(925)));
@@ -4229,7 +4230,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord463(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord463(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(927)));
@@ -4237,7 +4238,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord464(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord464(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(929)));
@@ -4245,7 +4246,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord465(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord465(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(931)));
@@ -4253,7 +4254,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord466(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord466(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(933)));
@@ -4261,7 +4262,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord467(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord467(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(935)));
@@ -4269,7 +4270,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord468(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord468(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(937)));
@@ -4277,7 +4278,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord469(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord469(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(939)));
@@ -4285,7 +4286,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord470(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord470(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(941)));
@@ -4293,7 +4294,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord471(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord471(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(943)));
@@ -4301,7 +4302,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord472(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord472(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(945)));
@@ -4309,7 +4310,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord473(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord473(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(947)));
@@ -4317,7 +4318,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord474(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord474(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(949)));
@@ -4325,7 +4326,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord475(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord475(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(951)));
@@ -4333,7 +4334,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord476(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord476(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(953)));
@@ -4341,7 +4342,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord477(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord477(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(955)));
@@ -4349,7 +4350,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord478(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord478(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(957)));
@@ -4357,7 +4358,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord479(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord479(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(959)));
@@ -4365,7 +4366,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord480(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord480(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(961)));
@@ -4373,7 +4374,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord481(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord481(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(963)));
@@ -4381,7 +4382,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord482(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord482(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(965)));
@@ -4389,7 +4390,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord483(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord483(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(967)));
@@ -4397,7 +4398,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord484(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord484(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(969)));
@@ -4405,7 +4406,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord485(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord485(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(971)));
@@ -4413,7 +4414,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord486(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord486(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(973)));
@@ -4421,7 +4422,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord487(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord487(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(975)));
@@ -4429,7 +4430,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord488(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord488(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(977)));
@@ -4437,7 +4438,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord489(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord489(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(979)));
@@ -4445,7 +4446,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord490(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord490(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(981)));
@@ -4453,7 +4454,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord491(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord491(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(983)));
@@ -4461,7 +4462,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord492(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord492(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(985)));
@@ -4469,7 +4470,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord493(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord493(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(987)));
@@ -4477,7 +4478,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord494(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord494(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(989)));
@@ -4485,7 +4486,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord495(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord495(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(991)));
@@ -4493,7 +4494,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord496(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord496(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(993)));
@@ -4501,7 +4502,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord497(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord497(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(995)));
@@ -4509,7 +4510,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord498(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord498(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(997)));
@@ -4517,7 +4518,7 @@ public class FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord_Gener
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord499(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldSerializeLargeRecord499(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         (encoder).writeInt(((Integer) data.get(999)));

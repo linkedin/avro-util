@@ -3,6 +3,7 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 
 import java.io.IOException;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import com.linkedin.avro.fastserde.generated.avro.MyEnumV1;
 import com.linkedin.avro.fastserde.generated.avro.MyEnumV2;
 import com.linkedin.avroutil1.Enums;
@@ -19,13 +20,13 @@ public class UnionOfRecordsWithSameNameEnumField_SpecificDeserializer_1341667615
         this.readerSchema = readerSchema;
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.UnionOfRecordsWithSameNameEnumField deserialize(com.linkedin.avro.fastserde.generated.avro.UnionOfRecordsWithSameNameEnumField reuse, Decoder decoder)
+    public com.linkedin.avro.fastserde.generated.avro.UnionOfRecordsWithSameNameEnumField deserialize(com.linkedin.avro.fastserde.generated.avro.UnionOfRecordsWithSameNameEnumField reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        return deserializeUnionOfRecordsWithSameNameEnumField0((reuse), (decoder));
+        return deserializeUnionOfRecordsWithSameNameEnumField0((reuse), (decoder), (customization));
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.UnionOfRecordsWithSameNameEnumField deserializeUnionOfRecordsWithSameNameEnumField0(Object reuse, Decoder decoder)
+    public com.linkedin.avro.fastserde.generated.avro.UnionOfRecordsWithSameNameEnumField deserializeUnionOfRecordsWithSameNameEnumField0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         com.linkedin.avro.fastserde.generated.avro.UnionOfRecordsWithSameNameEnumField UnionOfRecordsWithSameNameEnumField;
@@ -36,10 +37,10 @@ public class UnionOfRecordsWithSameNameEnumField_SpecificDeserializer_1341667615
         }
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
-            UnionOfRecordsWithSameNameEnumField.put(0, deserializeMyRecordV10(UnionOfRecordsWithSameNameEnumField.get(0), (decoder)));
+            UnionOfRecordsWithSameNameEnumField.put(0, deserializeMyRecordV10(UnionOfRecordsWithSameNameEnumField.get(0), (decoder), (customization)));
         } else {
             if (unionIndex0 == 1) {
-                UnionOfRecordsWithSameNameEnumField.put(0, deserializeMyRecordV20(UnionOfRecordsWithSameNameEnumField.get(0), (decoder)));
+                UnionOfRecordsWithSameNameEnumField.put(0, deserializeMyRecordV20(UnionOfRecordsWithSameNameEnumField.get(0), (decoder), (customization)));
             } else {
                 throw new RuntimeException(("Illegal union index for 'unionField': "+ unionIndex0));
             }
@@ -47,7 +48,7 @@ public class UnionOfRecordsWithSameNameEnumField_SpecificDeserializer_1341667615
         return UnionOfRecordsWithSameNameEnumField;
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.MyRecordV1 deserializeMyRecordV10(Object reuse, Decoder decoder)
+    public com.linkedin.avro.fastserde.generated.avro.MyRecordV1 deserializeMyRecordV10(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         com.linkedin.avro.fastserde.generated.avro.MyRecordV1 MyRecordV1;
@@ -60,7 +61,7 @@ public class UnionOfRecordsWithSameNameEnumField_SpecificDeserializer_1341667615
         return MyRecordV1;
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.MyRecordV2 deserializeMyRecordV20(Object reuse, Decoder decoder)
+    public com.linkedin.avro.fastserde.generated.avro.MyRecordV2 deserializeMyRecordV20(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         com.linkedin.avro.fastserde.generated.avro.MyRecordV2 MyRecordV2;

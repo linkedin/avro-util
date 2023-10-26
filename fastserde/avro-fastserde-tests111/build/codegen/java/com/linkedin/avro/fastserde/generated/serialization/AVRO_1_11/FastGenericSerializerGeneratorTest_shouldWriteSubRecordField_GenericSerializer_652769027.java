@@ -3,6 +3,7 @@ package com.linkedin.avro.fastserde.generated.serialization.AVRO_1_11;
 
 import java.io.IOException;
 import com.linkedin.avro.fastserde.FastSerializer;
+import com.linkedin.avro.fastserde.customized.DatumWriterCustomization;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.util.Utf8;
@@ -12,14 +13,14 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordField_Generi
 {
 
 
-    public void serialize(IndexedRecord data, Encoder encoder)
+    public void serialize(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
-        serializeFastGenericSerializerGeneratorTest_shouldWriteSubRecordField0(data, (encoder));
+        serializeFastGenericSerializerGeneratorTest_shouldWriteSubRecordField0(data, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    public void serializeFastGenericSerializerGeneratorTest_shouldWriteSubRecordField0(IndexedRecord data, Encoder encoder)
+    public void serializeFastGenericSerializerGeneratorTest_shouldWriteSubRecordField0(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         IndexedRecord record0 = ((IndexedRecord) data.get(0));
@@ -29,14 +30,14 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordField_Generi
         } else {
             if ((record0 instanceof IndexedRecord)&&"com.linkedin.avro.fastserde.generated.avro.subRecord".equals(((IndexedRecord) record0).getSchema().getFullName())) {
                 (encoder).writeIndex(1);
-                serializeSubRecord0(((IndexedRecord) record0), (encoder));
+                serializeSubRecord0(((IndexedRecord) record0), (encoder), (customization));
             }
         }
-        serialize_FastGenericSerializerGeneratorTest_shouldWriteSubRecordField0(data, (encoder));
+        serialize_FastGenericSerializerGeneratorTest_shouldWriteSubRecordField0(data, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    public void serializeSubRecord0(IndexedRecord data, Encoder encoder)
+    public void serializeSubRecord0(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         CharSequence subField0 = ((CharSequence) data.get(0));
@@ -54,11 +55,11 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordField_Generi
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldWriteSubRecordField0(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldWriteSubRecordField0(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         IndexedRecord record10 = ((IndexedRecord) data.get(1));
-        serializeSubRecord0(record10, (encoder));
+        serializeSubRecord0(record10, (encoder), (customization));
         CharSequence field0 = ((CharSequence) data.get(2));
         if (field0 == null) {
             (encoder).writeIndex(0);

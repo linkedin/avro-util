@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import com.linkedin.avro.fastserde.FastSerializer;
+import com.linkedin.avro.fastserde.customized.DatumWriterCustomization;
 import org.apache.avro.generic.GenericEnumSymbol;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Encoder;
@@ -14,14 +15,14 @@ public class FastSerdeEnums_GenericSerializer_957378572
 {
 
 
-    public void serialize(IndexedRecord data, Encoder encoder)
+    public void serialize(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
-        serializeFastSerdeEnums0(data, (encoder));
+        serializeFastSerdeEnums0(data, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    public void serializeFastSerdeEnums0(IndexedRecord data, Encoder encoder)
+    public void serializeFastSerdeEnums0(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         int valueToWrite0;
@@ -32,11 +33,11 @@ public class FastSerdeEnums_GenericSerializer_957378572
             valueToWrite0 = ((org.apache.avro.generic.GenericData.EnumSymbol) enumValue0).getSchema().getEnumOrdinal(((org.apache.avro.generic.GenericData.EnumSymbol) enumValue0).toString());
         }
         (encoder).writeEnum(valueToWrite0);
-        serialize_FastSerdeEnums0(data, (encoder));
+        serialize_FastSerdeEnums0(data, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastSerdeEnums0(IndexedRecord data, Encoder encoder)
+    private void serialize_FastSerdeEnums0(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         List<GenericEnumSymbol> arrayOfEnums0 = ((List<GenericEnumSymbol> ) data.get(1));
@@ -67,6 +68,7 @@ public class FastSerdeEnums_GenericSerializer_957378572
             }
         }
         Map<CharSequence, GenericEnumSymbol> mapOfEnums0 = ((Map<CharSequence, GenericEnumSymbol> ) data.get(2));
+        (customization).getCheckMapTypeFunction().apply(mapOfEnums0);
         (encoder).writeMapStart();
         if ((mapOfEnums0 == null)||mapOfEnums0 .isEmpty()) {
             (encoder).setItemCount(0);

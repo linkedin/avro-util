@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import com.linkedin.avro.fastserde.FastSerializer;
+import com.linkedin.avro.fastserde.customized.DatumWriterCustomization;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.util.Utf8;
@@ -14,14 +15,14 @@ public class FastStringableTest_javaStringPropertyTest_GenericSerializer_1110978
 {
 
 
-    public void serialize(IndexedRecord data, Encoder encoder)
+    public void serialize(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
-        serializeFastStringableTest_javaStringPropertyTest0(data, (encoder));
+        serializeFastStringableTest_javaStringPropertyTest0(data, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    public void serializeFastStringableTest_javaStringPropertyTest0(IndexedRecord data, Encoder encoder)
+    public void serializeFastStringableTest_javaStringPropertyTest0(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         if (((CharSequence) data.get(0)) instanceof Utf8) {
@@ -29,12 +30,12 @@ public class FastStringableTest_javaStringPropertyTest_GenericSerializer_1110978
         } else {
             (encoder).writeString(((CharSequence) data.get(0)).toString());
         }
-        serialize_FastStringableTest_javaStringPropertyTest0(data, (encoder));
-        serialize_FastStringableTest_javaStringPropertyTest1(data, (encoder));
+        serialize_FastStringableTest_javaStringPropertyTest0(data, (encoder), (customization));
+        serialize_FastStringableTest_javaStringPropertyTest1(data, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastStringableTest_javaStringPropertyTest0(IndexedRecord data, Encoder encoder)
+    private void serialize_FastStringableTest_javaStringPropertyTest0(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         CharSequence testUnionString0 = ((CharSequence) data.get(1));
@@ -68,10 +69,11 @@ public class FastStringableTest_javaStringPropertyTest_GenericSerializer_1110978
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastStringableTest_javaStringPropertyTest1(IndexedRecord data, Encoder encoder)
+    private void serialize_FastStringableTest_javaStringPropertyTest1(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         Map<CharSequence, CharSequence> testStringMap0 = ((Map<CharSequence, CharSequence> ) data.get(3));
+        (customization).getCheckMapTypeFunction().apply(testStringMap0);
         (encoder).writeMapStart();
         if ((testStringMap0 == null)||testStringMap0 .isEmpty()) {
             (encoder).setItemCount(0);

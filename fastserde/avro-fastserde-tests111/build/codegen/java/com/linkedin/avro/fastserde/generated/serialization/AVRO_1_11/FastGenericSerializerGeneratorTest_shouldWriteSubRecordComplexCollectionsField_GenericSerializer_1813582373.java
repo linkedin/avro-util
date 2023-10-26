@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import com.linkedin.avro.fastserde.FastSerializer;
+import com.linkedin.avro.fastserde.customized.DatumWriterCustomization;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.util.Utf8;
@@ -14,14 +15,14 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexColle
 {
 
 
-    public void serialize(IndexedRecord data, Encoder encoder)
+    public void serialize(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
-        serializeFastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexCollectionsField0(data, (encoder));
+        serializeFastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexCollectionsField0(data, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    public void serializeFastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexCollectionsField0(IndexedRecord data, Encoder encoder)
+    public void serializeFastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexCollectionsField0(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         List<Map<CharSequence, IndexedRecord>> recordsArrayMap0 = ((List<Map<CharSequence, IndexedRecord>> ) data.get(0));
@@ -34,6 +35,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexColle
                 (encoder).startItem();
                 Map<CharSequence, IndexedRecord> map0 = null;
                 map0 = ((List<Map<CharSequence, IndexedRecord>> ) recordsArrayMap0).get(counter0);
+                (customization).getCheckMapTypeFunction().apply(map0);
                 (encoder).writeMapStart();
                 if ((map0 == null)||map0 .isEmpty()) {
                     (encoder).setItemCount(0);
@@ -50,7 +52,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexColle
                         } else {
                             if ((union0 instanceof IndexedRecord)&&"com.linkedin.avro.fastserde.generated.avro.subRecord".equals(((IndexedRecord) union0).getSchema().getFullName())) {
                                 (encoder).writeIndex(1);
-                                serializeSubRecord0(((IndexedRecord) union0), (encoder));
+                                serializeSubRecord0(((IndexedRecord) union0), (encoder), (customization));
                             }
                         }
                     }
@@ -59,12 +61,12 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexColle
             }
         }
         (encoder).writeArrayEnd();
-        serialize_FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexCollectionsField0(data, (encoder));
-        serialize_FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexCollectionsField1(data, (encoder));
+        serialize_FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexCollectionsField0(data, (encoder), (customization));
+        serialize_FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexCollectionsField1(data, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    public void serializeSubRecord0(IndexedRecord data, Encoder encoder)
+    public void serializeSubRecord0(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         CharSequence subField0 = ((CharSequence) data.get(0));
@@ -82,10 +84,11 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexColle
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexCollectionsField0(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexCollectionsField0(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         Map<CharSequence, List<IndexedRecord>> recordsMapArray0 = ((Map<CharSequence, List<IndexedRecord>> ) data.get(1));
+        (customization).getCheckMapTypeFunction().apply(recordsMapArray0);
         (encoder).writeMapStart();
         if ((recordsMapArray0 == null)||recordsMapArray0 .isEmpty()) {
             (encoder).setItemCount(0);
@@ -111,7 +114,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexColle
                         } else {
                             if ((union1 instanceof IndexedRecord)&&"com.linkedin.avro.fastserde.generated.avro.subRecord".equals(((IndexedRecord) union1).getSchema().getFullName())) {
                                 (encoder).writeIndex(1);
-                                serializeSubRecord0(((IndexedRecord) union1), (encoder));
+                                serializeSubRecord0(((IndexedRecord) union1), (encoder), (customization));
                             }
                         }
                     }
@@ -136,6 +139,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexColle
                         (encoder).startItem();
                         Map<CharSequence, IndexedRecord> map1 = null;
                         map1 = ((List<Map<CharSequence, IndexedRecord>> )((List<Map<CharSequence, IndexedRecord>> ) recordsArrayMapUnion0)).get(counter2);
+                        (customization).getCheckMapTypeFunction().apply(map1);
                         (encoder).writeMapStart();
                         if ((map1 == null)||map1 .isEmpty()) {
                             (encoder).setItemCount(0);
@@ -152,7 +156,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexColle
                                 } else {
                                     if ((union2 instanceof IndexedRecord)&&"com.linkedin.avro.fastserde.generated.avro.subRecord".equals(((IndexedRecord) union2).getSchema().getFullName())) {
                                         (encoder).writeIndex(1);
-                                        serializeSubRecord0(((IndexedRecord) union2), (encoder));
+                                        serializeSubRecord0(((IndexedRecord) union2), (encoder), (customization));
                                     }
                                 }
                             }
@@ -166,7 +170,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexColle
     }
 
     @SuppressWarnings("unchecked")
-    private void serialize_FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexCollectionsField1(IndexedRecord data, Encoder encoder)
+    private void serialize_FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexCollectionsField1(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         Map<CharSequence, List<IndexedRecord>> recordsMapArrayUnion0 = ((Map<CharSequence, List<IndexedRecord>> ) data.get(3));
@@ -176,6 +180,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexColle
         } else {
             if (recordsMapArrayUnion0 instanceof Map) {
                 (encoder).writeIndex(1);
+                (customization).getCheckMapTypeFunction().apply(((Map<CharSequence, List<IndexedRecord>> ) recordsMapArrayUnion0));
                 (encoder).writeMapStart();
                 if ((((Map<CharSequence, List<IndexedRecord>> ) recordsMapArrayUnion0) == null)||((Map<CharSequence, List<IndexedRecord>> ) recordsMapArrayUnion0).isEmpty()) {
                     (encoder).setItemCount(0);
@@ -201,7 +206,7 @@ public class FastGenericSerializerGeneratorTest_shouldWriteSubRecordComplexColle
                                 } else {
                                     if ((union3 instanceof IndexedRecord)&&"com.linkedin.avro.fastserde.generated.avro.subRecord".equals(((IndexedRecord) union3).getSchema().getFullName())) {
                                         (encoder).writeIndex(1);
-                                        serializeSubRecord0(((IndexedRecord) union3), (encoder));
+                                        serializeSubRecord0(((IndexedRecord) union3), (encoder), (customization));
                                     }
                                 }
                             }

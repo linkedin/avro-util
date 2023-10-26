@@ -12,7 +12,6 @@ import com.linkedin.avro.fastserde.Utils;
  * This class needs to be in the org.apache.avro.generic package in order to access protected methods.
  */
 public class ColdGenericDatumReader<T> extends GenericDatumReader<T> implements ColdDatumReaderMixIn {
-
   public ColdGenericDatumReader(Schema writerSchema, Schema readerSchema, GenericData modelData) {
     super(writerSchema, readerSchema, modelData != null ? modelData : GenericData.get());
   }

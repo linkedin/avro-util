@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericEnumSymbol;
@@ -30,13 +31,13 @@ public class testRecord_GenericDeserializer_1146484089_1256982207
         this.enumMappingtestEnum0 = Collections.unmodifiableMap(tempEnumMapping0);
     }
 
-    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
+    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        return deserializetestRecord0((reuse), (decoder));
+        return deserializetestRecord0((reuse), (decoder), (customization));
     }
 
-    public IndexedRecord deserializetestRecord0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializetestRecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord testRecord;

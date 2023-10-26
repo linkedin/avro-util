@@ -4,6 +4,7 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 import java.io.IOException;
 import com.linkedin.avro.api.PrimitiveIntList;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import com.linkedin.avro.fastserde.primitive.PrimitiveIntArrayList;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
@@ -23,13 +24,13 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingW
         this.testOptionSchema0 = test0 .getTypes().get(0);
     }
 
-    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
+    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        return deserializeFastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithArrays0((reuse), (decoder));
+        return deserializeFastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithArrays0((reuse), (decoder), (customization));
     }
 
-    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithArrays0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithArrays0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithArrays;

@@ -4,6 +4,7 @@ package com.linkedin.avro.fastserde.generated.serialization.AVRO_1_11;
 import java.io.IOException;
 import java.util.Map;
 import com.linkedin.avro.fastserde.FastSerializer;
+import com.linkedin.avro.fastserde.customized.DatumWriterCustomization;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.util.Utf8;
@@ -13,9 +14,10 @@ public class Map_of_record_GenericSerializer_1677529043
 {
 
 
-    public void serialize(Map<CharSequence, IndexedRecord> data, Encoder encoder)
+    public void serialize(Map<CharSequence, IndexedRecord> data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
+        (customization).getCheckMapTypeFunction().apply(data);
         (encoder).writeMapStart();
         if ((data == null)||data.isEmpty()) {
             (encoder).setItemCount(0);
@@ -26,14 +28,14 @@ public class Map_of_record_GenericSerializer_1677529043
                 (encoder).writeString(key0);
                 IndexedRecord record0 = null;
                 record0 = ((Map<CharSequence, IndexedRecord> ) data).get(key0);
-                serializeRecord0(record0, (encoder));
+                serializeRecord0(record0, (encoder), (customization));
             }
         }
         (encoder).writeMapEnd();
     }
 
     @SuppressWarnings("unchecked")
-    public void serializeRecord0(IndexedRecord data, Encoder encoder)
+    public void serializeRecord0(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         CharSequence field0 = ((CharSequence) data.get(0));

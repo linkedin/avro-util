@@ -1,5 +1,6 @@
 package com.linkedin.avro.fastserde;
 
+import com.linkedin.avro.fastserde.customized.DatumWriterCustomization;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
@@ -21,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import java.util.function.Supplier;
 import org.apache.avro.Conversion;
 import org.apache.avro.Conversions;
 import org.apache.avro.Schema;
@@ -35,6 +37,7 @@ public class FastSerializerGenerator<T, U extends GenericData> extends FastSerde
   private static int FIELDS_PER_RECORD_SERIALIZATION_METHOD = 20;
 
   private static final String ENCODER = "encoder";
+  private static final String VAR_NAME_FOR_CUSTOMIZATION = "customization";
   protected final Schema schema;
 
   private final Map<String, JMethod> serializeMethodMap = new HashMap<>();
@@ -74,22 +77,24 @@ public class FastSerializerGenerator<T, U extends GenericData> extends FastSerde
       JClass outputClass = schemaAssistant.classFromSchema(schema);
       generatedClass._implements(codeModel.ref(FastSerializer.class).narrow(outputClass));
       serializeMethodParam = serializeMethod.param(outputClass, "data");
+      final Supplier<JExpression> customizationSupplier = () -> JExpr.direct(VAR_NAME_FOR_CUSTOMIZATION);
 
       switch (schema.getType()) {
         case RECORD:
-          processRecord(schema, serializeMethodParam, serializeMethod.body());
+          processRecord(schema, serializeMethodParam, serializeMethod.body(), customizationSupplier);
           break;
         case ARRAY:
-          processArray(schema, serializeMethodParam, serializeMethod.body());
+          processArray(schema, serializeMethodParam, serializeMethod.body(), customizationSupplier);
           break;
         case MAP:
-          processMap(schema, serializeMethodParam, serializeMethod.body());
+          processMap(schema, serializeMethodParam, serializeMethod.body(), customizationSupplier);
           break;
         default:
           throw new FastSerdeGeneratorException("Unsupported input schema type: " + schema.getType());
       }
 
       serializeMethod.param(codeModel.ref(Encoder.class), ENCODER);
+      serializeMethod.param(codeModel.ref(DatumWriterCustomization.class), VAR_NAME_FOR_CUSTOMIZATION);
       serializeMethod._throws(codeModel.ref(IOException.class));
 
       @SuppressWarnings("unchecked")
@@ -103,19 +108,19 @@ public class FastSerializerGenerator<T, U extends GenericData> extends FastSerde
     }
   }
 
-  private void processComplexType(Schema schema, JExpression valueExpr, JBlock body) {
+  private void processComplexType(Schema schema, JExpression valueExpr, JBlock body, Supplier<JExpression> customizationSupplier) {
     switch (schema.getType()) {
       case RECORD:
-        processRecord(schema, valueExpr, body);
+        processRecord(schema, valueExpr, body, customizationSupplier);
         break;
       case ARRAY:
-        processArray(schema, valueExpr, body);
+        processArray(schema, valueExpr, body, customizationSupplier);
         break;
       case UNION:
-        processUnion(schema, valueExpr, body);
+        processUnion(schema, valueExpr, body, customizationSupplier);
         break;
       case MAP:
-        processMap(schema, valueExpr, body);
+        processMap(schema, valueExpr, body, customizationSupplier);
         break;
       default:
         throw new FastSerdeGeneratorException("Not a complex schema type: " + schema.getType());
@@ -140,13 +145,13 @@ public class FastSerializerGenerator<T, U extends GenericData> extends FastSerde
     }
   }
 
-  private void processRecord(final Schema recordSchema, JExpression recordExpr, final JBlock containerBody) {
+  private void processRecord(final Schema recordSchema, JExpression recordExpr, final JBlock containerBody, Supplier<JExpression> customizationSupplier) {
     if (methodAlreadyDefined(recordSchema)) {
-      containerBody.invoke(getMethod(recordSchema)).arg(recordExpr).arg(JExpr.direct(ENCODER));
+      containerBody.invoke(getMethod(recordSchema)).arg(recordExpr).arg(JExpr.direct(ENCODER)).arg(customizationSupplier.get());
       return;
     }
     JMethod method = createMethod(recordSchema);
-    containerBody.invoke(getMethod(recordSchema)).arg(recordExpr).arg(JExpr.direct(ENCODER));
+    containerBody.invoke(getMethod(recordSchema)).arg(recordExpr).arg(JExpr.direct(ENCODER)).arg(customizationSupplier.get());
 
     JBlock methodBody = method.body();
     recordExpr = method.listParams()[0];
@@ -165,10 +170,11 @@ public class FastSerializerGenerator<T, U extends GenericData> extends FastSerde
         popMethod._throws(IOException.class);
         popMethod.param(schemaAssistant.classFromSchema(recordSchema), "data");
         popMethod.param(Encoder.class, ENCODER);
+        popMethod.param(DatumWriterCustomization.class, VAR_NAME_FOR_CUSTOMIZATION);
         popMethod.annotate(SuppressWarnings.class).param("value", "unchecked");
 
         popMethodBody = popMethod.body();
-        methodBody.invoke(popMethod).arg(recordExpr).arg(JExpr.direct(ENCODER));
+        methodBody.invoke(popMethod).arg(recordExpr).arg(JExpr.direct(ENCODER)).arg(customizationSupplier.get());
       }
 
       Schema fieldSchema = field.schema();
@@ -177,14 +183,14 @@ public class FastSerializerGenerator<T, U extends GenericData> extends FastSerde
       if (SchemaAssistant.isComplexType(fieldSchema)) {
         JClass fieldClass = schemaAssistant.classFromSchema(fieldSchema);
         JVar containerVar = popMethodBody.decl(fieldClass, getUniqueName(field.name()), JExpr.cast(fieldClass, fieldValueGetter));
-        processComplexType(fieldSchema, containerVar, popMethodBody);
+        processComplexType(fieldSchema, containerVar, popMethodBody, customizationSupplier);
       } else {
         processSimpleType(fieldSchema, fieldValueGetter, popMethodBody);
       }
     }
   }
 
-  private void processArray(final Schema arraySchema, JExpression arrayExpr, JBlock body) {
+  private void processArray(final Schema arraySchema, JExpression arrayExpr, JBlock body, Supplier<JExpression> customizationSupplier) {
     final JClass arrayClass = schemaAssistant.classFromSchema(arraySchema);
     body.invoke(JExpr.direct(ENCODER), "writeArrayStart");
 
@@ -215,22 +221,22 @@ public class FastSerializerGenerator<T, U extends GenericData> extends FastSerde
                   "bufferBackedPrimitiveFloatList", JExpr.cast(bufferBackedPrimitiveFloatListClass, primitiveList));
               then3.invoke(bufferBackedPrimitiveFloatList, "writeFloats").arg(JExpr.direct(ENCODER));
             }, else3 -> {
-              processArrayElementLoop(arraySchema, arrayClass, primitiveList, else3, "getPrimitive");
+              processArrayElementLoop(arraySchema, arrayClass, primitiveList, else3, "getPrimitive", customizationSupplier);
             });
           } else {
-            processArrayElementLoop(arraySchema, arrayClass, primitiveList, then2, "getPrimitive");
+            processArrayElementLoop(arraySchema, arrayClass, primitiveList, then2, "getPrimitive", customizationSupplier);
           }
         }, else2 -> {
-          processArrayElementLoop(arraySchema, arrayClass, arrayExpr, else2, "get");
+          processArrayElementLoop(arraySchema, arrayClass, arrayExpr, else2, "get", customizationSupplier);
         });
       } else {
-        processArrayElementLoop(arraySchema, arrayClass, arrayExpr, else1, "get");
+        processArrayElementLoop(arraySchema, arrayClass, arrayExpr, else1, "get", customizationSupplier);
       }
     });
     body.invoke(JExpr.direct(ENCODER), "writeArrayEnd");
   }
 
-  private void processArrayElementLoop(final Schema arraySchema, final JClass arrayClass, JExpression arrayExpr, JBlock body, String getMethodName) {
+  private void processArrayElementLoop(final Schema arraySchema, final JClass arrayClass, JExpression arrayExpr, JBlock body, String getMethodName, Supplier<JExpression> customizationSupplier) {
     final JForLoop forLoop = body._for();
     final JVar counter = forLoop.init(codeModel.INT, getUniqueName("counter"), JExpr.lit(0));
     forLoop.test(counter.lt(JExpr.invoke(arrayExpr, "size")));
@@ -242,15 +248,17 @@ public class FastSerializerGenerator<T, U extends GenericData> extends FastSerde
     if (SchemaAssistant.isComplexType(elementSchema)) {
       JVar containerVar = declareValueVar(elementSchema.getName(), elementSchema, forBody);
       forBody.assign(containerVar, JExpr.invoke(JExpr.cast(arrayClass, arrayExpr), getMethodName).arg(counter));
-      processComplexType(elementSchema, containerVar, forBody);
+      processComplexType(elementSchema, containerVar, forBody, customizationSupplier);
     } else {
       processSimpleType(elementSchema, arrayExpr.invoke(getMethodName).arg(counter), forBody, false);
     }
   }
 
-  private void processMap(final Schema mapSchema, JExpression mapExpr, JBlock body) {
+  private void processMap(final Schema mapSchema, JExpression mapExpr, JBlock body, Supplier<JExpression> customizationSupplier) {
     final JClass mapClass = schemaAssistant.classFromSchema(mapSchema);
     JClass keyClass = schemaAssistant.findStringClass(mapSchema);
+
+    body.invoke(JExpr.invoke(customizationSupplier.get(),"getCheckMapTypeFunction"),"apply").arg(mapExpr);
 
     body.invoke(JExpr.direct(ENCODER), "writeMapStart");
 
@@ -285,7 +293,7 @@ public class FastSerializerGenerator<T, U extends GenericData> extends FastSerde
       containerVar = declareValueVar(valueSchema.getName(), valueSchema, forBody);
       forBody.assign(containerVar, JExpr.invoke(JExpr.cast(mapClass, mapExpr), "get").arg(mapKeysLoop.var()));
 
-      processComplexType(valueSchema, containerVar, forBody);
+      processComplexType(valueSchema, containerVar, forBody, customizationSupplier);
     } else {
       processSimpleType(valueSchema, mapExpr.invoke("get").arg(mapKeysLoop.var()), forBody);
     }
@@ -312,7 +320,7 @@ public class FastSerializerGenerator<T, U extends GenericData> extends FastSerde
     throw new RuntimeException("Unknown schema: " + schema + " in union schema: " + unionSchema);
   }
 
-  private void processUnion(final Schema unionSchema, final JExpression unionExpr, final JBlock body) {
+  private void processUnion(final Schema unionSchema, final JExpression unionExpr, final JBlock body, Supplier<JExpression> customizationSupplier) {
     JConditional ifBlock = null;
 
     for (Schema schemaOption : unionSchema.getTypes()) {
@@ -387,7 +395,7 @@ public class FastSerializerGenerator<T, U extends GenericData> extends FastSerde
       }
 
       if (SchemaAssistant.isComplexType(schemaOption)) {
-        processComplexType(schemaOption, JExpr.cast(optionClass, unionExpr), unionTypeProcessingBlock);
+        processComplexType(schemaOption, JExpr.cast(optionClass, unionExpr), unionTypeProcessingBlock, customizationSupplier);
       } else {
         processSimpleType(schemaOption, unionExpr, unionTypeProcessingBlock);
       }
@@ -551,6 +559,7 @@ public class FastSerializerGenerator<T, U extends GenericData> extends FastSerde
         method._throws(IOException.class);
         method.param(schemaAssistant.classFromSchema(schema), "data");
         method.param(Encoder.class, ENCODER);
+        method.param(DatumWriterCustomization.class, VAR_NAME_FOR_CUSTOMIZATION);
 
         method.annotate(SuppressWarnings.class).param("value", "unchecked");
         serializeMethodMap.put(AvroCompatibilityHelper.getSchemaFullName(schema), method);

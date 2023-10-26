@@ -3,6 +3,7 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 
 import java.io.IOException;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
@@ -2018,13 +2019,13 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         this.f9990 = readerSchema.getField("F999").schema();
     }
 
-    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
+    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        return deserializeFastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema0((reuse), (decoder));
+        return deserializeFastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema0((reuse), (decoder), (customization));
     }
 
-    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema;
@@ -2051,510 +2052,510 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
                 throw new RuntimeException(("Illegal union index for 'F0': "+ unionIndex0));
             }
         }
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema0((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema1((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema2((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema3((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema4((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema5((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema6((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema7((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema8((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema9((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema10((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema11((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema12((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema13((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema14((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema15((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema16((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema17((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema18((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema19((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema20((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema21((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema22((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema23((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema24((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema25((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema26((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema27((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema28((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema29((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema30((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema31((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema32((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema33((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema34((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema35((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema36((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema37((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema38((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema39((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema40((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema41((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema42((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema43((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema44((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema45((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema46((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema47((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema48((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema49((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema50((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema51((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema52((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema53((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema54((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema55((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema56((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema57((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema58((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema59((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema60((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema61((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema62((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema63((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema64((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema65((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema66((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema67((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema68((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema69((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema70((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema71((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema72((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema73((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema74((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema75((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema76((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema77((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema78((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema79((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema80((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema81((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema82((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema83((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema84((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema85((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema86((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema87((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema88((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema89((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema90((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema91((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema92((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema93((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema94((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema95((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema96((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema97((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema98((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema99((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema100((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema101((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema102((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema103((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema104((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema105((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema106((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema107((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema108((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema109((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema110((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema111((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema112((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema113((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema114((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema115((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema116((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema117((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema118((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema119((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema120((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema121((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema122((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema123((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema124((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema125((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema126((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema127((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema128((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema129((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema130((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema131((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema132((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema133((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema134((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema135((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema136((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema137((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema138((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema139((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema140((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema141((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema142((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema143((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema144((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema145((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema146((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema147((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema148((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema149((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema150((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema151((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema152((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema153((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema154((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema155((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema156((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema157((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema158((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema159((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema160((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema161((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema162((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema163((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema164((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema165((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema166((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema167((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema168((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema169((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema170((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema171((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema172((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema173((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema174((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema175((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema176((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema177((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema178((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema179((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema180((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema181((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema182((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema183((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema184((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema185((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema186((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema187((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema188((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema189((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema190((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema191((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema192((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema193((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema194((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema195((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema196((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema197((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema198((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema199((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema200((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema201((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema202((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema203((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema204((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema205((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema206((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema207((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema208((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema209((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema210((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema211((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema212((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema213((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema214((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema215((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema216((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema217((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema218((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema219((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema220((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema221((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema222((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema223((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema224((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema225((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema226((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema227((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema228((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema229((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema230((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema231((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema232((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema233((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema234((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema235((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema236((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema237((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema238((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema239((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema240((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema241((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema242((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema243((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema244((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema245((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema246((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema247((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema248((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema249((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema250((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema251((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema252((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema253((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema254((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema255((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema256((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema257((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema258((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema259((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema260((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema261((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema262((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema263((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema264((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema265((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema266((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema267((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema268((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema269((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema270((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema271((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema272((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema273((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema274((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema275((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema276((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema277((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema278((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema279((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema280((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema281((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema282((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema283((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema284((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema285((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema286((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema287((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema288((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema289((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema290((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema291((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema292((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema293((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema294((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema295((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema296((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema297((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema298((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema299((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema300((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema301((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema302((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema303((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema304((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema305((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema306((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema307((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema308((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema309((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema310((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema311((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema312((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema313((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema314((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema315((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema316((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema317((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema318((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema319((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema320((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema321((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema322((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema323((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema324((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema325((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema326((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema327((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema328((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema329((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema330((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema331((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema332((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema333((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema334((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema335((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema336((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema337((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema338((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema339((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema340((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema341((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema342((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema343((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema344((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema345((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema346((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema347((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema348((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema349((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema350((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema351((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema352((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema353((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema354((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema355((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema356((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema357((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema358((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema359((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema360((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema361((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema362((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema363((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema364((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema365((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema366((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema367((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema368((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema369((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema370((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema371((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema372((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema373((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema374((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema375((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema376((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema377((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema378((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema379((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema380((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema381((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema382((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema383((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema384((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema385((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema386((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema387((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema388((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema389((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema390((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema391((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema392((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema393((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema394((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema395((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema396((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema397((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema398((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema399((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema400((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema401((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema402((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema403((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema404((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema405((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema406((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema407((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema408((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema409((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema410((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema411((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema412((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema413((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema414((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema415((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema416((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema417((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema418((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema419((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema420((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema421((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema422((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema423((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema424((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema425((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema426((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema427((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema428((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema429((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema430((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema431((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema432((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema433((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema434((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema435((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema436((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema437((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema438((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema439((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema440((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema441((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema442((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema443((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema444((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema445((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema446((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema447((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema448((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema449((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema450((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema451((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema452((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema453((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema454((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema455((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema456((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema457((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema458((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema459((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema460((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema461((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema462((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema463((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema464((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema465((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema466((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema467((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema468((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema469((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema470((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema471((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema472((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema473((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema474((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema475((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema476((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema477((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema478((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema479((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema480((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema481((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema482((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema483((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema484((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema485((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema486((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema487((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema488((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema489((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema490((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema491((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema492((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema493((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema494((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema495((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema496((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema497((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema498((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema499((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema0((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema1((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema2((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema3((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema4((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema5((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema6((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema7((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema8((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema9((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema10((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema11((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema12((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema13((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema14((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema15((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema16((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema17((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema18((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema19((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema20((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema21((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema22((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema23((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema24((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema25((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema26((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema27((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema28((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema29((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema30((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema31((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema32((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema33((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema34((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema35((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema36((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema37((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema38((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema39((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema40((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema41((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema42((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema43((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema44((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema45((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema46((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema47((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema48((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema49((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema50((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema51((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema52((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema53((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema54((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema55((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema56((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema57((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema58((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema59((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema60((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema61((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema62((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema63((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema64((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema65((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema66((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema67((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema68((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema69((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema70((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema71((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema72((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema73((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema74((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema75((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema76((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema77((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema78((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema79((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema80((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema81((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema82((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema83((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema84((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema85((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema86((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema87((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema88((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema89((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema90((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema91((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema92((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema93((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema94((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema95((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema96((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema97((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema98((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema99((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema100((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema101((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema102((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema103((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema104((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema105((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema106((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema107((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema108((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema109((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema110((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema111((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema112((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema113((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema114((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema115((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema116((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema117((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema118((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema119((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema120((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema121((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema122((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema123((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema124((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema125((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema126((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema127((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema128((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema129((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema130((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema131((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema132((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema133((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema134((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema135((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema136((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema137((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema138((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema139((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema140((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema141((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema142((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema143((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema144((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema145((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema146((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema147((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema148((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema149((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema150((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema151((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema152((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema153((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema154((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema155((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema156((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema157((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema158((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema159((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema160((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema161((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema162((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema163((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema164((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema165((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema166((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema167((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema168((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema169((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema170((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema171((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema172((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema173((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema174((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema175((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema176((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema177((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema178((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema179((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema180((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema181((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema182((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema183((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema184((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema185((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema186((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema187((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema188((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema189((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema190((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema191((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema192((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema193((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema194((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema195((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema196((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema197((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema198((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema199((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema200((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema201((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema202((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema203((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema204((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema205((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema206((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema207((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema208((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema209((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema210((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema211((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema212((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema213((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema214((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema215((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema216((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema217((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema218((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema219((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema220((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema221((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema222((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema223((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema224((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema225((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema226((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema227((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema228((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema229((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema230((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema231((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema232((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema233((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema234((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema235((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema236((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema237((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema238((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema239((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema240((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema241((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema242((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema243((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema244((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema245((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema246((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema247((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema248((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema249((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema250((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema251((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema252((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema253((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema254((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema255((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema256((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema257((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema258((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema259((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema260((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema261((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema262((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema263((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema264((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema265((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema266((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema267((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema268((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema269((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema270((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema271((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema272((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema273((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema274((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema275((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema276((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema277((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema278((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema279((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema280((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema281((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema282((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema283((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema284((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema285((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema286((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema287((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema288((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema289((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema290((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema291((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema292((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema293((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema294((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema295((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema296((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema297((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema298((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema299((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema300((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema301((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema302((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema303((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema304((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema305((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema306((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema307((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema308((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema309((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema310((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema311((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema312((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema313((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema314((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema315((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema316((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema317((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema318((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema319((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema320((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema321((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema322((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema323((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema324((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema325((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema326((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema327((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema328((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema329((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema330((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema331((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema332((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema333((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema334((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema335((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema336((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema337((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema338((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema339((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema340((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema341((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema342((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema343((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema344((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema345((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema346((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema347((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema348((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema349((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema350((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema351((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema352((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema353((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema354((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema355((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema356((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema357((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema358((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema359((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema360((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema361((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema362((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema363((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema364((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema365((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema366((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema367((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema368((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema369((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema370((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema371((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema372((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema373((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema374((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema375((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema376((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema377((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema378((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema379((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema380((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema381((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema382((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema383((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema384((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema385((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema386((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema387((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema388((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema389((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema390((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema391((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema392((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema393((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema394((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema395((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema396((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema397((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema398((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema399((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema400((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema401((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema402((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema403((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema404((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema405((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema406((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema407((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema408((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema409((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema410((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema411((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema412((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema413((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema414((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema415((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema416((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema417((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema418((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema419((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema420((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema421((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema422((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema423((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema424((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema425((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema426((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema427((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema428((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema429((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema430((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema431((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema432((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema433((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema434((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema435((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema436((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema437((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema438((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema439((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema440((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema441((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema442((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema443((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema444((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema445((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema446((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema447((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema448((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema449((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema450((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema451((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema452((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema453((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema454((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema455((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema456((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema457((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema458((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema459((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema460((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema461((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema462((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema463((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema464((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema465((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema466((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema467((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema468((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema469((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema470((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema471((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema472((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema473((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema474((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema475((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema476((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema477((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema478((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema479((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema480((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema481((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema482((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema483((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema484((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema485((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema486((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema487((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema488((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema489((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema490((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema491((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema492((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema493((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema494((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema495((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema496((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema497((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema498((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema499((FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema), (customization), (decoder));
         return FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema;
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex1 = (decoder.readIndex());
@@ -2595,7 +2596,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema1(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema1(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex3 = (decoder.readIndex());
@@ -2636,7 +2637,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema2(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema2(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex5 = (decoder.readIndex());
@@ -2677,7 +2678,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema3(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema3(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex7 = (decoder.readIndex());
@@ -2718,7 +2719,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema4(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema4(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex9 = (decoder.readIndex());
@@ -2759,7 +2760,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema5(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema5(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex11 = (decoder.readIndex());
@@ -2800,7 +2801,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema6(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema6(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex13 = (decoder.readIndex());
@@ -2841,7 +2842,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema7(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema7(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex15 = (decoder.readIndex());
@@ -2882,7 +2883,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema8(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema8(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex17 = (decoder.readIndex());
@@ -2923,7 +2924,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema9(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema9(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex19 = (decoder.readIndex());
@@ -2964,7 +2965,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema10(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema10(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex21 = (decoder.readIndex());
@@ -3005,7 +3006,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema11(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema11(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex23 = (decoder.readIndex());
@@ -3046,7 +3047,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema12(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema12(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex25 = (decoder.readIndex());
@@ -3087,7 +3088,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema13(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema13(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex27 = (decoder.readIndex());
@@ -3128,7 +3129,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema14(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema14(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex29 = (decoder.readIndex());
@@ -3169,7 +3170,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema15(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema15(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex31 = (decoder.readIndex());
@@ -3210,7 +3211,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema16(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema16(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex33 = (decoder.readIndex());
@@ -3251,7 +3252,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema17(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema17(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex35 = (decoder.readIndex());
@@ -3292,7 +3293,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema18(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema18(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex37 = (decoder.readIndex());
@@ -3333,7 +3334,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema19(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema19(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex39 = (decoder.readIndex());
@@ -3374,7 +3375,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema20(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema20(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex41 = (decoder.readIndex());
@@ -3415,7 +3416,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema21(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema21(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex43 = (decoder.readIndex());
@@ -3456,7 +3457,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema22(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema22(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex45 = (decoder.readIndex());
@@ -3497,7 +3498,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema23(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema23(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex47 = (decoder.readIndex());
@@ -3538,7 +3539,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema24(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema24(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex49 = (decoder.readIndex());
@@ -3579,7 +3580,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema25(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema25(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex51 = (decoder.readIndex());
@@ -3620,7 +3621,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema26(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema26(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex53 = (decoder.readIndex());
@@ -3661,7 +3662,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema27(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema27(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex55 = (decoder.readIndex());
@@ -3702,7 +3703,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema28(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema28(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex57 = (decoder.readIndex());
@@ -3743,7 +3744,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema29(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema29(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex59 = (decoder.readIndex());
@@ -3784,7 +3785,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema30(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema30(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex61 = (decoder.readIndex());
@@ -3825,7 +3826,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema31(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema31(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex63 = (decoder.readIndex());
@@ -3866,7 +3867,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema32(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema32(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex65 = (decoder.readIndex());
@@ -3907,7 +3908,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema33(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema33(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex67 = (decoder.readIndex());
@@ -3948,7 +3949,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema34(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema34(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex69 = (decoder.readIndex());
@@ -3989,7 +3990,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema35(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema35(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex71 = (decoder.readIndex());
@@ -4030,7 +4031,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema36(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema36(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex73 = (decoder.readIndex());
@@ -4071,7 +4072,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema37(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema37(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex75 = (decoder.readIndex());
@@ -4112,7 +4113,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema38(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema38(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex77 = (decoder.readIndex());
@@ -4153,7 +4154,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema39(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema39(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex79 = (decoder.readIndex());
@@ -4194,7 +4195,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema40(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema40(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex81 = (decoder.readIndex());
@@ -4235,7 +4236,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema41(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema41(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex83 = (decoder.readIndex());
@@ -4276,7 +4277,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema42(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema42(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex85 = (decoder.readIndex());
@@ -4317,7 +4318,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema43(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema43(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex87 = (decoder.readIndex());
@@ -4358,7 +4359,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema44(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema44(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex89 = (decoder.readIndex());
@@ -4399,7 +4400,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema45(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema45(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex91 = (decoder.readIndex());
@@ -4440,7 +4441,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema46(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema46(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex93 = (decoder.readIndex());
@@ -4481,7 +4482,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema47(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema47(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex95 = (decoder.readIndex());
@@ -4522,7 +4523,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema48(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema48(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex97 = (decoder.readIndex());
@@ -4563,7 +4564,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema49(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema49(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex99 = (decoder.readIndex());
@@ -4604,7 +4605,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema50(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema50(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex101 = (decoder.readIndex());
@@ -4645,7 +4646,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema51(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema51(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex103 = (decoder.readIndex());
@@ -4686,7 +4687,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema52(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema52(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex105 = (decoder.readIndex());
@@ -4727,7 +4728,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema53(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema53(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex107 = (decoder.readIndex());
@@ -4768,7 +4769,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema54(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema54(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex109 = (decoder.readIndex());
@@ -4809,7 +4810,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema55(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema55(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex111 = (decoder.readIndex());
@@ -4850,7 +4851,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema56(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema56(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex113 = (decoder.readIndex());
@@ -4891,7 +4892,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema57(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema57(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex115 = (decoder.readIndex());
@@ -4932,7 +4933,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema58(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema58(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex117 = (decoder.readIndex());
@@ -4973,7 +4974,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema59(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema59(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex119 = (decoder.readIndex());
@@ -5014,7 +5015,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema60(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema60(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex121 = (decoder.readIndex());
@@ -5055,7 +5056,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema61(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema61(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex123 = (decoder.readIndex());
@@ -5096,7 +5097,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema62(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema62(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex125 = (decoder.readIndex());
@@ -5137,7 +5138,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema63(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema63(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex127 = (decoder.readIndex());
@@ -5178,7 +5179,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema64(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema64(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex129 = (decoder.readIndex());
@@ -5219,7 +5220,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema65(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema65(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex131 = (decoder.readIndex());
@@ -5260,7 +5261,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema66(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema66(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex133 = (decoder.readIndex());
@@ -5301,7 +5302,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema67(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema67(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex135 = (decoder.readIndex());
@@ -5342,7 +5343,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema68(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema68(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex137 = (decoder.readIndex());
@@ -5383,7 +5384,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema69(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema69(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex139 = (decoder.readIndex());
@@ -5424,7 +5425,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema70(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema70(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex141 = (decoder.readIndex());
@@ -5465,7 +5466,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema71(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema71(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex143 = (decoder.readIndex());
@@ -5506,7 +5507,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema72(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema72(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex145 = (decoder.readIndex());
@@ -5547,7 +5548,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema73(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema73(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex147 = (decoder.readIndex());
@@ -5588,7 +5589,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema74(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema74(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex149 = (decoder.readIndex());
@@ -5629,7 +5630,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema75(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema75(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex151 = (decoder.readIndex());
@@ -5670,7 +5671,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema76(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema76(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex153 = (decoder.readIndex());
@@ -5711,7 +5712,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema77(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema77(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex155 = (decoder.readIndex());
@@ -5752,7 +5753,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema78(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema78(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex157 = (decoder.readIndex());
@@ -5793,7 +5794,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema79(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema79(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex159 = (decoder.readIndex());
@@ -5834,7 +5835,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema80(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema80(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex161 = (decoder.readIndex());
@@ -5875,7 +5876,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema81(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema81(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex163 = (decoder.readIndex());
@@ -5916,7 +5917,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema82(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema82(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex165 = (decoder.readIndex());
@@ -5957,7 +5958,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema83(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema83(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex167 = (decoder.readIndex());
@@ -5998,7 +5999,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema84(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema84(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex169 = (decoder.readIndex());
@@ -6039,7 +6040,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema85(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema85(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex171 = (decoder.readIndex());
@@ -6080,7 +6081,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema86(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema86(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex173 = (decoder.readIndex());
@@ -6121,7 +6122,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema87(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema87(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex175 = (decoder.readIndex());
@@ -6162,7 +6163,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema88(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema88(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex177 = (decoder.readIndex());
@@ -6203,7 +6204,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema89(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema89(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex179 = (decoder.readIndex());
@@ -6244,7 +6245,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema90(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema90(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex181 = (decoder.readIndex());
@@ -6285,7 +6286,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema91(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema91(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex183 = (decoder.readIndex());
@@ -6326,7 +6327,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema92(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema92(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex185 = (decoder.readIndex());
@@ -6367,7 +6368,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema93(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema93(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex187 = (decoder.readIndex());
@@ -6408,7 +6409,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema94(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema94(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex189 = (decoder.readIndex());
@@ -6449,7 +6450,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema95(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema95(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex191 = (decoder.readIndex());
@@ -6490,7 +6491,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema96(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema96(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex193 = (decoder.readIndex());
@@ -6531,7 +6532,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema97(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema97(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex195 = (decoder.readIndex());
@@ -6572,7 +6573,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema98(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema98(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex197 = (decoder.readIndex());
@@ -6613,7 +6614,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema99(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema99(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex199 = (decoder.readIndex());
@@ -6654,7 +6655,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema100(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema100(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex201 = (decoder.readIndex());
@@ -6695,7 +6696,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema101(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema101(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex203 = (decoder.readIndex());
@@ -6736,7 +6737,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema102(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema102(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex205 = (decoder.readIndex());
@@ -6777,7 +6778,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema103(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema103(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex207 = (decoder.readIndex());
@@ -6818,7 +6819,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema104(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema104(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex209 = (decoder.readIndex());
@@ -6859,7 +6860,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema105(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema105(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex211 = (decoder.readIndex());
@@ -6900,7 +6901,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema106(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema106(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex213 = (decoder.readIndex());
@@ -6941,7 +6942,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema107(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema107(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex215 = (decoder.readIndex());
@@ -6982,7 +6983,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema108(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema108(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex217 = (decoder.readIndex());
@@ -7023,7 +7024,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema109(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema109(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex219 = (decoder.readIndex());
@@ -7064,7 +7065,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema110(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema110(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex221 = (decoder.readIndex());
@@ -7105,7 +7106,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema111(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema111(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex223 = (decoder.readIndex());
@@ -7146,7 +7147,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema112(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema112(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex225 = (decoder.readIndex());
@@ -7187,7 +7188,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema113(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema113(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex227 = (decoder.readIndex());
@@ -7228,7 +7229,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema114(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema114(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex229 = (decoder.readIndex());
@@ -7269,7 +7270,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema115(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema115(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex231 = (decoder.readIndex());
@@ -7310,7 +7311,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema116(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema116(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex233 = (decoder.readIndex());
@@ -7351,7 +7352,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema117(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema117(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex235 = (decoder.readIndex());
@@ -7392,7 +7393,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema118(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema118(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex237 = (decoder.readIndex());
@@ -7433,7 +7434,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema119(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema119(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex239 = (decoder.readIndex());
@@ -7474,7 +7475,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema120(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema120(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex241 = (decoder.readIndex());
@@ -7515,7 +7516,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema121(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema121(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex243 = (decoder.readIndex());
@@ -7556,7 +7557,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema122(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema122(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex245 = (decoder.readIndex());
@@ -7597,7 +7598,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema123(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema123(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex247 = (decoder.readIndex());
@@ -7638,7 +7639,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema124(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema124(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex249 = (decoder.readIndex());
@@ -7679,7 +7680,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema125(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema125(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex251 = (decoder.readIndex());
@@ -7720,7 +7721,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema126(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema126(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex253 = (decoder.readIndex());
@@ -7761,7 +7762,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema127(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema127(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex255 = (decoder.readIndex());
@@ -7802,7 +7803,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema128(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema128(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex257 = (decoder.readIndex());
@@ -7843,7 +7844,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema129(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema129(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex259 = (decoder.readIndex());
@@ -7884,7 +7885,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema130(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema130(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex261 = (decoder.readIndex());
@@ -7925,7 +7926,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema131(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema131(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex263 = (decoder.readIndex());
@@ -7966,7 +7967,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema132(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema132(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex265 = (decoder.readIndex());
@@ -8007,7 +8008,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema133(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema133(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex267 = (decoder.readIndex());
@@ -8048,7 +8049,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema134(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema134(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex269 = (decoder.readIndex());
@@ -8089,7 +8090,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema135(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema135(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex271 = (decoder.readIndex());
@@ -8130,7 +8131,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema136(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema136(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex273 = (decoder.readIndex());
@@ -8171,7 +8172,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema137(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema137(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex275 = (decoder.readIndex());
@@ -8212,7 +8213,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema138(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema138(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex277 = (decoder.readIndex());
@@ -8253,7 +8254,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema139(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema139(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex279 = (decoder.readIndex());
@@ -8294,7 +8295,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema140(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema140(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex281 = (decoder.readIndex());
@@ -8335,7 +8336,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema141(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema141(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex283 = (decoder.readIndex());
@@ -8376,7 +8377,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema142(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema142(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex285 = (decoder.readIndex());
@@ -8417,7 +8418,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema143(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema143(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex287 = (decoder.readIndex());
@@ -8458,7 +8459,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema144(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema144(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex289 = (decoder.readIndex());
@@ -8499,7 +8500,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema145(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema145(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex291 = (decoder.readIndex());
@@ -8540,7 +8541,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema146(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema146(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex293 = (decoder.readIndex());
@@ -8581,7 +8582,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema147(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema147(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex295 = (decoder.readIndex());
@@ -8622,7 +8623,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema148(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema148(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex297 = (decoder.readIndex());
@@ -8663,7 +8664,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema149(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema149(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex299 = (decoder.readIndex());
@@ -8704,7 +8705,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema150(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema150(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex301 = (decoder.readIndex());
@@ -8745,7 +8746,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema151(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema151(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex303 = (decoder.readIndex());
@@ -8786,7 +8787,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema152(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema152(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex305 = (decoder.readIndex());
@@ -8827,7 +8828,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema153(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema153(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex307 = (decoder.readIndex());
@@ -8868,7 +8869,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema154(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema154(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex309 = (decoder.readIndex());
@@ -8909,7 +8910,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema155(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema155(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex311 = (decoder.readIndex());
@@ -8950,7 +8951,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema156(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema156(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex313 = (decoder.readIndex());
@@ -8991,7 +8992,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema157(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema157(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex315 = (decoder.readIndex());
@@ -9032,7 +9033,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema158(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema158(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex317 = (decoder.readIndex());
@@ -9073,7 +9074,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema159(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema159(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex319 = (decoder.readIndex());
@@ -9114,7 +9115,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema160(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema160(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex321 = (decoder.readIndex());
@@ -9155,7 +9156,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema161(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema161(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex323 = (decoder.readIndex());
@@ -9196,7 +9197,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema162(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema162(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex325 = (decoder.readIndex());
@@ -9237,7 +9238,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema163(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema163(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex327 = (decoder.readIndex());
@@ -9278,7 +9279,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema164(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema164(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex329 = (decoder.readIndex());
@@ -9319,7 +9320,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema165(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema165(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex331 = (decoder.readIndex());
@@ -9360,7 +9361,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema166(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema166(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex333 = (decoder.readIndex());
@@ -9401,7 +9402,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema167(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema167(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex335 = (decoder.readIndex());
@@ -9442,7 +9443,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema168(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema168(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex337 = (decoder.readIndex());
@@ -9483,7 +9484,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema169(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema169(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex339 = (decoder.readIndex());
@@ -9524,7 +9525,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema170(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema170(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex341 = (decoder.readIndex());
@@ -9565,7 +9566,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema171(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema171(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex343 = (decoder.readIndex());
@@ -9606,7 +9607,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema172(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema172(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex345 = (decoder.readIndex());
@@ -9647,7 +9648,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema173(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema173(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex347 = (decoder.readIndex());
@@ -9688,7 +9689,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema174(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema174(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex349 = (decoder.readIndex());
@@ -9729,7 +9730,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema175(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema175(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex351 = (decoder.readIndex());
@@ -9770,7 +9771,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema176(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema176(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex353 = (decoder.readIndex());
@@ -9811,7 +9812,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema177(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema177(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex355 = (decoder.readIndex());
@@ -9852,7 +9853,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema178(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema178(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex357 = (decoder.readIndex());
@@ -9893,7 +9894,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema179(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema179(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex359 = (decoder.readIndex());
@@ -9934,7 +9935,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema180(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema180(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex361 = (decoder.readIndex());
@@ -9975,7 +9976,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema181(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema181(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex363 = (decoder.readIndex());
@@ -10016,7 +10017,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema182(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema182(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex365 = (decoder.readIndex());
@@ -10057,7 +10058,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema183(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema183(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex367 = (decoder.readIndex());
@@ -10098,7 +10099,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema184(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema184(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex369 = (decoder.readIndex());
@@ -10139,7 +10140,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema185(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema185(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex371 = (decoder.readIndex());
@@ -10180,7 +10181,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema186(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema186(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex373 = (decoder.readIndex());
@@ -10221,7 +10222,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema187(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema187(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex375 = (decoder.readIndex());
@@ -10262,7 +10263,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema188(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema188(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex377 = (decoder.readIndex());
@@ -10303,7 +10304,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema189(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema189(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex379 = (decoder.readIndex());
@@ -10344,7 +10345,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema190(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema190(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex381 = (decoder.readIndex());
@@ -10385,7 +10386,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema191(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema191(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex383 = (decoder.readIndex());
@@ -10426,7 +10427,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema192(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema192(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex385 = (decoder.readIndex());
@@ -10467,7 +10468,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema193(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema193(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex387 = (decoder.readIndex());
@@ -10508,7 +10509,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema194(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema194(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex389 = (decoder.readIndex());
@@ -10549,7 +10550,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema195(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema195(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex391 = (decoder.readIndex());
@@ -10590,7 +10591,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema196(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema196(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex393 = (decoder.readIndex());
@@ -10631,7 +10632,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema197(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema197(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex395 = (decoder.readIndex());
@@ -10672,7 +10673,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema198(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema198(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex397 = (decoder.readIndex());
@@ -10713,7 +10714,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema199(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema199(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex399 = (decoder.readIndex());
@@ -10754,7 +10755,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema200(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema200(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex401 = (decoder.readIndex());
@@ -10795,7 +10796,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema201(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema201(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex403 = (decoder.readIndex());
@@ -10836,7 +10837,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema202(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema202(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex405 = (decoder.readIndex());
@@ -10877,7 +10878,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema203(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema203(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex407 = (decoder.readIndex());
@@ -10918,7 +10919,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema204(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema204(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex409 = (decoder.readIndex());
@@ -10959,7 +10960,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema205(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema205(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex411 = (decoder.readIndex());
@@ -11000,7 +11001,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema206(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema206(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex413 = (decoder.readIndex());
@@ -11041,7 +11042,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema207(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema207(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex415 = (decoder.readIndex());
@@ -11082,7 +11083,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema208(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema208(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex417 = (decoder.readIndex());
@@ -11123,7 +11124,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema209(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema209(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex419 = (decoder.readIndex());
@@ -11164,7 +11165,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema210(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema210(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex421 = (decoder.readIndex());
@@ -11205,7 +11206,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema211(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema211(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex423 = (decoder.readIndex());
@@ -11246,7 +11247,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema212(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema212(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex425 = (decoder.readIndex());
@@ -11287,7 +11288,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema213(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema213(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex427 = (decoder.readIndex());
@@ -11328,7 +11329,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema214(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema214(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex429 = (decoder.readIndex());
@@ -11369,7 +11370,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema215(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema215(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex431 = (decoder.readIndex());
@@ -11410,7 +11411,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema216(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema216(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex433 = (decoder.readIndex());
@@ -11451,7 +11452,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema217(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema217(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex435 = (decoder.readIndex());
@@ -11492,7 +11493,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema218(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema218(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex437 = (decoder.readIndex());
@@ -11533,7 +11534,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema219(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema219(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex439 = (decoder.readIndex());
@@ -11574,7 +11575,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema220(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema220(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex441 = (decoder.readIndex());
@@ -11615,7 +11616,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema221(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema221(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex443 = (decoder.readIndex());
@@ -11656,7 +11657,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema222(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema222(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex445 = (decoder.readIndex());
@@ -11697,7 +11698,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema223(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema223(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex447 = (decoder.readIndex());
@@ -11738,7 +11739,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema224(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema224(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex449 = (decoder.readIndex());
@@ -11779,7 +11780,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema225(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema225(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex451 = (decoder.readIndex());
@@ -11820,7 +11821,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema226(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema226(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex453 = (decoder.readIndex());
@@ -11861,7 +11862,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema227(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema227(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex455 = (decoder.readIndex());
@@ -11902,7 +11903,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema228(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema228(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex457 = (decoder.readIndex());
@@ -11943,7 +11944,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema229(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema229(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex459 = (decoder.readIndex());
@@ -11984,7 +11985,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema230(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema230(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex461 = (decoder.readIndex());
@@ -12025,7 +12026,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema231(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema231(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex463 = (decoder.readIndex());
@@ -12066,7 +12067,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema232(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema232(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex465 = (decoder.readIndex());
@@ -12107,7 +12108,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema233(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema233(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex467 = (decoder.readIndex());
@@ -12148,7 +12149,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema234(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema234(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex469 = (decoder.readIndex());
@@ -12189,7 +12190,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema235(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema235(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex471 = (decoder.readIndex());
@@ -12230,7 +12231,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema236(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema236(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex473 = (decoder.readIndex());
@@ -12271,7 +12272,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema237(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema237(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex475 = (decoder.readIndex());
@@ -12312,7 +12313,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema238(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema238(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex477 = (decoder.readIndex());
@@ -12353,7 +12354,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema239(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema239(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex479 = (decoder.readIndex());
@@ -12394,7 +12395,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema240(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema240(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex481 = (decoder.readIndex());
@@ -12435,7 +12436,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema241(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema241(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex483 = (decoder.readIndex());
@@ -12476,7 +12477,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema242(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema242(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex485 = (decoder.readIndex());
@@ -12517,7 +12518,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema243(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema243(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex487 = (decoder.readIndex());
@@ -12558,7 +12559,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema244(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema244(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex489 = (decoder.readIndex());
@@ -12599,7 +12600,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema245(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema245(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex491 = (decoder.readIndex());
@@ -12640,7 +12641,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema246(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema246(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex493 = (decoder.readIndex());
@@ -12681,7 +12682,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema247(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema247(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex495 = (decoder.readIndex());
@@ -12722,7 +12723,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema248(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema248(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex497 = (decoder.readIndex());
@@ -12763,7 +12764,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema249(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema249(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex499 = (decoder.readIndex());
@@ -12804,7 +12805,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema250(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema250(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex501 = (decoder.readIndex());
@@ -12845,7 +12846,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema251(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema251(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex503 = (decoder.readIndex());
@@ -12886,7 +12887,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema252(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema252(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex505 = (decoder.readIndex());
@@ -12927,7 +12928,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema253(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema253(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex507 = (decoder.readIndex());
@@ -12968,7 +12969,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema254(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema254(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex509 = (decoder.readIndex());
@@ -13009,7 +13010,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema255(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema255(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex511 = (decoder.readIndex());
@@ -13050,7 +13051,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema256(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema256(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex513 = (decoder.readIndex());
@@ -13091,7 +13092,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema257(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema257(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex515 = (decoder.readIndex());
@@ -13132,7 +13133,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema258(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema258(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex517 = (decoder.readIndex());
@@ -13173,7 +13174,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema259(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema259(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex519 = (decoder.readIndex());
@@ -13214,7 +13215,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema260(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema260(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex521 = (decoder.readIndex());
@@ -13255,7 +13256,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema261(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema261(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex523 = (decoder.readIndex());
@@ -13296,7 +13297,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema262(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema262(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex525 = (decoder.readIndex());
@@ -13337,7 +13338,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema263(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema263(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex527 = (decoder.readIndex());
@@ -13378,7 +13379,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema264(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema264(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex529 = (decoder.readIndex());
@@ -13419,7 +13420,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema265(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema265(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex531 = (decoder.readIndex());
@@ -13460,7 +13461,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema266(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema266(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex533 = (decoder.readIndex());
@@ -13501,7 +13502,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema267(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema267(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex535 = (decoder.readIndex());
@@ -13542,7 +13543,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema268(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema268(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex537 = (decoder.readIndex());
@@ -13583,7 +13584,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema269(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema269(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex539 = (decoder.readIndex());
@@ -13624,7 +13625,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema270(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema270(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex541 = (decoder.readIndex());
@@ -13665,7 +13666,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema271(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema271(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex543 = (decoder.readIndex());
@@ -13706,7 +13707,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema272(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema272(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex545 = (decoder.readIndex());
@@ -13747,7 +13748,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema273(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema273(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex547 = (decoder.readIndex());
@@ -13788,7 +13789,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema274(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema274(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex549 = (decoder.readIndex());
@@ -13829,7 +13830,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema275(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema275(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex551 = (decoder.readIndex());
@@ -13870,7 +13871,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema276(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema276(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex553 = (decoder.readIndex());
@@ -13911,7 +13912,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema277(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema277(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex555 = (decoder.readIndex());
@@ -13952,7 +13953,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema278(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema278(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex557 = (decoder.readIndex());
@@ -13993,7 +13994,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema279(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema279(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex559 = (decoder.readIndex());
@@ -14034,7 +14035,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema280(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema280(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex561 = (decoder.readIndex());
@@ -14075,7 +14076,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema281(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema281(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex563 = (decoder.readIndex());
@@ -14116,7 +14117,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema282(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema282(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex565 = (decoder.readIndex());
@@ -14157,7 +14158,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema283(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema283(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex567 = (decoder.readIndex());
@@ -14198,7 +14199,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema284(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema284(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex569 = (decoder.readIndex());
@@ -14239,7 +14240,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema285(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema285(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex571 = (decoder.readIndex());
@@ -14280,7 +14281,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema286(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema286(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex573 = (decoder.readIndex());
@@ -14321,7 +14322,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema287(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema287(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex575 = (decoder.readIndex());
@@ -14362,7 +14363,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema288(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema288(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex577 = (decoder.readIndex());
@@ -14403,7 +14404,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema289(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema289(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex579 = (decoder.readIndex());
@@ -14444,7 +14445,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema290(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema290(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex581 = (decoder.readIndex());
@@ -14485,7 +14486,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema291(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema291(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex583 = (decoder.readIndex());
@@ -14526,7 +14527,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema292(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema292(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex585 = (decoder.readIndex());
@@ -14567,7 +14568,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema293(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema293(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex587 = (decoder.readIndex());
@@ -14608,7 +14609,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema294(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema294(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex589 = (decoder.readIndex());
@@ -14649,7 +14650,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema295(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema295(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex591 = (decoder.readIndex());
@@ -14690,7 +14691,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema296(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema296(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex593 = (decoder.readIndex());
@@ -14731,7 +14732,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema297(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema297(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex595 = (decoder.readIndex());
@@ -14772,7 +14773,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema298(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema298(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex597 = (decoder.readIndex());
@@ -14813,7 +14814,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema299(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema299(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex599 = (decoder.readIndex());
@@ -14854,7 +14855,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema300(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema300(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex601 = (decoder.readIndex());
@@ -14895,7 +14896,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema301(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema301(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex603 = (decoder.readIndex());
@@ -14936,7 +14937,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema302(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema302(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex605 = (decoder.readIndex());
@@ -14977,7 +14978,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema303(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema303(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex607 = (decoder.readIndex());
@@ -15018,7 +15019,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema304(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema304(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex609 = (decoder.readIndex());
@@ -15059,7 +15060,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema305(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema305(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex611 = (decoder.readIndex());
@@ -15100,7 +15101,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema306(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema306(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex613 = (decoder.readIndex());
@@ -15141,7 +15142,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema307(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema307(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex615 = (decoder.readIndex());
@@ -15182,7 +15183,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema308(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema308(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex617 = (decoder.readIndex());
@@ -15223,7 +15224,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema309(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema309(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex619 = (decoder.readIndex());
@@ -15264,7 +15265,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema310(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema310(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex621 = (decoder.readIndex());
@@ -15305,7 +15306,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema311(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema311(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex623 = (decoder.readIndex());
@@ -15346,7 +15347,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema312(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema312(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex625 = (decoder.readIndex());
@@ -15387,7 +15388,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema313(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema313(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex627 = (decoder.readIndex());
@@ -15428,7 +15429,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema314(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema314(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex629 = (decoder.readIndex());
@@ -15469,7 +15470,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema315(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema315(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex631 = (decoder.readIndex());
@@ -15510,7 +15511,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema316(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema316(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex633 = (decoder.readIndex());
@@ -15551,7 +15552,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema317(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema317(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex635 = (decoder.readIndex());
@@ -15592,7 +15593,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema318(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema318(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex637 = (decoder.readIndex());
@@ -15633,7 +15634,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema319(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema319(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex639 = (decoder.readIndex());
@@ -15674,7 +15675,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema320(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema320(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex641 = (decoder.readIndex());
@@ -15715,7 +15716,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema321(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema321(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex643 = (decoder.readIndex());
@@ -15756,7 +15757,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema322(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema322(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex645 = (decoder.readIndex());
@@ -15797,7 +15798,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema323(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema323(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex647 = (decoder.readIndex());
@@ -15838,7 +15839,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema324(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema324(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex649 = (decoder.readIndex());
@@ -15879,7 +15880,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema325(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema325(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex651 = (decoder.readIndex());
@@ -15920,7 +15921,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema326(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema326(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex653 = (decoder.readIndex());
@@ -15961,7 +15962,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema327(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema327(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex655 = (decoder.readIndex());
@@ -16002,7 +16003,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema328(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema328(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex657 = (decoder.readIndex());
@@ -16043,7 +16044,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema329(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema329(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex659 = (decoder.readIndex());
@@ -16084,7 +16085,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema330(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema330(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex661 = (decoder.readIndex());
@@ -16125,7 +16126,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema331(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema331(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex663 = (decoder.readIndex());
@@ -16166,7 +16167,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema332(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema332(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex665 = (decoder.readIndex());
@@ -16207,7 +16208,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema333(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema333(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex667 = (decoder.readIndex());
@@ -16248,7 +16249,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema334(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema334(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex669 = (decoder.readIndex());
@@ -16289,7 +16290,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema335(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema335(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex671 = (decoder.readIndex());
@@ -16330,7 +16331,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema336(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema336(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex673 = (decoder.readIndex());
@@ -16371,7 +16372,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema337(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema337(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex675 = (decoder.readIndex());
@@ -16412,7 +16413,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema338(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema338(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex677 = (decoder.readIndex());
@@ -16453,7 +16454,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema339(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema339(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex679 = (decoder.readIndex());
@@ -16494,7 +16495,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema340(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema340(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex681 = (decoder.readIndex());
@@ -16535,7 +16536,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema341(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema341(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex683 = (decoder.readIndex());
@@ -16576,7 +16577,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema342(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema342(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex685 = (decoder.readIndex());
@@ -16617,7 +16618,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema343(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema343(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex687 = (decoder.readIndex());
@@ -16658,7 +16659,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema344(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema344(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex689 = (decoder.readIndex());
@@ -16699,7 +16700,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema345(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema345(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex691 = (decoder.readIndex());
@@ -16740,7 +16741,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema346(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema346(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex693 = (decoder.readIndex());
@@ -16781,7 +16782,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema347(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema347(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex695 = (decoder.readIndex());
@@ -16822,7 +16823,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema348(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema348(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex697 = (decoder.readIndex());
@@ -16863,7 +16864,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema349(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema349(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex699 = (decoder.readIndex());
@@ -16904,7 +16905,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema350(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema350(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex701 = (decoder.readIndex());
@@ -16945,7 +16946,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema351(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema351(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex703 = (decoder.readIndex());
@@ -16986,7 +16987,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema352(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema352(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex705 = (decoder.readIndex());
@@ -17027,7 +17028,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema353(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema353(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex707 = (decoder.readIndex());
@@ -17068,7 +17069,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema354(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema354(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex709 = (decoder.readIndex());
@@ -17109,7 +17110,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema355(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema355(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex711 = (decoder.readIndex());
@@ -17150,7 +17151,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema356(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema356(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex713 = (decoder.readIndex());
@@ -17191,7 +17192,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema357(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema357(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex715 = (decoder.readIndex());
@@ -17232,7 +17233,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema358(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema358(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex717 = (decoder.readIndex());
@@ -17273,7 +17274,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema359(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema359(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex719 = (decoder.readIndex());
@@ -17314,7 +17315,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema360(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema360(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex721 = (decoder.readIndex());
@@ -17355,7 +17356,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema361(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema361(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex723 = (decoder.readIndex());
@@ -17396,7 +17397,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema362(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema362(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex725 = (decoder.readIndex());
@@ -17437,7 +17438,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema363(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema363(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex727 = (decoder.readIndex());
@@ -17478,7 +17479,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema364(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema364(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex729 = (decoder.readIndex());
@@ -17519,7 +17520,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema365(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema365(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex731 = (decoder.readIndex());
@@ -17560,7 +17561,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema366(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema366(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex733 = (decoder.readIndex());
@@ -17601,7 +17602,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema367(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema367(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex735 = (decoder.readIndex());
@@ -17642,7 +17643,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema368(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema368(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex737 = (decoder.readIndex());
@@ -17683,7 +17684,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema369(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema369(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex739 = (decoder.readIndex());
@@ -17724,7 +17725,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema370(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema370(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex741 = (decoder.readIndex());
@@ -17765,7 +17766,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema371(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema371(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex743 = (decoder.readIndex());
@@ -17806,7 +17807,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema372(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema372(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex745 = (decoder.readIndex());
@@ -17847,7 +17848,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema373(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema373(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex747 = (decoder.readIndex());
@@ -17888,7 +17889,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema374(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema374(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex749 = (decoder.readIndex());
@@ -17929,7 +17930,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema375(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema375(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex751 = (decoder.readIndex());
@@ -17970,7 +17971,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema376(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema376(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex753 = (decoder.readIndex());
@@ -18011,7 +18012,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema377(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema377(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex755 = (decoder.readIndex());
@@ -18052,7 +18053,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema378(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema378(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex757 = (decoder.readIndex());
@@ -18093,7 +18094,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema379(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema379(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex759 = (decoder.readIndex());
@@ -18134,7 +18135,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema380(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema380(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex761 = (decoder.readIndex());
@@ -18175,7 +18176,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema381(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema381(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex763 = (decoder.readIndex());
@@ -18216,7 +18217,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema382(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema382(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex765 = (decoder.readIndex());
@@ -18257,7 +18258,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema383(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema383(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex767 = (decoder.readIndex());
@@ -18298,7 +18299,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema384(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema384(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex769 = (decoder.readIndex());
@@ -18339,7 +18340,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema385(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema385(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex771 = (decoder.readIndex());
@@ -18380,7 +18381,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema386(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema386(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex773 = (decoder.readIndex());
@@ -18421,7 +18422,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema387(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema387(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex775 = (decoder.readIndex());
@@ -18462,7 +18463,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema388(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema388(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex777 = (decoder.readIndex());
@@ -18503,7 +18504,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema389(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema389(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex779 = (decoder.readIndex());
@@ -18544,7 +18545,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema390(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema390(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex781 = (decoder.readIndex());
@@ -18585,7 +18586,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema391(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema391(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex783 = (decoder.readIndex());
@@ -18626,7 +18627,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema392(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema392(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex785 = (decoder.readIndex());
@@ -18667,7 +18668,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema393(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema393(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex787 = (decoder.readIndex());
@@ -18708,7 +18709,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema394(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema394(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex789 = (decoder.readIndex());
@@ -18749,7 +18750,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema395(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema395(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex791 = (decoder.readIndex());
@@ -18790,7 +18791,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema396(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema396(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex793 = (decoder.readIndex());
@@ -18831,7 +18832,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema397(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema397(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex795 = (decoder.readIndex());
@@ -18872,7 +18873,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema398(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema398(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex797 = (decoder.readIndex());
@@ -18913,7 +18914,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema399(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema399(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex799 = (decoder.readIndex());
@@ -18954,7 +18955,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema400(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema400(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex801 = (decoder.readIndex());
@@ -18995,7 +18996,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema401(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema401(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex803 = (decoder.readIndex());
@@ -19036,7 +19037,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema402(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema402(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex805 = (decoder.readIndex());
@@ -19077,7 +19078,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema403(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema403(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex807 = (decoder.readIndex());
@@ -19118,7 +19119,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema404(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema404(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex809 = (decoder.readIndex());
@@ -19159,7 +19160,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema405(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema405(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex811 = (decoder.readIndex());
@@ -19200,7 +19201,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema406(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema406(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex813 = (decoder.readIndex());
@@ -19241,7 +19242,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema407(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema407(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex815 = (decoder.readIndex());
@@ -19282,7 +19283,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema408(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema408(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex817 = (decoder.readIndex());
@@ -19323,7 +19324,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema409(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema409(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex819 = (decoder.readIndex());
@@ -19364,7 +19365,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema410(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema410(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex821 = (decoder.readIndex());
@@ -19405,7 +19406,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema411(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema411(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex823 = (decoder.readIndex());
@@ -19446,7 +19447,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema412(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema412(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex825 = (decoder.readIndex());
@@ -19487,7 +19488,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema413(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema413(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex827 = (decoder.readIndex());
@@ -19528,7 +19529,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema414(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema414(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex829 = (decoder.readIndex());
@@ -19569,7 +19570,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema415(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema415(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex831 = (decoder.readIndex());
@@ -19610,7 +19611,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema416(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema416(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex833 = (decoder.readIndex());
@@ -19651,7 +19652,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema417(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema417(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex835 = (decoder.readIndex());
@@ -19692,7 +19693,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema418(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema418(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex837 = (decoder.readIndex());
@@ -19733,7 +19734,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema419(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema419(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex839 = (decoder.readIndex());
@@ -19774,7 +19775,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema420(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema420(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex841 = (decoder.readIndex());
@@ -19815,7 +19816,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema421(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema421(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex843 = (decoder.readIndex());
@@ -19856,7 +19857,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema422(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema422(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex845 = (decoder.readIndex());
@@ -19897,7 +19898,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema423(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema423(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex847 = (decoder.readIndex());
@@ -19938,7 +19939,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema424(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema424(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex849 = (decoder.readIndex());
@@ -19979,7 +19980,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema425(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema425(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex851 = (decoder.readIndex());
@@ -20020,7 +20021,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema426(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema426(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex853 = (decoder.readIndex());
@@ -20061,7 +20062,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema427(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema427(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex855 = (decoder.readIndex());
@@ -20102,7 +20103,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema428(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema428(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex857 = (decoder.readIndex());
@@ -20143,7 +20144,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema429(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema429(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex859 = (decoder.readIndex());
@@ -20184,7 +20185,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema430(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema430(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex861 = (decoder.readIndex());
@@ -20225,7 +20226,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema431(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema431(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex863 = (decoder.readIndex());
@@ -20266,7 +20267,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema432(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema432(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex865 = (decoder.readIndex());
@@ -20307,7 +20308,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema433(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema433(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex867 = (decoder.readIndex());
@@ -20348,7 +20349,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema434(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema434(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex869 = (decoder.readIndex());
@@ -20389,7 +20390,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema435(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema435(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex871 = (decoder.readIndex());
@@ -20430,7 +20431,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema436(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema436(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex873 = (decoder.readIndex());
@@ -20471,7 +20472,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema437(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema437(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex875 = (decoder.readIndex());
@@ -20512,7 +20513,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema438(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema438(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex877 = (decoder.readIndex());
@@ -20553,7 +20554,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema439(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema439(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex879 = (decoder.readIndex());
@@ -20594,7 +20595,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema440(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema440(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex881 = (decoder.readIndex());
@@ -20635,7 +20636,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema441(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema441(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex883 = (decoder.readIndex());
@@ -20676,7 +20677,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema442(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema442(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex885 = (decoder.readIndex());
@@ -20717,7 +20718,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema443(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema443(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex887 = (decoder.readIndex());
@@ -20758,7 +20759,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema444(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema444(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex889 = (decoder.readIndex());
@@ -20799,7 +20800,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema445(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema445(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex891 = (decoder.readIndex());
@@ -20840,7 +20841,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema446(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema446(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex893 = (decoder.readIndex());
@@ -20881,7 +20882,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema447(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema447(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex895 = (decoder.readIndex());
@@ -20922,7 +20923,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema448(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema448(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex897 = (decoder.readIndex());
@@ -20963,7 +20964,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema449(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema449(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex899 = (decoder.readIndex());
@@ -21004,7 +21005,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema450(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema450(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex901 = (decoder.readIndex());
@@ -21045,7 +21046,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema451(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema451(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex903 = (decoder.readIndex());
@@ -21086,7 +21087,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema452(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema452(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex905 = (decoder.readIndex());
@@ -21127,7 +21128,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema453(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema453(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex907 = (decoder.readIndex());
@@ -21168,7 +21169,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema454(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema454(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex909 = (decoder.readIndex());
@@ -21209,7 +21210,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema455(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema455(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex911 = (decoder.readIndex());
@@ -21250,7 +21251,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema456(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema456(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex913 = (decoder.readIndex());
@@ -21291,7 +21292,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema457(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema457(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex915 = (decoder.readIndex());
@@ -21332,7 +21333,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema458(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema458(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex917 = (decoder.readIndex());
@@ -21373,7 +21374,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema459(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema459(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex919 = (decoder.readIndex());
@@ -21414,7 +21415,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema460(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema460(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex921 = (decoder.readIndex());
@@ -21455,7 +21456,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema461(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema461(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex923 = (decoder.readIndex());
@@ -21496,7 +21497,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema462(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema462(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex925 = (decoder.readIndex());
@@ -21537,7 +21538,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema463(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema463(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex927 = (decoder.readIndex());
@@ -21578,7 +21579,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema464(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema464(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex929 = (decoder.readIndex());
@@ -21619,7 +21620,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema465(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema465(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex931 = (decoder.readIndex());
@@ -21660,7 +21661,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema466(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema466(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex933 = (decoder.readIndex());
@@ -21701,7 +21702,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema467(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema467(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex935 = (decoder.readIndex());
@@ -21742,7 +21743,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema468(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema468(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex937 = (decoder.readIndex());
@@ -21783,7 +21784,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema469(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema469(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex939 = (decoder.readIndex());
@@ -21824,7 +21825,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema470(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema470(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex941 = (decoder.readIndex());
@@ -21865,7 +21866,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema471(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema471(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex943 = (decoder.readIndex());
@@ -21906,7 +21907,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema472(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema472(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex945 = (decoder.readIndex());
@@ -21947,7 +21948,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema473(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema473(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex947 = (decoder.readIndex());
@@ -21988,7 +21989,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema474(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema474(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex949 = (decoder.readIndex());
@@ -22029,7 +22030,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema475(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema475(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex951 = (decoder.readIndex());
@@ -22070,7 +22071,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema476(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema476(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex953 = (decoder.readIndex());
@@ -22111,7 +22112,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema477(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema477(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex955 = (decoder.readIndex());
@@ -22152,7 +22153,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema478(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema478(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex957 = (decoder.readIndex());
@@ -22193,7 +22194,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema479(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema479(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex959 = (decoder.readIndex());
@@ -22234,7 +22235,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema480(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema480(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex961 = (decoder.readIndex());
@@ -22275,7 +22276,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema481(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema481(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex963 = (decoder.readIndex());
@@ -22316,7 +22317,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema482(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema482(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex965 = (decoder.readIndex());
@@ -22357,7 +22358,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema483(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema483(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex967 = (decoder.readIndex());
@@ -22398,7 +22399,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema484(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema484(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex969 = (decoder.readIndex());
@@ -22439,7 +22440,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema485(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema485(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex971 = (decoder.readIndex());
@@ -22480,7 +22481,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema486(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema486(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex973 = (decoder.readIndex());
@@ -22521,7 +22522,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema487(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema487(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex975 = (decoder.readIndex());
@@ -22562,7 +22563,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema488(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema488(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex977 = (decoder.readIndex());
@@ -22603,7 +22604,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema489(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema489(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex979 = (decoder.readIndex());
@@ -22644,7 +22645,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema490(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema490(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex981 = (decoder.readIndex());
@@ -22685,7 +22686,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema491(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema491(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex983 = (decoder.readIndex());
@@ -22726,7 +22727,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema492(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema492(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex985 = (decoder.readIndex());
@@ -22767,7 +22768,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema493(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema493(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex987 = (decoder.readIndex());
@@ -22808,7 +22809,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema494(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema494(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex989 = (decoder.readIndex());
@@ -22849,7 +22850,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema495(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema495(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex991 = (decoder.readIndex());
@@ -22890,7 +22891,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema496(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema496(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex993 = (decoder.readIndex());
@@ -22931,7 +22932,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema497(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema497(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex995 = (decoder.readIndex());
@@ -22972,7 +22973,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema498(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema498(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex997 = (decoder.readIndex());
@@ -23013,7 +23014,7 @@ public class FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSch
         }
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema499(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema499(IndexedRecord FastGenericDeserializerGeneratorTest_shouldBeAbleToReadVeryLargeSchema, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex999 = (decoder.readIndex());

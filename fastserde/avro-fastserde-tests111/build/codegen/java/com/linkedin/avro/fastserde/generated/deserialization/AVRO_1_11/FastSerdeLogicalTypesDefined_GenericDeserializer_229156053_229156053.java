@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.Conversions;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
@@ -41,13 +42,13 @@ public class FastSerdeLogicalTypesDefined_GenericDeserializer_229156053_22915605
         this.arrayOfUnionOfDateAndTimestampMillisElemOptionSchema1 = arrayOfUnionOfDateAndTimestampMillisArrayElemSchema0 .getTypes().get(1);
     }
 
-    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
+    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        return deserializeFastSerdeLogicalTypesDefined0((reuse), (decoder));
+        return deserializeFastSerdeLogicalTypesDefined0((reuse), (decoder), (customization));
     }
 
-    public IndexedRecord deserializeFastSerdeLogicalTypesDefined0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializeFastSerdeLogicalTypesDefined0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord FastSerdeLogicalTypesDefined;
@@ -58,11 +59,11 @@ public class FastSerdeLogicalTypesDefined_GenericDeserializer_229156053_22915605
         }
         LocalTime convertedValue0 = ((LocalTime) Conversions.convertToLogicalType((decoder.readInt()), this.logicalTypeSchema__419105534, this.logicalTypeSchema__419105534 .getLogicalType(), this.conversion_time_millis));
         FastSerdeLogicalTypesDefined.put(0, convertedValue0);
-        populate_FastSerdeLogicalTypesDefined0((FastSerdeLogicalTypesDefined), (decoder));
+        populate_FastSerdeLogicalTypesDefined0((FastSerdeLogicalTypesDefined), (customization), (decoder));
         return FastSerdeLogicalTypesDefined;
     }
 
-    private void populate_FastSerdeLogicalTypesDefined0(IndexedRecord FastSerdeLogicalTypesDefined, Decoder decoder)
+    private void populate_FastSerdeLogicalTypesDefined0(IndexedRecord FastSerdeLogicalTypesDefined, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         LocalDate convertedValue1 = ((LocalDate) Conversions.convertToLogicalType((decoder.readInt()), this.logicalTypeSchema__59052268, this.logicalTypeSchema__59052268 .getLogicalType(), this.conversion_date));

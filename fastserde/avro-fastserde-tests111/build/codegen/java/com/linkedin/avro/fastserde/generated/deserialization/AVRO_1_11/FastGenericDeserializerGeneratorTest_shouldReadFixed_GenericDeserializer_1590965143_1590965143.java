@@ -4,6 +4,7 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 import java.io.IOException;
 import java.util.List;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericFixed;
@@ -30,13 +31,13 @@ public class FastGenericDeserializerGeneratorTest_shouldReadFixed_GenericDeseria
         this.testFixedUnionArrayArrayElemSchema0 = testFixedUnionArray0 .getElementType();
     }
 
-    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
+    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        return deserializeFastGenericDeserializerGeneratorTest_shouldReadFixed0((reuse), (decoder));
+        return deserializeFastGenericDeserializerGeneratorTest_shouldReadFixed0((reuse), (decoder), (customization));
     }
 
-    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadFixed0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadFixed0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadFixed;
@@ -54,12 +55,12 @@ public class FastGenericDeserializerGeneratorTest_shouldReadFixed_GenericDeseria
         }
         decoder.readFixed(testFixed1);
         FastGenericDeserializerGeneratorTest_shouldReadFixed.put(0, new org.apache.avro.generic.GenericData.Fixed(testFixed0, testFixed1));
-        populate_FastGenericDeserializerGeneratorTest_shouldReadFixed0((FastGenericDeserializerGeneratorTest_shouldReadFixed), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldReadFixed1((FastGenericDeserializerGeneratorTest_shouldReadFixed), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadFixed0((FastGenericDeserializerGeneratorTest_shouldReadFixed), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadFixed1((FastGenericDeserializerGeneratorTest_shouldReadFixed), (customization), (decoder));
         return FastGenericDeserializerGeneratorTest_shouldReadFixed;
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldReadFixed0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadFixed, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadFixed0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadFixed, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex0 = (decoder.readIndex());
@@ -115,7 +116,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadFixed_GenericDeseria
         FastGenericDeserializerGeneratorTest_shouldReadFixed.put(2, testFixedArray1);
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldReadFixed1(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadFixed, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadFixed1(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadFixed, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         List<GenericFixed> testFixedUnionArray1 = null;

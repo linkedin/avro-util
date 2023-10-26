@@ -6,6 +6,7 @@ import java.util.List;
 import com.linkedin.avro.api.PrimitiveFloatList;
 import com.linkedin.avro.fastserde.BufferBackedPrimitiveFloatList;
 import com.linkedin.avro.fastserde.FastSerializer;
+import com.linkedin.avro.fastserde.customized.DatumWriterCustomization;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Encoder;
 
@@ -14,14 +15,14 @@ public class TestArrayOfFloats_GenericSerializer_1408566797
 {
 
 
-    public void serialize(IndexedRecord data, Encoder encoder)
+    public void serialize(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
-        serializeTestArrayOfFloats0(data, (encoder));
+        serializeTestArrayOfFloats0(data, (encoder), (customization));
     }
 
     @SuppressWarnings("unchecked")
-    public void serializeTestArrayOfFloats0(IndexedRecord data, Encoder encoder)
+    public void serializeTestArrayOfFloats0(IndexedRecord data, Encoder encoder, DatumWriterCustomization customization)
         throws IOException
     {
         List<Float> array_of_float0 = ((List<Float> ) data.get(0));

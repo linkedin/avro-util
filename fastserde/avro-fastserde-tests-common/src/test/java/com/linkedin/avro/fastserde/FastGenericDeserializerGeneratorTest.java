@@ -1592,7 +1592,7 @@ public class FastGenericDeserializerGeneratorTest {
 
   private static <T> T decodeRecordColdFast(Schema writerSchema, Schema readerSchema, Decoder decoder) {
     FastDeserializer<T> deserializer =
-        new FastSerdeCache.FastDeserializerWithAvroGenericImpl<>(writerSchema, readerSchema, GenericData.get());
+        new FastSerdeUtils.FastDeserializerWithAvroGenericImpl<>(writerSchema, readerSchema, GenericData.get(), false);
 
     return decodeRecordFast(deserializer, decoder);
   }

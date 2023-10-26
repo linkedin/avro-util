@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 import com.linkedin.avro.api.PrimitiveIntList;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import com.linkedin.avro.fastserde.primitive.PrimitiveIntArrayList;
 import org.apache.avro.Schema;
 import org.apache.avro.io.Decoder;
@@ -19,7 +20,7 @@ public class Array_of_INT_GenericDeserializer_1012089072_1012089072
         this.readerSchema = readerSchema;
     }
 
-    public List<Integer> deserialize(List<Integer> reuse, Decoder decoder)
+    public List<Integer> deserialize(List<Integer> reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         PrimitiveIntList array0 = null;

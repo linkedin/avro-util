@@ -3,6 +3,7 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 
 import java.io.IOException;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
@@ -20,13 +21,13 @@ public class recordName_GenericDeserializer_1743054079_1743054079
         this.unionField0 = readerSchema.getField("unionField").schema();
     }
 
-    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
+    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        return deserializerecordName0((reuse), (decoder));
+        return deserializerecordName0((reuse), (decoder), (customization));
     }
 
-    public IndexedRecord deserializerecordName0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializerecordName0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord recordName;
@@ -43,11 +44,11 @@ public class recordName_GenericDeserializer_1743054079_1743054079
             charSequence0 = (decoder).readString(null);
         }
         recordName.put(0, charSequence0);
-        populate_recordName0((recordName), (decoder));
+        populate_recordName0((recordName), (customization), (decoder));
         return recordName;
     }
 
-    private void populate_recordName0(IndexedRecord recordName, Decoder decoder)
+    private void populate_recordName0(IndexedRecord recordName, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex0 = (decoder.readIndex());
@@ -56,7 +57,7 @@ public class recordName_GenericDeserializer_1743054079_1743054079
             recordName.put(1, null);
         } else {
             if (unionIndex0 == 1) {
-                recordName.put(1, deserializerecordName0(recordName.get(1), (decoder)));
+                recordName.put(1, deserializerecordName0(recordName.get(1), (decoder), (customization)));
             } else {
                 throw new RuntimeException(("Illegal union index for 'unionField': "+ unionIndex0));
             }

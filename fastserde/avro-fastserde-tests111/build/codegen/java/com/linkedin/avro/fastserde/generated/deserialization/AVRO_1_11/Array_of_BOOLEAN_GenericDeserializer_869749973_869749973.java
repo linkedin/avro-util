@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 import com.linkedin.avro.api.PrimitiveBooleanList;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import com.linkedin.avro.fastserde.primitive.PrimitiveBooleanArrayList;
 import org.apache.avro.Schema;
 import org.apache.avro.io.Decoder;
@@ -19,7 +20,7 @@ public class Array_of_BOOLEAN_GenericDeserializer_869749973_869749973
         this.readerSchema = readerSchema;
     }
 
-    public List<Boolean> deserialize(List<Boolean> reuse, Decoder decoder)
+    public List<Boolean> deserialize(List<Boolean> reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         PrimitiveBooleanList array0 = null;

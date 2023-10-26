@@ -3,6 +3,7 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 
 import java.io.IOException;
 import com.linkedin.avro.fastserde.FastDeserializer;
+import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
@@ -22,13 +23,13 @@ public class FastGenericDeserializerGeneratorTest_shouldReadAliasedField_Generic
         this.testStringUnionAlias0 = readerSchema.getField("testStringUnionAlias").schema();
     }
 
-    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder)
+    public IndexedRecord deserialize(IndexedRecord reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        return deserializeFastGenericDeserializerGeneratorTest_shouldReadAliasedField0((reuse), (decoder));
+        return deserializeFastGenericDeserializerGeneratorTest_shouldReadAliasedField0((reuse), (decoder), (customization));
     }
 
-    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadAliasedField0(Object reuse, Decoder decoder)
+    public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadAliasedField0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadAliasedField;
@@ -55,11 +56,11 @@ public class FastGenericDeserializerGeneratorTest_shouldReadAliasedField_Generic
                 throw new RuntimeException(("Illegal union index for 'testString': "+ unionIndex0));
             }
         }
-        populate_FastGenericDeserializerGeneratorTest_shouldReadAliasedField0((FastGenericDeserializerGeneratorTest_shouldReadAliasedField), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadAliasedField0((FastGenericDeserializerGeneratorTest_shouldReadAliasedField), (customization), (decoder));
         return FastGenericDeserializerGeneratorTest_shouldReadAliasedField;
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldReadAliasedField0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadAliasedField, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadAliasedField0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadAliasedField, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex1 = (decoder.readIndex());
