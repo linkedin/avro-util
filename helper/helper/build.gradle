@@ -8,7 +8,7 @@ plugins {
   id "java-library"
   id "jacoco"
   id "checkstyle"
-  id "com.github.johnrengelman.shadow"
+  id "com.github.johnrengelman.shadow" version "8.1.1"
 }
 
 dependencies {
@@ -39,7 +39,7 @@ configurations {
 
 shadowJar {
   //needs to have a classifier to not overwrite the regular jar
-  classifier = "all"
+  archiveClassifier = "all"
 
   dependencies {
     //do not pack slf4j
