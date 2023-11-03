@@ -181,16 +181,6 @@ public class FieldBuilder19 implements FieldBuilder {
       return result;
     }
 
-    // handle default values that are maps
-    if (mightNotBeFriendly instanceof Map) {
-      Map<String, ?> map = (Map<String, ?>) mightNotBeFriendly;
-      Map<Object, Object> result = new HashMap<>(map.size());
-      for (Map.Entry<?, ?> entry : map.entrySet()) {
-        result.put(entry.getKey(), avroFriendlyDefaultValue(entry.getValue()));
-      }
-      return result;
-    }
-
     //generic enums we turn to strings
     if (mightNotBeFriendly instanceof GenericData.EnumSymbol) {
       return mightNotBeFriendly.toString(); // == symbol string
