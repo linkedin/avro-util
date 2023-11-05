@@ -10,12 +10,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linkedin.avroutil1.compatibility.AvroSchemaUtil;
 import com.linkedin.avroutil1.compatibility.FieldBuilder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.apache.avro.JsonProperties;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field.Order;
-
-import java.util.Map;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericFixed;
 import org.apache.avro.generic.IndexedRecord;
@@ -170,6 +171,15 @@ public class FieldBuilder19 implements FieldBuilder {
    * @return a representation of the input that avro likes for use as a field default value
    */
   private static Object avroFriendlyDefaultValue(Object mightNotBeFriendly) throws Exception {
+    // handle default values that are lists
+    if (mightNotBeFriendly instanceof List) {
+      List<?> list = (List<?>) mightNotBeFriendly;
+      List<Object> result = new ArrayList<>(list.size());
+      for (Object element : list) {
+        result.add(avroFriendlyDefaultValue(element));
+      }
+      return result;
+    }
 
     //generic enums we turn to strings
     if (mightNotBeFriendly instanceof GenericData.EnumSymbol) {

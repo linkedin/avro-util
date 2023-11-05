@@ -1,0 +1,25 @@
+{
+  "type": "record",
+  "name": "FieldWithArrayOfEnumDefaultValue",
+  "fields": [
+    {
+      "name": "arrayOfEnum",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "enum",
+          "name": "EnumDefaultValue",
+          "symbols": [
+            "A",
+            "B",
+            "C"
+          ]
+        }
+      },
+      "default": [
+        "A",
+        "B"
+      ]
+    }
+  ]
+}
