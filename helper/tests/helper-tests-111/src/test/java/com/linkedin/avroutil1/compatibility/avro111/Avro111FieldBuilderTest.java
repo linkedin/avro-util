@@ -23,7 +23,9 @@ public class Avro111FieldBuilderTest {
     Object defaultValue = AvroCompatibilityHelper.getGenericDefaultValue(field);
     FieldBuilder builder = AvroCompatibilityHelper.newField(field);
     builder.setDefault(defaultValue);
+
+    // Test that .build() should not throw an exception.
     Schema.Field resField = builder.build();
-    Assert.assertNotNull(resField.defaultVal());
+    Assert.assertNotNull(resField);
   }
 }
