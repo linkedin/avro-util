@@ -13,6 +13,7 @@ plugins {
 
 dependencies {
   testImplementation project(":helper:helper")
+  testImplementation project(":helper:impls:helper-impl-111")
   testImplementation project(":helper:tests:helper-tests-common")
   testImplementation (project(":helper:tests:codegen-14")) {
     exclude group: "org.apache.avro"
@@ -39,8 +40,8 @@ dependencies {
     exclude group: "org.apache.avro"
   }
 
-  testImplementation "org.apache.avro:avro:1.11.1"
-  testImplementation "org.apache.avro:avro-compiler:1.11.1"
+  testImplementation "org.apache.avro:avro:1.11.3"
+  testImplementation "org.apache.avro:avro-compiler:1.11.3"
   testImplementation "com.google.guava:guava:28.2-jre"
   testImplementation "org.mockito:mockito-core:3.2.4"
 }

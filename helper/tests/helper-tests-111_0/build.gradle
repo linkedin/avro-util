@@ -13,6 +13,7 @@ plugins {
 
 dependencies {
     testImplementation project(":helper:helper")
+    testImplementation project(":helper:impls:helper-impl-111")
     testImplementation project(":helper:tests:helper-tests-common")
     testImplementation (project(":helper:tests:codegen-14")) {
         exclude group: "org.apache.avro"

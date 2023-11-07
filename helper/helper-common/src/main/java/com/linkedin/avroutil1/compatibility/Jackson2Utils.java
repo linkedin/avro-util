@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Objects;
 import org.apache.avro.Schema;
+import org.apache.avro.SchemaParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -228,7 +229,8 @@ public class Jackson2Utils {
       throw new IllegalStateException("error parsing json out of " + json, e);
     }
     if (!dangling.isEmpty()) {
-      throw new IllegalArgumentException("dangling content beyond the end of a schema at line: "
+      //match behaviour of newer 1.11 and throw SchemaParseException
+      throw new SchemaParseException("dangling content beyond the end of a schema at line: "
           + endOfSchemaLocation.getLineNr() + " column: " + endOfSchemaLocation.getColumnNr() + ": " + dangling);
     }
   }
