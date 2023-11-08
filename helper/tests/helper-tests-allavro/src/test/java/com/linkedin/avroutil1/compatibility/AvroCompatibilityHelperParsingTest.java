@@ -238,21 +238,26 @@ public class AvroCompatibilityHelperParsingTest {
     String innocent = "{\"type\": \"string\"}";
     Assert.assertNotNull(AvroCompatibilityHelper.parse(innocent, SchemaParseConfiguration.STRICT, null).getMainSchema());
     Assert.assertNotNull(AvroCompatibilityHelper.parse(innocent + "  \n \t \r  ", SchemaParseConfiguration.STRICT, null).getMainSchema());
+    String badAvsc1 = innocent + "?";
+    String badAvsc2 = innocent + "; DROP TABLE STUDENTS";
     try {
-      AvroCompatibilityHelper.parse(innocent + "?", SchemaParseConfiguration.STRICT, null);
+      AvroCompatibilityHelper.parse(badAvsc1, SchemaParseConfiguration.STRICT, null);
       Assert.fail("expected to fail");
-    } catch (IllegalArgumentException expected) {
+    } catch (SchemaParseException | IllegalArgumentException expected) {
+      //1.11.2+ throws SchemaParseException. for older 1.11 helper fills in the gap
       Assert.assertTrue(expected.getMessage().contains("?"));
     }
-    Assert.assertNotNull(AvroCompatibilityHelper.parse(innocent + "?", SchemaParseConfiguration.LOOSE, null).getMainSchema());
     try {
-      AvroCompatibilityHelper.parse(innocent + "; DROP TABLE STUDENTS", SchemaParseConfiguration.STRICT, null);
+      AvroCompatibilityHelper.parse(badAvsc2, SchemaParseConfiguration.STRICT, null);
       Assert.fail("expected to fail");
-    } catch (IllegalArgumentException expected) {
+    } catch (SchemaParseException | IllegalArgumentException expected) {
+      //1.11.2+ throws SchemaParseException. for older 1.11 helper fills in the gap
       Assert.assertTrue(expected.getMessage().contains("DROP TABLE STUDENTS"));
     }
-    Assert.assertNotNull(
-        AvroCompatibilityHelper.parse(innocent + "; DROP TABLE STUDENTS", SchemaParseConfiguration.LOOSE, null).getMainSchema()
-    );
+    //stops being possible under 1.11.2+
+    if (AvroCompatibilityHelper.getRuntimeAvroVersion().earlierThan(AvroVersion.AVRO_1_11)) {
+      Assert.assertNotNull(AvroCompatibilityHelper.parse(badAvsc1, SchemaParseConfiguration.LOOSE, null).getMainSchema());
+      Assert.assertNotNull(AvroCompatibilityHelper.parse(badAvsc2, SchemaParseConfiguration.LOOSE, null).getMainSchema());
+    }
   }
 }

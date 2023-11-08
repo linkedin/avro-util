@@ -31,7 +31,7 @@ dependencies {
   testImplementation "org.apache.commons:commons-lang3:3.4"
   testImplementation "com.sun.codemodel:codemodel:2.6"
 
-  testImplementation ("org.apache.avro:avro:1.11.1") {
+  testImplementation ("org.apache.avro:avro:1.11.3") {
     exclude group: "org.slf4j"
   }
 
@@ -43,8 +43,8 @@ dependencies {
   testImplementation 'org.slf4j:slf4j-simple:1.7.14'
 
   codegen project(":helper:helper")
-  codegen "org.apache.avro:avro-tools:1.11.1"
-  codegen "org.apache.avro:avro-compiler:1.11.1"
+  codegen "org.apache.avro:avro-tools:1.11.3"
+  codegen "org.apache.avro:avro-compiler:1.11.3"
 }
 
 test {
