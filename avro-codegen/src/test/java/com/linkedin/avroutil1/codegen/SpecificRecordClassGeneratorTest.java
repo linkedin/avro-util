@@ -11,8 +11,8 @@ import com.linkedin.avroutil1.model.AvroNamedSchema;
 import com.linkedin.avroutil1.model.AvroRecordSchema;
 import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
 import com.linkedin.avroutil1.parser.avsc.AvscParser;
+import com.linkedin.avroutil1.testcommon.CommonCompilerHelper;
 import com.linkedin.avroutil1.testcommon.TestUtil;
-import com.linkedin.avroutil1.testutil.CompilerHelper;
 import java.io.IOException;
 import javax.tools.JavaFileObject;
 import org.testng.Assert;
@@ -56,7 +56,7 @@ public class SpecificRecordClassGeneratorTest {
         generator.generateSpecificClass(schema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
 
     if (checkCompiles) {
-      CompilerHelper.assertCompiles(javaFileObject);
+      CommonCompilerHelper.assertCompiles(javaFileObject);
     }
   }
 
