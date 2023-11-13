@@ -9,13 +9,16 @@ package com.linkedin.avroutil1.compatibility;
 import com.linkedin.avroutil1.testcommon.TestUtil;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.specific.SpecificRecord;
 import org.apache.avro.util.Utf8;
+import org.assertj.core.api.Assertions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import under14.newnewpkg.inner.NewNewInnerRecordWithAliases;
@@ -253,6 +256,111 @@ public class AvroRecordUtilTest {
     expected.put(new Utf8("2"), new Utf8("b"));
     expected.put(new Utf8("3"), new Utf8("c"));
     Assert.assertEquals(record.mapOfStrings, expected);
+  }
+
+  @Test
+  public void testInnerSchemaValidation() throws Exception {
+    String outerAvsc = TestUtil.load("allavro/innerSchemaValidation/OuterRecord.avsc");
+    String badRecordAvsc = TestUtil.load("allavro/innerSchemaValidation/BadInnerRecord.avsc");
+    String badEnumAvsc = TestUtil.load("allavro/innerSchemaValidation/BadEnum.avsc");
+    String badFixedAvsc = TestUtil.load("allavro/innerSchemaValidation/BadFixed.avsc");
+
+    Schema outerSchema = Schema.parse(outerAvsc);
+    Schema goodRecordSchema = outerSchema.getField("recordField").schema();
+    Schema badRecordSchema = Schema.parse(badRecordAvsc);
+    Schema badEnumSchema = Schema.parse(badEnumAvsc);
+    Schema badFixedSchema = Schema.parse(badFixedAvsc);
+
+    RandomRecordGenerator generator = new RandomRecordGenerator();
+
+    IndexedRecord outerRecord = (IndexedRecord) generator.randomGeneric(outerSchema, RecordGenerationConfig.NO_NULLS);
+
+    //expected to pass
+    AvroRecordUtil.validateNestedSchemasConsistent(outerRecord);
+
+    IndexedRecord badInnerRecord = (IndexedRecord) generator.randomGeneric(badRecordSchema);
+    Object prevValue = outerRecord.get(0);
+    outerRecord.put(0, badInnerRecord);
+
+    try {
+      AvroRecordUtil.validateNestedSchemasConsistent(outerRecord);
+      Assertions.fail("expected to fail");
+    } catch (Exception expected) {
+      int f = 6;
+    }
+
+    //restore record to good state
+    outerRecord.put(0, prevValue);
+    AvroRecordUtil.validateNestedSchemasConsistent(outerRecord);
+
+    //mutilate the union field
+    prevValue = outerRecord.get(1);
+    outerRecord.put(1, badInnerRecord);
+    try {
+      AvroRecordUtil.validateNestedSchemasConsistent(outerRecord);
+      Assertions.fail("expected to fail");
+    } catch (Exception expected) {
+      int f = 6;
+    }
+    //restore record to good state
+    outerRecord.put(1, prevValue);
+    AvroRecordUtil.validateNestedSchemasConsistent(outerRecord);
+
+    //mutilate enums in list field if avro > 1.4
+    //noinspection deprecation
+    if (AvroCompatibilityHelper.getRuntimeAvroVersion().laterThan(AvroVersion.AVRO_1_4)) {
+      GenericData.EnumSymbol badEnum = (GenericData.EnumSymbol) generator.randomGeneric(badEnumSchema);
+
+      @SuppressWarnings("unchecked")
+      List<Object> list = (List<Object>) outerRecord.get(2);
+      IndexedRecord listItem;
+      if (list.isEmpty()) {
+        //put one InnerRecord into the list to play with
+        listItem = (IndexedRecord) generator.randomGeneric(goodRecordSchema, RecordGenerationConfig.NO_NULLS);
+        list.add(listItem);
+      } else {
+        listItem = (IndexedRecord) list.get(0); //InnerRecord
+      }
+      prevValue = listItem.get(0); //good enum instance
+
+      listItem.put(0, badEnum);
+      try {
+        AvroRecordUtil.validateNestedSchemasConsistent(outerRecord);
+        Assertions.fail("expected to fail");
+      } catch (Exception expected) {
+        int f = 6;
+      }
+
+      //restore record to good state
+      listItem.put(0, prevValue);
+      AvroRecordUtil.validateNestedSchemasConsistent(outerRecord);
+    }
+
+    //mutilate fixeds in map field if avro > 1.4
+    //noinspection deprecation
+    if (AvroCompatibilityHelper.getRuntimeAvroVersion().laterThan(AvroVersion.AVRO_1_4)) {
+      GenericData.Fixed badFixed = (GenericData.Fixed) generator.randomGeneric(badFixedSchema);
+
+      Map<CharSequence, ?> map = (Map<CharSequence, ?>) outerRecord.get(3);
+      Map.Entry<CharSequence, ?> entry = map.entrySet().iterator().next();
+      CharSequence key = entry.getKey();
+      IndexedRecord mapItem = (IndexedRecord) entry.getValue(); //InnerRecord
+
+      prevValue = mapItem.get(1); //good fixed instance
+
+      mapItem.put(1, badFixed);
+      try {
+        AvroRecordUtil.validateNestedSchemasConsistent(outerRecord);
+        Assertions.fail("expected to fail");
+      } catch (Exception expected) {
+        int f = 6;
+      }
+
+      //restore record to good state
+      mapItem.put(1, prevValue);
+      AvroRecordUtil.validateNestedSchemasConsistent(outerRecord);
+    }
+    int g = 6;
   }
 
   private void convertRoundTrip(GenericRecord original) {

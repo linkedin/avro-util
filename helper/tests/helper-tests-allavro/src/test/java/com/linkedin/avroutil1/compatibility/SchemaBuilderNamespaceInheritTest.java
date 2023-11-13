@@ -44,8 +44,10 @@ public class SchemaBuilderNamespaceInheritTest {
     validateSchema(originalSchema, newSchema, nameSpace, inheritNamespace, 0);
 
     String newAvsc = AvroCompatibilityHelper.toAvsc(newSchema, AvscGenerationConfig.CORRECT_PRETTY);
+    //on windows newAvsc has \r\n for linebreaks, which fails the check below
+    String newAvscSansCarriageReturns = newAvsc.replaceAll("\r", "");
     String targetAvsc = TestUtil.load(resultAvscFile);
-    Assert.assertEquals(newAvsc, targetAvsc);
+    Assert.assertEquals(newAvscSansCarriageReturns, targetAvsc);
   }
 
   private void validateSchema(Schema originalSchema, Schema newSchema, String parentNameSpace, boolean inheritNamespace,

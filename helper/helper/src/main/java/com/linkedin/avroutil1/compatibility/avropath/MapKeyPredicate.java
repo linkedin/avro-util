@@ -31,8 +31,13 @@ package com.linkedin.avroutil1.compatibility.avropath;
 public class MapKeyPredicate implements PositionalPathPredicate {
   private final String key;
 
+  @Deprecated
   public MapKeyPredicate(String key) {
     this.key = key;
+  }
+
+  public MapKeyPredicate(CharSequence key) {
+    this.key = key == null ? null : String.valueOf(key);
   }
 
   public String getKey() {

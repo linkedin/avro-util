@@ -1,0 +1,29 @@
+{
+  "type": "record",
+  "namespace": "allavro.innerSchemaValidation",
+  "name": "InnerRecord",
+  "fields": [
+    {
+      "name": "enumField",
+      "type": {
+        "type": "enum",
+        "name": "InnerEnum",
+        "symbols": [
+          "A", "B"
+        ]
+      }
+    },
+    {
+      "name": "fixedField",
+      "type": {
+        "type": "fixed",
+        "name": "InnerFixed",
+        "size": 42
+      }
+    },
+    {
+      "name": "evilField",
+      "type": "int"
+    }
+  ]
+}
