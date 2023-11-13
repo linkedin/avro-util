@@ -28,6 +28,7 @@ import com.linkedin.avroutil1.compatibility.avropath.AvroPath;
 import com.linkedin.avroutil1.compatibility.avropath.LocationStep;
 import com.linkedin.avroutil1.compatibility.avropath.MapKeyPredicate;
 import com.linkedin.avroutil1.compatibility.avropath.UnionTypePredicate;
+import com.linkedin.avroutil1.compatibility.exception.InconsistentSchemaException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericEnumSymbol;
@@ -827,7 +828,7 @@ public class AvroRecordUtil {
    * different jars (and so could have a schema different than the one contained in the outermost
    * record's schema)
    * @param record a record, which could contain other records or named types
-   * @throws Exception if the schema for the record does not match the schema declared by any nested object
+   * @throws com.linkedin.avroutil1.compatibility.exception.InconsistentSchemaException if the schema for the record does not match the schema declared by any nested object
    */
   public static void validateNestedSchemasConsistent(IndexedRecord record) throws Exception {
     if (record == null) {
@@ -852,7 +853,7 @@ public class AvroRecordUtil {
           IdentityHashMap<Schema, Boolean> visited,
           Map<String, Schema> referenceDefinitions,
           SchemaComparisonConfiguration comparisonConfiguration
-  ) {
+  ) throws InconsistentSchemaException {
     Schema recordSchema = record.getSchema();
 
     //validate current record's schema if we havent before
@@ -923,7 +924,7 @@ public class AvroRecordUtil {
           IdentityHashMap<Schema, Boolean> visited,
           Map<String, Schema> referenceDefinitions,
           SchemaComparisonConfiguration comparisonConfiguration
-  ) {
+  ) throws InconsistentSchemaException {
     if (value == null) {
       return;
     }
@@ -945,21 +946,20 @@ public class AvroRecordUtil {
           IdentityHashMap<Schema, Boolean> visited,
           Map<String, Schema> referenceDefinitions,
           SchemaComparisonConfiguration comparisonConfiguration
-  ) {
+  ) throws InconsistentSchemaException {
     if (!visited.containsKey(schema)) {
       visited.put(schema, Boolean.TRUE); //never again
       String fullName = schema.getFullName();
       Schema reference = referenceDefinitions.get(fullName);
       if (reference == null) {
-        throw new IllegalStateException("unexpected schema not in reference set: " + fullName + " at " + path);
+        throw new InconsistentSchemaException(path, "unexpected schema not in reference set: " + fullName + " at " + path);
       }
       if (!ConfigurableSchemaComparator.equals(schema, reference, comparisonConfiguration)) {
         @SuppressWarnings("rawtypes")
         AvscWriter avscWriter = AvroCompatibilityHelper.getAvscWriter(AvscGenerationConfig.CORRECT_ONELINE, null);
         String actual = avscWriter.toAvsc(schema);
         String expected = avscWriter.toAvsc(reference);
-        //TODO - create a proper exception class for this, also add details
-        throw new IllegalArgumentException("schema " + fullName + " at " + path + " does not match nested definition in top level record. found: " + actual + ". expecting: " + expected);
+        throw new InconsistentSchemaException(path, "schema " + fullName + " at " + path + " does not match nested definition in top level record. found: " + actual + ". expecting: " + expected);
       }
     }
   }
