@@ -837,6 +837,9 @@ public class AvroRecordUtil {
     Schema outermost = record.getSchema();
     Map<String, Schema> referenceDefinitions = AvroSchemaUtil.getAllDefinedSchemas(outermost);
     AvroPath path = new AvroPath();
+    //we are trying to detect cases of multiple different definitions of the "same" schema.
+    //this means we cant cache results by schema fullname, but only by exact instance
+    //of org.apache.avro.Schema, hence the IndentityHashMap
     IdentityHashMap<Schema, Boolean> visited = new IdentityHashMap<>();
     SchemaComparisonConfiguration comparisonConfiguration = SchemaComparisonConfiguration.STRICT;
     //noinspection deprecation
@@ -856,7 +859,7 @@ public class AvroRecordUtil {
   ) throws InconsistentSchemaException {
     Schema recordSchema = record.getSchema();
 
-    //validate current record's schema if we havent before
+    //validate current record's schema (this uses a cache internally to reduce dup work)
     validateNestedSchema(recordSchema, path, visited, referenceDefinitions, comparisonConfiguration);
 
     //now recurse down into values in fields
