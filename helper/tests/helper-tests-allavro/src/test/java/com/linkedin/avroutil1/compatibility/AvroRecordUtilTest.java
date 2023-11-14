@@ -286,7 +286,7 @@ public class AvroRecordUtilTest {
       AvroRecordUtil.validateNestedSchemasConsistent(outerRecord);
       Assertions.fail("expected to fail");
     } catch (Exception expected) {
-      int f = 6;
+      //expected
     }
 
     //restore record to good state
@@ -300,7 +300,7 @@ public class AvroRecordUtilTest {
       AvroRecordUtil.validateNestedSchemasConsistent(outerRecord);
       Assertions.fail("expected to fail");
     } catch (Exception expected) {
-      int f = 6;
+      //expected
     }
     //restore record to good state
     outerRecord.put(1, prevValue);
@@ -328,7 +328,7 @@ public class AvroRecordUtilTest {
         AvroRecordUtil.validateNestedSchemasConsistent(outerRecord);
         Assertions.fail("expected to fail");
       } catch (Exception expected) {
-        int f = 6;
+        //expected
       }
 
       //restore record to good state
@@ -341,10 +341,20 @@ public class AvroRecordUtilTest {
     if (AvroCompatibilityHelper.getRuntimeAvroVersion().laterThan(AvroVersion.AVRO_1_4)) {
       GenericData.Fixed badFixed = (GenericData.Fixed) generator.randomGeneric(badFixedSchema);
 
-      Map<CharSequence, ?> map = (Map<CharSequence, ?>) outerRecord.get(3);
-      Map.Entry<CharSequence, ?> entry = map.entrySet().iterator().next();
-      CharSequence key = entry.getKey();
-      IndexedRecord mapItem = (IndexedRecord) entry.getValue(); //InnerRecord
+      @SuppressWarnings("unchecked")
+      Map<CharSequence, Object> map = (Map<CharSequence, Object>) outerRecord.get(3);
+      CharSequence key;
+      IndexedRecord mapItem;
+      if (map.isEmpty()) {
+        //put one InnerRecord into the map to play with
+        key = new Utf8("whatever");
+        mapItem = (IndexedRecord) generator.randomGeneric(goodRecordSchema, RecordGenerationConfig.NO_NULLS);
+        map.put(key, mapItem);
+      } else {
+        Map.Entry<CharSequence, ?> entry = map.entrySet().iterator().next();
+        key = entry.getKey();
+        mapItem = (IndexedRecord) entry.getValue(); //InnerRecord
+      }
 
       prevValue = mapItem.get(1); //good fixed instance
 
@@ -353,14 +363,13 @@ public class AvroRecordUtilTest {
         AvroRecordUtil.validateNestedSchemasConsistent(outerRecord);
         Assertions.fail("expected to fail");
       } catch (Exception expected) {
-        int f = 6;
+        //expected
       }
 
       //restore record to good state
       mapItem.put(1, prevValue);
       AvroRecordUtil.validateNestedSchemasConsistent(outerRecord);
     }
-    int g = 6;
   }
 
   private void convertRoundTrip(GenericRecord original) {
