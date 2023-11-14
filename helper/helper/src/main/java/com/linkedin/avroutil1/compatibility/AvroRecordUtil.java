@@ -12,14 +12,23 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import com.linkedin.avroutil1.compatibility.avropath.ArrayPositionPredicate;
+import com.linkedin.avroutil1.compatibility.avropath.AvroPath;
+import com.linkedin.avroutil1.compatibility.avropath.LocationStep;
+import com.linkedin.avroutil1.compatibility.avropath.MapKeyPredicate;
+import com.linkedin.avroutil1.compatibility.avropath.UnionTypePredicate;
+import com.linkedin.avroutil1.compatibility.exception.InconsistentSchemaException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericEnumSymbol;
@@ -809,6 +818,152 @@ public class AvroRecordUtil {
       return (Enum<?>) valueOf.invoke(enumClass, symbolStr);
     } catch (Exception e) {
       throw new IllegalStateException("while trying to resolve " + enumClass.getName() + ".valueOf(" + symbolStr + ")", e);
+    }
+  }
+
+  /**
+   * verifies that the schemas on any nested named types "contained" by a given IndexedRecord
+   * match the schemas declared by the records schema (or SCHEMA$ field for specific record classes).
+   * this is useful to validate in situations where various generated record classes can come from
+   * different jars (and so could have a schema different than the one contained in the outermost
+   * record's schema)
+   * @param record a record, which could contain other records or named types
+   * @throws com.linkedin.avroutil1.compatibility.exception.InconsistentSchemaException if the schema for the record does not match the schema declared by any nested object
+   */
+  public static void validateNestedSchemasConsistent(IndexedRecord record) throws Exception {
+    if (record == null) {
+      return;
+    }
+    Schema outermost = record.getSchema();
+    Map<String, Schema> referenceDefinitions = AvroSchemaUtil.getAllDefinedSchemas(outermost);
+    AvroPath path = new AvroPath();
+    //we are trying to detect cases of multiple different definitions of the "same" schema.
+    //this means we cant cache results by schema fullname, but only by exact instance
+    //of org.apache.avro.Schema, hence the IndentityHashMap
+    IdentityHashMap<Schema, Boolean> visited = new IdentityHashMap<>();
+    SchemaComparisonConfiguration comparisonConfiguration = SchemaComparisonConfiguration.STRICT;
+    //noinspection deprecation
+    if (AvroCompatibilityHelper.getRuntimeAvroVersion().earlierThan(AvroVersion.AVRO_1_8)) {
+      //avro < 1.7.3 cant handle non-string properties, so we use a less strict comparison
+      comparisonConfiguration = SchemaComparisonConfiguration.PRE_1_7_3;
+    }
+    validateNestedRecordSchema(record, path, visited, referenceDefinitions, comparisonConfiguration);
+  }
+
+  private static void validateNestedRecordSchema(
+          IndexedRecord record,
+          AvroPath path,
+          IdentityHashMap<Schema, Boolean> visited,
+          Map<String, Schema> referenceDefinitions,
+          SchemaComparisonConfiguration comparisonConfiguration
+  ) throws InconsistentSchemaException {
+    Schema recordSchema = record.getSchema();
+
+    //validate current record's schema (this uses a cache internally to reduce dup work)
+    validateNestedSchema(recordSchema, path, visited, referenceDefinitions, comparisonConfiguration);
+
+    //now recurse down into values in fields
+    List<Schema.Field> fields = recordSchema.getFields();
+    for (Schema.Field field : fields) {
+      Object fieldValue = record.get(field.pos());
+      if (fieldValue == null) {
+        continue;
+      }
+      path.appendPath(new LocationStep(".", field.name()));
+      try {
+        Schema fieldSchema = field.schema();
+        Schema valueSchema;
+        switch (fieldSchema.getType()) {
+          case UNION:
+            valueSchema = AvroSchemaUtil.resolveUnionBranchOf(fieldValue, fieldSchema); //  !=null
+            path.appendPath(new UnionTypePredicate(valueSchema.getName()));
+            try {
+              validateNestedValue(fieldValue, path, visited, referenceDefinitions, comparisonConfiguration);
+            } finally {
+              path.pop();
+            }
+            break;
+          case ARRAY:
+            Collection<?> arr = (Collection<?>) fieldValue;
+            Iterator<?> iter = arr.iterator();
+            int i=0;
+            while (iter.hasNext()) {
+              Object value = iter.next();
+              path.appendPath(new ArrayPositionPredicate(i));
+              try {
+                validateNestedValue(value, path, visited, referenceDefinitions, comparisonConfiguration);
+              } finally {
+                path.pop();
+                i++;
+              }
+            }
+            break;
+          case MAP:
+            @SuppressWarnings("unchecked")
+            Map<CharSequence, ?> map = (Map<CharSequence, ?>) fieldValue;
+            for (Map.Entry<CharSequence, ?> entry : map.entrySet()) {
+              CharSequence key = entry.getKey();
+              Object value = entry.getValue();
+              path.appendPath(new MapKeyPredicate(key));
+              try {
+                validateNestedValue(value, path, visited, referenceDefinitions, comparisonConfiguration);
+              } finally {
+                path.pop();
+              }
+            }
+            break;
+          default:
+            validateNestedValue(fieldValue, path, visited, referenceDefinitions, comparisonConfiguration);
+        }
+      } finally {
+        path.pop();
+      }
+    }
+  }
+
+  private static void validateNestedValue(
+          Object value,
+          AvroPath path,
+          IdentityHashMap<Schema, Boolean> visited,
+          Map<String, Schema> referenceDefinitions,
+          SchemaComparisonConfiguration comparisonConfiguration
+  ) throws InconsistentSchemaException {
+    if (value == null) {
+      return;
+    }
+    if (value instanceof IndexedRecord) {
+      //generic or specific record (dont care which)
+      IndexedRecord record = (IndexedRecord) value;
+      validateNestedRecordSchema(record, path, visited, referenceDefinitions, comparisonConfiguration);
+    } else {
+      Schema declaredSchema = AvroSchemaUtil.getDeclaredSchema(value);
+      if (declaredSchema != null) {
+        validateNestedSchema(declaredSchema, path, visited, referenceDefinitions, comparisonConfiguration);
+      }
+    }
+  }
+
+  private static void validateNestedSchema(
+          Schema schema,
+          AvroPath path,
+          IdentityHashMap<Schema, Boolean> visited,
+          Map<String, Schema> referenceDefinitions,
+          SchemaComparisonConfiguration comparisonConfiguration
+  ) throws InconsistentSchemaException {
+    if (!visited.containsKey(schema)) {
+      visited.put(schema, Boolean.TRUE); //never again
+      String fullName = schema.getFullName();
+      Schema reference = referenceDefinitions.get(fullName);
+      if (reference == null) {
+        throw new InconsistentSchemaException(path, "unexpected schema not in reference set: " + fullName + " at " + path);
+      }
+      if (!ConfigurableSchemaComparator.equals(schema, reference, comparisonConfiguration)) {
+        @SuppressWarnings("rawtypes")
+        AvscWriter avscWriter = AvroCompatibilityHelper.getAvscWriter(AvscGenerationConfig.CORRECT_ONELINE, null);
+        String actual = avscWriter.toAvsc(schema);
+        String expected = avscWriter.toAvsc(reference);
+        throw new InconsistentSchemaException(path, "schema " + fullName + " at " + path + " does not match nested definition in top level record. found: " + actual + ". expecting: " + expected);
+      }
     }
   }
 }

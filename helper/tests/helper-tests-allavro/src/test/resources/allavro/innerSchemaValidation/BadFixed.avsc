@@ -1,0 +1,6 @@
+{
+  "type": "fixed",
+  "namespace": "allavro.innerSchemaValidation",
+  "name": "InnerFixed",
+  "size": 666
+}

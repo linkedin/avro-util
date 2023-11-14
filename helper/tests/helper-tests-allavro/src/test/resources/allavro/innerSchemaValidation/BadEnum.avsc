@@ -1,0 +1,8 @@
+{
+  "type": "enum",
+  "namespace": "allavro.innerSchemaValidation",
+  "name": "InnerEnum",
+  "symbols": [
+    "A", "B", "EVIL"
+  ]
+}
