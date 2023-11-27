@@ -627,6 +627,7 @@ public class SpecificRecordClassGenerator {
   private void populateBuilderClassBuilder(TypeSpec.Builder recordBuilder, AvroRecordSchema recordSchema,
       SpecificRecordGenerationConfig config) throws ClassNotFoundException {
     boolean canThrowMissingFieldException = false;
+    // Split Builder constructors from other Builder and other record if # of fields is > 50
     boolean splitConstructors = recordSchema.getFields().size() > 50;
     recordBuilder.superclass(ClassName.get(CompatibleSpecificRecordBuilderBase.class));
     CodeBlock.Builder otherBuilderConstructorFromRecordBlockBuilder = CodeBlock.builder();
@@ -786,7 +787,7 @@ public class SpecificRecordClassGenerator {
         .addStatement("super($L)", "SCHEMA$")
         .addParameter(ClassName.get(recordSchema.getNamespace(), recordSchema.getSimpleName()), "other")
         .addModifiers(Modifier.PRIVATE)
-        .addJavadoc("Creates a Builder by copying an existing Builder.\n")
+        .addJavadoc("Creates a Builder by copying an existing instance of the record.\n")
         .addJavadoc("@param other The existing Builder to copy.")
         .addCode(otherBuilderConstructorFromRecordBlockBuilder.build())
         .build());
