@@ -575,6 +575,7 @@ public class SpecificRecordClassGenerator {
               .addStatement("this.$1L = null", escapedFieldName)
               .endControlFlow();
 
+
           // if union might contain string value in runtime
           for (SchemaOrRef unionMemberSchema : ((AvroUnionSchema) field.getSchema()).getTypes()) {
             if (SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.STRING, unionMemberSchema.getSchema())) {
