@@ -627,6 +627,7 @@ public class SpecificRecordClassGenerator {
   private void populateBuilderClassBuilder(TypeSpec.Builder recordBuilder, AvroRecordSchema recordSchema,
       SpecificRecordGenerationConfig config) throws ClassNotFoundException {
     boolean canThrowMissingFieldException = false;
+    boolean splitConstructors = recordSchema.getFields().size() > 50;
     recordBuilder.superclass(ClassName.get(CompatibleSpecificRecordBuilderBase.class));
     CodeBlock.Builder otherBuilderConstructorFromRecordBlockBuilder = CodeBlock.builder();
     CodeBlock.Builder otherBuilderConstructorFromOtherBuilderBlockBuilder = CodeBlock.builder();
@@ -742,19 +743,21 @@ public class SpecificRecordClassGenerator {
       }
       recordBuilder.addField(fieldBuilder.build());
 
-      otherBuilderConstructorFromRecordBlockBuilder.beginControlFlow("if (isValidValue(fields()[$L], other.$L))", fieldIndex,
-          escapedFieldName)
-          .addStatement("this.$1L = deepCopyField(other.$1L, fields()[$2L].schema(), $3S)", escapedFieldName, fieldIndex,
-              config.getDefaultMethodStringRepresentation().getJsonValue())
-          .addStatement("fieldSetFlags()[$L] = true", fieldIndex)
-          .endControlFlow();
+      if(!splitConstructors) {
+        otherBuilderConstructorFromRecordBlockBuilder.beginControlFlow("if (isValidValue(fields()[$L], other.$L))", fieldIndex,
+                escapedFieldName)
+            .addStatement("this.$1L = deepCopyField(other.$1L, fields()[$2L].schema(), $3S)", escapedFieldName, fieldIndex,
+                config.getDefaultMethodStringRepresentation().getJsonValue())
+            .addStatement("fieldSetFlags()[$L] = true", fieldIndex)
+            .endControlFlow();
 
-      otherBuilderConstructorFromOtherBuilderBlockBuilder.beginControlFlow("if (isValidValue(fields()[$L], other.$L))", fieldIndex,
-          escapedFieldName)
-          .addStatement("this.$1L = deepCopyField(other.$1L, fields()[$2L].schema(), $3S)", escapedFieldName, fieldIndex,
-              config.getDefaultMethodStringRepresentation().getJsonValue())
-          .addStatement("fieldSetFlags()[$1L] = other.fieldSetFlags()[$1L]", fieldIndex)
-          .endControlFlow();
+        otherBuilderConstructorFromOtherBuilderBlockBuilder.beginControlFlow("if (isValidValue(fields()[$L], other.$L))", fieldIndex,
+                escapedFieldName)
+            .addStatement("this.$1L = deepCopyField(other.$1L, fields()[$2L].schema(), $3S)", escapedFieldName, fieldIndex,
+                config.getDefaultMethodStringRepresentation().getJsonValue())
+            .addStatement("fieldSetFlags()[$1L] = other.fieldSetFlags()[$1L]", fieldIndex)
+            .endControlFlow();
+      }
 
       // get, set, has, clear methods
       populateAccessorMethodsBlock(accessorMethodSpecs, field, fieldClass, fieldType, recordSchema.getFullName(),
@@ -770,6 +773,13 @@ public class SpecificRecordClassGenerator {
         .addModifiers(Modifier.PRIVATE)
         .addJavadoc("Creates a new Builder")
         .build());
+
+    if (splitConstructors) {
+      addBuilderFromOtherBuilderConstructor(recordBuilder, recordSchema,
+          otherBuilderConstructorFromOtherBuilderBlockBuilder, config);
+      addBuilderFromRecordConstructor(recordBuilder, recordSchema, otherBuilderConstructorFromRecordBlockBuilder,
+          config);
+    }
 
     // private constructor from record
     recordBuilder.addMethod(MethodSpec.constructorBuilder()
@@ -820,6 +830,58 @@ public class SpecificRecordClassGenerator {
             .returns(ClassName.get(recordSchema.getNamespace(), recordSchema.getSimpleName()))
             .addCode(buildMethodCodeBlockBuilder.build())
             .build());
+  }
+
+  private void addBuilderFromOtherBuilderConstructor(TypeSpec.Builder recordBuilder, AvroRecordSchema recordSchema,
+      CodeBlock.Builder otherBuilderConstructorFromOtherBuilderBlockBuilder, SpecificRecordGenerationConfig config) {
+    int blockSize = 25, fieldIndex = 0, chunkCounter = 0;
+    while(fieldIndex < recordSchema.getFields().size()) {
+
+      String chunkMethodName = "builderFromOtherBuilderChunk" + chunkCounter;
+      MethodSpec.Builder fromOtherBuilderChunkMethod =
+          MethodSpec.methodBuilder(chunkMethodName)
+              .addParameter(ClassName.get(recordSchema.getFullName(), "Builder"), "other");
+      for (; fieldIndex < Math.min(blockSize * chunkCounter + blockSize, recordSchema.getFields().size());
+          fieldIndex++) {
+        AvroSchemaField currField = recordSchema.getField(fieldIndex);
+        String escapedFieldName = getFieldNameWithSuffix(currField);
+        fromOtherBuilderChunkMethod.beginControlFlow("if (isValidValue(fields()[$L], other.$L))", fieldIndex,
+                escapedFieldName)
+            .addStatement("this.$1L = deepCopyField(other.$1L, fields()[$2L].schema(), $3S)", escapedFieldName,
+                fieldIndex, config.getDefaultMethodStringRepresentation().getJsonValue())
+            .addStatement("fieldSetFlags()[$1L] = other.fieldSetFlags()[$1L]", fieldIndex)
+            .endControlFlow();
+      }
+      recordBuilder.addMethod(fromOtherBuilderChunkMethod.build());
+      otherBuilderConstructorFromOtherBuilderBlockBuilder.addStatement("$1L(other)", chunkMethodName);
+      chunkCounter++;
+    }
+  }
+
+  private void addBuilderFromRecordConstructor(TypeSpec.Builder recordBuilder, AvroRecordSchema recordSchema,
+      CodeBlock.Builder otherBuilderConstructorFromRecordBlockBuilder, SpecificRecordGenerationConfig config) {
+    int blockSize = 25, fieldIndex = 0, chunkCounter = 0;
+    while(fieldIndex < recordSchema.getFields().size()) {
+
+      String chunkMethodName = "builderFromRecordChunk" + chunkCounter;
+      MethodSpec.Builder fromRecordChunkMethod =
+          MethodSpec.methodBuilder(chunkMethodName)
+              .addParameter(ClassName.get(recordSchema.getNamespace(), recordSchema.getSimpleName()), "other");
+      for (; fieldIndex < Math.min(blockSize * chunkCounter + blockSize, recordSchema.getFields().size());
+          fieldIndex++) {
+        AvroSchemaField currField = recordSchema.getField(fieldIndex);
+        String escapedFieldName = getFieldNameWithSuffix(currField);
+        fromRecordChunkMethod.beginControlFlow("if (isValidValue(fields()[$L], other.$L))", fieldIndex,
+                escapedFieldName)
+            .addStatement("this.$1L = deepCopyField(other.$1L, fields()[$2L].schema(), $3S)", escapedFieldName, fieldIndex,
+                config.getDefaultMethodStringRepresentation().getJsonValue())
+            .addStatement("fieldSetFlags()[$L] = true", fieldIndex)
+            .endControlFlow();
+      }
+      recordBuilder.addMethod(fromRecordChunkMethod.build());
+      otherBuilderConstructorFromRecordBlockBuilder.addStatement("$1L(other)", chunkMethodName);
+      chunkCounter++;
+    }
   }
 
   private List<MethodSpec> getNewBuilderMethods(AvroRecordSchema recordSchema) {
