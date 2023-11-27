@@ -787,7 +787,8 @@ public class SpecificRecordClassGenerator {
         .addStatement("super($L)", "SCHEMA$")
         .addParameter(ClassName.get(recordSchema.getNamespace(), recordSchema.getSimpleName()), "other")
         .addModifiers(Modifier.PRIVATE)
-        .addJavadoc("Creates a Builder by copying an existing instance of the record.\n")
+        .addJavadoc("Creates a Builder by copying an existing instance of the record.\n" + (splitConstructors
+            ? " This method is split into smaller chunks to avoid MethodTooLargeException.\n" : ""))
         .addJavadoc("@param other The existing Builder to copy.")
         .addCode(otherBuilderConstructorFromRecordBlockBuilder.build())
         .build());
@@ -797,7 +798,8 @@ public class SpecificRecordClassGenerator {
         .addStatement("super($L)", "other.schema()")
         .addParameter(ClassName.get(recordSchema.getFullName(), "Builder"), "other")
         .addModifiers(Modifier.PRIVATE)
-        .addJavadoc("Creates a Builder by copying an existing Builder.\n")
+        .addJavadoc("Creates a Builder by copying an existing Builder.\n" + (splitConstructors
+            ? " This method is split into smaller chunks to avoid MethodTooLargeException.\n" : ""))
         .addJavadoc("@param other The existing Builder to copy.")
         .addCode(otherBuilderConstructorFromOtherBuilderBlockBuilder.build())
         .build());
