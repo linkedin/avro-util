@@ -65,6 +65,10 @@ public class SpecificRecordClassGenerator {
   private static final Logger LOGGER = LoggerFactory.getLogger(SpecificRecordClassGenerator.class);
 
   private int sizeValCounter = -1;
+  /**
+   * If methods are split due to large record size, they are split in `blockSize` number of fields per method chunk
+   */
+  private final int blockSize = 25;
 
   /***
    * Generates Java class for top level schema.
@@ -627,9 +631,9 @@ public class SpecificRecordClassGenerator {
   private void populateBuilderClassBuilder(TypeSpec.Builder recordBuilder, AvroRecordSchema recordSchema,
       SpecificRecordGenerationConfig config) throws ClassNotFoundException {
     boolean canThrowMissingFieldException = false;
-    // Split Builder constructors from other Builder and other record if # of fields is > 2 * chunkSize
-    final int chunkSize = 25;
-    boolean splitMethods = recordSchema.getFields().size() > 2 * chunkSize;
+    // Split Builder constructors from other Builder and other record if # of fields is > 2 * blockSize
+
+    boolean splitMethods = recordSchema.getFields().size() > 2 * blockSize;
 
     recordBuilder.superclass(ClassName.get(CompatibleSpecificRecordBuilderBase.class));
     CodeBlock.Builder otherBuilderConstructorFromRecordBlockBuilder = CodeBlock.builder();
@@ -647,9 +651,9 @@ public class SpecificRecordClassGenerator {
     // Loop over all the fields
     while(fieldIndex < recordSchema.getFields().size()) {
       buildMethodChunkBuilder = CodeBlock.builder();
-      // Loop from currentCounter -> currentCounter + chunkSize to allow adding smaller methods if the record is large.
+      // Loop from currentCounter -> currentCounter + blockSize to allow adding smaller methods if the record is large.
       int maxFieldsAllowedInCurrentChunk =
-          Math.min(chunkCounter * chunkSize + chunkSize, recordSchema.getFields().size());
+          Math.min(chunkCounter * blockSize + blockSize, recordSchema.getFields().size());
       for (; fieldIndex < maxFieldsAllowedInCurrentChunk; fieldIndex++) {
         AvroSchemaField field = recordSchema.getFields().get(fieldIndex);
         FieldSpec.Builder fieldBuilder;
@@ -864,7 +868,8 @@ public class SpecificRecordClassGenerator {
    */
   private void addBuilderFromOtherBuilderConstructor(TypeSpec.Builder recordBuilder, AvroRecordSchema recordSchema,
       CodeBlock.Builder otherBuilderConstructorFromOtherBuilderBlockBuilder, SpecificRecordGenerationConfig config) {
-    int blockSize = 25, fieldIndex = 0, chunkCounter = 0;
+    int fieldIndex = 0;
+    int chunkCounter = 0;
     while(fieldIndex < recordSchema.getFields().size()) {
 
       String chunkMethodName = "builderFromOtherBuilderChunk" + chunkCounter;
@@ -892,7 +897,6 @@ public class SpecificRecordClassGenerator {
 
   private void addBuilderFromRecordConstructor(TypeSpec.Builder recordBuilder, AvroRecordSchema recordSchema,
       CodeBlock.Builder otherBuilderConstructorFromRecordBlockBuilder, SpecificRecordGenerationConfig config) {
-    final int blockSize = 25;
     int fieldIndex = 0;
     int chunkCounter = 1;
     while(fieldIndex < recordSchema.getFields().size()) {
@@ -1057,7 +1061,8 @@ public class SpecificRecordClassGenerator {
 
   private void addCustomDecodeMethod(MethodSpec.Builder customDecodeBuilder, AvroRecordSchema recordSchema,
       SpecificRecordGenerationConfig config, TypeSpec.Builder classBuilder) {
-    int blockSize = 25, fieldCounter = 0, chunkCounter = 0;
+    int fieldCounter = 0;
+    int chunkCounter = 0;
     // reset var counter
     sizeValCounter = -1;
     customDecodeBuilder.addStatement(
