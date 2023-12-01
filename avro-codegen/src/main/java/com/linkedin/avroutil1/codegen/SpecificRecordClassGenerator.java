@@ -898,7 +898,7 @@ public class SpecificRecordClassGenerator {
   private void addBuilderFromRecordConstructor(TypeSpec.Builder recordBuilder, AvroRecordSchema recordSchema,
       CodeBlock.Builder otherBuilderConstructorFromRecordBlockBuilder, SpecificRecordGenerationConfig config) {
     int fieldIndex = 0;
-    int chunkCounter = 1;
+    int chunkCounter = 0;
     while(fieldIndex < recordSchema.getFields().size()) {
 
       String chunkMethodName = "builderFromRecordChunk" + chunkCounter;
