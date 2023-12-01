@@ -77,7 +77,7 @@ public class SpecificRecordClassGeneratorTest {
   }
 
   @Test
-  public void testExtraLargeRecord() throws Exception {
+  public void generateVeryLargeSchemaAndCompileTest() throws Exception {
     String avsc = TestUtil.load("schemas/TwoThousandField.avsc");
     AvscParser parser = new AvscParser();
     AvscParseResult result = parser.parse(avsc);

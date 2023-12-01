@@ -627,9 +627,10 @@ public class SpecificRecordClassGenerator {
   private void populateBuilderClassBuilder(TypeSpec.Builder recordBuilder, AvroRecordSchema recordSchema,
       SpecificRecordGenerationConfig config) throws ClassNotFoundException {
     boolean canThrowMissingFieldException = false;
-    // Split Builder constructors from other Builder and other record if # of fields is > 50
-    boolean splitMethods = recordSchema.getFields().size() > 50;
-    int chunkSize = 25;
+    // Split Builder constructors from other Builder and other record if # of fields is > 2 * chunkSize
+    final int chunkSize = 25;
+    boolean splitMethods = recordSchema.getFields().size() > 2 * chunkSize;
+
     recordBuilder.superclass(ClassName.get(CompatibleSpecificRecordBuilderBase.class));
     CodeBlock.Builder otherBuilderConstructorFromRecordBlockBuilder = CodeBlock.builder();
     CodeBlock.Builder otherBuilderConstructorFromOtherBuilderBlockBuilder = CodeBlock.builder();
@@ -639,14 +640,17 @@ public class SpecificRecordClassGenerator {
         .addStatement("$1L record = new $1L()", recordSchema.getName().getSimpleName());
 
     List<MethodSpec> accessorMethodSpecs = new ArrayList<>();
-    int fieldIndex = 0, chunkCounter = 0;
+    int fieldIndex = 0;
+    int chunkCounter = 0;
     // All private fields, string representation same as method
 
     // Loop over all the fields
     while(fieldIndex < recordSchema.getFields().size()) {
       buildMethodChunkBuilder = CodeBlock.builder();
       // Loop from currentCounter -> currentCounter + chunkSize to allow adding smaller methods if the record is large.
-      for(; fieldIndex < Math.min(chunkCounter*chunkSize + chunkSize, recordSchema.getFields().size()); fieldIndex++) {
+      int maxFieldsAllowedInCurrentChunk =
+          Math.min(chunkCounter * chunkSize + chunkSize, recordSchema.getFields().size());
+      for (; fieldIndex < maxFieldsAllowedInCurrentChunk; fieldIndex++) {
         AvroSchemaField field = recordSchema.getFields().get(fieldIndex);
         FieldSpec.Builder fieldBuilder;
         String escapedFieldName = getFieldNameWithSuffix(field);
@@ -888,15 +892,17 @@ public class SpecificRecordClassGenerator {
 
   private void addBuilderFromRecordConstructor(TypeSpec.Builder recordBuilder, AvroRecordSchema recordSchema,
       CodeBlock.Builder otherBuilderConstructorFromRecordBlockBuilder, SpecificRecordGenerationConfig config) {
-    int blockSize = 25, fieldIndex = 0, chunkCounter = 1;
+    final int blockSize = 25;
+    int fieldIndex = 0;
+    int chunkCounter = 1;
     while(fieldIndex < recordSchema.getFields().size()) {
 
       String chunkMethodName = "builderFromRecordChunk" + chunkCounter;
       MethodSpec.Builder fromRecordChunkMethod =
           MethodSpec.methodBuilder(chunkMethodName)
               .addParameter(ClassName.get(recordSchema.getNamespace(), recordSchema.getSimpleName()), "other");
-      for (; fieldIndex < Math.min(blockSize * chunkCounter + blockSize, recordSchema.getFields().size());
-          fieldIndex++) {
+      int maxFieldsAllowedInCurrentChunk = Math.min(blockSize * chunkCounter + blockSize, recordSchema.getFields().size());
+      for (; fieldIndex < maxFieldsAllowedInCurrentChunk; fieldIndex++) {
         AvroSchemaField currField = recordSchema.getField(fieldIndex);
         String escapedFieldName = getFieldNameWithSuffix(currField);
         fromRecordChunkMethod.beginControlFlow("if (isValidValue(fields()[$L], other.$L))", fieldIndex,
