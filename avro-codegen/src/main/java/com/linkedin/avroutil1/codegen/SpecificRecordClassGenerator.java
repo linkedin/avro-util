@@ -641,9 +641,12 @@ public class SpecificRecordClassGenerator {
     List<MethodSpec> accessorMethodSpecs = new ArrayList<>();
     int fieldIndex = 0, chunkCounter = 0;
     // All private fields, string representation same as method
+
+    // Loop over all the fields
     while(fieldIndex < recordSchema.getFields().size()) {
       buildMethodChunkBuilder = CodeBlock.builder();
-      for(; fieldIndex < Math.min(chunkCounter*chunkSize, recordSchema.getFields().size()); fieldIndex++) {
+      // Loop from currentCounter -> currentCounter + chunkSize to allow adding smaller methods if the record is large.
+      for(; fieldIndex < Math.min(chunkCounter*chunkSize + chunkSize, recordSchema.getFields().size()); fieldIndex++) {
         AvroSchemaField field = recordSchema.getFields().get(fieldIndex);
         FieldSpec.Builder fieldBuilder;
         String escapedFieldName = getFieldNameWithSuffix(field);
@@ -769,6 +772,7 @@ public class SpecificRecordClassGenerator {
         populateAccessorMethodsBlock(accessorMethodSpecs, field, fieldClass, fieldType, recordSchema.getFullName(),
             fieldIndex);
       }
+      // Don't populate large method builder if the methods are to be split
       if(splitMethods) {
         String buildChunkMethodName = "buildChunk" + chunkCounter++;
         recordBuilder.addMethod(MethodSpec.methodBuilder(buildChunkMethodName)
@@ -788,7 +792,7 @@ public class SpecificRecordClassGenerator {
         .addModifiers(Modifier.PRIVATE)
         .addJavadoc("Creates a new Builder")
         .build());
-
+    // If methods have to be split, the method builder are not populated. So add the split code
     if (splitMethods) {
       addBuilderFromOtherBuilderConstructor(recordBuilder, recordSchema,
           otherBuilderConstructorFromOtherBuilderBlockBuilder, config);
@@ -851,6 +855,9 @@ public class SpecificRecordClassGenerator {
             .build());
   }
 
+  /**
+   * Create split methods for constructors and add them in recordBuilder which represents the Builder class.
+   */
   private void addBuilderFromOtherBuilderConstructor(TypeSpec.Builder recordBuilder, AvroRecordSchema recordSchema,
       CodeBlock.Builder otherBuilderConstructorFromOtherBuilderBlockBuilder, SpecificRecordGenerationConfig config) {
     int blockSize = 25, fieldIndex = 0, chunkCounter = 0;
@@ -871,7 +878,9 @@ public class SpecificRecordClassGenerator {
             .addStatement("fieldSetFlags()[$1L] = other.fieldSetFlags()[$1L]", fieldIndex)
             .endControlFlow();
       }
+      // Add the chunk method in Builder class
       recordBuilder.addMethod(fromOtherBuilderChunkMethod.build());
+      // Main constructor needs to call all newly added method chunk
       otherBuilderConstructorFromOtherBuilderBlockBuilder.addStatement("$1L(other)", chunkMethodName);
       chunkCounter++;
     }
@@ -879,7 +888,7 @@ public class SpecificRecordClassGenerator {
 
   private void addBuilderFromRecordConstructor(TypeSpec.Builder recordBuilder, AvroRecordSchema recordSchema,
       CodeBlock.Builder otherBuilderConstructorFromRecordBlockBuilder, SpecificRecordGenerationConfig config) {
-    int blockSize = 25, fieldIndex = 0, chunkCounter = 0;
+    int blockSize = 25, fieldIndex = 0, chunkCounter = 1;
     while(fieldIndex < recordSchema.getFields().size()) {
 
       String chunkMethodName = "builderFromRecordChunk" + chunkCounter;
