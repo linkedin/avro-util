@@ -785,6 +785,7 @@ public class SpecificRecordClassGenerator {
         String buildChunkMethodName = "buildChunk" + chunkCounter++;
         recordBuilder.addMethod(MethodSpec.methodBuilder(buildChunkMethodName)
             .addParameter(ClassName.get(recordSchema.getNamespace(), recordSchema.getSimpleName()), "record")
+            .addModifiers(Modifier.PRIVATE)
             .addCode(buildMethodChunkBuilder.build())
             .build());
         buildMethodCodeBlockBuilder.addStatement("$1L(record)", buildChunkMethodName);
@@ -873,9 +874,9 @@ public class SpecificRecordClassGenerator {
     while(fieldIndex < recordSchema.getFields().size()) {
 
       String chunkMethodName = "builderFromOtherBuilderChunk" + chunkCounter;
-      MethodSpec.Builder fromOtherBuilderChunkMethod =
-          MethodSpec.methodBuilder(chunkMethodName)
-              .addParameter(ClassName.get(recordSchema.getFullName(), "Builder"), "other");
+      MethodSpec.Builder fromOtherBuilderChunkMethod = MethodSpec.methodBuilder(chunkMethodName)
+          .addParameter(ClassName.get(recordSchema.getFullName(), "Builder"), "other")
+          .addModifiers(Modifier.PRIVATE);
       for (; fieldIndex < Math.min(blockSize * chunkCounter + blockSize, recordSchema.getFields().size());
           fieldIndex++) {
         AvroSchemaField currField = recordSchema.getField(fieldIndex);
@@ -902,9 +903,9 @@ public class SpecificRecordClassGenerator {
     while(fieldIndex < recordSchema.getFields().size()) {
 
       String chunkMethodName = "builderFromRecordChunk" + chunkCounter;
-      MethodSpec.Builder fromRecordChunkMethod =
-          MethodSpec.methodBuilder(chunkMethodName)
-              .addParameter(ClassName.get(recordSchema.getNamespace(), recordSchema.getSimpleName()), "other");
+      MethodSpec.Builder fromRecordChunkMethod = MethodSpec.methodBuilder(chunkMethodName)
+          .addParameter(ClassName.get(recordSchema.getNamespace(), recordSchema.getSimpleName()), "other")
+          .addModifiers(Modifier.PRIVATE);
       int maxFieldsAllowedInCurrentChunk = Math.min(blockSize * chunkCounter + blockSize, recordSchema.getFields().size());
       for (; fieldIndex < maxFieldsAllowedInCurrentChunk; fieldIndex++) {
         AvroSchemaField currField = recordSchema.getField(fieldIndex);
@@ -1077,7 +1078,7 @@ public class SpecificRecordClassGenerator {
       MethodSpec.Builder customDecodeChunkMethod = MethodSpec.methodBuilder(chunkMethodName)
           .addParameter(SpecificRecordGeneratorUtil.CLASSNAME_RESOLVING_DECODER, "in")
           .addException(IOException.class)
-          .addModifiers(Modifier.PUBLIC);
+          .addModifiers(Modifier.PRIVATE);
       for (; fieldCounter < Math.min(blockSize * chunkCounter + blockSize, recordSchema.getFields().size());
           fieldCounter++) {
         AvroSchemaField field = recordSchema.getField(fieldCounter);
@@ -1107,7 +1108,7 @@ public class SpecificRecordClassGenerator {
           .addParameter(SpecificRecordGeneratorUtil.CLASSNAME_RESOLVING_DECODER, "in")
           .addParameter(ArrayTypeName.of(SpecificRecordGeneratorUtil.CLASSNAME_SCHEMA_FIELD), "fieldOrder")
           .addException(IOException.class)
-          .addModifiers(Modifier.PUBLIC);
+          .addModifiers(Modifier.PRIVATE);
 
       customDecodeChunkMethod.beginControlFlow("for( int i = $L; i< $L; i++)", fieldCounter, Math.min(blockSize * chunkCounter + blockSize, recordSchema.getFields().size()))
           .beginControlFlow("switch(fieldOrder[i].pos())");
