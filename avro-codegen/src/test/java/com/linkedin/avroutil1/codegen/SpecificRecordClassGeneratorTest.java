@@ -75,4 +75,20 @@ public class SpecificRecordClassGeneratorTest {
             "/**\n" + "   * @deprecated public fields are deprecated. Please use setters/getters.\n" + "   */"),
         schema.getFields().size());
   }
+
+  @Test
+  public void testExtraLargeRecord() throws Exception {
+    String avsc = TestUtil.load("schemas/TwoThousandField.avsc");
+    AvscParser parser = new AvscParser();
+    AvscParseResult result = parser.parse(avsc);
+    Assert.assertNull(result.getParseError());
+    AvroNamedSchema schema = (AvroNamedSchema) result.getTopLevelSchema();
+    Assert.assertNotNull(schema);
+
+    SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
+    JavaFileObject javaFileObject =
+        generator.generateSpecificClass(schema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
+
+    CompilerHelper.assertCompiles(javaFileObject);
+  }
 }
