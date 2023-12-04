@@ -9,6 +9,9 @@ plugins {
     id "checkstyle"
     id "jacoco"
 }
+test {
+    maxHeapSize='1g'
+}
 
 dependencies {
     api project(":parser")
