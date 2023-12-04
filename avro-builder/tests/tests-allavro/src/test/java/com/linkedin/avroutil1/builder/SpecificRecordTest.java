@@ -33,7 +33,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import vs19.ThousandField;
 
 
 public class SpecificRecordTest {
@@ -1835,20 +1834,24 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
   public static Object[][] testPrivateModifierOnChunkMethodProvider() {
     return new Object[][]{{vs14.ThousandField.class}, {vs19.ThousandField.class}};
   }
-  @Test(dataProvider = "testPrivateModifierOnChunkMethodProvider")
+  
+ @Test(dataProvider = "testPrivateModifierOnChunkMethodProvider")
   public <T extends IndexedRecord> void testPrivateModifierOnChunkMethod(Class<T> clazz) {
-    // No chunk methods in main class in the current codegen implementation
-    Assert.assertTrue(Arrays.stream(clazz.getDeclaredMethods()).noneMatch(method -> method.getName().contains("Chunk")));
 
-    // Currently, all Chunk methods are in Builder.
-    List<Method> chunkMethodsInBuilderClass = Arrays.stream(Arrays.stream(clazz.getClasses())
+    // All chunk methods in builder
+    List<Method> chunkMethodNames = Arrays.stream(Arrays.stream(clazz.getClasses())
         .filter(internalClazz -> internalClazz.getName().equals(clazz.getName() + "$Builder"))
         .collect(Collectors.toList())
         .get(0)
         .getDeclaredMethods()).filter(method -> method.getName().contains("Chunk")).collect(Collectors.toList());
 
-    Assert.assertFalse(chunkMethodsInBuilderClass.isEmpty());
-    chunkMethodsInBuilderClass.forEach(method -> Assert.assertTrue(Modifier.isPrivate(method.getModifiers())));
+    // chunk methods from main class
+    chunkMethodNames.addAll(Arrays.stream(clazz.getDeclaredMethods())
+        .filter(method -> method.getName().contains("Chunk"))
+        .collect(Collectors.toList()));
+
+    Assert.assertFalse(chunkMethodNames.isEmpty());
+    chunkMethodNames.forEach(method -> Assert.assertTrue(Modifier.isPrivate(method.getModifiers())));
   }
 
   @BeforeClass
