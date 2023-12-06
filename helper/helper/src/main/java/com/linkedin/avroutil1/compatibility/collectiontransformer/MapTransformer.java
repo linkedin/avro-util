@@ -11,11 +11,27 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.avro.util.Utf8;
 
 
 public class MapTransformer {
 
   public static Map getUtf8Map(Object mapObj) {
+    return getUtf8Map(mapObj, false);
+  }
+
+  public static Map getStringMap(Object mapObj) {
+    return getStringMap(mapObj, false);
+  }
+
+  public static Map getCharSequenceMap(Object mapObj) {
+    return getCharSequenceMap(mapObj, false);
+  }
+
+  public static Map getUtf8Map(Object mapObj, boolean isPrimitiveCollection) {
+    if(isPrimitiveCollection) {
+      return CollectionTransformerUtil.createUtf8MapView((Map<Utf8, Utf8>) mapObj);
+    }
     if (mapObj == null) {
       return null;
     }
@@ -44,7 +60,10 @@ public class MapTransformer {
     return Collections.unmodifiableMap(ret);
   }
 
-  public static Map getStringMap(Object mapObj) {
+  public static Map getStringMap(Object mapObj, boolean isPrimitiveCollection) {
+    if(isPrimitiveCollection) {
+      return CollectionTransformerUtil.createStringMapView((Map<Utf8, Utf8>) mapObj);
+    }
     if (mapObj == null) {
       return null;
     }
@@ -72,7 +91,10 @@ public class MapTransformer {
     return Collections.unmodifiableMap(ret);
   }
 
-  public static Map getCharSequenceMap(Object mapObj) {
+  public static Map getCharSequenceMap(Object mapObj, boolean isPrimitiveCollection) {
+    if(isPrimitiveCollection) {
+      return CollectionTransformerUtil.createCharSequenceMapView((Map<Utf8, Utf8>) mapObj);
+    }
     if (mapObj == null) {
       return null;
     }
