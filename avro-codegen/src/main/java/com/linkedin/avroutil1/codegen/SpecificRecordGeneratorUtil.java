@@ -288,6 +288,54 @@ public class SpecificRecordGeneratorUtil {
     return isNullUnionOf(AvroType.MAP, schema);
   }
 
+  /**
+   * If a schema is primitive type or a null union of primitive type, it can be handled as a primitive type
+   * @param schema schema to be validated
+   * @return true if schema can be handled as primitive, else false
+   */
+  private static boolean canBeHandledAsPrimitiveType(AvroSchema schema) {
+    if (schema instanceof AvroUnionSchema) {
+      if (((AvroUnionSchema) schema).getTypes().size() != 2) {
+        return false;
+      }
+
+      return ((AvroUnionSchema) schema).getTypes().get(0).getSchema().type().equals(AvroType.NULL)
+          && ((AvroUnionSchema) schema).getTypes().get(1).getSchema().type().isPrimitive()
+          || ((AvroUnionSchema) schema).getTypes().get(1).getSchema().type().equals(AvroType.NULL)
+          && ((AvroUnionSchema) schema).getTypes().get(0).getSchema().type().isPrimitive();
+    }
+
+    return schema.type().isPrimitive();
+  }
+
+  /**
+   * schema type must be either a List of Map (or a null union of List/Map)
+   * @return true if schema value is primitive
+   */
+  public static boolean isCollectionSchemaValuePrimitive(AvroSchema schema) {
+    if(!isListTransformerApplicableForSchema(schema) && !isMapTransformerApplicable(schema)) {
+      return false;
+    }
+    if (schema.type().equals(AvroType.UNION)) {
+      if (((AvroUnionSchema) schema).getTypes().get(0).getSchema().type().equals(AvroType.NULL)) {
+        schema = ((AvroUnionSchema) schema).getTypes().get(1).getSchema();
+      } else if (((AvroUnionSchema) schema).getTypes().get(1).getSchema().type().equals(AvroType.NULL)) {
+        schema = ((AvroUnionSchema) schema).getTypes().get(0).getSchema();
+      } else {
+        // checks with isListTransformerApplicable and isMapTransformerApplicable should prevent this from happening
+        throw new IllegalArgumentException("schema type must be either a List of Map (or a null union of List/Map)");
+      }
+    }
+
+    if(AvroType.ARRAY.equals(schema.type())) {
+      return canBeHandledAsPrimitiveType(((AvroArraySchema) schema).getValueSchema());
+    } else if (AvroType.MAP.equals(schema.type())) {
+      return canBeHandledAsPrimitiveType(((AvroMapSchema) schema).getValueSchema());
+    } else {
+      // checks with isListTransformerApplicable and isMapTransformerApplicable should prevent this from happening
+      throw new IllegalArgumentException("schema type must be either a List of Map (or a null union of List/Map)");
+    }
+  }
 
   public static boolean schemaContainsString(AvroSchema schema) {
     if (schema == null) {
