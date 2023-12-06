@@ -1834,7 +1834,7 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
   public static Object[][] testPrivateModifierOnChunkMethodProvider() {
     return new Object[][]{{vs14.ThousandField.class}, {vs19.ThousandField.class}};
   }
-  
+
  @Test(dataProvider = "testPrivateModifierOnChunkMethodProvider")
   public <T extends IndexedRecord> void testPrivateModifierOnChunkMethod(Class<T> clazz) {
 
@@ -1852,6 +1852,33 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
 
     Assert.assertFalse(chunkMethodNames.isEmpty());
     chunkMethodNames.forEach(method -> Assert.assertTrue(Modifier.isPrivate(method.getModifiers())));
+  }
+
+  @Test
+  public void modifiablePrimitiveCollectionTest() {
+    String tba = "NewElement";
+    RandomRecordGenerator generator = new RandomRecordGenerator();
+    TestCollections instance = generator.randomSpecific(TestCollections.class, RecordGenerationConfig.newConfig().withAvoidNulls(true));
+
+    // array of string
+    instance.getStrAr().add(tba);
+    Assert.assertTrue(instance.getStrAr().contains(tba));
+
+    // union[null, List<String>]
+    instance.getUnionOfArray().add(tba);
+    Assert.assertTrue(instance.getUnionOfArray().contains(tba));
+
+    // array (union[null, string])
+    instance.getArOfUnionOfStr().add(tba);
+    Assert.assertTrue(instance.getArOfUnionOfStr().contains(tba));
+
+
+    // Union (null, Map<String, String>)
+    instance.getUnionOfMap().put("key1", tba);
+    Assert.assertEquals(tba, instance.getUnionOfMap().get("key1"));
+
+    instance.getIntAr().add(Integer.MAX_VALUE);
+    Assert.assertEquals((int) instance.getIntAr().get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
   }
 
   @BeforeClass
