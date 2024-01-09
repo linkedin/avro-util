@@ -51,11 +51,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.StringJoiner;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.util.stream.Collectors;
 import javax.lang.model.element.Modifier;
-import javax.tools.JavaFileObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -78,7 +77,7 @@ public class SpecificRecordClassGenerator {
    * @return Java class of top level schema
    * @throws ClassNotFoundException
    */
-  public JavaFileObject generateSpecificClass(AvroNamedSchema topLevelSchema,
+  public JavaFile generateSpecificClass(AvroNamedSchema topLevelSchema,
       SpecificRecordGenerationConfig config) throws ClassNotFoundException {
     if (topLevelSchema == null) {
       throw new IllegalArgumentException("topLevelSchema required");
@@ -129,7 +128,7 @@ public class SpecificRecordClassGenerator {
    *
    */
   private void populateJavaFilesOfInnerNamedSchemasFromRecord(AvroRecordSchema recordSchema,
-      SpecificRecordGenerationConfig config, List<JavaFileObject> namedSchemaFiles) throws ClassNotFoundException {
+      SpecificRecordGenerationConfig config, List<JavaFile> namedSchemaFiles) throws ClassNotFoundException {
 
     HashSet<String> visitedSchemasFullNames = new HashSet<>();
     Queue<AvroSchema> schemaQueue = recordSchema.getFields()
@@ -183,7 +182,7 @@ public class SpecificRecordClassGenerator {
   }
 
 
-  protected JavaFileObject generateSpecificEnum(AvroEnumSchema enumSchema, SpecificRecordGenerationConfig config) {
+  protected JavaFile generateSpecificEnum(AvroEnumSchema enumSchema, SpecificRecordGenerationConfig config) {
     //public enum
     TypeSpec.Builder classBuilder = TypeSpec.enumBuilder(enumSchema.getSimpleName());
     classBuilder.addModifiers(Modifier.PUBLIC);
@@ -219,16 +218,15 @@ public class SpecificRecordClassGenerator {
 
     //create file object
     TypeSpec classSpec = classBuilder.build();
-    JavaFile javaFile = JavaFile.builder(enumSchema.getNamespace(), classSpec)
+
+    return JavaFile.builder(enumSchema.getNamespace(), classSpec)
         .skipJavaLangImports(false) //no imports
         .addFileComment(SpecificRecordGeneratorUtil.AVRO_GEN_COMMENT)
         .build();
-
-    return javaFile.toJavaFileObject();
   }
 
 
-  protected JavaFileObject generateSpecificFixed(AvroFixedSchema fixedSchema, SpecificRecordGenerationConfig config)
+  protected JavaFile generateSpecificFixed(AvroFixedSchema fixedSchema, SpecificRecordGenerationConfig config)
       throws ClassNotFoundException {
     //public class
     TypeSpec.Builder classBuilder = TypeSpec.classBuilder(fixedSchema.getSimpleName());
@@ -270,12 +268,11 @@ public class SpecificRecordClassGenerator {
 
     //create file object
     TypeSpec classSpec = classBuilder.build();
-    JavaFile javaFile = JavaFile.builder(fixedSchema.getNamespace(), classSpec)
+
+    return JavaFile.builder(fixedSchema.getNamespace(), classSpec)
         .skipJavaLangImports(false) //no imports
         .addFileComment(SpecificRecordGeneratorUtil.AVRO_GEN_COMMENT)
         .build();
-
-    return javaFile.toJavaFileObject();
   }
 
   /***
@@ -336,7 +333,7 @@ public class SpecificRecordClassGenerator {
     classBuilder.addMethod(writeExternalBuilder.build());
   }
 
-  protected JavaFileObject generateSpecificRecord(AvroRecordSchema recordSchema, SpecificRecordGenerationConfig config)
+  protected JavaFile generateSpecificRecord(AvroRecordSchema recordSchema, SpecificRecordGenerationConfig config)
       throws ClassNotFoundException {
 
     // Default to broad compatibility config if null
@@ -454,12 +451,12 @@ public class SpecificRecordClassGenerator {
     // add no arg constructor
     classBuilder.addMethod(MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC).build());
 
-    if (recordSchema.getFields().size() > 0) {
+    if (!recordSchema.getFields().isEmpty()) {
       // add all arg constructor if #args < 254
       addAllArgsConstructor(recordSchema, config.getDefaultFieldStringRepresentation(),
           config.getDefaultMethodStringRepresentation(), classBuilder);
 
-      if(SpecificRecordGeneratorUtil.recordHasSimpleStringField(recordSchema)) {
+      if (SpecificRecordGeneratorUtil.recordHasSimpleStringField(recordSchema)) {
         addAllArgsConstructor(recordSchema, config.getDefaultFieldStringRepresentation(),
             config.getDefaultMethodStringRepresentation().equals(AvroJavaStringRepresentation.STRING)
             ? AvroJavaStringRepresentation.CHAR_SEQUENCE : AvroJavaStringRepresentation.STRING,
@@ -505,7 +502,7 @@ public class SpecificRecordClassGenerator {
             .build());
 
     //customCoders
-    if(hasCustomCoders(recordSchema)) {
+    if (hasCustomCoders(recordSchema)) {
 
       // customEncode
       MethodSpec.Builder customEncodeBuilder = MethodSpec
@@ -542,12 +539,9 @@ public class SpecificRecordClassGenerator {
 
     //create file object
     TypeSpec classSpec = classBuilder.build();
-    JavaFile javaFile = JavaFile.builder(recordSchema.getNamespace(), classSpec)
+    return JavaFile.builder(recordSchema.getNamespace(), classSpec)
         .skipJavaLangImports(false) //no imports
-        .addFileComment(SpecificRecordGeneratorUtil.AVRO_GEN_COMMENT)
-        .build();
-
-    return javaFile.toJavaFileObject();
+        .addFileComment(SpecificRecordGeneratorUtil.AVRO_GEN_COMMENT).build();
   }
 
   private void addAllArgsConstructor(AvroRecordSchema recordSchema,
