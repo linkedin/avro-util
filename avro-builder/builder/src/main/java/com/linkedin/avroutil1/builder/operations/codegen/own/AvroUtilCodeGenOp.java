@@ -59,11 +59,9 @@ public class AvroUtilCodeGenOp implements Operation {
   private static final Logger LOGGER = LoggerFactory.getLogger(AvroUtilCodeGenOp.class);
 
   private final CodeGenOpConfig config;
-  private final ForkJoinPool diskWritePool;
 
   public AvroUtilCodeGenOp(CodeGenOpConfig config) {
     this.config = config;
-    this.diskWritePool = new ForkJoinPool();
   }
 
   @Override
