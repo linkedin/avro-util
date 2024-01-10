@@ -41,6 +41,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -56,9 +59,11 @@ public class AvroUtilCodeGenOp implements Operation {
   private static final Logger LOGGER = LoggerFactory.getLogger(AvroUtilCodeGenOp.class);
 
   private final CodeGenOpConfig config;
+  private final ForkJoinPool diskWritePool;
 
   public AvroUtilCodeGenOp(CodeGenOpConfig config) {
     this.config = config;
+    this.diskWritePool = new ForkJoinPool();
   }
 
   @Override
