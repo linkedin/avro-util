@@ -341,18 +341,18 @@ public class AvroUtilCodeGenOp implements Operation {
     long writeStart = System.currentTimeMillis();
 
     // write out the files we generated
-    long numFilesWritten = javaFiles.parallelStream().map(javaFile -> {
+    int filesWritten = javaFiles.parallelStream().map(javaFile -> {
       try {
         javaFile.writeToPath(outputFolderPath);
       } catch (Exception e) {
         throw new IllegalStateException("while writing file " + javaFile.typeSpec.name, e);
       }
 
-      return null;
-    }).count();
+      return 1;
+    }).reduce(0, Integer::sum);
 
     long writeEnd = System.currentTimeMillis();
-    LOGGER.info("wrote out {} generated java source files under {} in {} millis", numFilesWritten, outputFolderPath,
+    LOGGER.info("wrote out {} generated java source files under {} in {} millis", filesWritten, outputFolderPath,
         writeEnd - writeStart);
   }
 }
