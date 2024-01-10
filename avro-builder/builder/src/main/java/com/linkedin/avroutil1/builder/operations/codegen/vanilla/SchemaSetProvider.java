@@ -6,6 +6,9 @@
 
 package com.linkedin.avroutil1.builder.operations.codegen.vanilla;
 
+import com.linkedin.avroutil1.builder.operations.SchemaSet;
+
+
 public interface SchemaSetProvider {
 
   @Deprecated //for backwards compatibility

@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.builder.operations.codegen.vanilla;
 
+import com.linkedin.avroutil1.builder.operations.SchemaSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

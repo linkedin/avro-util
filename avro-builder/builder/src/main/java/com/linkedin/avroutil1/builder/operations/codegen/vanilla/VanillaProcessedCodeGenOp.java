@@ -6,9 +6,10 @@
 
 package com.linkedin.avroutil1.builder.operations.codegen.vanilla;
 
+import com.linkedin.avroutil1.builder.operations.AvroSchemaUtils;
 import com.linkedin.avroutil1.builder.operations.OperationContext;
 import com.linkedin.avroutil1.builder.operations.codegen.CodeGenOpConfig;
-import com.linkedin.avroutil1.builder.operations.Operation;
+import com.linkedin.avroutil1.builder.operations.codegen.OperationContextBuilder;
 import com.linkedin.avroutil1.builder.operations.codegen.util.AvscFileFinderUtil;
 import com.linkedin.avroutil1.compatibility.Avro702Checker;
 import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
@@ -37,18 +38,12 @@ import org.slf4j.LoggerFactory;
 /**
  * a code generation operation using vanilla avro-compiler + helper post-processing
  */
-public class VanillaProcessedCodeGenOp implements Operation {
+public class VanillaProcessedCodeGenOp implements OperationContextBuilder {
   private static final Logger LOGGER = LoggerFactory.getLogger(VanillaProcessedCodeGenOp.class);
 
-  private final CodeGenOpConfig config;
-
-  public VanillaProcessedCodeGenOp(CodeGenOpConfig config) {
-    this.config = config;
-  }
-
   @Override
-  public void run(OperationContext opContext) throws Exception {
-    //mkdir any output folders that dont exist
+  public OperationContext buildOperationContext(CodeGenOpConfig config) throws Exception {
+    //mkdir any output folders that don't exist
     if (!config.getOutputSpecificRecordClassesRoot().exists() && !config.getOutputSpecificRecordClassesRoot().mkdirs()) {
       throw new IllegalStateException("unable to create destination folder " + config.getOutputSpecificRecordClassesRoot());
     }
@@ -173,9 +168,8 @@ public class VanillaProcessedCodeGenOp implements Operation {
       }
     }
 
-    opContext.addVanillaSchemas(new HashSet<>(schemas), avroFiles);
-
     LOGGER.info("Compilation complete.");
+    return new OperationContext(AvroSchemaUtils.schemasToAvroSchemas(new HashSet<>(schemas)), avroFiles, null);
   }
 
   private static String fqcnFromSchema(JSONObject schemaJson) throws JSONException { //works for both avsc and pdsc

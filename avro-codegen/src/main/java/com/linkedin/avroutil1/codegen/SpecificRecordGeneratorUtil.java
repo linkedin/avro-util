@@ -199,8 +199,6 @@ public class SpecificRecordGeneratorUtil {
   /***
    * Get nested internal Named schemas for a given topLevel Record schema
    * Traverses through fields and catches their de-duped
-   * @param topLevelSchema
-   * @return
    */
   public static List<AvroNamedSchema> getNestedInternalSchemaList(AvroNamedSchema topLevelSchema) {
 
@@ -219,8 +217,6 @@ public class SpecificRecordGeneratorUtil {
   /***
    * Checks if field type can be treated as null union of the given type
    *
-   * @param type
-   * @param schema
    * @return True if type [null, type] or [type, null]
    */
   public static boolean isNullUnionOf(AvroType type, AvroSchema schema) {
@@ -241,7 +237,6 @@ public class SpecificRecordGeneratorUtil {
 
   /***
    * Handles list , union of list
-   * @param schema
    * @return true for List of String and List of Union of String
    */
   public static boolean isListTransformerApplicableForSchema(AvroSchema schema) {
