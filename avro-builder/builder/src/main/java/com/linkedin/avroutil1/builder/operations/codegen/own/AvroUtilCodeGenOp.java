@@ -41,6 +41,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -56,9 +59,11 @@ public class AvroUtilCodeGenOp implements Operation {
   private static final Logger LOGGER = LoggerFactory.getLogger(AvroUtilCodeGenOp.class);
 
   private final CodeGenOpConfig config;
+  private final ForkJoinPool diskWritePool;
 
   public AvroUtilCodeGenOp(CodeGenOpConfig config) {
     this.config = config;
+    this.diskWritePool = new ForkJoinPool();
   }
 
   @Override
@@ -341,18 +346,18 @@ public class AvroUtilCodeGenOp implements Operation {
     long writeStart = System.currentTimeMillis();
 
     // write out the files we generated
-    long numFilesWritten = javaFiles.parallelStream().map(javaFile -> {
+    int filesWritten = javaFiles.parallelStream().map(javaFile -> {
       try {
         javaFile.writeToPath(outputFolderPath);
       } catch (Exception e) {
         throw new IllegalStateException("while writing file " + javaFile.typeSpec.name, e);
       }
 
-      return null;
-    }).count();
+      return 1;
+    }).reduce(0, Integer::sum);
 
     long writeEnd = System.currentTimeMillis();
-    LOGGER.info("wrote out {} generated java source files under {} in {} millis", numFilesWritten, outputFolderPath,
+    LOGGER.info("wrote out {} generated java source files under {} in {} millis", filesWritten, outputFolderPath,
         writeEnd - writeStart);
   }
 }
