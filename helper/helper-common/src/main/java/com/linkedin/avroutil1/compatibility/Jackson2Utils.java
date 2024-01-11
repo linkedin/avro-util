@@ -12,15 +12,20 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.DoubleNode;
 import com.fasterxml.jackson.databind.node.FloatNode;
 import com.fasterxml.jackson.databind.node.IntNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.LongNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import java.io.StringReader;
 import java.math.BigDecimal;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaParseException;
 import org.slf4j.Logger;
@@ -233,6 +238,32 @@ public class Jackson2Utils {
       throw new SchemaParseException("dangling content beyond the end of a schema at line: "
           + endOfSchemaLocation.getLineNr() + " column: " + endOfSchemaLocation.getColumnNr() + ": " + dangling);
     }
+  }
+
+  /**
+   * Sorts the properties of a JsonNode alphabetically by key.
+   * @param jsonNode the JsonNode to sort
+   * @return the sorted JsonNode
+   */
+  public static JsonNode sortJsonNode(JsonNode jsonNode) {
+    if (jsonNode.isObject()) {
+      ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
+      Map<String, JsonNode> sortedMap = new TreeMap<>();
+
+      Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.fields();
+      while (fields.hasNext()) {
+        Map.Entry<String, JsonNode> field = fields.next();
+        sortedMap.put(field.getKey(), sortJsonNode(field.getValue()));
+      }
+
+      sortedMap.forEach(objectNode::set);
+      return objectNode;
+    } else if (jsonNode.isArray()) {
+      for (int i = 0; i < jsonNode.size(); i++) {
+        ((ArrayNode)jsonNode).set(i, sortJsonNode(jsonNode.get(i)));
+      }
+    }
+    return jsonNode;
   }
 
   private static boolean isAMathematicalInteger(BigDecimal bigDecimal) {

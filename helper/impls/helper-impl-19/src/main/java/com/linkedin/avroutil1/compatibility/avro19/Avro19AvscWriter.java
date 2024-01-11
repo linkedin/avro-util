@@ -125,7 +125,7 @@ public class Avro19AvscWriter extends AvscWriter<Jackson2JsonGeneratorWrapper> {
         JsonGenerator delegate = gen.getDelegate();
         for (Map.Entry<String, Object> entry : props.entrySet()) {
             Object o = entry.getValue();
-            delegate.writeObjectField(entry.getKey(), JacksonUtils.toJsonNode(o));
+            delegate.writeObjectField(entry.getKey(), Jackson2Utils.sortJsonNode(JacksonUtils.toJsonNode(o)));
         }
     }
     @Override

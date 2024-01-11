@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -23,6 +24,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.DoubleNode;
 import org.codehaus.jackson.node.IntNode;
 import org.codehaus.jackson.node.JsonNodeFactory;
@@ -298,6 +300,30 @@ public class Jackson1Utils {
       throw new IllegalArgumentException("dangling content beyond the end of a schema at line: "
           + endOfSchemaLocation.getLineNr() + " column: " + endOfSchemaLocation.getColumnNr() + ": " + dangling);
     }
+  }
+
+  /**
+   * Sorts a JsonNode alphabetically by field name. This is useful for comparing JsonNodes for equality.
+   * @param jsonNode the JsonNode to sort
+   * @return the sorted JsonNode
+   */
+  public static JsonNode sortJsonNode(JsonNode jsonNode) {
+    if (jsonNode.isObject()) {
+      ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
+      Map<String, JsonNode> sortedMap = new TreeMap<>();
+
+      // create map of field names to field values of json node
+      jsonNode.getFieldNames()
+          .forEachRemaining(fieldName -> sortedMap.put(fieldName, sortJsonNode(jsonNode.get(fieldName))));
+
+      sortedMap.forEach(objectNode::put);
+      return objectNode;
+    } else if (jsonNode.isArray()) {
+      for (int i = 0; i < jsonNode.size(); i++) {
+        ((ArrayNode) jsonNode).set(i, sortJsonNode(jsonNode.get(i)));
+      }
+    }
+    return jsonNode;
   }
 
   private static boolean isAMathematicalInteger(BigDecimal bigDecimal) {
