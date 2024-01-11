@@ -250,9 +250,9 @@ public class AvroUtilCodeGenOp implements Operation {
       throw new IllegalStateException("unable to create output folder " + outputFolder);
     }
     final Path outputDirectoryPath = outputFolder.toPath();
+    final SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
 
     int totalGeneratedClasses = allNamedSchemaList.parallelStream().map(allNamedSchemas -> {
-      SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
       HashSet<String> alreadyGeneratedSchemaNames = new HashSet<>();
       List<JavaFile> generatedSpecificClasses = new ArrayList<>(allNamedSchemas.size());
       for (AvroNamedSchema namedSchema : allNamedSchemas) {

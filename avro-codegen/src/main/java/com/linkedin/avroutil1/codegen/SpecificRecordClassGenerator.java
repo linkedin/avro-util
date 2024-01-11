@@ -50,7 +50,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import javax.lang.model.element.Modifier;
@@ -64,7 +63,22 @@ import org.slf4j.LoggerFactory;
 public class SpecificRecordClassGenerator {
   private static final Logger LOGGER = LoggerFactory.getLogger(SpecificRecordClassGenerator.class);
 
-  private int sizeValCounter = -1;
+  private static class Counter {
+
+    private int _counter = -1;
+
+    void increment() {
+      _counter++;
+    }
+
+    int get() {
+      return _counter;
+    }
+
+    void reset() {
+      _counter = -1;
+    }
+  }
 
   /***
    * Generates Java class for top level schema.
@@ -333,6 +347,8 @@ public class SpecificRecordClassGenerator {
   protected JavaFile generateSpecificRecord(AvroRecordSchema recordSchema, SpecificRecordGenerationConfig config)
       throws ClassNotFoundException {
 
+    Counter sizeValCounter = new Counter();
+
     // Default to broad compatibility config if null
     if(config == null) {
       config = SpecificRecordGenerationConfig.BROAD_COMPATIBILITY;
@@ -470,9 +486,6 @@ public class SpecificRecordClassGenerator {
         }
         classBuilder.addField(fieldBuilder.build());
 
-        //if declared schema, use fully qualified class (no import)
-        addFullyQualified(field, config.getDefaultFieldStringRepresentation());
-
         //getters
         classBuilder.addMethod(getGetterMethodSpec(field, config));
 
@@ -507,7 +520,7 @@ public class SpecificRecordClassGenerator {
           .addParameter(SpecificRecordGeneratorUtil.CLASSNAME_ENCODER, "out")
           .addException(IOException.class)
           .addModifiers(Modifier.PUBLIC);
-      addCustomEncodeMethod(customEncodeBuilder, recordSchema, config);
+      addCustomEncodeMethod(customEncodeBuilder, recordSchema, config, sizeValCounter);
       classBuilder.addMethod(customEncodeBuilder.build());
 
       //customDecode
@@ -516,7 +529,7 @@ public class SpecificRecordClassGenerator {
           .addParameter(SpecificRecordGeneratorUtil.CLASSNAME_RESOLVING_DECODER, "in")
           .addException(IOException.class)
           .addModifiers(Modifier.PUBLIC);
-      addCustomDecodeMethod(customDecodeBuilder, recordSchema, config, classBuilder);
+      addCustomDecodeMethod(customDecodeBuilder, recordSchema, config, classBuilder, sizeValCounter);
       classBuilder.addMethod(customDecodeBuilder.build());
     }
 
@@ -531,8 +544,6 @@ public class SpecificRecordClassGenerator {
     } catch (ClassNotFoundException e) {
       throw new ClassNotFoundException("Exception while creating Builder: %s", e);
     }
-
-    addDefaultFullyQualifiedClassesForSpecificRecord(classBuilder, recordSchema);
 
     //create file object
     TypeSpec classSpec = classBuilder.build();
@@ -549,7 +560,6 @@ public class SpecificRecordClassGenerator {
       for (AvroSchemaField field : recordSchema.getFields()) {
         //if declared schema, use fully qualified class (no import)
         String escapedFieldName = getFieldNameWithSuffix(field);
-        addFullyQualified(field, defaultFieldStringRepresentation);
         allArgsConstructorBuilder.addParameter(getParameterSpecForField(field, defaultMethodStringRepresentation, true));
         if(SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.STRING, field.getSchema())) {
           allArgsConstructorBuilder.addStatement(
@@ -955,10 +965,10 @@ public class SpecificRecordClassGenerator {
   }
 
   private void addCustomDecodeMethod(MethodSpec.Builder customDecodeBuilder, AvroRecordSchema recordSchema,
-      SpecificRecordGenerationConfig config, TypeSpec.Builder classBuilder) {
+      SpecificRecordGenerationConfig config, TypeSpec.Builder classBuilder, Counter sizeValCounter) {
     int blockSize = 25, fieldCounter = 0, chunkCounter = 0;
     // reset var counter
-    sizeValCounter = -1;
+    sizeValCounter.reset();
     customDecodeBuilder.addStatement(
             "org.apache.avro.Schema.Field[] fieldOrder = (com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper.areFieldsReordered(getSchema())) ? in.readFieldOrder() : null")
         .beginControlFlow("if (fieldOrder == null)");
@@ -978,14 +988,15 @@ public class SpecificRecordClassGenerator {
         String escapedFieldName = getFieldNameWithSuffix(field);
         customDecodeChunkMethod.addStatement(getSerializedCustomDecodeBlock(config, field.getSchemaOrRef().getSchema(),
             field.getSchemaOrRef().getSchema().type(), "this." + replaceSingleDollarSignWithDouble(escapedFieldName),
-            "this." + replaceSingleDollarSignWithDouble(escapedFieldName), StringUtils.EMPTY_STRING));
+            "this." + replaceSingleDollarSignWithDouble(escapedFieldName), StringUtils.EMPTY_STRING,
+            sizeValCounter));
       }
       chunkCounter++;
       classBuilder.addMethod(customDecodeChunkMethod.build());
     }
 
     // reset var counter
-    sizeValCounter = -1;
+    sizeValCounter.reset();
     int fieldIndex = 0;
     fieldCounter = 0;
     chunkCounter = 0;
@@ -1013,7 +1024,8 @@ public class SpecificRecordClassGenerator {
         customDecodeChunkMethod.addStatement(String.format("case %s: ",fieldIndex++)+ getSerializedCustomDecodeBlock(config,
                 field.getSchemaOrRef().getSchema(), field.getSchemaOrRef().getSchema().type(),
                 "this." + replaceSingleDollarSignWithDouble(escapedFieldName),
-                "this." + replaceSingleDollarSignWithDouble(escapedFieldName), StringUtils.EMPTY_STRING))
+                "this." + replaceSingleDollarSignWithDouble(escapedFieldName), StringUtils.EMPTY_STRING,
+                sizeValCounter))
             .addStatement("break");
       }
       customDecodeChunkMethod
@@ -1032,7 +1044,8 @@ public class SpecificRecordClassGenerator {
 
 
   private String getSerializedCustomDecodeBlock(SpecificRecordGenerationConfig config,
-      AvroSchema fieldSchema, AvroType fieldType, String fieldName, String schemaFieldName, String arrayOption) {
+      AvroSchema fieldSchema, AvroType fieldType, String fieldName, String schemaFieldName, String arrayOption,
+      Counter sizeValCounter) {
     String serializedCodeBlock = "";
     CodeBlock.Builder codeBlockBuilder  = CodeBlock.builder();
     switch (fieldType) {
@@ -1081,12 +1094,12 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = codeBlockBuilder.build().toString();
         break;
       case ARRAY:
-        sizeValCounter++;
+        sizeValCounter.increment();
 
-        String arrayVarName = getArrayVarName();
-        String gArrayVarName = getGArrayVarName();
-        String arraySizeVarName = getSizeVarName();
-        String arrayElementVarName = getElementVarName();
+        String arrayVarName = getArrayVarName(sizeValCounter.get());
+        String gArrayVarName = getGArrayVarName(sizeValCounter.get());
+        String arraySizeVarName = getSizeVarName(sizeValCounter.get());
+        String arrayElementVarName = getElementVarName(sizeValCounter.get());
         AvroSchema arrayItemSchema = ((AvroArraySchema) fieldSchema).getValueSchema();
         Class<?> arrayItemClass =
             SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(arrayItemSchema.type(),
@@ -1118,7 +1131,8 @@ public class SpecificRecordClassGenerator {
 
         codeBlockBuilder.addStatement(
             getSerializedCustomDecodeBlock(config, arrayItemSchema, arrayItemSchema.type(), arrayElementVarName,
-                schemaFieldName,  arrayOption + SpecificRecordGeneratorUtil.ARRAY_GET_ELEMENT_TYPE));
+                schemaFieldName,  arrayOption + SpecificRecordGeneratorUtil.ARRAY_GET_ELEMENT_TYPE,
+                sizeValCounter));
         codeBlockBuilder.addStatement("$L.add($L)", arrayVarName, arrayElementVarName)
             .endControlFlow()
             .endControlFlow()
@@ -1129,11 +1143,11 @@ public class SpecificRecordClassGenerator {
 
         break;
       case MAP:
-        sizeValCounter++;
-        String mapVarName = getMapVarName();
-        String mapKeyVarName = getKeyVarName();
-        String mapSizeVarName = getSizeVarName();
-        String mapValueVarName = getValueVarName();
+        sizeValCounter.increment();
+        String mapVarName = getMapVarName(sizeValCounter.get());
+        String mapKeyVarName = getKeyVarName(sizeValCounter.get());
+        String mapSizeVarName = getSizeVarName(sizeValCounter.get());
+        String mapValueVarName = getValueVarName(sizeValCounter.get());
         AvroType mapItemAvroType = ((AvroMapSchema) fieldSchema).getValueSchema().type();
         Class<?> mapItemClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(mapItemAvroType,
             config.getDefaultFieldStringRepresentation(), true);
@@ -1160,11 +1174,13 @@ public class SpecificRecordClassGenerator {
             .addStatement("$T $L = null", CharSequence.class, mapKeyVarName)
             .addStatement(
                 getSerializedCustomDecodeBlock(config, ((AvroMapSchema) fieldSchema).getValueSchema(), AvroType.STRING,
-                    mapKeyVarName, schemaFieldName, arrayOption + SpecificRecordGeneratorUtil.MAP_GET_VALUE_TYPE))
+                    mapKeyVarName, schemaFieldName, arrayOption + SpecificRecordGeneratorUtil.MAP_GET_VALUE_TYPE,
+                    sizeValCounter))
             .addStatement("$T $L = null", ((mapItemClass != null) ? mapItemClass : mapItemClassName), mapValueVarName)
             .addStatement(getSerializedCustomDecodeBlock(config, ((AvroMapSchema) fieldSchema).getValueSchema(),
                 ((AvroMapSchema) fieldSchema).getValueSchema().type(), mapValueVarName, schemaFieldName,
-                arrayOption + SpecificRecordGeneratorUtil.MAP_GET_VALUE_TYPE));
+                arrayOption + SpecificRecordGeneratorUtil.MAP_GET_VALUE_TYPE,
+                sizeValCounter));
 
         codeBlockBuilder.addStatement("$L.put($L,$L)", mapVarName, mapKeyVarName, mapValueVarName)
             .endControlFlow()
@@ -1185,7 +1201,8 @@ public class SpecificRecordClassGenerator {
             codeBlockBuilder.addStatement("case $L: ", i);
             codeBlockBuilder.addStatement(
                 getSerializedCustomDecodeBlock(config, unionMember.getSchema(), unionMember.getSchema().type(),
-                    fieldName, schemaFieldName, arrayOption + ".getTypes().get(" + i + ")"));
+                    fieldName, schemaFieldName, arrayOption + ".getTypes().get(" + i + ")",
+                    sizeValCounter));
             if (unionMember.getSchema().type().equals(AvroType.NULL)) {
               codeBlockBuilder.addStatement("$L = null", fieldName);
             }
@@ -1222,16 +1239,17 @@ public class SpecificRecordClassGenerator {
   }
 
   private void addCustomEncodeMethod(MethodSpec.Builder customEncodeBuilder, AvroRecordSchema recordSchema,
-      SpecificRecordGenerationConfig config) {
+      SpecificRecordGenerationConfig config, Counter sizeValCounter) {
     for(AvroSchemaField field : recordSchema.getFields()) {
       String escapedFieldName = getFieldNameWithSuffix(field);
       customEncodeBuilder.addStatement(getSerializedCustomEncodeBlock(config, field.getSchemaOrRef().getSchema(),
-          field.getSchemaOrRef().getSchema().type(), "this."+replaceSingleDollarSignWithDouble(escapedFieldName)));
+          field.getSchemaOrRef().getSchema().type(), "this."+replaceSingleDollarSignWithDouble(escapedFieldName),
+          sizeValCounter));
     }
   }
 
   private String getSerializedCustomEncodeBlock(SpecificRecordGenerationConfig config,
-      AvroSchema fieldSchema, AvroType fieldType, String fieldName) {
+      AvroSchema fieldSchema, AvroType fieldType, String fieldName, Counter sizeValCounter) {
     String serializedCodeBlock = "";
     CodeBlock.Builder codeBlockBuilder  = CodeBlock.builder();
     switch (fieldType) {
@@ -1283,31 +1301,25 @@ public class SpecificRecordClassGenerator {
             .toString();
         break;
       case ARRAY:
-        sizeValCounter++;
-        String lengthVarName = getSizeVarName();
-        String actualSizeVarName = getActualSizeVarName();
+        sizeValCounter.increment();
+        String lengthVarName = getSizeVarName(sizeValCounter.get());
+        String actualSizeVarName = getActualSizeVarName(sizeValCounter.get());
         AvroType arrayItemAvroType = ((AvroArraySchema) fieldSchema).getValueSchema().type();
         Class<?> arrayItemClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(arrayItemAvroType,
             config.getDefaultFieldStringRepresentation(), true);
         TypeName arrayItemTypeName =
             SpecificRecordGeneratorUtil.getTypeName(((AvroArraySchema) fieldSchema).getValueSchema(), arrayItemAvroType,
                 true, config.getDefaultFieldStringRepresentation());
-        if(arrayItemClass != null) {
-          SpecificRecordGeneratorUtil.fullyQualifiedClassesInRecord.add(arrayItemClass.getName());
-        } else {
-          SpecificRecordGeneratorUtil.fullyQualifiedClassesInRecord.add(arrayItemTypeName.toString());
-        }
-
         codeBlockBuilder.addStatement("long $L = ((java.util.List)$L).size()", lengthVarName, fieldName)
             .addStatement("out.writeArrayStart()")
             .addStatement("out.setItemCount($L)", lengthVarName)
             .addStatement("long $L = 0", actualSizeVarName)
             .beginControlFlow("for ($1T $2L: (java.util.List<$1T>)$3L)", arrayItemClass != null ? arrayItemClass : arrayItemTypeName,
-                getElementVarName(), fieldName)
+                getElementVarName(sizeValCounter.get()), fieldName)
             .addStatement("$L++", actualSizeVarName)
             .addStatement("out.startItem()")
             .addStatement(getSerializedCustomEncodeBlock(config, ((AvroArraySchema) fieldSchema).getValueSchema(),
-                arrayItemAvroType, getElementVarName()))
+                arrayItemAvroType, getElementVarName(sizeValCounter.get()), sizeValCounter))
             .endControlFlow();
 
         codeBlockBuilder
@@ -1320,11 +1332,11 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = codeBlockBuilder.build().toString();
         break;
       case MAP:
-        sizeValCounter++;
-        lengthVarName = getSizeVarName();
-        actualSizeVarName = getActualSizeVarName();
-        String elementVarName = getElementVarName();
-        String valueVarName = getValueVarName();
+        sizeValCounter.increment();
+        lengthVarName = getSizeVarName(sizeValCounter.get());
+        actualSizeVarName = getActualSizeVarName(sizeValCounter.get());
+        String elementVarName = getElementVarName(sizeValCounter.get());
+        String valueVarName = getValueVarName(sizeValCounter.get());
 
         codeBlockBuilder
             .addStatement("long $L = ((Map)$L).size()", lengthVarName, fieldName)
@@ -1352,7 +1364,7 @@ public class SpecificRecordClassGenerator {
 
         codeBlockBuilder.addStatement(
             getSerializedCustomEncodeBlock(config, ((AvroMapSchema) fieldSchema).getValueSchema(), mapItemAvroType,
-                valueVarName))
+                valueVarName, sizeValCounter))
             .endControlFlow()
             .addStatement("out.writeMapEnd()")
             .beginControlFlow("if ($L != $L)", actualSizeVarName, lengthVarName)
@@ -1392,7 +1404,8 @@ public class SpecificRecordClassGenerator {
             }
             codeBlockBuilder.addStatement("out.writeIndex($L)", i)
                 .addStatement(
-                    getSerializedCustomEncodeBlock(config, unionMemberSchema, unionMemberSchema.type(), fieldName));
+                    getSerializedCustomEncodeBlock(config, unionMemberSchema, unionMemberSchema.type(), fieldName,
+                        sizeValCounter));
           }
           codeBlockBuilder.endControlFlow()
               .beginControlFlow("else")
@@ -1412,39 +1425,35 @@ public class SpecificRecordClassGenerator {
     return SpecificRecordGeneratorUtil.SINGLE_DOLLAR_SIGN_REGEX.matcher(serializedCodeBlock).replaceAll("\\$\\$");
   }
 
-  private String getKeyVarName() {
+  private String getKeyVarName(int sizeValCounter) {
     return "k" + sizeValCounter;
   }
 
-  private String getValueVarName() {
+  private String getValueVarName(int sizeValCounter) {
     return "v" + sizeValCounter;
   }
 
-  private String getElementVarName() {
+  private String getElementVarName(int sizeValCounter) {
     return "e" + sizeValCounter;
   }
 
-  private String getElementVarNameForCounter(int counter) {
-    return "e" + counter;
-  }
-
-  private String getSizeVarName() {
+  private String getSizeVarName(int sizeValCounter) {
     return "size" + sizeValCounter;
   }
 
-  private String getActualSizeVarName() {
+  private String getActualSizeVarName(int sizeValCounter) {
     return "actualSize" + sizeValCounter;
   }
 
-  private String getArrayVarName() {
+  private String getArrayVarName(int sizeValCounter) {
     return "a" + sizeValCounter;
   }
 
-  private String getGArrayVarName() {
+  private String getGArrayVarName(int sizeValCounter) {
     return "ga" + sizeValCounter;
   }
 
-  private String getMapVarName() {
+  private String getMapVarName(int sizeValCounter) {
     return "m" + sizeValCounter;
   }
 
@@ -1644,40 +1653,6 @@ public class SpecificRecordClassGenerator {
         .endControlFlow();
 
     classBuilder.addMethod(methodSpecBuilder.addCode(switchBuilder.build()).build());
-  }
-
-  private void addDefaultFullyQualifiedClassesForSpecificRecord(TypeSpec.Builder classBuilder,
-      AvroRecordSchema recordSchema) {
-
-    Set<String> fieldNamesInRecord =
-        recordSchema.getFields().stream().map(AvroSchemaField::getName).collect(Collectors.toSet());
-
-    for (String classToQualify: SpecificRecordGeneratorUtil.fullyQualifiedClassesInRecord) {
-      String[] splitClassName = classToQualify.split("\\.");
-      if (!fieldNamesInRecord.contains(splitClassName[0])) {
-        classBuilder.alwaysQualify(splitClassName[splitClassName.length-1]);
-      }
-    }
-
-    for (TypeName classNameToQualify: SpecificRecordGeneratorUtil.fullyQualifiedClassNamesInRecord) {
-
-      if(!fieldNamesInRecord.contains(classNameToQualify.toString().split("\\.")[0])){
-        String[] fullyQualifiedNameArray = classNameToQualify.toString().split("\\.");
-        classBuilder.alwaysQualify(fullyQualifiedNameArray[fullyQualifiedNameArray.length-1]);
-      }
-    }
-  }
-
-  private void addFullyQualified(AvroSchemaField field, AvroJavaStringRepresentation defaultStringRep) {
-    if(field.getSchemaOrRef().getSchema() != null) {
-      Class<?> fieldClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(field.getSchemaOrRef().getSchema().type(), defaultStringRep, false);
-      if (fieldClass != null) {
-        SpecificRecordGeneratorUtil.fullyQualifiedClassesInRecord.add(fieldClass.getName());
-      } else {
-        SpecificRecordGeneratorUtil.fullyQualifiedClassNamesInRecord.add(
-            SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(), field.getSchemaOrRef().getSchema().type(), true, defaultStringRep));
-      }
-    }
   }
 
   private MethodSpec getOverloadedSetterSpecIfStringField(AvroSchemaField field,
