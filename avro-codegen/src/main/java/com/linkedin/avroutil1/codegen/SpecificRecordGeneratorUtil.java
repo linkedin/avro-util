@@ -36,6 +36,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.avro.Schema;
@@ -66,34 +68,35 @@ public class SpecificRecordGeneratorUtil {
   public static final ClassName CLASSNAME_FIXED_SIZE = ClassName.get("org.apache.avro.specific", "FixedSize");
   public static final ClassName CLASSNAME_SPECIFIC_FIXED = ClassName.get("org.apache.avro.specific", "SpecificFixed");
 
+  public static final String ARRAY_GET_ELEMENT_TYPE = ".getElementType()";
+  public static final String MAP_GET_VALUE_TYPE = ".getValueType()";
 
-  public static String ARRAY_GET_ELEMENT_TYPE = ".getElementType()";
-  public static String MAP_GET_VALUE_TYPE = ".getValueType()";
-
-  public static HashSet<TypeName> fullyQualifiedClassNamesInRecord = new HashSet<>();
-
-  public static HashSet<String> fullyQualifiedClassesInRecord = new HashSet<>(Arrays.asList(
-      CLASSNAME_DATUM_READER.canonicalName(),
-      CLASSNAME_DATUM_WRITER.canonicalName(),
-      CLASSNAME_ENCODER.canonicalName(),
-      CLASSNAME_RESOLVING_DECODER.canonicalName(),
-      CLASSNAME_SPECIFIC_DATA.canonicalName(),
-      CLASSNAME_SPECIFIC_DATUM_READER.canonicalName(),
-      CLASSNAME_SPECIFIC_DATUM_WRITER.canonicalName(),
-      CLASSNAME_SPECIFIC_RECORD.canonicalName(),
-      CLASSNAME_SPECIFIC_RECORD_BASE.canonicalName(),
-      IOException.class.getName(),
-      Exception.class.getName(),
-      ObjectInput.class.getName(),
-      ObjectOutput.class.getName(),
-      String.class.getName(),
-      Object.class.getName(),
-      ConcurrentModificationException.class.getName(),
-      IllegalArgumentException.class.getName(),
-      IndexOutOfBoundsException.class.getName(),
-      HashMap.class.getName(),
-      CompatibleSpecificRecordBuilderBase.class.getName()
-  ));
+  public static final Set<TypeName> fullyQualifiedClassNamesInRecord = ConcurrentHashMap.newKeySet();
+  public static final Set<String> fullyQualifiedClassesInRecord = ConcurrentHashMap.newKeySet();
+  static {
+    fullyQualifiedClassesInRecord.addAll(
+        Arrays.asList(
+            CLASSNAME_DATUM_READER.canonicalName(),
+            CLASSNAME_DATUM_WRITER.canonicalName(),
+            CLASSNAME_ENCODER.canonicalName(),
+            CLASSNAME_RESOLVING_DECODER.canonicalName(),
+            CLASSNAME_SPECIFIC_DATA.canonicalName(),
+            CLASSNAME_SPECIFIC_DATUM_READER.canonicalName(),
+            CLASSNAME_SPECIFIC_DATUM_WRITER.canonicalName(),
+            CLASSNAME_SPECIFIC_RECORD.canonicalName(),
+            CLASSNAME_SPECIFIC_RECORD_BASE.canonicalName(),
+            IOException.class.getName(),
+            Exception.class.getName(),
+            ObjectInput.class.getName(),
+            ObjectOutput.class.getName(),
+            String.class.getName(),
+            Object.class.getName(),
+            ConcurrentModificationException.class.getName(),
+            IllegalArgumentException.class.getName(),
+            IndexOutOfBoundsException.class.getName(),
+            HashMap.class.getName(),
+            CompatibleSpecificRecordBuilderBase.class.getName()));
+  }
 
   private SpecificRecordGeneratorUtil(){}
 

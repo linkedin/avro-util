@@ -50,6 +50,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import javax.lang.model.element.Modifier;
@@ -1648,17 +1649,17 @@ public class SpecificRecordClassGenerator {
   private void addDefaultFullyQualifiedClassesForSpecificRecord(TypeSpec.Builder classBuilder,
       AvroRecordSchema recordSchema) {
 
-    List<String> fieldNamesInRecord =
-        recordSchema.getFields().stream().map(AvroSchemaField::getName).collect(Collectors.toList());
+    Set<String> fieldNamesInRecord =
+        recordSchema.getFields().stream().map(AvroSchemaField::getName).collect(Collectors.toSet());
 
-    for(String classToQualify: SpecificRecordGeneratorUtil.fullyQualifiedClassesInRecord) {
+    for (String classToQualify: SpecificRecordGeneratorUtil.fullyQualifiedClassesInRecord) {
       String[] splitClassName = classToQualify.split("\\.");
-      if(!fieldNamesInRecord.contains(splitClassName[0])){
+      if (!fieldNamesInRecord.contains(splitClassName[0])) {
         classBuilder.alwaysQualify(splitClassName[splitClassName.length-1]);
       }
     }
 
-    for(TypeName classNameToQualify: SpecificRecordGeneratorUtil.fullyQualifiedClassNamesInRecord) {
+    for (TypeName classNameToQualify: SpecificRecordGeneratorUtil.fullyQualifiedClassNamesInRecord) {
 
       if(!fieldNamesInRecord.contains(classNameToQualify.toString().split("\\.")[0])){
         String[] fullyQualifiedNameArray = classNameToQualify.toString().split("\\.");
