@@ -143,7 +143,7 @@ public class Avro17AvscWriter extends AvscWriter<Jackson1JsonGeneratorWrapper> {
         for (Map.Entry<String, JsonNode> entry : props.entrySet()) {
             String propName = entry.getKey();
             if (propNameFilter == null || propNameFilter.test(propName)) {
-                delegate.writeObjectField(entry.getKey(), entry.getValue());
+                delegate.writeObjectField(entry.getKey(), Jackson1Utils.sortJsonNode(entry.getValue()));
             }
         }
     }
