@@ -6,7 +6,6 @@
 
 package com.linkedin.avroutil1.codegen;
 
-import com.linkedin.avroutil1.compatibility.CompatibleSpecificRecordBuilderBase;
 import com.linkedin.avroutil1.model.AvroArraySchema;
 import com.linkedin.avroutil1.model.AvroEnumSchema;
 import com.linkedin.avroutil1.model.AvroFixedSchema;
@@ -23,19 +22,14 @@ import com.linkedin.avroutil1.model.SchemaOrRef;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.ConcurrentModificationException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.avro.Schema;
@@ -69,31 +63,6 @@ public class SpecificRecordGeneratorUtil {
 
   public static String ARRAY_GET_ELEMENT_TYPE = ".getElementType()";
   public static String MAP_GET_VALUE_TYPE = ".getValueType()";
-
-  public static HashSet<TypeName> fullyQualifiedClassNamesInRecord = new HashSet<>();
-
-  public static HashSet<String> fullyQualifiedClassesInRecord = new HashSet<>(Arrays.asList(
-      CLASSNAME_DATUM_READER.canonicalName(),
-      CLASSNAME_DATUM_WRITER.canonicalName(),
-      CLASSNAME_ENCODER.canonicalName(),
-      CLASSNAME_RESOLVING_DECODER.canonicalName(),
-      CLASSNAME_SPECIFIC_DATA.canonicalName(),
-      CLASSNAME_SPECIFIC_DATUM_READER.canonicalName(),
-      CLASSNAME_SPECIFIC_DATUM_WRITER.canonicalName(),
-      CLASSNAME_SPECIFIC_RECORD.canonicalName(),
-      CLASSNAME_SPECIFIC_RECORD_BASE.canonicalName(),
-      IOException.class.getName(),
-      Exception.class.getName(),
-      ObjectInput.class.getName(),
-      ObjectOutput.class.getName(),
-      String.class.getName(),
-      Object.class.getName(),
-      ConcurrentModificationException.class.getName(),
-      IllegalArgumentException.class.getName(),
-      IndexOutOfBoundsException.class.getName(),
-      HashMap.class.getName(),
-      CompatibleSpecificRecordBuilderBase.class.getName()
-  ));
 
   private SpecificRecordGeneratorUtil(){}
 
@@ -160,7 +129,7 @@ public class SpecificRecordGeneratorUtil {
   }
 
   public static TypeName getTypeName(AvroSchema fieldSchema, AvroType avroType, boolean getParameterizedTypeNames,
-      AvroJavaStringRepresentation defaultStringRepresentation) {
+      AvroJavaStringRepresentation defaultStringRepresentation, Set<String> fullyQualifiedTypesSet) {
     TypeName className = ClassName.OBJECT;
     switch (avroType) {
       case NULL:
@@ -193,7 +162,7 @@ public class SpecificRecordGeneratorUtil {
           if (simpleClass != null) {
             className = ClassName.get(simpleClass);
           } else {
-            className = getTypeName(branchSchema, branchSchemaType, getParameterizedTypeNames, defaultStringRepresentation);
+            className = getTypeName(branchSchema, branchSchemaType, getParameterizedTypeNames, defaultStringRepresentation, fullyQualifiedTypesSet);
           }
         } //otherwise Object
         break;
@@ -203,8 +172,8 @@ public class SpecificRecordGeneratorUtil {
         Class<?> valueClass = getJavaClassForAvroTypeIfApplicable(arraySchema.getValueSchema().type(), defaultStringRepresentation, true);
         if (valueClass == null) {
           TypeName parameterTypeName = getTypeName(arraySchema.getValueSchema(), arraySchema.getValueSchema().type(),
-              true, defaultStringRepresentation);
-          fullyQualifiedClassesInRecord.add(parameterTypeName.toString());
+              true, defaultStringRepresentation, fullyQualifiedTypesSet);
+          fullyQualifiedTypesSet.add(parameterTypeName.toString());
           className = ParameterizedTypeName.get(ClassName.get(List.class), parameterTypeName);
         } else {
           className = ParameterizedTypeName.get(List.class, valueClass);
@@ -217,8 +186,8 @@ public class SpecificRecordGeneratorUtil {
         Class<?> mapKeyClass = getJavaClassForAvroTypeIfApplicable(AvroType.STRING, defaultStringRepresentation, true);
         //complex map is allowed
         if (mapValueClass == null) {
-          TypeName mapValueTypeName = getTypeName(mapSchema.getValueSchema(), mapSchema.getValueSchema().type(), true, defaultStringRepresentation);
-          fullyQualifiedClassesInRecord.add(mapValueTypeName.toString());
+          TypeName mapValueTypeName = getTypeName(mapSchema.getValueSchema(), mapSchema.getValueSchema().type(), true, defaultStringRepresentation, fullyQualifiedTypesSet);
+          fullyQualifiedTypesSet.add(mapValueTypeName.toString());
           className =
               ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(mapKeyClass), mapValueTypeName);
         } else {
