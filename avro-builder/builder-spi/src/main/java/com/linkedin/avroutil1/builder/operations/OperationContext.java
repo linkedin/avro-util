@@ -10,8 +10,8 @@ import com.linkedin.avroutil1.model.AvroSchema;
 import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Set;
-import org.apache.avro.Schema;
 
 
 /**
@@ -19,33 +19,21 @@ import org.apache.avro.Schema;
  */
 public class OperationContext {
   private final HashMap<String, Object> context;
-  private Set<File> avroFiles;
-  private Set<AvroSchema> avroSchemas;
+  private final Set<File> avroFiles;
+  private final Set<AvroSchema> avroSchemas;
+  private final SchemaSet lookupSchemaSet;
 
-  public OperationContext() {
+  public OperationContext(Set<AvroSchema> avroSchemas, Set<File> avroFiles, SchemaSet lookupSchemaSet) {
     this.context = new HashMap<>();
-  }
-
-  public void addParsedSchemas(Set<AvroSchema> avroSchemas, Set<File> avroFiles) {
-    if (this.avroFiles != null || this.avroSchemas != null) {
-      throw new IllegalStateException("Cannot initialize avro files twice");
-    }
-
-    this.avroFiles = Collections.unmodifiableSet(avroFiles);
-    this.avroSchemas = Collections.unmodifiableSet(avroSchemas);
-  }
-
-  public void addVanillaSchemas(Set<Schema> schemas, Set<File> avroFiles) {
-    addParsedSchemas(AvroSchemaUtils.schemasToAvroSchemas(schemas), avroFiles);
+    this.avroSchemas = Collections.unmodifiableSet(Objects.requireNonNull(avroSchemas));
+    this.avroFiles = Collections.unmodifiableSet(Objects.requireNonNull(avroFiles));
+    this.lookupSchemaSet = lookupSchemaSet;
   }
 
   /**
    * Returns an unmodifiable set of all input avro files.
    */
   public Set<File> getAvroFiles() {
-    if (this.avroFiles == null) {
-      throw new IllegalStateException("Avro files haven't been added yet.");
-    }
     return this.avroFiles;
   }
 
@@ -53,11 +41,14 @@ public class OperationContext {
    * Returns an unmodifiable set of all parsed avro schemas.
    */
   public Set<AvroSchema> getAvroSchemas() {
-    if (this.avroSchemas == null) {
-      throw new IllegalStateException("Avro schemas haven't been added yet.");
-    }
-
     return this.avroSchemas;
+  }
+
+  /**
+   * Returns the lookup schema set.
+   */
+  public SchemaSet getLookupSchemaSet() {
+    return this.lookupSchemaSet;
   }
 
   public void setConfigValue(String key, Object value) {

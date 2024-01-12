@@ -17,9 +17,13 @@ import java.util.List;
  */
 public class BuilderPluginContext {
 
-  private List<Operation> operations = new ArrayList<>(1);
-  private OperationContext _operationContext = new OperationContext();
+  private final List<Operation> operations = new ArrayList<>(1);
   private volatile boolean sealed = false;
+  private final OperationContext operationContext;
+
+  public BuilderPluginContext(OperationContext operationContext) {
+    this.operationContext = operationContext;
+  }
 
   public void add(Operation op) {
     if (sealed) {
@@ -39,8 +43,12 @@ public class BuilderPluginContext {
     //"seal" any internal state to prevent plugins from trying to do weird things during execution
     sealed = true;
 
-    for (Operation op : operations) {
-      op.run(_operationContext);
-    }
+    operations.parallelStream().forEach(op -> {
+      try {
+        op.run(operationContext);
+      } catch (Exception e) {
+        throw new IllegalStateException("Exception running operation", e);
+      }
+    });
   }
 }

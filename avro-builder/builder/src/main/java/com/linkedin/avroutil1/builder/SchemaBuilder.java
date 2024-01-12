@@ -6,10 +6,12 @@
 
 package com.linkedin.avroutil1.builder;
 
+import com.linkedin.avroutil1.builder.operations.OperationContext;
 import com.linkedin.avroutil1.builder.operations.codegen.CodeGenerator;
-import com.linkedin.avroutil1.builder.operations.codegen.own.AvroUtilCodeGenOp;
+import com.linkedin.avroutil1.builder.operations.codegen.OperationContextBuilder;
+import com.linkedin.avroutil1.builder.operations.codegen.own.AvroUtilCodeGenPlugin;
 import com.linkedin.avroutil1.builder.operations.codegen.CodeGenOpConfig;
-import com.linkedin.avroutil1.builder.operations.Operation;
+import com.linkedin.avroutil1.builder.operations.codegen.own.AvroUtilOperationContextBuilder;
 import com.linkedin.avroutil1.builder.operations.codegen.vanilla.VanillaProcessedCodeGenOp;
 import com.linkedin.avroutil1.builder.plugins.BuilderPlugin;
 import com.linkedin.avroutil1.builder.plugins.BuilderPluginContext;
@@ -232,8 +234,6 @@ public class SchemaBuilder {
       plugin.parseAndValidateOptions(options);
     }
 
-    BuilderPluginContext context = new BuilderPluginContext();
-
     CodeGenOpConfig opConfig = new CodeGenOpConfig(
         inputs,
         nonImportableSources,
@@ -254,20 +254,22 @@ public class SchemaBuilder {
 
     opConfig.validateParameters();
 
-    Operation op;
+    OperationContextBuilder operationContextBuilder;
     switch (opConfig.getGeneratorType()) {
       case AVRO_UTIL:
-        op = new AvroUtilCodeGenOp(opConfig);
+        operationContextBuilder = new AvroUtilOperationContextBuilder();
+        plugins.add(new AvroUtilCodeGenPlugin(opConfig));
         break;
       case VANILLA:
-        op = new VanillaProcessedCodeGenOp(opConfig);
+        operationContextBuilder = new VanillaProcessedCodeGenOp();
         break;
       default:
         throw new IllegalStateException("unhandled: " + opConfig.getGeneratorType());
     }
-    context.add(op);
+    OperationContext opContext = operationContextBuilder.buildOperationContext(opConfig);
+    BuilderPluginContext context = new BuilderPluginContext(opContext);
 
-    //allow plugins to add operations
+    // Allow other plugins to add operations
     for (BuilderPlugin plugin : plugins) {
       plugin.createOperations(context);
     }
