@@ -1,0 +1,22 @@
+{
+  "type": "record",
+  "name": "SimpleTestRecord",
+  "namespace": "com.linkedin.avro.fastserde.generated.avro",
+  "doc": "Used in tests of fast-serde to verify writing records by DataFileWriter and reading by DataFileReader/DataFileStream",
+  "fields": [
+    {
+      "name": "text",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name": "fiveBytes",
+      "type": {
+        "name": "Fixed5",
+        "type": "fixed",
+        "size": 5
+      },
+      "default": "Fizyk"
+    }
+  ]
+}
