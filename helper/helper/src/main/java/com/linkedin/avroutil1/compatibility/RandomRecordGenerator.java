@@ -360,7 +360,7 @@ public class RandomRecordGenerator {
     //TODO - look for both old and new SchemaConstructable ctrs 1st
     try {
       Constructor<T> noArgCtr = clazz.getDeclaredConstructor(NO_ARGS);
-      return noArgCtr.newInstance(NO_ARGS);
+      return noArgCtr.newInstance();
     } catch (Exception e) {
       throw new IllegalStateException("while trying to instantiate a(n) " + clazz.getName(), e);
     }

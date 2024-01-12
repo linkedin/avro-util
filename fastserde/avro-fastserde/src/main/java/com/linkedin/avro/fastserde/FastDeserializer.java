@@ -2,8 +2,6 @@ package com.linkedin.avro.fastserde;
 
 import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.avro.io.Decoder;
 
 import static com.linkedin.avro.fastserde.customized.DatumReaderCustomization.*;

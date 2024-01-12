@@ -8,14 +8,10 @@ import org.apache.avro.generic.CustomizedSpecificDatumReaderForAvro14;
 import org.apache.avro.generic.CustomizedSpecificDatumWriter;
 import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
 import com.linkedin.avro.fastserde.customized.DatumWriterCustomization;
-import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import java.io.IOException;
 import org.apache.avro.Schema;
-import org.apache.avro.generic.ColdGenericDatumReader;
-import org.apache.avro.generic.ColdSpecificDatumReader;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
-import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.specific.SpecificData;
@@ -50,7 +46,7 @@ public class FastSerdeUtils {
         SpecificData modelData, DatumReaderCustomization customization, boolean failFast, boolean runtimeClassGenerationDone) {
       this.customization = customization == null ? DatumReaderCustomization.DEFAULT_DATUM_READER_CUSTOMIZATION : customization;
       this.customizedDatumReader = Utils.isAvro14() ?
-          new CustomizedSpecificDatumReaderForAvro14(writerSchema, readerSchema, this.customization) :
+          new CustomizedSpecificDatumReaderForAvro14<>(writerSchema, readerSchema, this.customization) :
           new CustomizedSpecificDatumReader<>(writerSchema, readerSchema, modelData, this.customization);
       this.failFast = failFast;
       this.runtimeClassGenerationDone = runtimeClassGenerationDone;
@@ -100,7 +96,7 @@ public class FastSerdeUtils {
         GenericData modelData, DatumReaderCustomization customization, boolean failFast, boolean runtimeClassGenerationDone) {
       this.customization = customization == null ? DatumReaderCustomization.DEFAULT_DATUM_READER_CUSTOMIZATION : customization;
       this.customizedDatumReader = Utils.isAvro14() ?
-          new CustomizedGenericDatumReaderForAvro14(writerSchema, readerSchema, this.customization) :
+          new CustomizedGenericDatumReaderForAvro14<>(writerSchema, readerSchema, this.customization) :
           new CustomizedGenericDatumReader<>(writerSchema, readerSchema, modelData, this.customization);
 
       this.failFast = failFast;
