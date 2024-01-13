@@ -53,6 +53,11 @@ public class FastSerdeUtils {
     }
 
     @Override
+    public void setSchema(Schema writerSchema) {
+      this.customizedDatumReader.setSchema(writerSchema);
+    }
+
+    @Override
     public V deserialize(V reuse, Decoder d, DatumReaderCustomization customization) throws IOException {
       if (failFast) {
         throw new UnsupportedOperationException("Fast specific deserializer could not be generated.");
@@ -101,6 +106,11 @@ public class FastSerdeUtils {
 
       this.failFast = failFast;
       this.runtimeClassGenerationDone = runtimeClassGenerationDone;
+    }
+
+    @Override
+    public void setSchema(Schema writerSchema) {
+      customizedDatumReader.setSchema(writerSchema);
     }
 
     @Override

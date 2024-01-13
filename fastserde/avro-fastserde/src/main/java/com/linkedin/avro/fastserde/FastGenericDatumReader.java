@@ -87,6 +87,8 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
     if (readerSchema == null) {
       readerSchema = writerSchema;
     }
+
+    coldDeserializer.setSchema(schema);
   }
 
   @Override
