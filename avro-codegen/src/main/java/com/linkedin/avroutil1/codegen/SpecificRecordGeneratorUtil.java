@@ -24,6 +24,7 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -206,7 +207,7 @@ public class SpecificRecordGeneratorUtil {
     switch (type) {
       case ENUM:
       case FIXED:
-        return new ArrayList<>();
+        return Collections.emptyList();
       case RECORD:
         return getNestedInternalSchemaListForRecord((AvroRecordSchema) topLevelSchema);
       default:
