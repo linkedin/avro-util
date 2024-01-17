@@ -1,9 +1,15 @@
+/*
+ * Copyright 2024 LinkedIn Corp.
+ * Licensed under the BSD 2-Clause License (the "License").
+ * See License in the project root for license information.
+ */
+
 package com.linkedin.avroutil1.builder.util;
 
 import com.pivovarit.collectors.ParallelCollectors;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -22,7 +28,7 @@ public final class StreamUtil {
    * sane values for parallelism to avoid spawning a crazy number of concurrent threads.
    */
   private static final ExecutorService WORK_EXECUTOR =
-      new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+      new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60, TimeUnit.SECONDS, new SynchronousQueue<>());
 
   private StreamUtil() {
     // Disallow external instantiation.
