@@ -8,14 +8,19 @@ package com.linkedin.avroutil1.builder.plugins;
 
 import com.linkedin.avroutil1.builder.operations.Operation;
 import com.linkedin.avroutil1.builder.operations.OperationContext;
+import com.linkedin.avroutil1.builder.util.StreamUtil;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * context for running a set of {@link  com.linkedin.avroutil1.builder.plugins.BuilderPlugin}s
  */
 public class BuilderPluginContext {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(BuilderPluginContext.class);
 
   private final List<Operation> operations = new ArrayList<>(1);
   private volatile boolean sealed = false;
@@ -43,12 +48,16 @@ public class BuilderPluginContext {
     //"seal" any internal state to prevent plugins from trying to do weird things during execution
     sealed = true;
 
-    operations.parallelStream().forEach(op -> {
+    int operationCount = operations.stream().collect(StreamUtil.toParallelStream(op -> {
       try {
         op.run(operationContext);
       } catch (Exception e) {
         throw new IllegalStateException("Exception running operation", e);
       }
-    });
+
+      return 1;
+    }, 2)).reduce(0, Integer::sum);
+
+    LOGGER.info("Executed {} operations for builder plugins", operationCount);
   }
 }
