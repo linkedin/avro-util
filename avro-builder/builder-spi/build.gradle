@@ -17,6 +17,7 @@ dependencies {
     implementation "org.apache.logging.log4j:log4j-api:2.17.1"
     implementation "commons-io:commons-io:2.11.0"
     implementation "jakarta.json:jakarta.json-api:2.0.1"
+    implementation "com.pivovarit:parallel-collectors:2.5.0"
 
     testImplementation "org.apache.avro:avro:1.9.2"
 }

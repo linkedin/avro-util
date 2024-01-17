@@ -9,6 +9,7 @@ package com.linkedin.avroutil1.builder.operations.codegen.own;
 import com.linkedin.avroutil1.builder.operations.OperationContext;
 import com.linkedin.avroutil1.builder.operations.SchemaSet;
 import com.linkedin.avroutil1.builder.operations.codegen.CodeGenOpConfig;
+import com.linkedin.avroutil1.builder.util.StreamUtil;
 import com.linkedin.avroutil1.builder.plugins.BuilderPlugin;
 import com.linkedin.avroutil1.builder.plugins.BuilderPluginContext;
 import com.linkedin.avroutil1.codegen.SpecificRecordClassGenerator;
@@ -101,14 +102,14 @@ public class AvroUtilCodeGenPlugin implements BuilderPlugin {
             AvroJavaStringRepresentation.fromJson(config.getMethodStringRepresentation().toString()),
             config.getMinAvroVersion(), config.isUtf8EncodingPutByIndexEnabled());
     final SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
-    List<JavaFile> generatedClasses = allNamedSchemas.parallelStream().map(namedSchema -> {
+    List<JavaFile> generatedClasses = allNamedSchemas.stream().collect(StreamUtil.toParallelStream(namedSchema -> {
       try {
         // Top level schema
         return generator.generateSpecificClass(namedSchema, generationConfig);
       } catch (Exception e) {
         throw new RuntimeException("failed to generate class for " + namedSchema.getFullName(), e);
       }
-    }).collect(Collectors.toList());
+    }, 10)).collect(Collectors.toList());
     long genEnd = System.currentTimeMillis();
     LOGGER.info("Generated {} java source files in {} millis", generatedClasses.size(), genEnd - genStart);
 
@@ -129,7 +130,7 @@ public class AvroUtilCodeGenPlugin implements BuilderPlugin {
     long writeStart = System.currentTimeMillis();
 
     // write out the files we generated
-    int filesWritten = javaFiles.parallelStream().map(javaFile -> {
+    int filesWritten = javaFiles.stream().collect(StreamUtil.toParallelStream(javaFile -> {
       try {
         javaFile.writeToPath(outputFolderPath);
       } catch (Exception e) {
@@ -137,7 +138,7 @@ public class AvroUtilCodeGenPlugin implements BuilderPlugin {
       }
 
       return 1;
-    }).reduce(0, Integer::sum);
+    }, 10)).reduce(0, Integer::sum);
 
     long writeEnd = System.currentTimeMillis();
     LOGGER.info("Wrote out {} generated java source files under {} in {} millis", filesWritten, outputFolderPath,
