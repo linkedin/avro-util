@@ -23,6 +23,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -1138,6 +1139,54 @@ public class AvroCompatibilityHelper  extends AvroCompatibilityHelperCommon{
       throw new IllegalArgumentException("config must be provided");
     }
     return ADAPTER.toAvsc(schema, config);
+  }
+
+  /**
+   * Given a schema, writes a (exploded, fully-inlined, self-contained, however you want to call it)
+   * avsc representation of the schema to the given {@link java.io.Writer}.
+   *
+   * This is logically the same as {@link Schema#toString(boolean)} except not full of horrible bugs.
+   * specifically, under all versions of avro, we support:
+   * <ul>
+   *     <li>output free of avro-702, even under avro 1.4</li>
+   *     <li>escaped characters in docs and default values remain properly escaped (avro-886)</li>
+   * </ul>
+   * (unless of course you choose to delegate to vanilla avro, at which point youre at the mercy of
+   * the runtime version thereof)
+   * @param schema a schema to serialize to avsc
+   * @param config configuration for avsc generation. see {@link AvscGenerationConfig} for available knobs
+   * @param writer The writer to write to.
+   */
+  public static void writeAvsc(Schema schema, AvscGenerationConfig config, Writer writer) {
+    assertAvroAvailable();
+    if (config == null) {
+      throw new IllegalArgumentException("config must be provided");
+    }
+    ADAPTER.writeAvsc(schema, config, writer);
+  }
+
+  /**
+   * Given a schema, writes a (exploded, fully-inlined, self-contained, however you want to call it)
+   * avsc representation of the schema to the given {@link java.io.OutputStream}.
+   *
+   * This is logically the same as {@link Schema#toString(boolean)} except not full of horrible bugs.
+   * specifically, under all versions of avro, we support:
+   * <ul>
+   *     <li>output free of avro-702, even under avro 1.4</li>
+   *     <li>escaped characters in docs and default values remain properly escaped (avro-886)</li>
+   * </ul>
+   * (unless of course you choose to delegate to vanilla avro, at which point youre at the mercy of
+   * the runtime version thereof)
+   * @param schema a schema to serialize to avsc
+   * @param config configuration for avsc generation. see {@link AvscGenerationConfig} for available knobs
+   * @param stream The output stream to write to.
+   */
+  public static void writeAvsc(Schema schema, AvscGenerationConfig config, OutputStream stream) {
+    assertAvroAvailable();
+    if (config == null) {
+      throw new IllegalArgumentException("config must be provided");
+    }
+    ADAPTER.writeAvsc(schema, config, stream);
   }
 
   /***

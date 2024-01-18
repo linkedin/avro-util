@@ -11,7 +11,7 @@ import java.io.IOException;
 /**
  * internal abstraction to bridge jackson 1 to 2 JsonGenerator
  */
-public interface JsonGeneratorWrapper<T> {
+public interface JsonGeneratorWrapper<T> extends AutoCloseable {
 
     T getDelegate();
 
@@ -34,4 +34,6 @@ public interface JsonGeneratorWrapper<T> {
     void writeArrayFieldStart(String fieldName) throws IOException;
 
     void flush() throws IOException;
+
+    void close() throws IOException;
 }

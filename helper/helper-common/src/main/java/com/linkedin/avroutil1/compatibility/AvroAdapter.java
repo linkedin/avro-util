@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -196,7 +198,25 @@ public interface AvroAdapter {
    * @param schema a schema to print out as (exploded/fully-defined) avsc
    * @return the given schema as avsc
    */
-  String toAvsc(Schema schema, AvscGenerationConfig config);
+  default String toAvsc(Schema schema, AvscGenerationConfig config) {
+    StringWriter writer = new StringWriter();
+    writeAvsc(schema, config, writer);
+    return writer.toString();
+  }
+
+  /**
+   * "serialize" a {@link Schema} to avsc format and write it to the given writer.
+   * @param schema a schema to print out as (exploded/fully-defined) avsc
+   * @param writer the writer to write the serialized schema to.
+   */
+  void writeAvsc(Schema schema, AvscGenerationConfig config, Writer writer);
+
+  /**
+   * "serialize" a {@link Schema} to avsc format and write it to the given output stream.
+   * @param schema a schema to print out as (exploded/fully-defined) avsc
+   * @param stream the output stream to write the serialized schema to.
+   */
+  void writeAvsc(Schema schema, AvscGenerationConfig config, OutputStream stream);
 
   /***
    * Instantiates and returns com.linkedin.avroutil1.compatibility.AvroWriter for the provided configs, plugin list
