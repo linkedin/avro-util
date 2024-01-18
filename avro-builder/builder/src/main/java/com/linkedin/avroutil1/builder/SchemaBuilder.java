@@ -28,6 +28,8 @@ import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -35,13 +37,20 @@ import joptsimple.OptionSpec;
  */
 public class SchemaBuilder {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(SchemaBuilder.class);
+
   private SchemaBuilder() { }
 
   public static void main(String[] args) throws Exception {
+    long start = System.currentTimeMillis();
+
+    long pluginLoadStart = System.currentTimeMillis();
     List<BuilderPlugin> plugins = loadPlugins(1);
+    long pluginLoadEnd = System.currentTimeMillis();
+    LOGGER.info("Loaded {} plugins in {} millis.", plugins.size(), pluginLoadEnd - pluginLoadStart);
 
+    long optionParseStart = System.currentTimeMillis();
     OptionParser parser = new OptionParser();
-
     OptionSpec<String> inputOpt = parser.accepts("input", "Schema or directory of schemas to compile [REQUIRED]")
         .withRequiredArg().required()
         .describedAs("file");
@@ -253,7 +262,10 @@ public class SchemaBuilder {
     );
 
     opConfig.validateParameters();
+    long optionParseEnd = System.currentTimeMillis();
+    LOGGER.info("Parsed all options in {} millis.", optionParseEnd - optionParseStart);
 
+    long operationContextBuildStart = System.currentTimeMillis();
     OperationContextBuilder operationContextBuilder;
     switch (opConfig.getGeneratorType()) {
       case AVRO_UTIL:
@@ -267,6 +279,9 @@ public class SchemaBuilder {
         throw new IllegalStateException("unhandled: " + opConfig.getGeneratorType());
     }
     OperationContext opContext = operationContextBuilder.buildOperationContext(opConfig);
+    long operationContextBuildEnd = System.currentTimeMillis();
+    LOGGER.info("Built operation context in {} millis.", operationContextBuildStart - operationContextBuildEnd);
+
     BuilderPluginContext context = new BuilderPluginContext(opContext);
 
     // Allow other plugins to add operations
@@ -275,6 +290,9 @@ public class SchemaBuilder {
     }
 
     context.run();
+
+    long end = System.currentTimeMillis();
+    LOGGER.info("Finished running SchemaBuilder in {} millis", end - start);
   }
 
   private static List<BuilderPlugin> loadPlugins(@SuppressWarnings("SameParameterValue") int currentApiVersion) {
