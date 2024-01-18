@@ -234,7 +234,7 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
     String contextNamespaceAfter702;
     boolean shouldEmitNSPre702 = shouldEmitNamespace(schemaName, context.getAvro702ContextNamespace());
     if (shouldEmitNSPre702) {
-      contextNamespaceAfter702 = schema.getNamespace();
+      contextNamespaceAfter702 = getNamespace(schemaName);
     } else {
       contextNamespaceAfter702 = context.getAvro702ContextNamespace();
     }
@@ -243,7 +243,7 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
     String contextNamespaceAfter;
     boolean shouldEmitNSNormally = shouldEmitNamespace(schemaName, context.getCorrectContextNamespace());
     if (shouldEmitNSNormally) {
-      contextNamespaceAfter = schema.getNamespace();
+      contextNamespaceAfter = getNamespace(schemaName);
     } else {
       contextNamespaceAfter = context.getCorrectContextNamespace();
     }
