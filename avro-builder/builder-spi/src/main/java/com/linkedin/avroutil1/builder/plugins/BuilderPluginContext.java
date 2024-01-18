@@ -45,19 +45,27 @@ public class BuilderPluginContext {
       throw new IllegalStateException("run() has already been invoked");
     }
 
-    //"seal" any internal state to prevent plugins from trying to do weird things during execution
+    // "seal" any internal state to prevent plugins from trying to do weird things during execution
     sealed = true;
 
-    int operationCount = operations.stream().collect(StreamUtil.toParallelStream(op -> {
-      try {
-        op.run(operationContext);
-      } catch (Exception e) {
-        throw new IllegalStateException("Exception running operation", e);
-      }
+    if (!operations.isEmpty()) {
+      long operationStart = System.currentTimeMillis();
+      final int parallelism = Math.min(operations.size(), 5);
+      int operationCount = operations.stream().collect(StreamUtil.toParallelStream(op -> {
+        try {
+          op.run(operationContext);
+        } catch (Exception e) {
+          throw new IllegalStateException("Exception running operation", e);
+        }
 
-      return 1;
-    }, 2)).reduce(0, Integer::sum);
+        return 1;
+      }, parallelism)).reduce(0, Integer::sum);
 
-    LOGGER.info("Executed {} operations for builder plugins", operationCount);
+      long operationEnd = System.currentTimeMillis();
+      LOGGER.info("Executed {} operations with parallelism of {} for builder plugins in {} millis", operationCount,
+          parallelism, operationEnd - operationStart);
+    } else {
+      LOGGER.info("No operations specified to run");
+    }
   }
 }
