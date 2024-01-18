@@ -15,7 +15,8 @@ import com.linkedin.avroutil1.compatibility.Jackson2JsonGeneratorWrapper;
 import com.linkedin.avroutil1.compatibility.Jackson2Utils;
 import com.linkedin.avroutil1.normalization.AvscWriterPlugin;
 import java.io.IOException;
-import java.io.StringWriter;
+import java.io.OutputStream;
+import java.io.Writer;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,12 +52,22 @@ public class Avro19AvscWriter extends AvscWriter<Jackson2JsonGeneratorWrapper> {
     }
 
     @Override
-    protected Jackson2JsonGeneratorWrapper createJsonGenerator(StringWriter writer) throws IOException {
+    protected Jackson2JsonGeneratorWrapper createJsonGenerator(Writer writer) throws IOException {
         JsonGenerator gen = FACTORY.createGenerator(writer);
+        return createWrapper(gen);
+    }
+
+    @Override
+    protected Jackson2JsonGeneratorWrapper createJsonGenerator(OutputStream stream) throws IOException {
+        JsonGenerator gen = FACTORY.createGenerator(stream);
+        return createWrapper(gen);
+    }
+
+    private Jackson2JsonGeneratorWrapper createWrapper(JsonGenerator generator) {
         if (pretty) {
-            gen.useDefaultPrettyPrinter();
+            generator.useDefaultPrettyPrinter();
         }
-        return new Jackson2JsonGeneratorWrapper(gen);
+        return new Jackson2JsonGeneratorWrapper(generator);
     }
 
     @Override

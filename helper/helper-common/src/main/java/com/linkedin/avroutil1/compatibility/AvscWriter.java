@@ -11,7 +11,9 @@ import com.linkedin.avroutil1.compatibility.backports.AvroName;
 import com.linkedin.avroutil1.compatibility.backports.AvroNames;
 import com.linkedin.avroutil1.normalization.AvscWriterPlugin;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -137,22 +139,35 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
         this._plugins = plugins == null ? Collections.emptyList() : plugins;
     }
 
-    public String toAvsc(Schema schema) {
-        try {
-            AvroNames names = new AvroNames();
-            StringWriter writer = new StringWriter();
-            G gen = createJsonGenerator(writer);
-            if(isLegacy) {
-                toJsonLegacy(schema, names, "", "", gen);
-            } else {
-                toJson(schema, names, "", "", gen);
-            }
-
-            gen.flush();
-            return writer.toString();
+    public void writeAvsc(Schema schema, OutputStream outputStream) {
+        try (G generator = createJsonGenerator(outputStream)) {
+            writeAvsc(schema, generator);
         } catch (IOException e) {
             throw new AvroRuntimeException(e);
         }
+    }
+
+    public void writeAvsc(Schema schema, Writer writer) {
+        try (G generator = createJsonGenerator(writer)) {
+            writeAvsc(schema, generator);
+        } catch (IOException e) {
+            throw new AvroRuntimeException(e);
+        }
+    }
+
+    private void writeAvsc(Schema schema, G generator) throws IOException {
+        AvroNames names = new AvroNames();
+        if (isLegacy) {
+            toJsonLegacy(schema, names, "", "", generator);
+        } else {
+            toJson(schema, names, "", "", generator);
+        }
+    }
+
+    public String toAvsc(Schema schema) {
+        StringWriter writer = new StringWriter();
+        writeAvsc(schema, writer);
+        return writer.toString();
     }
 
     protected void toJsonLegacy(
@@ -728,7 +743,9 @@ public abstract class AvscWriter<G extends JsonGeneratorWrapper<?>> {
 
     //json generator methods (will vary by jackson version across different avro versions)
 
-    protected abstract G createJsonGenerator(StringWriter writer) throws IOException;
+    protected abstract G createJsonGenerator(Writer writer) throws IOException;
+
+    protected abstract G createJsonGenerator(OutputStream outputStream) throws IOException;
 
     //properties are very broken across avro versions
 

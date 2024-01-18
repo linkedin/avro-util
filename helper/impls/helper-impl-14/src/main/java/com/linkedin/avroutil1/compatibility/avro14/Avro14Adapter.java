@@ -35,6 +35,8 @@ import com.linkedin.avroutil1.compatibility.avro14.codec.CompatibleJsonEncoder;
 import com.linkedin.avroutil1.compatibility.backports.ObjectInputToInputStreamAdapter;
 import com.linkedin.avroutil1.compatibility.backports.ObjectOutputToOutputStreamAdapter;
 import com.linkedin.avroutil1.normalization.AvscWriterPlugin;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Objects;
 import org.apache.avro.Avro14SchemaAccessUtil;
@@ -466,7 +468,7 @@ public class Avro14Adapter implements AvroAdapter {
   }
 
   @Override
-  public String toAvsc(Schema schema, AvscGenerationConfig config) {
+  public void writeAvsc(Schema schema, AvscGenerationConfig config, Writer writer) {
     boolean useRuntime;
     if (!isRuntimeAvroCapableOf(config)) {
       if (config.isForceUseOfRuntimeAvro()) {
@@ -480,13 +482,46 @@ public class Avro14Adapter implements AvroAdapter {
     }
 
     if (useRuntime) {
-      return schema.toString(config.isPrettyPrint());
+      try {
+        writer.write(schema.toString(config.isPrettyPrint()));
+      } catch (IOException e) {
+        throw new AvroRuntimeException(e);
+      }
     } else {
       //if the user does not specify do whatever runtime avro would (which for 1.4 means produce bad schema)
       boolean usePre702Logic = config.getRetainPreAvro702Logic().orElse(Boolean.TRUE);
-      Avro14AvscWriter writer =
+      Avro14AvscWriter avscWriter =
           new Avro14AvscWriter(config.isPrettyPrint(), usePre702Logic, config.isAddAvro702Aliases());
-      return writer.toAvsc(schema);
+      avscWriter.writeAvsc(schema, writer);
+    }
+  }
+
+  @Override
+  public void writeAvsc(Schema schema, AvscGenerationConfig config, OutputStream stream) {
+    boolean useRuntime;
+    if (!isRuntimeAvroCapableOf(config)) {
+      if (config.isForceUseOfRuntimeAvro()) {
+        throw new UnsupportedOperationException(
+            "desired configuration " + config + " is forced yet runtime avro " + supportedMajorVersion()
+                + " is not capable of it");
+      }
+      useRuntime = false;
+    } else {
+      useRuntime = config.isPreferUseOfRuntimeAvro();
+    }
+
+    if (useRuntime) {
+      try {
+        stream.write(schema.toString(config.isPrettyPrint()).getBytes(StandardCharsets.UTF_8));
+      } catch (IOException e) {
+        throw new AvroRuntimeException(e);
+      }
+    } else {
+      //if the user does not specify do whatever runtime avro would (which for 1.4 means produce bad schema)
+      boolean usePre702Logic = config.getRetainPreAvro702Logic().orElse(Boolean.TRUE);
+      Avro14AvscWriter avscWriter =
+          new Avro14AvscWriter(config.isPrettyPrint(), usePre702Logic, config.isAddAvro702Aliases());
+      avscWriter.writeAvsc(schema, stream);
     }
   }
 

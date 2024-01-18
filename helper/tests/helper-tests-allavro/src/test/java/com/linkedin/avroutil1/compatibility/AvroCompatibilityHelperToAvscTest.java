@@ -7,11 +7,15 @@
 package com.linkedin.avroutil1.compatibility;
 
 import com.linkedin.avroutil1.testcommon.TestUtil;
+import java.io.ByteArrayOutputStream;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.generic.IndexedRecord;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 
@@ -20,21 +24,31 @@ import org.testng.annotations.Test;
  */
 public class AvroCompatibilityHelperToAvscTest {
 
-  @Test
-  public void testBadSchemaGeneration() throws Exception {
-    //show we can generate the same (bad) schemas that avro 1.4 would under any avro
-    testBadSchemaGeneration("avro702/Avro702DemoEnum-good.avsc", "avro702/Avro702DemoEnum-bad.avsc");
-    testBadSchemaGeneration("avro702/Avro702DemoFixed-good.avsc", "avro702/Avro702DemoFixed-bad.avsc");
-    testBadSchemaGeneration("avro702/Avro702DemoRecord-good.avsc", "avro702/Avro702DemoRecord-bad.avsc");
+  public enum SerializationMode {
+    TO_AVSC, WRITE_AVSC_WRITER, WRITE_AVSC_STREAM
   }
 
-  @Test
-  public void testMonsantoSchema() throws Exception {
+  @DataProvider(name = "serializationMode")
+  public Object[][] serializationMode() {
+    return new Object[][]{{SerializationMode.TO_AVSC}, {SerializationMode.WRITE_AVSC_STREAM},
+        {SerializationMode.WRITE_AVSC_WRITER}};
+  }
+
+  @Test(dataProvider = "serializationMode")
+  public void testBadSchemaGeneration(SerializationMode mode) throws Exception {
+    //show we can generate the same (bad) schemas that avro 1.4 would under any avro
+    testBadSchemaGeneration("avro702/Avro702DemoEnum-good.avsc", "avro702/Avro702DemoEnum-bad.avsc", mode);
+    testBadSchemaGeneration("avro702/Avro702DemoFixed-good.avsc", "avro702/Avro702DemoFixed-bad.avsc", mode);
+    testBadSchemaGeneration("avro702/Avro702DemoRecord-good.avsc", "avro702/Avro702DemoRecord-bad.avsc", mode);
+  }
+
+  @Test(dataProvider = "serializationMode")
+  public void testMonsantoSchema(SerializationMode mode) throws Exception {
     String avsc = TestUtil.load("MonsantoRecord.avsc");
-    testSchemaRoundtrip(avsc);
+    testSchemaRoundtrip(avsc, mode);
 
     Schema schema = Schema.parse(avsc);
-    String badAvsc = AvroCompatibilityHelper.toAvsc(schema, AvscGenerationConfig.LEGACY_PRETTY);
+    String badAvsc = serialize(schema, AvscGenerationConfig.LEGACY_PRETTY, mode);
     Schema evilClone = Schema.parse(badAvsc);
 
     //show avro-702
@@ -44,29 +58,32 @@ public class AvroCompatibilityHelperToAvscTest {
     Assert.assertEquals(evilInnerRecordSchema.getNamespace(), "com.acme.middle");
   }
 
-  @Test
-  public void testOtherSchemas() throws Exception {
-    testSchemaRoundtrip(TestUtil.load("PerfectlyNormalEnum.avsc"));
-    testSchemaRoundtrip(TestUtil.load("PerfectlyNormalFixed.avsc"));
-    testSchemaRoundtrip(TestUtil.load("PerfectlyNormalRecord.avsc"));
-    testSchemaRoundtrip(TestUtil.load("RecordWithDefaults.avsc"));
-    testSchemaRoundtrip(TestUtil.load("RecordWithFieldProps.avsc"));
-    testSchemaRoundtrip(TestUtil.load("RecordWithLogicalTypes.avsc"));
+  @Test(dataProvider = "serializationMode")
+  public void testOtherSchemas(SerializationMode mode) throws Exception {
+    testSchemaRoundtrip(TestUtil.load("PerfectlyNormalEnum.avsc"), mode);
+    testSchemaRoundtrip(TestUtil.load("PerfectlyNormalFixed.avsc"), mode);
+    testSchemaRoundtrip(TestUtil.load("PerfectlyNormalRecord.avsc"), mode);
+    testSchemaRoundtrip(TestUtil.load("RecordWithDefaults.avsc"), mode);
+    testSchemaRoundtrip(TestUtil.load("RecordWithFieldProps.avsc"), mode);
+    testSchemaRoundtrip(TestUtil.load("RecordWithLogicalTypes.avsc"), mode);
   }
 
-  @Test
-  public void testAliasInjectionOnBadSchemas() throws Exception {
+  @Test(dataProvider = "serializationMode")
+  public void testAliasInjectionOnBadSchemas(SerializationMode mode) throws Exception {
     AvroVersion runtimeVersion = AvroCompatibilityHelperCommon.getRuntimeAvroVersion();
     boolean newerThan14 = runtimeVersion.laterThan(AvroVersion.AVRO_1_4);
     //1.11.1 started disrespecting aliases ?!
     boolean is1111 = runtimeVersion.equals(AvroVersion.AVRO_1_11);
-    testAliasInjection("avro702/Avro702DemoEnum-good.avsc", "avro702/Avro702DemoEnum-bad.avsc", !newerThan14 || is1111);
-    testAliasInjection("avro702/Avro702DemoFixed-good.avsc", "avro702/Avro702DemoFixed-bad.avsc", !newerThan14 | is1111);
+    testAliasInjection("avro702/Avro702DemoEnum-good.avsc", "avro702/Avro702DemoEnum-bad.avsc", !newerThan14 || is1111,
+        mode);
+    testAliasInjection("avro702/Avro702DemoFixed-good.avsc", "avro702/Avro702DemoFixed-bad.avsc", !newerThan14 | is1111,
+        mode);
     //even modern avro "tolerates" renaming records ...
-    testAliasInjection("avro702/Avro702DemoRecord-good.avsc", "avro702/Avro702DemoRecord-bad.avsc", true);
+    testAliasInjection("avro702/Avro702DemoRecord-good.avsc", "avro702/Avro702DemoRecord-bad.avsc", true, mode);
   }
 
-  private void testAliasInjection(String originalAvscPath, String badAvscPath, boolean vanillaExpectedToWork) throws Exception {
+  private void testAliasInjection(String originalAvscPath, String badAvscPath, boolean vanillaExpectedToWork,
+      SerializationMode mode) throws Exception {
     String originalAvsc = TestUtil.load(originalAvscPath);
     Schema originalSchema = Schema.parse(originalAvsc);
     String badAvsc = TestUtil.load(badAvscPath);
@@ -76,16 +93,18 @@ public class AvroCompatibilityHelperToAvscTest {
     //demonstrate that bad and original schemas cannot interop by default (except where expected to work)
     RandomRecordGenerator gen = new RandomRecordGenerator();
     //write with good schema, read with bad
-    GenericRecord goodRecord = (GenericRecord) gen.randomGeneric(originalSchema, RecordGenerationConfig.newConfig().withSeed(seed));
+    GenericRecord goodRecord =
+        (GenericRecord) gen.randomGeneric(originalSchema, RecordGenerationConfig.newConfig().withSeed(seed));
     testBinaryEncodingCycle(goodRecord, badSchema, vanillaExpectedToWork);
     //write with bad schema, read with good
-    GenericRecord badRecord = (GenericRecord) gen.randomGeneric(badSchema, RecordGenerationConfig.newConfig().withSeed(seed));
+    GenericRecord badRecord =
+        (GenericRecord) gen.randomGeneric(badSchema, RecordGenerationConfig.newConfig().withSeed(seed));
     testBinaryEncodingCycle(badRecord, originalSchema, vanillaExpectedToWork);
 
     //now generate both good and bad schemas with avro-702-mitigation aliases
-    String badAvscWithAliases = AvroCompatibilityHelper.toAvsc(originalSchema, AvscGenerationConfig.LEGACY_MITIGATED_PRETTY);
+    String badAvscWithAliases = serialize(originalSchema, AvscGenerationConfig.LEGACY_MITIGATED_PRETTY, mode);
     Schema badSchemaWithAliases = Schema.parse(badAvscWithAliases);
-    String goodAvscWithAliases = AvroCompatibilityHelper.toAvsc(originalSchema, AvscGenerationConfig.CORRECT_MITIGATED_PRETTY);
+    String goodAvscWithAliases = serialize(originalSchema, AvscGenerationConfig.CORRECT_MITIGATED_PRETTY, mode);
     Schema goodSchemaWithAliases = Schema.parse(goodAvscWithAliases);
     //and show they can be used to inter-op with their counterparts
     testBinaryEncodingCycle(goodRecord, badSchemaWithAliases, true);
@@ -99,13 +118,14 @@ public class AvroCompatibilityHelperToAvscTest {
    * @param expectedBadAvscPath
    * @throws Exception
    */
-  private void testBadSchemaGeneration(String originalAvscPath, String expectedBadAvscPath) throws Exception {
+  private void testBadSchemaGeneration(String originalAvscPath, String expectedBadAvscPath, SerializationMode mode)
+      throws Exception {
     String originalAvsc = TestUtil.load(originalAvscPath);
     String expectedBadAvsc = TestUtil.load(expectedBadAvscPath);
     Schema originalSchema = Schema.parse(originalAvsc);
     Schema expectedBadSchema = Schema.parse(expectedBadAvsc);
 
-    String generatedAvsc = AvroCompatibilityHelper.toAvsc(originalSchema, AvscGenerationConfig.LEGACY_PRETTY);
+    String generatedAvsc = serialize(originalSchema, AvscGenerationConfig.LEGACY_PRETTY, mode);
     Schema parsedSchema = Schema.parse(generatedAvsc);
     Assert.assertEquals(parsedSchema, expectedBadSchema);
     Assert.assertNotEquals(parsedSchema, originalSchema);
@@ -117,10 +137,10 @@ public class AvroCompatibilityHelperToAvscTest {
    * @param avsc avsc to run through a parse --> toAvsc --> parse cycle
    * @throws Exception if anything goes wrong
    */
-  private void testSchemaRoundtrip(String avsc) throws Exception {
+  private void testSchemaRoundtrip(String avsc, SerializationMode mode) throws Exception {
     Schema schema = Schema.parse(avsc);
-    String oneLine = AvroCompatibilityHelper.toAvsc(schema, AvscGenerationConfig.CORRECT_ONELINE);
-    String pretty = AvroCompatibilityHelper.toAvsc(schema, AvscGenerationConfig.CORRECT_PRETTY);
+    String oneLine = serialize(schema, AvscGenerationConfig.CORRECT_ONELINE, mode);
+    String pretty = serialize(schema, AvscGenerationConfig.CORRECT_PRETTY, mode);
 
     Schema copy = Schema.parse(oneLine);
     Assert.assertEquals(copy, schema);
@@ -136,7 +156,8 @@ public class AvroCompatibilityHelperToAvscTest {
    * @param expectedToWork true if expected to work
    * @throws Exception if anything goes wrong
    */
-  private void testBinaryEncodingCycle(IndexedRecord record, Schema readerSchema, boolean expectedToWork) throws Exception {
+  private void testBinaryEncodingCycle(IndexedRecord record, Schema readerSchema, boolean expectedToWork)
+      throws Exception {
     byte[] serialized = AvroCodecUtil.serializeBinary(record);
     try {
       AvroCodecUtil.deserializeAsGeneric(serialized, record.getSchema(), readerSchema);
@@ -144,6 +165,21 @@ public class AvroCompatibilityHelperToAvscTest {
       Assert.assertTrue(expectedToWork, "was expected to throw");
     } catch (AvroTypeException issue) {
       Assert.assertFalse(expectedToWork, "was expected to succeed");
+    }
+  }
+
+  private String serialize(Schema schema, AvscGenerationConfig config, SerializationMode mode) {
+    switch (mode) {
+      case WRITE_AVSC_STREAM:
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        AvroCompatibilityHelper.writeAvsc(schema, config, outputStream);
+        return new String(outputStream.toByteArray(), StandardCharsets.UTF_8);
+      case WRITE_AVSC_WRITER:
+        StringWriter writer = new StringWriter();
+        AvroCompatibilityHelper.writeAvsc(schema, config, writer);
+        return writer.toString();
+      default:
+        return AvroCompatibilityHelper.toAvsc(schema, config);
     }
   }
 }

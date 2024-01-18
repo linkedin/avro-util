@@ -38,7 +38,9 @@ import com.linkedin.avroutil1.model.JsonPropertiesContainer;
 import com.linkedin.avroutil1.model.SchemaOrRef;
 import com.linkedin.avroutil1.parser.avsc.AvscUnparsedLiteral;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -85,20 +87,34 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
     return Paths.get(parts[0], pathParts);
   }
 
-  public String generateAvsc(AvroSchema schema, AvscWriterConfig config) {
-    AvscWriterContext context = new AvscWriterContext();
-
-    StringWriter stringWriter = new StringWriter();
-    try (JsonGenerator generator = JSON_FACTORY.createGenerator(stringWriter)) {
-      if (config.isPretty()) {
-        generator.useDefaultPrettyPrinter();
-      }
-      writeSchema(schema, context, config, generator);
+  public void writeAvsc(AvroSchema schema, AvscWriterConfig config, OutputStream stream) {
+    try (JsonGenerator generator = JSON_FACTORY.createGenerator(stream)) {
+      writeAvsc(schema, config, generator);
     } catch (IOException e) {
       throw new IllegalStateException("Error serializing avro schema to avsc", e);
     }
+  }
 
+  public void writeAvsc(AvroSchema schema, AvscWriterConfig config, Writer writer) {
+    try (JsonGenerator generator = JSON_FACTORY.createGenerator(writer)) {
+      writeAvsc(schema, config, generator);
+    } catch (IOException e) {
+      throw new IllegalStateException("Error serializing avro schema to avsc", e);
+    }
+  }
+
+  public String generateAvsc(AvroSchema schema, AvscWriterConfig config) {
+    StringWriter stringWriter = new StringWriter();
+    writeAvsc(schema, config, stringWriter);
     return stringWriter.toString();
+  }
+
+  private void writeAvsc(AvroSchema schema, AvscWriterConfig config, JsonGenerator generator) throws IOException {
+    AvscWriterContext context = new AvscWriterContext();
+    if (config.isPretty()) {
+      generator.useDefaultPrettyPrinter();
+    }
+    writeSchema(schema, context, config, generator);
   }
 
   protected void writeSchema(AvroSchema schema, AvscWriterContext context, AvscWriterConfig config,
