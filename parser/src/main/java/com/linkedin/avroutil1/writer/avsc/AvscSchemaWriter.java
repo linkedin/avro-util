@@ -68,9 +68,10 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
     AvroName name = namedSchema.getName();
 
     if (!name.hasNamespace()) {
-      return Paths.get(name.getSimpleName() + "." + AvscFile.SUFFIX);
+      return Paths.get(getSimpleName(name) + "." + AvscFile.SUFFIX);
     }
-    String fullname = name.getFullname();
+
+    String fullname = getFullName(name, false);
     String[] parts = fullname.split("\\.");
     String[] pathParts = new String[parts.length - 1];
     for (int i = 1; i < parts.length; i++) {
@@ -162,8 +163,9 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
     generator.writeStartObject();
     AvroName extraAlias = emitSchemaName(schema, context, config, generator);
     emitSchemaAliases(schema, context, config, extraAlias, generator);
-    if (schema.getDoc() != null) {
-      generator.writeStringField("doc", schema.getDoc());
+    String schemaDoc = getSchemaDoc(schema);
+    if (schemaDoc != null) {
+      generator.writeStringField("doc", schemaDoc);
     }
 
     AvroType type = schema.type();
@@ -211,7 +213,7 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
 
     // Emit fullname always if configured to do so.
     if (config.isAlwaysEmitNamespace()) {
-      generator.writeString(schema.getFullName());
+      generator.writeString(getFullName(schema.getName(), false));
     }
 
     // Figure out what the context namespace is
@@ -247,8 +249,8 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
     }
 
     //how will Schema.parse() read the output of ancient and modern avro?
-    AvroName fullnameWhenParsedUnder702 = new AvroName(schemaName.getSimpleName(), contextNamespaceAfter702);
-    AvroName fullnameWhenParsed = new AvroName(schemaName.getSimpleName(), contextNamespaceAfter);
+    AvroName fullnameWhenParsedUnder702 = new AvroName(getSimpleName(schemaName), contextNamespaceAfter702);
+    AvroName fullnameWhenParsed = new AvroName(getSimpleName(schemaName), contextNamespaceAfter);
 
     AvroName extraAlias = null;
     if (!fullnameWhenParsed.equals(fullnameWhenParsedUnder702)) {
@@ -260,25 +262,46 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
     }
 
     if (config.isAlwaysEmitNamespace()) {
-      if (config.isEmitNamespacesSeparately() || schemaName.getNamespace().isEmpty()) {
+      String namespace = getNamespace(schemaName);
+      if (config.isEmitNamespacesSeparately() || namespace.isEmpty()) {
         //there's no way to build a fullname for something in the empty namespace
         //so for those we always need to emit an empty namespace prop.
-        generator.writeStringField("namespace", schemaName.getNamespace());
-        generator.writeStringField("name", schemaName.getSimpleName());
+        generator.writeStringField("namespace", namespace);
+        generator.writeStringField("name", getSimpleName(schemaName));
       } else {
-        generator.writeStringField("name", schemaName.getFullname());
+        generator.writeStringField("name", getFullName(schemaName, false));
       }
     } else {
       boolean emitNS = config.isUsePreAvro702Logic() ? shouldEmitNSPre702 : shouldEmitNSNormally;
       if (emitNS) {
-        generator.writeStringField("namespace", schemaName.getNamespace());
+        generator.writeStringField("namespace", getNamespace(schemaName));
       }
-      generator.writeStringField("name", schemaName.getSimpleName());
+      generator.writeStringField("name", getSimpleName(schemaName));
     }
 
     context.pushNamingContext(schema, contextNamespaceAfter, contextNamespaceAfter702);
 
     return extraAlias;
+  }
+
+  protected String getNamespace(AvroName schemaName) {
+    return schemaName.getNamespace();
+  }
+
+  protected String getSimpleName(AvroName schemaName) {
+    return schemaName.getSimpleName();
+  }
+
+  protected String getFullName(AvroName schemaName, boolean isAlias) {
+    return schemaName.getFullname();
+  }
+
+  protected String getSchemaDoc(AvroNamedSchema schema) {
+    return schema.getDoc();
+  }
+
+  protected String getSchemaFieldDoc(AvroSchemaField field) {
+    return field.getDoc();
   }
 
   protected void emitSchemaAliases(AvroNamedSchema schema, AvscWriterContext context, AvscWriterConfig config,
@@ -291,13 +314,15 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
 
     generator.writeFieldName("aliases");
     generator.writeStartArray();
+
     if (aliases != null) {
       for (AvroName alias : aliases) {
-        generator.writeString(alias.getFullname());
+        generator.writeString(getFullName(alias, true));
       }
     }
+
     if (extraAlias != null) {
-      generator.writeString(extraAlias.getFullname());
+      generator.writeString(getFullName(extraAlias, true));
     }
     generator.writeEndArray();
   }
@@ -326,8 +351,9 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
       generator.writeStringField("name", field.getName());
 
       // Field doc.
-      if (field.hasDoc()) {
-        generator.writeStringField("doc", field.getDoc());
+      String fieldDoc = getSchemaFieldDoc(field);
+      if (fieldDoc != null) {
+        generator.writeStringField("doc", fieldDoc);
       }
 
       // Field type.
@@ -363,7 +389,6 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
   protected void writeDefaultValue(AvroSchema schemaForLiteral, AvroLiteral literal, AvroSchemaField field,
       JsonGenerator generator) throws IOException {
     AvroType type = schemaForLiteral.type();
-    String temp;
     AvroSchema valueSchema;
 
     // if literal is of type AvscUnparsedLiteral, throw an exception
@@ -478,10 +503,11 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
    * @return true if vanilla avro would emit a "namespace" json property
    */
   private boolean shouldEmitNamespace(AvroName name, String contextNamespace) {
+    String namespace = getNamespace(name);
     if (contextNamespace == null) {
-      return name.getNamespace() != null && !name.getNamespace().isEmpty();
+      return namespace != null && !namespace.isEmpty();
     }
     //name.namespace could be "" and sometimes need to be emitted explicitly still
-    return !contextNamespace.equals(name.getNamespace());
+    return !contextNamespace.equals(namespace);
   }
 }
