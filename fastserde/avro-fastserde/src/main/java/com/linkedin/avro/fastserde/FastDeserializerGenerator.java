@@ -239,10 +239,12 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
       // as effectiveRecordReaderSchema and recordAction needs to be adjusted.
       if (Schema.Type.UNION.equals(recordReaderSchema.getType())) {
         effectiveRecordReaderSchema = schemaAssistant.compatibleUnionSchema(recordWriterSchema, recordReaderSchema);
-        recordSchemaVar = declareSchemaVar(effectiveRecordReaderSchema, recordName + "RecordSchema",
-                recordSchemaVar.invoke("getTypes").invoke("get").arg(JExpr.lit(
-                        schemaAssistant.compatibleUnionSchemaIndex(recordWriterSchema, recordReaderSchema)
-                )));
+        if (recordSchemaVar != null) {
+          recordSchemaVar = declareSchemaVar(effectiveRecordReaderSchema, recordName + "RecordSchema",
+                  recordSchemaVar.invoke("getTypes").invoke("get").arg(JExpr.lit(
+                          schemaAssistant.compatibleUnionSchemaIndex(recordWriterSchema, recordReaderSchema)
+                  )));
+        }
 
         Symbol symbol = null;
         ListIterator<Symbol> symbolIterator = recordAction.getSymbolIterator() != null ? recordAction.getSymbolIterator()
@@ -726,15 +728,16 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
 
     Schema effectiveArrayReaderSchema = arrayReaderSchema;
     if (action.getShouldRead()) {
-
       // if reader schema is a union then the compatible union array type must be selected
       // as effectiveArrayReaderSchema and action needs to be adjusted.
       if (Schema.Type.UNION.equals(arrayReaderSchema.getType())) {
         effectiveArrayReaderSchema = schemaAssistant.compatibleUnionSchema(arraySchema, arrayReaderSchema);
-        arraySchemaVar = declareSchemaVar(effectiveArrayReaderSchema, name + "ArraySchema",
-                arraySchemaVar.invoke("getTypes").invoke("get").arg(JExpr.lit(
-                        schemaAssistant.compatibleUnionSchemaIndex(arraySchema, arrayReaderSchema)
-                )));
+        if (arraySchemaVar != null) {
+          arraySchemaVar = declareSchemaVar(effectiveArrayReaderSchema, name + "ArraySchema",
+                  arraySchemaVar.invoke("getTypes").invoke("get").arg(JExpr.lit(
+                          schemaAssistant.compatibleUnionSchemaIndex(arraySchema, arrayReaderSchema)
+                  )));
+        }
 
         Symbol symbol = action.getSymbol();
         if (!(symbol instanceof Symbol.UnionAdjustAction)) {
@@ -914,7 +917,7 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
      * Determine the action symbol for Map value. {@link ResolvingGrammarGenerator} generates
      * resolving grammar symbols with reversed order of production sequence. If this symbol is
      * a terminal, its production list will be <code>null</code>. Otherwise the production list
-     * holds the the sequence of the symbols that forms this symbol.
+     * holds the sequence of the symbols that forms this symbol.
      *
      * The {@link FastDeserializerGenerator.generateDeserializer} tries to proceed as a depth-first,
      * left-to-right traversal of the schema. So for a nested Map, we need to iterate production list
@@ -926,13 +929,15 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
       // as effectiveMapReaderSchema and action needs to be adjusted.
       if (Schema.Type.UNION.equals(mapReaderSchema.getType())) {
         effectiveMapReaderSchema = schemaAssistant.compatibleUnionSchema(mapSchema, mapReaderSchema);
-        mapSchemaVar = declareSchemaVar(effectiveMapReaderSchema, name + "MapSchema",
-                mapSchemaVar.invoke("getTypes").invoke("get").arg(JExpr.lit(
-                        schemaAssistant.compatibleUnionSchemaIndex(mapSchema, mapReaderSchema)
-                )));
+        if (mapSchemaVar != null) {
+          mapSchemaVar = declareSchemaVar(effectiveMapReaderSchema, name + "MapSchema",
+                  mapSchemaVar.invoke("getTypes").invoke("get").arg(JExpr.lit(
+                          schemaAssistant.compatibleUnionSchemaIndex(mapSchema, mapReaderSchema)
+                  )));
+        }
 
         Symbol symbol = action.getSymbol();
-        if (!(symbol instanceof Symbol.UnionAdjustAction)) {
+        if (!(symbol instanceof Symbol.UnionAdjustAction)) { // TODO: maybe check if (symbol != null) as well?
           for (Symbol aSymbol: symbol.production) {
             if (aSymbol instanceof Symbol.UnionAdjustAction) {
               symbol = aSymbol;
@@ -940,7 +945,7 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
             }
           }
         }
-        if (symbol == null) {
+        if (symbol == null) { // TODO always false(?) - if symbol is null then symbol.production from above throws NPE
           throw new FastDeserializerGeneratorException("Symbol.UnionAdjustAction is expected but was not found");
         }
         action = FieldAction.fromValues(action.getType(), action.getShouldRead(),
