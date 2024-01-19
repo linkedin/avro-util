@@ -7,8 +7,6 @@
 package com.linkedin.avroutil1.compatibility;
 
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 
@@ -223,12 +221,6 @@ public class SchemaComparisonConfiguration {
 
     public Builder setJsonPropNamesToIgnore(Set<String> jsonPropNamesToIgnore) {
       this.jsonPropNamesToIgnore = jsonPropNamesToIgnore;
-      return this;
-    }
-
-    // Overloaded method to accept List instead of Set
-    public Builder setJsonPropNamesToIgnore(List<String> jsonPropNamesToIgnore) {
-      this.jsonPropNamesToIgnore = new HashSet<>(jsonPropNamesToIgnore);
       return this;
     }
 

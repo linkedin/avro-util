@@ -21,9 +21,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.stream.Collectors;
 import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -244,9 +246,10 @@ public class SchemaBuilder {
       skipCodegenIfSchemaOnClasspath = Boolean.TRUE.equals(Boolean.parseBoolean(value));
     }
 
-    List<String> jsonPropsToIgnoreInCompare = new ArrayList<>();
-    if(options.has(jsonPropsToIgnoreInCompareOpt)) {
-      jsonPropsToIgnoreInCompare = options.valuesOf(jsonPropsToIgnoreInCompareOpt);
+    Set<String> jsonPropsToIgnoreInCompare = Collections.EMPTY_SET;
+    if (options.has(jsonPropsToIgnoreInCompareOpt)) {
+      jsonPropsToIgnoreInCompare =
+          options.valuesOf(jsonPropsToIgnoreInCompareOpt).stream().map(String::trim).collect(Collectors.toSet());
     }
 
     //allow plugins to parse and validate their own added options

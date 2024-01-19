@@ -15,6 +15,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -52,7 +53,7 @@ public class CodeGenOpConfig {
   /**
    * List of JSON properties to ignore when comparing two schemas during codegen.
    */
-  private List<String> jsonPropsToIgnoreInCompare;
+  private Set<String> jsonPropsToIgnoreInCompare;
 
   @Deprecated
   public CodeGenOpConfig(
@@ -220,7 +221,7 @@ public class CodeGenOpConfig {
       boolean avro702Handling,
       boolean handleUtf8EncodingInPutByIndex,
       boolean skipCodegenIfSchemaOnClasspath,
-      List<String> jsonPropsToIgnoreInCompare) {
+      Set<String> jsonPropsToIgnoreInCompare) {
     this.inputRoots = inputRoots;
     this.nonImportableSourceRoots = nonImportableSourceRoots;
     this.includeClasspath = includeClasspath;
@@ -350,7 +351,7 @@ public class CodeGenOpConfig {
     return skipCodegenIfSchemaOnClasspath;
   }
 
-  public List<String> getJsonPropsToIgnoreInCompare() {
+  public Set<String> getJsonPropsToIgnoreInCompare() {
     return jsonPropsToIgnoreInCompare;
   }
 

@@ -126,6 +126,7 @@ public class AvroUtilOperationContextBuilder implements OperationContextBuilder 
                 SchemaComparisonConfiguration.newBuilder(SchemaComparisonConfiguration.STRICT).setJsonPropNamesToIgnore(
                     config.getJsonPropsToIgnoreInCompare()).build());
             if (!areEqual) {
+
               throw new IllegalStateException("Schema with name " + fullName
                   + " is defined in the filesystem and on the classpath, but the two schemas are not equal.");
             }
