@@ -68,8 +68,9 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
     }
     AvroNamedSchema namedSchema = (AvroNamedSchema) maybeNamed;
     AvroName name = namedSchema.getName();
+    String namespace = getNamespace(name);
 
-    if (!name.hasNamespace()) {
+    if (namespace == null || namespace.isEmpty()) {
       return Paths.get(getSimpleName(name) + "." + AvscFile.SUFFIX);
     }
 
@@ -226,17 +227,24 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
    */
   protected void writeSchemaRef(AvroNamedSchema schema, AvscWriterContext context, AvscWriterConfig config,
       JsonGenerator generator) throws IOException {
+    AvroName schemaName = schema.getName();
 
     // Emit fullname always if configured to do so.
     if (config.isAlwaysEmitNamespace()) {
-      generator.writeString(getFullName(schema.getName(), false));
+      generator.writeString(getFullName(schemaName, false));
+      return;
     }
 
-    // Figure out what the context namespace is
+    // Figure out what the context namespace is. If it is the same as the namespace, then write the simple name, else
+    // write the full name.
     String contextNamespace =
         config.isUsePreAvro702Logic() ? context.getAvro702ContextNamespace() : context.getCorrectContextNamespace();
-    String qualified = schema.getName().qualified(contextNamespace);
-    generator.writeString(qualified);
+    String namespace = getNamespace(schemaName);
+    if (namespace.equals(contextNamespace)) {
+      generator.writeString(getSimpleName(schemaName));
+    } else {
+      generator.writeString(getFullName(schemaName, false));
+    }
   }
 
   protected AvroName emitSchemaName(AvroNamedSchema schema, AvscWriterContext context, AvscWriterConfig config,
@@ -295,7 +303,7 @@ public class AvscSchemaWriter implements AvroSchemaWriter {
       generator.writeStringField("name", getSimpleName(schemaName));
     }
 
-    context.pushNamingContext(schema, contextNamespaceAfter, contextNamespaceAfter702);
+    context.pushNamingContext(contextNamespaceAfter, contextNamespaceAfter702);
 
     return extraAlias;
   }
