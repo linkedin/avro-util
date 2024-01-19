@@ -123,7 +123,8 @@ public class AvroUtilOperationContextBuilder implements OperationContextBuilder 
             // check if the schema on classpath is the same as the one we are trying to generate
             AvroSchema avroSchemaFromClasspath = (new AvscParser()).parse(cpSchema.toString()).getTopLevelSchema();
             boolean areEqual = ConfigurableAvroSchemaComparator.equals(avroSchemaFromClasspath, schema,
-                SchemaComparisonConfiguration.STRICT);
+                SchemaComparisonConfiguration.newBuilder(SchemaComparisonConfiguration.STRICT).setJsonPropNamesToIgnore(
+                    config.getJsonPropsToIgnoreInCompare()).build());
             if (!areEqual) {
               throw new IllegalStateException("Schema with name " + fullName
                   + " is defined in the filesystem and on the classpath, but the two schemas are not equal.");

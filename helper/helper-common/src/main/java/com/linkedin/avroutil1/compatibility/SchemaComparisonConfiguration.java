@@ -7,6 +7,8 @@
 package com.linkedin.avroutil1.compatibility;
 
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -80,6 +82,9 @@ public class SchemaComparisonConfiguration {
   public Set<String> getJsonPropNamesToIgnore() {
     return jsonPropNamesToIgnore;
   }
+
+  // Builder class
+
 
   public SchemaComparisonConfiguration compareStringJsonProps(boolean compare) {
     return new SchemaComparisonConfiguration(
@@ -163,6 +168,92 @@ public class SchemaComparisonConfiguration {
         compareFieldLogicalTypes,
         jsonPropNamesToIgnore
     );
+  }
+
+  /**
+   * Get instance of SchemaComparisonConfiguration.Builder
+   * @param schemaConfig SchemaComparisonConfiguration
+   * @return Builder instance
+   */
+  public static Builder newBuilder(SchemaComparisonConfiguration schemaConfig) {
+    return new Builder().from(schemaConfig);
+  }
+
+  /**
+   * Builder class for {@link SchemaComparisonConfiguration}
+   */
+  public static class Builder {
+    private boolean compareStringJsonProps;
+    private boolean compareNonStringJsonProps;
+    private boolean compareAliases;
+    private boolean compareIntToFloatDefaults;
+    private boolean compareFieldOrder;
+    private boolean compareFieldLogicalTypes;
+    private Set<String> jsonPropNamesToIgnore;
+
+    public Builder setCompareStringJsonProps(boolean compareStringJsonProps) {
+      this.compareStringJsonProps = compareStringJsonProps;
+      return this;
+    }
+
+    public Builder setCompareNonStringJsonProps(boolean compareNonStringJsonProps) {
+      this.compareNonStringJsonProps = compareNonStringJsonProps;
+      return this;
+    }
+
+    public Builder setCompareAliases(boolean compareAliases) {
+      this.compareAliases = compareAliases;
+      return this;
+    }
+
+    public Builder setCompareIntToFloatDefaults(boolean compareIntToFloatDefaults) {
+      this.compareIntToFloatDefaults = compareIntToFloatDefaults;
+      return this;
+    }
+
+    public Builder setCompareFieldOrder(boolean compareFieldOrder) {
+      this.compareFieldOrder = compareFieldOrder;
+      return this;
+    }
+
+    public Builder setCompareFieldLogicalTypes(boolean compareFieldLogicalTypes) {
+      this.compareFieldLogicalTypes = compareFieldLogicalTypes;
+      return this;
+    }
+
+    public Builder setJsonPropNamesToIgnore(Set<String> jsonPropNamesToIgnore) {
+      this.jsonPropNamesToIgnore = jsonPropNamesToIgnore;
+      return this;
+    }
+
+    // Overloaded method to accept List instead of Set
+    public Builder setJsonPropNamesToIgnore(List<String> jsonPropNamesToIgnore) {
+      this.jsonPropNamesToIgnore = new HashSet<>(jsonPropNamesToIgnore);
+      return this;
+    }
+
+    Builder from(SchemaComparisonConfiguration config) {
+      this.compareStringJsonProps = config.isCompareStringJsonProps();
+      this.compareNonStringJsonProps = config.isCompareNonStringJsonProps();
+      this.compareAliases = config.isCompareAliases();
+      this.compareIntToFloatDefaults = config.isCompareIntToFloatDefaults();
+      this.compareFieldOrder = config.isCompareFieldOrder();
+      this.compareFieldLogicalTypes = config.isCompareFieldLogicalTypes();
+      this.jsonPropNamesToIgnore = config.getJsonPropNamesToIgnore();
+      return this;
+    }
+
+    public SchemaComparisonConfiguration build() {
+      return new SchemaComparisonConfiguration(
+          compareStringJsonProps,
+          compareNonStringJsonProps,
+          compareAliases,
+          compareIntToFloatDefaults,
+          compareFieldOrder,
+          compareFieldLogicalTypes,
+          jsonPropNamesToIgnore
+      );
+    }
   }
 }
 

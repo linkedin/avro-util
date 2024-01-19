@@ -114,6 +114,11 @@ public class SchemaBuilder {
         .defaultsTo("false")
         .describedAs("true/false");
 
+    OptionSpec<String> jsonPropsToIgnoreInCompareOpt = parser.accepts("jsonPropsToIgnoreInCompare", "json properties to ignore when comparing schemas on filesystem and classpath")
+        .withOptionalArg()
+        .defaultsTo("")
+        .withValuesSeparatedBy(',');
+
     //allow plugins to add CLI options
     for (BuilderPlugin plugin : plugins) {
       plugin.customizeCLI(parser);
@@ -238,6 +243,11 @@ public class SchemaBuilder {
       skipCodegenIfSchemaOnClasspath = Boolean.TRUE.equals(Boolean.parseBoolean(value));
     }
 
+    List<String> jsonPropsToIgnoreInCompare = new ArrayList<>();
+    if(options.has(jsonPropsToIgnoreInCompareOpt)) {
+      jsonPropsToIgnoreInCompare = options.valuesOf(jsonPropsToIgnoreInCompareOpt);
+    }
+
     //allow plugins to parse and validate their own added options
     for (BuilderPlugin plugin : plugins) {
       plugin.parseAndValidateOptions(options);
@@ -258,7 +268,8 @@ public class SchemaBuilder {
         minAvroVer,
         handleAvro702,
         handleUtf8EncodingInPutByIndex,
-        skipCodegenIfSchemaOnClasspath
+        skipCodegenIfSchemaOnClasspath,
+        jsonPropsToIgnoreInCompare
     );
 
     opConfig.validateParameters();
