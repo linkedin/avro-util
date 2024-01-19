@@ -6,7 +6,6 @@
 
 package com.linkedin.avroutil1.writer.avsc;
 
-import com.linkedin.avroutil1.model.AvroName;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
 import java.util.ArrayDeque;
@@ -33,8 +32,8 @@ public class AvscWriterContext {
   private final Map<String, AvroNamedSchema> known = new HashMap<>(); //by their fullname
 
   public AvscWriterContext() {
-    //context starts at the "root"  namespace
-    contextStack.push(new NamingContext(null, "", ""));
+    // Context starts at the "root" namespace ie. empty.
+    contextStack.push(new NamingContext("", ""));
   }
 
   /**
@@ -42,7 +41,7 @@ public class AvscWriterContext {
    */
   public String getCorrectContextNamespace() {
     assert contextStack.peek() != null;
-    return contextStack.peek().correcttNamespace;
+    return contextStack.peek().correctNamespace;
   }
 
   /**
@@ -72,8 +71,8 @@ public class AvscWriterContext {
     return true;
   }
 
-  public void pushNamingContext(AvroNamedSchema root, String correctNamespace, String pre702ParsedNamespace) {
-    contextStack.push(new NamingContext(root.getName(), correctNamespace, pre702ParsedNamespace));
+  public void pushNamingContext(String correctNamespace, String pre702ParsedNamespace) {
+    contextStack.push(new NamingContext(correctNamespace, pre702ParsedNamespace));
   }
 
   public void popNamingContext() {
@@ -82,22 +81,17 @@ public class AvscWriterContext {
 
   private static class NamingContext {
     /**
-     * the (always correct) named type at the root of this context (if any)
-     */
-    private final AvroName root;
-    /**
      * the correct namespace of this context, as defined by the avro specification
      */
-    private final String correcttNamespace;
+    private final String correctNamespace;
     /**
      * what would be the context namespace here on parsing if the schema was
      * written under pre-702 (incorrect) logic
      */
     private final String pre702ParsedNamespace;
 
-    public NamingContext(AvroName root, String correctNamespace, String pre702ParsedNamespace) {
-      this.root = root;
-      this.correcttNamespace = correctNamespace;
+    public NamingContext(String correctNamespace, String pre702ParsedNamespace) {
+      this.correctNamespace = correctNamespace;
       this.pre702ParsedNamespace = pre702ParsedNamespace;
     }
   }
