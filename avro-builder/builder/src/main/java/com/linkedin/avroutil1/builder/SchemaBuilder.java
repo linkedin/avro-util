@@ -114,7 +114,8 @@ public class SchemaBuilder {
         .defaultsTo("false")
         .describedAs("true/false");
 
-    OptionSpec<String> jsonPropsToIgnoreInCompareOpt = parser.accepts("jsonPropsToIgnoreInCompare", "json properties to ignore when comparing schemas on filesystem and classpath")
+    OptionSpec<String> jsonPropsToIgnoreInCompareOpt = parser.accepts("jsonPropsToIgnoreInCompare",
+            "json properties to ignore when comparing schemas on filesystem and classpath. Example : jsonOption1, jsonOption2")
         .withOptionalArg()
         .defaultsTo("")
         .withValuesSeparatedBy(',');

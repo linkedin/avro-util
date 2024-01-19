@@ -284,6 +284,29 @@ public class SchemaBuilderTest {
     Assert.assertEquals(javaFiles.size(), 2);
   }
 
+  @Test
+  public void testTopLevelUnionUsingOwnCodegenWithIngoreJsonPropOptipn() throws Exception {
+    File simpleProjectRoot = new File(locateTestProjectsRoot(), "union-schema-project");
+    File inputFolder = new File(simpleProjectRoot, "input");
+    File outputFolder = new File(simpleProjectRoot, "output");
+    if (outputFolder.exists()) { //clear output
+      FileUtils.deleteDirectory(outputFolder);
+    }
+    //run the builder
+    SchemaBuilder.main(new String[] {
+        "--input", inputFolder.getAbsolutePath(),
+        "--output", outputFolder.getAbsolutePath(),
+        "--generator", CodeGenerator.AVRO_UTIL.name(),
+        "enableUtf8EncodingInPutByIndex", "false",
+        "--jsonPropsToIgnoreInCompare", "option1, option2"
+    });
+    //see output was generated
+    List<Path> javaFiles = Files.find(outputFolder.toPath(), 5,
+        (path, basicFileAttributes) -> path.getFileName().toString().endsWith(".java")
+    ).collect(Collectors.toList());
+    Assert.assertEquals(javaFiles.size(), 2);
+  }
+
   private File locateTestProjectsRoot() {
     //the current working directory for test execution varies across gradle and IDEs.
     //as such, we need to get creative to locate the folder
