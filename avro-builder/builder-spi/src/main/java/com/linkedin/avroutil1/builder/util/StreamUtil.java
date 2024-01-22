@@ -40,8 +40,8 @@ public final class StreamUtil {
   /**
    * A convenience {@link Collector} used for executing parallel computations on a custom {@link Executor}
    * and returning a {@link Stream} instance returning results as they arrive.
-   * <br>
-   * For the parallelism of 1, the stream is executed by the calling thread.
+   * 
+   * <p>For the parallelism of 1, the stream is executed by the calling thread.</p>
    *
    * @param mapper      a transformation to be performed in parallel
    * @param parallelism the max parallelism level
@@ -57,9 +57,9 @@ public final class StreamUtil {
   /**
    * A convenience {@link Collector} used for executing parallel computations on a custom {@link Executor}
    * and returning a {@link Stream} instance returning results as they arrive.
-   * <br>
-   * For the parallelism of 1 or if the size of the elements is <= batchSize, the stream is executed by the calling
-   * thread.
+   *
+   * <p>For the parallelism of 1 or if the size of the elements is <= batchSize, the stream is executed by the calling
+   * thread.</p>
    *
    * @param mapper      a transformation to be performed in parallel
    * @param parallelism the max parallelism level
