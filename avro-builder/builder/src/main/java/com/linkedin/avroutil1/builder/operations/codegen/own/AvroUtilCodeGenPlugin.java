@@ -56,6 +56,8 @@ public class AvroUtilCodeGenPlugin implements BuilderPlugin {
   }
 
   private void generateCode(OperationContext opContext) {
+    LOGGER.info("Generating Avro Java bindings...");
+
     // Make sure the output folder exists
     File outputFolder = config.getOutputSpecificRecordClassesRoot();
     if (!outputFolder.exists() && !outputFolder.mkdirs()) {
@@ -109,7 +111,7 @@ public class AvroUtilCodeGenPlugin implements BuilderPlugin {
       } catch (Exception e) {
         throw new RuntimeException("failed to generate class for " + namedSchema.getFullName(), e);
       }
-    }, 10)).collect(Collectors.toList());
+    }, 10, 10)).collect(Collectors.toList());
     long genEnd = System.currentTimeMillis();
     LOGGER.info("Generated {} java source files in {} millis", generatedClasses.size(), genEnd - genStart);
 
@@ -138,7 +140,7 @@ public class AvroUtilCodeGenPlugin implements BuilderPlugin {
       }
 
       return 1;
-    }, 10)).reduce(0, Integer::sum);
+    }, 10, 10)).reduce(0, Integer::sum);
 
     long writeEnd = System.currentTimeMillis();
     LOGGER.info("Wrote out {} generated java source files under {} in {} millis", filesWritten, outputFolderPath,

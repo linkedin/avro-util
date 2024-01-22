@@ -280,7 +280,7 @@ public class SchemaBuilder {
     }
     OperationContext opContext = operationContextBuilder.buildOperationContext(opConfig);
     long operationContextBuildEnd = System.currentTimeMillis();
-    LOGGER.info("Built operation context in {} millis.", operationContextBuildStart - operationContextBuildEnd);
+    LOGGER.info("Built operation context in {} millis.", operationContextBuildEnd - operationContextBuildStart);
 
     BuilderPluginContext context = new BuilderPluginContext(opContext);
 
