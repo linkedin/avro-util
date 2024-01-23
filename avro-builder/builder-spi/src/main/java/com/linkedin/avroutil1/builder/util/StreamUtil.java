@@ -31,7 +31,7 @@ public final class StreamUtil {
    * sane values for parallelism to avoid spawning a crazy number of concurrent threads.
    */
   private static final ExecutorService WORK_EXECUTOR =
-      new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60, TimeUnit.SECONDS, new SynchronousQueue<>());
+      new ThreadPoolExecutor(0, Integer.MAX_VALUE, 100, TimeUnit.MILLISECONDS, new SynchronousQueue<>());
 
   private StreamUtil() {
     // Disallow external instantiation.
