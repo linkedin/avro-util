@@ -87,6 +87,8 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
     if (readerSchema == null) {
       readerSchema = writerSchema;
     }
+
+    coldDeserializer.setSchema(schema);
   }
 
   @Override
@@ -99,7 +101,7 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
       fastDeserializer = getFastDeserializerFromCache(cache, writerSchema, readerSchema, modelData, customization);
       if (fastDeserializer.hasDynamicClassGenerationDone()) {
         if (fastDeserializer.isBackedByGeneratedClass()) {
-          /**
+          /*
            * Runtime class generation is done successfully, so cache it.
             */
           cachedFastDeserializer.compareAndSet(null, fastDeserializer);
@@ -108,7 +110,7 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
                 + readerSchema + "], writer schema: [" + writerSchema + "]");
           }
         } else {
-          /**
+          /*
            * Runtime class generation fails, so this class will cache a newly generated cold deserializer, which will
            * honer {@link FastSerdeCache#isFailFast()}.
             */

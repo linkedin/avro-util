@@ -42,7 +42,6 @@ import org.testng.collections.Lists;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import com.linkedin.avro.fastserde.FastGenericDeserializerGenerator;
 import com.linkedin.avro.fastserde.FastGenericSerializerGenerator;
-import com.linkedin.avro.fastserde.FastSerdeCache;
 import com.linkedin.avro.fastserde.FastSerializer;
 import com.linkedin.avro.fastserde.FastSpecificDeserializerGenerator;
 import com.linkedin.avro.fastserde.FastSpecificSerializerGenerator;

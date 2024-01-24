@@ -183,7 +183,7 @@ public final class FastSerdeCache {
         Schema.Type.ARRAY);
   }
 
-  public static boolean isFastDeserializer(FastDeserializer deserializer) {
+  public static boolean isFastDeserializer(FastDeserializer<?> deserializer) {
     return deserializer.isBackedByGeneratedClass();
   }
 
@@ -476,7 +476,7 @@ public final class FastSerdeCache {
       LOGGER.error("Deserializer class instantiation exception", e);
     }
 
-    return new FastSerdeUtils.FastDeserializerWithAvroSpecificImpl(writerSchema, readerSchema, modelData, customization, failFast, true);
+    return new FastSerdeUtils.FastDeserializerWithAvroSpecificImpl<>(writerSchema, readerSchema, modelData, customization, failFast, true);
   }
 
   /**
@@ -536,7 +536,7 @@ public final class FastSerdeCache {
       LOGGER.error("Deserializer class instantiation exception:", e);
     }
 
-    return new FastSerdeUtils.FastDeserializerWithAvroGenericImpl(writerSchema, readerSchema, modelData, customization, failFast, true);
+    return new FastSerdeUtils.FastDeserializerWithAvroGenericImpl<>(writerSchema, readerSchema, modelData, customization, failFast, true);
   }
 
   public FastSerializer<?> buildFastSpecificSerializer(Schema schema, SpecificData modelData) {
