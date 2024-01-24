@@ -5,8 +5,14 @@ import com.linkedin.avro.api.PrimitiveDoubleList;
 import com.linkedin.avro.api.PrimitiveFloatList;
 import com.linkedin.avro.api.PrimitiveIntList;
 import com.linkedin.avro.api.PrimitiveLongList;
+import com.linkedin.avro.fastserde.generated.avro.InnerRecordNotNull;
+import com.linkedin.avro.fastserde.generated.avro.OuterRecordWithNestedNotNullComplexFields;
+import com.linkedin.avro.fastserde.generated.avro.OuterRecordWithNestedNullableComplexFields;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
+import com.linkedin.avroutil1.compatibility.AvroRecordUtil;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -26,16 +32,21 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.BinaryDecoder;
+import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.Decoder;
+import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.avro.util.Utf8;
 import org.testng.Assert;
 import org.testng.SkipException;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.testng.collections.Lists;
+import org.testng.internal.collections.Pair;
 
 import static com.linkedin.avro.fastserde.FastSerdeTestsSupport.*;
-
+import static com.linkedin.avro.fastserde.FastSpecificDeserializerGeneratorTest.createAndSerializeOuterRecordWithNotNullComplexFields;
 
 
 public class FastGenericDeserializerGeneratorTest {
@@ -1588,6 +1599,25 @@ public class FastGenericDeserializerGeneratorTest {
     Assert.assertEquals(((Map<Utf8,Integer>) recordB.get("someInts")).get(new Utf8("1")), Integer.valueOf(1));
     Assert.assertEquals(((Map<Utf8,Integer>) recordB.get("someInts")).get(new Utf8("2")), Integer.valueOf(2));
     Assert.assertEquals(((Map<Utf8,Integer>) recordB.get("someInts")).get(new Utf8("3")), Integer.valueOf(3));
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  void deserializeNullableFieldsPreviouslySerializedAsNotNull(Implementation implementation) throws IOException {
+    // given: outerRecord1 serialized using schema with not-null complex fields
+    Pair<OuterRecordWithNestedNotNullComplexFields, byte[]> pair = createAndSerializeOuterRecordWithNotNullComplexFields();
+    OuterRecordWithNestedNotNullComplexFields outerRecord1 = pair.first();
+    byte[] serializedOuterRecord1 = pair.second();
+
+    Schema writerSchema = OuterRecordWithNestedNotNullComplexFields.SCHEMA$; // without nullable fields
+    Schema readerSchema = OuterRecordWithNestedNullableComplexFields.SCHEMA$; // contains nullable fields
+    BinaryDecoder binaryDecoder = AvroCompatibilityHelper.newBinaryDecoder(serializedOuterRecord1);
+
+    // when: serialized outerRecord1 is deserialized using readerSchema with nullable complex fields
+    GenericRecord outerRecord2 = implementation.decode(writerSchema, readerSchema, binaryDecoder);
+
+    // then: deserialized outerRecord2 is the same as outerRecord1 (initial one)
+    Assert.assertNotNull(outerRecord2);
+    Assert.assertEquals(outerRecord2.toString(), outerRecord1.toString());
   }
 
   private static <T> T decodeRecordColdFast(Schema writerSchema, Schema readerSchema, Decoder decoder) {

@@ -1,0 +1,35 @@
+{
+  "type": "record",
+  "name": "OuterRecordWithNestedNotNullComplexFields",
+  "namespace": "com.linkedin.avro.fastserde.generated.avro",
+  "doc": "Used in tests of fast-serde to serialize record with schema having not-null complex fields",
+  "fields": [
+    {
+      "name": "innerRecord",
+      "type": {
+        "name": "InnerRecordNotNull",
+        "type": "record",
+        "fields": [
+          {
+            "name": "comment",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "innerMap",
+      "type": {
+        "type": "map",
+        "values": "int"
+      }
+    },
+    {
+      "name": "innerArray",
+      "type": {
+        "type": "array",
+        "items": "int"
+      }
+    }
+  ]
+}
