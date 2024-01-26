@@ -314,10 +314,16 @@ public class SpecificRecordGeneratorUtil {
           });
           break;
         case MAP:
-          schemaQueue.add(((AvroMapSchema) fieldSchema).getValueSchema());
+          AvroMapSchema mapSchema = (AvroMapSchema) fieldSchema;
+          if (mapSchema.getValueSchemaOrRef().getRef() == null) {
+            schemaQueue.add(mapSchema.getValueSchema());
+          }
           break;
         case ARRAY:
-          schemaQueue.add(((AvroArraySchema) fieldSchema).getValueSchema());
+          AvroArraySchema arraySchema = (AvroArraySchema) fieldSchema;
+          if (arraySchema.getValueSchemaOrRef().getRef() == null) {
+            schemaQueue.add(arraySchema.getValueSchema());
+          }
           break;
       }
     }
