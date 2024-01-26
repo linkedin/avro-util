@@ -7,6 +7,23 @@
     {
       "name": "date",
       "type": "build.generated.SimpleRecord"
+    },
+    {
+      "name": "unionArrayReference",
+      "type" :[
+        "null",
+        {
+          "type": "array",
+          "items": "build.generated.SimpleRecord"
+        }
+      ]
+    },
+    {
+      "name": "mapReference",
+        "type": {
+            "type": "map",
+            "values": "build.generated.SimpleRecord"
+        }
     }
   ]
 }
