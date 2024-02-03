@@ -29,8 +29,10 @@ import com.linkedin.avroutil1.parser.exceptions.AvroSyntaxException;
 import com.linkedin.avroutil1.parser.exceptions.JsonParseException;
 import com.linkedin.avroutil1.parser.exceptions.UnresolvedReferenceException;
 import com.linkedin.avroutil1.testcommon.TestUtil;
+import com.linkedin.avroutil1.writer.avsc.AvscSchemaWriter;
 import java.io.IOException;
 import java.util.stream.Collectors;
+import net.openhft.compiler.CompilerUtils;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -686,6 +688,40 @@ public class AvscParserTest {
 
         AvscParseResult recordParseResult = avscParser.parse(recordAvsc);
         Assert.assertEquals(recordParseResult.getIssues().size(), 1);
+    }
+
+    @Test
+    public void testRecursiveReferenceUnionWithDefault() throws Exception {
+        String recordAvsc = TestUtil.load("schemas/RecursiveRefUnion.avsc");
+        AvscParser avscParser = new AvscParser();
+
+        AvscParseResult recordParseResult = avscParser.parse(recordAvsc);
+        AvroRecordSchema topLevelSchema = (AvroRecordSchema) recordParseResult.getTopLevelSchema();
+
+        // Tests we don't have unparsed default values in for of AvscUnparsedLiteral.
+        new AvscSchemaWriter().writeSingle(topLevelSchema);
+
+        Assert.assertFalse(hasUnparsedDefault(topLevelSchema));
+        Assert.assertEquals(recordParseResult.getIssues().size(), 0);
+    }
+
+    /**
+     * Recursively goes through all fields and their schemas to check if any field has an unparsed default value
+     * @param schema
+     * @return
+     */
+    private boolean hasUnparsedDefault(AvroRecordSchema schema) {
+        for(AvroSchemaField field : schema.getFields()) {
+            if (field.getDefaultValue() instanceof AvscUnparsedLiteral) {
+                return true;
+            }
+            if (field.getSchema().type() == AvroType.RECORD) {
+                if (hasUnparsedDefault((AvroRecordSchema) field.getSchema())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private Schema vanillaParse(String resource) throws Exception {

@@ -178,6 +178,39 @@ public class AvscFileParseContext {
         for (AvroSchema schema : definedSchemas) {
             resolveReferences(schema);
         }
+
+        // Once all schemas are resolved for this file, we can process the defaults for fields
+        for (AvroSchema schema : definedSchemas) {
+            processAllDefaults(schema);
+        }
+    }
+
+    private void processAllDefaults(AvroSchema schema) {
+        AvroType type = schema.type();
+        if (type == AvroType.RECORD) {
+            AvroRecordSchema recordSchema = (AvroRecordSchema) schema;
+            List<AvroSchemaField> fields = recordSchema.getFields();
+            for (AvroSchemaField field : fields) {
+                SchemaOrRef fieldSchema = field.getSchemaOrRef();
+                boolean hasDefault = field.hasDefaultValue();
+                boolean wasDefinedBefore = fieldSchema.isFullyDefined();
+                if (!wasDefinedBefore) {
+                    if (!fieldSchema.isFullyDefined()) {
+                        if (hasDefault) {
+                            fieldsWithUnparsedDefaults.add(field);
+                        }
+                        continue;
+                    }
+                }
+                //fully defined if we're here
+                if (!hasDefault) {
+                    continue;
+                }
+                if (field.getDefaultValue() instanceof AvscUnparsedLiteral) {
+                    AvscParseUtil.lateParseFieldDefault(field, this);
+                }
+            }
+        }
     }
 
     private void resolveReferences(AvroSchema schema) {
@@ -188,23 +221,9 @@ public class AvscFileParseContext {
                 List<AvroSchemaField> fields = recordSchema.getFields();
                 for (AvroSchemaField field : fields) {
                     SchemaOrRef fieldSchema = field.getSchemaOrRef();
-                    boolean hasDefault = field.hasDefaultValue();
                     boolean wasDefinedBefore = fieldSchema.isFullyDefined();
                     if (!wasDefinedBefore) {
                         resolveReferences(fieldSchema);
-                        if (!fieldSchema.isFullyDefined()) {
-                            if (hasDefault) {
-                                fieldsWithUnparsedDefaults.add(field);
-                            }
-                            continue;
-                        }
-                    }
-                    //fully defined if we're here
-                    if (!hasDefault) {
-                        continue;
-                    }
-                    if (field.getDefaultValue() instanceof AvscUnparsedLiteral) {
-                        AvscParseUtil.lateParseFieldDefault(field, this);
                     }
                 }
                 break;

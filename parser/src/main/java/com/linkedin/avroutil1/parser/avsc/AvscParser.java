@@ -392,11 +392,7 @@ public class AvscParser {
                     }
                     AvroLiteral defaultValue = null;
                     if (fieldDefaultValueNode != null) {
-                        // To parse the default value, the schema should be fully defined
-                        // or if field schema is a union, the first type in the union should be fully defined
-                        if (fieldSchema.isFullyDefined() || (fieldSchema.getRef() == null
-                            && fieldSchema.getSchema().type() == AvroType.UNION
-                            && ((AvroUnionSchema) fieldSchema.getSchema()).getTypes().get(0).isFullyDefined())) {
+                        if (fieldSchema.isFullyDefined()) {
                             AvroSchema defaultValueExpectedSchema = fieldSchema.getSchema();
                             if (defaultValueExpectedSchema.type() == AvroType.UNION) {
                                 //(legal) default values are expected to match the 1st union branch

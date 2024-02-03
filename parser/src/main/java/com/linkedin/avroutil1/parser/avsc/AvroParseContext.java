@@ -157,9 +157,7 @@ public class AvroParseContext {
                     fieldsWithUnparsedDefaults.add(field);
                     continue;
                 }
-                if (field.hasDefaultValue() && field.getDefaultValue() instanceof AvscUnparsedLiteral) {
-                    AvscParseUtil.lateParseFieldDefault(field, parseResult.getContext());
-                }
+                AvscParseUtil.lateParseFieldDefault(field, parseResult.getContext());
             }
         }
     }
