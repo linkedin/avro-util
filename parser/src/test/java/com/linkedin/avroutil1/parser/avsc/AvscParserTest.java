@@ -32,7 +32,6 @@ import com.linkedin.avroutil1.testcommon.TestUtil;
 import com.linkedin.avroutil1.writer.avsc.AvscSchemaWriter;
 import java.io.IOException;
 import java.util.stream.Collectors;
-import net.openhft.compiler.CompilerUtils;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.skyscreamer.jsonassert.JSONAssert;
