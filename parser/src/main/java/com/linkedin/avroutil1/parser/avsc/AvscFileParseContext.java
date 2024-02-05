@@ -191,22 +191,18 @@ public class AvscFileParseContext {
             AvroRecordSchema recordSchema = (AvroRecordSchema) schema;
             List<AvroSchemaField> fields = recordSchema.getFields();
             for (AvroSchemaField field : fields) {
-                SchemaOrRef fieldSchema = field.getSchemaOrRef();
-                boolean hasDefault = field.hasDefaultValue();
-                boolean wasDefinedBefore = fieldSchema.isFullyDefined();
-                if (!wasDefinedBefore) {
-                    if (!fieldSchema.isFullyDefined()) {
-                        if (hasDefault) {
-                            fieldsWithUnparsedDefaults.add(field);
-                        }
-                        continue;
-                    }
-                }
-                //fully defined if we're here
-                if (!hasDefault) {
+                // If field has no default value, we can skip it
+                if (!field.hasDefaultValue()) {
                     continue;
                 }
-                if (field.getDefaultValue() instanceof AvscUnparsedLiteral) {
+                SchemaOrRef fieldSchema = field.getSchemaOrRef();
+                // If schema is not fully defined, add it to the list of fields with unparsed defaults
+                if (!fieldSchema.isFullyDefined()) {
+                    fieldsWithUnparsedDefaults.add(field);
+                    continue;
+
+                // schema is defined and default value is unparsed.
+                } else if (field.getDefaultValue() instanceof AvscUnparsedLiteral) {
                     AvscParseUtil.lateParseFieldDefault(field, this);
                 }
             }
