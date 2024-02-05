@@ -199,9 +199,8 @@ public class AvscFileParseContext {
                 // If schema is not fully defined, add it to the list of fields with unparsed defaults
                 if (!fieldSchema.isFullyDefined()) {
                     fieldsWithUnparsedDefaults.add(field);
-                    continue;
 
-                // schema is defined and default value is unparsed.
+                    // schema is defined and default value is unparsed.
                 } else if (field.getDefaultValue() instanceof AvscUnparsedLiteral) {
                     AvscParseUtil.lateParseFieldDefault(field, this);
                 }
