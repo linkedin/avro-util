@@ -1,0 +1,89 @@
+{
+  "type": "record",
+  "name": "RecursiveRefUnion",
+  "namespace": "com.test",
+  "doc": "Top record",
+  "fields": [
+    {
+      "name": "innerField2",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "NestedType2",
+          "doc": "",
+          "fields": [
+            {
+              "name": "innerField3",
+              "type": {
+                "type": "record",
+                "name": "NestedType3",
+                "fields": [
+                  {
+                    "name": "innerField4",
+                    "type": [
+                      "null",
+                      "NestedType2"
+                    ],
+                    "doc": "",
+                    "default": null
+                  },
+                  {
+                    "name": "innerField5",
+                    "type": {
+                      "type": "record",
+                      "name": "NestedType4",
+                      "fields": [
+                        {
+                          "name": "innerField6",
+                          "type": [
+                            "null",
+                            "NestedType2"
+                          ],
+                          "doc": "!!!!",
+                          "default": null
+                        },
+                        {
+                          "name": "innerField7",
+                          "type": [
+                            "null",
+                            {
+                              "type": "record",
+                              "name": "NestedType5",
+                              "doc": "",
+                              "fields": [
+                                {
+                                  "name": "field",
+                                  "type": "string"
+                                }
+                              ]
+                            }
+                          ],
+                          "doc": "",
+                          "default": null
+                        }
+                      ]
+                    },
+                    "doc": "."
+                  },
+                  {
+                    "name": "innerField8",
+                    "type": [
+                      "null",
+                      "NestedType5"
+                    ],
+                    "doc": "!!!!",
+                    "default": null
+                  }
+                ]
+              },
+              "doc": "."
+            }
+          ]
+        }
+      ],
+      "doc": "",
+      "default": null
+    }
+  ]
+}
