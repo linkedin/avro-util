@@ -1829,6 +1829,32 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     compareIndexedRecords(instance, builder.build());
   }
 
+  public void modifiablePrimitiveCollectionTest() {
+    String tba = "NewElement";
+    RandomRecordGenerator generator = new RandomRecordGenerator();
+    TestCollections instance = generator.randomSpecific(TestCollections.class, RecordGenerationConfig.newConfig().withAvoidNulls(true));
+
+    // array of string
+    instance.getStrAr().add(tba);
+    Assert.assertTrue(instance.getStrAr().contains(tba));
+
+    // union[null, List<String>]
+    instance.getUnionOfArray().add(tba);
+    Assert.assertTrue(instance.getUnionOfArray().contains(tba));
+
+    // array (union[null, string])
+    instance.getArOfUnionOfStr().add(tba);
+    Assert.assertTrue(instance.getArOfUnionOfStr().contains(tba));
+
+
+    // Union (null, Map<String, String>)
+    instance.getUnionOfMap().put("key1", tba);
+    Assert.assertEquals(tba, instance.getUnionOfMap().get("key1"));
+
+    instance.getIntAr().add(Integer.MAX_VALUE);
+    Assert.assertEquals((int) instance.getIntAr().get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
+  }
+
   @BeforeClass
   public void setup() {
     System.setProperty("org.apache.avro.specific.use_custom_coders", "true");
