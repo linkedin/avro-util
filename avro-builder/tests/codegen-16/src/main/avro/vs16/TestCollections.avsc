@@ -7,13 +7,6 @@
       "type": "string"
     },
     {
-      "name": "intAr",
-      "type": {
-        "type": "array",
-        "items": "int"
-      }
-    },
-    {
       "name": "strAr",
       "type": {
         "type": "array",
@@ -78,6 +71,13 @@
             "items": "string"
           }]
         }
+      }
+    },
+    {
+      "name": "intAr",
+      "type": {
+        "type": "array",
+        "items": "int"
       }
     }
   ],

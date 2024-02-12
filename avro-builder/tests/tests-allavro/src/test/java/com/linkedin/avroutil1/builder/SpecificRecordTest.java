@@ -1358,6 +1358,7 @@ public class SpecificRecordTest {
       put("unionOfMap", "java.util.Map<java.lang.String, java.lang.String>");
       put("arOfUnionOfStr", "java.util.List<java.lang.String>");
       put("arOfMapOfUnionOfArray", "java.util.List<java.util.Map<java.lang.String, java.util.List<java.lang.String>>>");
+      put("intAr", "java.util.List<java.lang.Integer>");
     }};
 
     Map<String, String> vs14TestCollectionsCharSeqFieldToType = new LinkedHashMap<String, String>() {{
@@ -1369,6 +1370,7 @@ public class SpecificRecordTest {
       put("unionOfMap", "java.util.Map<java.lang.CharSequence, java.lang.CharSequence>");
       put("arOfUnionOfStr", "java.util.List<java.lang.CharSequence>");
       put("arOfMapOfUnionOfArray", "java.util.List<java.util.Map<java.lang.CharSequence, java.util.List<java.lang.CharSequence>>>");
+      put("intAr", "java.util.List<java.lang.Integer>");
     }};
 
     return new Object[][]{
@@ -1484,7 +1486,7 @@ public class SpecificRecordTest {
         .setArOfMap(Arrays.asList(mapCharSeq))
         .setUnionOfMap(mapCharSeq)
         .setArOfUnionOfStr(Arrays.asList(str))
-        .setArOfMapOfUnionOfArray(Arrays.asList(mapOfList));
+        .setArOfMapOfUnionOfArray(Arrays.asList(mapOfList)).setIntAr(Arrays.asList(1, 2, 3));
 
     charseqmethod.TestCollections testCollections = testCollectionsBuilder.build();
 
@@ -1815,6 +1817,7 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     RandomRecordGenerator generator = new RandomRecordGenerator();
     TestCollections instance = generator.randomSpecific(TestCollections.class, RecordGenerationConfig.newConfig().withAvoidNulls(true));
     TestCollections.Builder builder = TestCollections.newBuilder()
+        .setIntAr(instance.getIntAr())
         .setStr(instance.getStr())
         .setStrAr(instance.getStrAr())
         .setStrArAr(instance.getStrArAr())
