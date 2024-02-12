@@ -53,7 +53,7 @@ public class SpecificRecordClassGeneratorTest {
 
     SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
     JavaFileObject javaFileObject =
-        generator.generateSpecificClass(schema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
+        generator.generateSpecificClass(schema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY).toJavaFileObject();
 
     if (checkCompiles) {
       CompilerHelper.assertCompiles(javaFileObject);
@@ -70,25 +70,9 @@ public class SpecificRecordClassGeneratorTest {
     AvroRecordSchema schema  = (AvroRecordSchema) result.getTopLevelSchema();
 
     JavaFileObject javaFileObject =
-        generator.generateSpecificClass(schema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
+        generator.generateSpecificClass(schema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY).toJavaFileObject();
     Assert.assertEquals(StringUtils.countMatches(javaFileObject.getCharContent(false).toString(),
             "/**\n" + "   * @deprecated public fields are deprecated. Please use setters/getters.\n" + "   */"),
         schema.getFields().size());
-  }
-
-  @Test
-  public void generateVeryLargeSchemaAndCompileTest() throws Exception {
-    String avsc = TestUtil.load("schemas/TwoThousandField.avsc");
-    AvscParser parser = new AvscParser();
-    AvscParseResult result = parser.parse(avsc);
-    Assert.assertNull(result.getParseError());
-    AvroNamedSchema schema = (AvroNamedSchema) result.getTopLevelSchema();
-    Assert.assertNotNull(schema);
-
-    SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
-    JavaFileObject javaFileObject =
-        generator.generateSpecificClass(schema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY);
-
-    CompilerHelper.assertCompiles(javaFileObject);
   }
 }

@@ -1,0 +1,55 @@
+{
+  "type": "record",
+  "namespace": "com.acme",
+  "name": "RecordWithStuff",
+  "doc": "Here is a great overall doc",
+  "aliases": [
+    "record_alias",
+    "a_record_alias"
+  ],
+  "fields": [
+    {
+      "name": "strTest",
+      "type": {
+        "type": "string",
+        "avro.java.string": "String"
+      },
+      "some_prop": {
+        "KEY1": "VALUE1",
+        "KEY2": "VALUE2",
+        "ObjKey": {
+          "K2": "V2",
+          "K1": "V1",
+          "K5": {
+            "K5K2": "K5V2",
+            "K5K1": "K5V1",
+            "K5K3": "K5V3"
+          },
+          "K4": "V4",
+          "K3": "V3"
+        },
+        "ArObjKey": [
+          {
+            "K3": "V3",
+            "K1": "V1",
+            "K4": "V4",
+            "K2": "V2"
+          },
+          {
+            "K1": "V1",
+            "K3": {
+              "K3K2": "K3V2",
+              "K3K1": "K3V1",
+              "K3K3": {
+                "K3K3K2": "K3K3V2",
+                "K3K3K1": "K3K3V1",
+                "K3K3K3": "K3K3V3"
+              }
+            },
+            "K2": "V2"
+          }
+        ]
+      }
+    }
+  ]
+}

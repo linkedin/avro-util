@@ -6,7 +6,6 @@
 
 package com.linkedin.avroutil1.codegen;
 
-import com.linkedin.avroutil1.compatibility.CompatibleSpecificRecordBuilderBase;
 import com.linkedin.avroutil1.model.AvroArraySchema;
 import com.linkedin.avroutil1.model.AvroEnumSchema;
 import com.linkedin.avroutil1.model.AvroFixedSchema;
@@ -23,14 +22,9 @@ import com.linkedin.avroutil1.model.SchemaOrRef;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.ConcurrentModificationException;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -66,34 +60,8 @@ public class SpecificRecordGeneratorUtil {
   public static final ClassName CLASSNAME_FIXED_SIZE = ClassName.get("org.apache.avro.specific", "FixedSize");
   public static final ClassName CLASSNAME_SPECIFIC_FIXED = ClassName.get("org.apache.avro.specific", "SpecificFixed");
 
-
-  public static String ARRAY_GET_ELEMENT_TYPE = ".getElementType()";
-  public static String MAP_GET_VALUE_TYPE = ".getValueType()";
-
-  public static HashSet<TypeName> fullyQualifiedClassNamesInRecord = new HashSet<>();
-
-  public static HashSet<String> fullyQualifiedClassesInRecord = new HashSet<>(Arrays.asList(
-      CLASSNAME_DATUM_READER.canonicalName(),
-      CLASSNAME_DATUM_WRITER.canonicalName(),
-      CLASSNAME_ENCODER.canonicalName(),
-      CLASSNAME_RESOLVING_DECODER.canonicalName(),
-      CLASSNAME_SPECIFIC_DATA.canonicalName(),
-      CLASSNAME_SPECIFIC_DATUM_READER.canonicalName(),
-      CLASSNAME_SPECIFIC_DATUM_WRITER.canonicalName(),
-      CLASSNAME_SPECIFIC_RECORD.canonicalName(),
-      CLASSNAME_SPECIFIC_RECORD_BASE.canonicalName(),
-      IOException.class.getName(),
-      Exception.class.getName(),
-      ObjectInput.class.getName(),
-      ObjectOutput.class.getName(),
-      String.class.getName(),
-      Object.class.getName(),
-      ConcurrentModificationException.class.getName(),
-      IllegalArgumentException.class.getName(),
-      IndexOutOfBoundsException.class.getName(),
-      HashMap.class.getName(),
-      CompatibleSpecificRecordBuilderBase.class.getName()
-  ));
+  public static final String ARRAY_GET_ELEMENT_TYPE = ".getElementType()";
+  public static final String MAP_GET_VALUE_TYPE = ".getValueType()";
 
   private SpecificRecordGeneratorUtil(){}
 
@@ -204,7 +172,6 @@ public class SpecificRecordGeneratorUtil {
         if (valueClass == null) {
           TypeName parameterTypeName = getTypeName(arraySchema.getValueSchema(), arraySchema.getValueSchema().type(),
               true, defaultStringRepresentation);
-          fullyQualifiedClassesInRecord.add(parameterTypeName.toString());
           className = ParameterizedTypeName.get(ClassName.get(List.class), parameterTypeName);
         } else {
           className = ParameterizedTypeName.get(List.class, valueClass);
@@ -218,7 +185,6 @@ public class SpecificRecordGeneratorUtil {
         //complex map is allowed
         if (mapValueClass == null) {
           TypeName mapValueTypeName = getTypeName(mapSchema.getValueSchema(), mapSchema.getValueSchema().type(), true, defaultStringRepresentation);
-          fullyQualifiedClassesInRecord.add(mapValueTypeName.toString());
           className =
               ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(mapKeyClass), mapValueTypeName);
         } else {
@@ -234,8 +200,6 @@ public class SpecificRecordGeneratorUtil {
   /***
    * Get nested internal Named schemas for a given topLevel Record schema
    * Traverses through fields and catches their de-duped
-   * @param topLevelSchema
-   * @return
    */
   public static List<AvroNamedSchema> getNestedInternalSchemaList(AvroNamedSchema topLevelSchema) {
 
@@ -243,7 +207,7 @@ public class SpecificRecordGeneratorUtil {
     switch (type) {
       case ENUM:
       case FIXED:
-        return new ArrayList<>();
+        return Collections.emptyList();
       case RECORD:
         return getNestedInternalSchemaListForRecord((AvroRecordSchema) topLevelSchema);
       default:
@@ -254,8 +218,6 @@ public class SpecificRecordGeneratorUtil {
   /***
    * Checks if field type can be treated as null union of the given type
    *
-   * @param type
-   * @param schema
    * @return True if type [null, type] or [type, null]
    */
   public static boolean isNullUnionOf(AvroType type, AvroSchema schema) {
@@ -276,7 +238,6 @@ public class SpecificRecordGeneratorUtil {
 
   /***
    * Handles list , union of list
-   * @param schema
    * @return true for List of String and List of Union of String
    */
   public static boolean isListTransformerApplicableForSchema(AvroSchema schema) {
@@ -401,10 +362,16 @@ public class SpecificRecordGeneratorUtil {
           });
           break;
         case MAP:
-          schemaQueue.add(((AvroMapSchema) fieldSchema).getValueSchema());
+          AvroMapSchema mapSchema = (AvroMapSchema) fieldSchema;
+          if (mapSchema.getValueSchemaOrRef().getRef() == null) {
+            schemaQueue.add(mapSchema.getValueSchema());
+          }
           break;
         case ARRAY:
-          schemaQueue.add(((AvroArraySchema) fieldSchema).getValueSchema());
+          AvroArraySchema arraySchema = (AvroArraySchema) fieldSchema;
+          if (arraySchema.getValueSchemaOrRef().getRef() == null) {
+            schemaQueue.add(arraySchema.getValueSchema());
+          }
           break;
       }
     }

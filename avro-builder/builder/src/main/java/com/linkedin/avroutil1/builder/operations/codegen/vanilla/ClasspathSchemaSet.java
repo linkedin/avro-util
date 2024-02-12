@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.builder.operations.codegen.vanilla;
 
+import com.linkedin.avroutil1.builder.operations.SchemaSet;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;

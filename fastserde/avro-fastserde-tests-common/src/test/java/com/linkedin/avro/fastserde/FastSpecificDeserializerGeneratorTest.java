@@ -2,9 +2,12 @@
 package com.linkedin.avro.fastserde;
 
 import com.linkedin.avro.fastserde.generated.avro.FullRecord;
+import com.linkedin.avro.fastserde.generated.avro.InnerRecordNotNull;
 import com.linkedin.avro.fastserde.generated.avro.IntRecord;
 import com.linkedin.avro.fastserde.generated.avro.MyEnumV2;
 import com.linkedin.avro.fastserde.generated.avro.MyRecordV2;
+import com.linkedin.avro.fastserde.generated.avro.OuterRecordWithNestedNotNullComplexFields;
+import com.linkedin.avro.fastserde.generated.avro.OuterRecordWithNestedNullableComplexFields;
 import com.linkedin.avro.fastserde.generated.avro.RecordWithLargeUnionField;
 import com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord;
 import com.linkedin.avro.fastserde.generated.avro.SplitRecordTest1;
@@ -16,6 +19,9 @@ import com.linkedin.avro.fastserde.generated.avro.TestFixed;
 import com.linkedin.avro.fastserde.generated.avro.TestRecord;
 import com.linkedin.avro.fastserde.generated.avro.UnionOfRecordsWithSameNameEnumField;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
+import com.linkedin.avroutil1.compatibility.AvroRecordUtil;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -31,13 +37,18 @@ import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.BinaryDecoder;
+import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.specific.SpecificDatumReader;
+import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.avro.util.Utf8;
 import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.testng.collections.Lists;
+import org.testng.internal.collections.Pair;
 
 import static com.linkedin.avro.fastserde.FastSerdeTestsSupport.*;
 
@@ -842,6 +853,61 @@ public class FastSpecificDeserializerGeneratorTest {
     } catch (Exception e) {
       Assert.fail("Exception was thrown: ", e);
     }
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
+  void deserializeNullableFieldsPreviouslySerializedAsNotNull(boolean useFastSerializer) throws IOException {
+    // given: outerRecord1 serialized using schema with not-null complex fields
+    Pair<OuterRecordWithNestedNotNullComplexFields, byte[]> pair = createAndSerializeOuterRecordWithNotNullComplexFields();
+    OuterRecordWithNestedNotNullComplexFields outerRecord1 = pair.first();
+    byte[] serializedOuterRecord1 = pair.second();
+    BinaryDecoder binaryDecoder = AvroCompatibilityHelper.newBinaryDecoder(serializedOuterRecord1);
+
+    Schema writerSchema = OuterRecordWithNestedNotNullComplexFields.SCHEMA$; // without nullable fields
+    Schema readerSchema = OuterRecordWithNestedNullableComplexFields.SCHEMA$; // contains nullable fields
+
+    // when: serialized outerRecord1 is deserialized using readerSchema with nullable complex fields
+    OuterRecordWithNestedNullableComplexFields outerRecord2;
+    if (useFastSerializer) {
+      outerRecord2 = decodeRecordFast(readerSchema, writerSchema, binaryDecoder);
+    } else {
+      outerRecord2 = decodeRecordSlow(readerSchema, writerSchema, binaryDecoder);
+    }
+
+    // then: deserialized outerRecord2 is the same as outerRecord1 (initial one)
+    Assert.assertNotNull(outerRecord2);
+    Assert.assertEquals(outerRecord2.toString(), outerRecord1.toString());
+  }
+
+  /**
+   * @return serialized {@link OuterRecordWithNestedNotNullComplexFields}
+   */
+  static Pair<OuterRecordWithNestedNotNullComplexFields, byte[]> createAndSerializeOuterRecordWithNotNullComplexFields() throws IOException {
+    InnerRecordNotNull innerRecord = AvroRecordUtil.setField(new InnerRecordNotNull(), "comment", "awesome comment");
+
+    Map<String, Integer> innerMap = new HashMap<>();
+    innerMap.put("one", 1);
+    innerMap.put("twotwo", 22);
+    innerMap.put("three x 3", 333);
+
+    List<Integer> innerArray = Lists.newArrayList(234, 2342, 948563);
+
+    OuterRecordWithNestedNotNullComplexFields outerRecord1 = new OuterRecordWithNestedNotNullComplexFields();
+    AvroRecordUtil.setField(outerRecord1, "innerRecord", innerRecord);
+    AvroRecordUtil.setField(outerRecord1, "innerMap", innerMap);
+    AvroRecordUtil.setField(outerRecord1, "innerArray", innerArray);
+
+    Schema writerSchema = OuterRecordWithNestedNotNullComplexFields.SCHEMA$;
+    SpecificDatumWriter<OuterRecordWithNestedNotNullComplexFields> datumWriter = new SpecificDatumWriter<>(writerSchema);
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    BinaryEncoder binaryEncoder = AvroCompatibilityHelper.newBinaryEncoder(baos);
+
+    datumWriter.write(outerRecord1, binaryEncoder);
+    binaryEncoder.flush();
+
+    byte[] serializedOuterRecord1 = baos.toByteArray();
+
+    return Pair.of(outerRecord1, serializedOuterRecord1);
   }
 
   private <T> T decodeRecordFast(Schema readerSchema, Schema writerSchema, Decoder decoder) {

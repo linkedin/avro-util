@@ -120,6 +120,19 @@ public class AvroUtilSchemaNormalizationTest17 {
   }
 
   @Test
+  public void testNestedObjectJsonPropertySerialization() throws IOException {
+    Schema schema1 = Schema.parse(TestUtil.load("PropRecord1.avsc"));
+    Schema schema2 = Schema.parse(TestUtil.load("PropRecord2.avsc"));
+    AvscGenerationConfig avscGenerationConfig =
+        new AvscGenerationConfig(false, false, false, Optional.of(Boolean.FALSE), false, true, false, true, true, true,
+            true, false, false);
+    String schemaStr1 = AvroUtilSchemaNormalization.getCanonicalForm(schema1, avscGenerationConfig, null);
+    String schemaStr2 = AvroUtilSchemaNormalization.getCanonicalForm(schema2, avscGenerationConfig, null);
+
+    Assert.assertEquals(schemaStr1, schemaStr2);
+  }
+
+  @Test
   public void testCanonicalStrictWithNonSpecificJsonIncluded() throws IOException {
     AvscGenerationConfig config = new AvscGenerationConfig(
         false, false, false, Optional.of(Boolean.TRUE), false, false,

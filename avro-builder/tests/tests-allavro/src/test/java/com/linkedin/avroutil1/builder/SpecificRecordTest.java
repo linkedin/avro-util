@@ -14,7 +14,6 @@ import com.linkedin.avroutil1.compatibility.StringConverterUtil;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1828,57 +1827,6 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     TestCollections.newBuilder(builder);
 
     compareIndexedRecords(instance, builder.build());
-  }
-
-  @DataProvider
-  public static Object[][] testPrivateModifierOnChunkMethodProvider() {
-    return new Object[][]{{vs14.ThousandField.class}, {vs19.ThousandField.class}};
-  }
-
- @Test(dataProvider = "testPrivateModifierOnChunkMethodProvider")
-  public <T extends IndexedRecord> void testPrivateModifierOnChunkMethod(Class<T> clazz) {
-
-    // All chunk methods in builder
-    List<Method> chunkMethodNames = Arrays.stream(Arrays.stream(clazz.getClasses())
-        .filter(internalClazz -> internalClazz.getName().equals(clazz.getName() + "$Builder"))
-        .collect(Collectors.toList())
-        .get(0)
-        .getDeclaredMethods()).filter(method -> method.getName().contains("Chunk")).collect(Collectors.toList());
-
-    // chunk methods from main class
-    chunkMethodNames.addAll(Arrays.stream(clazz.getDeclaredMethods())
-        .filter(method -> method.getName().contains("Chunk"))
-        .collect(Collectors.toList()));
-
-    Assert.assertFalse(chunkMethodNames.isEmpty());
-    chunkMethodNames.forEach(method -> Assert.assertTrue(Modifier.isPrivate(method.getModifiers())));
-  }
-
-  @Test
-  public void modifiablePrimitiveCollectionTest() {
-    String tba = "NewElement";
-    RandomRecordGenerator generator = new RandomRecordGenerator();
-    TestCollections instance = generator.randomSpecific(TestCollections.class, RecordGenerationConfig.newConfig().withAvoidNulls(true));
-
-    // array of string
-    instance.getStrAr().add(tba);
-    Assert.assertTrue(instance.getStrAr().contains(tba));
-
-    // union[null, List<String>]
-    instance.getUnionOfArray().add(tba);
-    Assert.assertTrue(instance.getUnionOfArray().contains(tba));
-
-    // array (union[null, string])
-    instance.getArOfUnionOfStr().add(tba);
-    Assert.assertTrue(instance.getArOfUnionOfStr().contains(tba));
-
-
-    // Union (null, Map<String, String>)
-    instance.getUnionOfMap().put("key1", tba);
-    Assert.assertEquals(tba, instance.getUnionOfMap().get("key1"));
-
-    instance.getIntAr().add(Integer.MAX_VALUE);
-    Assert.assertEquals((int) instance.getIntAr().get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
   }
 
   @BeforeClass

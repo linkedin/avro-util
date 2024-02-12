@@ -76,7 +76,7 @@ public class FastGenericDatumWriter<T> implements DatumWriter<T> {
 
       if (fastSerializer.hasDynamicClassGenerationDone()) {
         if (fastSerializer.isBackedByGeneratedClass()) {
-          /**
+          /*
            * Runtime class generation is done successfully, so cache it.
            */
           cachedFastSerializer = fastSerializer;
@@ -84,7 +84,7 @@ public class FastGenericDatumWriter<T> implements DatumWriter<T> {
             LOGGER.debug("FastSerializer has been generated and cached for writer schema: [" + writerSchema + "]");
           }
         } else {
-          /**
+          /*
            * Runtime class generation fails, so this class will cache a newly generated cold deserializer, which will
            * honer {@link FastSerdeCache#isFailFast()}.
            */
@@ -95,7 +95,7 @@ public class FastGenericDatumWriter<T> implements DatumWriter<T> {
         }
         fastSerializer = cachedFastSerializer;
       } else {
-        /**
+        /*
          * Don't use the cached serializer since it may not support the passed customization.
          */
         fastSerializer = coldSerializer;
