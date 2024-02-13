@@ -1,0 +1,24 @@
+{
+  "type": "record",
+  "name": "RecordWithMapOfUnion",
+  "fields": [
+    {
+      "name": "myField2",
+      "type": {
+        "type": "map",
+        "values": [
+          "string",
+          {
+            "type": "array",
+            "items": "string"
+          },
+          {
+            "type": "map",
+            "values": "string"
+          }
+        ]
+      },
+      "default": {"key1": "value1"}
+    }
+  ]
+}

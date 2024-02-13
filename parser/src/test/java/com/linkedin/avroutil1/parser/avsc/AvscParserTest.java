@@ -704,6 +704,21 @@ public class AvscParserTest {
         Assert.assertEquals(recordParseResult.getIssues().size(), 0);
     }
 
+    @Test
+    public void testMapOfUnionDefault() throws Exception {
+        String recordAvsc = TestUtil.load("schemas/RecordWithMapOfUnion.avsc");
+        AvscParser avscParser = new AvscParser();
+
+        AvscParseResult recordParseResult = avscParser.parse(recordAvsc);
+        AvroRecordSchema topLevelSchema = (AvroRecordSchema) recordParseResult.getTopLevelSchema();
+
+        // Tests we don't have unparsed default values in for of AvscUnparsedLiteral.
+        new AvscSchemaWriter().writeSingle(topLevelSchema);
+
+        Assert.assertFalse(hasUnparsedDefault(topLevelSchema));
+        Assert.assertEquals(recordParseResult.getIssues().size(), 0);
+    }
+
     /**
      * Recursively goes through all fields and their schemas to check if any field has an unparsed default value
      * @param schema
