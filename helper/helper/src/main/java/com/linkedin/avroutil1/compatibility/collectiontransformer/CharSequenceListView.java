@@ -10,7 +10,7 @@ import org.apache.avro.util.Utf8;
 
 
 /**
- * View of List<Utf8> to allow get as CharSequence while still allowing put to reflect on the original object.
+ * View of Utf8 List to allow get as CharSequence while still allowing put to reflect on the original object.
  */
 public class CharSequenceListView extends AbstractList<CharSequence> {
   private java.util.List<Utf8> utf8List;

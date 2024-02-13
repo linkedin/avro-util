@@ -15,7 +15,7 @@ import org.apache.avro.util.Utf8;
 
 
 /**
- * View of Map<Utf8, Utf8> to allow get as String while still allowing put to reflect on the original object.
+ * View of Utf8 Map to allow get as String while still allowing put to reflect on the original object.
  */
 public class CharSequenceMapView extends AbstractMap<CharSequence, CharSequence> {
 

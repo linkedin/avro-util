@@ -10,7 +10,7 @@ import org.apache.avro.util.Utf8;
 
 
 /**
- * View of List<Utf8> to allow get as String while still allowing set to reflect on the original object.
+ * View of Utf8 List to allow get as String while still allowing set to reflect on the original object.
  */
 public class StringListView extends AbstractList<String> {
   // Not final to allow addition
