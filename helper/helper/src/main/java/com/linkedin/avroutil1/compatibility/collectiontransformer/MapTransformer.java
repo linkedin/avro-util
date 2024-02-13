@@ -121,4 +121,62 @@ public class MapTransformer {
     }
     return Collections.unmodifiableMap(ret);
   }
+
+  public static Map convertToUtf8(Object mapObj) {
+    if (mapObj == null) {
+      return null;
+    }
+    if (mapObj instanceof Map) {
+      Map map = (Map) mapObj;
+      Map ret = new HashMap(map.size());
+      // for all elements in the map
+      for(Object entry : map.entrySet()) {
+        Object key = ((Map.Entry) entry).getKey();
+        Object val = ((Map.Entry) entry).getValue();
+        // recursively convert to Utf8 if applicable
+        if (val instanceof List) {
+          ret.put(StringConverterUtil.getUtf8(key), ListTransformer.convertToUtf8((List) val));
+        } else if (val instanceof Map) {
+          ret.put(StringConverterUtil.getUtf8(key), MapTransformer.convertToUtf8((Map) val));
+        } else if (val instanceof CharSequence) {
+          ret.put(StringConverterUtil.getUtf8(key), StringConverterUtil.getUtf8(val));
+        } else {
+          ret.put(StringConverterUtil.getUtf8(key), val);
+        }
+      }
+      return ret;
+    } else {
+      throw new UnsupportedOperationException(
+          "Supports only Map. Received" + CollectionTransformerUtil.getErrorMessageForInstance(mapObj));
+    }
+  }
+
+  public static Map convertToString(Object mapObj) {
+    if (mapObj == null) {
+      return null;
+    }
+    if (mapObj instanceof Map) {
+      Map map = (Map) mapObj;
+      Map ret = new HashMap(map.size());
+      // for all elements in the map
+      for(Object entry : map.entrySet()) {
+        Object key = ((Map.Entry) entry).getKey();
+        Object val = ((Map.Entry) entry).getValue();
+        // recursively convert to String if applicable
+        if (val instanceof List) {
+          ret.put(StringConverterUtil.getString(key), ListTransformer.convertToString((List) val));
+        } else if (val instanceof Map) {
+          ret.put(StringConverterUtil.getString(key), MapTransformer.convertToString((Map) val));
+        } else if (val instanceof CharSequence) {
+          ret.put(StringConverterUtil.getString(key), StringConverterUtil.getString(val));
+        } else {
+          ret.put(StringConverterUtil.getString(key), val);
+        }
+      }
+      return ret;
+    } else {
+      throw new UnsupportedOperationException(
+          "Supports only Map. Received" + CollectionTransformerUtil.getErrorMessageForInstance(mapObj));
+    }
+  }
 }

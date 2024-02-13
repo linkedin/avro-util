@@ -73,6 +73,64 @@ public class ListTransformer {
     }
   }
 
+  public static List convertToUtf8(Object listObj) {
+    if (listObj == null) {
+      return null;
+    }
+    if (listObj instanceof List) {
+      List list = (List) listObj;
+      List ret = new ArrayList(list.size());
+      // for all items in the list
+      for (Object item : list) {
+        // recursively convert to Utf8 if the item is a list or a map
+        if (item instanceof List) {
+          ret.add(convertToUtf8((List) item));
+        } else if (item instanceof Map) {
+          ret.add(MapTransformer.convertToUtf8((Map) item));
+          // if the item is a CharSequence, convert it to Utf8
+        } else if (item instanceof CharSequence) {
+          ret.add(StringConverterUtil.getUtf8(item));
+        } else {
+          // otherwise, add the item as is
+          ret.add(item);
+        }
+      }
+      return ret;
+    } else {
+      throw new UnsupportedOperationException(
+          "Supports only Lists. Received" + CollectionTransformerUtil.getErrorMessageForInstance(listObj));
+    }
+  }
+
+  public static List convertToString(Object listObj) {
+    if (listObj == null) {
+      return null;
+    }
+    if (listObj instanceof List) {
+      List list = (List) listObj;
+      List ret = new ArrayList(list.size());
+      // for all items in the list
+      for (Object item : list) {
+        // recursively convert to String if the item is a list or a map
+        if (item instanceof List) {
+          ret.add(convertToString((List) item));
+        } else if (item instanceof Map) {
+          ret.add(MapTransformer.convertToString((Map) item));
+          // if the item is a CharSequence, convert it to String
+        } else if (item instanceof CharSequence) {
+          ret.add(StringConverterUtil.getString(item));
+        } else {
+          // otherwise, add the item as is
+          ret.add(item);
+        }
+      }
+      return ret;
+    } else {
+      throw new UnsupportedOperationException(
+          "Supports only Lists. Received" + CollectionTransformerUtil.getErrorMessageForInstance(listObj));
+    }
+  }
+
   private static void flushCharSeqFlag() {
     hasCharSeq.set(false);
   }
