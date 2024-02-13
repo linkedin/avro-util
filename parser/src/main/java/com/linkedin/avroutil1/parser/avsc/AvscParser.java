@@ -876,6 +876,16 @@ public class AvscParser {
                 return new LiteralOrIssue(new AvroRecordLiteral(
                     recordSchema, locationOf(context.getUri(), literalNode), map
                 ));
+            case UNION:
+                AvroUnionSchema unionSchema = (AvroUnionSchema) schema;
+                LiteralOrIssue branchValueOrIssue =
+                    parseLiteral(literalNode, unionSchema.getTypes().get(0).getSchema(), fieldName, context);
+                if (branchValueOrIssue.getIssue() == null) {
+                    return branchValueOrIssue;
+                }
+                return new LiteralOrIssue(
+                    AvscIssues.badFieldDefaultValue(locationOf(context.getUri(), literalNode), literalNode.toString(),
+                        avroType, fieldName));
             default:
                 throw new UnsupportedOperationException("dont know how to parse a " + avroType + " at " + literalNode.getStartLocation()
                         + " out of a " + literalNode.getValueType() + " (" + literalNode + ")");
