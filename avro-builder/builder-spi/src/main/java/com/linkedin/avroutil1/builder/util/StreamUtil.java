@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.builder.util;
 
+import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -90,14 +91,16 @@ public final class StreamUtil {
           .mapToObj(batch -> {
             int startIndex = batch * batchSize;
             int endIndex = (batch == batchCount) ? list.size() : (batch + 1) * batchSize;
-            return list.subList(startIndex, endIndex).stream();
+            return list.subList(startIndex, endIndex);
           })
-          .map(batch -> CompletableFuture.supplyAsync(() -> batch.map(mapper), limitingExecutor))
-          .flatMap(CompletableFuture::join);
+          .map(batch -> CompletableFuture.supplyAsync(() -> batch.stream().map(mapper).collect(Collectors.toList()),
+              limitingExecutor))
+          .map(CompletableFuture::join)
+          .flatMap(Collection::stream);
     });
   }
 
-  private static class LimitingExecutor implements Executor {
+  private final static class LimitingExecutor implements Executor {
 
     private final Semaphore _limiter;
 
