@@ -255,7 +255,9 @@ public class SpecificRecordTest {
     Assert.assertSame(builderTester.get(0), stringField);
     Assert.assertSame(builderTester.get(1), package$);
     Assert.assertSame(builderTester.get(6), min);
-    Assert.assertSame(builderTester.get(7), arrayOfRecord);
+
+    // Equal, not same as the Record has string fields
+    Assert.assertEquals(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
     Assert.assertEquals(builderTester.get(2), exception);
@@ -391,7 +393,9 @@ public class SpecificRecordTest {
     Assert.assertSame(builderTester.get(0), stringField);
     Assert.assertSame(builderTester.get(1), package$);
     Assert.assertSame(builderTester.get(6), min);
-    Assert.assertSame(builderTester.get(7), arrayOfRecord);
+
+    // Equal, not same as the Record has string fields
+    Assert.assertEquals(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
     Assert.assertEquals(builderTester.get(2), exception);
@@ -528,7 +532,9 @@ public class SpecificRecordTest {
     Assert.assertSame(builderTester.get(0), stringField);
     Assert.assertSame(builderTester.get(1), package$);
     Assert.assertSame(builderTester.get(6), min);
-    Assert.assertSame(builderTester.get(7), arrayOfRecord);
+
+    // Equal, not same as the Record has string fields
+    Assert.assertEquals(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
     Assert.assertEquals(builderTester.get(2), exception);
@@ -664,7 +670,9 @@ public class SpecificRecordTest {
     Assert.assertSame(builderTester.get(0), stringField);
     Assert.assertSame(builderTester.get(1), package$);
     Assert.assertSame(builderTester.get(6), min);
-    Assert.assertSame(builderTester.get(7), arrayOfRecord);
+
+    // Equal, not same as the Record has string fields
+    Assert.assertEquals(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
     Assert.assertEquals(builderTester.get(2), exception);
@@ -804,7 +812,9 @@ public class SpecificRecordTest {
     Assert.assertSame(builderTester.get(0), stringField);
     Assert.assertSame(builderTester.get(1), package$);
     Assert.assertSame(builderTester.get(6), min);
-    Assert.assertSame(builderTester.get(7), arrayOfRecord);
+
+    // Equal, not same as the Record has string fields
+    Assert.assertEquals(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
     Assert.assertEquals(builderTester.get(2), exception);
@@ -946,7 +956,9 @@ public class SpecificRecordTest {
     Assert.assertSame(builderTester.get(0), stringField);
     Assert.assertSame(builderTester.get(1), package$);
     Assert.assertSame(builderTester.get(6), min);
-    Assert.assertSame(builderTester.get(7), arrayOfRecord);
+
+    // Equal, not same as the Record has string fields
+    Assert.assertEquals(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
     Assert.assertEquals(builderTester.get(2), exception);
@@ -1224,7 +1236,9 @@ public class SpecificRecordTest {
     Assert.assertSame(builderTester.get(0), stringField);
     Assert.assertSame(builderTester.get(1), package$);
     Assert.assertSame(builderTester.get(6), min);
-    Assert.assertSame(builderTester.get(7), arrayOfRecord);
+
+    // Equal, not same as the Record has string fields
+    Assert.assertEquals(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
     Assert.assertEquals(builderTester.get(2), exception);
