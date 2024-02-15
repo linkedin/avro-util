@@ -6,7 +6,11 @@
 
 package com.linkedin.avroutil1.builder.util;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -14,10 +18,12 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 
@@ -72,36 +78,27 @@ public final class StreamUtil {
    */
   public static <T, R> Collector<T, ?, Stream<R>> toParallelStream(Function<T, R> mapper, int parallelism,
       int batchSize) {
-    if (parallelism <= 0 || batchSize <= 0) {
-      throw new IllegalArgumentException("Parallelism and batch size must be >= 1");
-    }
+    return new ParallelStreamCollector<>(mapper, parallelism, batchSize);
+  }
 
-    return Collectors.collectingAndThen(Collectors.toList(), list -> {
-      if (list.isEmpty()) {
-        return Stream.empty();
-      }
-
-      if (parallelism == 1 || list.size() <= batchSize) {
-        return list.stream().map(mapper);
-      }
-
-      final Executor limitingExecutor = new LimitingExecutor(parallelism);
-      final int batchCount = (list.size() - 1) / batchSize;
-      return IntStream.rangeClosed(0, batchCount)
-          .mapToObj(batch -> {
-            int startIndex = batch * batchSize;
-            int endIndex = (batch == batchCount) ? list.size() : (batch + 1) * batchSize;
-            return list.subList(startIndex, endIndex);
-          })
-          .map(batch -> CompletableFuture.supplyAsync(() -> batch.stream().map(mapper).collect(Collectors.toList()),
-              limitingExecutor))
-          .map(CompletableFuture::join)
-          .flatMap(Collection::stream);
-    });
+  /**
+   * A convenience {@link Collector} used for executing parallel computations on the user provided {@link Executor}
+   * and returning a {@link Stream} instance returning results as they arrive.
+   *
+   * @param mapper a transformation to be performed in parallel
+   * @param batchSize the size into which inputs should be batched before running the mapper.
+   * @param executor executor for executing computations in parallel
+   * @param <T> the type of the collected elements
+   * @param <R> the result returned by {@code mapper}
+   *
+   * @return a {@code Collector} which collects all processed elements into a {@code Stream} in parallel.
+   */
+  public static <T, R> Collector<T, ?, Stream<R>> toParallelStream(Function<T, R> mapper, int batchSize,
+      Executor executor) {
+    return new ParallelStreamCollector<>(mapper, batchSize, executor);
   }
 
   private final static class LimitingExecutor implements Executor {
-
     private final Semaphore _limiter;
 
     private LimitingExecutor(int maxParallelism) {
@@ -110,14 +107,86 @@ public final class StreamUtil {
 
     @Override
     public void execute(Runnable command) {
-      try {
-        _limiter.acquire();
-        WORK_EXECUTOR.execute(command);
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
-      } finally {
-        _limiter.release();
+      WORK_EXECUTOR.execute(() -> {
+        try {
+          _limiter.acquire();
+          command.run();
+        } catch (InterruptedException e) {
+          throw new RuntimeException(e);
+        } finally {
+          _limiter.release();
+        }
+      });
+    }
+  }
+
+  private static final class ParallelStreamCollector<T, R> implements Collector<T, LinkedList<T>, Stream<R>> {
+    private final int _batchSize;
+    private final Function<T, R> _mapper;
+    private final Executor _executor;
+    private final List<CompletableFuture<List<R>>> _futures = new ArrayList<>();
+
+    private ParallelStreamCollector(Function<T, R> mapper, int parallelism, int batchSize) {
+      if (parallelism <= 0 || batchSize <= 0) {
+        throw new IllegalArgumentException("Parallelism and batch size must be > 0");
       }
+      _mapper = mapper;
+      _batchSize = batchSize;
+      //this.executor = new ForkJoinPool(parallelism);
+      _executor = new LimitingExecutor(parallelism);
+    }
+
+    private ParallelStreamCollector(Function<T, R> mapper, int batchSize, Executor executor) {
+      if (batchSize <= 0) {
+        throw new IllegalArgumentException("Batch size must be > 0");
+      }
+      _mapper = mapper;
+      _batchSize = batchSize;
+      _executor = executor;
+    }
+
+    @Override
+    public Supplier<LinkedList<T>> supplier() {
+      return LinkedList::new;
+    }
+
+    public BiConsumer<LinkedList<T>, T> accumulator() {
+      return this::accumulate;
+    }
+
+    private void accumulate(LinkedList<T> list, T element) {
+      if (list.size() >= _batchSize) {
+        List<T> listCopy = new ArrayList<>(list);
+        _futures.add(CompletableFuture.supplyAsync(() -> listCopy.stream().map(_mapper).collect(Collectors.toList()),
+            _executor));
+        list.clear();
+      }
+      list.add(element);
+    }
+
+    @Override
+    public BinaryOperator<LinkedList<T>> combiner() {
+      return (left, right) -> {
+        left.addAll(right);
+        return left;
+      };
+    }
+
+    @Override
+    public Function<LinkedList<T>, Stream<R>> finisher() {
+      return list -> {
+        if (!list.isEmpty()) {
+          _futures.add(
+              CompletableFuture.supplyAsync(() -> list.stream().map(_mapper).collect(Collectors.toList()), _executor));
+        }
+
+        return _futures.stream().flatMap(future -> future.join().stream());
+      };
+    }
+
+    @Override
+    public Set<Characteristics> characteristics() {
+      return Collections.singleton(Characteristics.UNORDERED);
     }
   }
 }
