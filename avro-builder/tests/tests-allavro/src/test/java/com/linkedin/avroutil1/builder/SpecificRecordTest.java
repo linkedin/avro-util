@@ -1087,13 +1087,14 @@ public class SpecificRecordTest {
     Assert.assertSame(builderTester.get(0), stringField);
     Assert.assertSame(builderTester.get(1), package$);
     Assert.assertSame(builderTester.get(6), min);
-    Assert.assertSame(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
     Assert.assertEquals(builderTester.get(2), exception);
     Assert.assertEquals(builderTester.get(3), dbl);
     Assert.assertEquals(builderTester.get(4), isTrue);
 
+    // Equal, not same as the Record has string fields
+    Assert.assertEquals(builderTester.get(7), arrayOfRecord);
     // Use transformers to return a copy of data
     assertNotSameIfNotNull(builderTester.get(5), arrayOfStrings);
     Assert.assertEquals(builderTester.get(5), arrayOfStrings);
