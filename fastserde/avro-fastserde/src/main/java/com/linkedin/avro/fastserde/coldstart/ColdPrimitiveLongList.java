@@ -10,12 +10,12 @@ import org.apache.avro.generic.GenericData;
  * implementation, both in terms of functionality and (lack of) performance. It provides the primitive
  * API that the interface requires, but actually just returns an unboxed Float Object, thus providing
  * no GC benefit. This should be possible to improve upon in the future, however.
- *
+ * <br>
  * The main motivation for this class is merely to provide a guarantee that the extended API is always
  * available, even when Fast-Avro isn't warmed up yet.
  */
 public class ColdPrimitiveLongList extends GenericData.Array<Long> implements PrimitiveLongList {
-  private static final Schema SCHEMA = Schema.createArray(Schema.create(Schema.Type.FLOAT));
+  private static final Schema SCHEMA = Schema.createArray(Schema.create(Schema.Type.LONG));
   public ColdPrimitiveLongList(int capacity) {
     super(capacity, SCHEMA);
   }

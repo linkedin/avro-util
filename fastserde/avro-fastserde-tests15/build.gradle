@@ -42,6 +42,7 @@ dependencies {
 
   testImplementation 'org.testng:testng:6.14.3'
   testImplementation 'org.slf4j:slf4j-simple:1.7.14'
+  testImplementation 'org.awaitility:awaitility:4.2.0'
 
   codegen project(":helper:helper")
   codegen "org.apache.avro:avro-tools:1.5.4"

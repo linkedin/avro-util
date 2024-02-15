@@ -15,7 +15,7 @@ import org.apache.avro.generic.GenericData;
  * available, even when Fast-Avro isn't warmed up yet.
  */
 public class ColdPrimitiveIntList extends GenericData.Array<Integer> implements PrimitiveIntList {
-  private static final Schema SCHEMA = Schema.createArray(Schema.create(Schema.Type.FLOAT));
+  private static final Schema SCHEMA = Schema.createArray(Schema.create(Schema.Type.INT));
   public ColdPrimitiveIntList(int capacity) {
     super(capacity, SCHEMA);
   }

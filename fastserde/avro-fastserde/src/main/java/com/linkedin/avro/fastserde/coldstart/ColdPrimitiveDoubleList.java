@@ -15,7 +15,7 @@ import org.apache.avro.generic.GenericData;
  * available, even when Fast-Avro isn't warmed up yet.
  */
 public class ColdPrimitiveDoubleList extends GenericData.Array<Double> implements PrimitiveDoubleList {
-  private static final Schema SCHEMA = Schema.createArray(Schema.create(Schema.Type.FLOAT));
+  private static final Schema SCHEMA = Schema.createArray(Schema.create(Schema.Type.DOUBLE));
   public ColdPrimitiveDoubleList(int capacity) {
     super(capacity, SCHEMA);
   }

@@ -15,7 +15,7 @@ import org.apache.avro.generic.GenericData;
  * available, even when Fast-Avro isn't warmed up yet.
  */
 public class ColdPrimitiveBooleanList extends GenericData.Array<Boolean> implements PrimitiveBooleanList {
-  private static final Schema SCHEMA = Schema.createArray(Schema.create(Schema.Type.FLOAT));
+  private static final Schema SCHEMA = Schema.createArray(Schema.create(Schema.Type.BOOLEAN));
   public ColdPrimitiveBooleanList(int capacity) {
     super(capacity, SCHEMA);
   }
