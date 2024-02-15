@@ -783,8 +783,8 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
      */
     if (action.getShouldRead() && arraySchema.getElementType().getType().equals(Schema.Type.FLOAT)) {
       JClass primitiveFloatList = codeModel.ref(BufferBackedPrimitiveFloatList.class);
-      JExpression readPrimitiveFloatArrayInvocation = primitiveFloatList.staticInvoke("readPrimitiveFloatArray").
-          arg(reuseSupplier.get()).arg(JExpr.direct(DECODER));
+      JExpression readPrimitiveFloatArrayInvocation = primitiveFloatList.staticInvoke("readPrimitiveFloatArray")
+              .arg(reuseSupplier.get()).arg(JExpr.direct(DECODER));
       JExpression castedResult =
           JExpr.cast(codeModel.ref(PrimitiveFloatList.class), readPrimitiveFloatArrayInvocation);
 

@@ -28,6 +28,7 @@ dependencies {
   testImplementation project(":helper:helper")
 
   testImplementation "org.slf4j:slf4j-api:1.7.14"
+  testImplementation 'org.awaitility:awaitility:4.2.0'
   testImplementation "org.apache.commons:commons-lang3:3.4"
   testImplementation "com.sun.codemodel:codemodel:2.6"
 

@@ -1,0 +1,42 @@
+{
+  "namespace": "com.linkedin.avro.fastserde.generated.avro",
+  "name": "PrimitiveArraysTestRecord",
+  "type": "record",
+  "fields": [
+    {
+      "name": "arrayOfInts",
+      "type": {
+        "type": "array",
+        "items": "int"
+      }
+    },
+    {
+      "name": "arrayOfLongs",
+      "type": {
+        "type": "array",
+        "items": "long"
+      }
+    },
+    {
+      "name": "arrayOfFloats",
+      "type": {
+        "type": "array",
+        "items": "float"
+      }
+    },
+    {
+      "name": "arrayOfDoubles",
+      "type": {
+        "type": "array",
+        "items": "double"
+      }
+    },
+    {
+      "name": "arrayOfBooleans",
+      "type": {
+        "type": "array",
+        "items": "boolean"
+      }
+    }
+  ]
+}
