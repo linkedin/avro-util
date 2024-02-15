@@ -56,4 +56,9 @@ public class StringListView extends AbstractList<String> {
     }
     return modified;
   }
+
+  @Override
+  public boolean remove(Object o) {
+    return _utf8List.remove(new Utf8(o.toString()));
+  }
 }

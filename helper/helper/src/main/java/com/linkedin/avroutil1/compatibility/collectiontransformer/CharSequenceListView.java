@@ -55,4 +55,9 @@ public class CharSequenceListView extends AbstractList<CharSequence> {
     }
     return modified;
   }
+
+  @Override
+  public boolean remove(Object o) {
+    return utf8List.remove(new Utf8(o.toString()));
+  }
 }

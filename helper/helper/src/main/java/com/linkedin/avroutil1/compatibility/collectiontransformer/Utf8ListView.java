@@ -50,4 +50,9 @@ public class Utf8ListView extends AbstractList<Utf8> {
   public boolean addAll(int index, java.util.Collection<? extends Utf8> c) {
     return utf8List.addAll(index, c);
   }
+
+  @Override
+  public boolean remove(Object o) {
+    return utf8List.remove(o);
+  }
 }
