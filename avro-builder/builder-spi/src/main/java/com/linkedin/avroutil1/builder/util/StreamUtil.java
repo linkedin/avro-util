@@ -81,23 +81,6 @@ public final class StreamUtil {
     return new ParallelStreamCollector<>(mapper, parallelism, batchSize);
   }
 
-  /**
-   * A convenience {@link Collector} used for executing parallel computations on the user provided {@link Executor}
-   * and returning a {@link Stream} instance returning results as they arrive.
-   *
-   * @param mapper a transformation to be performed in parallel
-   * @param batchSize the size into which inputs should be batched before running the mapper.
-   * @param executor executor for executing computations in parallel
-   * @param <T> the type of the collected elements
-   * @param <R> the result returned by {@code mapper}
-   *
-   * @return a {@code Collector} which collects all processed elements into a {@code Stream} in parallel.
-   */
-  public static <T, R> Collector<T, ?, Stream<R>> toParallelStream(Function<T, R> mapper, int batchSize,
-      Executor executor) {
-    return new ParallelStreamCollector<>(mapper, batchSize, executor);
-  }
-
   private final static class LimitingExecutor implements Executor {
     private final Semaphore _limiter;
 
@@ -107,16 +90,18 @@ public final class StreamUtil {
 
     @Override
     public void execute(Runnable command) {
-      WORK_EXECUTOR.execute(() -> {
-        try {
-          _limiter.acquire();
-          command.run();
-        } catch (InterruptedException e) {
-          throw new RuntimeException(e);
-        } finally {
-          _limiter.release();
-        }
-      });
+      try {
+        _limiter.acquire();
+        WORK_EXECUTOR.execute(() -> {
+          try {
+            command.run();
+          } finally {
+            _limiter.release();
+          }
+        });
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
     }
   }
 
@@ -133,15 +118,6 @@ public final class StreamUtil {
       _mapper = mapper;
       _batchSize = batchSize;
       _executor = new LimitingExecutor(parallelism);
-    }
-
-    private ParallelStreamCollector(Function<T, R> mapper, int batchSize, Executor executor) {
-      if (batchSize <= 0) {
-        throw new IllegalArgumentException("Batch size must be > 0");
-      }
-      _mapper = mapper;
-      _batchSize = batchSize;
-      _executor = executor;
     }
 
     @Override

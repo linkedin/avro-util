@@ -6,7 +6,6 @@
 
 package com.linkedin.avroutil1.builder.util;
 
-import java.util.concurrent.ForkJoinPool;
 import java.util.stream.IntStream;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -17,22 +16,10 @@ import org.testng.annotations.Test;
  */
 public class StreamUtilTest {
   @Test
-  public void testParallelStreamUsingGlobalExecutor() throws Exception {
+  public void testParallelStreaming() throws Exception {
     int result = IntStream.rangeClosed(1, 100)
         .boxed()
         .collect(StreamUtil.toParallelStream(x -> x * x, 3, 4))
-        .reduce(0, Integer::sum);
-
-    int expected = IntStream.rangeClosed(1, 100).map(x -> x * x).sum();
-
-    Assert.assertEquals(result, expected);
-  }
-
-  @Test
-  public void testParallelStreamUsingSelfExecutor() throws Exception {
-    int result = IntStream.rangeClosed(1, 100)
-        .boxed()
-        .collect(StreamUtil.toParallelStream(x -> x * x, 4, new ForkJoinPool(5)))
         .reduce(0, Integer::sum);
 
     int expected = IntStream.rangeClosed(1, 100).map(x -> x * x).sum();
