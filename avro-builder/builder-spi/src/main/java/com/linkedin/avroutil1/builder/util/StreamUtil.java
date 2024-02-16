@@ -6,11 +6,10 @@
 
 package com.linkedin.avroutil1.builder.util;
 
-import java.util.Collection;
-import java.util.concurrent.CompletableFuture;
+import com.pivovarit.collectors.ParallelCollectors;
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -52,7 +51,7 @@ public final class StreamUtil {
    * @return a {@code Collector} which collects all processed elements into a {@code Stream} in parallel.
    */
   public static <T, R> Collector<T, ?, Stream<R>> toParallelStream(Function<T, R> mapper, int parallelism) {
-    return toParallelStream(mapper, parallelism, 1);
+    return ParallelCollectors.parallelToStream(mapper, WORK_EXECUTOR, parallelism);
   }
 
   /**
@@ -72,8 +71,9 @@ public final class StreamUtil {
    */
   public static <T, R> Collector<T, ?, Stream<R>> toParallelStream(Function<T, R> mapper, int parallelism,
       int batchSize) {
-    if (parallelism <= 0 || batchSize <= 0) {
-      throw new IllegalArgumentException("Parallelism and batch size must be >= 1");
+    // When batch size is 1, fallback to toParallelStream
+    if (batchSize == 1) {
+      return toParallelStream(mapper, parallelism);
     }
 
     return Collectors.collectingAndThen(Collectors.toList(), list -> {
@@ -85,39 +85,16 @@ public final class StreamUtil {
         return list.stream().map(mapper);
       }
 
-      final Executor limitingExecutor = new LimitingExecutor(parallelism);
       final int batchCount = (list.size() - 1) / batchSize;
-      return IntStream.rangeClosed(0, batchCount)
-          .mapToObj(batch -> {
-            int startIndex = batch * batchSize;
-            int endIndex = (batch == batchCount) ? list.size() : (batch + 1) * batchSize;
-            return list.subList(startIndex, endIndex);
-          })
-          .map(batch -> CompletableFuture.supplyAsync(() -> batch.stream().map(mapper).collect(Collectors.toList()),
-              limitingExecutor))
-          .map(CompletableFuture::join)
-          .flatMap(Collection::stream);
+      final Function<List<T>, List<R>> batchingMapper =
+          batch -> batch.stream().map(mapper).collect(Collectors.toList());
+      List<List<T>> sublists = IntStream.rangeClosed(0, batchCount).mapToObj(batch -> {
+        int startIndex = batch * batchSize;
+        int endIndex = (batch == batchCount) ? list.size() : (batch + 1) * batchSize;
+        return list.subList(startIndex, endIndex);
+      }).collect(Collectors.toList());
+
+      return sublists.stream().collect(toParallelStream(batchingMapper, parallelism)).flatMap(List::stream);
     });
-  }
-
-  private final static class LimitingExecutor implements Executor {
-
-    private final Semaphore _limiter;
-
-    private LimitingExecutor(int maxParallelism) {
-      _limiter = new Semaphore(maxParallelism);
-    }
-
-    @Override
-    public void execute(Runnable command) {
-      try {
-        _limiter.acquire();
-        WORK_EXECUTOR.execute(command);
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
-      } finally {
-        _limiter.release();
-      }
-    }
   }
 }
