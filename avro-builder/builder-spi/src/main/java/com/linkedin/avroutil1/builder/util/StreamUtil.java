@@ -132,7 +132,6 @@ public final class StreamUtil {
       }
       _mapper = mapper;
       _batchSize = batchSize;
-      //this.executor = new ForkJoinPool(parallelism);
       _executor = new LimitingExecutor(parallelism);
     }
 
