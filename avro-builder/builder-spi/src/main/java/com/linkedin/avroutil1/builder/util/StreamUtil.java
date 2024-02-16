@@ -19,8 +19,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.*;
-
 
 /**
  * Utilities for dealing with java streams.
@@ -88,7 +86,8 @@ public final class StreamUtil {
       }
 
       final int batchCount = (list.size() - 1) / batchSize;
-      final Function<List<T>, List<R>> batchingMapper = batch -> batch.stream().map(mapper).collect(toList());
+      final Function<List<T>, List<R>> batchingMapper =
+          batch -> batch.stream().map(mapper).collect(Collectors.toList());
       List<List<T>> sublists = IntStream.rangeClosed(0, batchCount).mapToObj(batch -> {
         int startIndex = batch * batchSize;
         int endIndex = (batch == batchCount) ? list.size() : (batch + 1) * batchSize;
