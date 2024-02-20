@@ -72,6 +72,12 @@
           }]
         }
       }
+    },{
+      "name": "intAr",
+      "type": {
+        "type": "array",
+        "items": "int"
+      }
     }
   ],
   "type": "record"

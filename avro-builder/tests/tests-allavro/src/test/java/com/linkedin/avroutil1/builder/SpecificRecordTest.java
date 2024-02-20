@@ -255,7 +255,9 @@ public class SpecificRecordTest {
     Assert.assertSame(builderTester.get(0), stringField);
     Assert.assertSame(builderTester.get(1), package$);
     Assert.assertSame(builderTester.get(6), min);
-    Assert.assertSame(builderTester.get(7), arrayOfRecord);
+
+    // Equal, not same as the Record has string fields
+    Assert.assertEquals(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
     Assert.assertEquals(builderTester.get(2), exception);
@@ -391,7 +393,9 @@ public class SpecificRecordTest {
     Assert.assertSame(builderTester.get(0), stringField);
     Assert.assertSame(builderTester.get(1), package$);
     Assert.assertSame(builderTester.get(6), min);
-    Assert.assertSame(builderTester.get(7), arrayOfRecord);
+
+    // Equal, not same as the Record has string fields
+    Assert.assertEquals(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
     Assert.assertEquals(builderTester.get(2), exception);
@@ -528,7 +532,9 @@ public class SpecificRecordTest {
     Assert.assertSame(builderTester.get(0), stringField);
     Assert.assertSame(builderTester.get(1), package$);
     Assert.assertSame(builderTester.get(6), min);
-    Assert.assertSame(builderTester.get(7), arrayOfRecord);
+
+    // Equal, not same as the Record has string fields
+    Assert.assertEquals(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
     Assert.assertEquals(builderTester.get(2), exception);
@@ -664,7 +670,9 @@ public class SpecificRecordTest {
     Assert.assertSame(builderTester.get(0), stringField);
     Assert.assertSame(builderTester.get(1), package$);
     Assert.assertSame(builderTester.get(6), min);
-    Assert.assertSame(builderTester.get(7), arrayOfRecord);
+
+    // Equal, not same as the Record has string fields
+    Assert.assertEquals(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
     Assert.assertEquals(builderTester.get(2), exception);
@@ -804,7 +812,9 @@ public class SpecificRecordTest {
     Assert.assertSame(builderTester.get(0), stringField);
     Assert.assertSame(builderTester.get(1), package$);
     Assert.assertSame(builderTester.get(6), min);
-    Assert.assertSame(builderTester.get(7), arrayOfRecord);
+
+    // Equal, not same as the Record has string fields
+    Assert.assertEquals(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
     Assert.assertEquals(builderTester.get(2), exception);
@@ -946,7 +956,9 @@ public class SpecificRecordTest {
     Assert.assertSame(builderTester.get(0), stringField);
     Assert.assertSame(builderTester.get(1), package$);
     Assert.assertSame(builderTester.get(6), min);
-    Assert.assertSame(builderTester.get(7), arrayOfRecord);
+
+    // Equal, not same as the Record has string fields
+    Assert.assertEquals(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
     Assert.assertEquals(builderTester.get(2), exception);
@@ -1087,13 +1099,14 @@ public class SpecificRecordTest {
     Assert.assertSame(builderTester.get(0), stringField);
     Assert.assertSame(builderTester.get(1), package$);
     Assert.assertSame(builderTester.get(6), min);
-    Assert.assertSame(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
     Assert.assertEquals(builderTester.get(2), exception);
     Assert.assertEquals(builderTester.get(3), dbl);
     Assert.assertEquals(builderTester.get(4), isTrue);
 
+    // Equal, not same as the Record has string fields
+    Assert.assertEquals(builderTester.get(7), arrayOfRecord);
     // Use transformers to return a copy of data
     assertNotSameIfNotNull(builderTester.get(5), arrayOfStrings);
     Assert.assertEquals(builderTester.get(5), arrayOfStrings);
@@ -1223,7 +1236,9 @@ public class SpecificRecordTest {
     Assert.assertSame(builderTester.get(0), stringField);
     Assert.assertSame(builderTester.get(1), package$);
     Assert.assertSame(builderTester.get(6), min);
-    Assert.assertSame(builderTester.get(7), arrayOfRecord);
+
+    // Equal, not same as the Record has string fields
+    Assert.assertEquals(builderTester.get(7), arrayOfRecord);
     Assert.assertSame(builderTester.get(10), simpleUnion);
     Assert.assertSame(builderTester.get(11), fixedType);
     Assert.assertEquals(builderTester.get(2), exception);
@@ -1358,6 +1373,7 @@ public class SpecificRecordTest {
       put("unionOfMap", "java.util.Map<java.lang.String, java.lang.String>");
       put("arOfUnionOfStr", "java.util.List<java.lang.String>");
       put("arOfMapOfUnionOfArray", "java.util.List<java.util.Map<java.lang.String, java.util.List<java.lang.String>>>");
+      put("intAr", "java.util.List<java.lang.Integer>");
     }};
 
     Map<String, String> vs14TestCollectionsCharSeqFieldToType = new LinkedHashMap<String, String>() {{
@@ -1369,6 +1385,7 @@ public class SpecificRecordTest {
       put("unionOfMap", "java.util.Map<java.lang.CharSequence, java.lang.CharSequence>");
       put("arOfUnionOfStr", "java.util.List<java.lang.CharSequence>");
       put("arOfMapOfUnionOfArray", "java.util.List<java.util.Map<java.lang.CharSequence, java.util.List<java.lang.CharSequence>>>");
+      put("intAr", "java.util.List<java.lang.Integer>");
     }};
 
     return new Object[][]{
@@ -1484,7 +1501,7 @@ public class SpecificRecordTest {
         .setArOfMap(Arrays.asList(mapCharSeq))
         .setUnionOfMap(mapCharSeq)
         .setArOfUnionOfStr(Arrays.asList(str))
-        .setArOfMapOfUnionOfArray(Arrays.asList(mapOfList));
+        .setArOfMapOfUnionOfArray(Arrays.asList(mapOfList)).setIntAr(Arrays.asList(1, 2, 3));
 
     charseqmethod.TestCollections testCollections = testCollectionsBuilder.build();
 
@@ -1815,6 +1832,7 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     RandomRecordGenerator generator = new RandomRecordGenerator();
     TestCollections instance = generator.randomSpecific(TestCollections.class, RecordGenerationConfig.newConfig().withAvoidNulls(true));
     TestCollections.Builder builder = TestCollections.newBuilder()
+        .setIntAr(instance.getIntAr())
         .setStr(instance.getStr())
         .setStrAr(instance.getStrAr())
         .setStrArAr(instance.getStrArAr())
@@ -1827,6 +1845,102 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     TestCollections.newBuilder(builder);
 
     compareIndexedRecords(instance, builder.build());
+  }
+
+  @Test
+  public void modifiablePrimitiveCollectionTest() {
+    String tba = "NewElement";
+    RandomRecordGenerator generator = new RandomRecordGenerator();
+    TestCollections instance = generator.randomSpecific(TestCollections.class, RecordGenerationConfig.newConfig().withAvoidNulls(true));
+
+    // array of string
+    instance.getStrAr().add(tba);
+    Assert.assertTrue(instance.getStrAr().contains(tba));
+    Assert.assertTrue(instance.strAr.contains(new Utf8(tba)));
+
+    // union[null, List<String>]
+    instance.getUnionOfArray().add(tba);
+    Assert.assertTrue(instance.getUnionOfArray().contains(tba));
+    Assert.assertTrue(instance.unionOfArray.contains(new Utf8(tba)));
+
+    // array (union[null, string])
+    instance.getArOfUnionOfStr().add(tba);
+    Assert.assertTrue(instance.getArOfUnionOfStr().contains(tba));
+    Assert.assertTrue(instance.arOfUnionOfStr.contains(new Utf8(tba)));
+
+
+    // Union (null, Map<String, String>)
+    instance.getUnionOfMap().put("key1", tba);
+    Assert.assertEquals(tba, instance.getUnionOfMap().get("key1"));
+    Assert.assertEquals(new Utf8(tba), instance.unionOfMap.get(new Utf8("key1")));
+
+    instance.getIntAr().add(Integer.MAX_VALUE);
+    Assert.assertEquals((int) instance.getIntAr().get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
+    Assert.assertEquals((int) instance.intAr.get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
+  }
+
+  @Test
+  public void modifiablePrimitiveCollectionTestForCharSeq() {
+    String tba = "NewElement";
+    RandomRecordGenerator generator = new RandomRecordGenerator();
+    charseqmethod.TestCollections instance = generator.randomSpecific(charseqmethod.TestCollections.class, RecordGenerationConfig.newConfig().withAvoidNulls(true));
+
+    // array of string
+    instance.getStrAr().add(tba);
+    Assert.assertTrue(instance.getStrAr().contains(tba));
+    Assert.assertTrue(instance.strAr.contains(new Utf8(tba)));
+
+    // union[null, List<String>]
+    instance.getUnionOfArray().add(tba);
+    Assert.assertTrue(instance.getUnionOfArray().contains(tba));
+    Assert.assertTrue(instance.unionOfArray.contains(new Utf8(tba)));
+
+    // array (union[null, string])
+    instance.getArOfUnionOfStr().add(tba);
+    Assert.assertTrue(instance.getArOfUnionOfStr().contains(tba));
+    Assert.assertTrue(instance.arOfUnionOfStr.contains(new Utf8(tba)));
+
+
+    // Union (null, Map<String, String>)
+    instance.getUnionOfMap().put("key1", tba);
+    Assert.assertEquals(tba, instance.getUnionOfMap().get("key1"));
+    Assert.assertEquals(new Utf8(tba), instance.unionOfMap.get(new Utf8("key1")));
+
+    instance.getIntAr().add(Integer.MAX_VALUE);
+    Assert.assertEquals((int) instance.getIntAr().get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
+    Assert.assertEquals((int) instance.intAr.get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
+  }
+
+  @Test
+  public void testCharSeqAccessorForNoUtf8() {
+    String tba = "NewElement";
+    RandomRecordGenerator generator = new RandomRecordGenerator();
+    noutf8.TestCollections instance = generator.randomSpecific(noutf8.TestCollections.class, RecordGenerationConfig.newConfig().withAvoidNulls(true));
+
+    // array of string
+    instance.getStrAr().add(tba);
+    Assert.assertTrue(instance.getStrAr().contains(tba));
+    Assert.assertTrue(instance.strAr.contains(new Utf8(tba)));
+
+    // union[null, List<String>]
+    instance.getUnionOfArray().add(tba);
+    Assert.assertTrue(instance.getUnionOfArray().contains(tba));
+    Assert.assertTrue(instance.unionOfArray.contains(new Utf8(tba)));
+
+    // array (union[null, string])
+    instance.getArOfUnionOfStr().add(tba);
+    Assert.assertTrue(instance.getArOfUnionOfStr().contains(tba));
+    Assert.assertTrue(instance.arOfUnionOfStr.contains(new Utf8(tba)));
+
+
+    // Union (null, Map<String, String>)
+    instance.getUnionOfMap().put("key1", tba);
+    Assert.assertEquals(tba, instance.getUnionOfMap().get("key1"));
+    Assert.assertEquals(new Utf8(tba), instance.unionOfMap.get(new Utf8("key1")));
+
+    instance.getIntAr().add(Integer.MAX_VALUE);
+    Assert.assertEquals((int) instance.getIntAr().get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
+    Assert.assertEquals((int) instance.intAr.get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
   }
 
   @BeforeClass
