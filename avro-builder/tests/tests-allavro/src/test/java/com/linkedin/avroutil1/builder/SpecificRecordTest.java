@@ -1946,6 +1946,46 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     instance.getIntAr().add(Integer.MAX_VALUE);
     Assert.assertEquals((int) instance.getIntAr().get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
     Assert.assertEquals((int) instance.intAr.get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
+
+    instance.getIntAr().add(Integer.MAX_VALUE);
+    Assert.assertEquals((int) instance.getIntAr().get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
+    Assert.assertEquals((int) instance.intAr.get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
+  }
+
+  @Test
+  public void testCharSeqAccessorForCharseq() {
+    String tba = "NewElement";
+    RandomRecordGenerator generator = new RandomRecordGenerator();
+    charseqmethod.TestCollections instance = generator.randomSpecific(charseqmethod.TestCollections.class, RecordGenerationConfig.newConfig().withAvoidNulls(true));
+
+    // array of string
+    instance.getStrAr().add(tba);
+    Assert.assertTrue(instance.getStrAr().contains(tba));
+    Assert.assertTrue(instance.strAr.contains(new Utf8(tba)));
+
+    // union[null, List<String>]
+    instance.getUnionOfArray().add(tba);
+    Assert.assertTrue(instance.getUnionOfArray().contains(tba));
+    Assert.assertTrue(instance.unionOfArray.contains(new Utf8(tba)));
+
+    // array (union[null, string])
+    instance.getArOfUnionOfStr().add(tba);
+    Assert.assertTrue(instance.getArOfUnionOfStr().contains(tba));
+    Assert.assertTrue(instance.arOfUnionOfStr.contains(new Utf8(tba)));
+
+
+    // Union (null, Map<String, String>)
+    instance.getUnionOfMap().put("key1", tba);
+    Assert.assertEquals(tba, instance.getUnionOfMap().get("key1"));
+    Assert.assertEquals(new Utf8(tba), instance.unionOfMap.get(new Utf8("key1")));
+
+    instance.getIntAr().add(Integer.MAX_VALUE);
+    Assert.assertEquals((int) instance.getIntAr().get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
+    Assert.assertEquals((int) instance.intAr.get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
+
+    instance.getIntAr().add(Integer.MAX_VALUE);
+    Assert.assertEquals((int) instance.getIntAr().get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
+    Assert.assertEquals((int) instance.intAr.get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
   }
 
   @BeforeClass
