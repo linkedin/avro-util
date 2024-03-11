@@ -1840,7 +1840,8 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
         .setArOfMap(instance.getArOfMap())
         .setUnionOfMap(instance.getUnionOfMap())
         .setArOfUnionOfStr(instance.getArOfUnionOfStr())
-        .setArOfMapOfUnionOfArray(instance.getArOfMapOfUnionOfArray());
+        .setArOfMapOfUnionOfArray(instance.getArOfMapOfUnionOfArray())
+        .setUnionOfIntMap(instance.getUnionOfIntMap());
 
     TestCollections.newBuilder(builder);
 
@@ -1914,6 +1915,11 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     instance.getIntAr().add(Integer.MAX_VALUE);
     Assert.assertEquals((int) instance.getIntAr().get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
     Assert.assertEquals((int) instance.intAr.get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
+
+    // Union (null, Map<String, Integer>)
+    instance.getUnionOfIntMap().put("key1", Integer.MAX_VALUE);
+    Assert.assertEquals(Integer.MAX_VALUE, (int) instance.getUnionOfIntMap().get("key1"));
+    Assert.assertEquals(Integer.MAX_VALUE, (int) instance.getUnionOfIntMap().get("key1"));
   }
 
   @Test
@@ -1947,9 +1953,10 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     Assert.assertEquals((int) instance.getIntAr().get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
     Assert.assertEquals((int) instance.intAr.get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
 
-    instance.getIntAr().add(Integer.MAX_VALUE);
-    Assert.assertEquals((int) instance.getIntAr().get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
-    Assert.assertEquals((int) instance.intAr.get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
+    // Union (null, Map<String, Integer>)
+    instance.getUnionOfIntMap().put("key1", Integer.MAX_VALUE);
+    Assert.assertEquals(Integer.MAX_VALUE, (int) instance.getUnionOfIntMap().get("key1"));
+    Assert.assertEquals(Integer.MAX_VALUE, (int) instance.getUnionOfIntMap().get("key1"));
   }
 
   @Test
@@ -1983,9 +1990,10 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     Assert.assertEquals((int) instance.getIntAr().get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
     Assert.assertEquals((int) instance.intAr.get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
 
-    instance.getIntAr().add(Integer.MAX_VALUE);
-    Assert.assertEquals((int) instance.getIntAr().get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
-    Assert.assertEquals((int) instance.intAr.get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
+    // Union (null, Map<String, Integer>)
+    instance.getUnionOfIntMap().put("key1", Integer.MAX_VALUE);
+    Assert.assertEquals(Integer.MAX_VALUE, (int) instance.getUnionOfIntMap().get("key1"));
+    Assert.assertEquals(Integer.MAX_VALUE, (int) instance.getUnionOfIntMap().get("key1"));
   }
 
   @BeforeClass

@@ -59,7 +59,7 @@ public class CollectionTransformerUtil {
       return null;
     }
     if (utf8Map.isEmpty()) {
-      return Collections.emptyMap();
+      return utf8Map;
     }
     Object val = utf8Map.values().iterator().next();
     if (val instanceof CharSequence) {
@@ -87,7 +87,7 @@ public class CollectionTransformerUtil {
       return null;
     }
     if (utf8Map.isEmpty()) {
-      return Collections.emptyMap();
+      return utf8Map;
     }
     Object val = utf8Map.values().iterator().next();
     if (val instanceof CharSequence) {
