@@ -7,7 +7,6 @@
 package com.linkedin.avroutil1.compatibility.collectiontransformer;
 
 import com.linkedin.avroutil1.compatibility.StringUtils;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.apache.avro.util.Utf8;
