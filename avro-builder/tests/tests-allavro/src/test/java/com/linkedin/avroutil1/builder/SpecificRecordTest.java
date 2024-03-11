@@ -1851,7 +1851,7 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
   public void modifiablePrimitiveCollectionTest() {
     String tba = "NewElement";
     RandomRecordGenerator generator = new RandomRecordGenerator();
-    TestCollections instance = generator.randomSpecific(TestCollections.class, RecordGenerationConfig.newConfig().withAvoidNulls(true));
+    vs18.TestCollections instance = generator.randomSpecific(vs18.TestCollections.class, RecordGenerationConfig.newConfig().withAvoidNulls(true));
 
     // array of string
     instance.getStrAr().add(tba);
@@ -1877,6 +1877,11 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     instance.getIntAr().add(Integer.MAX_VALUE);
     Assert.assertEquals((int) instance.getIntAr().get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
     Assert.assertEquals((int) instance.intAr.get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
+
+    // Union (null, Map<String, Integer>)
+    instance.getUnionOfIntMap().put("key1", Integer.MAX_VALUE);
+    Assert.assertEquals(Integer.MAX_VALUE, (int) instance.getUnionOfIntMap().get("key1"));
+    Assert.assertEquals(Integer.MAX_VALUE, (int) instance.getUnionOfIntMap().get("key1"));
   }
 
   @Test

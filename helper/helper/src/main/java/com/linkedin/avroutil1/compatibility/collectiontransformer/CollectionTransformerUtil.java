@@ -7,6 +7,7 @@
 package com.linkedin.avroutil1.compatibility.collectiontransformer;
 
 import com.linkedin.avroutil1.compatibility.StringUtils;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.apache.avro.util.Utf8;
@@ -53,19 +54,17 @@ public class CollectionTransformerUtil {
    * @param utf8Map map of {@link Utf8} objects
    * @return a {@link StringMapView} for the given map of {@link Utf8} objects
    */
-  public static Map<String, String> createStringMapView(Map<Utf8, Utf8> utf8Map) {
+  public static Map<String, String> createStringMapView(Map utf8Map) {
     if (utf8Map == null) {
       return null;
     }
-    return new StringMapView(utf8Map);
-  }
-
-  /**
-   * Returns a {@link CharSequenceMapView} for the given map of {@link Utf8} objects.
-   * @param utf8Map map of {@link Utf8} objects
-   * @return a {@link CharSequenceMapView} for the given map of {@link Utf8} objects
-   */
-  public static Map<Utf8, Utf8> createUtf8MapView(Map<Utf8, Utf8> utf8Map) {
+    if (utf8Map.isEmpty()) {
+      return Collections.emptyMap();
+    }
+    Object val = utf8Map.values().iterator().next();
+    if (val instanceof CharSequence) {
+      return new StringMapView(utf8Map);
+    }
     return utf8Map;
   }
 
@@ -74,10 +73,26 @@ public class CollectionTransformerUtil {
    * @param utf8Map map of {@link Utf8} objects
    * @return a {@link CharSequenceMapView} for the given map of {@link Utf8} objects
    */
-  public static Map<CharSequence, CharSequence> createCharSequenceMapView(Map<Utf8, Utf8> utf8Map) {
+  public static Map<Utf8, Utf8> createUtf8MapView(Map utf8Map) {
+    return utf8Map;
+  }
+
+  /**
+   * Returns a {@link CharSequenceMapView} for the given map of {@link Utf8} objects.
+   * @param utf8Map map of {@link Utf8} objects
+   * @return a {@link CharSequenceMapView} for the given map of {@link Utf8} objects
+   */
+  public static Map<CharSequence, CharSequence> createCharSequenceMapView(Map utf8Map) {
     if (utf8Map == null) {
       return null;
     }
-    return new CharSequenceMapView(utf8Map);
+    if (utf8Map.isEmpty()) {
+      return Collections.emptyMap();
+    }
+    Object val = utf8Map.values().iterator().next();
+    if (val instanceof CharSequence) {
+      return new CharSequenceMapView(utf8Map);
+    }
+    return utf8Map;
   }
 }

@@ -62,7 +62,7 @@ public class MapTransformer {
 
   public static Map getStringMap(Object mapObj, boolean isPrimitiveCollection) {
     if(isPrimitiveCollection) {
-      return CollectionTransformerUtil.createStringMapView((Map<Utf8, Utf8>) mapObj);
+      return CollectionTransformerUtil.createStringMapView((Map) mapObj);
     }
     if (mapObj == null) {
       return null;
