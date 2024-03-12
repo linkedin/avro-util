@@ -1374,6 +1374,7 @@ public class SpecificRecordTest {
       put("arOfUnionOfStr", "java.util.List<java.lang.String>");
       put("arOfMapOfUnionOfArray", "java.util.List<java.util.Map<java.lang.String, java.util.List<java.lang.String>>>");
       put("intAr", "java.util.List<java.lang.Integer>");
+      put("unionOfIntMap", "java.util.Map<java.lang.String, java.lang.Integer>");
     }};
 
     Map<String, String> vs14TestCollectionsCharSeqFieldToType = new LinkedHashMap<String, String>() {{
@@ -1386,6 +1387,7 @@ public class SpecificRecordTest {
       put("arOfUnionOfStr", "java.util.List<java.lang.CharSequence>");
       put("arOfMapOfUnionOfArray", "java.util.List<java.util.Map<java.lang.CharSequence, java.util.List<java.lang.CharSequence>>>");
       put("intAr", "java.util.List<java.lang.Integer>");
+      put("unionOfIntMap", "java.util.Map<java.lang.CharSequence, java.lang.Integer>");
     }};
 
     return new Object[][]{
@@ -1489,6 +1491,11 @@ public class SpecificRecordTest {
       put("key2", "value2");
     }};
 
+    Map<CharSequence, Integer> mapInt  = new HashMap<CharSequence, Integer>() {{
+      put("key1", 1);
+      put("key2", 2);
+    }};
+
     Map<CharSequence, List<CharSequence>> mapOfList = new HashMap<CharSequence, List<CharSequence>>() {{
       put("key1", Arrays.asList("val1", "val2"));
       put("key2", Arrays.asList("val10", "val20"));
@@ -1501,7 +1508,8 @@ public class SpecificRecordTest {
         .setArOfMap(Arrays.asList(mapCharSeq))
         .setUnionOfMap(mapCharSeq)
         .setArOfUnionOfStr(Arrays.asList(str))
-        .setArOfMapOfUnionOfArray(Arrays.asList(mapOfList)).setIntAr(Arrays.asList(1, 2, 3));
+        .setArOfMapOfUnionOfArray(Arrays.asList(mapOfList)).setIntAr(Arrays.asList(1, 2, 3))
+        .setUnionOfIntMap(mapInt);
 
     charseqmethod.TestCollections testCollections = testCollectionsBuilder.build();
 
@@ -1573,6 +1581,8 @@ public class SpecificRecordTest {
       Assert.assertTrue(((List<?>) ((Map.Entry)entry).getValue()).get(0) instanceof CharSequence);
       Assert.assertTrue(((List<?>) ((Map.Entry)entry).getValue()).get(0) instanceof Utf8);
     }
+
+    Assert.assertEquals(testCollections.getUnionOfIntMap().size(), 2);
   }
 
   @DataProvider
