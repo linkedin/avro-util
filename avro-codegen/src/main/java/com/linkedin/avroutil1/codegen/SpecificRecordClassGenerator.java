@@ -1116,7 +1116,7 @@ public class SpecificRecordClassGenerator {
         codeBlockBuilder.addStatement("$L.add($L)", arrayVarName, arrayElementVarName)
             .endControlFlow()
             .endControlFlow()
-            .addStatement("$L = com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.getUtf8List($L)", fieldName, arrayVarName);
+            .addStatement("$L = com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.convertToUtf8($L)", fieldName, arrayVarName);
 
         serializedCodeBlock = codeBlockBuilder.build().toString();
 
@@ -1165,7 +1165,7 @@ public class SpecificRecordClassGenerator {
         codeBlockBuilder.addStatement("$L.put($L,$L)", mapVarName, mapKeyVarName, mapValueVarName)
             .endControlFlow()
             .endControlFlow()
-            .addStatement("$L = com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.getUtf8Map($L)", fieldName, mapVarName);;
+            .addStatement("$L = com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.convertToUtf8($L)", fieldName, mapVarName);;
 
         serializedCodeBlock = codeBlockBuilder.build().toString();
 
@@ -1581,9 +1581,8 @@ public class SpecificRecordClassGenerator {
             SpecificRecordGeneratorUtil.isCollectionSchemaValuePrimitive(field.getSchema()));
       } else if (SpecificRecordGeneratorUtil.isMapTransformerApplicable(field.getSchema())) {
         switchBuilder.addStatement(
-            "case $L: return com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.get$LMap(this.$L, $L)",
-            fieldIndex++, config.getDefaultMethodStringRepresentation().getJsonValue(), escapedFieldName,
-            SpecificRecordGeneratorUtil.isCollectionSchemaValuePrimitive(field.getSchema()));
+            "case $L: return com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.get$LMap(this.$L)",
+            fieldIndex++, config.getDefaultMethodStringRepresentation().getJsonValue(), escapedFieldName);
       } else if (field.getSchema() != null && AvroType.UNION.equals(field.getSchema().type())) {
 
         switchBuilder.addStatement("case $L:", fieldIndex++);
@@ -1610,9 +1609,8 @@ public class SpecificRecordClassGenerator {
           } else if (SpecificRecordGeneratorUtil.isMapTransformerApplicable(unionMemberSchema.getSchema())) {
             switchBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName, Map.class)
                 .addStatement(
-                    "return com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.get$1LMap($2L, $3L)",
-                    config.getDefaultMethodStringRepresentation().getJsonValue(), escapedFieldName,
-                    SpecificRecordGeneratorUtil.isCollectionSchemaValuePrimitive(field.getSchema()))
+                    "return com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.get$1LMap($2L)",
+                    config.getDefaultMethodStringRepresentation().getJsonValue(), escapedFieldName)
                 .endControlFlow();
           }
         }
@@ -1826,9 +1824,9 @@ public class SpecificRecordClassGenerator {
           SpecificRecordGeneratorUtil.isCollectionSchemaValuePrimitive(field.getSchema()));
     } else if (SpecificRecordGeneratorUtil.isMapTransformerApplicable(field.getSchema())) {
       methodSpecBuilder.addStatement(
-          "return com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.get$LMap(this.$L, $L)",
+          "return com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.get$LMap(this.$L)",
           config.getDefaultMethodStringRepresentation().getJsonValue(),
-          escapedFieldName, SpecificRecordGeneratorUtil.isCollectionSchemaValuePrimitive(field.getSchema()));
+          escapedFieldName);
     } else if (field.getSchema() != null && AvroType.UNION.equals(field.getSchema().type())) {
 
       methodSpecBuilder.beginControlFlow("if (this.$1L == null)", escapedFieldName)
@@ -1852,9 +1850,8 @@ public class SpecificRecordClassGenerator {
         } else if (SpecificRecordGeneratorUtil.isMapTransformerApplicable(unionMemberSchema.getSchema())) {
           methodSpecBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName, Map.class)
               .addStatement(
-                  "return com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.get$2LMap($1L, $3L)",
-                  escapedFieldName, config.getDefaultMethodStringRepresentation().getJsonValue(),
-                  SpecificRecordGeneratorUtil.isCollectionSchemaValuePrimitive(field.getSchema()))
+                  "return com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.get$2LMap($1L)",
+                  escapedFieldName, config.getDefaultMethodStringRepresentation().getJsonValue())
               .endControlFlow();
         }
       }

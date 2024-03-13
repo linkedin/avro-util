@@ -78,6 +78,16 @@
         "type": "array",
         "items": "int"
       }
+    },
+    {
+      "name": "unionOfIntMap",
+      "type": [
+        "null",
+        {
+          "type": "map",
+          "values": "int"
+        }
+      ]
     }
   ],
   "type": "record"
