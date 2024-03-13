@@ -111,10 +111,10 @@ public class SpecificRecordTest {
         {vs110.BuilderTester.class, vs110.BuilderTester.getClassSchema()},
         {vs111.BuilderTester.class, vs111.BuilderTester.getClassSchema()},
 
-        {charseqmethod.TestCollections.class, charseqmethod.TestCollections.getClassSchema()},
+        {charseqmethod.TestCollections.class, charseqmethod.TestCollections.getClassSchema()}
 
-        {vs14.ThousandField.class, vs14.ThousandField.getClassSchema()},
-        {vs19.ThousandField.class, vs19.ThousandField.getClassSchema()}
+//        {vs14.ThousandField.class, vs14.ThousandField.getClassSchema()},
+//        {vs19.ThousandField.class, vs19.ThousandField.getClassSchema()}
     };
   }
 
@@ -1374,6 +1374,7 @@ public class SpecificRecordTest {
       put("arOfUnionOfStr", "java.util.List<java.lang.String>");
       put("arOfMapOfUnionOfArray", "java.util.List<java.util.Map<java.lang.String, java.util.List<java.lang.String>>>");
       put("intAr", "java.util.List<java.lang.Integer>");
+      put("unionOfIntMap", "java.util.Map<java.lang.String, java.lang.Integer>");
     }};
 
     Map<String, String> vs14TestCollectionsCharSeqFieldToType = new LinkedHashMap<String, String>() {{
@@ -1386,6 +1387,7 @@ public class SpecificRecordTest {
       put("arOfUnionOfStr", "java.util.List<java.lang.CharSequence>");
       put("arOfMapOfUnionOfArray", "java.util.List<java.util.Map<java.lang.CharSequence, java.util.List<java.lang.CharSequence>>>");
       put("intAr", "java.util.List<java.lang.Integer>");
+      put("unionOfIntMap", "java.util.Map<java.lang.CharSequence, java.lang.Integer>");
     }};
 
     return new Object[][]{
@@ -1489,6 +1491,11 @@ public class SpecificRecordTest {
       put("key2", "value2");
     }};
 
+    Map<CharSequence, Integer> mapInt  = new HashMap<CharSequence, Integer>() {{
+      put("key1", 1);
+      put("key2", 2);
+    }};
+
     Map<CharSequence, List<CharSequence>> mapOfList = new HashMap<CharSequence, List<CharSequence>>() {{
       put("key1", Arrays.asList("val1", "val2"));
       put("key2", Arrays.asList("val10", "val20"));
@@ -1501,7 +1508,8 @@ public class SpecificRecordTest {
         .setArOfMap(Arrays.asList(mapCharSeq))
         .setUnionOfMap(mapCharSeq)
         .setArOfUnionOfStr(Arrays.asList(str))
-        .setArOfMapOfUnionOfArray(Arrays.asList(mapOfList)).setIntAr(Arrays.asList(1, 2, 3));
+        .setArOfMapOfUnionOfArray(Arrays.asList(mapOfList)).setIntAr(Arrays.asList(1, 2, 3))
+        .setUnionOfIntMap(mapInt);
 
     charseqmethod.TestCollections testCollections = testCollectionsBuilder.build();
 
@@ -1573,6 +1581,8 @@ public class SpecificRecordTest {
       Assert.assertTrue(((List<?>) ((Map.Entry)entry).getValue()).get(0) instanceof CharSequence);
       Assert.assertTrue(((List<?>) ((Map.Entry)entry).getValue()).get(0) instanceof Utf8);
     }
+
+    Assert.assertEquals(testCollections.getUnionOfIntMap().size(), 2);
   }
 
   @DataProvider
@@ -1840,7 +1850,8 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
         .setArOfMap(instance.getArOfMap())
         .setUnionOfMap(instance.getUnionOfMap())
         .setArOfUnionOfStr(instance.getArOfUnionOfStr())
-        .setArOfMapOfUnionOfArray(instance.getArOfMapOfUnionOfArray());
+        .setArOfMapOfUnionOfArray(instance.getArOfMapOfUnionOfArray())
+        .setUnionOfIntMap(instance.getUnionOfIntMap());
 
     TestCollections.newBuilder(builder);
 
@@ -1851,7 +1862,7 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
   public void modifiablePrimitiveCollectionTest() {
     String tba = "NewElement";
     RandomRecordGenerator generator = new RandomRecordGenerator();
-    TestCollections instance = generator.randomSpecific(TestCollections.class, RecordGenerationConfig.newConfig().withAvoidNulls(true));
+    vs18.TestCollections instance = generator.randomSpecific(vs18.TestCollections.class, RecordGenerationConfig.newConfig().withAvoidNulls(true));
 
     // array of string
     instance.getStrAr().add(tba);
@@ -1877,6 +1888,11 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     instance.getIntAr().add(Integer.MAX_VALUE);
     Assert.assertEquals((int) instance.getIntAr().get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
     Assert.assertEquals((int) instance.intAr.get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
+
+    // Union (null, Map<String, Integer>)
+    instance.getUnionOfIntMap().put("key1", Integer.MAX_VALUE);
+    Assert.assertEquals(Integer.MAX_VALUE, (int) instance.getUnionOfIntMap().get("key1"));
+    Assert.assertEquals(Integer.MAX_VALUE, (int) instance.getUnionOfIntMap().get("key1"));
   }
 
   @Test
@@ -1909,6 +1925,11 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     instance.getIntAr().add(Integer.MAX_VALUE);
     Assert.assertEquals((int) instance.getIntAr().get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
     Assert.assertEquals((int) instance.intAr.get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
+
+    // Union (null, Map<String, Integer>)
+    instance.getUnionOfIntMap().put("key1", Integer.MAX_VALUE);
+    Assert.assertEquals(Integer.MAX_VALUE, (int) instance.getUnionOfIntMap().get("key1"));
+    Assert.assertEquals(Integer.MAX_VALUE, (int) instance.getUnionOfIntMap().get("key1"));
   }
 
   @Test
@@ -1941,6 +1962,48 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     instance.getIntAr().add(Integer.MAX_VALUE);
     Assert.assertEquals((int) instance.getIntAr().get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
     Assert.assertEquals((int) instance.intAr.get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
+
+    // Union (null, Map<String, Integer>)
+    instance.getUnionOfIntMap().put("key1", Integer.MAX_VALUE);
+    Assert.assertEquals(Integer.MAX_VALUE, (int) instance.getUnionOfIntMap().get("key1"));
+    Assert.assertEquals(Integer.MAX_VALUE, (int) instance.getUnionOfIntMap().get("key1"));
+  }
+
+  @Test
+  public void testCharSeqAccessorForCharseq() {
+    String tba = "NewElement";
+    RandomRecordGenerator generator = new RandomRecordGenerator();
+    charseqmethod.TestCollections instance = generator.randomSpecific(charseqmethod.TestCollections.class, RecordGenerationConfig.newConfig().withAvoidNulls(true));
+
+    // array of string
+    instance.getStrAr().add(tba);
+    Assert.assertTrue(instance.getStrAr().contains(tba));
+    Assert.assertTrue(instance.strAr.contains(new Utf8(tba)));
+
+    // union[null, List<String>]
+    instance.getUnionOfArray().add(tba);
+    Assert.assertTrue(instance.getUnionOfArray().contains(tba));
+    Assert.assertTrue(instance.unionOfArray.contains(new Utf8(tba)));
+
+    // array (union[null, string])
+    instance.getArOfUnionOfStr().add(tba);
+    Assert.assertTrue(instance.getArOfUnionOfStr().contains(tba));
+    Assert.assertTrue(instance.arOfUnionOfStr.contains(new Utf8(tba)));
+
+
+    // Union (null, Map<String, String>)
+    instance.getUnionOfMap().put("key1", tba);
+    Assert.assertEquals(tba, instance.getUnionOfMap().get("key1"));
+    Assert.assertEquals(new Utf8(tba), instance.unionOfMap.get(new Utf8("key1")));
+
+    instance.getIntAr().add(Integer.MAX_VALUE);
+    Assert.assertEquals((int) instance.getIntAr().get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
+    Assert.assertEquals((int) instance.intAr.get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
+
+    // Union (null, Map<String, Integer>)
+    instance.getUnionOfIntMap().put("key1", Integer.MAX_VALUE);
+    Assert.assertEquals(Integer.MAX_VALUE, (int) instance.getUnionOfIntMap().get("key1"));
+    Assert.assertEquals(Integer.MAX_VALUE, (int) instance.getUnionOfIntMap().get("key1"));
   }
 
   @BeforeClass

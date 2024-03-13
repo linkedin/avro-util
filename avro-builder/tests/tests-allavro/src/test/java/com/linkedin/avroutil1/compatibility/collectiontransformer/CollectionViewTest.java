@@ -151,7 +151,7 @@ public class CollectionViewTest {
     }
     // utf8 map should contain the same 3 elements
     for (String key : keys) {
-      Assert.assertTrue(utf8Map.containsKey(new Utf8(key)));
+      Assert.assertTrue(utf8Map.containsKey(key));
     }
 
     // remove from map
@@ -220,7 +220,7 @@ public class CollectionViewTest {
     }
     // utf8 map should contain the same 3 elements
     for (CharSequence key : keys) {
-      Assert.assertTrue(utf8Map.containsKey(new Utf8(String.valueOf(key))));
+      Assert.assertTrue(utf8Map.containsKey(key));
     }
 
     // remove from view
