@@ -1493,6 +1493,11 @@ public class SpecificRecordTest {
       put("key1", Arrays.asList("val1", "val2"));
       put("key2", Arrays.asList("val10", "val20"));
     }};
+
+    Map<CharSequence, Integer> mapOfInt = new HashMap<CharSequence, Integer>() {{
+      put("key1", 1);
+      put("key2", 2);
+    }};
     charseqmethod.TestCollections.Builder testCollectionsBuilder = charseqmethod.TestCollections.newBuilder()
         .setStr(str)
         .setStrAr(Arrays.asList(str))
@@ -1501,7 +1506,8 @@ public class SpecificRecordTest {
         .setArOfMap(Arrays.asList(mapCharSeq))
         .setUnionOfMap(mapCharSeq)
         .setArOfUnionOfStr(Arrays.asList(str))
-        .setArOfMapOfUnionOfArray(Arrays.asList(mapOfList)).setIntAr(Arrays.asList(1, 2, 3));
+        .setArOfMapOfUnionOfArray(Arrays.asList(mapOfList)).setIntAr(Arrays.asList(1, 2, 3))
+        .setUnionOfIntMap(mapOfInt);
 
     charseqmethod.TestCollections testCollections = testCollectionsBuilder.build();
 
@@ -1840,7 +1846,8 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
         .setArOfMap(instance.getArOfMap())
         .setUnionOfMap(instance.getUnionOfMap())
         .setArOfUnionOfStr(instance.getArOfUnionOfStr())
-        .setArOfMapOfUnionOfArray(instance.getArOfMapOfUnionOfArray());
+        .setArOfMapOfUnionOfArray(instance.getArOfMapOfUnionOfArray())
+        .setUnionOfIntMap(instance.getUnionOfIntMap());
 
     TestCollections.newBuilder(builder);
 
