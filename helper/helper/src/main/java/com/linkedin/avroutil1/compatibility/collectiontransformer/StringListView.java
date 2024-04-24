@@ -6,6 +6,7 @@
 package com.linkedin.avroutil1.compatibility.collectiontransformer;
 
 import java.util.AbstractList;
+import java.util.Iterator;
 import org.apache.avro.util.Utf8;
 
 
@@ -60,5 +61,27 @@ public class StringListView extends AbstractList<String> {
   @Override
   public boolean remove(Object o) {
     return _utf8List.remove(new Utf8(o.toString()));
+  }
+
+  @Override
+  public void clear() {
+    _utf8List.clear();
+  }
+
+  @Override
+  public Iterator<String> iterator() {
+    return new Iterator<String>() {
+      private final Iterator<Utf8> _iter = _utf8List.iterator();
+
+      @Override
+      public boolean hasNext() {
+        return _iter.hasNext();
+      }
+
+      @Override
+      public String next() {
+        return String.valueOf(_iter.next());
+      }
+    };
   }
 }
