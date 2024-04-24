@@ -55,4 +55,9 @@ public class Utf8ListView extends AbstractList<Utf8> {
   public boolean remove(Object o) {
     return utf8List.remove(o);
   }
+
+  @Override
+  public void clear() {
+    utf8List.clear();
+  }
 }

@@ -61,4 +61,9 @@ public class StringListView extends AbstractList<String> {
   public boolean remove(Object o) {
     return _utf8List.remove(new Utf8(o.toString()));
   }
+
+  @Override
+  public void clear() {
+    _utf8List.clear();
+  }
 }
