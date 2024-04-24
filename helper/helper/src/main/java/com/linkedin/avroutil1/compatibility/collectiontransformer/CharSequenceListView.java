@@ -6,6 +6,7 @@
 package com.linkedin.avroutil1.compatibility.collectiontransformer;
 
 import java.util.AbstractList;
+import java.util.Iterator;
 import org.apache.avro.util.Utf8;
 
 
@@ -64,5 +65,22 @@ public class CharSequenceListView extends AbstractList<CharSequence> {
   @Override
   public void clear() {
     utf8List.clear();
+  }
+
+  @Override
+  public Iterator<CharSequence> iterator() {
+    return new Iterator<CharSequence>() {
+      private final Iterator<Utf8> iter = utf8List.iterator();
+
+      @Override
+      public boolean hasNext() {
+        return iter.hasNext();
+      }
+
+      @Override
+      public CharSequence next() {
+        return String.valueOf(iter.next());
+      }
+    };
   }
 }
