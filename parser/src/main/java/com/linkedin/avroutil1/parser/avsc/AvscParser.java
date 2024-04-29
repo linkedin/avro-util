@@ -144,13 +144,12 @@ public class AvscParser {
 
     public AvscParseResult parse(File avscFile) {
         AvscFileParseContext context = new AvscFileParseContext(avscFile, this);
-        Reader reader;
-        try {
-            reader = new FileReader(avscFile);
+        ;
+        try (Reader reader = new FileReader(avscFile)) {
+            return parse(context, reader);
         } catch (FileNotFoundException e) {
             throw new IllegalStateException("input file " + avscFile.getAbsolutePath() + " not found", e);
         }
-        return parse(context, reader);
     }
 
     private AvscParseResult parse(AvscFileParseContext context, Reader reader) {
