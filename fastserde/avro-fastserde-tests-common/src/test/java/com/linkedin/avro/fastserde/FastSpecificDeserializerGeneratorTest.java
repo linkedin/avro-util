@@ -48,7 +48,6 @@ import org.apache.avro.util.Utf8;
 import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import org.testng.collections.Lists;
 import org.testng.internal.collections.Pair;
@@ -904,20 +903,11 @@ public class FastSpecificDeserializerGeneratorTest {
 
     // when (serialized reach record is read with schema without 'nestedField')
     BinaryDecoder decoder = AvroCompatibilityHelper.newBinaryDecoder(serializedReachRecord);
-    /*- Below is commented out due to fast-serde compilation error:
-    avro-util/fastserde/avro-fastserde-tests111/./build/codegen/java/com/linkedin/avro/fastserde/generated/deserialization/AVRO_1_11/RecordWithOneNullableText_SpecificDeserializer_1753906665_1009500237.java:98: error: cannot find symbol
-                deserializeDeeplyNestedRecord0(null, (decoder), (customization));
-                                                                 ^
-    symbol:   variable customization
-    location: class RecordWithOneNullableText_SpecificDeserializer_1753906665_1009500237
-
-
     RecordWithOneNullableText liteRecord = decodeRecordFast(readerSchema, writerSchema, decoder);
 
     // then (fast-serde compilation and deserialization succeeds)
     Assert.assertNotNull(liteRecord);
     Assert.assertEquals(getField(liteRecord, "text").toString(), "I am from reach record");
-    */
   }
 
   /**

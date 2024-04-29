@@ -9,13 +9,13 @@ import org.apache.avro.Schema;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.util.Utf8;
 
-public class RecordWithOneNullableText_SpecificDeserializer_1753906665_1009500237
+public class RecordWithOneNullableText_SpecificDeserializer_2111230429_1009500237
     implements FastDeserializer<RecordWithOneNullableText>
 {
 
     private final Schema readerSchema;
 
-    public RecordWithOneNullableText_SpecificDeserializer_1753906665_1009500237(Schema readerSchema) {
+    public RecordWithOneNullableText_SpecificDeserializer_2111230429_1009500237(Schema readerSchema) {
         this.readerSchema = readerSchema;
     }
 
@@ -84,10 +84,10 @@ public class RecordWithOneNullableText_SpecificDeserializer_1753906665_100950023
                 throw new RuntimeException(("Illegal union index for 'sampleText1': "+ unionIndex2));
             }
         }
-        populate_NestedRecord0((decoder));
+        populate_NestedRecord0((customization), (decoder));
     }
 
-    private void populate_NestedRecord0(Decoder decoder)
+    private void populate_NestedRecord0(DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex3 = (decoder.readIndex());

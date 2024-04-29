@@ -2,7 +2,7 @@
   "type": "record",
   "name": "RecordWithOneNullableTextAndDeeplyNestedRecord",
   "namespace": "com.linkedin.avro.fastserde.generated.avro",
-  "doc": "Used in tests of fast-serde to verify populate-methods works correctly with DatumReaderCustomization. Just like OuterRecordWith2NestedBetaRecords but with one field more.",
+  "doc": "Used in tests of fast-serde to verify populate-methods works correctly with DatumReaderCustomization.",
   "fields": [
     {
       "name": "text",
@@ -48,7 +48,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "doc": "One more level of nested-records is needed to generate deserialize*() method called by populate*() method"
             }
           ]
         }

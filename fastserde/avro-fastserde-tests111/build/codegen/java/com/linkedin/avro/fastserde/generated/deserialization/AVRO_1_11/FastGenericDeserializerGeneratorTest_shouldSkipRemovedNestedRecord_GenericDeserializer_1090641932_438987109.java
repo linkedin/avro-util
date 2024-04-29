@@ -82,10 +82,10 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord_
         throws IOException
     {
         decoder.skipString();
-        populate_subSubRecord0((decoder));
+        populate_subSubRecord0((customization), (decoder));
     }
 
-    private void populate_subSubRecord0(Decoder decoder)
+    private void populate_subSubRecord0(DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         decoder.skipString();

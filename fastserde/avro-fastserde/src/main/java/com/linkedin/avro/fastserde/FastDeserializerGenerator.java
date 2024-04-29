@@ -370,16 +370,17 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
         popMethod._throws(IOException.class);
         if (recordAction.getShouldRead()) {
           popMethod.param(recordClass, recordName);
-          popMethod.param(codeModel.ref(DatumReaderCustomization.class), VAR_NAME_FOR_CUSTOMIZATION);
         }
+        popMethod.param(codeModel.ref(DatumReaderCustomization.class), VAR_NAME_FOR_CUSTOMIZATION);
         popMethod.param(Decoder.class, DECODER);
         popMethodBody = popMethod.body();
 
         JInvocation invocation = methodBody.invoke(popMethod);
         if (recordAction.getShouldRead()) {
           invocation.arg(JExpr.direct(recordName));
-          invocation.arg(customizationSupplier.get());
         }
+        // even if recordAction.getShouldRead() == false we need to generate 'customization' argument for javac purposes
+        invocation.arg(customizationSupplier.get());
         invocation.arg(JExpr.direct(DECODER));
       }
       FieldAction action = seekFieldAction(recordAction.getShouldRead(), field, actionIterator);
