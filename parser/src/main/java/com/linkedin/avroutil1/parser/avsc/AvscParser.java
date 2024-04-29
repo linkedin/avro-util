@@ -149,6 +149,8 @@ public class AvscParser {
             return parse(context, reader);
         } catch (FileNotFoundException e) {
             throw new IllegalStateException("input file " + avscFile.getAbsolutePath() + " not found", e);
+        } catch (IOException e) {
+            throw new IllegalStateException("error reading input file " + avscFile.getAbsolutePath(), e);
         }
     }
 
