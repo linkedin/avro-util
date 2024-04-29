@@ -268,8 +268,10 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
     if (methodAlreadyDefined(recordWriterSchema, effectiveRecordReaderSchema, recordAction.getShouldRead())) {
       JMethod method = getMethod(recordWriterSchema, effectiveRecordReaderSchema, recordAction.getShouldRead());
       updateActualExceptions(method);
-      JExpression readingExpression = JExpr.invoke(method).arg(reuseSupplier.get()).arg(JExpr.direct(DECODER)).arg(
-          customizationSupplier.get());
+      JExpression readingExpression = JExpr.invoke(method)
+              .arg(reuseSupplier.get())
+              .arg(JExpr.direct(DECODER))
+              .arg(customizationSupplier.get());
       if (recordAction.getShouldRead()) {
         putRecordIntoParent.accept(parentBody, readingExpression);
       } else {
@@ -304,9 +306,15 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
     schemaAssistant.resetExceptionsFromStringable();
 
     if (recordAction.getShouldRead()) {
-      putRecordIntoParent.accept(parentBody, JExpr.invoke(method).arg(reuseSupplier.get()).arg(JExpr.direct(DECODER)).arg(customizationSupplier.get()));
+      putRecordIntoParent.accept(parentBody, JExpr.invoke(method)
+              .arg(reuseSupplier.get())
+              .arg(JExpr.direct(DECODER))
+              .arg(customizationSupplier.get()));
     } else {
-      parentBody.invoke(method).arg(reuseSupplier.get()).arg(JExpr.direct(DECODER)).arg(customizationSupplier.get());
+      parentBody.invoke(method)
+              .arg(reuseSupplier.get())
+              .arg(JExpr.direct(DECODER))
+              .arg(customizationSupplier.get());
     }
 
     JBlock methodBody = method.body();

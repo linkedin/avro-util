@@ -1,0 +1,17 @@
+{
+  "type": "record",
+  "name": "RecordWithOneNullableText",
+  "namespace": "com.linkedin.avro.fastserde.generated.avro",
+  "doc": "Used in tests of fast-serde to verify populate-methods works correctly with DatumReaderCustomization.",
+  "fields": [
+    {
+      "name": "text",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Corresponds with recordWith2FieldsAndDeeplyNestedRecord.avsc"
+    }
+  ]
+}
