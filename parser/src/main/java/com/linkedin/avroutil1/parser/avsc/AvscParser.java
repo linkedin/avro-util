@@ -144,7 +144,6 @@ public class AvscParser {
 
     public AvscParseResult parse(File avscFile) {
         AvscFileParseContext context = new AvscFileParseContext(avscFile, this);
-        ;
         try (Reader reader = new FileReader(avscFile)) {
             return parse(context, reader);
         } catch (FileNotFoundException e) {
