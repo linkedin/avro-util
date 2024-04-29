@@ -55,6 +55,7 @@ import com.linkedin.avroutil1.util.Util;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Path;
 import java.util.HashMap;
