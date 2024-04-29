@@ -55,6 +55,7 @@ import com.linkedin.avroutil1.util.Util;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -144,13 +145,13 @@ public class AvscParser {
 
     public AvscParseResult parse(File avscFile) {
         AvscFileParseContext context = new AvscFileParseContext(avscFile, this);
-        Reader reader;
-        try {
-            reader = new FileReader(avscFile);
+        try (Reader reader = new FileReader(avscFile)) {
+            return parse(context, reader);
         } catch (FileNotFoundException e) {
             throw new IllegalStateException("input file " + avscFile.getAbsolutePath() + " not found", e);
+        } catch (IOException e) {
+            throw new IllegalStateException("error reading input file " + avscFile.getAbsolutePath(), e);
         }
-        return parse(context, reader);
     }
 
     private AvscParseResult parse(AvscFileParseContext context, Reader reader) {
