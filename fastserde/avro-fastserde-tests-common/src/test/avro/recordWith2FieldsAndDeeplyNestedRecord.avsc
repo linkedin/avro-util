@@ -1,0 +1,60 @@
+{
+  "type": "record",
+  "name": "RecordWithOneNullableTextAndDeeplyNestedRecord",
+  "namespace": "com.linkedin.avro.fastserde.generated.avro",
+  "doc": "Used in tests of fast-serde to verify populate-methods works correctly with DatumReaderCustomization.",
+  "fields": [
+    {
+      "name": "text",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Corresponds with recordWith2Fields.avsc"
+    },
+    {
+      "name": "nestedField",
+      "type": [
+        "null",
+        {
+          "name": "NestedRecord",
+          "type": "record",
+          "fields": [
+            {
+              "name": "sampleText1",
+              "type": [
+                "null",
+                "string"
+              ],
+              "default": null,
+              "doc": "field just to make crowd and force FastDeserializerGenerator to create populate*() method"
+            },
+            {
+              "name": "deeplyNestedField",
+              "type": [
+                "null",
+                {
+                  "name": "DeeplyNestedRecord",
+                  "type": "record",
+                  "fields": [
+                    {
+                      "name": "deeplyDeeplyNestedText",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "default": null
+                    }
+                  ]
+                }
+              ],
+              "doc": "One more level of nested-records is needed to generate deserialize*() method called by populate*() method"
+            }
+          ]
+        }
+      ],
+      "default": null
+    }
+  ]
+}

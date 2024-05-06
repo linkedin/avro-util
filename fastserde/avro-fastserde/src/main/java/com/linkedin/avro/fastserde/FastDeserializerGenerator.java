@@ -268,8 +268,10 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
     if (methodAlreadyDefined(recordWriterSchema, effectiveRecordReaderSchema, recordAction.getShouldRead())) {
       JMethod method = getMethod(recordWriterSchema, effectiveRecordReaderSchema, recordAction.getShouldRead());
       updateActualExceptions(method);
-      JExpression readingExpression = JExpr.invoke(method).arg(reuseSupplier.get()).arg(JExpr.direct(DECODER)).arg(
-          customizationSupplier.get());
+      JExpression readingExpression = JExpr.invoke(method)
+              .arg(reuseSupplier.get())
+              .arg(JExpr.direct(DECODER))
+              .arg(customizationSupplier.get());
       if (recordAction.getShouldRead()) {
         putRecordIntoParent.accept(parentBody, readingExpression);
       } else {
@@ -304,9 +306,15 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
     schemaAssistant.resetExceptionsFromStringable();
 
     if (recordAction.getShouldRead()) {
-      putRecordIntoParent.accept(parentBody, JExpr.invoke(method).arg(reuseSupplier.get()).arg(JExpr.direct(DECODER)).arg(customizationSupplier.get()));
+      putRecordIntoParent.accept(parentBody, JExpr.invoke(method)
+              .arg(reuseSupplier.get())
+              .arg(JExpr.direct(DECODER))
+              .arg(customizationSupplier.get()));
     } else {
-      parentBody.invoke(method).arg(reuseSupplier.get()).arg(JExpr.direct(DECODER)).arg(customizationSupplier.get());
+      parentBody.invoke(method)
+              .arg(reuseSupplier.get())
+              .arg(JExpr.direct(DECODER))
+              .arg(customizationSupplier.get());
     }
 
     JBlock methodBody = method.body();
@@ -362,16 +370,17 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
         popMethod._throws(IOException.class);
         if (recordAction.getShouldRead()) {
           popMethod.param(recordClass, recordName);
-          popMethod.param(codeModel.ref(DatumReaderCustomization.class), VAR_NAME_FOR_CUSTOMIZATION);
         }
+        popMethod.param(codeModel.ref(DatumReaderCustomization.class), VAR_NAME_FOR_CUSTOMIZATION);
         popMethod.param(Decoder.class, DECODER);
         popMethodBody = popMethod.body();
 
         JInvocation invocation = methodBody.invoke(popMethod);
         if (recordAction.getShouldRead()) {
           invocation.arg(JExpr.direct(recordName));
-          invocation.arg(customizationSupplier.get());
         }
+        // even if recordAction.getShouldRead() == false we need to generate 'customization' argument for javac purposes
+        invocation.arg(customizationSupplier.get());
         invocation.arg(JExpr.direct(DECODER));
       }
       FieldAction action = seekFieldAction(recordAction.getShouldRead(), field, actionIterator);

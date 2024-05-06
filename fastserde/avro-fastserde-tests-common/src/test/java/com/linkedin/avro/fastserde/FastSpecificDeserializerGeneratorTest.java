@@ -9,6 +9,8 @@ import com.linkedin.avro.fastserde.generated.avro.MyRecordV2;
 import com.linkedin.avro.fastserde.generated.avro.OuterRecordWithNestedNotNullComplexFields;
 import com.linkedin.avro.fastserde.generated.avro.OuterRecordWithNestedNullableComplexFields;
 import com.linkedin.avro.fastserde.generated.avro.RecordWithLargeUnionField;
+import com.linkedin.avro.fastserde.generated.avro.RecordWithOneNullableText;
+import com.linkedin.avro.fastserde.generated.avro.RecordWithOneNullableTextAndDeeplyNestedRecord;
 import com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord;
 import com.linkedin.avro.fastserde.generated.avro.SplitRecordTest1;
 import com.linkedin.avro.fastserde.generated.avro.SplitRecordTest2;
@@ -110,7 +112,7 @@ public class FastSpecificDeserializerGeneratorTest {
     classLoader = URLClassLoader.newInstance(new URL[]{tempDir.toURI().toURL()},
         FastSpecificDeserializerGeneratorTest.class.getClassLoader());
 
-    // In order to test the functionallity of the record split we set an unusually low number
+    // In order to test the functionality of the record split we set an unusually low number
     FastGenericDeserializerGenerator.setFieldsPerPopulationMethod(2);
   }
 
@@ -877,6 +879,35 @@ public class FastSpecificDeserializerGeneratorTest {
     // then: deserialized outerRecord2 is the same as outerRecord1 (initial one)
     Assert.assertNotNull(outerRecord2);
     Assert.assertEquals(outerRecord2.toString(), outerRecord1.toString());
+  }
+
+  @Test(groups = {"deserializationTest"})
+  void deserializeWithSchemaMissingDeeplyNestedRecord() throws IOException {
+    // duplicates prepare() just in case - .avsc files used here assume FIELDS_PER_POPULATION_METHOD is 2
+    FastDeserializerGenerator.setFieldsPerPopulationMethod(2);
+
+    // given (serialized record with more fields than we want to read)
+    RecordWithOneNullableTextAndDeeplyNestedRecord reachRecord = new RecordWithOneNullableTextAndDeeplyNestedRecord();
+    setField(reachRecord, "text", "I am from reach record");
+
+    Schema writerSchema = RecordWithOneNullableTextAndDeeplyNestedRecord.SCHEMA$;
+    Schema readerSchema = RecordWithOneNullableText.SCHEMA$;
+
+    SpecificDatumWriter<RecordWithOneNullableTextAndDeeplyNestedRecord> datumWriter = new SpecificDatumWriter<>(writerSchema);
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    BinaryEncoder binaryEncoder = AvroCompatibilityHelper.newBinaryEncoder(baos);
+    datumWriter.write(reachRecord, binaryEncoder);
+    binaryEncoder.flush();
+
+    byte[] serializedReachRecord = baos.toByteArray();
+
+    // when (serialized reach record is read with schema without 'nestedField')
+    BinaryDecoder decoder = AvroCompatibilityHelper.newBinaryDecoder(serializedReachRecord);
+    RecordWithOneNullableText liteRecord = decodeRecordFast(readerSchema, writerSchema, decoder);
+
+    // then (fast-serde compilation and deserialization succeeds)
+    Assert.assertNotNull(liteRecord);
+    Assert.assertEquals(getField(liteRecord, "text").toString(), "I am from reach record");
   }
 
   /**
