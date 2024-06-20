@@ -2,7 +2,7 @@ plugins {
     id "java-library"
     id "checkstyle"
     id "jacoco"
-    id "com.github.johnrengelman.shadow"
+    id "com.github.johnrengelman.shadow" version "8.1.1"
 }
 
 jar {
@@ -14,7 +14,7 @@ jar {
 }
 
 shadowJar {
-    classifier = "all"
+    archiveClassifier = "all"
 
     //manifests is inherited from "normal" jar above
 
@@ -47,7 +47,7 @@ publishing {
             version project.version
 
             from components.java
-            artifact source: shadowJar, classifier: 'all'
+            //the "-all" fat-jar is already published, and listing it here will cause an error over the dup
             artifact sourceJar
             artifact javadocJar
 
