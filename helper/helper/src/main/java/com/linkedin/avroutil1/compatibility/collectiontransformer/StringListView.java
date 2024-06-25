@@ -98,9 +98,4 @@ public class StringListView extends AbstractList<String> {
       }
     };
   }
-
-  @Override
-  public boolean equals(Object o) {
-    return o instanceof StringListView && _utf8List.equals(((StringListView) o)._utf8List);
-  }
 }
