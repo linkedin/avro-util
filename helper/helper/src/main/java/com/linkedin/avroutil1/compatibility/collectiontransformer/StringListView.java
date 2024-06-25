@@ -38,9 +38,19 @@ public class StringListView extends AbstractList<String> {
     return previousValue;
   }
 
+  public String set(int index, Utf8 element) {
+    String previousValue = String.valueOf(_utf8List.get(index));
+    _utf8List.set(index, element);
+    return previousValue;
+  }
+
   @Override
   public void add(int index, String element) {
     _utf8List.add(index, new Utf8(element));
+  }
+
+  public void add(int index, Utf8 element) {
+    _utf8List.add(index, element);
   }
 
   @Override
@@ -48,11 +58,39 @@ public class StringListView extends AbstractList<String> {
     return _utf8List.add(new Utf8(element));
   }
 
+  public boolean add(Utf8 element) {
+    return _utf8List.add(element);
+  }
+
   @Override
   public boolean addAll(int index, java.util.Collection<? extends String> c) {
     boolean modified = false;
     for (String element : c) {
       _utf8List.add(index++, new Utf8(element));
+      modified = true;
+    }
+    return modified;
+  }
+
+  /**
+   * Overloaded method to add all Utf8 elements of a collection at a specific index.
+   */
+  public boolean addAll(int index, java.util.List<? extends Utf8> c) {
+    boolean modified = false;
+    for (Utf8 element : c) {
+      _utf8List.add(index++, element);
+      modified = true;
+    }
+    return modified;
+  }
+
+  /**
+   * Overloaded method to add all Utf8 elements of a set at a specific index.
+   */
+  public boolean addAll(int index, java.util.Set<? extends Utf8> c) {
+    boolean modified = false;
+    for (Utf8 element : c) {
+      _utf8List.add(index++, element);
       modified = true;
     }
     return modified;
