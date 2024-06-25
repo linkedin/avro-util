@@ -72,6 +72,30 @@ public class StringListView extends AbstractList<String> {
     return modified;
   }
 
+  /**
+   * Overloaded method to add all Utf8 elements of a collection at a specific index.
+   */
+  public boolean addAll(int index, java.util.List<? extends Utf8> c) {
+    boolean modified = false;
+    for (Utf8 element : c) {
+      _utf8List.add(index++, element);
+      modified = true;
+    }
+    return modified;
+  }
+
+  /**
+   * Overloaded method to add all Utf8 elements of a set at a specific index.
+   */
+  public boolean addAll(int index, java.util.Set<? extends Utf8> c) {
+    boolean modified = false;
+    for (Utf8 element : c) {
+      _utf8List.add(index++, element);
+      modified = true;
+    }
+    return modified;
+  }
+
   @Override
   public boolean remove(Object o) {
     return _utf8List.remove(new Utf8(o.toString()));
