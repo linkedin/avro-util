@@ -38,14 +38,28 @@ public class StringListView extends AbstractList<String> {
     return previousValue;
   }
 
+  public String set(int index, Utf8 element) {
+    String previousValue = String.valueOf(_utf8List.get(index));
+    _utf8List.set(index, element);
+    return previousValue;
+  }
+
   @Override
   public void add(int index, String element) {
     _utf8List.add(index, new Utf8(element));
   }
 
+  public void add(int index, Utf8 element) {
+    _utf8List.add(index, element);
+  }
+
   @Override
   public boolean add(String element) {
     return _utf8List.add(new Utf8(element));
+  }
+
+  public boolean add(Utf8 element) {
+    return _utf8List.add(element);
   }
 
   @Override
@@ -83,5 +97,10 @@ public class StringListView extends AbstractList<String> {
         return String.valueOf(_iter.next());
       }
     };
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    return o instanceof StringListView && _utf8List.equals(((StringListView) o)._utf8List);
   }
 }

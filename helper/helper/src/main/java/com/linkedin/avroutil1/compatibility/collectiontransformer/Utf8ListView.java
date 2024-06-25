@@ -66,4 +66,9 @@ public class Utf8ListView extends AbstractList<Utf8> {
   public Iterator<Utf8> iterator() {
     return utf8List.iterator();
   }
+
+  @Override
+  public boolean equals(Object o) {
+    return o instanceof Utf8ListView && utf8List.equals(((Utf8ListView) o).utf8List);
+  }
 }

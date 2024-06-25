@@ -83,4 +83,9 @@ public class CharSequenceListView extends AbstractList<CharSequence> {
       }
     };
   }
+
+  @Override
+  public boolean equals(Object o) {
+    return o instanceof CharSequenceListView && utf8List.equals(((CharSequenceListView) o).utf8List);
+  }
 }
