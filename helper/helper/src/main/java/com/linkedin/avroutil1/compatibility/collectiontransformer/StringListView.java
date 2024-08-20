@@ -5,15 +5,17 @@
  */
 package com.linkedin.avroutil1.compatibility.collectiontransformer;
 
+import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.Iterator;
+import java.util.stream.Collectors;
 import org.apache.avro.util.Utf8;
 
 
 /**
  * View of Utf8 List to allow get as String while still allowing set to reflect on the original object.
  */
-public class StringListView extends AbstractList<String> {
+public class StringListView extends AbstractList<String> implements Serializable {
   // Not final to allow addition
   private java.util.List<Utf8> _utf8List;
 
@@ -101,5 +103,13 @@ public class StringListView extends AbstractList<String> {
         return String.valueOf(_iter.next());
       }
     };
+  }
+
+  /**
+   * Custom serialization to write the list of strings instead of the list of Utf8.
+   * ObjectOutputStream seeks this method to serialize the object.
+   */
+  private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+    out.writeObject(_utf8List.stream().map(Utf8::toString).collect(Collectors.toList()));
   }
 }
