@@ -11,10 +11,15 @@ import com.linkedin.avroutil1.compatibility.AvroRecordUtil;
 import com.linkedin.avroutil1.compatibility.RandomRecordGenerator;
 import com.linkedin.avroutil1.compatibility.RecordGenerationConfig;
 import com.linkedin.avroutil1.compatibility.StringConverterUtil;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -1944,6 +1949,20 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     instance.getIntAr().add(Integer.MAX_VALUE);
     Assert.assertEquals((int) instance.getIntAr().get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
     Assert.assertEquals((int) instance.intAr.get(instance.getIntAr().size() - 1), Integer.MAX_VALUE);
+  }
+
+  @Test
+  public void testIfSerializable() throws IOException {
+    Path tempFile = Files.createTempFile(null, ".tmp");
+    try (FileOutputStream fileOutputStream = new FileOutputStream(tempFile.toFile());
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
+      vs19.TestCollections instance = new RandomRecordGenerator().randomSpecific(vs19.TestCollections.class,
+          RecordGenerationConfig.newConfig().withAvoidNulls(true));
+
+      objectOutputStream.writeObject(instance.getStrAr());
+    } finally {
+      Files.delete(tempFile);
+    }
   }
 
   @BeforeClass
