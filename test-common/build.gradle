@@ -13,5 +13,5 @@ dependencies {
   //we use this module as an easy way to "export" libraries for use by other test modules
   api "commons-io:commons-io:2.6"
   api "net.openhft:compiler:2.4.1"
-  api "org.testng:testng:6.14.3"
+  api "org.testng:testng:7.5"
 }
