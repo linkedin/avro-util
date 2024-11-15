@@ -54,7 +54,7 @@ compileJava.dependsOn runOwnCodegen
 dependencies {
     codegen project(":avro-builder:builder")
 
-    implementation ("org.apache.avro:avro:1.11.3") {
+    implementation ("org.apache.avro:avro:1.11.4") {
         exclude group: "org.mortbay.jetty"
         exclude group: "org.apache.velocity"
         exclude group: "commons-lang"

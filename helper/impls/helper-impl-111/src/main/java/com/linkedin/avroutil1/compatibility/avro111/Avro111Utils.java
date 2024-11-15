@@ -7,8 +7,10 @@
 package com.linkedin.avroutil1.compatibility.avro111;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.specific.SpecificData;
+import org.apache.avro.specific.SpecificDatumReader;
 
 
 /**
@@ -19,6 +21,8 @@ public class Avro111Utils {
   private final static boolean IS_AT_LEAST_1_11_1;
   private final static boolean IS_AT_LEAST_1_11_2;
   private final static boolean IS_AT_LEAST_1_11_3;
+
+  private final static boolean IS_AT_LEAST_1_11_4;
 
   static {
     Class<?>[] inners = GenericDatumReader.class.getDeclaredClasses(); //never null
@@ -55,6 +59,19 @@ public class Avro111Utils {
       //expected in avro < 1.11.3
     }
     IS_AT_LEAST_1_11_3 = found;
+
+    found = false;
+    //added in https://issues.apache.org/jira/browse/AVRO-3985
+    //see https://github.com/apache/avro/pull/2980/files#diff-95af304493048b22c3dda8fbfc7efb0e0c1c5e876f0234c2b8d0635bb2bcb494R151
+    Method[] methods = SpecificDatumReader.class.getDeclaredMethods();
+    for (Method method : methods) {
+      if ("getTrustedPackages".equals(method.getName())) {
+        found = true;
+        break;
+      }
+    }
+
+    IS_AT_LEAST_1_11_4 = found;
   }
 
   private Avro111Utils() {
@@ -71,5 +88,9 @@ public class Avro111Utils {
 
   public static boolean isAtLeast1113() {
     return IS_AT_LEAST_1_11_3;
+  }
+
+  public static boolean isAtLeast1114() {
+    return IS_AT_LEAST_1_11_4;
   }
 }
