@@ -138,10 +138,10 @@ dependencies {
     exclude group: "org.slf4j"
   }
 
-  avro111 ("org.apache.avro:avro:1.11.3") {
+  avro111 ("org.apache.avro:avro:1.11.4") {
     exclude group: "org.slf4j"
   }
-  avro111 ("org.apache.avro:avro-compiler:1.11.3") {
+  avro111 ("org.apache.avro:avro-compiler:1.11.4") {
     exclude group: "org.slf4j"
   }
 }

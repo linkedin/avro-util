@@ -161,15 +161,25 @@ compileJava.dependsOn runVanillaAvroCodegen, runCompatAvroCodegen, runCompatAvro
 jar.dependsOn runResourceGeneration
 
 dependencies {
-  codegen "org.apache.avro:avro-tools:1.11.3"
-  codegen "org.apache.avro:avro-compiler:1.11.3"
+  // trevni-avro and trevni-core no longer publish -test jars, but avro-tools still tries to pull in these test jars
+  // gradle does not support custom resolution strategy for classifier. The blocks below are to do a workaround by
+  // excluding trevni-avro and trevni-core first and then add them back without the test classifier
+  codegen ("org.apache.avro:avro-tools:1.11.4") {
+    exclude group: "org.apache.avro", module: "trevni-avro"
+    exclude group: "org.apache.avro", module: "trevni-core"
+  }
+  codegen ("org.apache.avro:trevni-avro:1.11.4") {
+    exclude group: "org.apache.avro", module: "trevni-core"
+  }
+  codegen "org.apache.avro:trevni-core:1.11.4"
+  codegen "org.apache.avro:avro-compiler:1.11.4"
   codegen files('../codegenClasspath')
   codegen project(":helper:tests:helper-tests-common")
   codegen project(":helper:helper")
 
   //required because generated code depends on the helper
   implementation project(":helper:helper")
-  implementation "org.apache.avro:avro:1.11.3"
+  implementation "org.apache.avro:avro:1.11.4"
 
   //this block required for resource generation code
   implementation project(":helper:tests:helper-tests-common")

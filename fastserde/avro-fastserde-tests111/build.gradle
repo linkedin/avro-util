@@ -32,7 +32,7 @@ dependencies {
   testImplementation "org.apache.commons:commons-lang3:3.4"
   testImplementation "com.sun.codemodel:codemodel:2.6"
 
-  testImplementation ("org.apache.avro:avro:1.11.3") {
+  testImplementation ("org.apache.avro:avro:1.11.4") {
     exclude group: "org.slf4j"
   }
 
@@ -44,8 +44,19 @@ dependencies {
   testImplementation 'org.slf4j:slf4j-simple:1.7.14'
 
   codegen project(":helper:helper")
-  codegen "org.apache.avro:avro-tools:1.11.3"
-  codegen "org.apache.avro:avro-compiler:1.11.3"
+
+  // trevni-avro and trevni-core no longer publish -test jars, but avro-tools still tries to pull in these test jars
+  // gradle does not support custom resolution strategy for classifier. The blocks below are to do a workaround by
+  // excluding trevni-avro and trevni-core first and then add them back without the test classifier
+  codegen ("org.apache.avro:avro-tools:1.11.4") {
+    exclude group: "org.apache.avro", module: "trevni-avro"
+    exclude group: "org.apache.avro", module: "trevni-core"
+  }
+  codegen ("org.apache.avro:trevni-avro:1.11.4") {
+    exclude group: "org.apache.avro", module: "trevni-core"
+  }
+  codegen "org.apache.avro:trevni-core:1.11.4"
+  codegen "org.apache.avro:avro-compiler:1.11.4"
 }
 
 test {

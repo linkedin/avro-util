@@ -14,19 +14,25 @@ public class Avro111UtilsTest {
 
   @Test
   public void testAvro1111Detection() throws Exception {
-    //at time of writing we use 1.11.3
+    //at time of writing we use 1.11.4
     Assert.assertTrue(Avro111Utils.isAtLeast1111());
   }
 
   @Test
   public void testAvro1112Detection() throws Exception {
-    //at time of writing we use 1.11.3
+    //at time of writing we use 1.11.4
     Assert.assertTrue(Avro111Utils.isAtLeast1112());
   }
 
   @Test
   public void testAvro1113Detection() throws Exception {
-    //at time of writing we use 1.11.3
+    //at time of writing we use 1.11.4
     Assert.assertTrue(Avro111Utils.isAtLeast1113());
+  }
+
+  @Test
+  public void testAvro1114Detection() throws Exception {
+    //at time of writing we use 1.11.4
+    Assert.assertTrue(Avro111Utils.isAtLeast1114());
   }
 }
