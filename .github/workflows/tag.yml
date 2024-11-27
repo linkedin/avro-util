@@ -25,7 +25,7 @@ jobs:
       run: ./gradlew clean build javadoc --stacktrace --warning-mode all --no-daemon --parallel
     - name: Branch tag
       id: branch_tag
-      run: echo ::set-output name=RELEASE_TAG::${GITHUB_REF#refs/tags/}
+      run: echo "RELEASE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
     - name: Publish to Jfrog
       env:
         JFROG_USER: ${{ secrets.JFROG_USER }}
