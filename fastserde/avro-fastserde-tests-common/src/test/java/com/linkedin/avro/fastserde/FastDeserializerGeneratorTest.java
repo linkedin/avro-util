@@ -18,7 +18,7 @@ import org.testng.annotations.Test;
 
 public class FastDeserializerGeneratorTest {
   @Test
-  public void testSchemaForFixedField() throws IOException, InterruptedException {
+  public void testDeserializationOfFixedField() throws IOException, InterruptedException {
     if (Utils.isAvro14()) {
       throw new SkipException("Avro 1.4 doesn't have schemas for GenericFixed type");
     }
@@ -27,7 +27,9 @@ public class FastDeserializerGeneratorTest {
     Schema readerSchema = AvroCompatibilityHelper.parse("{\"type\":\"record\",\"name\":\"topLevelRecord\",\"fields\":[{\"name\":\"fixedField\",\"type\":{\"type\":\"fixed\",\"name\":\"FixedType\",\"size\":5,\"newField\": \"New field to change something\"}}]}");
 
     GenericRecord writtenRecord = new GenericData.Record(writerSchema);
-    writtenRecord.put("fixedField", AvroCompatibilityHelper.newFixed(writerSchema.getField("fixedField").schema(), new byte[]{1,2,3,4,5}));
+
+    byte[] writtenFixedFieldData = new byte[]{1,2,3,4,5};
+    writtenRecord.put("fixedField", AvroCompatibilityHelper.newFixed(writerSchema.getField("fixedField").schema(), writtenFixedFieldData));
 
     byte[] writeBytes = serialize(writtenRecord);
 
@@ -42,6 +44,7 @@ public class FastDeserializerGeneratorTest {
 
     Schema fixedFieldSchema = AvroSchemaUtil.getDeclaredSchema(fixedField);
     Assert.assertNotNull(fixedFieldSchema, "Schema for field must always be set.");
+    Assert.assertEquals(fixedField.bytes(), writtenFixedFieldData);
   }
 
   private byte[] serialize(GenericRecord record) throws IOException {
