@@ -214,7 +214,12 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
         processEnum(readerSchema, methodBody, action, putExpressionIntoParent);
         break;
       case FIXED:
-        processFixed(schema, methodBody, action, putExpressionIntoParent, reuseSupplier);
+        // to preserve reader fixed specific options use reader field schema
+        if (action.getShouldRead() && readerSchema != null && Schema.Type.FIXED.equals(readerSchema.getType())) {
+          processFixed(readerSchema, methodBody, action, putExpressionIntoParent, reuseSupplier);
+        } else {
+          processFixed(schema, methodBody, action, putExpressionIntoParent, reuseSupplier);
+        }
         break;
       default:
         // to preserve reader string specific options use reader field schema
