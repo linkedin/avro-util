@@ -156,7 +156,7 @@ public class SpecificRecordGenerationConfig {
     this.defaultFieldStringRepresentation = defaultFieldStringRepresentation;
     this.defaultMethodStringRepresentation = defaultMethodStringRepresentation;
     this.minimumSupportedAvroVersion = minimumSupportedAvroVersion;
-    this.utf8EncodingPutByIndex = true;  //  Question: Should this also be false and maybe overridden?
+    this.utf8EncodingPutByIndex = true;
     this.utf8EncodingEnabled = true;
   }
 
