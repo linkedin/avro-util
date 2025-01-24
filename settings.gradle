@@ -86,17 +86,17 @@ include 'avro-builder:tests:tests-allavro'
 
 include 'demos:spotbugs-demo'
 
-//include 'fastserde:avro-fastserde'
-//include 'fastserde:avro-fastserde-jmh'
-//include 'fastserde:avro-fastserde-tests-common'
-//include 'fastserde:avro-fastserde-tests14'
-//include 'fastserde:avro-fastserde-tests15'
-//include 'fastserde:avro-fastserde-tests16'
-//include 'fastserde:avro-fastserde-tests17'
-//include 'fastserde:avro-fastserde-tests18'
-//include 'fastserde:avro-fastserde-tests19'
-//include 'fastserde:avro-fastserde-tests110'
-//include 'fastserde:avro-fastserde-tests111'
+include 'fastserde:avro-fastserde'
+include 'fastserde:avro-fastserde-jmh'
+include 'fastserde:avro-fastserde-tests-common'
+include 'fastserde:avro-fastserde-tests14'
+include 'fastserde:avro-fastserde-tests15'
+include 'fastserde:avro-fastserde-tests16'
+include 'fastserde:avro-fastserde-tests17'
+include 'fastserde:avro-fastserde-tests18'
+include 'fastserde:avro-fastserde-tests19'
+include 'fastserde:avro-fastserde-tests110'
+include 'fastserde:avro-fastserde-tests111'
 
 gradleEnterprise {
   buildScan {

@@ -43,8 +43,7 @@ task runOwnCodegen {
                 "--input", "$projectDir/src/main/avro",
                 "--output", "$buildDir/generated/sources/avro/java/main",
                 "--generator", "AVRO_UTIL",
-                "--minAvroVer", "1.4",
-                "--enableUtf8Encoding", "true"
+                "--minAvroVer", "1.4"
             ]
         }
     }

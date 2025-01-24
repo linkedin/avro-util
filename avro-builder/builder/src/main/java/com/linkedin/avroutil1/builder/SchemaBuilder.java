@@ -52,7 +52,6 @@ public class SchemaBuilder {
     long optionParseStart = System.currentTimeMillis();
     OptionParser parser = new OptionParser();
 
-    // ADD NEW OPTION HERE(1 option)
     OptionSpec<String> inputOpt = parser.accepts("input", "Schema or directory of schemas to compile [REQUIRED]")
         .withRequiredArg().required()
         .describedAs("file");
