@@ -240,7 +240,6 @@ public class SpecificRecordGeneratorUtil {
    * Handles list , union of list
    * @return true for List of String and List of Union of String
    */
-  // change this
   public static boolean isListTransformerApplicableForSchema(AvroSchema schema, boolean disableStringTransform) {
     if (disableStringTransform || schema == null) {
       return false;
@@ -248,7 +247,6 @@ public class SpecificRecordGeneratorUtil {
     return isNullUnionOf(AvroType.ARRAY, schema) && schemaContainsString(schema);
   }
 
-  // change this
   public static boolean isMapTransformerApplicable(AvroSchema schema, boolean disableTransform) {
     if (disableTransform) {
       return false;
