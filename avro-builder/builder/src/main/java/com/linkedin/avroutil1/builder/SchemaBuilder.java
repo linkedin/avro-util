@@ -51,6 +51,8 @@ public class SchemaBuilder {
 
     long optionParseStart = System.currentTimeMillis();
     OptionParser parser = new OptionParser();
+
+    // ADD NEW OPTION HERE(1 option)
     OptionSpec<String> inputOpt = parser.accepts("input", "Schema or directory of schemas to compile [REQUIRED]")
         .withRequiredArg().required()
         .describedAs("file");
@@ -112,6 +114,11 @@ public class SchemaBuilder {
                 + " Use with care! Make sure your classpath only contains the schemas you want to use.")
         .withOptionalArg()
         .defaultsTo("false")
+        .describedAs("true/false");
+
+    OptionSpec<String> enableUtf8Encoding = parser.accepts("enableUtf8Encoding", "adds codegen of UTF8 type for strings.")
+        .withOptionalArg()
+        .defaultsTo("true")
         .describedAs("true/false");
 
     //allow plugins to add CLI options
@@ -238,6 +245,13 @@ public class SchemaBuilder {
       skipCodegenIfSchemaOnClasspath = Boolean.TRUE.equals(Boolean.parseBoolean(value));
     }
 
+    boolean handleUtf8Encoding = true;
+    if (options.has(enableUtf8Encoding)) {
+      String value = options.valueOf(enableUtf8Encoding);
+      handleUtf8Encoding = Boolean.TRUE.equals(Boolean.parseBoolean(value));
+      handleUtf8EncodingInPutByIndex = handleUtf8Encoding;
+    }
+
     //allow plugins to parse and validate their own added options
     for (BuilderPlugin plugin : plugins) {
       plugin.parseAndValidateOptions(options);
@@ -258,7 +272,8 @@ public class SchemaBuilder {
         minAvroVer,
         handleAvro702,
         handleUtf8EncodingInPutByIndex,
-        skipCodegenIfSchemaOnClasspath
+        skipCodegenIfSchemaOnClasspath,
+        handleUtf8Encoding
     );
 
     opConfig.validateParameters();

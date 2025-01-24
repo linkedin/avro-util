@@ -240,12 +240,19 @@ public class SpecificRecordGeneratorUtil {
    * Handles list , union of list
    * @return true for List of String and List of Union of String
    */
-  public static boolean isListTransformerApplicableForSchema(AvroSchema schema) {
-    if(schema == null) return false;
+  // change this
+  public static boolean isListTransformerApplicableForSchema(AvroSchema schema, boolean disableStringTransform) {
+    if (disableStringTransform || schema == null) {
+      return false;
+    }
     return isNullUnionOf(AvroType.ARRAY, schema) && schemaContainsString(schema);
   }
 
-  public static boolean isMapTransformerApplicable(AvroSchema schema) {
+  // change this
+  public static boolean isMapTransformerApplicable(AvroSchema schema, boolean disableTransform) {
+    if (disableTransform) {
+      return false;
+    }
     return isNullUnionOf(AvroType.MAP, schema);
   }
 
@@ -273,8 +280,8 @@ public class SpecificRecordGeneratorUtil {
    * schema type must be either a List of Map (or a null union of List/Map)
    * @return true if schema value is primitive
    */
-  public static boolean isCollectionSchemaValuePrimitive(AvroSchema schema) {
-    if(!isListTransformerApplicableForSchema(schema) && !isMapTransformerApplicable(schema)) {
+  public static boolean isCollectionSchemaValuePrimitive(AvroSchema schema, boolean disableStringTransform) {
+    if(!isListTransformerApplicableForSchema(schema, disableStringTransform) && !isMapTransformerApplicable(schema, disableStringTransform)) {
       return false;
     }
     if (schema.type().equals(AvroType.UNION)) {
