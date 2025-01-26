@@ -85,7 +85,7 @@ task copyCompatAvroCodeToResources(type: Copy) {
 
 task runResourceGeneration(type: JavaExec) {
   classpath configurations.resourcegen + sourceSets.main.output
-  main = "com.linkedin.avroutil1.compatibility.avro16.Generate16TestResources"
+  mainClass = "com.linkedin.avroutil1.compatibility.avro16.Generate16TestResources"
   args "$buildDir/generated/resources"
   debug false
 }
