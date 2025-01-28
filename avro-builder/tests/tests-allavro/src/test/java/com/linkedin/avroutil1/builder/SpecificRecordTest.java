@@ -1976,21 +1976,23 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     noutf8encoding.TestCollections instance = generator.randomSpecific(noutf8encoding.TestCollections.class,
         RecordGenerationConfig.newConfig().withAvoidNulls(true));
 
-    // fields should contain String values
+    // String fields should contain CharSequence values
     Assert.assertTrue(instance.str instanceof CharSequence);
 
-    // getter should return String values
+    // String getter should return CharSequence
     Assert.assertTrue(instance.getStr() instanceof CharSequence);
 
-    // Set String and Get String
+    // Setting and getting String type or Utf8 type values, both should work on CharSequence fields.
+    // Verifies direct field access and through getter, both works.
     String strValue = "strValue";
     Utf8 utf8Value = new Utf8("utf8Value");
 
     instance.getStrAr().add(strValue);
     instance.getStrAr().add(utf8Value);
-    //instance
+
     Assert.assertTrue(instance.getStrAr().contains(strValue));
     Assert.assertTrue(instance.strAr.contains(strValue));
+
     Assert.assertTrue(instance.getStrAr().contains(utf8Value));
     Assert.assertTrue(instance.strAr.contains(utf8Value));
 
@@ -1998,6 +2000,7 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     instance.getStrArAr().add(Arrays.asList(strValue));
     Assert.assertTrue(instance.getStrArAr().get(instance.getStrArAr().size() - 1).contains(strValue));
     Assert.assertTrue(instance.strArAr.get(instance.getStrArAr().size() - 1).contains(strValue));
+    
     instance.getStrArAr().add(Arrays.asList(utf8Value));
     Assert.assertTrue(instance.getStrArAr().get(instance.getStrArAr().size() - 1).contains(utf8Value));
     Assert.assertTrue(instance.strArAr.get(instance.getStrArAr().size() - 1).contains(utf8Value));

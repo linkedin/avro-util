@@ -115,7 +115,7 @@ public class SchemaBuilder {
         .defaultsTo("false")
         .describedAs("true/false");
 
-    OptionSpec<String> enableUtf8Encoding = parser.accepts("enableUtf8Encoding", "adds codegen of UTF8 type for strings.")
+    OptionSpec<String> enableUtf8Encoding = parser.accepts("enableUtf8Encoding", "enable encoding strings to their utf8 values throughout generated code.")
         .withOptionalArg()
         .defaultsTo("true")
         .describedAs("true/false");
@@ -248,7 +248,9 @@ public class SchemaBuilder {
     if (options.has(enableUtf8Encoding)) {
       String value = options.valueOf(enableUtf8Encoding);
       handleUtf8Encoding = Boolean.TRUE.equals(Boolean.parseBoolean(value));
-      handleUtf8EncodingInPutByIndex = handleUtf8Encoding;
+      if (methodStringRepresentation.equals(StringRepresentation.CharSeq) && stringRepresentation.equals(StringRepresentation.CharSeq)) {
+        handleUtf8EncodingInPutByIndex = handleUtf8Encoding;
+      }
     }
 
     //allow plugins to parse and validate their own added options
