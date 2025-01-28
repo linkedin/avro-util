@@ -248,7 +248,7 @@ public class SchemaBuilder {
     if (options.has(enableUtf8Encoding)) {
       String value = options.valueOf(enableUtf8Encoding);
       handleUtf8Encoding = Boolean.TRUE.equals(Boolean.parseBoolean(value));
-      if (methodStringRepresentation.equals(StringRepresentation.CharSeq) && stringRepresentation.equals(StringRepresentation.CharSeq)) {
+      if (methodStringRepresentation.equals(StringRepresentation.CharSequence) && stringRepresentation.equals(StringRepresentation.CharSequence)) {
         handleUtf8EncodingInPutByIndex = handleUtf8Encoding;
       }
     }
