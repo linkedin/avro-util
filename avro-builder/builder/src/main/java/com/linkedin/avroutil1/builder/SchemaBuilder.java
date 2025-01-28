@@ -115,7 +115,9 @@ public class SchemaBuilder {
         .defaultsTo("false")
         .describedAs("true/false");
 
-    OptionSpec<String> enableUtf8Encoding = parser.accepts("enableUtf8Encoding", "enable encoding strings to their utf8 values throughout generated code.")
+    OptionSpec<String> enableUtf8Encoding = parser.accepts("enableUtf8Encoding",
+            "enable encoding strings to their utf8 values throughout generated code. This overrides enableUtf8EncodingInPutByIndex."
+                + "Requires --stringRepresentation and --methodStringRepresentation to be CharSequence")
         .withOptionalArg()
         .defaultsTo("true")
         .describedAs("true/false");
@@ -248,8 +250,14 @@ public class SchemaBuilder {
     if (options.has(enableUtf8Encoding)) {
       String value = options.valueOf(enableUtf8Encoding);
       handleUtf8Encoding = Boolean.TRUE.equals(Boolean.parseBoolean(value));
-      if (methodStringRepresentation.equals(StringRepresentation.CharSequence) && stringRepresentation.equals(StringRepresentation.CharSequence)) {
-        handleUtf8EncodingInPutByIndex = handleUtf8Encoding;
+      if (handleUtf8Encoding) {
+        if (methodStringRepresentation.equals(StringRepresentation.CharSequence) && stringRepresentation.equals(
+            StringRepresentation.CharSequence)) {
+          handleUtf8EncodingInPutByIndex = handleUtf8Encoding;
+        } else {
+          throw new IllegalArgumentException("--methodStringRepresentation and --stringRepresentation both need to be"
+              + " CharSequence for enableUtf8Encoding to be supported.");
+        }
       }
     }
 
