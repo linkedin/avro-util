@@ -1,0 +1,23 @@
+{
+  "type": "record",
+  "namespace": "noutf8encoding",
+  "name": "HasNoSimpleString",
+  "fields": [
+    {
+      "name": "one",
+      "type": "float"
+    },
+    {
+      "name": "two",
+      "type": ["string"]
+    },
+    {
+      "name": "three",
+      "type": "int"
+    },
+    {
+      "name": "four",
+      "type": "boolean"
+    }
+  ]
+}

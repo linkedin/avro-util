@@ -1965,6 +1965,81 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     }
   }
 
+  /**
+   * Tests that both String and UTF8 fields are supported in the generated classes and can be accessed
+   * interchangeably directly and through getters.
+   * @throws IOException
+   */
+  @Test
+  public void testNoUtf8Encoding() throws IOException {
+    RandomRecordGenerator generator = new RandomRecordGenerator();
+    noutf8encoding.TestCollections instance = generator.randomSpecific(noutf8encoding.TestCollections.class,
+        RecordGenerationConfig.newConfig().withAvoidNulls(true));
+
+    // String fields should contain CharSequence values
+    Assert.assertTrue(instance.str instanceof CharSequence);
+
+    // String getter should return CharSequence
+    Assert.assertTrue(instance.getStr() instanceof CharSequence);
+
+    // Setting and getting String type or Utf8 type values, both should work on CharSequence fields.
+    // Verifies direct field access and through getter, both works.
+    String strValue = "strValue";
+    Utf8 utf8Value = new Utf8("utf8Value");
+
+    instance.getStrAr().add(strValue);
+    instance.getStrAr().add(utf8Value);
+
+    Assert.assertTrue(instance.getStrAr().contains(strValue));
+    Assert.assertTrue(instance.strAr.contains(strValue));
+
+    Assert.assertTrue(instance.getStrAr().contains(utf8Value));
+    Assert.assertTrue(instance.strAr.contains(utf8Value));
+
+    // array (array (union[null, string])
+    instance.getStrArAr().add(Arrays.asList(strValue));
+    Assert.assertTrue(instance.getStrArAr().get(instance.getStrArAr().size() - 1).contains(strValue));
+    Assert.assertTrue(instance.strArAr.get(instance.getStrArAr().size() - 1).contains(strValue));
+    
+    instance.getStrArAr().add(Arrays.asList(utf8Value));
+    Assert.assertTrue(instance.getStrArAr().get(instance.getStrArAr().size() - 1).contains(utf8Value));
+    Assert.assertTrue(instance.strArAr.get(instance.getStrArAr().size() - 1).contains(utf8Value));
+
+    // union[null, List<String>]
+    instance.getUnionOfArray().add(strValue);
+    Assert.assertTrue(instance.getUnionOfArray().contains(strValue));
+    Assert.assertTrue(instance.unionOfArray.contains(strValue));
+
+    instance.getUnionOfArray().add(utf8Value);
+    Assert.assertTrue(instance.getUnionOfArray().contains(utf8Value));
+    Assert.assertTrue(instance.unionOfArray.contains(utf8Value));
+
+    // array (union[null, string])
+    instance.getArOfUnionOfStr().add(strValue);
+    Assert.assertTrue(instance.getArOfUnionOfStr().contains(strValue));
+    Assert.assertTrue(instance.arOfUnionOfStr.contains(strValue));
+
+    instance.getArOfUnionOfStr().add(utf8Value);
+    Assert.assertTrue(instance.getArOfUnionOfStr().contains(utf8Value));
+    Assert.assertTrue(instance.arOfUnionOfStr.contains(utf8Value));
+
+    // Union (null, Map<String, String>)
+    Map<CharSequence, CharSequence> mapOfStr = new HashMap() {{
+      put("key1", strValue);
+      put("key2", utf8Value);
+    }};
+    instance.setUnionOfMap(mapOfStr);
+    Assert.assertTrue(instance.getUnionOfMap().containsValue(strValue));
+    Assert.assertTrue(instance.getUnionOfMap().containsValue(utf8Value));
+
+    // array (Map<String, List<String>>)
+    instance.setArOfMap(Arrays.asList(mapOfStr));
+    Assert.assertTrue(instance.getArOfMap().get(0).containsValue(strValue));
+    Assert.assertTrue(instance.arOfMap.get(0).containsValue(strValue));
+    Assert.assertTrue(instance.getArOfMap().get(0).containsValue(utf8Value));
+    Assert.assertTrue(instance.arOfMap.get(0).containsValue(strValue));
+  }
+
   @BeforeClass
   public void setup() {
     System.setProperty("org.apache.avro.specific.use_custom_coders", "true");

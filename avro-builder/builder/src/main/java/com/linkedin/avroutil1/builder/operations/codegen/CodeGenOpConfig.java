@@ -49,6 +49,7 @@ public class CodeGenOpConfig {
   boolean avro702Handling;
   boolean utf8EncodingPutByIndex;
   boolean skipCodegenIfSchemaOnClasspath;
+  boolean enableUtf8Encoding;
 
   @Deprecated
   public CodeGenOpConfig(
@@ -77,6 +78,7 @@ public class CodeGenOpConfig {
     this.minAvroVersion = minAvroVersion;
     this.avro702Handling = avro702Handling;
     this.utf8EncodingPutByIndex = true;
+    this.enableUtf8Encoding = true;
   }
 
   @Deprecated
@@ -107,6 +109,7 @@ public class CodeGenOpConfig {
     this.minAvroVersion = minAvroVersion;
     this.avro702Handling = avro702Handling;
     this.utf8EncodingPutByIndex = true;
+    this.enableUtf8Encoding = true;
   }
 
   @Deprecated
@@ -136,6 +139,7 @@ public class CodeGenOpConfig {
     this.minAvroVersion = minAvroVersion;
     this.avro702Handling = avro702Handling;
     this.utf8EncodingPutByIndex = handleUtf8EncodingInPutByIndex;
+    this.enableUtf8Encoding = true;
   }
 
   @Deprecated
@@ -167,8 +171,10 @@ public class CodeGenOpConfig {
     this.avro702Handling = avro702Handling;
     this.utf8EncodingPutByIndex = handleUtf8EncodingInPutByIndex;
     this.skipCodegenIfSchemaOnClasspath = skipCodegenIfSchemaOnClasspath;
+    this.enableUtf8Encoding = true;
   }
 
+  @Deprecated
   public CodeGenOpConfig(List<File> inputRoots,
       List<File> nonImportableSourceRoots,
       boolean includeClasspath,
@@ -199,6 +205,41 @@ public class CodeGenOpConfig {
     this.avro702Handling = avro702Handling;
     this.utf8EncodingPutByIndex = handleUtf8EncodingInPutByIndex;
     this.skipCodegenIfSchemaOnClasspath = skipCodegenIfSchemaOnClasspath;
+    this.enableUtf8Encoding = true;
+  }
+
+  public CodeGenOpConfig(List<File> inputRoots,
+      List<File> nonImportableSourceRoots,
+      boolean includeClasspath,
+      File outputSpecificRecordClassesRoot,
+      File outputExpandedSchemasRoot,
+      List<File> resolverPath,
+      CodeGenerator generatorType,
+      DuplicateSchemaBehaviour dupBehaviour,
+      List<String> duplicateSchemasToIgnore,
+      StringRepresentation stringRepresentation,
+      StringRepresentation methodStringRepresentation,
+      AvroVersion minAvroVersion,
+      boolean avro702Handling,
+      boolean handleUtf8EncodingInPutByIndex,
+      boolean skipCodegenIfSchemaOnClasspath,
+      boolean handleUtf8Encoding) {
+    this.inputRoots = inputRoots;
+    this.nonImportableSourceRoots = nonImportableSourceRoots;
+    this.includeClasspath = includeClasspath;
+    this.outputSpecificRecordClassesRoot = outputSpecificRecordClassesRoot;
+    this.outputExpandedSchemasRoot = outputExpandedSchemasRoot;
+    this.resolverPath = resolverPath;
+    this.generatorType = generatorType;
+    this.dupBehaviour = dupBehaviour;
+    this.duplicateSchemasToIgnore = duplicateSchemasToIgnore;
+    this.stringRepresentation = stringRepresentation;
+    this.methodStringRepresentation = methodStringRepresentation;
+    this.minAvroVersion = minAvroVersion;
+    this.avro702Handling = avro702Handling;
+    this.utf8EncodingPutByIndex = handleUtf8EncodingInPutByIndex;
+    this.skipCodegenIfSchemaOnClasspath = skipCodegenIfSchemaOnClasspath;
+    this.enableUtf8Encoding = handleUtf8Encoding;
   }
 
   /**
@@ -310,6 +351,10 @@ public class CodeGenOpConfig {
 
   public boolean shouldSkipCodegenIfSchemaOnClasspath() {
     return skipCodegenIfSchemaOnClasspath;
+  }
+
+  public boolean isUtf8EncodingEnabled() {
+    return enableUtf8Encoding;
   }
 
   private void validateInput(Collection<File> files, String desc) {

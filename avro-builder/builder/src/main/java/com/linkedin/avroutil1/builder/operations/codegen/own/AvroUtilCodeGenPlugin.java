@@ -102,7 +102,7 @@ public class AvroUtilCodeGenPlugin implements BuilderPlugin {
         SpecificRecordGenerationConfig.getBroadCompatibilitySpecificRecordGenerationConfig(
             AvroJavaStringRepresentation.fromJson(config.getStringRepresentation().toString()),
             AvroJavaStringRepresentation.fromJson(config.getMethodStringRepresentation().toString()),
-            config.getMinAvroVersion(), config.isUtf8EncodingPutByIndexEnabled());
+            config.getMinAvroVersion(), config.isUtf8EncodingPutByIndexEnabled(), config.isUtf8EncodingEnabled());
     final SpecificRecordClassGenerator generator = new SpecificRecordClassGenerator();
     List<JavaFile> generatedClasses = allNamedSchemas.stream().collect(StreamUtil.toParallelStream(namedSchema -> {
       try {

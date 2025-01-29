@@ -80,6 +80,9 @@ dependencies {
   testImplementation (project(":avro-builder:tests:codegen-no-utf8-in-putbyindex")) {
     exclude group: "org.apache.avro"
   }
+  testImplementation (project(":avro-builder:tests:codegen-no-utf8-encoding")) {
+    exclude group: "org.apache.avro"
+  }
 
   testImplementation "com.google.guava:guava:28.2-jre"
   testImplementation "org.mockito:mockito-core:3.2.4"

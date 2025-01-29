@@ -74,6 +74,27 @@ public class SpecificRecordGenerationConfig {
     );
   }
 
+  public final static SpecificRecordGenerationConfig getBroadCompatibilitySpecificRecordGenerationConfig(
+      AvroJavaStringRepresentation defaultFieldStringRepresentation,
+      AvroJavaStringRepresentation defaultMethodStringRepresentation,
+      AvroVersion minimumSupportedAvroVersion,
+      boolean utf8EncodingPutByIndex,
+      boolean utf8EncodingEnabled
+  ) {
+    return new SpecificRecordGenerationConfig(
+        BROAD_COMPATIBILITY.publicFields,
+        BROAD_COMPATIBILITY.getters,
+        BROAD_COMPATIBILITY.setters,
+        BROAD_COMPATIBILITY.builders,
+        BROAD_COMPATIBILITY.honorStringTypeHints,
+        defaultFieldStringRepresentation,
+        defaultMethodStringRepresentation,
+        minimumSupportedAvroVersion,
+        utf8EncodingPutByIndex,
+        utf8EncodingEnabled
+    );
+  }
+
   /**
    * true to make generated fields public
    */
@@ -112,6 +133,11 @@ public class SpecificRecordGenerationConfig {
    */
   private boolean utf8EncodingPutByIndex;
 
+  /**
+   * should enable utf8Encoding for strings or not.
+   */
+  private boolean utf8EncodingEnabled;
+
   public SpecificRecordGenerationConfig(
       boolean publicFields,
       boolean getters,
@@ -131,6 +157,7 @@ public class SpecificRecordGenerationConfig {
     this.defaultMethodStringRepresentation = defaultMethodStringRepresentation;
     this.minimumSupportedAvroVersion = minimumSupportedAvroVersion;
     this.utf8EncodingPutByIndex = true;
+    this.utf8EncodingEnabled = true;
   }
 
   public SpecificRecordGenerationConfig(
@@ -153,6 +180,31 @@ public class SpecificRecordGenerationConfig {
     this.defaultMethodStringRepresentation = defaultMethodStringRepresentation;
     this.minimumSupportedAvroVersion = minimumSupportedAvroVersion;
     this.utf8EncodingPutByIndex = utf8EncodingPutByIndex;
+    this.utf8EncodingEnabled = true;
+  }
+
+  public SpecificRecordGenerationConfig(
+      boolean publicFields,
+      boolean getters,
+      boolean setters,
+      boolean builders,
+      boolean honorStringTypeHints,
+      AvroJavaStringRepresentation defaultFieldStringRepresentation,
+      AvroJavaStringRepresentation defaultMethodStringRepresentation,
+      AvroVersion minimumSupportedAvroVersion,
+      boolean utf8EncodingPutByIndex,
+      boolean utf8EncodingEnabled
+  ) {
+    this.publicFields = publicFields;
+    this.getters = getters;
+    this.setters = setters;
+    this.builders = builders;
+    this.honorStringTypeHints = honorStringTypeHints;
+    this.defaultFieldStringRepresentation = defaultFieldStringRepresentation;
+    this.defaultMethodStringRepresentation = defaultMethodStringRepresentation;
+    this.minimumSupportedAvroVersion = minimumSupportedAvroVersion;
+    this.utf8EncodingPutByIndex = utf8EncodingPutByIndex;
+    this.utf8EncodingEnabled = utf8EncodingEnabled;
   }
 
   public AvroVersion getMinimumSupportedAvroVersion() {
@@ -173,5 +225,9 @@ public class SpecificRecordGenerationConfig {
 
   public boolean isUtf8EncodingInPutByIndexEnabled() {
     return utf8EncodingPutByIndex;
+  }
+
+  public boolean isUtf8EncodingEnabled() {
+    return utf8EncodingEnabled;
   }
 }
