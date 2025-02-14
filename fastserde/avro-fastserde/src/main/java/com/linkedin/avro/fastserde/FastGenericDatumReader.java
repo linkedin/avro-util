@@ -18,6 +18,9 @@ import org.slf4j.LoggerFactory;
 public class FastGenericDatumReader<T> implements DatumReader<T> {
   private static final Logger LOGGER = LoggerFactory.getLogger(FastGenericDatumReader.class);
 
+  // Limit max schema length in WARNING logs.
+  private static final int MAX_SCHEMA_LENGTH_IN_WARNING = 100;
+
   private Schema writerSchema;
   private Schema readerSchema;
   protected final FastSerdeCache cache;
@@ -116,8 +119,9 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
             */
           cachedFastDeserializer.compareAndSet(null,
               getRegularAvroImplWhenGenerationFail(writerSchema, readerSchema, modelData, customization));
-          LOGGER.warn("FastGenericDeserializer generation fails, and will cache cold deserializer "
-              + "for reader schema: [" + readerSchema + "], writer schema: [" + writerSchema + "]");
+          LOGGER.warn("FastGenericDeserializer generation fails, and will cache cold deserializer for "
+              + "reader schema: [" + truncateSchemaForWarning(readerSchema) + "],"
+              + "writer schema: [" + truncateSchemaForWarning(writerSchema) + "].");
         }
         fastDeserializer = cachedFastDeserializer.get();
       } else {
@@ -163,5 +167,12 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
   public boolean isFastDeserializerUsed() {
     FastDeserializer<T> fastDeserializer = cachedFastDeserializer.get();
     return fastDeserializer != null && fastDeserializer.isBackedByGeneratedClass();
+  }
+
+  private String truncateSchemaForWarning(Schema schema) {
+    String schemaString = schema.toString();
+    return (schemaString.length() > MAX_SCHEMA_LENGTH_IN_WARNING)
+        ? schemaString.substring(0, MAX_SCHEMA_LENGTH_IN_WARNING) + "..."
+        : schemaString;
   }
 }
