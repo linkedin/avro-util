@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import javax.lang.model.SourceVersion;
 
+import org.apache.avro.Schema;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -72,5 +73,45 @@ public class UtilsTest {
   void shouldFailGeneratingValidJavaIdentifier(String invalidProposal) {
     // NPE expected
     Utils.toValidJavaIdentifier(invalidProposal);
+  }
+
+  @Test
+  void testGetTruncateSchemaForWarningNull() {
+    Schema schema = null;
+    Assert.assertEquals("null", Utils.getTruncateSchemaForWarning(schema));
+  }
+
+  @Test
+  void testGetTruncateSchemaForWarningSmall() {
+    String schemaJson = "{"
+            + "\"type\": \"record\","
+            + "\"name\": \"User\","
+            + "\"fields\": ["
+            + "   {\"name\": \"name\", \"type\": \"string\"}"
+            + "]"
+            + "}";
+    Schema schema = Schema.parse(schemaJson);
+    Assert.assertTrue(schema.toString().length() <= Utils.MAX_SCHEMA_LENGTH_IN_WARNING);
+    Assert.assertEquals(schema.toString(), Utils.getTruncateSchemaForWarning(schema));
+  }
+
+  @Test
+  void testGetTruncateSchemaForWarningLarge() {
+    String schemaJson = "{"
+            + "\"type\": \"record\","
+            + "\"name\": \"User\","
+            + "\"namespace\": \"com.example.avro\","
+            + "\"fields\": ["
+            + "   {\"name\": \"name\", \"type\": \"string\"},"
+            + "   {\"name\": \"age\", \"type\": \"int\"},"
+            + "   {\"name\": \"email\", \"type\": [\"null\", \"string\"], \"default\": null}"
+            + "]"
+            + "}";
+    Schema schema = Schema.parse(schemaJson);
+    Assert.assertTrue(schema.toString().length() > Utils.MAX_SCHEMA_LENGTH_IN_WARNING);
+    String truncatedSchema = Utils.getTruncateSchemaForWarning(schema);
+    Assert.assertEquals(truncatedSchema.length(), Utils.MAX_SCHEMA_LENGTH_IN_WARNING + 3);
+    Assert.assertTrue(truncatedSchema.endsWith("..."));
+    Assert.assertTrue(schema.toString().startsWith(truncatedSchema.substring(0, Utils.MAX_SCHEMA_LENGTH_IN_WARNING)));
   }
 }
