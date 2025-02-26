@@ -55,6 +55,9 @@ public class Utils {
   // Cache the mapping between Schema and the corresponding fingerprint
   private static final Map<Schema, Integer> SCHEMA_IDS_CACHE = new ConcurrentHashMap<>();
 
+  // Limit max schema length in WARNING logs.
+  static final int MAX_SCHEMA_LENGTH_IN_WARNING = 100;
+
   private Utils() {
   }
 
@@ -258,5 +261,15 @@ public class Utils {
     }
 
     return javaIdentifier;
+  }
+
+  static String getTruncateSchemaForWarning(Schema schema) {
+    if (schema == null) {
+      return "null";
+    }
+    String schemaString = schema.toString();
+    return (schemaString.length() > MAX_SCHEMA_LENGTH_IN_WARNING)
+        ? schemaString.substring(0, MAX_SCHEMA_LENGTH_IN_WARNING) + "..."
+        : schemaString;
   }
 }
