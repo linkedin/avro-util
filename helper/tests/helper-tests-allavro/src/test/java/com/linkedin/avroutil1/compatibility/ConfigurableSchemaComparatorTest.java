@@ -71,6 +71,7 @@ public class ConfigurableSchemaComparatorTest {
         true,
         true,
         true,
+        false,
         Collections.emptySet()
     );
     switch (runtimeAvroVersion) {
@@ -127,6 +128,91 @@ public class ConfigurableSchemaComparatorTest {
     Assert.assertTrue(ConfigurableSchemaComparator.equals(a, b, SchemaComparisonConfiguration.PRE_1_7_3));
     if (runtimeAvroVersion.laterThan(AvroVersion.AVRO_1_7)) {
       //complex props are only supported by avro >= 1.7.3
+      Assert.assertFalse(ConfigurableSchemaComparator.equals(a, b, SchemaComparisonConfiguration.STRICT));
+    }
+  }
+
+  @Test
+  public void testCompareSchemaDoc() throws Exception {
+    AvroVersion runtimeAvroVersion = AvroCompatibilityHelper.getRuntimeAvroVersion();
+    String avscA = "{\n"
+        + "  \"type\": \"record\",\n"
+        + "  \"name\": \"Bob\",\n"
+        + "  \"schemaStrProp\": \"val1\",\n"
+        + "  \"schemaIntProp\": 1,\n"
+        + "  \"doc\": \"doc1\",\n"
+        + "  \"fields\": [\n"
+        + "    {\n"
+        + "      \"name\": \"f\",\n"
+        + "      \"type\": \"string\",\n"
+        + "      \"fieldStrProp\": \"val2\",\n"
+        + "      \"fieldIntProp\": 2\n"
+        + "    }\n"
+        + "  ]\n"
+        + "}";
+    String avscB = "{\n"
+        + "  \"type\": \"record\",\n"
+        + "  \"name\": \"Bob\",\n"
+        + "  \"schemaStrProp\": \"val1\",\n"
+        + "  \"schemaIntProp\": 1,\n"
+        + "  \"doc\": null,\n"
+        + "  \"fields\": [\n"
+        + "    {\n"
+        + "      \"name\": \"f\",\n"
+        + "      \"type\": \"string\",\n"
+        + "      \"fieldStrProp\": \"val2\",\n"
+        + "      \"fieldIntProp\": 2\n"
+        + "    }\n"
+        + "  ]\n"
+        + "}";
+    Schema a = Schema.parse(avscA);
+    Schema b = Schema.parse(avscB);
+    Assert.assertTrue(ConfigurableSchemaComparator.equals(a, b, SchemaComparisonConfiguration.PRE_1_7_3));
+    if (runtimeAvroVersion.laterThan(AvroVersion.AVRO_1_8)) {
+      //complex props are only supported by avro >= 1.8.0
+      Assert.assertFalse(ConfigurableSchemaComparator.equals(a, b, SchemaComparisonConfiguration.STRICT));
+    }
+  }
+
+
+  @Test
+  public void testCompareSchemaFieldDoc() throws Exception {
+    AvroVersion runtimeAvroVersion = AvroCompatibilityHelper.getRuntimeAvroVersion();
+    String avscA = "{\n"
+        + "  \"type\": \"record\",\n"
+        + "  \"name\": \"Bob\",\n"
+        + "  \"schemaStrProp\": \"val1\",\n"
+        + "  \"schemaIntProp\": 1,\n"
+        + "  \"fields\": [\n"
+        + "    {\n"
+        + "      \"name\": \"f\",\n"
+        + "      \"type\": \"string\",\n"
+        + "      \"doc\": \"doc1\",\n"
+        + "      \"fieldStrProp\": \"val2\",\n"
+        + "      \"fieldIntProp\": 2\n"
+        + "    }\n"
+        + "  ]\n"
+        + "}";
+    String avscB = "{\n"
+        + "  \"type\": \"record\",\n"
+        + "  \"name\": \"Bob\",\n"
+        + "  \"schemaStrProp\": \"val1\",\n"
+        + "  \"schemaIntProp\": 1,\n"
+        + "  \"fields\": [\n"
+        + "    {\n"
+        + "      \"name\": \"f\",\n"
+        + "      \"type\": \"string\",\n"
+        + "      \"doc\": null,\n"
+        + "      \"fieldStrProp\": \"val2\",\n"
+        + "      \"fieldIntProp\": 2\n"
+        + "    }\n"
+        + "  ]\n"
+        + "}";
+    Schema a = Schema.parse(avscA);
+    Schema b = Schema.parse(avscB);
+    Assert.assertTrue(ConfigurableSchemaComparator.equals(a, b, SchemaComparisonConfiguration.PRE_1_7_3));
+    if (runtimeAvroVersion.laterThan(AvroVersion.AVRO_1_8)) {
+      //complex props are only supported by avro >= 1.8.0
       Assert.assertFalse(ConfigurableSchemaComparator.equals(a, b, SchemaComparisonConfiguration.STRICT));
     }
   }
@@ -393,7 +479,7 @@ public class ConfigurableSchemaComparatorTest {
       default:
         Assert.assertTrue(ConfigurableSchemaComparator.equals(schemaA, schemaB,
             new SchemaComparisonConfiguration(false, false, true,
-                SchemaComparisonConfiguration.STRICT.isCompareIntToFloatDefaults(), true, true,
+                SchemaComparisonConfiguration.STRICT.isCompareIntToFloatDefaults(), true, true, false,
                 Collections.emptySet())));
     }
 

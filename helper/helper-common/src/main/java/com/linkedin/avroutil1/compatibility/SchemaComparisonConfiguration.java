@@ -15,16 +15,16 @@ public class SchemaComparisonConfiguration {
    * behaves like avro &lt;= 1.7.2 - non-string props on fields or types are ignored
    */
   public static final SchemaComparisonConfiguration PRE_1_7_3 = new SchemaComparisonConfiguration(
-      true, false, false, false, true, false,  Collections.emptySet()
+      true, false, false, false, true, false,  false, Collections.emptySet()
   );
   /**
    * same as {@link #STRICT} but allows int default values to match (round) float default values
    */
   public static final SchemaComparisonConfiguration LOOSE_NUMERICS = new SchemaComparisonConfiguration(
-      true, true, true, true, true, true, Collections.emptySet()
+      true, true, true, true, true, true, true, Collections.emptySet()
   );
   public static final SchemaComparisonConfiguration STRICT = new SchemaComparisonConfiguration(
-      true, true, true, false, true, true,  Collections.emptySet()
+      true, true, true, false, true, true,  true, Collections.emptySet()
   );
 
   private final boolean compareStringJsonProps;
@@ -33,6 +33,7 @@ public class SchemaComparisonConfiguration {
   private final boolean compareIntToFloatDefaults;
   private final boolean compareFieldOrder;
   private final boolean compareFieldLogicalTypes;
+  private final boolean compareFieldDocs;
   private final Set<String> jsonPropNamesToIgnore;
 
   public SchemaComparisonConfiguration(
@@ -42,6 +43,7 @@ public class SchemaComparisonConfiguration {
       boolean compareIntToFloatDefaults,
       boolean compareFieldOrder,
       boolean compareFieldLogicalTypes,
+      boolean compareFieldDocs,
       Set<String> jsonPropNamesToIgnore
   ) {
     this.compareStringJsonProps = compareStringJsonProps;
@@ -50,6 +52,7 @@ public class SchemaComparisonConfiguration {
     this.compareIntToFloatDefaults = compareIntToFloatDefaults;
     this.compareFieldOrder = compareFieldOrder;
     this.compareFieldLogicalTypes = compareFieldLogicalTypes;
+    this.compareFieldDocs = compareFieldDocs;
     this.jsonPropNamesToIgnore = jsonPropNamesToIgnore;
   }
 
@@ -89,6 +92,7 @@ public class SchemaComparisonConfiguration {
         compareIntToFloatDefaults,
         compareFieldOrder,
         compareFieldLogicalTypes,
+        compareFieldDocs,
         jsonPropNamesToIgnore
     );
   }
@@ -101,6 +105,7 @@ public class SchemaComparisonConfiguration {
         compareIntToFloatDefaults,
         compareFieldOrder,
         compareFieldLogicalTypes,
+        compareFieldDocs,
         jsonPropNamesToIgnore
     );
   }
@@ -113,6 +118,7 @@ public class SchemaComparisonConfiguration {
         compareIntToFloatDefaults,
         compareFieldOrder,
         compareFieldLogicalTypes,
+        compareFieldDocs,
         jsonPropNamesToIgnore
     );
   }
@@ -125,6 +131,7 @@ public class SchemaComparisonConfiguration {
         compare,
         compareFieldOrder,
         compareFieldLogicalTypes,
+        compareFieldDocs,
         jsonPropNamesToIgnore
     );
   }
@@ -137,6 +144,7 @@ public class SchemaComparisonConfiguration {
         compareIntToFloatDefaults,
         compare,
         compareFieldLogicalTypes,
+        compareFieldDocs,
         jsonPropNamesToIgnore
     );
   }
@@ -149,6 +157,7 @@ public class SchemaComparisonConfiguration {
         compareIntToFloatDefaults,
         compareFieldOrder,
         compare,
+        compareFieldDocs,
         jsonPropNamesToIgnore
     );
   }
@@ -161,8 +170,13 @@ public class SchemaComparisonConfiguration {
         compareIntToFloatDefaults,
         compareFieldOrder,
         compareFieldLogicalTypes,
+        compareFieldDocs,
         jsonPropNamesToIgnore
     );
+  }
+
+  public boolean isCompareFieldDocs() {
+    return compareFieldDocs;
   }
 }
 
