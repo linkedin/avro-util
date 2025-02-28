@@ -11,8 +11,6 @@ import java.util.Set;
 
 
 public class SchemaComparisonConfiguration {
-
-  
   /**
    * behaves like avro &lt;= 1.7.2 - non-string props on fields or types are ignored
    */
