@@ -126,7 +126,7 @@ public class FastGenericDatumReader<T> implements DatumReader<T> {
             String writerSchemaStr = writerSchema.toString();
             if (readerSchemaStr.length() > Utils.MAX_SCHEMA_LENGTH_IN_WARNING ||
                 writerSchemaStr.length() > Utils.MAX_SCHEMA_LENGTH_IN_WARNING) {
-              LOGGER.debug("FastGenericDeserializer generation fails, and will cache cold deserializer for "
+              LOGGER.debug("FastGenericDeserializer generation sadly fails, and will cache cold deserializer for "
                   + "reader schema: [" + readerSchemaStr + "],"
                   + "writer schema: [" + writerSchemaStr + "].");
             }
