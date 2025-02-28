@@ -71,6 +71,7 @@ public class ConfigurableSchemaComparatorTest {
         true,
         true,
         true,
+        false,
         Collections.emptySet()
     );
     switch (runtimeAvroVersion) {
@@ -393,7 +394,7 @@ public class ConfigurableSchemaComparatorTest {
       default:
         Assert.assertTrue(ConfigurableSchemaComparator.equals(schemaA, schemaB,
             new SchemaComparisonConfiguration(false, false, true,
-                SchemaComparisonConfiguration.STRICT.isCompareIntToFloatDefaults(), true, true,
+                SchemaComparisonConfiguration.STRICT.isCompareIntToFloatDefaults(), true, true, false,
                 Collections.emptySet())));
     }
 
