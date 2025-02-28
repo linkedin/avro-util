@@ -52,10 +52,15 @@ public class ConfigurableSchemaComparator {
     boolean considerJsonNonStringProps = config.isCompareNonStringJsonProps();
     boolean considerAliases = config.isCompareAliases();
     boolean considerJsonProps = considerJsonStringProps || considerJsonNonStringProps;
+    boolean considerDocs = config.isCompareFieldDocs();
     Set<String> jsonPropNamesToIgnore = config.getJsonPropNamesToIgnore();
 
     if (considerJsonProps && !hasSameObjectProps(a, b, considerJsonStringProps, considerJsonNonStringProps,
         jsonPropNamesToIgnore)) {
+      return false;
+    }
+
+    if (considerDocs && !Objects.equals(a.getDoc(), b.getDoc())) {
       return false;
     }
 
@@ -125,6 +130,7 @@ public class ConfigurableSchemaComparator {
     boolean considerAliases = config.isCompareAliases();
     boolean considerJsonProps = considerJsonStringProps || considerJsonNonStringProps;
     boolean compareIntToFloatDefaults = config.isCompareIntToFloatDefaults();
+    boolean compareDocs = config.isCompareFieldDocs();
     Set<String> jsonPropNamesToIgnore = config.getJsonPropNamesToIgnore();
 
     try {
@@ -169,6 +175,9 @@ public class ConfigurableSchemaComparator {
           return false;
         }
         if (considerAliases && !hasSameAliases(aField, bField)) {
+          return false;
+        }
+        if (compareDocs && !aField.doc().equals(bField.doc())) {
           return false;
         }
       }
