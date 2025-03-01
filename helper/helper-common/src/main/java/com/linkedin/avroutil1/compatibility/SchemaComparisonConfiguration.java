@@ -79,6 +79,10 @@ public class SchemaComparisonConfiguration {
     return compareFieldLogicalTypes;
   }
 
+  public boolean isCompareFieldDocs() {
+    return compareFieldDocs;
+  }
+
   public Set<String> getJsonPropNamesToIgnore() {
     return jsonPropNamesToIgnore;
   }
