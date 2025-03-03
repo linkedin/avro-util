@@ -24,7 +24,7 @@ public class SchemaComparisonConfiguration {
       true, true, true, true, true, true, false, Collections.emptySet()
   );
   public static final SchemaComparisonConfiguration STRICT = new SchemaComparisonConfiguration(
-      true, true, true, false, true, true,  false, Collections.emptySet()
+      true, true, true, false, true, true,  true, Collections.emptySet()
   );
 
   private final boolean compareStringJsonProps;

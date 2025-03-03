@@ -29,6 +29,11 @@ public class ConfigurableSchemaComparator {
       throw new IllegalArgumentException("config required");
     }
     AvroVersion runtimeAvroVersion = AvroCompatibilityHelper.getRuntimeAvroVersion();
+    if (runtimeAvroVersion.earlierThan(AvroVersion.AVRO_1_8) && config.isCompareFieldDocs()) {
+      //1.7 itself changes between < 1.7.3 and >= 1.7.3, so we leave that validation to later runtime :-(
+      throw new IllegalArgumentException(
+          "avro " + runtimeAvroVersion + " does not preserve docs and so cannot compare them");
+    }
     if (runtimeAvroVersion.earlierThan(AvroVersion.AVRO_1_7) && config.isCompareNonStringJsonProps()) {
       //1.7 itself changes between < 1.7.3 and >= 1.7.3, so we leave that validation to later runtime :-(
       throw new IllegalArgumentException(
@@ -60,7 +65,11 @@ public class ConfigurableSchemaComparator {
       return false;
     }
 
-    if (considerDocs && !Objects.equals(a.getDoc(), b.getDoc())) {
+    if (considerDocs && (
+        (a.getDoc() != null && b.getDoc() == null) ||
+        (b.getDoc() != null && a.getDoc() == null) ||
+        (a.getDoc() != null && b.getDoc() != null && !Objects.equals(a.getDoc(), b.getDoc()))
+    )) {
       return false;
     }
 
@@ -177,7 +186,11 @@ public class ConfigurableSchemaComparator {
         if (considerAliases && !hasSameAliases(aField, bField)) {
           return false;
         }
-        if (compareDocs && !aField.doc().equals(bField.doc())) {
+        if (compareDocs && (
+            (aField.doc() != null && bField.doc() == null) ||
+            (bField.doc() != null && aField.doc() == null) ||
+            (aField.doc() != null && bField.doc() != null && !aField.doc().equals(bField.doc()))
+        )) {
           return false;
         }
       }
