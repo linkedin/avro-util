@@ -21,10 +21,10 @@ public class SchemaComparisonConfiguration {
    * same as {@link #STRICT} but allows int default values to match (round) float default values
    */
   public static final SchemaComparisonConfiguration LOOSE_NUMERICS = new SchemaComparisonConfiguration(
-      true, true, true, true, true, true, true, Collections.emptySet()
+      true, true, true, true, true, true, false, Collections.emptySet()
   );
   public static final SchemaComparisonConfiguration STRICT = new SchemaComparisonConfiguration(
-      true, true, true, false, true, true,  true, Collections.emptySet()
+      true, true, true, false, true, true,  false, Collections.emptySet()
   );
 
   private final boolean compareStringJsonProps;
