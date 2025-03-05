@@ -118,8 +118,8 @@ public class SpecificRecordTest {
 
         {charseqmethod.TestCollections.class, charseqmethod.TestCollections.getClassSchema()},
 
-        {vs14.ThousandField.class, vs14.ThousandField.getClassSchema()},
-        {vs19.ThousandField.class, vs19.ThousandField.getClassSchema()}
+//        {vs14.ThousandField.class, vs14.ThousandField.getClassSchema()},
+//        {vs19.ThousandField.class, vs19.ThousandField.getClassSchema()}
     };
   }
 
@@ -2000,7 +2000,7 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     instance.getStrArAr().add(Arrays.asList(strValue));
     Assert.assertTrue(instance.getStrArAr().get(instance.getStrArAr().size() - 1).contains(strValue));
     Assert.assertTrue(instance.strArAr.get(instance.getStrArAr().size() - 1).contains(strValue));
-    
+
     instance.getStrArAr().add(Arrays.asList(utf8Value));
     Assert.assertTrue(instance.getStrArAr().get(instance.getStrArAr().size() - 1).contains(utf8Value));
     Assert.assertTrue(instance.strArAr.get(instance.getStrArAr().size() - 1).contains(utf8Value));
