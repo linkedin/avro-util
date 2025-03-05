@@ -29,11 +29,6 @@ public class ConfigurableSchemaComparator {
       throw new IllegalArgumentException("config required");
     }
     AvroVersion runtimeAvroVersion = AvroCompatibilityHelper.getRuntimeAvroVersion();
-//    if (runtimeAvroVersion.earlierThan(AvroVersion.AVRO_1_8) && config.isCompareFieldDocs()) {
-//      //1.7 itself changes between < 1.7.3 and >= 1.7.3, so we leave that validation to later runtime :-(
-//      throw new IllegalArgumentException(
-//          "avro " + runtimeAvroVersion + " does not preserve docs and so cannot compare them");
-//    }
     if (runtimeAvroVersion.earlierThan(AvroVersion.AVRO_1_7) && config.isCompareNonStringJsonProps()) {
       //1.7 itself changes between < 1.7.3 and >= 1.7.3, so we leave that validation to later runtime :-(
       throw new IllegalArgumentException(
