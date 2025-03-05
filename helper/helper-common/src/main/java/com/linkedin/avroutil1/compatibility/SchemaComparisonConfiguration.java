@@ -15,15 +15,18 @@ public class SchemaComparisonConfiguration {
    * behaves like avro &lt;= 1.7.2 - non-string props on fields or types are ignored
    */
   public static final SchemaComparisonConfiguration PRE_1_7_3 = new SchemaComparisonConfiguration(
-      true, false, false, false, true, false,  false, Collections.emptySet()
+      true, false, false, false, true, false, Collections.emptySet()
   );
   /**
    * same as {@link #STRICT} but allows int default values to match (round) float default values
    */
   public static final SchemaComparisonConfiguration LOOSE_NUMERICS = new SchemaComparisonConfiguration(
-      true, true, true, true, true, true, false, Collections.emptySet()
+      true, true, true, true, true, true, Collections.emptySet()
   );
   public static final SchemaComparisonConfiguration STRICT = new SchemaComparisonConfiguration(
+      true, true, true, false, true, true, Collections.emptySet()
+  );
+  public static final SchemaComparisonConfiguration STRICT_FIELD_DOCS = new SchemaComparisonConfiguration(
       true, true, true, false, true, true,  true, Collections.emptySet()
   );
 

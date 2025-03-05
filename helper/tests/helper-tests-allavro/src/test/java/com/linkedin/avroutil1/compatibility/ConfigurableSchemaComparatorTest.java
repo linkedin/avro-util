@@ -438,7 +438,7 @@ public class ConfigurableSchemaComparatorTest {
     if (runtimeAvroVersion.earlierThan(AvroVersion.AVRO_1_8)) {
       Assert.assertTrue(ConfigurableSchemaComparator.equals(a, b, SchemaComparisonConfiguration.PRE_1_7_3));
     } else {
-      Assert.assertFalse(ConfigurableSchemaComparator.equals(a, b, SchemaComparisonConfiguration.STRICT));
+      Assert.assertFalse(ConfigurableSchemaComparator.equals(a, b, SchemaComparisonConfiguration.STRICT_FIELD_DOCS));
     }
   }
 
@@ -481,7 +481,7 @@ public class ConfigurableSchemaComparatorTest {
     if (runtimeAvroVersion.earlierThan(AvroVersion.AVRO_1_8)) {
       Assert.assertTrue(ConfigurableSchemaComparator.equals(a, b, SchemaComparisonConfiguration.PRE_1_7_3));
     } else {
-      Assert.assertFalse(ConfigurableSchemaComparator.equals(a, b, SchemaComparisonConfiguration.STRICT));
+      Assert.assertFalse(ConfigurableSchemaComparator.equals(a, b, SchemaComparisonConfiguration.STRICT_FIELD_DOCS));
     }
   }
 }
