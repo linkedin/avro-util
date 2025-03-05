@@ -116,7 +116,7 @@ public class SpecificRecordTest {
         {vs110.BuilderTester.class, vs110.BuilderTester.getClassSchema()},
         {vs111.BuilderTester.class, vs111.BuilderTester.getClassSchema()},
 
-        {charseqmethod.TestCollections.class, charseqmethod.TestCollections.getClassSchema()},
+        {charseqmethod.TestCollections.class, charseqmethod.TestCollections.getClassSchema()}
 
 //        {vs14.ThousandField.class, vs14.ThousandField.getClassSchema()},
 //        {vs19.ThousandField.class, vs19.ThousandField.getClassSchema()}

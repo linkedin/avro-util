@@ -42,7 +42,27 @@ public class SchemaComparisonConfiguration {
       boolean compareAliases,
       boolean compareIntToFloatDefaults,
       boolean compareFieldOrder,
-      boolean compareFieldLogicalTypes, boolean compareFieldDocs,
+      boolean compareFieldLogicalTypes,
+      Set<String> jsonPropNamesToIgnore
+  ) {
+    this.compareStringJsonProps = compareStringJsonProps;
+    this.compareNonStringJsonProps = compareNonStringJsonProps;
+    this.compareAliases = compareAliases;
+    this.compareIntToFloatDefaults = compareIntToFloatDefaults;
+    this.compareFieldOrder = compareFieldOrder;
+    this.compareFieldLogicalTypes = compareFieldLogicalTypes;
+    this.compareFieldDocs = false;
+    this.jsonPropNamesToIgnore = jsonPropNamesToIgnore;
+  }
+
+  public SchemaComparisonConfiguration(
+      boolean compareStringJsonProps,
+      boolean compareNonStringJsonProps,
+      boolean compareAliases,
+      boolean compareIntToFloatDefaults,
+      boolean compareFieldOrder,
+      boolean compareFieldLogicalTypes,
+      boolean compareFieldDocs,
       Set<String> jsonPropNamesToIgnore
   ) {
     this.compareStringJsonProps = compareStringJsonProps;
