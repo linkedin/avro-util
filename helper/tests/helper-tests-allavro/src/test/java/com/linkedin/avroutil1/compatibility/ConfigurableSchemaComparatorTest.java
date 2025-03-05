@@ -399,4 +399,85 @@ public class ConfigurableSchemaComparatorTest {
     }
 
   }
+
+  @Test
+  public void testCompareSchemaDoc() throws Exception {
+    AvroVersion runtimeAvroVersion = AvroCompatibilityHelper.getRuntimeAvroVersion();
+    String avscA = "{\n"
+        + "  \"type\": \"record\",\n"
+        + "  \"name\": \"Bob\",\n"
+        + "  \"schemaStrProp\": \"val1\",\n"
+        + "  \"schemaIntProp\": 1,\n"
+        + "  \"doc\": \"doc1\",\n"
+        + "  \"fields\": [\n"
+        + "    {\n"
+        + "      \"name\": \"f\",\n"
+        + "      \"type\": \"string\",\n"
+        + "      \"fieldStrProp\": \"val2\",\n"
+        + "      \"fieldIntProp\": 2\n"
+        + "    }\n"
+        + "  ]\n"
+        + "}";
+    String avscB = "{\n"
+        + "  \"type\": \"record\",\n"
+        + "  \"name\": \"Bob\",\n"
+        + "  \"schemaStrProp\": \"val1\",\n"
+        + "  \"schemaIntProp\": 1,\n"
+        + "  \"doc\": null,\n"
+        + "  \"fields\": [\n"
+        + "    {\n"
+        + "      \"name\": \"f\",\n"
+        + "      \"type\": \"string\",\n"
+        + "      \"fieldStrProp\": \"val2\",\n"
+        + "      \"fieldIntProp\": 2\n"
+        + "    }\n"
+        + "  ]\n"
+        + "}";
+    Schema a = Schema.parse(avscA);
+    Schema b = Schema.parse(avscB);
+    Assert.assertTrue(ConfigurableSchemaComparator.equals(a, b, SchemaComparisonConfiguration.PRE_1_7_3));
+    Assert.assertFalse(ConfigurableSchemaComparator.equals(a, b, SchemaComparisonConfiguration.STRICT));
+
+  }
+
+
+  @Test
+  public void testCompareSchemaFieldDoc() throws Exception {
+    AvroVersion runtimeAvroVersion = AvroCompatibilityHelper.getRuntimeAvroVersion();
+    String avscA = "{\n"
+        + "  \"type\": \"record\",\n"
+        + "  \"name\": \"Bob\",\n"
+        + "  \"schemaStrProp\": \"val1\",\n"
+        + "  \"schemaIntProp\": 1,\n"
+        + "  \"fields\": [\n"
+        + "    {\n"
+        + "      \"name\": \"f\",\n"
+        + "      \"type\": \"string\",\n"
+        + "      \"doc\": \"doc1\",\n"
+        + "      \"fieldStrProp\": \"val2\",\n"
+        + "      \"fieldIntProp\": 2\n"
+        + "    }\n"
+        + "  ]\n"
+        + "}";
+    String avscB = "{\n"
+        + "  \"type\": \"record\",\n"
+        + "  \"name\": \"Bob\",\n"
+        + "  \"schemaStrProp\": \"val1\",\n"
+        + "  \"schemaIntProp\": 1,\n"
+        + "  \"fields\": [\n"
+        + "    {\n"
+        + "      \"name\": \"f\",\n"
+        + "      \"type\": \"string\",\n"
+        + "      \"doc\": null,\n"
+        + "      \"fieldStrProp\": \"val2\",\n"
+        + "      \"fieldIntProp\": 2\n"
+        + "    }\n"
+        + "  ]\n"
+        + "}";
+    Schema a = Schema.parse(avscA);
+    Schema b = Schema.parse(avscB);
+    Assert.assertTrue(ConfigurableSchemaComparator.equals(a, b, SchemaComparisonConfiguration.PRE_1_7_3));
+    Assert.assertFalse(ConfigurableSchemaComparator.equals(a, b, SchemaComparisonConfiguration.STRICT));
+
+  }
 }
