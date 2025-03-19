@@ -297,9 +297,12 @@ public class SchemaAssistant<T extends GenericData> {
   /* Note that settings abstractType and rawType are not passed to subcalls */
   public JClass classFromSchema(Schema schema, boolean abstractType, boolean rawType, boolean primitiveList,
           boolean allowLogicalTypes) {
-    if (allowLogicalTypes && logicalTypeEnabled(schema)) {
+    if (logicalTypeEnabled(schema)) {
       Class<?> logicalTypeClass = ((Conversion<?>) getConversion(schema.getLogicalType())).getConvertedType();
-      return codeModel.ref(logicalTypeClass);
+      fullyQualifiedClassNameSet.add(logicalTypeClass.getName());
+      if (allowLogicalTypes) {
+        return codeModel.ref(logicalTypeClass);
+      }
     }
 
     JClass outputClass;
