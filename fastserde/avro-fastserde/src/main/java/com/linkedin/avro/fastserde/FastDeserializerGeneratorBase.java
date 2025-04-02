@@ -185,7 +185,7 @@ public abstract class FastDeserializerGeneratorBase<T, U extends GenericData> ex
         if (symbolIterator.hasNext()) {
           symbol = symbolIterator.next();
 
-          if (symbol instanceof Symbol.Repeater) {
+          if (symbol instanceof Symbol.Repeater || symbol instanceof Symbol.UnionAdjustAction) {
             fieldSymbol = symbol;
           } else {
             fieldSymbol = symbolIterator.previous();
