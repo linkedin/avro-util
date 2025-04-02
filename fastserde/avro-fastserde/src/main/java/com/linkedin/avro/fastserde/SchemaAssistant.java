@@ -580,7 +580,7 @@ public class SchemaAssistant<T extends GenericData> {
       Schema potentialCompatibleSchema = unionSchema.getTypes().get(i);
       if (potentialCompatibleSchema.getType().equals(schema.getType()) &&
               (!isNamedType(potentialCompatibleSchema) ||
-                      AvroCompatibilityHelper.getSchemaFullName(potentialCompatibleSchema).equals(AvroCompatibilityHelper.getSchemaFullName(schema)) ||
+                      potentialCompatibleSchema.getName().equals(schema.getName()) ||
                       potentialCompatibleSchema.getAliases().contains(AvroCompatibilityHelper.getSchemaFullName(schema)))) {
         return i;
       }

@@ -257,6 +257,78 @@ public class FastGenericDeserializerGeneratorTest {
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldHandleDiffNamepspaceInRecords(Implementation implementation) {
+    //record with two fields, first optional string second a record with namespace "a.b.c" with name "innerRecordName". Inner record has one int field
+    Schema writerSchema  = Schema.parse("{\n" +
+            "  \"type\": \"record\",\n" +
+            "  \"name\": \"OuterRecord\",\n" +
+            "  \"fields\": [\n" +
+            "    {\n" +
+            "      \"name\": \"optionalString\",\n" +
+            "      \"type\": [\"null\", \"string\"],\n" +
+            "      \"default\": null\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"innerRecord\",\n" +
+            "      \"type\": {\n" +
+            "        \"type\": \"record\",\n" +
+            "        \"name\": \"innerRecordName\",\n" +
+            "        \"namespace\": \"a.b.c\",\n" +
+            "        \"fields\": [\n" +
+            "          {\n" +
+            "            \"name\": \"intField\",\n" +
+            "            \"type\": \"int\"\n" +
+            "          }\n" +
+            "        ]\n" +
+            "      }\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}");
+
+    //change namespace on inner record to "d.e.f"
+    Schema readerSchema = Schema.parse("{\n" +
+            "  \"type\": \"record\",\n" +
+            "  \"name\": \"OuterRecord\",\n" +
+            "  \"fields\": [\n" +
+            "    {\n" +
+            "      \"name\": \"optionalString\",\n" +
+            "      \"type\": [\"null\", \"string\"],\n" +
+            "      \"default\": null\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"innerRecord\",\n" +
+            "      \"type\": [\"null\", {\n" +
+            "        \"type\": \"record\",\n" +
+            "        \"name\": \"innerRecordName\",\n" +
+            "        \"namespace\": \"d.e.f\",\n" +
+            "        \"fields\": [\n" +
+            "          {\n" +
+            "            \"name\": \"intField\",\n" +
+            "            \"type\": \"int\"\n" +
+            "          }\n" +
+            "        ]\n" +
+            "      }],\n" +
+            "      \"default\": null\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}");
+
+    GenericRecord originalRecord = new GenericData.Record(writerSchema);
+    originalRecord.put("optionalString", "abc");
+    GenericRecord innerRecord = new GenericData.Record(writerSchema.getField("innerRecord").schema());
+    innerRecord.put("intField", 1);
+    originalRecord.put("innerRecord", innerRecord);
+
+    // when
+    GenericRecord record = implementation.decode(writerSchema, readerSchema, genericDataAsDecoder(originalRecord));
+
+    // then
+    Assert.assertEquals(new Utf8("abc"), record.get("optionalString"));
+    GenericRecord innerRecordDecoded = (GenericRecord) record.get("innerRecord");
+    Assert.assertEquals(1, innerRecordDecoded.get("intField"));
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
   public void shouldReadEnum(Implementation implementation) {
     // given
     Schema enumSchema = createEnumSchema("testEnum", new String[]{"A", "B"});
