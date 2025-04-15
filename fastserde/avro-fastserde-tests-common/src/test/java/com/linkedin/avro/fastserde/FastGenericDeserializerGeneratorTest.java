@@ -320,12 +320,20 @@ public class FastGenericDeserializerGeneratorTest {
     originalRecord.put("innerRecord", innerRecord);
 
     // when
-    GenericRecord record = implementation.decode(writerSchema, readerSchema, genericDataAsDecoder(originalRecord));
-
-    // then
-    Assert.assertEquals(new Utf8("abc"), record.get("optionalString"));
-    GenericRecord innerRecordDecoded = (GenericRecord) record.get("innerRecord");
-    Assert.assertEquals(1, innerRecordDecoded.get("intField"));
+    try{
+      GenericRecord record = implementation.decode(writerSchema, readerSchema, genericDataAsDecoder(originalRecord));
+      // then
+      if(Utils.usesQualifiedNameForNamedTypedMatching()){
+        Assert.fail("1.5-1.7 don't support unqualified name for named type matching so we should have failed");
+      }
+      Assert.assertEquals(new Utf8("abc"), record.get("optionalString"));
+      GenericRecord innerRecordDecoded = (GenericRecord) record.get("innerRecord");
+      Assert.assertEquals(1, innerRecordDecoded.get("intField"));
+    } catch (Exception e){
+      if(!Utils.usesQualifiedNameForNamedTypedMatching()) {
+        Assert.fail("1.4, and 1.8+ support unqualified name for named type matching");
+      }
+    }
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
