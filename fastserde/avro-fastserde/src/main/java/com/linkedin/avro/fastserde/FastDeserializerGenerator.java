@@ -773,10 +773,17 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
                 ((Symbol.UnionAdjustAction) symbol).symToParse);
       }
 
+      //See processMap for a description of this logic
       Symbol valuesActionSymbol = null;
-      for (Symbol symbol : action.getSymbol().production) {
+      int arrayEndsToSkip = arraySchema.getElementType().getType().equals(Schema.Type.ARRAY) ? 1 : 0;
+      int arrayEndsFound = 0;
+      for (Symbol symbol: action.getSymbol().production) {
         if (Symbol.Kind.REPEATER.equals(symbol.kind) && "array-end".equals(
-            getSymbolPrintName(((Symbol.Repeater) symbol).end))) {
+                getSymbolPrintName(((Symbol.Repeater) symbol).end))) {
+          if(arrayEndsFound < arrayEndsToSkip) {
+            arrayEndsFound++;
+            continue;
+          }
           valuesActionSymbol = symbol;
           break;
         }
@@ -939,7 +946,22 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
      *
      * The {@link FastDeserializerGenerator.generateDeserializer} tries to proceed as a depth-first,
      * left-to-right traversal of the schema. So for a nested Map, we need to iterate production list
-     * in reverse order to get the correct "map-end" symbol of internal Maps.
+     * in reverse order to get the correct "map-end" symbol of internal Maps. However, if the map's value type
+     * is a record which contains a nested map we need to still use the outer map's production.
+     *
+     * Assume we are processing a Map it's value type is a map. In this case the production for the fieldAction of this map will be
+     * <code> map-end1, map-end2, map-start2, string</code>. map-end1 is for the outer map and map-end2 is for the inner map.
+     *  When we create a field action for the inner map we must give it the symbol map-end2 which is the second map-end
+     *  we see in the production. If we had even more levels of nesting, this would still hold.
+     *
+     * Now assume we are processing a map and the value type is a record which contains a map. In this case,
+     *  the production for the fieldAction of this map will be <code> map-end1, map-end2, map-start2, fieldAdjustAction, string</code>.
+     * Notice how similar this is to the previous case with just one additional fieldAdjustAction to help us differentiate.
+     * In this case, to process the record correctly it needs to have a symbol list which has [fieldAdjustAction map-start2 map-end2].
+     * However, our logic to create actionIterator for a record is much more lax and will accept additional symbols
+     * before the fieldAdjustAction and skip them. Moreover, it also accepts additional symbols after the last symbol
+     * in the record which it just ignores. This, if we give it map-end2's production it will work just fine.
+     * Same applies to arrays where we look for an array-end in the array processing logic to do something
      */
     Schema effectiveMapReaderSchema = mapReaderSchema;
     if (action.getShouldRead()) {
@@ -971,10 +993,15 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
       }
 
       Symbol valuesActionSymbol = null;
-      for (int i = action.getSymbol().production.length - 1; i >= 0; --i) {
-        Symbol symbol = action.getSymbol().production[i];
+      int mapEndsToSkip = mapSchema.getValueType().getType().equals(Schema.Type.MAP) ? 1 : 0;
+      int mapEndsFound = 0;
+      for (Symbol symbol: action.getSymbol().production) {
         if (Symbol.Kind.REPEATER.equals(symbol.kind) && "map-end".equals(
             getSymbolPrintName(((Symbol.Repeater) symbol).end))) {
+            if(mapEndsFound < mapEndsToSkip) {
+              mapEndsFound++;
+              continue;
+            }
           valuesActionSymbol = symbol;
           break;
         }

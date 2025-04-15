@@ -98,11 +98,6 @@ public abstract class FastDeserializerGeneratorBase<T, U extends GenericData> ex
     while (actionIterator.hasNext()) {
       Symbol symbol = actionIterator.next();
 
-      if(Symbol.Kind.REPEATER.equals(symbol.kind) && "array-end".equals(((Symbol.Repeater)symbol).end.toString())) {
-        actionIterator = Arrays.asList(reverseSymbolArray(symbol.production)).listIterator();
-        break;
-      }
-
       if (symbol instanceof Symbol.ErrorAction) {
         throw new FastDeserializerGeneratorException(((Symbol.ErrorAction) symbol).msg);
       }
