@@ -1568,6 +1568,50 @@ public class FastGenericDeserializerGeneratorTest {
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldHandleJavaKeywordsAsRecordNames(Implementation implementation) {
+    // Create schemas with Java keywords as names
+    Schema classSchema = createRecord("class",
+            createField("value", Schema.create(Schema.Type.STRING)));
+
+    Schema ifSchema = createRecord("if",
+            createField("value", Schema.create(Schema.Type.STRING)));
+
+    Schema publicSchema = createRecord("public",
+            createField("value", Schema.create(Schema.Type.STRING)));
+
+    // Create a parent record that contains records with Java keyword names
+    Schema parentSchema = createRecord("ParentRecord",
+            createField("class_field", classSchema),
+            createField("if_field", ifSchema),
+            createField("public_field", publicSchema));
+
+    // Create record instances
+    GenericRecord classRecord = new GenericData.Record(classSchema);
+    classRecord.put("value", "class value");
+
+    GenericRecord ifRecord = new GenericData.Record(ifSchema);
+    ifRecord.put("value", "if value");
+
+    GenericRecord publicRecord = new GenericData.Record(publicSchema);
+    publicRecord.put("value", "public value");
+
+    GenericRecord parentRecord = new GenericData.Record(parentSchema);
+    parentRecord.put("class_field", classRecord);
+    parentRecord.put("if_field", ifRecord);
+    parentRecord.put("public_field", publicRecord);
+
+
+    // when
+    GenericRecord deserializedRecord = implementation.decode(parentSchema, parentSchema,
+            genericDataAsDecoder(parentRecord));
+
+    // then
+    Assert.assertEquals(((GenericRecord)deserializedRecord.get("class_field")).get("value"), new Utf8("class value"));
+    Assert.assertEquals(((GenericRecord)deserializedRecord.get("if_field")).get("value"), new Utf8("if value"));
+    Assert.assertEquals(((GenericRecord)deserializedRecord.get("public_field")).get("value"), new Utf8("public value"));
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
   public void shouldBidirectionallyReadMapWithUnionMapOfUnionValues(Implementation implementation) {
     // given
     Schema recordWithMapSchema = createRecord("record", createMapFieldSchema("someInts", Schema.create(Schema.Type.INT)));
