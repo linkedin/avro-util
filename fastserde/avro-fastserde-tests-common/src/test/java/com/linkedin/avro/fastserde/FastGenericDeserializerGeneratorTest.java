@@ -79,9 +79,9 @@ public class FastGenericDeserializerGeneratorTest {
   @DataProvider(name = "Implementation")
   public static Object[][] implementations() {
     return new Object[][]{
-        {Implementation.VANILLA_AVRO},
-        {Implementation.COLD_FAST_AVRO},
-        {Implementation.WARM_FAST_AVRO}
+            {Implementation.VANILLA_AVRO},
+            {Implementation.COLD_FAST_AVRO},
+            {Implementation.WARM_FAST_AVRO}
     };
   }
 
@@ -99,7 +99,7 @@ public class FastGenericDeserializerGeneratorTest {
     tempDir = getCodeGenDirectory();
 
     classLoader = URLClassLoader.newInstance(new URL[]{tempDir.toURI().toURL()},
-        FastGenericDeserializerGeneratorTest.class.getClassLoader());
+            FastGenericDeserializerGeneratorTest.class.getClassLoader());
 
     // In order to test the functionality of the record split we set an unusually low number
     FastGenericDeserializerGenerator.setFieldsPerPopulationMethod(2);
@@ -265,6 +265,7 @@ public class FastGenericDeserializerGeneratorTest {
     Assert.assertEquals("A", ((List<GenericData.EnumSymbol>) record.get("testEnumArray")).get(0).toString());
     Assert.assertEquals("A", ((List<GenericData.EnumSymbol>) record.get("testEnumUnionArray")).get(0).toString());
   }
+
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
   public void shouldReadEnumDefault(Implementation implementation) {
@@ -1498,6 +1499,119 @@ public class FastGenericDeserializerGeneratorTest {
     for (int i = 0; i < expected.size(); i++) {
       Assert.assertEquals(((List<Integer>) recordB.get("someInts")).get(i), expected.get(i));
     }
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadMapWithNestedRecordWithMapField(Implementation implementation) {
+    // given
+    Schema schema = createRecord("outerRecord",
+            createField("mapField", createMapFieldSchema("mapField",
+                    createRecord("innerRecord", createField("internalMapField",
+                            createMapFieldSchema("internalMapField", Schema.create(Schema.Type.LONG)).schema())
+                    )).schema()));
+    Schema mapSchema = schema.getField("mapField").schema();
+    Schema recordFieldSchema = mapSchema.getValueType();
+
+    // Create test data
+    GenericRecord record = new GenericData.Record(schema);
+    Map<String, GenericRecord> mapField = new HashMap<>();
+    for (int i = 0; i < 3; i++) {
+      GenericRecord nestedRecord = new GenericData.Record(recordFieldSchema);
+      Map<String, Long> internalMap = new HashMap<>();
+      internalMap.put("key" + i, (long) i);
+      nestedRecord.put("internalMapField", internalMap);
+      mapField.put("record" + i, nestedRecord);
+    }
+    record.put("mapField", mapField);
+
+    // when
+    GenericRecord decoded = implementation.decode(schema, schema, genericDataAsDecoder(record));
+    //then
+    Assert.assertNotNull(decoded);
+    Map<Utf8, GenericRecord> deserializedMap = (Map<Utf8, GenericRecord>) decoded.get("mapField");
+    Assert.assertEquals(deserializedMap.size(), 3);
+    for (int i = 0; i < 3; i++) {
+      GenericRecord nestedRecord = deserializedMap.get(new Utf8("record" + i));
+      Assert.assertNotNull(nestedRecord);
+      Map<Utf8, Long> internalMap = (Map<Utf8, Long>) nestedRecord.get("internalMapField");
+      Assert.assertEquals(internalMap.get(new Utf8("key" + i)), Long.valueOf(i));
+    }
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadNestedArrayOfMaps(Implementation implementation) {
+    // Define a complex nested structure: array<array<map<string, int>>>
+    Schema mapSchema = Schema.createMap(Schema.create(Schema.Type.INT));
+    Schema innerArraySchema = Schema.createArray(mapSchema);
+    Schema outerArraySchema = Schema.createArray(innerArraySchema);
+    Schema recordSchema = createRecord(
+            createField("arrayField", outerArraySchema)
+    );
+
+    GenericRecord recordData = new GenericData.Record(recordSchema);
+    List<List<Map<String, Integer>>> outerArray = new ArrayList<>();
+    List<Map<String, Integer>> innerArray1 = new ArrayList<>();
+    for (int i = 0; i < 2; i++) {
+      Map<String, Integer> map = new HashMap<>();
+      map.put("key" + i + "_1", i * 10 + 1);
+      map.put("key" + i + "_2", i * 10 + 2);
+      map.put("key" + i + "_3", i * 10 + 3);
+      innerArray1.add(map);
+    }
+
+    List<Map<String, Integer>> innerArray2 = new ArrayList<>();
+    Map<String, Integer> map = new HashMap<>();
+    map.put("keyA", 100);
+    map.put("keyB", 200);
+    map.put("keyC", 300);
+    innerArray2.add(map);
+
+    outerArray.add(innerArray1);
+    outerArray.add(innerArray2);
+    recordData.put("arrayField", outerArray);
+
+    // when
+    GenericData.Record decodedRecord = implementation.decode(recordSchema, recordSchema,
+            FastSerdeTestsSupport.genericDataAsDecoder(recordData, recordSchema));
+
+    // then
+    Object decodedArrayField = decodedRecord.get("arrayField");
+    Assert.assertTrue(decodedArrayField instanceof List);
+    List<?> decodedOuterArray = (List<?>) decodedArrayField;
+    Assert.assertEquals(decodedOuterArray.size(), 2);
+
+    // Verify first inner array with 2 maps
+    Object firstInnerArray = decodedOuterArray.get(0);
+    Assert.assertTrue(firstInnerArray instanceof List);
+    List<?> decodedInnerArray1 = (List<?>) firstInnerArray;
+    Assert.assertEquals(decodedInnerArray1.size(), 2);
+
+    // Verify the maps in the first inner array
+    for (int i = 0; i < 2; i++) {
+      Object mapObj = decodedInnerArray1.get(i);
+      Assert.assertTrue(mapObj instanceof Map);
+      @SuppressWarnings("unchecked")
+      Map<Utf8, Integer> decodedMap = (Map<Utf8, Integer>) mapObj;
+      Assert.assertEquals(decodedMap.size(), 3);
+
+      // Verify each key-value pair in the map
+      Assert.assertEquals(decodedMap.get(new Utf8("key" + i + "_1")), Integer.valueOf(i * 10 + 1));
+      Assert.assertEquals(decodedMap.get(new Utf8("key" + i + "_2")), Integer.valueOf(i * 10 + 2));
+      Assert.assertEquals(decodedMap.get(new Utf8("key" + i + "_3")), Integer.valueOf(i * 10 + 3));
+    }
+
+    // Verify second inner array with 1 map
+    Object secondInnerArray = decodedOuterArray.get(1);
+    Assert.assertTrue(secondInnerArray instanceof List);
+    List<?> decodedInnerArray2 = (List<?>) secondInnerArray;
+    Assert.assertEquals(decodedInnerArray2.size(), 1);
+
+    // Verify the map in the second inner array
+    Map<Utf8, Integer> decodedMap = (Map<Utf8, Integer>) decodedInnerArray2.get(0);
+    Assert.assertEquals(decodedMap.size(), 3);
+    Assert.assertEquals(decodedMap.get(new Utf8("keyA")), Integer.valueOf(100));
+    Assert.assertEquals(decodedMap.get(new Utf8("keyB")), Integer.valueOf(200));
+    Assert.assertEquals(decodedMap.get(new Utf8("keyC")), Integer.valueOf(300));
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
