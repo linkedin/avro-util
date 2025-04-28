@@ -1734,6 +1734,181 @@ public class FastGenericDeserializerGeneratorTest {
     Assert.assertEquals(outerRecord2.toString(), outerRecord1.toString());
   }
 
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  void testNestedMapWithNullableInnerMapOnReader(Implementation implementation) {
+
+    String writerAvroSchema = "{\n" +
+            "  \"type\" : \"record\",\n" +
+            "  \"name\" : \"container\",\n" +
+            "  \"fields\" : [ {\n" +
+            "    \"name\" : \"nested_maps\",\n" +
+            "    \"type\" : {\n" +
+            "      \"type\" : \"map\",\n" +
+            "      \"values\" : {\n" +
+            "        \"type\" : \"map\",\n" +
+            "        \"values\" : \"int\"\n" +
+            "      }\n" +
+            "    }\n" +
+            "  } ]\n" +
+            "}";
+    Schema writerSchema = Schema.parse(writerAvroSchema);
+    String readerAvroSchema = "{\n" +
+            "  \"type\" : \"record\",\n" +
+            "  \"name\" : \"container\",\n" +
+            "  \"fields\" : [ {\n" +
+            "    \"name\" : \"nested_maps\",\n" +
+            "    \"type\" : [ \"null\", {\n" +
+            "      \"type\" : \"map\",\n" +
+            "      \"values\" : [ \"null\", {\n" +
+            "        \"type\" : \"map\",\n" +
+            "        \"values\" : [ \"null\", \"int\" ]\n" +
+            "      } ]\n" +
+            "    } ],\n" +
+            "    \"default\" : null\n" +
+            "  } ]\n" +
+            "}";
+    Schema readerSchema = Schema.parse(readerAvroSchema);
+    
+    GenericRecord record = new GenericData.Record(writerSchema);
+    Map<String, Map<Utf8, Integer>> map = new HashMap<>();
+    Map<Utf8, Integer> innerMap = new HashMap<>();
+    innerMap.put(new Utf8("key1"), 1);
+    map.put("key1", innerMap);
+    
+    record.put("nested_maps", map);
+
+    // when
+    GenericRecord decodedRecord = implementation.decode(writerSchema, readerSchema, genericDataAsDecoder(record));
+    
+    // then
+    Assert.assertNotNull(decodedRecord);
+    Assert.assertNotNull(decodedRecord.get("nested_maps"));
+    
+    @SuppressWarnings("unchecked")
+    Map<Utf8, Map<Utf8, Integer>> decodedMap = (Map<Utf8, Map<Utf8, Integer>>) decodedRecord.get("nested_maps");
+    Assert.assertEquals(decodedMap.size(), 1);
+    
+    Map<Utf8, Integer> decodedInnerMap = decodedMap.get(new Utf8("key1"));
+    Assert.assertNotNull(decodedInnerMap);
+    Assert.assertEquals(decodedInnerMap.size(), 1);
+    Assert.assertEquals(decodedInnerMap.get(new Utf8("key1")), Integer.valueOf(1));
+  }
+
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void testNestedArrayWithNullableInnerArrayOnReader(Implementation implementation){
+    String writerSchemaStr = "{\n" +
+            "  \"type\" : \"record\",\n" +
+            "  \"name\" : \"message\",\n" +
+            "  \"fields\" : [ {\n" +
+            "    \"name\" : \"data\",\n" +
+            "    \"type\" : {\n" +
+            "      \"type\" : \"array\",\n" +
+            "      \"items\" : {\n" +
+            "        \"type\" : \"array\",\n" +
+            "        \"items\" : \"int\"\n" +
+            "      }\n" +
+            "    }\n" +
+            "  } ]\n" +
+            "}";
+    Schema writerSchema = Schema.parse(writerSchemaStr);
+    
+    String readerSchemaStr = "{\n" +
+            "  \"type\" : \"record\",\n" +
+            "  \"name\" : \"message\",\n" +
+            "  \"fields\" : [ {\n" +
+            "    \"name\" : \"data\",\n" +
+            "    \"type\" : [ \"null\", {\n" +
+            "      \"type\" : \"array\",\n" +
+            "      \"items\" : {\n" +
+            "        \"type\" : \"array\",\n" +
+            "        \"items\" : \"int\"\n" +
+            "      }\n" +
+            "    } ],\n" +
+            "    \"default\" : null\n" +
+            "  } ]\n" +
+            "}";
+    Schema readerSchema = Schema.parse(readerSchemaStr);
+    
+    // Create a test record with nested arrays
+    GenericRecord record = new GenericData.Record(writerSchema);
+    
+    // Create a nested array structure: array<array<int>>
+    List<List<Integer>> nestedArrays = new ArrayList<>();
+    
+    List<Integer> inner1 = new ArrayList<>();
+    inner1.add(1);
+    
+    // Add inner arrays to the outer array
+    nestedArrays.add(inner1);
+    
+    // Add the nested array structure to the record
+    record.put("data", nestedArrays);
+
+    // when
+    GenericRecord decodedRecord = implementation.decode(writerSchema, readerSchema, genericDataAsDecoder(record));
+    
+    // then
+    Assert.assertNotNull(decodedRecord);
+    Assert.assertNotNull(decodedRecord.get("data"));
+    
+    @SuppressWarnings("unchecked")
+    List<List<Integer>> decodedData = (List<List<Integer>>) decodedRecord.get("data");
+    Assert.assertEquals(decodedData.size(), 1);
+
+    List<Integer> decodedInner1 = decodedData.get(0);
+    Assert.assertEquals(decodedInner1.get(0), Integer.valueOf(1));
+    
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  void testNullableNestedMap(Implementation implementation) {
+    String schemaStr = "{\n" +
+            "  \"type\" : \"record\",\n" +
+            "  \"name\" : \"message\",\n" +
+            "  \"fields\" : [ {\n" +
+            "    \"name\" : \"data\",\n" +
+            "    \"type\" : [ \"null\", {\n" +
+            "      \"type\" : \"map\",\n" +
+            "      \"values\" : {\n" +
+            "        \"type\" : \"map\",\n" +
+            "        \"values\" : \"int\"\n" +
+            "      }\n" +
+            "    } ],\n" +
+            "    \"default\" : null\n" +
+            "  } ]\n" +
+            "}";
+    Schema schema = Schema.parse(schemaStr);
+    
+    // Test Case 1: With non-null data
+    GenericRecord record1 = new GenericData.Record(schema);
+    
+    // Create a nested map structure: map<string, map<string, int>>
+    Map<String, Map<String, Integer>> nestedMap = new HashMap<>();
+    Map<String, Integer> innerMap = new HashMap<>();
+    innerMap.put("inner_key", 42);
+    nestedMap.put("outer_key", innerMap);
+    
+    // Add the nested map to the record
+    record1.put("data", nestedMap);
+
+    // When: decode with identical schema
+    GenericRecord decodedRecord1 = implementation.decode(schema, schema, genericDataAsDecoder(record1));
+    
+    // Then: verify the decoded record
+    Assert.assertNotNull(decodedRecord1);
+    Assert.assertNotNull(decodedRecord1.get("data"));
+    
+    @SuppressWarnings("unchecked")
+    Map<Utf8, Map<Utf8, Integer>> decodedMap = (Map<Utf8, Map<Utf8, Integer>>) decodedRecord1.get("data");
+    Assert.assertEquals(decodedMap.size(), 1);
+    
+    Map<Utf8, Integer> decodedInnerMap = decodedMap.get(new Utf8("outer_key"));
+    Assert.assertNotNull(decodedInnerMap);
+    Assert.assertEquals(decodedInnerMap.size(), 1);
+    Assert.assertEquals(decodedInnerMap.get(new Utf8("inner_key")), Integer.valueOf(42));
+  }
+
   private static <T> T decodeRecordColdFast(Schema writerSchema, Schema readerSchema, Decoder decoder) {
     FastDeserializer<T> deserializer =
         new FastSerdeUtils.FastDeserializerWithAvroGenericImpl<>(writerSchema, readerSchema, GenericData.get(), false);
@@ -1769,4 +1944,6 @@ public class FastGenericDeserializerGeneratorTest {
       return null;
     }
   }
+
+  
 }

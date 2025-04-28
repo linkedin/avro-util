@@ -703,8 +703,15 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
                   FieldAction.fromValues(optionSchema.getType(), action.getShouldRead(), alternative.symbols[compatibleWriterSchema]);
         } else {
           Symbol.UnionAdjustAction unionAdjustAction = (Symbol.UnionAdjustAction) alternative.symbols[i].production[0];
-          unionAction =
-                  FieldAction.fromValues(optionSchema.getType(), action.getShouldRead(), unionAdjustAction.symToParse);
+          //For maps and arrays, our processMap and processArray logic expect the map-end symbol whose production contains the maps values
+          //We go from Symbol A(production = [map-start, map-end]) to Symbol map-end
+          if(optionSchema.getType().equals(Schema.Type.MAP) || optionSchema.getType().equals(Schema.Type.ARRAY)){
+            unionAction =
+                    FieldAction.fromValues(optionSchema.getType(), action.getShouldRead(), unionAdjustAction.symToParse.production[0]);
+          } else {
+            unionAction =
+                    FieldAction.fromValues(optionSchema.getType(), action.getShouldRead(), unionAdjustAction.symToParse);
+          }
         }
 
       } else {
@@ -775,7 +782,7 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
 
       //See processMap for a description of this logic
       Symbol valuesActionSymbol = null;
-      int arrayEndsToSkip = arraySchema.getElementType().getType().equals(Schema.Type.ARRAY) ? 1 : 0;
+      int arrayEndsToSkip = arrayReaderSchema.getType().equals(Schema.Type.ARRAY) && arrayReaderSchema.getElementType().getType().equals(Schema.Type.ARRAY) ? 1 : 0;
       int arrayEndsFound = 0;
       for (Symbol symbol: action.getSymbol().production) {
         if (Symbol.Kind.REPEATER.equals(symbol.kind) && "array-end".equals(
@@ -993,7 +1000,7 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
       }
 
       Symbol valuesActionSymbol = null;
-      int mapEndsToSkip = mapSchema.getValueType().getType().equals(Schema.Type.MAP) ? 1 : 0;
+      int mapEndsToSkip = mapReaderSchema.getType().equals(Schema.Type.MAP) && mapReaderSchema.getValueType().getType().equals(Schema.Type.MAP) ? 1 : 0;
       int mapEndsFound = 0;
       for (Symbol symbol: action.getSymbol().production) {
         if (Symbol.Kind.REPEATER.equals(symbol.kind) && "map-end".equals(
