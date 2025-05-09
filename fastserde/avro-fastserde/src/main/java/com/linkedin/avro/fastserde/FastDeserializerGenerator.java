@@ -207,11 +207,11 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
     }
   }
 
-  private void processSimpleType(Schema schema, Schema readerSchema, JBlock methodBody, FieldAction action,
+  private void processSimpleType(JVar fieldSchemaVar, String name, Schema schema, Schema readerSchema, JBlock methodBody, FieldAction action,
       BiConsumer<JBlock, JExpression> putExpressionIntoParent, Supplier<JExpression> reuseSupplier) {
     switch (schema.getType()) {
       case ENUM:
-        processEnum(readerSchema, methodBody, action, putExpressionIntoParent);
+        processEnum(fieldSchemaVar, name, schema, readerSchema, methodBody, action, putExpressionIntoParent);
         break;
       case FIXED:
         final Schema fixedFieldSchema;
@@ -417,7 +417,7 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
         processComplexType(fieldSchemaVar, field.name(), field.schema(), readerFieldSchema, popMethodBody, action,
             putExpressionInRecord, fieldReuseSupplier, customizationSupplier);
       } else {
-        processSimpleType(field.schema(), readerFieldSchema, popMethodBody, action, putExpressionInRecord, fieldReuseSupplier);
+        processSimpleType(fieldSchemaVar, field.name(), field.schema(), readerFieldSchema, popMethodBody, action, putExpressionInRecord, fieldReuseSupplier);
       }
 
       if (popMethod != null) {
@@ -730,15 +730,16 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
         optionSchemaVar = unionSchemaVar;
       }
 
+      String optionName = name + "Option";
+      if (Schema.Type.UNION.equals(optionSchema.getType())) {
+        throw new FastDeserializerGeneratorException("Union cannot be sub-type of union!");
+      }
       if (SchemaAssistant.isComplexType(optionSchema)) {
-        String optionName = name + "Option";
-        if (Schema.Type.UNION.equals(optionSchema.getType())) {
-          throw new FastDeserializerGeneratorException("Union cannot be sub-type of union!");
-        }
+
         processComplexType(optionSchemaVar, optionName, optionSchema, readerOptionSchema, thenBlock, unionAction,
             putValueIntoParent, reuseSupplier, customizationSupplier);
       } else {
-        processSimpleType(optionSchema, readerOptionSchema, thenBlock, unionAction, putValueIntoParent, reuseSupplier);
+        processSimpleType(optionSchemaVar, name, optionSchema, readerOptionSchema, thenBlock, unionAction, putValueIntoParent, reuseSupplier);
       }
     }
     if (ifBlock != null) {
@@ -908,11 +909,10 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
 
     if (SchemaAssistant.isComplexType(arraySchema.getElementType())) {
       String elemName = name + "Elem";
-
       processComplexType(elementSchemaVar, elemName, arraySchema.getElementType(), readerArrayElementSchema, forBody,
           finalAction, putValueInArray, elementReuseSupplier, customizationSupplier);
     } else {
-      processSimpleType(arraySchema.getElementType(), readerArrayElementSchema, forBody, finalAction, putValueInArray, elementReuseSupplier);
+      processSimpleType(elementSchemaVar, name, arraySchema.getElementType(), readerArrayElementSchema, forBody, finalAction, putValueInArray, elementReuseSupplier);
     }
     whileLoopToIterateOnBlocks.body().assign(chunkLen, JExpr.direct(DECODER + ".arrayNext()"));
 
@@ -1070,13 +1070,12 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
       putValueInMap = (block, expression) -> block.invoke(mapVar, "put").arg(key).arg(expression);
       readerMapValueSchema = effectiveMapReaderSchema.getValueType();
     }
-
     if (SchemaAssistant.isComplexType(mapSchema.getValueType())) {
       String valueName = name + "Value";
       processComplexType(mapValueSchemaVar, valueName, mapSchema.getValueType(), readerMapValueSchema, forBody, action,
           putValueInMap, EMPTY_SUPPLIER, customizationSupplier);
     } else {
-      processSimpleType(mapSchema.getValueType(), readerMapValueSchema, forBody, action, putValueInMap, EMPTY_SUPPLIER);
+      processSimpleType(mapValueSchemaVar, name, mapSchema.getValueType(), readerMapValueSchema, forBody, action, putValueInMap, EMPTY_SUPPLIER);
     }
     doLoop.body().assign(chunkLen, JExpr.direct(DECODER + ".mapNext()"));
     if (action.getShouldRead()) {
@@ -1134,9 +1133,36 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
     }
   }
 
-  private void processEnum(final Schema schema, final JBlock body, FieldAction action,
+  private void processEnum(JVar fieldVar, final String name,  final Schema writerSchema, Schema schema, final JBlock body, FieldAction action,
       BiConsumer<JBlock, JExpression> putEnumIntoParent) {
     if (action.getShouldRead()) {
+      // if reader schema is a union type then the compatible union type must be selected
+      // as effectiveRecordReaderSchema and recordAction needs to be adjusted.
+      if (Schema.Type.UNION.equals(schema.getType())) {
+        Schema effectiveRecordReaderSchema = schemaAssistant.compatibleUnionSchema(writerSchema, schema);
+        if (fieldVar != null) {
+          declareSchemaVar(effectiveRecordReaderSchema, name + "EnumSchema",
+                  fieldVar.invoke("getTypes").invoke("get").arg(JExpr.lit(
+                          schemaAssistant.compatibleUnionSchemaIndex(writerSchema, schema)
+                  )));
+        }
+        Symbol symbol = action.getSymbol();
+        if (!(symbol instanceof Symbol.UnionAdjustAction)) {
+          for (Symbol aSymbol: symbol.production) {
+            if (aSymbol instanceof Symbol.UnionAdjustAction) {
+              symbol = aSymbol;
+              break;
+            }
+          }
+        }
+        if (symbol == null) {
+          throw new FastDeserializerGeneratorException("Symbol.UnionAdjustAction is expected but was not found");
+        }
+        action = FieldAction.fromValues(action.getType(), action.getShouldRead(),
+                ((Symbol.UnionAdjustAction) symbol).symToParse);
+        schema = effectiveRecordReaderSchema;
+      }
+
       Symbol.EnumAdjustAction enumAdjustAction = null;
       if (action.getSymbol() instanceof Symbol.EnumAdjustAction) {
         enumAdjustAction = (Symbol.EnumAdjustAction) action.getSymbol();
