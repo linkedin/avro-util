@@ -288,6 +288,59 @@ public class FastGenericDeserializerGeneratorTest {
 
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldHandleNullableCorrectly(Implementation implementation){
+    //writer is a record with 2 required primitive fields, 1 required record and 1 required array field with record elements
+    Schema innerWriteRecordOneSchema =  createRecord("recordOne",
+            createField("fieldA", Schema.create(Schema.Type.STRING))
+    );
+    Schema innerWriterRecordTwoSchema =  createRecord("recordTwo",
+            createField("fieldB", Schema.create(Schema.Type.STRING))
+    );
+    Schema writerSchema = createRecord(
+        createField("field1", Schema.create(Schema.Type.STRING)),
+        createField("field2", Schema.create(Schema.Type.DOUBLE)),
+        createField("fieldRecordOne", innerWriteRecordOneSchema),
+        createArrayFieldSchema("arrayFieldRecordTwo", innerWriterRecordTwoSchema
+    ));
+    //reader is a record with 4 fields, all nullable at all levels including array field
+    Schema readerSchema = createRecord(
+        createUnionFieldWithNull("field1", Schema.create(Schema.Type.STRING)),
+        createUnionFieldWithNull("field2", Schema.create(Schema.Type.DOUBLE)),
+        createUnionFieldWithNull("fieldRecordOne", createRecord("recordOne",
+                createUnionFieldWithNull("fieldA", Schema.create(Schema.Type.STRING))
+        )),
+        createUnionFieldWithNull("arrayFieldRecordTwo", createArrayFieldSchema("unused",
+                createUnionFieldWithNull("unused2",
+                        createRecord("recordTwo",
+                                createUnionFieldWithNull("fieldB", Schema.create(Schema.Type.STRING))
+                        )
+                ).schema()
+        ).schema()
+    ));
+
+    //create record with writer schema
+    GenericRecord originalRecord = new GenericData.Record(writerSchema);
+    originalRecord.put("field1", "abc");
+    originalRecord.put("field2", 1.0);
+    GenericRecord innerRecord = new GenericData.Record(innerWriteRecordOneSchema);
+    innerRecord.put("fieldA", "valFieldA");
+    originalRecord.put("fieldRecordOne", innerRecord);
+    GenericRecord innerRecord2 = new GenericData.Record(innerWriterRecordTwoSchema);
+    innerRecord2.put("fieldB", "valFieldB");
+    originalRecord.put("arrayFieldRecordTwo", Arrays.asList(innerRecord2));
+
+    //decode record
+    GenericRecord record = implementation.decode(writerSchema, readerSchema, genericDataAsDecoder(originalRecord));
+
+    Assert.assertEquals(new Utf8("abc"), record.get("field1"));
+    Assert.assertEquals(1.0, record.get("field2"));
+    Assert.assertEquals(new Utf8("valFieldB"), ((List<GenericData.Record>) record.get("arrayFieldRecordTwo")).get(0).get("fieldB"));
+    Assert.assertEquals(new Utf8("valFieldA"), ((GenericRecord) record.get("fieldRecordOne")).get("fieldA"));
+  }
+
+
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
   public void shouldReadEnumDefault(Implementation implementation) {
     if (!Utils.isAbleToSupportEnumDefault()) {
       // skip if enum default is not supported in the schema
