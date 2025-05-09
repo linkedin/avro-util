@@ -28,35 +28,35 @@ public class RecordWithOneNullableText_SpecificDeserializer_2111230429_100950023
     public RecordWithOneNullableText deserializeRecordWithOneNullableText0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        RecordWithOneNullableText RecordWithOneNullableTextAndDeeplyNestedRecord;
+        RecordWithOneNullableText recordWithOneNullableTextAndDeeplyNestedRecord0;
         if ((reuse)!= null) {
-            RecordWithOneNullableTextAndDeeplyNestedRecord = ((RecordWithOneNullableText)(reuse));
+            recordWithOneNullableTextAndDeeplyNestedRecord0 = ((RecordWithOneNullableText)(reuse));
         } else {
-            RecordWithOneNullableTextAndDeeplyNestedRecord = new RecordWithOneNullableText();
+            recordWithOneNullableTextAndDeeplyNestedRecord0 = new RecordWithOneNullableText();
         }
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
-            RecordWithOneNullableTextAndDeeplyNestedRecord.put(0, null);
+            recordWithOneNullableTextAndDeeplyNestedRecord0 .put(0, null);
         } else {
             if (unionIndex0 == 1) {
                 Utf8 charSequence0;
-                Object oldString0 = RecordWithOneNullableTextAndDeeplyNestedRecord.get(0);
+                Object oldString0 = recordWithOneNullableTextAndDeeplyNestedRecord0 .get(0);
                 if (oldString0 instanceof Utf8) {
                     charSequence0 = (decoder).readString(((Utf8) oldString0));
                 } else {
                     charSequence0 = (decoder).readString(null);
                 }
-                RecordWithOneNullableTextAndDeeplyNestedRecord.put(0, charSequence0);
+                recordWithOneNullableTextAndDeeplyNestedRecord0 .put(0, charSequence0);
             } else {
                 throw new RuntimeException(("Illegal union index for 'text': "+ unionIndex0));
             }
         }
-        populate_RecordWithOneNullableTextAndDeeplyNestedRecord0((RecordWithOneNullableTextAndDeeplyNestedRecord), (customization), (decoder));
-        return RecordWithOneNullableTextAndDeeplyNestedRecord;
+        populate_RecordWithOneNullableTextAndDeeplyNestedRecord0((recordWithOneNullableTextAndDeeplyNestedRecord0), (customization), (decoder));
+        return recordWithOneNullableTextAndDeeplyNestedRecord0;
     }
 
-    private void populate_RecordWithOneNullableTextAndDeeplyNestedRecord0(RecordWithOneNullableText RecordWithOneNullableTextAndDeeplyNestedRecord, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_RecordWithOneNullableTextAndDeeplyNestedRecord0(RecordWithOneNullableText recordWithOneNullableTextAndDeeplyNestedRecord0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex1 = (decoder.readIndex());

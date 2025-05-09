@@ -36,37 +36,37 @@ public class FastStringableTest_javaStringPropertyTest_GenericDeserializer_11109
     public IndexedRecord deserializeFastStringableTest_javaStringPropertyTest0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord FastStringableTest_javaStringPropertyTest;
+        IndexedRecord fastStringableTest_javaStringPropertyTest0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
-            FastStringableTest_javaStringPropertyTest = ((IndexedRecord)(reuse));
+            fastStringableTest_javaStringPropertyTest0 = ((IndexedRecord)(reuse));
         } else {
-            FastStringableTest_javaStringPropertyTest = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            fastStringableTest_javaStringPropertyTest0 = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         String charSequence0 = (decoder).readString();
-        FastStringableTest_javaStringPropertyTest.put(0, charSequence0);
-        populate_FastStringableTest_javaStringPropertyTest0((FastStringableTest_javaStringPropertyTest), (customization), (decoder));
-        populate_FastStringableTest_javaStringPropertyTest1((FastStringableTest_javaStringPropertyTest), (customization), (decoder));
-        return FastStringableTest_javaStringPropertyTest;
+        fastStringableTest_javaStringPropertyTest0 .put(0, charSequence0);
+        populate_FastStringableTest_javaStringPropertyTest0((fastStringableTest_javaStringPropertyTest0), (customization), (decoder));
+        populate_FastStringableTest_javaStringPropertyTest1((fastStringableTest_javaStringPropertyTest0), (customization), (decoder));
+        return fastStringableTest_javaStringPropertyTest0;
     }
 
-    private void populate_FastStringableTest_javaStringPropertyTest0(IndexedRecord FastStringableTest_javaStringPropertyTest, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_FastStringableTest_javaStringPropertyTest0(IndexedRecord fastStringableTest_javaStringPropertyTest0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
-            FastStringableTest_javaStringPropertyTest.put(1, null);
+            fastStringableTest_javaStringPropertyTest0 .put(1, null);
         } else {
             if (unionIndex0 == 1) {
                 String charSequence1 = (decoder).readString();
-                FastStringableTest_javaStringPropertyTest.put(1, charSequence1);
+                fastStringableTest_javaStringPropertyTest0 .put(1, charSequence1);
             } else {
                 throw new RuntimeException(("Illegal union index for 'testUnionString': "+ unionIndex0));
             }
         }
         List<String> testStringArray1 = null;
         long chunkLen0 = (decoder.readArrayStart());
-        Object oldArray0 = FastStringableTest_javaStringPropertyTest.get(2);
+        Object oldArray0 = fastStringableTest_javaStringPropertyTest0 .get(2);
         if (oldArray0 instanceof List) {
             testStringArray1 = ((List) oldArray0);
             if (testStringArray1 instanceof GenericArray) {
@@ -88,16 +88,16 @@ public class FastStringableTest_javaStringPropertyTest_GenericDeserializer_11109
             }
             chunkLen0 = (decoder.arrayNext());
         }
-        FastStringableTest_javaStringPropertyTest.put(2, testStringArray1);
+        fastStringableTest_javaStringPropertyTest0 .put(2, testStringArray1);
     }
 
-    private void populate_FastStringableTest_javaStringPropertyTest1(IndexedRecord FastStringableTest_javaStringPropertyTest, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_FastStringableTest_javaStringPropertyTest1(IndexedRecord fastStringableTest_javaStringPropertyTest0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         Map<String, String> testStringMap1 = null;
         long chunkLen1 = (decoder.readMapStart());
         if (chunkLen1 > 0) {
-            testStringMap1 = ((Map)(customization).getNewMapOverrideFunc().apply(FastStringableTest_javaStringPropertyTest.get(3), ((int) chunkLen1)));
+            testStringMap1 = ((Map)(customization).getNewMapOverrideFunc().apply(fastStringableTest_javaStringPropertyTest0 .get(3), ((int) chunkLen1)));
             do {
                 for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {
                     String key0 = (decoder.readString());
@@ -107,9 +107,9 @@ public class FastStringableTest_javaStringPropertyTest_GenericDeserializer_11109
                 chunkLen1 = (decoder.mapNext());
             } while (chunkLen1 > 0);
         } else {
-            testStringMap1 = ((Map)(customization).getNewMapOverrideFunc().apply(FastStringableTest_javaStringPropertyTest.get(3), 0));
+            testStringMap1 = ((Map)(customization).getNewMapOverrideFunc().apply(fastStringableTest_javaStringPropertyTest0 .get(3), 0));
         }
-        FastStringableTest_javaStringPropertyTest.put(3, testStringMap1);
+        fastStringableTest_javaStringPropertyTest0 .put(3, testStringMap1);
     }
 
 }

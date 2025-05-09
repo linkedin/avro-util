@@ -28,15 +28,15 @@ public class record_GenericDeserializer_1126840752_2099305627
     public IndexedRecord deserializerecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord record;
+        IndexedRecord record0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
-            record = ((IndexedRecord)(reuse));
+            record0 = ((IndexedRecord)(reuse));
         } else {
-            record = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            record0 = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
-            record.put(0, (decoder.readInt()));
+            record0 .put(0, (decoder.readInt()));
         } else {
             if (unionIndex0 == 1) {
                 throw new AvroTypeException("Found \"string\", expecting \"int\"");
@@ -44,7 +44,7 @@ public class record_GenericDeserializer_1126840752_2099305627
                 throw new RuntimeException(("Illegal union index for 'someField': "+ unionIndex0));
             }
         }
-        return record;
+        return record0;
     }
 
 }

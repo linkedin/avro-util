@@ -31,26 +31,26 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanill
     public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType;
+        IndexedRecord fastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
-            FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType = ((IndexedRecord)(reuse));
+            fastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType0 = ((IndexedRecord)(reuse));
         } else {
-            FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            fastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType0 = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
-            FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType.put(0, null);
+            fastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType0 .put(0, null);
         } else {
             if (unionIndex0 == 1) {
                 Utf8 charSequence0;
-                Object oldString0 = FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType.get(0);
+                Object oldString0 = fastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType0 .get(0);
                 if (oldString0 instanceof Utf8) {
                     charSequence0 = (decoder).readString(((Utf8) oldString0));
                 } else {
                     charSequence0 = (decoder).readString(null);
                 }
-                FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType.put(0, charSequence0);
+                fastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType0 .put(0, charSequence0);
             } else {
                 if (unionIndex0 == 2) {
                     throw new AvroTypeException("Found \"long\", expecting [\"null\", \"string\"]");
@@ -59,7 +59,7 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanill
                 }
             }
         }
-        return FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType;
+        return fastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType0;
     }
 
 }

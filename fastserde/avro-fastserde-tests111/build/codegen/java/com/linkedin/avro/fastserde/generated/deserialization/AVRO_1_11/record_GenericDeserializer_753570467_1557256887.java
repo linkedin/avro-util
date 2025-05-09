@@ -32,11 +32,11 @@ public class record_GenericDeserializer_753570467_1557256887
     public IndexedRecord deserializerecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord record;
+        IndexedRecord record0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
-            record = ((IndexedRecord)(reuse));
+            record0 = ((IndexedRecord)(reuse));
         } else {
-            record = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            record0 = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
@@ -46,7 +46,7 @@ public class record_GenericDeserializer_753570467_1557256887
                 Map<Utf8, Integer> someIntsOption0 = null;
                 long chunkLen0 = (decoder.readMapStart());
                 if (chunkLen0 > 0) {
-                    someIntsOption0 = ((Map)(customization).getNewMapOverrideFunc().apply(record.get(0), ((int) chunkLen0)));
+                    someIntsOption0 = ((Map)(customization).getNewMapOverrideFunc().apply(record0 .get(0), ((int) chunkLen0)));
                     do {
                         for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
                             Utf8 key0 = (decoder.readString(null));
@@ -55,14 +55,14 @@ public class record_GenericDeserializer_753570467_1557256887
                         chunkLen0 = (decoder.mapNext());
                     } while (chunkLen0 > 0);
                 } else {
-                    someIntsOption0 = ((Map)(customization).getNewMapOverrideFunc().apply(record.get(0), 0));
+                    someIntsOption0 = ((Map)(customization).getNewMapOverrideFunc().apply(record0 .get(0), 0));
                 }
-                record.put(0, someIntsOption0);
+                record0 .put(0, someIntsOption0);
             } else {
                 throw new RuntimeException(("Illegal union index for 'someInts': "+ unionIndex0));
             }
         }
-        return record;
+        return record0;
     }
 
 }

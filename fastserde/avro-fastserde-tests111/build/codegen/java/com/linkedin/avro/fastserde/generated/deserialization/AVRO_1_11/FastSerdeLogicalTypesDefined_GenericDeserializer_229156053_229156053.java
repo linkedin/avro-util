@@ -51,26 +51,26 @@ public class FastSerdeLogicalTypesDefined_GenericDeserializer_229156053_22915605
     public IndexedRecord deserializeFastSerdeLogicalTypesDefined0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord FastSerdeLogicalTypesDefined;
+        IndexedRecord fastSerdeLogicalTypesDefined0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
-            FastSerdeLogicalTypesDefined = ((IndexedRecord)(reuse));
+            fastSerdeLogicalTypesDefined0 = ((IndexedRecord)(reuse));
         } else {
-            FastSerdeLogicalTypesDefined = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            fastSerdeLogicalTypesDefined0 = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         LocalTime convertedValue0 = ((LocalTime) Conversions.convertToLogicalType((decoder.readInt()), this.logicalTypeSchema__419105534, this.logicalTypeSchema__419105534 .getLogicalType(), this.conversion_time_millis));
-        FastSerdeLogicalTypesDefined.put(0, convertedValue0);
-        populate_FastSerdeLogicalTypesDefined0((FastSerdeLogicalTypesDefined), (customization), (decoder));
-        return FastSerdeLogicalTypesDefined;
+        fastSerdeLogicalTypesDefined0 .put(0, convertedValue0);
+        populate_FastSerdeLogicalTypesDefined0((fastSerdeLogicalTypesDefined0), (customization), (decoder));
+        return fastSerdeLogicalTypesDefined0;
     }
 
-    private void populate_FastSerdeLogicalTypesDefined0(IndexedRecord FastSerdeLogicalTypesDefined, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_FastSerdeLogicalTypesDefined0(IndexedRecord fastSerdeLogicalTypesDefined0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         LocalDate convertedValue1 = ((LocalDate) Conversions.convertToLogicalType((decoder.readInt()), this.logicalTypeSchema__59052268, this.logicalTypeSchema__59052268 .getLogicalType(), this.conversion_date));
-        FastSerdeLogicalTypesDefined.put(1, convertedValue1);
+        fastSerdeLogicalTypesDefined0 .put(1, convertedValue1);
         List<Object> arrayOfUnionOfDateAndTimestampMillis1 = null;
         long chunkLen0 = (decoder.readArrayStart());
-        Object oldArray0 = FastSerdeLogicalTypesDefined.get(2);
+        Object oldArray0 = fastSerdeLogicalTypesDefined0 .get(2);
         if (oldArray0 instanceof List) {
             arrayOfUnionOfDateAndTimestampMillis1 = ((List) oldArray0);
             if (arrayOfUnionOfDateAndTimestampMillis1 instanceof GenericArray) {
@@ -102,7 +102,7 @@ public class FastSerdeLogicalTypesDefined_GenericDeserializer_229156053_22915605
             }
             chunkLen0 = (decoder.arrayNext());
         }
-        FastSerdeLogicalTypesDefined.put(2, arrayOfUnionOfDateAndTimestampMillis1);
+        fastSerdeLogicalTypesDefined0 .put(2, arrayOfUnionOfDateAndTimestampMillis1);
     }
 
 }

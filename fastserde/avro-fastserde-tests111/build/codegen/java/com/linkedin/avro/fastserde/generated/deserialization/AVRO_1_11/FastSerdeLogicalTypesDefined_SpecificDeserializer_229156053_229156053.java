@@ -9,13 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
+import com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesDefined;
 import org.apache.avro.Conversions;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.io.Decoder;
 
 public class FastSerdeLogicalTypesDefined_SpecificDeserializer_229156053_229156053
-    implements FastDeserializer<com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesDefined>
+    implements FastDeserializer<FastSerdeLogicalTypesDefined>
 {
 
     private final Schema readerSchema;
@@ -30,35 +31,35 @@ public class FastSerdeLogicalTypesDefined_SpecificDeserializer_229156053_2291560
         this.readerSchema = readerSchema;
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesDefined deserialize(com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesDefined reuse, Decoder decoder, DatumReaderCustomization customization)
+    public FastSerdeLogicalTypesDefined deserialize(FastSerdeLogicalTypesDefined reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         return deserializeFastSerdeLogicalTypesDefined0((reuse), (decoder), (customization));
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesDefined deserializeFastSerdeLogicalTypesDefined0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
+    public FastSerdeLogicalTypesDefined deserializeFastSerdeLogicalTypesDefined0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesDefined FastSerdeLogicalTypesDefined;
+        FastSerdeLogicalTypesDefined fastSerdeLogicalTypesDefined0;
         if ((reuse)!= null) {
-            FastSerdeLogicalTypesDefined = ((com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesDefined)(reuse));
+            fastSerdeLogicalTypesDefined0 = ((FastSerdeLogicalTypesDefined)(reuse));
         } else {
-            FastSerdeLogicalTypesDefined = new com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesDefined();
+            fastSerdeLogicalTypesDefined0 = new FastSerdeLogicalTypesDefined();
         }
         LocalTime convertedValue0 = ((LocalTime) Conversions.convertToLogicalType((decoder.readInt()), this.logicalTypeSchema__419105534, this.logicalTypeSchema__419105534 .getLogicalType(), this.conversion_time_millis));
-        FastSerdeLogicalTypesDefined.put(0, convertedValue0);
-        populate_FastSerdeLogicalTypesDefined0((FastSerdeLogicalTypesDefined), (customization), (decoder));
-        return FastSerdeLogicalTypesDefined;
+        fastSerdeLogicalTypesDefined0 .put(0, convertedValue0);
+        populate_FastSerdeLogicalTypesDefined0((fastSerdeLogicalTypesDefined0), (customization), (decoder));
+        return fastSerdeLogicalTypesDefined0;
     }
 
-    private void populate_FastSerdeLogicalTypesDefined0(com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesDefined FastSerdeLogicalTypesDefined, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_FastSerdeLogicalTypesDefined0(FastSerdeLogicalTypesDefined fastSerdeLogicalTypesDefined0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         LocalDate convertedValue1 = ((LocalDate) Conversions.convertToLogicalType((decoder.readInt()), this.logicalTypeSchema__59052268, this.logicalTypeSchema__59052268 .getLogicalType(), this.conversion_date));
-        FastSerdeLogicalTypesDefined.put(1, convertedValue1);
+        fastSerdeLogicalTypesDefined0 .put(1, convertedValue1);
         List<Object> arrayOfUnionOfDateAndTimestampMillis0 = null;
         long chunkLen0 = (decoder.readArrayStart());
-        Object oldArray0 = FastSerdeLogicalTypesDefined.get(2);
+        Object oldArray0 = fastSerdeLogicalTypesDefined0 .get(2);
         if (oldArray0 instanceof List) {
             arrayOfUnionOfDateAndTimestampMillis0 = ((List) oldArray0);
             if (arrayOfUnionOfDateAndTimestampMillis0 instanceof GenericArray) {
@@ -90,7 +91,7 @@ public class FastSerdeLogicalTypesDefined_SpecificDeserializer_229156053_2291560
             }
             chunkLen0 = (decoder.arrayNext());
         }
-        FastSerdeLogicalTypesDefined.put(2, arrayOfUnionOfDateAndTimestampMillis0);
+        fastSerdeLogicalTypesDefined0 .put(2, arrayOfUnionOfDateAndTimestampMillis0);
     }
 
 }

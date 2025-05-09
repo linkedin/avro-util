@@ -33,54 +33,54 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingW
     public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords;
+        IndexedRecord fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
-            FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords = ((IndexedRecord)(reuse));
+            fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords0 = ((IndexedRecord)(reuse));
         } else {
-            FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords0 = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
-            FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords.put(0, null);
+            fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords0 .put(0, null);
         } else {
             if (unionIndex0 == 1) {
-                FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords.put(0, deserializesubRecord10(FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords.get(0), (decoder), (customization)));
+                fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords0 .put(0, deserializesubRecord10(fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords0 .get(0), (decoder), (customization)));
             } else {
                 if (unionIndex0 == 2) {
-                    FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords.put(0, deserializesubRecord20(FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords.get(0), (decoder), (customization)));
+                    fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords0 .put(0, deserializesubRecord20(fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords0 .get(0), (decoder), (customization)));
                 } else {
                     throw new RuntimeException(("Illegal union index for 'test': "+ unionIndex0));
                 }
             }
         }
-        return FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords;
+        return fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithSubRecords0;
     }
 
     public IndexedRecord deserializesubRecord10(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord subRecord1;
+        IndexedRecord subRecord10;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == testOptionSchema0)) {
-            subRecord1 = ((IndexedRecord)(reuse));
+            subRecord10 = ((IndexedRecord)(reuse));
         } else {
-            subRecord1 = new org.apache.avro.generic.GenericData.Record(testOptionSchema0);
+            subRecord10 = new org.apache.avro.generic.GenericData.Record(testOptionSchema0);
         }
-        subRecord1 .put(0, (decoder.readInt()));
-        return subRecord1;
+        subRecord10 .put(0, (decoder.readInt()));
+        return subRecord10;
     }
 
     public IndexedRecord deserializesubRecord20(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord subRecord2;
+        IndexedRecord subRecord20;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == testOptionSchema1)) {
-            subRecord2 = ((IndexedRecord)(reuse));
+            subRecord20 = ((IndexedRecord)(reuse));
         } else {
-            subRecord2 = new org.apache.avro.generic.GenericData.Record(testOptionSchema1);
+            subRecord20 = new org.apache.avro.generic.GenericData.Record(testOptionSchema1);
         }
-        subRecord2 .put(0, (decoder.readInt()));
-        return subRecord2;
+        subRecord20 .put(0, (decoder.readInt()));
+        return subRecord20;
     }
 
 }
