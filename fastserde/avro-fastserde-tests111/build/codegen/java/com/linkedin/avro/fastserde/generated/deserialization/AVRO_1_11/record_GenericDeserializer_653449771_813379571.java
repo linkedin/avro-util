@@ -34,15 +34,15 @@ public class record_GenericDeserializer_653449771_813379571
     public IndexedRecord deserializerecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord record;
+        IndexedRecord record0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
-            record = ((IndexedRecord)(reuse));
+            record0 = ((IndexedRecord)(reuse));
         } else {
-            record = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            record0 = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         List<Integer> someInts1 = null;
         long chunkLen0 = (decoder.readArrayStart());
-        Object oldArray0 = record.get(0);
+        Object oldArray0 = record0 .get(0);
         if (oldArray0 instanceof List) {
             someInts1 = ((List) oldArray0);
             someInts1 .clear();
@@ -55,8 +55,8 @@ public class record_GenericDeserializer_653449771_813379571
             }
             chunkLen0 = (decoder.arrayNext());
         }
-        record.put(0, someInts1);
-        return record;
+        record0 .put(0, someInts1);
+        return record0;
     }
 
 }

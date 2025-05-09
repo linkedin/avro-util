@@ -4,13 +4,14 @@ package com.linkedin.avro.fastserde.generated.deserialization.AVRO_1_11;
 import java.io.IOException;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
+import com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.util.Utf8;
 
 public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
-    implements FastDeserializer<com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord>
+    implements FastDeserializer<RemovedTypesTestRecord>
 {
 
     private final Schema readerSchema;
@@ -19,45 +20,45 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
         this.readerSchema = readerSchema;
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord deserialize(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord reuse, Decoder decoder, DatumReaderCustomization customization)
+    public RemovedTypesTestRecord deserialize(RemovedTypesTestRecord reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         return deserializeRemovedTypesTestRecord0((reuse), (decoder), (customization));
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord deserializeRemovedTypesTestRecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
+    public RemovedTypesTestRecord deserializeRemovedTypesTestRecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord;
+        RemovedTypesTestRecord removedTypesTestRecord0;
         if ((reuse)!= null) {
-            RemovedTypesTestRecord = ((com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord)(reuse));
+            removedTypesTestRecord0 = ((RemovedTypesTestRecord)(reuse));
         } else {
-            RemovedTypesTestRecord = new com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord();
+            removedTypesTestRecord0 = new RemovedTypesTestRecord();
         }
         Utf8 charSequence0;
-        Object oldString0 = RemovedTypesTestRecord.get(0);
+        Object oldString0 = removedTypesTestRecord0 .get(0);
         if (oldString0 instanceof Utf8) {
             charSequence0 = (decoder).readString(((Utf8) oldString0));
         } else {
             charSequence0 = (decoder).readString(null);
         }
-        RemovedTypesTestRecord.put(0, charSequence0);
-        populate_RemovedTypesTestRecord0((RemovedTypesTestRecord), (customization), (decoder));
-        populate_RemovedTypesTestRecord1((RemovedTypesTestRecord), (customization), (decoder));
-        populate_RemovedTypesTestRecord2((RemovedTypesTestRecord), (customization), (decoder));
-        populate_RemovedTypesTestRecord3((RemovedTypesTestRecord), (customization), (decoder));
-        populate_RemovedTypesTestRecord4((RemovedTypesTestRecord), (customization), (decoder));
-        populate_RemovedTypesTestRecord5((RemovedTypesTestRecord), (customization), (decoder));
-        populate_RemovedTypesTestRecord6((RemovedTypesTestRecord), (customization), (decoder));
-        populate_RemovedTypesTestRecord7((RemovedTypesTestRecord), (customization), (decoder));
-        populate_RemovedTypesTestRecord8((RemovedTypesTestRecord), (customization), (decoder));
-        populate_RemovedTypesTestRecord9((RemovedTypesTestRecord), (customization), (decoder));
-        populate_RemovedTypesTestRecord10((RemovedTypesTestRecord), (customization), (decoder));
-        populate_RemovedTypesTestRecord11((RemovedTypesTestRecord), (customization), (decoder));
-        return RemovedTypesTestRecord;
+        removedTypesTestRecord0 .put(0, charSequence0);
+        populate_RemovedTypesTestRecord0((removedTypesTestRecord0), (customization), (decoder));
+        populate_RemovedTypesTestRecord1((removedTypesTestRecord0), (customization), (decoder));
+        populate_RemovedTypesTestRecord2((removedTypesTestRecord0), (customization), (decoder));
+        populate_RemovedTypesTestRecord3((removedTypesTestRecord0), (customization), (decoder));
+        populate_RemovedTypesTestRecord4((removedTypesTestRecord0), (customization), (decoder));
+        populate_RemovedTypesTestRecord5((removedTypesTestRecord0), (customization), (decoder));
+        populate_RemovedTypesTestRecord6((removedTypesTestRecord0), (customization), (decoder));
+        populate_RemovedTypesTestRecord7((removedTypesTestRecord0), (customization), (decoder));
+        populate_RemovedTypesTestRecord8((removedTypesTestRecord0), (customization), (decoder));
+        populate_RemovedTypesTestRecord9((removedTypesTestRecord0), (customization), (decoder));
+        populate_RemovedTypesTestRecord10((removedTypesTestRecord0), (customization), (decoder));
+        populate_RemovedTypesTestRecord11((removedTypesTestRecord0), (customization), (decoder));
+        return removedTypesTestRecord0;
     }
 
-    private void populate_RemovedTypesTestRecord0(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_RemovedTypesTestRecord0(RemovedTypesTestRecord removedTypesTestRecord0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         decoder.skipBytes();
@@ -74,7 +75,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
         }
     }
 
-    private void populate_RemovedTypesTestRecord1(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_RemovedTypesTestRecord1(RemovedTypesTestRecord removedTypesTestRecord0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex0 = (decoder.readIndex());
@@ -99,7 +100,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
         }
     }
 
-    private void populate_RemovedTypesTestRecord2(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_RemovedTypesTestRecord2(RemovedTypesTestRecord removedTypesTestRecord0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         long chunkLen2 = (decoder.readArrayStart());
@@ -143,7 +144,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
         }
     }
 
-    private void populate_RemovedTypesTestRecord3(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_RemovedTypesTestRecord3(RemovedTypesTestRecord removedTypesTestRecord0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         decoder.skipFixed(1);
@@ -159,7 +160,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
         }
     }
 
-    private void populate_RemovedTypesTestRecord4(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_RemovedTypesTestRecord4(RemovedTypesTestRecord removedTypesTestRecord0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         long chunkLen4 = (decoder.readArrayStart());
@@ -185,7 +186,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
         }
     }
 
-    private void populate_RemovedTypesTestRecord5(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_RemovedTypesTestRecord5(RemovedTypesTestRecord removedTypesTestRecord0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         long chunkLen6 = (decoder.readArrayStart());
@@ -229,7 +230,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
         }
     }
 
-    private void populate_RemovedTypesTestRecord6(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_RemovedTypesTestRecord6(RemovedTypesTestRecord removedTypesTestRecord0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         decoder.readEnum();
@@ -245,7 +246,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
         }
     }
 
-    private void populate_RemovedTypesTestRecord7(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_RemovedTypesTestRecord7(RemovedTypesTestRecord removedTypesTestRecord0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         long chunkLen8 = (decoder.readArrayStart());
@@ -267,7 +268,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
         }
     }
 
-    private void populate_RemovedTypesTestRecord8(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_RemovedTypesTestRecord8(RemovedTypesTestRecord removedTypesTestRecord0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         long chunkLen10 = (decoder.readArrayStart());
@@ -311,7 +312,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
         }
     }
 
-    private void populate_RemovedTypesTestRecord9(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_RemovedTypesTestRecord9(RemovedTypesTestRecord removedTypesTestRecord0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         deserializeRemovedSubRecord0(null, (decoder), (customization));
@@ -333,7 +334,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
         decoder.skipString();
     }
 
-    private void populate_RemovedTypesTestRecord10(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_RemovedTypesTestRecord10(RemovedTypesTestRecord removedTypesTestRecord0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         long chunkLen12 = (decoder.readArrayStart());
@@ -369,7 +370,7 @@ public class RemovedTypesTestRecord_SpecificDeserializer_605055252_36310691
         }
     }
 
-    private void populate_RemovedTypesTestRecord11(com.linkedin.avro.fastserde.generated.avro.RemovedTypesTestRecord RemovedTypesTestRecord, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_RemovedTypesTestRecord11(RemovedTypesTestRecord removedTypesTestRecord0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         long chunkLen14 = (decoder.readMapStart());

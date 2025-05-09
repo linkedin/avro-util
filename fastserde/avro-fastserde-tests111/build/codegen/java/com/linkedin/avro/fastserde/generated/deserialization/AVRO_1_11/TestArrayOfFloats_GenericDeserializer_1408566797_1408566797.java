@@ -31,16 +31,16 @@ public class TestArrayOfFloats_GenericDeserializer_1408566797_1408566797
     public IndexedRecord deserializeTestArrayOfFloats0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord TestArrayOfFloats;
+        IndexedRecord testArrayOfFloats0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
-            TestArrayOfFloats = ((IndexedRecord)(reuse));
+            testArrayOfFloats0 = ((IndexedRecord)(reuse));
         } else {
-            TestArrayOfFloats = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            testArrayOfFloats0 = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         PrimitiveFloatList array_of_float1 = null;
-        array_of_float1 = ((PrimitiveFloatList) BufferBackedPrimitiveFloatList.readPrimitiveFloatArray(TestArrayOfFloats.get(0), (decoder)));
-        TestArrayOfFloats.put(0, array_of_float1);
-        return TestArrayOfFloats;
+        array_of_float1 = ((PrimitiveFloatList) BufferBackedPrimitiveFloatList.readPrimitiveFloatArray(testArrayOfFloats0 .get(0), (decoder)));
+        testArrayOfFloats0 .put(0, array_of_float1);
+        return testArrayOfFloats0;
     }
 
 }

@@ -30,39 +30,39 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord_
     public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord;
+        IndexedRecord fastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
-            FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord = ((IndexedRecord)(reuse));
+            fastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord0 = ((IndexedRecord)(reuse));
         } else {
-            FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            fastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord0 = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
-        FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord.put(0, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord.get(0), (decoder), (customization)));
-        return FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord;
+        fastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord0 .put(0, deserializesubRecord0(fastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord0 .get(0), (decoder), (customization)));
+        return fastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord0;
     }
 
     public IndexedRecord deserializesubRecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord subRecord;
+        IndexedRecord subRecord1;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == subRecord0)) {
-            subRecord = ((IndexedRecord)(reuse));
+            subRecord1 = ((IndexedRecord)(reuse));
         } else {
-            subRecord = new org.apache.avro.generic.GenericData.Record(subRecord0);
+            subRecord1 = new org.apache.avro.generic.GenericData.Record(subRecord0);
         }
         Utf8 charSequence0;
-        Object oldString0 = subRecord.get(0);
+        Object oldString0 = subRecord1 .get(0);
         if (oldString0 instanceof Utf8) {
             charSequence0 = (decoder).readString(((Utf8) oldString0));
         } else {
             charSequence0 = (decoder).readString(null);
         }
-        subRecord.put(0, charSequence0);
-        populate_subRecord0((subRecord), (customization), (decoder));
-        populate_subRecord1((subRecord), (customization), (decoder));
-        return subRecord;
+        subRecord1 .put(0, charSequence0);
+        populate_subRecord0((subRecord1), (customization), (decoder));
+        populate_subRecord1((subRecord1), (customization), (decoder));
+        return subRecord1;
     }
 
-    private void populate_subRecord0(IndexedRecord subRecord, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_subRecord0(IndexedRecord subRecord1, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         deserializesubSubRecord0(null, (decoder), (customization));
@@ -91,17 +91,17 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord_
         decoder.skipString();
     }
 
-    private void populate_subRecord1(IndexedRecord subRecord, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_subRecord1(IndexedRecord subRecord1, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         Utf8 charSequence1;
-        Object oldString1 = subRecord.get(1);
+        Object oldString1 = subRecord1 .get(1);
         if (oldString1 instanceof Utf8) {
             charSequence1 = (decoder).readString(((Utf8) oldString1));
         } else {
             charSequence1 = (decoder).readString(null);
         }
-        subRecord.put(1, charSequence1);
+        subRecord1 .put(1, charSequence1);
     }
 
 }

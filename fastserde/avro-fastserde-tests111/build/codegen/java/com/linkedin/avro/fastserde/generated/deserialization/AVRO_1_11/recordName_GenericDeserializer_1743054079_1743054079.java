@@ -30,34 +30,34 @@ public class recordName_GenericDeserializer_1743054079_1743054079
     public IndexedRecord deserializerecordName0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord recordName;
+        IndexedRecord recordName0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
-            recordName = ((IndexedRecord)(reuse));
+            recordName0 = ((IndexedRecord)(reuse));
         } else {
-            recordName = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            recordName0 = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         Utf8 charSequence0;
-        Object oldString0 = recordName.get(0);
+        Object oldString0 = recordName0 .get(0);
         if (oldString0 instanceof Utf8) {
             charSequence0 = (decoder).readString(((Utf8) oldString0));
         } else {
             charSequence0 = (decoder).readString(null);
         }
-        recordName.put(0, charSequence0);
-        populate_recordName0((recordName), (customization), (decoder));
-        return recordName;
+        recordName0 .put(0, charSequence0);
+        populate_recordName0((recordName0), (customization), (decoder));
+        return recordName0;
     }
 
-    private void populate_recordName0(IndexedRecord recordName, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_recordName0(IndexedRecord recordName0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
-            recordName.put(1, null);
+            recordName0 .put(1, null);
         } else {
             if (unionIndex0 == 1) {
-                recordName.put(1, deserializerecordName0(recordName.get(1), (decoder), (customization)));
+                recordName0 .put(1, deserializerecordName0(recordName0 .get(1), (decoder), (customization)));
             } else {
                 throw new RuntimeException(("Illegal union index for 'unionField': "+ unionIndex0));
             }

@@ -38,16 +38,16 @@ public class FastGenericDeserializerGeneratorTest_shouldReadNestedMap_GenericDes
     public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadNestedMap0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadNestedMap;
+        IndexedRecord fastGenericDeserializerGeneratorTest_shouldReadNestedMap0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
-            FastGenericDeserializerGeneratorTest_shouldReadNestedMap = ((IndexedRecord)(reuse));
+            fastGenericDeserializerGeneratorTest_shouldReadNestedMap0 = ((IndexedRecord)(reuse));
         } else {
-            FastGenericDeserializerGeneratorTest_shouldReadNestedMap = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            fastGenericDeserializerGeneratorTest_shouldReadNestedMap0 = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         Map<Utf8, Map<Utf8, List<Integer>>> mapField1 = null;
         long chunkLen0 = (decoder.readMapStart());
         if (chunkLen0 > 0) {
-            mapField1 = ((Map)(customization).getNewMapOverrideFunc().apply(FastGenericDeserializerGeneratorTest_shouldReadNestedMap.get(0), ((int) chunkLen0)));
+            mapField1 = ((Map)(customization).getNewMapOverrideFunc().apply(fastGenericDeserializerGeneratorTest_shouldReadNestedMap0 .get(0), ((int) chunkLen0)));
             do {
                 for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
                     Utf8 key0 = (decoder.readString(null));
@@ -84,10 +84,10 @@ public class FastGenericDeserializerGeneratorTest_shouldReadNestedMap_GenericDes
                 chunkLen0 = (decoder.mapNext());
             } while (chunkLen0 > 0);
         } else {
-            mapField1 = ((Map)(customization).getNewMapOverrideFunc().apply(FastGenericDeserializerGeneratorTest_shouldReadNestedMap.get(0), 0));
+            mapField1 = ((Map)(customization).getNewMapOverrideFunc().apply(fastGenericDeserializerGeneratorTest_shouldReadNestedMap0 .get(0), 0));
         }
-        FastGenericDeserializerGeneratorTest_shouldReadNestedMap.put(0, mapField1);
-        return FastGenericDeserializerGeneratorTest_shouldReadNestedMap;
+        fastGenericDeserializerGeneratorTest_shouldReadNestedMap0 .put(0, mapField1);
+        return fastGenericDeserializerGeneratorTest_shouldReadNestedMap0;
     }
 
 }

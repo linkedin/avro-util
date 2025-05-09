@@ -68,11 +68,11 @@ public class FastGenericDeserializerGeneratorTest_shouldReadEnumDefault_GenericD
     public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadEnumDefault0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadEnumDefault;
+        IndexedRecord fastGenericDeserializerGeneratorTest_shouldReadEnumDefault0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
-            FastGenericDeserializerGeneratorTest_shouldReadEnumDefault = ((IndexedRecord)(reuse));
+            fastGenericDeserializerGeneratorTest_shouldReadEnumDefault0 = ((IndexedRecord)(reuse));
         } else {
-            FastGenericDeserializerGeneratorTest_shouldReadEnumDefault = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            fastGenericDeserializerGeneratorTest_shouldReadEnumDefault0 = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         int enumIndex0 = (decoder.readEnum());
         GenericEnumSymbol enumValue0 = null;
@@ -86,19 +86,19 @@ public class FastGenericDeserializerGeneratorTest_shouldReadEnumDefault_GenericD
                 throw new RuntimeException(("Illegal enum index for 'com.linkedin.avro.fastserde.generated.avro.testEnum': "+ enumIndex0));
             }
         }
-        FastGenericDeserializerGeneratorTest_shouldReadEnumDefault.put(0, enumValue0);
-        populate_FastGenericDeserializerGeneratorTest_shouldReadEnumDefault0((FastGenericDeserializerGeneratorTest_shouldReadEnumDefault), (customization), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldReadEnumDefault1((FastGenericDeserializerGeneratorTest_shouldReadEnumDefault), (customization), (decoder));
-        return FastGenericDeserializerGeneratorTest_shouldReadEnumDefault;
+        fastGenericDeserializerGeneratorTest_shouldReadEnumDefault0 .put(0, enumValue0);
+        populate_FastGenericDeserializerGeneratorTest_shouldReadEnumDefault0((fastGenericDeserializerGeneratorTest_shouldReadEnumDefault0), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadEnumDefault1((fastGenericDeserializerGeneratorTest_shouldReadEnumDefault0), (customization), (decoder));
+        return fastGenericDeserializerGeneratorTest_shouldReadEnumDefault0;
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldReadEnumDefault0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadEnumDefault, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadEnumDefault0(IndexedRecord fastGenericDeserializerGeneratorTest_shouldReadEnumDefault0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
-            FastGenericDeserializerGeneratorTest_shouldReadEnumDefault.put(1, null);
+            fastGenericDeserializerGeneratorTest_shouldReadEnumDefault0 .put(1, null);
         } else {
             if (unionIndex0 == 1) {
                 int enumIndex1 = (decoder.readEnum());
@@ -113,14 +113,14 @@ public class FastGenericDeserializerGeneratorTest_shouldReadEnumDefault_GenericD
                         throw new RuntimeException(("Illegal enum index for 'com.linkedin.avro.fastserde.generated.avro.testEnum': "+ enumIndex1));
                     }
                 }
-                FastGenericDeserializerGeneratorTest_shouldReadEnumDefault.put(1, enumValue1);
+                fastGenericDeserializerGeneratorTest_shouldReadEnumDefault0 .put(1, enumValue1);
             } else {
                 throw new RuntimeException(("Illegal union index for 'testEnumUnion': "+ unionIndex0));
             }
         }
         List<GenericEnumSymbol> testEnumArray1 = null;
         long chunkLen0 = (decoder.readArrayStart());
-        Object oldArray0 = FastGenericDeserializerGeneratorTest_shouldReadEnumDefault.get(2);
+        Object oldArray0 = fastGenericDeserializerGeneratorTest_shouldReadEnumDefault0 .get(2);
         if (oldArray0 instanceof List) {
             testEnumArray1 = ((List) oldArray0);
             if (testEnumArray1 instanceof GenericArray) {
@@ -149,15 +149,15 @@ public class FastGenericDeserializerGeneratorTest_shouldReadEnumDefault_GenericD
             }
             chunkLen0 = (decoder.arrayNext());
         }
-        FastGenericDeserializerGeneratorTest_shouldReadEnumDefault.put(2, testEnumArray1);
+        fastGenericDeserializerGeneratorTest_shouldReadEnumDefault0 .put(2, testEnumArray1);
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldReadEnumDefault1(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadEnumDefault, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadEnumDefault1(IndexedRecord fastGenericDeserializerGeneratorTest_shouldReadEnumDefault0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         List<GenericEnumSymbol> testEnumUnionArray1 = null;
         long chunkLen1 = (decoder.readArrayStart());
-        Object oldArray1 = FastGenericDeserializerGeneratorTest_shouldReadEnumDefault.get(3);
+        Object oldArray1 = fastGenericDeserializerGeneratorTest_shouldReadEnumDefault0 .get(3);
         if (oldArray1 instanceof List) {
             testEnumUnionArray1 = ((List) oldArray1);
             if (testEnumUnionArray1 instanceof GenericArray) {
@@ -200,7 +200,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadEnumDefault_GenericD
             }
             chunkLen1 = (decoder.arrayNext());
         }
-        FastGenericDeserializerGeneratorTest_shouldReadEnumDefault.put(3, testEnumUnionArray1);
+        fastGenericDeserializerGeneratorTest_shouldReadEnumDefault0 .put(3, testEnumUnionArray1);
     }
 
 }

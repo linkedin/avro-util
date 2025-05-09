@@ -33,11 +33,11 @@ public class record_GenericDeserializer_813379571_653449771
     public IndexedRecord deserializerecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord record;
+        IndexedRecord record0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
-            record = ((IndexedRecord)(reuse));
+            record0 = ((IndexedRecord)(reuse));
         } else {
-            record = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            record0 = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
@@ -46,7 +46,7 @@ public class record_GenericDeserializer_813379571_653449771
             if (unionIndex0 == 1) {
                 PrimitiveIntList someIntsOption0 = null;
                 long chunkLen0 = (decoder.readArrayStart());
-                Object oldArray0 = record.get(0);
+                Object oldArray0 = record0 .get(0);
                 if (oldArray0 instanceof PrimitiveIntList) {
                     someIntsOption0 = ((PrimitiveIntList) oldArray0);
                     if (someIntsOption0 instanceof GenericArray) {
@@ -76,12 +76,12 @@ public class record_GenericDeserializer_813379571_653449771
                     }
                     chunkLen0 = (decoder.arrayNext());
                 }
-                record.put(0, someIntsOption0);
+                record0 .put(0, someIntsOption0);
             } else {
                 throw new RuntimeException(("Illegal union index for 'someInts': "+ unionIndex0));
             }
         }
-        return record;
+        return record0;
     }
 
 }

@@ -40,51 +40,51 @@ public class FastGenericDeserializerGeneratorTest_shouldReadFixed_GenericDeseria
     public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadFixed0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadFixed;
+        IndexedRecord fastGenericDeserializerGeneratorTest_shouldReadFixed0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
-            FastGenericDeserializerGeneratorTest_shouldReadFixed = ((IndexedRecord)(reuse));
+            fastGenericDeserializerGeneratorTest_shouldReadFixed0 = ((IndexedRecord)(reuse));
         } else {
-            FastGenericDeserializerGeneratorTest_shouldReadFixed = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            fastGenericDeserializerGeneratorTest_shouldReadFixed0 = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         byte[] testFixed1;
-        Object oldFixed0 = FastGenericDeserializerGeneratorTest_shouldReadFixed.get(0);
+        Object oldFixed0 = fastGenericDeserializerGeneratorTest_shouldReadFixed0 .get(0);
         if ((oldFixed0 instanceof GenericFixed)&&(((GenericFixed) oldFixed0).bytes().length == (2))) {
             testFixed1 = ((GenericFixed) oldFixed0).bytes();
         } else {
             testFixed1 = ( new byte[2]);
         }
         decoder.readFixed(testFixed1);
-        FastGenericDeserializerGeneratorTest_shouldReadFixed.put(0, new org.apache.avro.generic.GenericData.Fixed(testFixed0, testFixed1));
-        populate_FastGenericDeserializerGeneratorTest_shouldReadFixed0((FastGenericDeserializerGeneratorTest_shouldReadFixed), (customization), (decoder));
-        populate_FastGenericDeserializerGeneratorTest_shouldReadFixed1((FastGenericDeserializerGeneratorTest_shouldReadFixed), (customization), (decoder));
-        return FastGenericDeserializerGeneratorTest_shouldReadFixed;
+        fastGenericDeserializerGeneratorTest_shouldReadFixed0 .put(0, new org.apache.avro.generic.GenericData.Fixed(testFixed0, testFixed1));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadFixed0((fastGenericDeserializerGeneratorTest_shouldReadFixed0), (customization), (decoder));
+        populate_FastGenericDeserializerGeneratorTest_shouldReadFixed1((fastGenericDeserializerGeneratorTest_shouldReadFixed0), (customization), (decoder));
+        return fastGenericDeserializerGeneratorTest_shouldReadFixed0;
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldReadFixed0(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadFixed, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadFixed0(IndexedRecord fastGenericDeserializerGeneratorTest_shouldReadFixed0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
-            FastGenericDeserializerGeneratorTest_shouldReadFixed.put(1, null);
+            fastGenericDeserializerGeneratorTest_shouldReadFixed0 .put(1, null);
         } else {
             if (unionIndex0 == 1) {
                 byte[] testFixed2;
-                Object oldFixed1 = FastGenericDeserializerGeneratorTest_shouldReadFixed.get(1);
+                Object oldFixed1 = fastGenericDeserializerGeneratorTest_shouldReadFixed0 .get(1);
                 if ((oldFixed1 instanceof GenericFixed)&&(((GenericFixed) oldFixed1).bytes().length == (2))) {
                     testFixed2 = ((GenericFixed) oldFixed1).bytes();
                 } else {
                     testFixed2 = ( new byte[2]);
                 }
                 decoder.readFixed(testFixed2);
-                FastGenericDeserializerGeneratorTest_shouldReadFixed.put(1, new org.apache.avro.generic.GenericData.Fixed(testFixed0, testFixed2));
+                fastGenericDeserializerGeneratorTest_shouldReadFixed0 .put(1, new org.apache.avro.generic.GenericData.Fixed(testFixed0, testFixed2));
             } else {
                 throw new RuntimeException(("Illegal union index for 'testFixedUnion': "+ unionIndex0));
             }
         }
         List<GenericFixed> testFixedArray1 = null;
         long chunkLen0 = (decoder.readArrayStart());
-        Object oldArray0 = FastGenericDeserializerGeneratorTest_shouldReadFixed.get(2);
+        Object oldArray0 = fastGenericDeserializerGeneratorTest_shouldReadFixed0 .get(2);
         if (oldArray0 instanceof List) {
             testFixedArray1 = ((List) oldArray0);
             if (testFixedArray1 instanceof GenericArray) {
@@ -113,15 +113,15 @@ public class FastGenericDeserializerGeneratorTest_shouldReadFixed_GenericDeseria
             }
             chunkLen0 = (decoder.arrayNext());
         }
-        FastGenericDeserializerGeneratorTest_shouldReadFixed.put(2, testFixedArray1);
+        fastGenericDeserializerGeneratorTest_shouldReadFixed0 .put(2, testFixedArray1);
     }
 
-    private void populate_FastGenericDeserializerGeneratorTest_shouldReadFixed1(IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadFixed, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_FastGenericDeserializerGeneratorTest_shouldReadFixed1(IndexedRecord fastGenericDeserializerGeneratorTest_shouldReadFixed0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         List<GenericFixed> testFixedUnionArray1 = null;
         long chunkLen1 = (decoder.readArrayStart());
-        Object oldArray1 = FastGenericDeserializerGeneratorTest_shouldReadFixed.get(3);
+        Object oldArray1 = fastGenericDeserializerGeneratorTest_shouldReadFixed0 .get(3);
         if (oldArray1 instanceof List) {
             testFixedUnionArray1 = ((List) oldArray1);
             if (testFixedUnionArray1 instanceof GenericArray) {
@@ -160,7 +160,7 @@ public class FastGenericDeserializerGeneratorTest_shouldReadFixed_GenericDeseria
             }
             chunkLen1 = (decoder.arrayNext());
         }
-        FastGenericDeserializerGeneratorTest_shouldReadFixed.put(3, testFixedUnionArray1);
+        fastGenericDeserializerGeneratorTest_shouldReadFixed0 .put(3, testFixedUnionArray1);
     }
 
 }

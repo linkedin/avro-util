@@ -37,14 +37,14 @@ public class record_GenericDeserializer_1672473580_1971822364
     public IndexedRecord deserializerecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord record;
+        IndexedRecord record0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
-            record = ((IndexedRecord)(reuse));
+            record0 = ((IndexedRecord)(reuse));
         } else {
-            record = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            record0 = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
-        record.put(0, (decoder.readInt()));
-        return record;
+        record0 .put(0, (decoder.readInt()));
+        return record0;
     }
 
 }

@@ -30,35 +30,35 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingT
     public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString;
+        IndexedRecord fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
-            FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString = ((IndexedRecord)(reuse));
+            fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString0 = ((IndexedRecord)(reuse));
         } else {
-            FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString0 = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
-            FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString.put(0, null);
+            fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString0 .put(0, null);
         } else {
             if (unionIndex0 == 1) {
-                FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString.put(0, (decoder.readInt()));
+                fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString0 .put(0, (decoder.readInt()));
             } else {
                 if (unionIndex0 == 2) {
                     Utf8 charSequence0;
-                    Object oldString0 = FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString.get(0);
+                    Object oldString0 = fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString0 .get(0);
                     if (oldString0 instanceof Utf8) {
                         charSequence0 = (decoder).readString(((Utf8) oldString0));
                     } else {
                         charSequence0 = (decoder).readString(null);
                     }
-                    FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString.put(0, charSequence0);
+                    fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString0 .put(0, charSequence0);
                 } else {
                     throw new RuntimeException(("Illegal union index for 'test': "+ unionIndex0));
                 }
             }
         }
-        return FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString;
+        return fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingThatIncludeString0;
     }
 
 }

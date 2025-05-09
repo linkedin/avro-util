@@ -35,16 +35,16 @@ public class record_GenericDeserializer_1557256887_1025741720
     public IndexedRecord deserializerecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord record;
+        IndexedRecord record0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
-            record = ((IndexedRecord)(reuse));
+            record0 = ((IndexedRecord)(reuse));
         } else {
-            record = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            record0 = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         Map<Utf8, Integer> someInts1 = null;
         long chunkLen0 = (decoder.readMapStart());
         if (chunkLen0 > 0) {
-            someInts1 = ((Map)(customization).getNewMapOverrideFunc().apply(record.get(0), ((int) chunkLen0)));
+            someInts1 = ((Map)(customization).getNewMapOverrideFunc().apply(record0 .get(0), ((int) chunkLen0)));
             do {
                 for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
                     Utf8 key0 = (decoder.readString(null));
@@ -53,10 +53,10 @@ public class record_GenericDeserializer_1557256887_1025741720
                 chunkLen0 = (decoder.mapNext());
             } while (chunkLen0 > 0);
         } else {
-            someInts1 = ((Map)(customization).getNewMapOverrideFunc().apply(record.get(0), 0));
+            someInts1 = ((Map)(customization).getNewMapOverrideFunc().apply(record0 .get(0), 0));
         }
-        record.put(0, someInts1);
-        return record;
+        record0 .put(0, someInts1);
+        return record0;
     }
 
 }
