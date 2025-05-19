@@ -488,6 +488,10 @@ public class SpecificRecordClassGenerator {
         if(config.isUtf8EncodingEnabled() && overloadedSetterIfString != null) {
           classBuilder.addMethod(getOverloadedSetterSpecIfStringField(field, config));
         }
+        MethodSpec overloadedSetterIfIntOrLong = getOverloadedSetterSpecIfIntOrLongField(field, config);
+        if (overloadedSetterIfIntOrLong != null) {
+          classBuilder.addMethod(overloadedSetterIfIntOrLong);
+        }
       }
     }
 
@@ -1626,6 +1630,89 @@ public class SpecificRecordClassGenerator {
         .endControlFlow();
 
     classBuilder.addMethod(methodSpecBuilder.addCode(switchBuilder.build()).build());
+  }
+
+  private MethodSpec getOverloadedSetterSpecIfIntOrLongField(AvroSchemaField field,
+      SpecificRecordGenerationConfig config) {
+    MethodSpec.Builder numberSetter = null;
+    String escapedFieldName = getFieldNameWithSuffix(field);
+    if (SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.LONG, field.getSchema())
+        || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.INT, field.getSchema())) {
+
+      // Get the class from the schema
+      Class<?> fieldClass =
+          SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(field.getSchemaOrRef().getSchema().type(),
+              config.getDefaultMethodStringRepresentation(), false);
+
+      numberSetter = MethodSpec
+          .methodBuilder(getMethodNameForFieldWithPrefix("set", escapedFieldName))
+          .addModifiers(Modifier.PUBLIC);
+
+      if(fieldClass != null ) {
+        if (fieldClass.equals(long.class)) {
+          // If field is of type long, add method with int parameter
+          // int value can safely be cast to long
+          numberSetter
+              .addParameter( int.class, escapedFieldName)
+              .addStatement("this.$1L = (long) $1L", escapedFieldName);
+        } else if (fieldClass.equals(int.class)) {
+          // If field is of type int, add method with long parameter
+          // This method will error if the long input is greater than Integer.MAX_VALUE
+
+          CodeBlock castToInt = CodeBlock
+              .builder()
+              .beginControlFlow("if ($1L < Integer.MAX_VALUE)", escapedFieldName)
+              .addStatement("this.$1L = (int) $1L", escapedFieldName)
+              .endControlFlow()
+              .beginControlFlow("else")
+              .addStatement("throw new org.apache.avro.AvroRuntimeException(\"long value cannot be cast to int\")")
+              .endControlFlow()
+              .build();
+
+          numberSetter
+              .addParameter(long.class, escapedFieldName)
+              .addCode(castToInt);
+        }
+
+      } else if (field.getSchema() != null && field.getSchema().type().equals(AvroType.UNION)) {
+        TypeName typeName = SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(),
+            field.getSchemaOrRef().getSchema().type(), true,
+            config.getDefaultMethodStringRepresentation());
+
+        CodeBlock nullCheck = CodeBlock.builder()
+            .beginControlFlow("if ($1L == null)", escapedFieldName)
+            .addStatement("this.$1L = null", escapedFieldName)
+            .endControlFlow()
+            .build();
+
+        if (typeName.equals(ClassName.get(Long.class))) {
+          numberSetter
+              .addParameter(ClassName.get("java.lang", "Integer"), escapedFieldName)
+              .addCode(nullCheck)
+              .beginControlFlow("else")
+              .addStatement("this.$1L = Long.valueOf($1L)", escapedFieldName)
+              .endControlFlow();
+
+        } else if (typeName.equals(ClassName.get(Integer.class))) {
+
+          CodeBlock castToInt = CodeBlock
+              .builder()
+              .beginControlFlow("else if ($1L < Integer.MAX_VALUE)", escapedFieldName)
+              .addStatement("this.$1L = $1L.intValue()", escapedFieldName)
+              .endControlFlow()
+              .beginControlFlow("else")
+              .addStatement("throw new org.apache.avro.AvroRuntimeException(\"Long value cannot be cast to Integer\")")
+              .endControlFlow()
+              .build();
+
+          numberSetter
+              .addParameter(ClassName.get("java.lang", "Long"), escapedFieldName)
+              .addCode(nullCheck)
+              .addCode(castToInt);
+        }
+      }
+    }
+    return numberSetter == null ? null : numberSetter.build();
   }
 
   private MethodSpec getOverloadedSetterSpecIfStringField(AvroSchemaField field,

@@ -116,8 +116,16 @@ public class SpecificRecordTest {
         {vs110.BuilderTester.class, vs110.BuilderTester.getClassSchema()},
         {vs111.BuilderTester.class, vs111.BuilderTester.getClassSchema()},
 
-        {charseqmethod.TestCollections.class, charseqmethod.TestCollections.getClassSchema()}
+        {vs14.IntsAndLongs.class, vs14.IntsAndLongs.getClassSchema()},
+        {vs15.IntsAndLongs.class, vs15.IntsAndLongs.getClassSchema()},
+        {vs16.IntsAndLongs.class, vs16.IntsAndLongs.getClassSchema()},
+        {vs17.IntsAndLongs.class, vs17.IntsAndLongs.getClassSchema()},
+        {vs18.IntsAndLongs.class, vs18.IntsAndLongs.getClassSchema()},
+        {vs19.IntsAndLongs.class, vs19.IntsAndLongs.getClassSchema()},
+        {vs110.IntsAndLongs.class, vs110.IntsAndLongs.getClassSchema()},
+        {vs111.IntsAndLongs.class, vs111.IntsAndLongs.getClassSchema()},
 
+        {charseqmethod.TestCollections.class, charseqmethod.TestCollections.getClassSchema()}
 //        {vs14.ThousandField.class, vs14.ThousandField.getClassSchema()},
 //        {vs19.ThousandField.class, vs19.ThousandField.getClassSchema()}
     };
