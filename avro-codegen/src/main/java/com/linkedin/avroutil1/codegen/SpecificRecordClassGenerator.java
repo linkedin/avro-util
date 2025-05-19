@@ -888,6 +888,37 @@ public class SpecificRecordClassGenerator {
       setMethodBuilder.addParameter(fieldType, "value");
     }
 
+    MethodSpec.Builder overloadSetMethodBuilder = null;
+    // Additional setter for int/long fields
+    if (fieldClass == long.class) {
+      overloadSetMethodBuilder =
+          MethodSpec.methodBuilder(getMethodNameForFieldWithPrefix("set", escapedFieldName))
+              .addParameter(TypeName.INT, "value")
+              .addModifiers(Modifier.PUBLIC)
+              .addJavadoc(
+                  "Sets the value of the '$L' field.$L" + "@param value The value of '$L'.\n" + "@return This Builder.",
+                  field.getName(), getFieldJavaDoc(field), field.getName())
+              .addStatement("validate(fields()[$L], value)", fieldIndex)
+              .addStatement("this.$L = value", escapedFieldName)
+              .addStatement("fieldSetFlags()[$L] = true", fieldIndex)
+              .addStatement("return this")
+              .returns(ClassName.get(parentClass, "Builder"));
+
+    } else if (fieldClass == int.class) {
+      overloadSetMethodBuilder =
+          MethodSpec.methodBuilder(getMethodNameForFieldWithPrefix("set", escapedFieldName))
+              .addParameter(TypeName.LONG, "value")
+              .addModifiers(Modifier.PUBLIC)
+              .addJavadoc(
+                  "Sets the value of the '$L' field.$L" + "@param value The value of '$L'.\n" + "@return This Builder.",
+                  field.getName(), getFieldJavaDoc(field), field.getName())
+              .addStatement("validate(fields()[$L], value)", fieldIndex)
+              .addStatement("this.$L = (int) value", escapedFieldName)
+              .addStatement("fieldSetFlags()[$L] = true", fieldIndex)
+              .addStatement("return this")
+              .returns(ClassName.get(parentClass, "Builder"));;
+    }
+
     // Has
     MethodSpec.Builder hasMethodBuilder =
         MethodSpec.methodBuilder(getMethodNameForFieldWithPrefix("has", field.getName()))
@@ -915,6 +946,9 @@ public class SpecificRecordClassGenerator {
 
     accessorMethodSpecs.add(getMethodBuilder.build());
     accessorMethodSpecs.add(setMethodBuilder.build());
+    if (overloadSetMethodBuilder != null) {
+      accessorMethodSpecs.add(overloadSetMethodBuilder.build());
+    }
     accessorMethodSpecs.add(hasMethodBuilder.build());
     accessorMethodSpecs.add(clearMethodBuilder.build());
   }
