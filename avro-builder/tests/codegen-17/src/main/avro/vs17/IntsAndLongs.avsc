@@ -10,28 +10,6 @@
     {
       "name": "intField",
       "type": "int"
-    },
-    {
-      "name": "longArrayField",
-      "type": {
-        "type": "array",
-        "items": "long"
-      }
-    },
-    {
-      "name": "intArrayField",
-      "type": {
-        "type": "array",
-        "items": "int"
-      }
-    },
-    {
-      "name": "intUnionField",
-      "type": ["null", "int"]
-    },
-    {
-      "name": "longUnionField",
-      "type": ["null", "long"]
     }
   ]
 }
