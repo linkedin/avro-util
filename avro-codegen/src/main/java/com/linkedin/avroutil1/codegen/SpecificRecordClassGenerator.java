@@ -1041,7 +1041,7 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = String.format("%s = in.readBoolean()", fieldName);
         break;
       case INT:
-        serializedCodeBlock = String.format("%s = in.readInt()", fieldName);
+        serializedCodeBlock = String.format("%s = (int) in.readLong()", fieldName);
         break;
       case FLOAT:
         serializedCodeBlock = String.format("%s = in.readFloat()", fieldName);
@@ -1549,7 +1549,7 @@ public class SpecificRecordClassGenerator {
             .endControlFlow()
             .addStatement("break");
       } else if (fieldClass == int.class) {
-        // If the field is a int, allow input value to be a long
+        // If the field is an int, allow input value to be a long
         switchBuilder
             .add("case $L: \n", fieldIndex++)
             .beginControlFlow("if (value instanceof Long)")
