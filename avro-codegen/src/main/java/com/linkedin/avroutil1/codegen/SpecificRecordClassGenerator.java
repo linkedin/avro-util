@@ -1548,6 +1548,28 @@ public class SpecificRecordClassGenerator {
                     field.getSchemaOrRef().getSchema().type(), true, config.getDefaultFieldStringRepresentation()))
             .endControlFlow()
             .addStatement("break");
+      } else if (fieldClass == int.class) {
+        // If the field is a int, allow input value to be a long
+        switchBuilder
+            .add("case $L: \n", fieldIndex++)
+            .beginControlFlow("if (value instanceof Long)")
+            .addStatement("this.$1L = ((Long) value).intValue()", escapedFieldName)
+            .endControlFlow()
+            .beginControlFlow("else")
+            .addStatement("this.$L = ($T) value",  escapedFieldName, fieldClass)
+            .endControlFlow()
+            .addStatement("break");
+      } else if (fieldClass == long.class) {
+        // If the field is a long, allow input value to be an int
+        switchBuilder
+            .add("case $L: \n", fieldIndex++)
+            .beginControlFlow("if (value instanceof Integer)")
+            .addStatement("this.$1L = ((Integer) value).longValue()", escapedFieldName)
+            .endControlFlow()
+            .beginControlFlow("else")
+            .addStatement("this.$L = ($T) value",  escapedFieldName, fieldClass)
+            .endControlFlow()
+            .addStatement("break");
       } else {
         switchBuilder.addStatement(
             fieldClass != null ? "case $L: this.$L = ($T) value; break" : "case $L: this.$L = ($L) value; break",
