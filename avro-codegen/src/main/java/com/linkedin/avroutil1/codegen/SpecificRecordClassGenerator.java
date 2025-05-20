@@ -1743,7 +1743,7 @@ public class SpecificRecordClassGenerator {
 
         if (typeName.equals(ClassName.get(Long.class))) {
           numberSetter
-              .addParameter(ClassName.get("java.lang", "Integer"), escapedFieldName)
+              .addParameter(ClassName.get(Integer.class), escapedFieldName)
               .addCode(nullCheck)
               .beginControlFlow("else")
               .addStatement("this.$1L = Long.valueOf($1L)", escapedFieldName)
@@ -1762,7 +1762,7 @@ public class SpecificRecordClassGenerator {
               .build();
 
           numberSetter
-              .addParameter(ClassName.get("java.lang", "Long"), escapedFieldName)
+              .addParameter(ClassName.get(Long.class), escapedFieldName)
               .addCode(nullCheck)
               .addCode(castToInt);
         }
