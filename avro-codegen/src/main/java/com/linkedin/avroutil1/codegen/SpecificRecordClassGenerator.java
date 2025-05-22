@@ -56,7 +56,6 @@ import javax.lang.model.element.Modifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * generates java classes out of avro schemas.
  */
@@ -912,8 +911,12 @@ public class SpecificRecordClassGenerator {
               .addJavadoc(
                   "Sets the value of the '$L' field.$L" + "@param value The value of '$L'.\n" + "@return This Builder.",
                   field.getName(), getFieldJavaDoc(field), field.getName())
-              .addStatement("validate(fields()[$L], value)", fieldIndex)
+              .beginControlFlow("if (value <= Integer.MAX_VALUE && value >= Integer.MIN_VALUE)")
               .addStatement("this.$L = (int) value", escapedFieldName)
+              .endControlFlow()
+              .beginControlFlow("else")
+              .addStatement("throw new org.apache.avro.AvroRuntimeException(\"Long value \" + value + \" cannot be cast to int\")")
+              .endControlFlow()
               .addStatement("fieldSetFlags()[$L] = true", fieldIndex)
               .addStatement("return this")
               .returns(ClassName.get(parentClass, "Builder"));;
@@ -1583,11 +1586,16 @@ public class SpecificRecordClassGenerator {
             .endControlFlow()
             .addStatement("break");
       } else if (fieldClass == int.class) {
-        // If the field is an int, allow input value to be a long
+        // If the field is an int, allow input value to be a long with range check
         switchBuilder
             .add("case $L: \n", fieldIndex++)
             .beginControlFlow("if (value instanceof Long)")
+            .beginControlFlow("if (((Long) value) <= Integer.MAX_VALUE && ((Long) value) >= Integer.MIN_VALUE)")
             .addStatement("this.$1L = ((Long) value).intValue()", escapedFieldName)
+            .endControlFlow()
+            .beginControlFlow("else")
+            .addStatement("throw new org.apache.avro.AvroRuntimeException(\"Long value \" + value + \" cannot be cast to int\")")
+            .endControlFlow()
             .endControlFlow()
             .beginControlFlow("else")
             .addStatement("this.$L = ($T) value",  escapedFieldName, fieldClass)
@@ -1717,7 +1725,7 @@ public class SpecificRecordClassGenerator {
 
           CodeBlock castToInt = CodeBlock
               .builder()
-              .beginControlFlow("if ($1L <= Integer.MAX_VALUE)", escapedFieldName)
+              .beginControlFlow("if ($1L <= Integer.MAX_VALUE && $1L >= Integer.MIN_VALUE)", escapedFieldName)
               .addStatement("this.$1L = (int) $1L", escapedFieldName)
               .endControlFlow()
               .beginControlFlow("else")
@@ -1753,7 +1761,7 @@ public class SpecificRecordClassGenerator {
 
           CodeBlock castToInt = CodeBlock
               .builder()
-              .beginControlFlow("else if ($1L <= Integer.MAX_VALUE)", escapedFieldName)
+              .beginControlFlow("else if ($1L <= Integer.MAX_VALUE && $1L >= Integer.MIN_VALUE)", escapedFieldName)
               .addStatement("this.$1L = $1L.intValue()", escapedFieldName)
               .endControlFlow()
               .beginControlFlow("else")
