@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "namespace": "under19",
+  "name": "IntsAndLongs",
+  "fields": [
+    {
+      "name": "longField",
+      "type": "long"
+    },
+    {
+      "name": "intField",
+      "type": "int"
+    }
+  ]
+}
