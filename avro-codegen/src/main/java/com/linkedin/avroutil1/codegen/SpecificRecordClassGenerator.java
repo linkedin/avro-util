@@ -1717,7 +1717,7 @@ public class SpecificRecordClassGenerator {
 
           CodeBlock castToInt = CodeBlock
               .builder()
-              .beginControlFlow("if ($1L < Integer.MAX_VALUE)", escapedFieldName)
+              .beginControlFlow("if ($1L <= Integer.MAX_VALUE)", escapedFieldName)
               .addStatement("this.$1L = (int) $1L", escapedFieldName)
               .endControlFlow()
               .beginControlFlow("else")
@@ -1753,7 +1753,7 @@ public class SpecificRecordClassGenerator {
 
           CodeBlock castToInt = CodeBlock
               .builder()
-              .beginControlFlow("else if ($1L < Integer.MAX_VALUE)", escapedFieldName)
+              .beginControlFlow("else if ($1L <= Integer.MAX_VALUE)", escapedFieldName)
               .addStatement("this.$1L = $1L.intValue()", escapedFieldName)
               .endControlFlow()
               .beginControlFlow("else")
