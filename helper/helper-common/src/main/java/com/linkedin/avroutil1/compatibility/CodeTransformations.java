@@ -20,7 +20,6 @@ import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 /**
  * utility class for transforming avro-generated java code
  */
@@ -130,6 +129,10 @@ public class CodeTransformations {
     fixed = CodeTransformations.transformEnumClass(fixed, minSupportedVersion, maxSupportedVersion);
     fixed = CodeTransformations.transformParseCalls(fixed, generatedBy, minSupportedVersion, maxSupportedVersion, alternativeAvsc, importStatements);
     fixed = CodeTransformations.addGetClassSchemaMethod(fixed, generatedBy, minSupportedVersion, maxSupportedVersion);
+
+    // Allow int fields to be set using longs, and vice versa
+    fixed = CodeTransformations.enhanceNumericPutMethod(fixed);
+    fixed = CodeTransformations.enhanceNumericSetterMethods(fixed);
 
     //1.6+ features
     if (minSupportedVersion.earlierThan(AvroVersion.AVRO_1_6)) {
@@ -519,7 +522,7 @@ public class CodeTransformations {
 
     //find the end of the inner builder class
     Matcher endBuilderMatcher = END_BUILDER_CLASS_PATTERN.matcher(code);
-    if (!endBuilderMatcher.find(builderMethodMatcher.end())) {
+    if (!endBuilderMatcher.find(buildMethodMatcher.end())) {
       throw new IllegalStateException("cant locate builder support block in " + code);
     }
 
@@ -917,6 +920,162 @@ public class CodeTransformations {
     }
     return code.substring(0, insertPosition) + "\nprivate static final " + builderClassName +
         " " + BUILDER_INSTANCE_NAME + " = new " + builderClassName + "(false);\n" + code.substring(insertPosition);
+  }
+
+  /**
+   * Transforms the put method in Avro-generated record classes to allow setting Long values into int fields
+   * and Integer values into long fields. This improves type compatibility when working with numeric fields.
+   *
+   * @param code generated code
+   * @return transformed code with enhanced put method
+   */
+  public static String enhanceNumericPutMethod(String code) {
+    if (code == null || code.isEmpty()) {
+      return code;
+    }
+
+    // Pattern to match the put method with simple casts
+    Pattern putMethodPattern = Pattern.compile(
+        "public\\s+void\\s+put\\s*\\(\\s*int\\s+field\\$\\s*,\\s*java\\.lang\\.Object\\s+value\\$\\s*\\)\\s*\\{\\s*" +
+        "switch\\s*\\(\\s*field\\$\\s*\\)\\s*\\{\\s*" +
+        "([^}]+)" +  // Capture the case statements
+        "\\}\\s*\\}"
+    );
+
+    Matcher matcher = putMethodPattern.matcher(code);
+    if (!matcher.find()) {
+      return code; // No matching put method found
+    }
+
+    String caseStatements = matcher.group(1);
+
+    // Pattern to find int and long field cases
+    Pattern casePattern = Pattern.compile("case\\s+(\\d+)\\s*:\\s*(\\w+)\\s*=\\s*\\(([^)]+)\\)value\\$\\s*;\\s*break\\s*;");
+
+    Matcher caseMatcher = casePattern.matcher(caseStatements);
+
+    Map<String, String[]> fieldInfo = new HashMap<>(); // caseNumber -> [fieldName, fieldType]
+
+    while (caseMatcher.find()) {
+      String caseNumber = caseMatcher.group(1);
+      String fieldName = caseMatcher.group(2);
+      String fieldType = caseMatcher.group(3);
+      fieldInfo.put(caseNumber, new String[]{fieldName, fieldType});
+    }
+
+    // Build the enhanced put method
+    StringBuilder enhancedPutMethod = new StringBuilder();
+    enhancedPutMethod.append("public void put(int field$, java.lang.Object value$) {\n");
+    enhancedPutMethod.append("  switch (field$) {\n");
+
+    for (Map.Entry<String, String[]> entry : fieldInfo.entrySet()) {
+      String caseNumber = entry.getKey();
+      String fieldName = entry.getValue()[0];
+      String fieldType = entry.getValue()[1];
+
+      enhancedPutMethod.append("  case ").append(caseNumber).append(": ");
+
+      if ("java.lang.Integer".equals(fieldType)) {
+        enhancedPutMethod.append("if (value$ instanceof java.lang.Long) {\n");
+        enhancedPutMethod.append("      ").append(fieldName).append(" = ((java.lang.Long)value$).intValue();\n");
+        enhancedPutMethod.append("    } else {\n");
+        enhancedPutMethod.append("      ").append(fieldName).append(" = (java.lang.Integer)value$;\n");
+        enhancedPutMethod.append("    }\n");
+        enhancedPutMethod.append("    break;\n");
+      } else if ("java.lang.Long".equals(fieldType)) {
+        enhancedPutMethod.append("if (value$ instanceof java.lang.Integer) {\n");
+        enhancedPutMethod.append("      ").append(fieldName).append(" = ((java.lang.Integer)value$).longValue();\n");
+        enhancedPutMethod.append("    } else {\n");
+        enhancedPutMethod.append("      ").append(fieldName).append(" = (java.lang.Long)value$;\n");
+        enhancedPutMethod.append("    }\n");
+        enhancedPutMethod.append("    break;\n");
+      } else {
+        // Keep the original behavior for other types
+        enhancedPutMethod.append(fieldName).append(" = (").append(fieldType).append(")value$; break;\n");
+      }
+    }
+
+    // Add the default case
+    enhancedPutMethod.append("  default: throw new IndexOutOfBoundsException(\"Invalid index: \" + field$);\n");
+    enhancedPutMethod.append("  }\n}");
+
+    // Replace the original put method with the enhanced one
+    return code.substring(0, matcher.start()) + enhancedPutMethod + code.substring(matcher.end());
+  }
+
+  /**
+   * Enhances setter methods for int and long fields to allow cross-type assignments.
+   * This allows int fields to be set using long values and long fields to be set using int values.
+   * For int fields, a runtime check ensures the long value fits within the int range.
+   *
+   * @param code generated code
+   * @return transformed code with enhanced setter methods
+   */
+  public static String enhanceNumericSetterMethods(String code) {
+    if (code == null || code.isEmpty()) {
+      return code;
+    }
+
+    // First, identify all int and long fields in the class
+    Map<String, String> fieldTypes = new HashMap<>(); // fieldName -> type
+
+    // Pattern to match field declarations
+    Pattern fieldPattern = Pattern.compile("private\\s+(int|long)\\s+(\\w+)\\s*;");
+    Matcher fieldMatcher = fieldPattern.matcher(code);
+
+    while (fieldMatcher.find()) {
+      String fieldType = fieldMatcher.group(1);
+      String fieldName = fieldMatcher.group(2);
+      fieldTypes.put(fieldName, fieldType);
+    }
+
+    if (fieldTypes.isEmpty()) {
+      return code; // No int or long fields found
+    }
+
+    // For each field, find and enhance its setter method
+    for (Map.Entry<String, String> entry : fieldTypes.entrySet()) {
+      String fieldName = entry.getKey();
+      String fieldType = entry.getValue();
+
+      // Capitalize first letter of field name for method name
+      String capitalizedFieldName = Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+      String setterName = "set" + capitalizedFieldName;
+
+      // Pattern to match the setter method
+      Pattern setterPattern = Pattern.compile(
+          "public\\s+void\\s+" + setterName + "\\s*\\(\\s*" + fieldType + "\\s+\\w+\\s*\\)\\s*\\{[^}]+\\}"
+      );
+
+      Matcher setterMatcher = setterPattern.matcher(code);
+
+      if (setterMatcher.find()) {
+        String originalSetter = setterMatcher.group(0);
+        String overloadedSetter;
+
+        if ("int".equals(fieldType)) {
+          // Create an overloaded setter that accepts long for int field
+          overloadedSetter =
+              "public void " + setterName + "(long value) {\n" +
+              "    if (value <= Integer.MAX_VALUE && value >= Integer.MIN_VALUE) {\n" +
+              "      this." + fieldName + " = (int) value;\n" +
+              "    } else {\n" +
+              "      throw new org.apache.avro.AvroRuntimeException(\"Long value \" + value + \" cannot be cast to int\");\n" +
+              "    }\n" +
+              "  }";
+        } else { // long field
+          // Create an overloaded setter that accepts int for long field
+          overloadedSetter =
+              "public void " + setterName + "(int value) {\n" +
+              "    this." + fieldName + " = value;\n" +
+              "  }";
+        }
+
+        // Add the overloaded setter after the original setter
+        code = code.replace(originalSetter, originalSetter + "\n\n  " + overloadedSetter);
+      }
+    }
+    return code;
   }
 
   private static String addImports(String code, Collection<String> importStatements) {
