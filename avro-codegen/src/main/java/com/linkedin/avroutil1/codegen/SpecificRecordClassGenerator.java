@@ -1078,7 +1078,15 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = String.format("%s = in.readBoolean()", fieldName);
         break;
       case INT:
-        serializedCodeBlock = String.format("%s = (int) in.readLong()", fieldName);
+        codeBlockBuilder
+            .addStatement("long tempVal = in.readLong()")
+            .beginControlFlow("if (tempVal <= Integer.MAX_VALUE && tempVal >= Integer.MIN_VALUE)")
+            .addStatement("$L = (int) tempVal", fieldName)
+            .nextControlFlow("else")
+            .addStatement("throw new org.apache.avro.AvroRuntimeException($S + tempVal + $S)",
+                "Long value ", " cannot be cast to int")
+            .endControlFlow();
+        serializedCodeBlock = codeBlockBuilder.build().toString();
         break;
       case FLOAT:
         serializedCodeBlock = String.format("%s = in.readFloat()", fieldName);
@@ -1682,7 +1690,6 @@ public class SpecificRecordClassGenerator {
                 .endControlFlow();
           }
         }
-
         switchBuilder.beginControlFlow("else")
             .addStatement("return this.$1L", escapedFieldName)
             .endControlFlow();
