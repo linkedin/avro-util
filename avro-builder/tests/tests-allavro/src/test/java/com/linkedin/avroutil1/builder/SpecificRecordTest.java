@@ -125,6 +125,8 @@ public class SpecificRecordTest {
         {vs110.IntsAndLongs.class, vs110.IntsAndLongs.getClassSchema()},
         {vs111.IntsAndLongs.class, vs111.IntsAndLongs.getClassSchema()},
 
+        {vs110.IntsAndLongs2.class, vs110.IntsAndLongs2.getClassSchema()},
+
         {charseqmethod.TestCollections.class, charseqmethod.TestCollections.getClassSchema()}
 //        {vs14.ThousandField.class, vs14.ThousandField.getClassSchema()},
 //        {vs19.ThousandField.class, vs19.ThousandField.getClassSchema()}
@@ -1619,7 +1621,7 @@ public class SpecificRecordTest {
 
     List<Constructor> constructors = Arrays.stream(clazz.getConstructors()).filter(constructor -> constructor.getParameters().length != 0).collect(
         Collectors.toList());
-    Assert.assertEquals(constructors.size(), 1);
+    Assert.assertEquals(constructors.size(), 2);
   }
 
   private void assertNotSameIfNotNull(Object obj1, Object obj2) {
