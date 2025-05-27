@@ -461,6 +461,10 @@ public class SpecificRecordClassGenerator {
       // add all arg constructor if #args < 254
       addAllArgsConstructor(recordSchema, config.getDefaultMethodStringRepresentation(), classBuilder, !config.isUtf8EncodingEnabled());
 
+      // Add numeric conversion constructors. This will add constructor using Integer param for long/Long fields, and
+      //  Long param for int/Integer fields. Note that this will not create all constructor permutations
+      addNumericConversionConstructors(recordSchema, classBuilder);
+
       if (config.isUtf8EncodingEnabled() && SpecificRecordGeneratorUtil.recordHasSimpleStringField(recordSchema)) {
         addAllArgsConstructor(recordSchema,
             config.getDefaultMethodStringRepresentation().equals(AvroJavaStringRepresentation.STRING)
@@ -611,6 +615,144 @@ public class SpecificRecordClassGenerator {
 
       classBuilder.addMethod(allArgsConstructorBuilder.build());
     }
+  }
+
+  /**
+   * Adds a constructor that performs numeric conversions for {@link Integer} and {@link Long} fields.
+   * @param recordSchema The Avro record schema.
+   * @param classBuilder The {@link TypeSpec.Builder} for the generated class.
+   */
+  private void addNumericConversionConstructors(AvroRecordSchema recordSchema, TypeSpec.Builder classBuilder) {
+    // Only proceed if we have fewer than 254 fields (Java method parameter limit)
+    if (recordSchema.getFields().size() >= 254) {
+      return;
+    }
+
+    // Check if the record has any Integer/int or Long/long fields
+    boolean hasPrimitiveOrBoxedIntField = hasNumericFieldsOfType(recordSchema, true);
+    boolean hasPrimitiveOrBoxedLongField = hasNumericFieldsOfType(recordSchema, false);
+
+    // Add a constructor that handles both types of conversions
+    if (hasPrimitiveOrBoxedIntField || hasPrimitiveOrBoxedLongField) {
+      addMixedNumericConversionConstructor(recordSchema, classBuilder);
+    }
+  }
+
+  /**
+   * Checks if the record schema has any fields of the specified numeric type
+   *
+   * @param recordSchema The record schema to check
+   * @param isIntType If true, checks for int/Integer fields; if false, checks for long/Long fields
+   * @return True if the schema has fields of the specified numeric type
+   */
+  private boolean hasNumericFieldsOfType(AvroRecordSchema recordSchema, boolean isIntType) {
+    AvroType targetType = isIntType ? AvroType.INT : AvroType.LONG;
+
+    for (AvroSchemaField field : recordSchema.getFields()) {
+      if (SpecificRecordGeneratorUtil.isNullUnionOf(targetType, field.getSchema())) {
+        // Check for both primitive and boxed types
+        Class<?> primitiveClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(
+            field.getSchemaOrRef().getSchema().type(),
+            AvroJavaStringRepresentation.STRING, false);
+
+        Class<?> boxedClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(
+            field.getSchemaOrRef().getSchema().type(),
+            AvroJavaStringRepresentation.STRING, true);
+
+        if (isIntType) {
+          if ((primitiveClass != null && primitiveClass.equals(int.class)) ||
+              (boxedClass != null && boxedClass.equals(Integer.class))) {
+            return true;
+          }
+        } else {
+          if ((primitiveClass != null && primitiveClass.equals(long.class)) ||
+              (boxedClass != null && boxedClass.equals(Long.class))) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Adds a constructor that handles both Integer-to-Long and Long-to-Integer conversions simultaneously
+   *
+   * @param recordSchema The record schema
+   * @param classBuilder The class builder to add the constructor to
+   */
+  private void addMixedNumericConversionConstructor(AvroRecordSchema recordSchema, TypeSpec.Builder classBuilder) {
+    MethodSpec.Builder constructorBuilder = MethodSpec.constructorBuilder()
+        .addModifiers(Modifier.PUBLIC);
+
+    for (AvroSchemaField field : recordSchema.getFields()) {
+      String escapedFieldName = getFieldNameWithSuffix(field);
+
+      // Check for both primitive and boxed types
+      Class<?> primitiveClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(
+          field.getSchemaOrRef().getSchema().type(),
+          AvroJavaStringRepresentation.STRING, false);
+
+      Class<?> boxedClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(
+          field.getSchemaOrRef().getSchema().type(),
+          AvroJavaStringRepresentation.STRING, true);
+
+      // Handle Long fields - use Integer parameter
+      if ((boxedClass != null && boxedClass.equals(Long.class)) ||
+          (primitiveClass != null && primitiveClass.equals(long.class))) {
+
+        // Add parameter spec for numeric conversion (Integer for Long fields)
+        ParameterSpec paramSpec = getNumericConversionParameterSpecForField(field);
+        constructorBuilder.addParameter(paramSpec);
+
+        // Handle null check
+        constructorBuilder.beginControlFlow("if ($L != null)", escapedFieldName);
+
+        // Simple assignment without unnecessary boxing/unboxing
+        constructorBuilder.addStatement("this.$1L = $1L.longValue()", escapedFieldName);
+
+        // Handle null case - throw exception
+        constructorBuilder.nextControlFlow("else")
+            .addStatement("throw new org.apache.avro.AvroRuntimeException(\"$L cannot be set to null\")", escapedFieldName)
+            .endControlFlow();
+      }
+      // Handle Integer fields - use Long parameter
+      else if ((boxedClass != null && boxedClass.equals(Integer.class)) ||
+               (primitiveClass != null && primitiveClass.equals(int.class))) {
+
+        // Add parameter spec for numeric conversion (Long for Integer fields)
+        ParameterSpec paramSpec = getNumericConversionParameterSpecForField(field);
+        constructorBuilder.addParameter(paramSpec);
+
+        // Handle null check
+        constructorBuilder.beginControlFlow("if ($L != null)", escapedFieldName);
+
+        // Add range check for both boxed and primitive
+        constructorBuilder.beginControlFlow("if ($1L <= Integer.MAX_VALUE && $1L >= Integer.MIN_VALUE)", escapedFieldName);
+
+        // Simple assignment without unnecessary boxing/unboxing
+        constructorBuilder.addStatement("this.$1L = $1L.intValue()", escapedFieldName);
+
+        // Handle out-of-range case
+        constructorBuilder.nextControlFlow("else")
+            .addStatement("throw new org.apache.avro.AvroRuntimeException(\"Long value \" + $L + \" cannot be cast to int\")", escapedFieldName)
+            .endControlFlow();
+
+        // Handle null case - throw exception
+        constructorBuilder.nextControlFlow("else")
+            .addStatement("throw new org.apache.avro.AvroRuntimeException(\"$L cannot be set to null\")", escapedFieldName)
+            .endControlFlow();
+      }
+      // Handle non-numeric fields
+      else {
+        // For other fields, use their normal type
+        constructorBuilder.addParameter(
+            getParameterSpecForField(field, AvroJavaStringRepresentation.STRING));
+        constructorBuilder.addStatement("this.$1L = $1L", escapedFieldName);
+      }
+    }
+
+    classBuilder.addMethod(constructorBuilder.build());
   }
 
   private String replaceSingleDollarSignWithDouble(String str) {
@@ -1078,13 +1220,14 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = String.format("%s = in.readBoolean()", fieldName);
         break;
       case INT:
+        String cleanFieldName = fieldName.replaceAll("^this\\.", "");
+        String tempVarName = "temp" + Character.toUpperCase(cleanFieldName.charAt(0)) + cleanFieldName.substring(1);
         codeBlockBuilder
-            .addStatement("long tempVal = in.readLong()")
-            .beginControlFlow("if (tempVal <= Integer.MAX_VALUE && tempVal >= Integer.MIN_VALUE)")
-            .addStatement("$L = (int) tempVal", fieldName)
+            .addStatement("long $L = in.readLong()", tempVarName)
+            .beginControlFlow("if ($L <= Integer.MAX_VALUE && $L >= Integer.MIN_VALUE)", tempVarName, tempVarName)
+            .addStatement("$L = (int) $L", fieldName, tempVarName)
             .nextControlFlow("else")
-            .addStatement("throw new org.apache.avro.AvroRuntimeException($S + tempVal + $S)",
-                "Long value ", " cannot be cast to int")
+            .addStatement("throw new org.apache.avro.AvroRuntimeException(\"Long value cannot be cast to int\")")
             .endControlFlow();
         serializedCodeBlock = codeBlockBuilder.build().toString();
         break;
@@ -2069,7 +2212,41 @@ public class SpecificRecordClassGenerator {
     return parameterSpecBuilder.build();
   }
 
+  /**
+   * Creates a parameter spec for a field with numeric type conversion:
+   * - For int/Integer fields, creates a Long parameter
+   * - For long/Long fields, creates an Integer parameter
+   *
+   * @param field The Avro schema field
+   * @return A parameter spec with the appropriate numeric conversion type, or null if the field is not numeric
+   */
+  private ParameterSpec getNumericConversionParameterSpecForField(AvroSchemaField field) {
+    String escapedFieldName = getFieldNameWithSuffix(field);
 
+    // Check for both primitive and boxed types
+    Class<?> primitiveClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(
+        field.getSchemaOrRef().getSchema().type(),
+        AvroJavaStringRepresentation.STRING, false);
+
+    Class<?> boxedClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(
+        field.getSchemaOrRef().getSchema().type(),
+        AvroJavaStringRepresentation.STRING, true);
+
+    // For int/Integer fields, create a Long parameter
+    if ((primitiveClass != null && primitiveClass.equals(int.class)) ||
+        (boxedClass != null && boxedClass.equals(Integer.class))) {
+      return ParameterSpec.builder(Long.class, escapedFieldName).build();
+    }
+
+    // For long/Long fields, create an Integer parameter
+    if ((primitiveClass != null && primitiveClass.equals(long.class)) ||
+        (boxedClass != null && boxedClass.equals(Long.class))) {
+      return ParameterSpec.builder(Integer.class, escapedFieldName).build();
+    }
+
+    // For non-numeric fields, return null
+    return null;
+  }
   private void addAndInitializeSizeFieldToClass(TypeSpec.Builder classBuilder, AvroFixedSchema fixedSchema)
       throws ClassNotFoundException {
     classBuilder.addAnnotation(AnnotationSpec.builder(SpecificRecordGeneratorUtil.CLASSNAME_FIXED_SIZE)
