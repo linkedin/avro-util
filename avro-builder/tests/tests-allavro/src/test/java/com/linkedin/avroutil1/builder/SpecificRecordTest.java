@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.nio.file.Files;
@@ -1974,7 +1975,7 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
   }
 
   @DataProvider
-  private Object[][] IntsAndLongsDataProvider() {
+  private Object[][] intsAndLongsDataProvider() {
     return new Object[][]{
         {vs14.IntsAndLongs.class},
         {vs15.IntsAndLongs.class},
@@ -1987,7 +1988,7 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     };
   }
 
-  @Test(dataProvider = "IntsAndLongsDataProvider")
+  @Test(dataProvider = "intsAndLongsDataProvider")
   public void testIntLongRecords(Class<?> clazz) throws Exception {
     // Get the newBuilder method via reflection to work with different versions
     Method newBuilderMethod = clazz.getMethod("newBuilder");
@@ -2044,11 +2045,49 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     Assert.assertEquals(456L, getLongFieldMethod.invoke(record5));
   }
 
-  /**
-   * Tests that both String and UTF8 fields are supported in the generated classes and can be accessed
-   * interchangeably directly and through getters.
-   * @throws IOException
-   */
+  @Test(dataProvider = "intsAndLongsDataProvider")
+  public void testIntFieldOutOfBoundsHandling(Class<?> clazz) throws Exception {
+    // Test Case 1: Using builder pattern with setIntField(long)
+    Method newBuilderMethod = clazz.getMethod("newBuilder");
+    Object builder = newBuilderMethod.invoke(null);
+    Method setIntFieldLongMethod = builder.getClass().getMethod("setIntField", long.class);
+    Method buildMethod = builder.getClass().getMethod("build");
+
+    try {
+      // Try to set a long value that's too large for an int
+      setIntFieldLongMethod.invoke(builder, Long.MAX_VALUE);
+      // This should throw an exception when we try to build
+      buildMethod.invoke(builder);
+      Assert.fail("Expected an exception when building with out-of-bounds long value");
+    } catch (InvocationTargetException e) {
+      Throwable cause = e.getCause();
+      Assert.assertNotNull(cause, "Exception cause should not be null");
+      Assert.assertTrue(cause instanceof AvroRuntimeException,
+          "Expected AvroRuntimeException but got: " + cause.getClass().getName());
+      Assert.assertTrue(cause.getMessage() != null &&
+          cause.getMessage().contains(String.format("Long value %d cannot be cast to int", Long.MAX_VALUE)),
+          "Expected message about long value cast but got: " + cause.getMessage());
+    }
+
+    // Test Case 2: Using put method directly
+    Object record = clazz.newInstance();
+    Method putMethod = clazz.getMethod("put", int.class, Object.class);
+
+    try {
+      // Try to put a long value that's too large for the int field (field index 1)
+      putMethod.invoke(record, 1, Long.MAX_VALUE);
+      Assert.fail("Expected an exception when putting out-of-bounds long value");
+    } catch (InvocationTargetException e) {
+      Throwable cause = e.getCause();
+      Assert.assertNotNull(cause, "Exception cause should not be null");
+      Assert.assertTrue(cause instanceof AvroRuntimeException,
+          "Expected AvroRuntimeException but got: " + cause.getClass().getName());
+      Assert.assertTrue(cause.getMessage() != null &&
+          cause.getMessage().contains(String.format("Long value %d cannot be cast to int", Long.MAX_VALUE)),
+          "Expected message about long value cast but got: " + cause.getMessage());
+    }
+  }
+
   @Test
   public void testNoUtf8Encoding() throws IOException {
     RandomRecordGenerator generator = new RandomRecordGenerator();
