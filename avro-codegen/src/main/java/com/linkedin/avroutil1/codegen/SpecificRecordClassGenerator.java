@@ -1220,14 +1220,19 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = String.format("%s = in.readBoolean()", fieldName);
         break;
       case INT:
-        String cleanFieldName = fieldName.replaceAll("^this\\.", "");
-        String tempVarName = "temp" + Character.toUpperCase(cleanFieldName.charAt(0)) + cleanFieldName.substring(1);
+        String cleanIntFieldName = fieldName.replaceAll("^this\\.", "");
+        String tempIntVarName = "temp" + Character.toUpperCase(cleanIntFieldName.charAt(0)) + cleanIntFieldName.substring(1);
         codeBlockBuilder
-            .addStatement("long $L = in.readLong()", tempVarName)
-            .beginControlFlow("if ($L <= Integer.MAX_VALUE && $L >= Integer.MIN_VALUE)", tempVarName, tempVarName)
-            .addStatement("$L = (int) $L", fieldName, tempVarName)
+            .beginControlFlow("try")
+            .addStatement("$L = in.readInt()", fieldName)
+            .nextControlFlow("catch (Exception e)")
+            .addStatement("// If int decoding fails, try long decoding with bounds check")
+            .addStatement("long $L = in.readLong()", tempIntVarName)
+            .beginControlFlow("if ($L <= Integer.MAX_VALUE && $L >= Integer.MIN_VALUE)", tempIntVarName, tempIntVarName)
+            .addStatement("$L = (int) $L", fieldName, tempIntVarName)
             .nextControlFlow("else")
             .addStatement("throw new org.apache.avro.AvroRuntimeException(\"Long value cannot be cast to int\")")
+            .endControlFlow()
             .endControlFlow();
         serializedCodeBlock = codeBlockBuilder.build().toString();
         break;
@@ -1235,7 +1240,17 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = String.format("%s = in.readFloat()", fieldName);
         break;
       case LONG:
-        serializedCodeBlock = String.format("%s = in.readLong()", fieldName);
+        String cleanLongFieldName = fieldName.replaceAll("^this\\.", "");
+        String tempLongVarName = "temp" + Character.toUpperCase(cleanLongFieldName.charAt(0)) + cleanLongFieldName.substring(1);
+        codeBlockBuilder
+            .beginControlFlow("try")
+            .addStatement("$L = in.readLong()", fieldName)
+            .nextControlFlow("catch (Exception e)")
+            .addStatement("// If long decoding fails, try int decoding with conversion to long")
+            .addStatement("int $L = in.readInt()", tempLongVarName)
+            .addStatement("$L = (long) $L", fieldName, tempLongVarName)
+            .endControlFlow();
+        serializedCodeBlock = codeBlockBuilder.build().toString();
         break;
       case DOUBLE:
         serializedCodeBlock = String.format("%s = in.readDouble()", fieldName);
