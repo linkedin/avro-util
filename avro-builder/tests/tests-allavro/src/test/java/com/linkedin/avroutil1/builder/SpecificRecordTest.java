@@ -2088,6 +2088,11 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     }
   }
 
+  /**
+   * Tests that both String and UTF8 fields are supported in the generated classes and can be accessed
+   * interchangeably directly and through getters.
+   * @throws IOException
+   */
   @Test
   public void testNoUtf8Encoding() throws IOException {
     RandomRecordGenerator generator = new RandomRecordGenerator();

@@ -648,24 +648,11 @@ public class SpecificRecordClassGenerator {
       // Check if field is long or [null, long]
       if (SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.LONG, field.getSchema())
           || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.INT, field.getSchema())) {
-        // Check for both primitive and boxed types
-        Class<?> primitiveClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(
-            field.getSchemaOrRef().getSchema().type(),
-            AvroJavaStringRepresentation.STRING, false);
-
-        Class<?> boxedClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(
-            field.getSchemaOrRef().getSchema().type(),
-            AvroJavaStringRepresentation.STRING, true);
-
-        if (primitiveClass == int.class || boxedClass == Integer.class
-            || primitiveClass == long.class || boxedClass == Long.class ) {
-          return true;
-        }
+        return true;
       }
     }
     return false;
   }
-
 
   /**
    * Adds a constructor that handles both Integer-to-Long and Long-to-Integer conversions simultaneously
@@ -891,7 +878,7 @@ public class SpecificRecordClassGenerator {
 
       // get, set, has, clear methods
       populateAccessorMethodsBlock(accessorMethodSpecs, field, fieldClass, fieldType, recordSchema.getFullName(),
-          fieldIndex);
+          fieldIndex, config);
 
       fieldIndex++;
     }
@@ -993,7 +980,7 @@ public class SpecificRecordClassGenerator {
   }
 
   private void populateAccessorMethodsBlock(List<MethodSpec> accessorMethodSpecs, AvroSchemaField field,
-      Class<?> fieldClass, TypeName fieldType, String parentClass, int fieldIndex) {
+      Class<?> fieldClass, TypeName fieldType, String parentClass, int fieldIndex, SpecificRecordGenerationConfig config) {
     String escapedFieldName = getFieldNameWithSuffix(field);
     //Getter
     MethodSpec.Builder getMethodBuilder =
@@ -1026,8 +1013,12 @@ public class SpecificRecordClassGenerator {
     }
 
     // Additional setter for int/long fields (both primitive and boxed)
-    MethodSpec.Builder overloadSetMethodBuilder =
-        createNumericTypeOverloadedSetterBuilder(fieldClass, field, escapedFieldName, fieldIndex, parentClass);
+    MethodSpec.Builder overloadSetMethodBuilder = null;
+    if ((SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.LONG, field.getSchema())
+        || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.INT, field.getSchema()))) {
+      overloadSetMethodBuilder = createNumericTypeOverloadedSetterBuilder(fieldClass, field, escapedFieldName, fieldIndex,
+          parentClass, config);
+    }
 
     // Has
     MethodSpec.Builder hasMethodBuilder =
@@ -1074,70 +1065,54 @@ public class SpecificRecordClassGenerator {
    * @return A MethodSpec.Builder for the overloaded setter method
    */
   private MethodSpec.Builder createNumericTypeOverloadedSetterBuilder(Class<?> fieldClass, AvroSchemaField field,
-      String escapedFieldName, int fieldIndex, String parentClass) {
+      String escapedFieldName, int fieldIndex, String parentClass, SpecificRecordGenerationConfig config) {
     MethodSpec.Builder methodBuilder = null;
 
-    boolean isNumericType = fieldClass == long.class || fieldClass == int.class;
+    if (fieldClass != null) {
+      methodBuilder = MethodSpec
+          .methodBuilder(getMethodNameForFieldWithPrefix("set", escapedFieldName))
+          .addModifiers(Modifier.PUBLIC);
 
-    // Also check for union types that represent boxed numeric types
-    if (!isNumericType && field.getSchema() instanceof AvroUnionSchema) {
-      AvroUnionSchema unionSchema = (AvroUnionSchema) field.getSchema();
-      if (SpecificRecordGeneratorUtil.isSingleTypeNullableUnionSchema(unionSchema)) {
-        List<SchemaOrRef> branches = unionSchema.getTypes();
-        SchemaOrRef unionMemberSchemaOrRef =
-            (branches.get(0).getSchema().type().equals(AvroType.NULL) ? branches.get(1) : branches.get(0));
-
-        AvroType branchSchemaType = unionMemberSchemaOrRef.getSchema().type();
-        if (branchSchemaType == AvroType.INT || branchSchemaType == AvroType.LONG) {
-          // For union types like ["null", "int"] or ["null", "long"], use the boxed type
-          fieldClass = SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(branchSchemaType,
-              AvroJavaStringRepresentation.STRING, true); // true for boxed type
-          isNumericType = true;
-        }
-      }
-    }
-
-    // If not numeric type overload method is needed, return early
-    if (!isNumericType) {
-      return methodBuilder;
-    }
-
-    if (fieldClass == long.class || fieldClass == Long.class) {
-      // For long or Long fields, add a setter that accepts int or Integer
-      methodBuilder = MethodSpec.methodBuilder(getMethodNameForFieldWithPrefix("set", escapedFieldName))
-          .addParameter(fieldClass == long.class ? TypeName.INT : ClassName.get(Integer.class), "value")
-          .addModifiers(Modifier.PUBLIC)
-          .addJavadoc(
-              "Sets the value of the '$L' field.$L" + "@param value The value of '$L'.\n" + "@return This Builder.",
-              field.getName(), getFieldJavaDoc(field), field.getName());
-
-      if (fieldClass == Long.class) {
-        // For boxed Long, handle null case
+      if (fieldClass.equals(long.class)) {
+        // If field is of type long, add method with int parameter
         methodBuilder
+            .addParameter(TypeName.INT, "value")
+            .addStatement("validate(fields()[$L], value)", fieldIndex)
+            .addStatement("this.$L = value", escapedFieldName);
+
+      } else if (fieldClass.equals(int.class)) {
+        // If field is of type int, add method with long parameter
+        // This method will error if the long input is greater than Integer.MAX_VALUE
+        methodBuilder
+            .addParameter(TypeName.LONG, "value")
+            .beginControlFlow("if (value <= Integer.MAX_VALUE && value >= Integer.MIN_VALUE)")
+            .addStatement("this.$L = (int) value", escapedFieldName)
+            .nextControlFlow("else")
+            .addStatement("throw new org.apache.avro.AvroRuntimeException(\"Long value \" + value + \" cannot be cast to int\")")
+            .endControlFlow();
+
+      }
+    } else if (field.getSchema() != null && field.getSchema().type().equals(AvroType.UNION)) {
+      TypeName typeName = SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(),
+          field.getSchemaOrRef().getSchema().type(), true,
+          config.getDefaultMethodStringRepresentation());
+
+      if (typeName.equals(ClassName.get(Long.class))) {
+        // For long or Long fields, add a setter that accepts int or Integer
+        methodBuilder = MethodSpec
+            .methodBuilder(getMethodNameForFieldWithPrefix("set", escapedFieldName))
+            .addParameter(ClassName.get(Integer.class), "value")
             .beginControlFlow("if (value == null)")
             .addStatement("this.$L = null", escapedFieldName)
             .nextControlFlow("else")
             .addStatement("this.$L = Long.valueOf(value)", escapedFieldName)
             .endControlFlow();
-      } else {
-        // For primitive long
-        methodBuilder
-            .addStatement("validate(fields()[$L], value)", fieldIndex)
-            .addStatement("this.$L = value", escapedFieldName);
-      }
 
-    } else if (fieldClass == int.class || fieldClass == Integer.class) {
-      // For int or Integer fields, add a setter that accepts long or Long
-      methodBuilder = MethodSpec.methodBuilder(getMethodNameForFieldWithPrefix("set", escapedFieldName))
-          .addParameter(fieldClass == int.class ? TypeName.LONG : ClassName.get(Long.class), "value")
-          .addModifiers(Modifier.PUBLIC)
-          .addJavadoc(
-              "Sets the value of the '$L' field.$L" + "@param value The value of '$L'.\n" + "@return This Builder.",
-              field.getName(), getFieldJavaDoc(field), field.getName());
 
-      if (fieldClass == Integer.class) {
-        // For boxed Integer, handle null case first
-        methodBuilder
+      } else if (typeName.equals(ClassName.get(Integer.class))) {
+        methodBuilder = MethodSpec
+            .methodBuilder(getMethodNameForFieldWithPrefix("set", escapedFieldName))
+            .addParameter(ClassName.get(Long.class), "value")
             .beginControlFlow("if (value == null)")
             .addStatement("this.$L = null", escapedFieldName)
             .nextControlFlow("else if (value <= Integer.MAX_VALUE && value >= Integer.MIN_VALUE)")
@@ -1145,19 +1120,14 @@ public class SpecificRecordClassGenerator {
             .nextControlFlow("else")
             .addStatement("throw new org.apache.avro.AvroRuntimeException(\"Long value \" + value + \" cannot be cast to Integer\")")
             .endControlFlow();
-      } else {
-        // For primitive int
-        methodBuilder
-            .beginControlFlow("if (value <= Integer.MAX_VALUE && value >= Integer.MIN_VALUE)")
-            .addStatement("this.$L = (int) value", escapedFieldName)
-            .nextControlFlow("else")
-            .addStatement("throw new org.apache.avro.AvroRuntimeException(\"Long value \" + value + \" cannot be cast to int\")")
-            .endControlFlow();
       }
     }
 
     if (methodBuilder != null) {
       methodBuilder
+          .addJavadoc(
+              "Sets the value of the '$L' field.$L" + "@param value The value of '$L'.\n" + "@return This Builder.",
+              field.getName(), getFieldJavaDoc(field), field.getName())
           .addStatement("fieldSetFlags()[$L] = true", fieldIndex)
           .addStatement("return this")
           .returns(ClassName.get(parentClass, "Builder"));
