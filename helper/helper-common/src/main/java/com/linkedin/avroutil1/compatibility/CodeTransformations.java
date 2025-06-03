@@ -133,6 +133,7 @@ public class CodeTransformations {
     // Allow int fields to be set using longs, and vice versa
     fixed = CodeTransformations.enhanceNumericPutMethod(fixed);
     fixed = CodeTransformations.addOverloadedNumericSetterMethods(fixed);
+    fixed = CodeTransformations.addOverloadedNumericConstructor(fixed);
 
     //1.6+ features
     if (minSupportedVersion.earlierThan(AvroVersion.AVRO_1_6)) {
@@ -1151,6 +1152,252 @@ public class CodeTransformations {
     }
 
     return result.toString();
+  }
+
+  /**
+   * Adds an overloaded constructor that allows Integer parameters for Long fields and Long parameters for Integer fields.
+   * This makes the generated code more flexible by allowing automatic type conversion between numeric types.
+   * The implementation handles both boxed Integer/Long types and primitive int/long types, with proper null handling
+   * for boxed types and default values for primitives when null is passed.
+   *
+   * @param code generated code
+   * @return transformed code with overloaded constructor for numeric type conversions
+   */
+  public static String addOverloadedNumericConstructor(String code) {
+    if (code == null || code.isEmpty()) {
+      return code;
+    }
+
+    // First, identify all numeric fields in the class (both primitive and boxed)
+    Map<String, String> fieldTypes = new HashMap<>(); // fieldName -> type
+
+    // Pattern to match primitive field declarations
+    Pattern primitiveFieldPattern = Pattern.compile("private\\s+(int|long)\\s+(\\w+)\\s*;");
+    Matcher primitiveFieldMatcher = primitiveFieldPattern.matcher(code);
+
+    while (primitiveFieldMatcher.find()) {
+      String fieldType = primitiveFieldMatcher.group(1);
+      String fieldName = primitiveFieldMatcher.group(2);
+      fieldTypes.put(fieldName, fieldType);
+    }
+
+    // Pattern to match boxed field declarations
+    Pattern boxedFieldPattern = Pattern.compile("private\\s+(java\\.lang\\.Integer|java\\.lang\\.Long)\\s+(\\w+)\\s*;");
+    Matcher boxedFieldMatcher = boxedFieldPattern.matcher(code);
+
+    while (boxedFieldMatcher.find()) {
+      String fieldType = boxedFieldMatcher.group(1);
+      String fieldName = boxedFieldMatcher.group(2);
+      fieldTypes.put(fieldName, fieldType);
+    }
+
+    if (fieldTypes.isEmpty()) {
+      return code; // No numeric fields found
+    }
+
+    // Find the class name
+    Pattern classNamePattern = Pattern.compile("public\\s+class\\s+(\\w+)");
+    Matcher classNameMatcher = classNamePattern.matcher(code);
+    if (!classNameMatcher.find()) {
+      return code; // Can't find class name
+    }
+    String className = classNameMatcher.group(1);
+
+    // Find the all-args constructor
+    Pattern constructorPattern = Pattern.compile(
+        "public\\s+" + className + "\\s*\\(([^)]*)\\)\\s*\\{([^}]*)\\}"
+    );
+    Matcher constructorMatcher = constructorPattern.matcher(code);
+    
+    // Skip the default constructor (no args) and find the all-args constructor
+    if (constructorMatcher.find() && constructorMatcher.group(1).trim().isEmpty()) {
+      if (!constructorMatcher.find()) {
+        return code; // Can't find all-args constructor
+      }
+    }
+
+    String constructorParams = constructorMatcher.group(1);
+    
+    // Parse the constructor parameters using a more robust approach that handles generic types
+    List<String> paramTypes = new ArrayList<>();
+    List<String> paramNames = new ArrayList<>();
+    Map<String, String> originalParamTypes = new HashMap<>(); // paramName -> original type
+    
+    // Parse parameters more carefully to handle generics
+    parseConstructorParameters(constructorParams, paramTypes, paramNames, originalParamTypes);
+    
+    // Generate the overloaded constructor with swapped numeric types
+    StringBuilder overloadedConstructor = new StringBuilder();
+    overloadedConstructor.append("\n  /**\n");
+    overloadedConstructor.append("   * All-args constructor with flexible numeric type conversion.\n");
+    overloadedConstructor.append("   * Allows Integer parameters for Long fields and Long parameters for Integer fields.\n");
+    
+    // Add parameter javadoc
+    for (int i = 0; i < paramNames.size(); i++) {
+      overloadedConstructor.append("   * @param ").append(paramNames.get(i)).append(" The new value for ").append(paramNames.get(i)).append("\n");
+    }
+    
+    overloadedConstructor.append("   */\n");
+    overloadedConstructor.append("  public ").append(className).append("(");
+    
+    // Generate parameters with swapped types for numeric fields
+    Map<String, String> swappedParamTypes = new HashMap<>(); // paramName -> swapped type
+    
+    for (int i = 0; i < paramTypes.size(); i++) {
+      if (i > 0) {
+        overloadedConstructor.append(", ");
+      }
+      
+      String paramType = paramTypes.get(i);
+      String paramName = paramNames.get(i);
+      String fieldType = fieldTypes.get(paramName);
+      
+      // Swap Java types for numeric fields
+      if ("java.lang.Long".equals(paramType) && fieldTypes.containsKey(paramName)) {
+        overloadedConstructor.append("java.lang.Integer ").append(paramName);
+        swappedParamTypes.put(paramName, "java.lang.Integer");
+      } else if ("java.lang.Integer".equals(paramType) && fieldTypes.containsKey(paramName)) {
+        overloadedConstructor.append("java.lang.Long ").append(paramName);
+        swappedParamTypes.put(paramName, "java.lang.Long");
+      } else {
+        overloadedConstructor.append(paramType).append(" ").append(paramName);
+        swappedParamTypes.put(paramName, paramType);
+      }
+    }
+    
+    overloadedConstructor.append(") {\n");
+    
+    // Generate constructor body with type conversion logic
+    for (int i = 0; i < paramNames.size(); i++) {
+      String paramName = paramNames.get(i);
+      String fieldType = fieldTypes.get(paramName);
+      String swappedParamType = swappedParamTypes.get(paramName);
+      
+      if (fieldType != null) {
+        if ("int".equals(fieldType) && "java.lang.Long".equals(swappedParamType)) {
+          // Convert Long to int with bounds check
+          overloadedConstructor.append("    if (").append(paramName).append(" == null) {\n");
+          overloadedConstructor.append("      this.").append(paramName).append(" = 0;\n");
+          overloadedConstructor.append("    } else if (").append(paramName).append(" <= Integer.MAX_VALUE && ")
+                               .append(paramName).append(" >= Integer.MIN_VALUE) {\n");
+          overloadedConstructor.append("      this.").append(paramName).append(" = ").append(paramName).append(".intValue();\n");
+          overloadedConstructor.append("    } else {\n");
+          overloadedConstructor.append("      throw new org.apache.avro.AvroRuntimeException(\"Long value \" + ")
+                               .append(paramName).append(" + \" cannot be cast to int\");\n");
+          overloadedConstructor.append("    }\n");
+        } else if ("long".equals(fieldType) && "java.lang.Integer".equals(swappedParamType)) {
+          // Convert Integer to long
+          overloadedConstructor.append("    this.").append(paramName).append(" = ").append(paramName).append(" == null ? 0L : ")
+                               .append(paramName).append(".longValue();\n");
+        } else if ("java.lang.Integer".equals(fieldType) && "java.lang.Long".equals(swappedParamType)) {
+          // Convert Long to Integer with bounds check
+          overloadedConstructor.append("    if (").append(paramName).append(" == null) {\n");
+          overloadedConstructor.append("      this.").append(paramName).append(" = null;\n");
+          overloadedConstructor.append("    } else if (").append(paramName).append(" <= Integer.MAX_VALUE && ")
+                               .append(paramName).append(" >= Integer.MIN_VALUE) {\n");
+          overloadedConstructor.append("      this.").append(paramName).append(" = ").append(paramName).append(".intValue();\n");
+          overloadedConstructor.append("    } else {\n");
+          overloadedConstructor.append("      throw new org.apache.avro.AvroRuntimeException(\"Long value \" + ")
+                               .append(paramName).append(" + \" cannot be cast to Integer\");\n");
+          overloadedConstructor.append("    }\n");
+        } else if ("java.lang.Long".equals(fieldType) && "java.lang.Integer".equals(swappedParamType)) {
+          // Convert Integer to Long
+          overloadedConstructor.append("    if (").append(paramName).append(" == null) {\n");
+          overloadedConstructor.append("      this.").append(paramName).append(" = null;\n");
+          overloadedConstructor.append("    } else {\n");
+          overloadedConstructor.append("      this.").append(paramName).append(" = ").append(paramName).append(".longValue();\n");
+          overloadedConstructor.append("    }\n");
+        } else {
+          // For non-numeric fields or fields with the same type, just assign directly
+          overloadedConstructor.append("    this.").append(paramName).append(" = ").append(paramName).append(";\n");
+        }
+      } else {
+        // For fields not in our fieldTypes map, just assign directly
+        overloadedConstructor.append("    this.").append(paramName).append(" = ").append(paramName).append(";\n");
+      }
+    }
+    
+    overloadedConstructor.append("  }");
+    
+    // Insert the overloaded constructor after the original constructor
+    StringBuilder result = new StringBuilder(code);
+    result.insert(constructorMatcher.end(), "\n" + overloadedConstructor.toString());
+    
+    return result.toString();
+  }
+  
+  /**
+   * Parses constructor parameters handling complex generic types correctly.
+   * This method properly handles nested generics like Map<String, List<String>>.
+   *
+   * @param constructorParams The constructor parameter string
+   * @param paramTypes Output list to store parameter types
+   * @param paramNames Output list to store parameter names
+   * @param originalParamTypes Output map to store parameter name to type mapping
+   */
+  private static void parseConstructorParameters(String constructorParams, 
+                                               List<String> paramTypes, 
+                                               List<String> paramNames, 
+                                               Map<String, String> originalParamTypes) {
+    if (constructorParams == null || constructorParams.trim().isEmpty()) {
+      return;
+    }
+    
+    int pos = 0;
+    int len = constructorParams.length();
+    int angleNestLevel = 0;
+    int startPos = 0;
+    
+    while (pos < len) {
+      char c = constructorParams.charAt(pos);
+      
+      if (c == '<') {
+        angleNestLevel++;
+      } else if (c == '>') {
+        angleNestLevel--;
+      } else if (c == ',' && angleNestLevel == 0) {
+        // Found a top-level comma, which separates parameters
+        String param = constructorParams.substring(startPos, pos).trim();
+        processParameter(param, paramTypes, paramNames, originalParamTypes);
+        startPos = pos + 1;
+      }
+      
+      pos++;
+    }
+    
+    // Process the last parameter
+    if (startPos < len) {
+      String param = constructorParams.substring(startPos).trim();
+      processParameter(param, paramTypes, paramNames, originalParamTypes);
+    }
+  }
+  
+  /**
+   * Processes a single parameter string and extracts the type and name.
+   *
+   * @param param The parameter string (e.g., "java.lang.Integer fieldName")
+   * @param paramTypes Output list to store parameter types
+   * @param paramNames Output list to store parameter names
+   * @param originalParamTypes Output map to store parameter name to type mapping
+   */
+  private static void processParameter(String param, 
+                                     List<String> paramTypes, 
+                                     List<String> paramNames, 
+                                     Map<String, String> originalParamTypes) {
+    if (param == null || param.trim().isEmpty()) {
+      return;
+    }
+    
+    // Find the last space which separates the type from the name
+    int lastSpacePos = param.lastIndexOf(' ');
+    if (lastSpacePos > 0) {
+      String paramType = param.substring(0, lastSpacePos).trim();
+      String paramName = param.substring(lastSpacePos + 1).trim();
+      
+      paramTypes.add(paramType);
+      paramNames.add(paramName);
+      originalParamTypes.put(paramName, paramType);
+    }
   }
 
   private static String addImports(String code, Collection<String> importStatements) {
