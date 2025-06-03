@@ -99,6 +99,15 @@ public class CodeTransformations {
   private static final String ENUM_CLASS_BODY_POST19_TEMPLATE = TemplateUtil.loadTemplate("avroutil1/templates/EnumClass19.template");
   private static final String ENUM_CLASS_NO_NAMESPACE_BODY_POST19_TEMPLATE = TemplateUtil.loadTemplate("avroutil1/templates/EnumClassNoNamespace19.template");
 
+  private static final Pattern PUT_METHOD_PATTERN = Pattern.compile(
+      "public\\s+void\\s+put\\s*\\(\\s*int\\s+field\\$\\s*,\\s*java\\.lang\\.Object\\s+value\\$\\s*\\)\\s*\\{\\s*" +
+      "switch\\s*\\(\\s*field\\$\\s*\\)\\s*\\{\\s*" +
+      "([^}]+)" +  // Capture the case statements
+      "\\}\\s*\\}");
+
+  private static final String JAVA_LANG_INTEGER = "java.lang.Integer";
+  private static final String JAVA_LANG_LONG = "java.lang.Long";
+
   private static final int MAX_STRING_LITERAL_SIZE = 65000; //just under 64k
 
   private CodeTransformations() {
@@ -523,7 +532,7 @@ public class CodeTransformations {
 
     //find the end of the inner builder class
     Matcher endBuilderMatcher = END_BUILDER_CLASS_PATTERN.matcher(code);
-    if (!endBuilderMatcher.find(buildMethodMatcher.end())) {
+    if (!endBuilderMatcher.find(builderMethodMatcher.end())) {
       throw new IllegalStateException("cant locate builder support block in " + code);
     }
 
@@ -937,14 +946,7 @@ public class CodeTransformations {
     }
 
     // Pattern to match the put method with simple casts
-    Pattern putMethodPattern = Pattern.compile(
-        "public\\s+void\\s+put\\s*\\(\\s*int\\s+field\\$\\s*,\\s*java\\.lang\\.Object\\s+value\\$\\s*\\)\\s*\\{\\s*" +
-        "switch\\s*\\(\\s*field\\$\\s*\\)\\s*\\{\\s*" +
-        "([^}]+)" +  // Capture the case statements
-        "\\}\\s*\\}"
-    );
-
-    Matcher matcher = putMethodPattern.matcher(code);
+    Matcher matcher = PUT_METHOD_PATTERN.matcher(code);
     if (!matcher.find()) {
       return code; // No matching put method found
     }
@@ -964,8 +966,8 @@ public class CodeTransformations {
       String fieldName = caseMatcher.group(2);
       String fieldType = caseMatcher.group(3);
 
-      if ("java.lang.Integer".equals(fieldType) || "int".equals(fieldType) ||
-          "java.lang.Long".equals(fieldType) || "long".equals(fieldType)) {
+      if (JAVA_LANG_INTEGER.equals(fieldType) || "int".equals(fieldType) ||
+          JAVA_LANG_LONG.equals(fieldType) || "long".equals(fieldType)) {
         fieldInfo.put(caseNumber, new String[]{fieldName, fieldType});
       }
     }
@@ -1149,7 +1151,7 @@ public class CodeTransformations {
           enhancedSetter.append("    public void ").append(methodName).append("(int value) {\n");
           enhancedSetter.append("        this.").append(fieldName).append(" = value;\n");
           enhancedSetter.append("    }\n\n");
-        } else if ("java.lang.Integer".equals(fieldType)) {
+        } else if (JAVA_LANG_INTEGER.equals(fieldType)) {
           // For Integer fields, add an overloaded setter that accepts Long with bounds checking
           enhancedSetter.append("    public void ").append(methodName).append("(java.lang.Integer value) {\n");
           enhancedSetter.append("        this.").append(fieldName).append(" = value;\n");
@@ -1246,7 +1248,7 @@ public class CodeTransformations {
     boolean foundConstructor = false;
     String constructorParams = "";
     int constructorEnd = -1;
-    
+
     // Skip the default constructor (no args) if present
     if (constructorMatcher.find()) {
       String params = constructorMatcher.group(1).trim();
@@ -1264,7 +1266,7 @@ public class CodeTransformations {
         }
       }
     }
-    
+
     // If no constructor with parameters was found, return the original code
     if (!foundConstructor || constructorParams.isEmpty()) {
       return code;
@@ -1302,15 +1304,14 @@ public class CodeTransformations {
 
       String paramType = paramTypes.get(i);
       String paramName = paramNames.get(i);
-      String fieldType = fieldTypes.get(paramName);
 
       // Swap Java types for numeric fields
-      if ("java.lang.Long".equals(paramType) && fieldTypes.containsKey(paramName)) {
-        overloadedConstructor.append("java.lang.Integer ").append(paramName);
-        swappedParamTypes.put(paramName, "java.lang.Integer");
-      } else if ("java.lang.Integer".equals(paramType) && fieldTypes.containsKey(paramName)) {
-        overloadedConstructor.append("java.lang.Long ").append(paramName);
-        swappedParamTypes.put(paramName, "java.lang.Long");
+      if (JAVA_LANG_LONG.equals(paramType) && fieldTypes.containsKey(paramName)) {
+        overloadedConstructor.append(JAVA_LANG_INTEGER + " ").append(paramName);
+        swappedParamTypes.put(paramName, JAVA_LANG_INTEGER);
+      } else if (JAVA_LANG_INTEGER.equals(paramType) && fieldTypes.containsKey(paramName)) {
+        overloadedConstructor.append(JAVA_LANG_LONG + " ").append(paramName);
+        swappedParamTypes.put(paramName, JAVA_LANG_LONG);
       } else {
         overloadedConstructor.append(paramType).append(" ").append(paramName);
         swappedParamTypes.put(paramName, paramType);
@@ -1326,7 +1327,7 @@ public class CodeTransformations {
       String swappedParamType = swappedParamTypes.get(paramName);
 
       if (fieldType != null) {
-        if ("int".equals(fieldType) && "java.lang.Long".equals(swappedParamType)) {
+        if ("int".equals(fieldType) && JAVA_LANG_LONG.equals(swappedParamType)) {
           // Convert Long to int with bounds check
           overloadedConstructor.append("    if (").append(paramName).append(" == null) {\n");
           overloadedConstructor.append("      this.").append(paramName).append(" = 0;\n");
@@ -1337,11 +1338,11 @@ public class CodeTransformations {
           overloadedConstructor.append("      throw new org.apache.avro.AvroRuntimeException(\"Long value \" + ")
                                .append(paramName).append(" + \" cannot be cast to int\");\n");
           overloadedConstructor.append("    }\n");
-        } else if ("long".equals(fieldType) && "java.lang.Integer".equals(swappedParamType)) {
+        } else if ("long".equals(fieldType) && JAVA_LANG_INTEGER.equals(swappedParamType)) {
           // Convert Integer to long
           overloadedConstructor.append("    this.").append(paramName).append(" = ").append(paramName).append(" == null ? 0L : ")
                                .append(paramName).append(".longValue();\n");
-        } else if ("java.lang.Integer".equals(fieldType) && "java.lang.Long".equals(swappedParamType)) {
+        } else if (JAVA_LANG_INTEGER.equals(fieldType) && JAVA_LANG_LONG.equals(swappedParamType)) {
           // Convert Long to Integer with bounds check
           overloadedConstructor.append("    if (").append(paramName).append(" == null) {\n");
           overloadedConstructor.append("      this.").append(paramName).append(" = null;\n");
@@ -1352,7 +1353,7 @@ public class CodeTransformations {
           overloadedConstructor.append("      throw new org.apache.avro.AvroRuntimeException(\"Long value \" + ")
                                .append(paramName).append(" + \" cannot be cast to Integer\");\n");
           overloadedConstructor.append("    }\n");
-        } else if ("java.lang.Long".equals(fieldType) && "java.lang.Integer".equals(swappedParamType)) {
+        } else if (JAVA_LANG_LONG.equals(fieldType) && JAVA_LANG_INTEGER.equals(swappedParamType)) {
           // Convert Integer to Long
           overloadedConstructor.append("    if (").append(paramName).append(" == null) {\n");
           overloadedConstructor.append("      this.").append(paramName).append(" = null;\n");
