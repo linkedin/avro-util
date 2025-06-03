@@ -132,7 +132,7 @@ public class CodeTransformations {
 
     // Allow int fields to be set using longs, and vice versa
     fixed = CodeTransformations.enhanceNumericPutMethod(fixed);
-    fixed = CodeTransformations.enhanceNumericSetterMethods(fixed);
+    fixed = CodeTransformations.addOverloadedNumericSetterMethods(fixed);
 
     //1.6+ features
     if (minSupportedVersion.earlierThan(AvroVersion.AVRO_1_6)) {
@@ -951,7 +951,6 @@ public class CodeTransformations {
 
     // Pattern to find int and long field cases
     Pattern casePattern = Pattern.compile("case\\s+(\\d+)\\s*:\\s*(\\w+)\\s*=\\s*\\(([^)]+)\\)value\\$\\s*;\\s*break\\s*;");
-
     Matcher caseMatcher = casePattern.matcher(caseStatements);
 
     Map<String, String[]> fieldInfo = new HashMap<>(); // caseNumber -> [fieldName, fieldType]
@@ -977,16 +976,38 @@ public class CodeTransformations {
 
       if ("java.lang.Integer".equals(fieldType)) {
         enhancedPutMethod.append("if (value$ instanceof java.lang.Long) {\n");
-        enhancedPutMethod.append("      ").append(fieldName).append(" = ((java.lang.Long)value$).intValue();\n");
+        enhancedPutMethod.append("      if ((java.lang.Long)value$ <= Integer.MAX_VALUE && (java.lang.Long)value$ >= Integer.MIN_VALUE) {\n");
+        enhancedPutMethod.append("        this.").append(fieldName).append(" = (int) value$;\n");
+        enhancedPutMethod.append("      } else {\n");
+        enhancedPutMethod.append("        throw new org.apache.avro.AvroRuntimeException(\"Long value \" + value$ + \" cannot be cast to int\");\n");
+        enhancedPutMethod.append("      }\n");
         enhancedPutMethod.append("    } else {\n");
-        enhancedPutMethod.append("      ").append(fieldName).append(" = (java.lang.Integer)value$;\n");
+        enhancedPutMethod.append("      this.").append(fieldName).append(" = (java.lang.Integer)value$;\n");
+        enhancedPutMethod.append("    }\n");
+        enhancedPutMethod.append("    break;\n");
+      } else if ("int".equals(fieldType)) {
+        enhancedPutMethod.append("if (value$ instanceof java.lang.Long) {\n");
+        enhancedPutMethod.append("      if ((java.lang.Long)value$ <= Integer.MAX_VALUE && (java.lang.Long)value$ >= Integer.MIN_VALUE) {\n");
+        enhancedPutMethod.append("        this.").append(fieldName).append(" = (int) value$;\n");
+        enhancedPutMethod.append("      } else {\n");
+        enhancedPutMethod.append("        throw new org.apache.avro.AvroRuntimeException(\"Long value \" + value$ + \" cannot be cast to int\");\n");
+        enhancedPutMethod.append("      }\n");
+        enhancedPutMethod.append("    } else {\n");
+        enhancedPutMethod.append("      this.").append(fieldName).append(" = (int)value$;\n");
         enhancedPutMethod.append("    }\n");
         enhancedPutMethod.append("    break;\n");
       } else if ("java.lang.Long".equals(fieldType)) {
         enhancedPutMethod.append("if (value$ instanceof java.lang.Integer) {\n");
-        enhancedPutMethod.append("      ").append(fieldName).append(" = ((java.lang.Integer)value$).longValue();\n");
+        enhancedPutMethod.append("      this.").append(fieldName).append(" = ((java.lang.Integer)value$).longValue();\n");
         enhancedPutMethod.append("    } else {\n");
-        enhancedPutMethod.append("      ").append(fieldName).append(" = (java.lang.Long)value$;\n");
+        enhancedPutMethod.append("      this.").append(fieldName).append(" = (java.lang.Long)value$;\n");
+        enhancedPutMethod.append("    }\n");
+        enhancedPutMethod.append("    break;\n");
+      } else if ("long".equals(fieldType)) {
+        enhancedPutMethod.append("if (value$ instanceof java.lang.Integer) {\n");
+        enhancedPutMethod.append("      this.").append(fieldName).append(" = ((java.lang.Integer)value$).longValue();\n");
+        enhancedPutMethod.append("    } else {\n");
+        enhancedPutMethod.append("      this.").append(fieldName).append(" = (long)value$;\n");
         enhancedPutMethod.append("    }\n");
         enhancedPutMethod.append("    break;\n");
       } else {
@@ -999,83 +1020,137 @@ public class CodeTransformations {
     enhancedPutMethod.append("  default: throw new IndexOutOfBoundsException(\"Invalid index: \" + field$);\n");
     enhancedPutMethod.append("  }\n}");
 
-    // Replace the original put method with the enhanced one
+    // Replace the original put method with the enhanced version
     return code.substring(0, matcher.start()) + enhancedPutMethod + code.substring(matcher.end());
   }
 
   /**
-   * Enhances setter methods for int and long fields to allow cross-type assignments.
-   * This allows int fields to be set using long values and long fields to be set using int values.
-   * For int fields, a runtime check ensures the long value fits within the int range.
+   * Enhances setter methods for numeric types (int, long, Integer, Long) to allow cross-type assignments.
+   * This allows int/Integer fields to be set using long/Long values and long/Long fields to be set using int/Integer values.
+   * For int/Integer fields, a runtime check ensures the long/Long value fits within the int/Integer range.
    *
    * @param code generated code
    * @return transformed code with enhanced setter methods
    */
-  public static String enhanceNumericSetterMethods(String code) {
+  public static String addOverloadedNumericSetterMethods(String code) {
     if (code == null || code.isEmpty()) {
       return code;
     }
 
-    // First, identify all int and long fields in the class
+    // First, identify all numeric fields in the class (both primitive and boxed)
     Map<String, String> fieldTypes = new HashMap<>(); // fieldName -> type
 
-    // Pattern to match field declarations
-    Pattern fieldPattern = Pattern.compile("private\\s+(int|long)\\s+(\\w+)\\s*;");
-    Matcher fieldMatcher = fieldPattern.matcher(code);
+    // Pattern to match primitive field declarations
+    Pattern primitiveFieldPattern = Pattern.compile("private\\s+(int|long)\\s+(\\w+)\\s*;");
+    Matcher primitiveFieldMatcher = primitiveFieldPattern.matcher(code);
 
-    while (fieldMatcher.find()) {
-      String fieldType = fieldMatcher.group(1);
-      String fieldName = fieldMatcher.group(2);
+    while (primitiveFieldMatcher.find()) {
+      String fieldType = primitiveFieldMatcher.group(1);
+      String fieldName = primitiveFieldMatcher.group(2);
+      fieldTypes.put(fieldName, fieldType);
+    }
+
+    // Pattern to match boxed field declarations
+    Pattern boxedFieldPattern = Pattern.compile("private\\s+(java\\.lang\\.Integer|java\\.lang\\.Long)\\s+(\\w+)\\s*;");
+    Matcher boxedFieldMatcher = boxedFieldPattern.matcher(code);
+
+    while (boxedFieldMatcher.find()) {
+      String fieldType = boxedFieldMatcher.group(1);
+      String fieldName = boxedFieldMatcher.group(2);
       fieldTypes.put(fieldName, fieldType);
     }
 
     if (fieldTypes.isEmpty()) {
-      return code; // No int or long fields found
+      return code; // No numeric fields found
     }
+
+    StringBuilder result = new StringBuilder(code);
 
     // For each field, find and enhance its setter method
     for (Map.Entry<String, String> entry : fieldTypes.entrySet()) {
       String fieldName = entry.getKey();
       String fieldType = entry.getValue();
 
-      // Capitalize first letter of field name for method name
-      String capitalizedFieldName = Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
-      String setterName = "set" + capitalizedFieldName;
+      // Convert field name to method name (camelCase to PascalCase)
+      String methodName = "set" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
 
-      // Pattern to match the setter method
-      Pattern setterPattern = Pattern.compile(
-          "public\\s+void\\s+" + setterName + "\\s*\\(\\s*" + fieldType + "\\s+\\w+\\s*\\)\\s*\\{[^}]+\\}"
-      );
+      // Pattern to match the setter method - handle both primitive and boxed types
+      Pattern setterPattern;
+      if ("int".equals(fieldType) || "long".equals(fieldType)) {
+        setterPattern = Pattern.compile(
+            "public\\s+void\\s+" + methodName + "\\s*\\(\\s*" + fieldType + "\\s+\\w+\\s*\\)\\s*\\{[^}]+\\}"
+        );
+      } else {
+        setterPattern = Pattern.compile(
+            "public\\s+void\\s+" + methodName + "\\s*\\(\\s*" + fieldType + "\\s+value\\s*\\)\\s*\\{\\s*" +
+            "this\\." + fieldName + "\\s*=\\s*value;\\s*" +
+            "\\}"
+        );
+      }
 
-      Matcher setterMatcher = setterPattern.matcher(code);
+      Matcher setterMatcher = setterPattern.matcher(result);
 
       if (setterMatcher.find()) {
-        String originalSetter = setterMatcher.group(0);
-        String overloadedSetter;
+        StringBuilder enhancedSetter = new StringBuilder();
 
         if ("int".equals(fieldType)) {
-          // Create an overloaded setter that accepts long for int field
-          overloadedSetter =
-              "public void " + setterName + "(long value) {\n" +
-              "    if (value <= Integer.MAX_VALUE && value >= Integer.MIN_VALUE) {\n" +
-              "      this." + fieldName + " = (int) value;\n" +
-              "    } else {\n" +
-              "      throw new org.apache.avro.AvroRuntimeException(\"Long value \" + value + \" cannot be cast to int\");\n" +
-              "    }\n" +
-              "  }";
-        } else { // long field
-          // Create an overloaded setter that accepts int for long field
-          overloadedSetter =
-              "public void " + setterName + "(int value) {\n" +
-              "    this." + fieldName + " = value;\n" +
-              "  }";
+          // For int fields, add an overloaded setter that accepts long with bounds checking
+          enhancedSetter.append("    public void ").append(methodName).append("(long value) {\n");
+          enhancedSetter.append("        if (value <= Integer.MAX_VALUE && value >= Integer.MIN_VALUE) {\n");
+          enhancedSetter.append("            this.").append(fieldName).append(" = (int) value;\n");
+          enhancedSetter.append("        } else {\n");
+          enhancedSetter.append("            throw new org.apache.avro.AvroRuntimeException(\"Long value \" + value + \" cannot be cast to int\");\n");
+          enhancedSetter.append("        }\n");
+          enhancedSetter.append("    }\n\n");
+
+          enhancedSetter.append("    public void ").append(methodName).append("(int value) {\n");
+          enhancedSetter.append("        this.").append(fieldName).append(" = value;\n");
+          enhancedSetter.append("    }\n\n");
+        } else if ("long".equals(fieldType)) {
+          // For long fields, add an overloaded setter that accepts int
+          enhancedSetter.append("    public void ").append(methodName).append("(long value) {\n");
+          enhancedSetter.append("        this.").append(fieldName).append(" = value;\n");
+          enhancedSetter.append("    }\n\n");
+
+          enhancedSetter.append("    public void ").append(methodName).append("(int value) {\n");
+          enhancedSetter.append("        this.").append(fieldName).append(" = value;\n");
+          enhancedSetter.append("    }\n\n");
+        } else if ("java.lang.Integer".equals(fieldType)) {
+          // For Integer fields, add an overloaded setter that accepts Long with bounds checking
+          enhancedSetter.append("    public void ").append(methodName).append("(java.lang.Integer value) {\n");
+          enhancedSetter.append("        this.").append(fieldName).append(" = value;\n");
+          enhancedSetter.append("    }\n\n");
+
+          enhancedSetter.append("    public void ").append(methodName).append("(java.lang.Long value) {\n");
+          enhancedSetter.append("        if (value == null) {\n");
+          enhancedSetter.append("            this.").append(fieldName).append(" = null;\n");
+          enhancedSetter.append("        } else if (value <= Integer.MAX_VALUE && value >= Integer.MIN_VALUE) {\n");
+          enhancedSetter.append("            this.").append(fieldName).append(" = value.intValue();\n");
+          enhancedSetter.append("        } else {\n");
+          enhancedSetter.append("            throw new org.apache.avro.AvroRuntimeException(\"Long value \" + value + \" cannot be cast to Integer\");\n");
+          enhancedSetter.append("        }\n");
+          enhancedSetter.append("    }\n\n");
+        } else { // java.lang.Long
+          // For Long fields, add an overloaded setter that accepts Integer
+          enhancedSetter.append("    public void ").append(methodName).append("(java.lang.Long value) {\n");
+          enhancedSetter.append("        this.").append(fieldName).append(" = value;\n");
+          enhancedSetter.append("    }\n\n");
+
+          enhancedSetter.append("    public void ").append(methodName).append("(java.lang.Integer value) {\n");
+          enhancedSetter.append("        if (value == null) {\n");
+          enhancedSetter.append("            this.").append(fieldName).append(" = null;\n");
+          enhancedSetter.append("        } else {\n");
+          enhancedSetter.append("            this.").append(fieldName).append(" = value.longValue();\n");
+          enhancedSetter.append("        }\n");
+          enhancedSetter.append("    }\n\n");
         }
 
-        // Add the overloaded setter after the original setter
-        code = code.replace(originalSetter, originalSetter + "\n\n  " + overloadedSetter);
+        // Replace the original setter with the enhanced version
+        result.replace(setterMatcher.start(), setterMatcher.end(), enhancedSetter.toString());
       }
     }
-    return code;
+
+    return result.toString();
   }
 
   private static String addImports(String code, Collection<String> importStatements) {
