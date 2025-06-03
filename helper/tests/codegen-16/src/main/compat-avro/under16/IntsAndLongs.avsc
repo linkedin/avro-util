@@ -10,6 +10,16 @@
     {
       "name": "intField",
       "type": "int"
+    },
+    {
+      "name": "boxedLongField",
+      "type": ["null", "long"],
+      "default": null
+    },
+    {
+      "name": "boxedIntField",
+      "type": ["null", "int"],
+      "default": null
     }
   ]
 }
