@@ -1076,23 +1076,23 @@ public class CodeTransformations {
     // First, identify all numeric fields in the class (both primitive and boxed)
     Map<String, String> fieldTypes = new HashMap<>(); // fieldName -> type
 
-    // Pattern to match primitive field declarations
-    Pattern primitiveFieldPattern = Pattern.compile("private\\s+(int|long)\\s+(\\w+)\\s*;");
+    // Pattern to match primitive field declarations - both public and private
+    Pattern primitiveFieldPattern = Pattern.compile("(public|private)\\s+(int|long)\\s+(\\w+)\\s*;");
     Matcher primitiveFieldMatcher = primitiveFieldPattern.matcher(code);
 
     while (primitiveFieldMatcher.find()) {
-      String fieldType = primitiveFieldMatcher.group(1);
-      String fieldName = primitiveFieldMatcher.group(2);
+      String fieldType = primitiveFieldMatcher.group(2);
+      String fieldName = primitiveFieldMatcher.group(3);
       fieldTypes.put(fieldName, fieldType);
     }
 
     // Pattern to match boxed field declarations
-    Pattern boxedFieldPattern = Pattern.compile("private\\s+(java\\.lang\\.Integer|java\\.lang\\.Long)\\s+(\\w+)\\s*;");
+    Pattern boxedFieldPattern = Pattern.compile("(public|private)\\s+(java\\.lang\\.Integer|java\\.lang\\.Long)\\s+(\\w+)\\s*;");
     Matcher boxedFieldMatcher = boxedFieldPattern.matcher(code);
 
     while (boxedFieldMatcher.find()) {
-      String fieldType = boxedFieldMatcher.group(1);
-      String fieldName = boxedFieldMatcher.group(2);
+      String fieldType = boxedFieldMatcher.group(2);
+      String fieldName = boxedFieldMatcher.group(3);
       fieldTypes.put(fieldName, fieldType);
     }
 
@@ -1101,8 +1101,7 @@ public class CodeTransformations {
     }
 
     StringBuilder result = new StringBuilder(code);
-    int insertOffset = 0; // Track the offset as we insert new methods
-
+    
     // For each field, find its setter method and add an overloaded version
     for (Map.Entry<String, String> entry : fieldTypes.entrySet()) {
       String fieldName = entry.getKey();
@@ -1110,92 +1109,109 @@ public class CodeTransformations {
 
       // Convert field name to method name (camelCase to PascalCase)
       String methodName = "set" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+      
+      // Find the position of the existing setter method
+      String setterSignature = "public void " + methodName + "(" + fieldType + " ";
+      int setterStart = code.indexOf(setterSignature);
+      
+      if (setterStart == -1) {
+        continue; // Setter not found
+      }
+      
+      // Find the end of the setter method (closing brace)
+      int braceCount = 1;
+      int setterEnd = code.indexOf("{", setterStart);
+      if (setterEnd == -1) continue;
+      
+      setterEnd++;
+      while (setterEnd < code.length() && braceCount > 0) {
+        char c = code.charAt(setterEnd);
+        if (c == '{') braceCount++;
+        else if (c == '}') braceCount--;
+        setterEnd++;
+      }
+      
+      if (braceCount != 0) continue; // Couldn't find proper end of method
+      
+      StringBuilder overloadedSetter = new StringBuilder();
 
-      // Pattern to match the setter method - handle both primitive and boxed types
-      Pattern setterPattern;
-      if ("int".equals(fieldType) || "long".equals(fieldType)) {
-        setterPattern = Pattern.compile(
-            "public\\s+void\\s+" + methodName + "\\s*\\(\\s*" + fieldType + "\\s+\\w+\\s*\\)\\s*\\{[^}]+\\}"
-        );
-      } else {
-        setterPattern = Pattern.compile(
-            "public\\s+void\\s+" + methodName + "\\s*\\(\\s*" + fieldType + "\\s+value\\s*\\)\\s*\\{\\s*" +
-                "this\\." + fieldName + "\\s*=\\s*value;\\s*" +
-                "\\}"
-        );
+      // Add the appropriate overloaded setter based on field type
+      if ("int".equals(fieldType)) {
+        // For int fields, add an overloaded setter that accepts long with bounds checking
+        overloadedSetter.append("\n\n    /**\n");
+        overloadedSetter.append("     * Sets ").append(fieldName).append(" to the specified value.\n");
+        overloadedSetter.append("     * Accepts a long value and converts it to int with bounds checking.\n");
+        overloadedSetter.append("     * @param value The long value to set\n");
+        overloadedSetter.append("     * @throws org.apache.avro.AvroRuntimeException if the value is outside the int range\n");
+        overloadedSetter.append("     */\n");
+        overloadedSetter.append("    public void ").append(methodName).append("(long value) {\n");
+        overloadedSetter.append("        if (value <= Integer.MAX_VALUE && value >= Integer.MIN_VALUE) {\n");
+        overloadedSetter.append("            this.").append(fieldName).append(" = (int) value;\n");
+        overloadedSetter.append("        } else {\n");
+        overloadedSetter.append("            throw new org.apache.avro.AvroRuntimeException(\"Long value \" + value + \" cannot be cast to int\");\n");
+        overloadedSetter.append("        }\n");
+        overloadedSetter.append("    }");
+      } else if ("long".equals(fieldType)) {
+        // For long fields, add an overloaded setter that accepts int
+        overloadedSetter.append("\n\n    /**\n");
+        overloadedSetter.append("     * Sets ").append(fieldName).append(" to the specified value.\n");
+        overloadedSetter.append("     * Accepts an int value and converts it to long.\n");
+        overloadedSetter.append("     * @param value The int value to set\n");
+        overloadedSetter.append("     */\n");
+        overloadedSetter.append("    public void ").append(methodName).append("(int value) {\n");
+        overloadedSetter.append("        this.").append(fieldName).append(" = value;\n");
+        overloadedSetter.append("    }");
+      } else if (JAVA_LANG_INTEGER.equals(fieldType)) {
+        // For Integer fields, add an overloaded setter that accepts Long with bounds checking
+        overloadedSetter.append("\n\n    /**\n");
+        overloadedSetter.append("     * Sets ").append(fieldName).append(" to the specified value.\n");
+        overloadedSetter.append("     * Accepts a Long value and converts it to Integer with bounds checking.\n");
+        overloadedSetter.append("     * @param value The Long value to set\n");
+        overloadedSetter.append("     * @throws org.apache.avro.AvroRuntimeException if the value is outside the Integer range\n");
+        overloadedSetter.append("     */\n");
+        overloadedSetter.append("    public void ").append(methodName).append("(java.lang.Long value) {\n");
+        overloadedSetter.append("        if (value == null) {\n");
+        overloadedSetter.append("            this.").append(fieldName).append(" = null;\n");
+        overloadedSetter.append("        } else if (value <= Integer.MAX_VALUE && value >= Integer.MIN_VALUE) {\n");
+        overloadedSetter.append("            this.").append(fieldName).append(" = value.intValue();\n");
+        overloadedSetter.append("        } else {\n");
+        overloadedSetter.append("            throw new org.apache.avro.AvroRuntimeException(\"Long value \" + value + \" cannot be cast to Integer\");\n");
+        overloadedSetter.append("        }\n");
+        overloadedSetter.append("    }");
+      } else if (JAVA_LANG_LONG.equals(fieldType)) {
+        // For Long fields, add an overloaded setter that accepts Integer
+        overloadedSetter.append("\n\n    /**\n");
+        overloadedSetter.append("     * Sets ").append(fieldName).append(" to the specified value.\n");
+        overloadedSetter.append("     * Accepts an Integer value and converts it to Long.\n");
+        overloadedSetter.append("     * @param value The Integer value to set\n");
+        overloadedSetter.append("     */\n");
+        overloadedSetter.append("    public void ").append(methodName).append("(java.lang.Integer value) {\n");
+        overloadedSetter.append("        if (value == null) {\n");
+        overloadedSetter.append("            this.").append(fieldName).append(" = null;\n");
+        overloadedSetter.append("        } else {\n");
+        overloadedSetter.append("            this.").append(fieldName).append(" = value.longValue();\n");
+        overloadedSetter.append("        }\n");
+        overloadedSetter.append("    }");
       }
 
-      Matcher setterMatcher = setterPattern.matcher(result);
-
-      // Find the existing setter method
-      if (setterMatcher.find(insertOffset)) {
-        int setterEnd = setterMatcher.end();
-        StringBuilder overloadedSetter = new StringBuilder();
-
-        // Add the appropriate overloaded setter based on field type
-        if ("int".equals(fieldType)) {
-          // For int fields, add an overloaded setter that accepts long with bounds checking
-          overloadedSetter.append("\n\n    /**\n");
-          overloadedSetter.append("     * Sets ").append(fieldName).append(" to the specified value.\n");
-          overloadedSetter.append("     * Accepts a long value and converts it to int with bounds checking.\n");
-          overloadedSetter.append("     * @param value The long value to set\n");
-          overloadedSetter.append("     * @throws org.apache.avro.AvroRuntimeException if the value is outside the int range\n");
-          overloadedSetter.append("     */\n");
-          overloadedSetter.append("    public void ").append(methodName).append("(long value) {\n");
-          overloadedSetter.append("        if (value <= Integer.MAX_VALUE && value >= Integer.MIN_VALUE) {\n");
-          overloadedSetter.append("            this.").append(fieldName).append(" = (int) value;\n");
-          overloadedSetter.append("        } else {\n");
-          overloadedSetter.append("            throw new org.apache.avro.AvroRuntimeException(\"Long value \" + value + \" cannot be cast to int\");\n");
-          overloadedSetter.append("        }\n");
-          overloadedSetter.append("    }");
-        } else if ("long".equals(fieldType)) {
-          // For long fields, add an overloaded setter that accepts int
-          overloadedSetter.append("\n\n    /**\n");
-          overloadedSetter.append("     * Sets ").append(fieldName).append(" to the specified value.\n");
-          overloadedSetter.append("     * Accepts an int value and converts it to long.\n");
-          overloadedSetter.append("     * @param value The int value to set\n");
-          overloadedSetter.append("     */\n");
-          overloadedSetter.append("    public void ").append(methodName).append("(int value) {\n");
-          overloadedSetter.append("        this.").append(fieldName).append(" = value;\n");
-          overloadedSetter.append("    }");
-        } else if (JAVA_LANG_INTEGER.equals(fieldType)) {
-          // For Integer fields, add an overloaded setter that accepts Long with bounds checking
-          overloadedSetter.append("\n\n    /**\n");
-          overloadedSetter.append("     * Sets ").append(fieldName).append(" to the specified value.\n");
-          overloadedSetter.append("     * Accepts a Long value and converts it to Integer with bounds checking.\n");
-          overloadedSetter.append("     * @param value The Long value to set\n");
-          overloadedSetter.append("     * @throws org.apache.avro.AvroRuntimeException if the value is outside the Integer range\n");
-          overloadedSetter.append("     */\n");
-          overloadedSetter.append("    public void ").append(methodName).append("(java.lang.Long value) {\n");
-          overloadedSetter.append("        if (value == null) {\n");
-          overloadedSetter.append("            this.").append(fieldName).append(" = null;\n");
-          overloadedSetter.append("        } else if (value <= Integer.MAX_VALUE && value >= Integer.MIN_VALUE) {\n");
-          overloadedSetter.append("            this.").append(fieldName).append(" = value.intValue();\n");
-          overloadedSetter.append("        } else {\n");
-          overloadedSetter.append("            throw new org.apache.avro.AvroRuntimeException(\"Long value \" + value + \" cannot be cast to Integer\");\n");
-          overloadedSetter.append("        }\n");
-          overloadedSetter.append("    }");
-        } else if (JAVA_LANG_LONG.equals(fieldType)) {
-          // For Long fields, add an overloaded setter that accepts Integer
-          overloadedSetter.append("\n\n    /**\n");
-          overloadedSetter.append("     * Sets ").append(fieldName).append(" to the specified value.\n");
-          overloadedSetter.append("     * Accepts an Integer value and converts it to Long.\n");
-          overloadedSetter.append("     * @param value The Integer value to set\n");
-          overloadedSetter.append("     */\n");
-          overloadedSetter.append("    public void ").append(methodName).append("(java.lang.Integer value) {\n");
-          overloadedSetter.append("        if (value == null) {\n");
-          overloadedSetter.append("            this.").append(fieldName).append(" = null;\n");
-          overloadedSetter.append("        } else {\n");
-          overloadedSetter.append("            this.").append(fieldName).append(" = value.longValue();\n");
-          overloadedSetter.append("        }\n");
-          overloadedSetter.append("    }");
-        }
-
+      // Check if the overloaded method already exists in the code
+      String overloadSignature = null;
+      if ("int".equals(fieldType)) {
+        overloadSignature = "public void " + methodName + "(long ";
+      } else if ("long".equals(fieldType)) {
+        overloadSignature = "public void " + methodName + "(int ";
+      } else if (JAVA_LANG_INTEGER.equals(fieldType)) {
+        overloadSignature = "public void " + methodName + "(java.lang.Long ";
+      } else if (JAVA_LANG_LONG.equals(fieldType)) {
+        overloadSignature = "public void " + methodName + "(java.lang.Integer ";
+      }
+      
+      // Only add if it doesn't already exist
+      if (overloadSignature != null && !code.contains(overloadSignature)) {
         // Insert the overloaded setter after the existing setter
-        if (overloadedSetter.length() > 0) {
-          result.insert(setterEnd, overloadedSetter);
-          insertOffset = setterEnd + overloadedSetter.length();
-        }
+        result.insert(setterEnd, overloadedSetter);
+        // Update the code string for subsequent searches
+        code = result.toString();
       }
     }
 
