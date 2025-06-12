@@ -1061,7 +1061,7 @@ public class CodeTransformations {
   /**
    * Adds overloaded setter methods for numeric fields to allow setting Integer fields with Long values
    * and Long fields with Integer values. This improves type compatibility when working with numeric fields.
-   * This method preserves existing setter methods and only adds the overloaded versions.
+   * This method identifies existing setter methods and adds appropriate overloaded versions in a single pass.
    *
    * @param code generated code
    * @return transformed code with overloaded numeric setter methods
@@ -1071,78 +1071,57 @@ public class CodeTransformations {
       return code;
     }
 
-    // First, identify all numeric fields in the class (both primitive and boxed)
-    Map<String, String> fieldTypes = new HashMap<>(); // fieldName -> type
-
-    // Pattern to match primitive field declarations - both public and private
-    Pattern primitiveFieldPattern = Pattern.compile("(public|private)\\s+(int|long)\\s+(\\w+)\\s*;");
-    Matcher primitiveFieldMatcher = primitiveFieldPattern.matcher(code);
-
-    while (primitiveFieldMatcher.find()) {
-      String fieldType = primitiveFieldMatcher.group(2);
-      String fieldName = primitiveFieldMatcher.group(3);
-      fieldTypes.put(fieldName, fieldType);
-    }
-
-    // Pattern to match boxed field declarations
-    Pattern boxedFieldPattern = Pattern.compile("(public|private)\\s+(java\\.lang\\.Integer|java\\.lang\\.Long)\\s+(\\w+)\\s*;");
-    Matcher boxedFieldMatcher = boxedFieldPattern.matcher(code);
-
-    while (boxedFieldMatcher.find()) {
-      String fieldType = boxedFieldMatcher.group(2);
-      String fieldName = boxedFieldMatcher.group(3);
-      fieldTypes.put(fieldName, fieldType);
-    }
-
-    if (fieldTypes.isEmpty()) {
-      return code; // No numeric fields found
-    }
-
     StringBuilder result = new StringBuilder(code);
-
-    // For each field, find its setter method and add an overloaded version
-    for (Map.Entry<String, String> entry : fieldTypes.entrySet()) {
-      String fieldName = entry.getKey();
-      String fieldType = entry.getValue();
-
-      // Convert field name to method name (camelCase to PascalCase)
-      String methodName = "set" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
-
-      // Find the position of the existing setter method
-      String setterSignature = "public void " + methodName + "(" + fieldType + " ";
-      int setterStart = code.indexOf(setterSignature);
-
-      if (setterStart == -1) {
-        continue; // Setter not found
-      }
-
-      // Find the end of the setter method using the helper method
-      int setterBodyStart = code.indexOf("{", setterStart);
-      if (setterBodyStart == -1) continue;
+    
+    // Unified pattern to match all numeric setter methods in a single pass
+        Pattern numericSetterPattern = Pattern.compile(
+        "public\\s+void\\s+(set\\w+)\\s*\\(\\s*(int|long|java\\.lang\\.Integer|java\\.lang\\.Long)\\s+([\\w$]+)\\s*\\)\\s*\\{");
+    Matcher numericSetterMatcher = numericSetterPattern.matcher(code);
+    
+    // Track positions to insert overloaded methods
+    // Use a map of position -> insertion text to collect all insertions
+    Map<Integer, String> insertions = new HashMap<>();
+    
+    // Process all numeric setters in a single pass
+    while (numericSetterMatcher.find()) {
+      String methodName = numericSetterMatcher.group(1);
+      String paramType = numericSetterMatcher.group(2);
       
-      int setterEnd = CodeTransformationUtils.findEndOfBlock(code, setterBodyStart);
-      if (setterEnd == -1) continue; // Couldn't find proper end of method
-
-      // Generate the overloaded setter using the utility method
-      StringBuilder overloadedSetter = CodeTransformationUtils.generateOverloadedSetter(
-          methodName, fieldName, fieldType, false, null);
-
-      if (overloadedSetter.length() == 0) {
-        continue;  // Not a numeric type we handle
+      // Derive the field name from the method name instead of parameter name
+      // Convert "setFieldName" to "fieldName" (remove "set" prefix and lowercase first char)
+      String fieldName = methodName.substring(3, 4).toLowerCase() + methodName.substring(4);
+      
+      // Find the end of the setter method
+      int methodBodyStart = code.indexOf("{", numericSetterMatcher.start());
+      if (methodBodyStart == -1) continue;
+      
+      int methodEnd = CodeTransformationUtils.findEndOfBlock(code, methodBodyStart);
+      if (methodEnd == -1) continue;
+      
+      // Determine if we need to generate an overload based on the parameter type
+      String overloadSignature = CodeTransformationUtils.determineOverloadSignature(paramType, methodName);
+      
+      // Skip if no overload is needed or if this overload already exists
+      if (overloadSignature == null || code.contains(overloadSignature)) {
+        continue;
       }
-
-      // Check if the overloaded method already exists in the code
-      String overloadSignature = CodeTransformationUtils.determineOverloadSignature(fieldType, methodName);
-
-      // Only add if it doesn't already exist
-      if (overloadSignature != null && !code.contains(overloadSignature)) {
-        // Insert the overloaded setter after the existing setter
-        result.insert(setterEnd, overloadedSetter);
-        // Update the code string for subsequent searches
-        code = result.toString();
-      }
+      
+      // Generate the complete overloaded setter method
+      StringBuilder overload = CodeTransformationUtils.generateOverloadedSetter(
+          methodName, fieldName, paramType, false, null);
+      
+      // Schedule the insertion
+      insertions.put(methodEnd, overload.toString());
     }
-
+    
+    // Apply all insertions in reverse order to maintain correct positions
+    List<Integer> positions = new ArrayList<>(insertions.keySet());
+    Collections.sort(positions, Collections.reverseOrder());
+    
+    for (int position : positions) {
+      result.insert(position, insertions.get(position));
+    }
+    
     return result.toString();
   }
 
@@ -1375,7 +1354,7 @@ public class CodeTransformations {
       }
 
       pos++;
-    }
+           }
 
     // Process the last parameter
     if (startPos < len) {
@@ -1479,7 +1458,7 @@ public class CodeTransformations {
     while (builderSetterMatcher.find()) {
       String methodName = builderSetterMatcher.group(1);
       String paramType = builderSetterMatcher.group(2);
-      String paramName = builderSetterMatcher.group(3);
+      String fieldName = builderSetterMatcher.group(3);
 
       // Only process methods that start with "set"
       if (!methodName.startsWith("set")) {
@@ -1499,7 +1478,7 @@ public class CodeTransformations {
 
       // Generate the overloaded setter using the utility method
       StringBuilder overloadedSetter = CodeTransformationUtils.generateOverloadedSetter(
-          methodName, paramName, paramType, true, builderReturnType);
+          methodName, fieldName, paramType, true, builderReturnType);
 
       if (overloadedSetter.length() == 0) {
         continue;  // Not a numeric type we handle

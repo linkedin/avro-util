@@ -16,7 +16,7 @@ public class CodeTransformationUtils {
      */
     public static final String JAVA_LANG_INTEGER = "java.lang.Integer";
     public static final String JAVA_LANG_LONG = "java.lang.Long";
-    
+
     /**
      * Finds the index position of the end of a code block by counting braces.
      * Used to find the end of methods, classes, etc.
@@ -29,7 +29,7 @@ public class CodeTransformationUtils {
         if (startPosition < 0 || startPosition >= code.length()) {
             return -1; // Invalid start position
         }
-        
+
         // If we're not starting at a brace, find the first opening brace
         int position = startPosition;
         if (code.charAt(position) != '{') {
@@ -38,10 +38,10 @@ public class CodeTransformationUtils {
                 return -1; // No opening brace found
             }
         }
-        
+
         // Start counting from after the opening brace
         position++;
-        
+
         int braceCount = 1; // We've already seen the opening brace
         while (position < code.length() && braceCount > 0) {
             char c = code.charAt(position);
@@ -52,11 +52,11 @@ public class CodeTransformationUtils {
             }
             position++;
         }
-        
+
         // If brace count is not 0, we didn't find the matching closing brace
         return braceCount == 0 ? position : -1;
     }
-    
+
     /**
      * Generates Javadoc for an overloaded numeric setter method or builder setter method.
      *
@@ -69,7 +69,7 @@ public class CodeTransformationUtils {
     public static StringBuilder generateNumericConversionJavadoc(String fieldName, String sourceType, String targetType, boolean isBuilderMethod) {
         StringBuilder javadoc = new StringBuilder("\n\n    /**\n");
         javadoc.append("     * Sets ").append(fieldName).append(" to the specified value.\n");
-        
+
         // Add description based on source and target types
         if ("int".equals(sourceType) || JAVA_LANG_INTEGER.equals(sourceType)) {
             javadoc.append("     * Accepts an ");
@@ -84,30 +84,30 @@ public class CodeTransformationUtils {
             javadoc.append("int".equals(targetType) ? "int" : "Integer");
             javadoc.append(" with bounds checking.\n");
         }
-        
+
         // Add parameter description
         javadoc.append("     * @param value The ");
-        javadoc.append("int".equals(sourceType) ? "int" : 
-                       "long".equals(sourceType) ? "long" : 
+        javadoc.append("int".equals(sourceType) ? "int" :
+                       "long".equals(sourceType) ? "long" :
                        JAVA_LANG_INTEGER.equals(sourceType) ? "Integer" : "Long");
         javadoc.append(" value to set\n");
-        
+
         // Add return value description for builder methods
         if (isBuilderMethod) {
             javadoc.append("     * @return This builder\n");
         }
-        
+
         // Add exception for bounds checking (int/Integer target types)
         if ("int".equals(targetType) || JAVA_LANG_INTEGER.equals(targetType)) {
             javadoc.append("     * @throws org.apache.avro.AvroRuntimeException if the value is outside the ");
             javadoc.append("int".equals(targetType) ? "int" : "Integer");
             javadoc.append(" range\n");
         }
-        
+
         javadoc.append("     */\n");
         return javadoc;
     }
-    
+
     /**
      * Generates the method signature for an overloaded numeric setter or builder setter.
      *
@@ -126,29 +126,29 @@ public class CodeTransformationUtils {
                 .append(paramName).append(") {\n");
         return signature;
     }
-    
+
     /**
      * Generates code for converting between numeric types with appropriate bounds checking and null handling.
-     * 
-     * @param fieldName The field name to set
+     *
      * @param sourceType The source type parameter (e.g., "long", "java.lang.Long")
      * @param targetType The target type field (e.g., "int", "java.lang.Integer")
      * @param isBuilderMethod Whether this is for a builder method (returns the builder) or regular setter
+     * @param methodName The name of the original setter method (used for delegating to original setter)
      * @param builderMethodName For builder methods, the name of the method to return to (usually same as methodName)
      * @return StringBuilder containing the generated method body without the closing brace
      */
     public static StringBuilder generateNumericConversionCode(
-            String fieldName, String sourceType, String targetType, 
-            boolean isBuilderMethod, String builderMethodName) {
+            String sourceType, String targetType,
+            boolean isBuilderMethod, String methodName, String builderMethodName) {
         StringBuilder code = new StringBuilder();
-        
+
         if ("int".equals(targetType) && "long".equals(sourceType)) {
             // Convert long to int with bounds check
             code.append("        if (value <= Integer.MAX_VALUE && value >= Integer.MIN_VALUE) {\n");
             if (isBuilderMethod) {
                 code.append("            return ").append(builderMethodName).append("((int) value);\n");
             } else {
-                code.append("            this.").append(fieldName).append(" = (int) value;\n");
+                code.append("            ").append(methodName).append("((int) value);\n");
             }
             code.append("        } else {\n");
             code.append("            throw new org.apache.avro.AvroRuntimeException(\"Long value \" + value + \" cannot be cast to int\");\n");
@@ -158,7 +158,7 @@ public class CodeTransformationUtils {
             if (isBuilderMethod) {
                 code.append("        return ").append(builderMethodName).append("((long) value);");
             } else {
-                code.append("        this.").append(fieldName).append(" = (long) value;");
+                code.append("        ").append(methodName).append("((long) value);");
             }
         } else if (JAVA_LANG_INTEGER.equals(targetType) && JAVA_LANG_LONG.equals(sourceType)) {
             // Convert Long to Integer with bounds check and null handling
@@ -166,13 +166,13 @@ public class CodeTransformationUtils {
             if (isBuilderMethod) {
                 code.append("            return ").append(builderMethodName).append("((").append(JAVA_LANG_INTEGER).append(") null);\n");
             } else {
-                code.append("            this.").append(fieldName).append(" = null;\n");
+                code.append("            ").append(methodName).append("((").append(JAVA_LANG_INTEGER).append(") null);\n");
             }
             code.append("        } else if (value <= Integer.MAX_VALUE && value >= Integer.MIN_VALUE) {\n");
             if (isBuilderMethod) {
                 code.append("            return ").append(builderMethodName).append("(value.intValue());\n");
             } else {
-                code.append("            this.").append(fieldName).append(" = value.intValue();\n");
+                code.append("            ").append(methodName).append("(value.intValue());\n");
             }
             code.append("        } else {\n");
             code.append("            throw new org.apache.avro.AvroRuntimeException(\"Long value \" + value + \" cannot be cast to Integer\");\n");
@@ -183,23 +183,23 @@ public class CodeTransformationUtils {
             if (isBuilderMethod) {
                 code.append("            return ").append(builderMethodName).append("((").append(JAVA_LANG_LONG).append(") null);\n");
             } else {
-                code.append("            this.").append(fieldName).append(" = null;\n");
+                code.append("            ").append(methodName).append("((").append(JAVA_LANG_LONG).append(") null);\n");
             }
             code.append("        } else {\n");
             if (isBuilderMethod) {
                 code.append("            return ").append(builderMethodName).append("(value.longValue());\n");
             } else {
-                code.append("            this.").append(fieldName).append(" = value.longValue();\n");
+                code.append("            ").append(methodName).append("(value.longValue());\n");
             }
             code.append("        }");
         }
-        
+
         return code;
     }
-    
+
     /**
      * Determines the appropriate overloaded method signature for a given field type.
-     * 
+     *
      * @param fieldType The type of the field (e.g., "int", "java.lang.Integer")
      * @param methodName The setter method name
      * @return The signature of the overloaded method, or null if no overloaded method is needed
@@ -217,7 +217,7 @@ public class CodeTransformationUtils {
         }
         return overloadSignature;
     }
-    
+
     /**
      * Generates the complete code for an overloaded setter method with proper type conversion.
      *
@@ -231,12 +231,12 @@ public class CodeTransformationUtils {
     public static StringBuilder generateOverloadedSetter(
             String methodName, String fieldName, String fieldType,
             boolean isBuilderMethod, String builderReturnType) {
-        
+
         StringBuilder overloadedSetter = new StringBuilder();
         String returnType = isBuilderMethod ? builderReturnType : "void";
         String sourceType;
         String targetType = fieldType;
-        
+
         // Determine the appropriate source type based on the target field type
         if ("int".equals(fieldType)) {
             sourceType = "long";
@@ -249,19 +249,19 @@ public class CodeTransformationUtils {
         } else {
             return overloadedSetter; // Empty if not a numeric type we handle
         }
-        
+
         // Generate the method Javadoc
         overloadedSetter.append(generateNumericConversionJavadoc(fieldName, sourceType, targetType, isBuilderMethod));
-        
+
         // Generate the method signature
         overloadedSetter.append(generateNumericMethodSignature(methodName, sourceType, "value", returnType));
-        
-        // Generate the conversion code
-        overloadedSetter.append(generateNumericConversionCode(fieldName, sourceType, targetType, isBuilderMethod, methodName));
-        
+
+        // Generate the conversion code - pass methodName as both the setter method name and builder method name
+        overloadedSetter.append(generateNumericConversionCode(sourceType, targetType, isBuilderMethod, methodName, methodName));
+
         // Close the method
         overloadedSetter.append("\n    }");
-        
+
         return overloadedSetter;
     }
 }
