@@ -154,6 +154,7 @@ public class CodeTransformations {
       fixed = CodeTransformations.removeReferencesToNewClassesFromBuilders(fixed, generatedBy, minSupportedVersion, maxSupportedVersion);
     }
 
+    fixed = CodeTransformations.addOverloadedNumericBuilderSetterMethods(fixed);
     //1.7+ features
     //this is considered harmless enough we can keep doing it?
     fixed = CodeTransformations.removeAvroGeneratedAnnotation(fixed, minSupportedVersion, maxSupportedVersion);
@@ -1101,7 +1102,7 @@ public class CodeTransformations {
     }
 
     StringBuilder result = new StringBuilder(code);
-    
+
     // For each field, find its setter method and add an overloaded version
     for (Map.Entry<String, String> entry : fieldTypes.entrySet()) {
       String fieldName = entry.getKey();
@@ -1109,20 +1110,20 @@ public class CodeTransformations {
 
       // Convert field name to method name (camelCase to PascalCase)
       String methodName = "set" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
-      
+
       // Find the position of the existing setter method
       String setterSignature = "public void " + methodName + "(" + fieldType + " ";
       int setterStart = code.indexOf(setterSignature);
-      
+
       if (setterStart == -1) {
         continue; // Setter not found
       }
-      
+
       // Find the end of the setter method (closing brace)
       int braceCount = 1;
       int setterEnd = code.indexOf("{", setterStart);
       if (setterEnd == -1) continue;
-      
+
       setterEnd++;
       while (setterEnd < code.length() && braceCount > 0) {
         char c = code.charAt(setterEnd);
@@ -1130,9 +1131,9 @@ public class CodeTransformations {
         else if (c == '}') braceCount--;
         setterEnd++;
       }
-      
+
       if (braceCount != 0) continue; // Couldn't find proper end of method
-      
+
       StringBuilder overloadedSetter = new StringBuilder();
 
       // Add the appropriate overloaded setter based on field type
@@ -1159,7 +1160,7 @@ public class CodeTransformations {
         overloadedSetter.append("     * @param value The int value to set\n");
         overloadedSetter.append("     */\n");
         overloadedSetter.append("    public void ").append(methodName).append("(int value) {\n");
-        overloadedSetter.append("        this.").append(fieldName).append(" = value;\n");
+        overloadedSetter.append("        this.").append(fieldName).append(" = (long) value;\n");
         overloadedSetter.append("    }");
       } else if (JAVA_LANG_INTEGER.equals(fieldType)) {
         // For Integer fields, add an overloaded setter that accepts Long with bounds checking
@@ -1205,7 +1206,7 @@ public class CodeTransformations {
       } else if (JAVA_LANG_LONG.equals(fieldType)) {
         overloadSignature = "public void " + methodName + "(java.lang.Integer ";
       }
-      
+
       // Only add if it doesn't already exist
       if (overloadSignature != null && !code.contains(overloadSignature)) {
         // Insert the overloaded setter after the existing setter
@@ -1480,6 +1481,188 @@ public class CodeTransformations {
       paramNames.add(paramName);
       originalParamTypes.put(paramName, paramType);
     }
+  }
+
+
+ /**
+   * Adds overloaded setter methods for numeric fields in the builder class to allow setting Integer fields with Long values
+   * and Long fields with Integer values. This improves type compatibility when working with numeric fields in the builder pattern.
+   * This method preserves existing builder setter methods and only adds the overloaded versions.
+   *
+   * @param code generated code
+   * @return transformed code with overloaded numeric builder setter methods
+   */
+  public static String addOverloadedNumericBuilderSetterMethods(String code) {
+    if (code == null || code.isEmpty()) {
+      return code;
+    }
+
+    // First, identify the builder class in the code
+    Pattern builderClassPattern = Pattern.compile("public static class Builder[^{]*\\{");
+    Matcher builderClassMatcher = builderClassPattern.matcher(code);
+
+    if (!builderClassMatcher.find()) {
+      return code; // No builder class found
+    }
+
+    int builderClassStart = builderClassMatcher.start();
+
+    // Find the end of the builder class
+    int braceCount = 1;
+    int builderClassEnd = code.indexOf("{", builderClassStart) + 1;
+
+    while (builderClassEnd < code.length() && braceCount > 0) {
+      char c = code.charAt(builderClassEnd);
+      if (c == '{') braceCount++;
+      else if (c == '}') braceCount--;
+      builderClassEnd++;
+    }
+
+    if (braceCount != 0) {
+      return code; // Couldn't find proper end of builder class
+    }
+
+    String builderClassCode = code.substring(builderClassStart, builderClassEnd);
+
+    // Extract the class name to determine the builder return type
+    Pattern classNamePattern = Pattern.compile("public class (\\w+)");
+    Matcher classNameMatcher = classNamePattern.matcher(code);
+    if (!classNameMatcher.find()) {
+      return code; // Can't find class name
+    }
+    String className = classNameMatcher.group(1);
+
+    // Extract namespace/package name to correctly reference the builder class
+    String namespace = "";
+    Pattern packagePattern = Pattern.compile("package\\s+([^;]+);");
+    Matcher packageMatcher = packagePattern.matcher(code);
+    if (packageMatcher.find()) {
+      namespace = packageMatcher.group(1) + ".";
+    }
+
+    String builderReturnType = namespace + className + ".Builder";
+
+    // Find numeric setter methods in the builder class
+    // Pattern to match builder setter methods like:
+    // public IntsAndLongsWithBuilder.Builder setIntField(int value) { ... }
+    Pattern builderSetterPattern = Pattern.compile(
+        "public\\s+[\\w.]+\\.Builder\\s+(\\w+)\\s*\\(\\s*(int|long|java\\.lang\\.Integer|java\\.lang\\.Long)\\s+(\\w+)\\s*\\)\\s*\\{");
+    Matcher builderSetterMatcher = builderSetterPattern.matcher(builderClassCode);
+
+    StringBuilder modifiedBuilderClass = new StringBuilder(builderClassCode);
+    int offset = 0;
+
+    while (builderSetterMatcher.find()) {
+      String methodName = builderSetterMatcher.group(1);
+      String paramType = builderSetterMatcher.group(2);
+      String paramName = builderSetterMatcher.group(3);
+
+      // Only process methods that start with "set"
+      if (!methodName.startsWith("set")) {
+        continue;
+      }
+
+      // Find the end of the original setter method
+      int methodStart = builderSetterMatcher.start() + offset;
+      int methodBodyStart = modifiedBuilderClass.indexOf("{", methodStart);
+
+      int methodEnd = methodBodyStart + 1;
+      braceCount = 1;
+
+      while (methodEnd < modifiedBuilderClass.length() && braceCount > 0) {
+        char c = modifiedBuilderClass.charAt(methodEnd);
+        if (c == '{') braceCount++;
+        else if (c == '}') braceCount--;
+        methodEnd++;
+      }
+
+      // Create the overloaded setter based on the parameter type
+      StringBuilder overloadedSetter = new StringBuilder();
+
+      if ("int".equals(paramType)) {
+        // For int parameters, add an overloaded setter that accepts long with bounds checking
+        overloadedSetter.append("\n\n    /**\n");
+        overloadedSetter.append("     * Sets ").append(paramName).append(" to the specified value.\n");
+        overloadedSetter.append("     * Accepts a long value and converts it to int with bounds checking.\n");
+        overloadedSetter.append("     * @param value The long value to set\n");
+        overloadedSetter.append("     * @return This builder\n");
+        overloadedSetter.append("     * @throws org.apache.avro.AvroRuntimeException if the value is outside the int range\n");
+        overloadedSetter.append("     */\n");
+        overloadedSetter.append("    public ").append(builderReturnType).append(" ").append(methodName).append("(long value) {\n");
+        overloadedSetter.append("        if (value <= Integer.MAX_VALUE && value >= Integer.MIN_VALUE) {\n");
+        overloadedSetter.append("            return ").append(methodName).append("((int) value);\n");
+        overloadedSetter.append("        } else {\n");
+        overloadedSetter.append("            throw new org.apache.avro.AvroRuntimeException(\"Long value \" + value + \" cannot be cast to int\");\n");
+        overloadedSetter.append("        }\n");
+        overloadedSetter.append("    }");
+      } else if ("long".equals(paramType)) {
+        // For long parameters, add an overloaded setter that accepts int
+        overloadedSetter.append("\n\n    /**\n");
+        overloadedSetter.append("     * Sets ").append(paramName).append(" to the specified value.\n");
+        overloadedSetter.append("     * Accepts an int value and converts it to long.\n");
+        overloadedSetter.append("     * @param value The int value to set\n");
+        overloadedSetter.append("     * @return This builder\n");
+        overloadedSetter.append("     */\n");
+        overloadedSetter.append("    public ").append(builderReturnType).append(" ").append(methodName).append("(int value) {\n");
+        overloadedSetter.append("        return ").append(methodName).append("((long) value);\n");
+        overloadedSetter.append("    }");
+      } else if (JAVA_LANG_INTEGER.equals(paramType)) {
+        // For Integer parameters, add an overloaded setter that accepts Long with bounds checking
+        overloadedSetter.append("\n\n    /**\n");
+        overloadedSetter.append("     * Sets ").append(paramName).append(" to the specified value.\n");
+        overloadedSetter.append("     * Accepts a Long value and converts it to Integer with bounds checking.\n");
+        overloadedSetter.append("     * @param value The Long value to set\n");
+        overloadedSetter.append("     * @return This builder\n");
+        overloadedSetter.append("     * @throws org.apache.avro.AvroRuntimeException if the value is outside the Integer range\n");
+        overloadedSetter.append("     */\n");
+        overloadedSetter.append("    public ").append(builderReturnType).append(" ").append(methodName).append("(java.lang.Long value) {\n");
+        overloadedSetter.append("        if (value == null) {\n");
+        overloadedSetter.append("            return ").append(methodName).append("((java.lang.Integer) null);\n");
+        overloadedSetter.append("        } else if (value <= Integer.MAX_VALUE && value >= Integer.MIN_VALUE) {\n");
+        overloadedSetter.append("            return ").append(methodName).append("(value.intValue());\n");
+        overloadedSetter.append("        } else {\n");
+        overloadedSetter.append("            throw new org.apache.avro.AvroRuntimeException(\"Long value \" + value + \" cannot be cast to Integer\");\n");
+        overloadedSetter.append("        }\n");
+        overloadedSetter.append("    }");
+      } else if (JAVA_LANG_LONG.equals(paramType)) {
+        // For Long parameters, add an overloaded setter that accepts Integer
+        overloadedSetter.append("\n\n    /**\n");
+        overloadedSetter.append("     * Sets ").append(paramName).append(" to the specified value.\n");
+        overloadedSetter.append("     * Accepts an Integer value and converts it to Long.\n");
+        overloadedSetter.append("     * @param value The Integer value to set\n");
+        overloadedSetter.append("     * @return This builder\n");
+        overloadedSetter.append("     */\n");
+        overloadedSetter.append("    public ").append(builderReturnType).append(" ").append(methodName).append("(java.lang.Integer value) {\n");
+        overloadedSetter.append("        if (value == null) {\n");
+        overloadedSetter.append("            return ").append(methodName).append("((java.lang.Long) null);\n");
+        overloadedSetter.append("        } else {\n");
+        overloadedSetter.append("            return ").append(methodName).append("(value.longValue());\n");
+        overloadedSetter.append("        }\n");
+        overloadedSetter.append("    }");
+      }
+
+      // Check if the overloaded method already exists in the builder class
+      String overloadSignature = null;
+      if ("int".equals(paramType)) {
+        overloadSignature = "public " + builderReturnType + " " + methodName + "(long ";
+      } else if ("long".equals(paramType)) {
+        overloadSignature = "public " + builderReturnType + " " + methodName + "(int ";
+      } else if (JAVA_LANG_INTEGER.equals(paramType)) {
+        overloadSignature = "public " + builderReturnType + " " + methodName + "(java.lang.Long ";
+      } else if (JAVA_LANG_LONG.equals(paramType)) {
+        overloadSignature = "public " + builderReturnType + " " + methodName + "(java.lang.Integer ";
+      }
+
+      // Only add if it doesn't already exist
+      if (overloadSignature != null && !modifiedBuilderClass.toString().contains(overloadSignature)) {
+        // Insert the overloaded setter after the existing setter
+        modifiedBuilderClass.insert(methodEnd, overloadedSetter);
+        offset += overloadedSetter.length();
+      }
+    }
+
+    // Replace the builder class in the original code
+    return code.substring(0, builderClassStart) + modifiedBuilderClass + code.substring(builderClassEnd);
   }
 
   private static String addImports(String code, Collection<String> importStatements) {
