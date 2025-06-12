@@ -11,7 +11,6 @@ import org.testng.annotations.Test;
 
 
 public class CodeTransformationUtilsTest {
-
     @Test
     public void testFindEndOfBlock() {
         // Test basic code block
@@ -74,58 +73,57 @@ public class CodeTransformationUtilsTest {
     public void testGenerateNumericMethodSignature() {
         // Test regular setter signature
         StringBuilder sig1 = CodeTransformationUtils.generateNumericMethodSignature(
-                "setValue", "long", "value", "void");
-        Assert.assertEquals(sig1.toString(), "    public void setValue(long value) {\n");
+                "setValueField", "long", "value", "void");
+        Assert.assertEquals(sig1.toString(), "    public void setValueField(long value) {\n");
 
         // Test builder method signature
         StringBuilder sig2 = CodeTransformationUtils.generateNumericMethodSignature(
-                "withCount", "java.lang.Integer", "value", "Builder");
-        Assert.assertEquals(sig2.toString(), "    public Builder withCount(java.lang.Integer value) {\n");
+                "setValueField", "java.lang.Integer", "value", "Builder");
+        Assert.assertEquals(sig2.toString(), "    public Builder setValueField(java.lang.Integer value) {\n");
     }
 
     @Test
     public void testGenerateNumericConversionCode() {
         // Test long to int conversion (regular setter)
-        StringBuilder code1 = CodeTransformationUtils.generateNumericConversionCode(
-                "count", "long", "int", false, null);
+        StringBuilder code1 = CodeTransformationUtils.generateNumericConversionCode("long", "int", false, "setSizeField",
+            null);
         Assert.assertTrue(code1.toString().contains("if (value <= Integer.MAX_VALUE && value >= Integer.MIN_VALUE)"));
-        Assert.assertTrue(code1.toString().contains("this.count = (int) value"));
+        Assert.assertTrue(code1.toString().contains("setSizeField((int) value)"));
         Assert.assertTrue(code1.toString().contains("throw new org.apache.avro.AvroRuntimeException"));
 
         // Test int to long conversion (builder method)
-        StringBuilder code2 = CodeTransformationUtils.generateNumericConversionCode(
-                "size", "int", "long", true, "withSize");
-        Assert.assertTrue(code2.toString().contains("return withSize((long) value)"));
+        StringBuilder code2 = CodeTransformationUtils.generateNumericConversionCode("int", "long", true, null, "setSizeField");
+        Assert.assertTrue(code2.toString().contains("return setSizeField((long) value)"));
 
         // Test Long to Integer conversion (regular setter with null handling)
-        StringBuilder code3 = CodeTransformationUtils.generateNumericConversionCode(
-                "count", "java.lang.Long", "java.lang.Integer", false, null);
+        StringBuilder code3 = CodeTransformationUtils.generateNumericConversionCode("java.lang.Long", "java.lang.Integer", false,
+            "setSizeField", null);
         Assert.assertTrue(code3.toString().contains("if (value == null)"));
-        Assert.assertTrue(code3.toString().contains("this.count = null"));
-        Assert.assertTrue(code3.toString().contains("this.count = value.intValue()"));
+        Assert.assertTrue(code3.toString().contains("setSizeField((java.lang.Integer) null)"));
+        Assert.assertTrue(code3.toString().contains("setSizeField(value.intValue())"));
 
         // Test Integer to Long conversion (builder method with null handling)
-        StringBuilder code4 = CodeTransformationUtils.generateNumericConversionCode(
-                "size", "java.lang.Integer", "java.lang.Long", true, "withSize");
+        StringBuilder code4 = CodeTransformationUtils.generateNumericConversionCode("java.lang.Integer", "java.lang.Long", true,
+            null, "setSizeField");
         Assert.assertTrue(code4.toString().contains("if (value == null)"));
-        Assert.assertTrue(code4.toString().contains("return withSize((java.lang.Long) null)"));
-        Assert.assertTrue(code4.toString().contains("return withSize(value.longValue())"));
+        Assert.assertTrue(code4.toString().contains("return setSizeField((java.lang.Long) null)"));
+        Assert.assertTrue(code4.toString().contains("return setSizeField(value.longValue())"));
     }
 
     @Test
     public void testDetermineOverloadSignature() {
         // Test primitive types
-        Assert.assertEquals(CodeTransformationUtils.determineOverloadSignature("int", "setValue"), 
+        Assert.assertEquals(CodeTransformationUtils.determineOverloadSignature("int", "setValue"),
                 "public void setValue(long ");
-        Assert.assertEquals(CodeTransformationUtils.determineOverloadSignature("long", "setValue"), 
+        Assert.assertEquals(CodeTransformationUtils.determineOverloadSignature("long", "setValue"),
                 "public void setValue(int ");
-        
+
         // Test wrapper types
-        Assert.assertEquals(CodeTransformationUtils.determineOverloadSignature("java.lang.Integer", "setValue"), 
+        Assert.assertEquals(CodeTransformationUtils.determineOverloadSignature("java.lang.Integer", "setValue"),
                 "public void setValue(java.lang.Long ");
-        Assert.assertEquals(CodeTransformationUtils.determineOverloadSignature("java.lang.Long", "setValue"), 
+        Assert.assertEquals(CodeTransformationUtils.determineOverloadSignature("java.lang.Long", "setValue"),
                 "public void setValue(java.lang.Integer ");
-        
+
         // Test unsupported type
         Assert.assertNull(CodeTransformationUtils.determineOverloadSignature("String", "setValue"));
     }
@@ -137,22 +135,22 @@ public class CodeTransformationUtilsTest {
                 "setCount", "count", "int", false, null);
         Assert.assertTrue(setter1.toString().contains("public void setCount(long value)"));
         Assert.assertTrue(setter1.toString().contains("if (value <= Integer.MAX_VALUE && value >= Integer.MIN_VALUE)"));
-        Assert.assertTrue(setter1.toString().contains("this.count = (int) value"));
-        
+        Assert.assertTrue(setter1.toString().contains("setCount((int) value)"));
+
         // Test primitive long field with builder method
         StringBuilder setter2 = CodeTransformationUtils.generateOverloadedSetter(
                 "withSize", "size", "long", true, "Builder");
         Assert.assertTrue(setter2.toString().contains("public Builder withSize(int value)"));
         Assert.assertTrue(setter2.toString().contains("return withSize((long) value)"));
-        
+
         // Test wrapper Integer field with regular setter
         StringBuilder setter3 = CodeTransformationUtils.generateOverloadedSetter(
                 "setCount", "count", "java.lang.Integer", false, null);
         Assert.assertTrue(setter3.toString().contains("public void setCount(java.lang.Long value)"));
         Assert.assertTrue(setter3.toString().contains("if (value == null)"));
-        Assert.assertTrue(setter3.toString().contains("this.count = null"));
-        Assert.assertTrue(setter3.toString().contains("this.count = value.intValue()"));
-        
+        Assert.assertTrue(setter3.toString().contains("setCount((java.lang.Integer) null)"));
+        Assert.assertTrue(setter3.toString().contains("setCount(value.intValue())"));
+
         // Test wrapper Long field with builder method
         StringBuilder setter4 = CodeTransformationUtils.generateOverloadedSetter(
                 "withSize", "size", "java.lang.Long", true, "Builder");
@@ -160,7 +158,7 @@ public class CodeTransformationUtilsTest {
         Assert.assertTrue(setter4.toString().contains("if (value == null)"));
         Assert.assertTrue(setter4.toString().contains("return withSize((java.lang.Long) null)"));
         Assert.assertTrue(setter4.toString().contains("return withSize(value.longValue())"));
-        
+
         // Test unsupported type (should return empty StringBuilder)
         StringBuilder setter5 = CodeTransformationUtils.generateOverloadedSetter(
                 "setName", "name", "String", false, null);
