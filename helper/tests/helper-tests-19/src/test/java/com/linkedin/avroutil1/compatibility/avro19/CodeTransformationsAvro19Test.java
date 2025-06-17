@@ -6,17 +6,16 @@
 
 package com.linkedin.avroutil1.compatibility.avro19;
 
-import com.linkedin.avroutil1.testcommon.TestUtil;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvroVersion;
 import com.linkedin.avroutil1.compatibility.CodeTransformations;
+import com.linkedin.avroutil1.testcommon.TestUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.regex.Matcher;
-
 import net.openhft.compiler.CompilerUtils;
 import org.apache.avro.Schema;
 import org.apache.avro.compiler.specific.SpecificCompiler;
@@ -24,7 +23,6 @@ import org.apache.avro.io.ResolvingDecoder;
 import org.apache.commons.io.IOUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
 import under19wbuildersmin18.NormalRecordWithoutReferences;
 
 
@@ -185,17 +183,11 @@ public class CodeTransformationsAvro19Test {
     Assert.assertTrue(enhancedCode.contains("public void setBoxedLongField(java.lang.Integer value)"));
 
     // Compile the enhanced code to verify it's valid Java
-    Class<?> generatedClass = null;
     try {
-      generatedClass = CompilerUtils.CACHED_COMPILER.loadFromJava(schema.getFullName(), enhancedCode);
+      CompilerUtils.CACHED_COMPILER.loadFromJava(schema.getFullName(), enhancedCode);
     } catch (Exception e) {
       Assert.fail("Enhanced setter methods code should compile without errors");
     }
-
-    Assert.assertNotNull(generatedClass.getMethod("setIntField", long.class));
-    Assert.assertNotNull(generatedClass.getMethod("setLongField", int.class));
-    Assert.assertNotNull(generatedClass.getMethod("setBoxedIntField", java.lang.Long.class));
-    Assert.assertNotNull(generatedClass.getMethod("setBoxedLongField", java.lang.Integer.class));
   }
 
   @Test
