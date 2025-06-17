@@ -84,8 +84,8 @@ public class CodeTransformationsAvro17Test {
     String enhancedCode = CodeTransformations.addOverloadedNumericSetterMethods(originalCode);
 
     // Verify the enhanced code contains the overloaded setters
-    Assert.assertTrue(enhancedCode.contains("public void setIntField(long value)"));
-    Assert.assertTrue(enhancedCode.contains("public void setLongField(int value)"));
+    Assert.assertTrue(enhancedCode.contains("public void setIntField(java.lang.Long value)"));
+    Assert.assertTrue(enhancedCode.contains("public void setLongField(java.lang.Integer value)"));
     Assert.assertTrue(enhancedCode.contains("public void setBoxedIntField(java.lang.Long value)"));
     Assert.assertTrue(enhancedCode.contains("public void setBoxedLongField(java.lang.Integer value)"));
 
@@ -97,8 +97,8 @@ public class CodeTransformationsAvro17Test {
       Assert.fail("Enhanced setter methods code should compile without errors");
     }
 
-    Assert.assertNotNull(generatedClass.getMethod("setIntField", long.class));
-    Assert.assertNotNull(generatedClass.getMethod("setLongField", int.class));
+    Assert.assertNotNull(generatedClass.getMethod("setIntField", java.lang.Long.class));
+    Assert.assertNotNull(generatedClass.getMethod("setLongField", java.lang.Integer.class));
     Assert.assertNotNull(generatedClass.getMethod("setBoxedIntField", java.lang.Long.class));
     Assert.assertNotNull(generatedClass.getMethod("setBoxedLongField", java.lang.Integer.class));
   }
