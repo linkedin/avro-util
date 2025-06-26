@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.nio.file.Files;
@@ -116,8 +117,16 @@ public class SpecificRecordTest {
         {vs110.BuilderTester.class, vs110.BuilderTester.getClassSchema()},
         {vs111.BuilderTester.class, vs111.BuilderTester.getClassSchema()},
 
-        {charseqmethod.TestCollections.class, charseqmethod.TestCollections.getClassSchema()}
+        {vs14.IntsAndLongs.class, vs14.IntsAndLongs.getClassSchema()},
+        {vs15.IntsAndLongs.class, vs15.IntsAndLongs.getClassSchema()},
+        {vs16.IntsAndLongs.class, vs16.IntsAndLongs.getClassSchema()},
+        {vs17.IntsAndLongs.class, vs17.IntsAndLongs.getClassSchema()},
+        {vs18.IntsAndLongs.class, vs18.IntsAndLongs.getClassSchema()},
+        {vs19.IntsAndLongs.class, vs19.IntsAndLongs.getClassSchema()},
+        {vs110.IntsAndLongs.class, vs110.IntsAndLongs.getClassSchema()},
+        {vs111.IntsAndLongs.class, vs111.IntsAndLongs.getClassSchema()},
 
+        {charseqmethod.TestCollections.class, charseqmethod.TestCollections.getClassSchema()}
 //        {vs14.ThousandField.class, vs14.ThousandField.getClassSchema()},
 //        {vs19.ThousandField.class, vs19.ThousandField.getClassSchema()}
     };
@@ -1611,7 +1620,7 @@ public class SpecificRecordTest {
 
     List<Constructor> constructors = Arrays.stream(clazz.getConstructors()).filter(constructor -> constructor.getParameters().length != 0).collect(
         Collectors.toList());
-    Assert.assertEquals(constructors.size(), 1);
+    Assert.assertEquals(constructors.size(), 2);
   }
 
   private void assertNotSameIfNotNull(Object obj1, Object obj2) {
@@ -1962,6 +1971,120 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
       objectOutputStream.writeObject(instance.getStrAr());
     } finally {
       Files.delete(tempFile);
+    }
+  }
+
+  @DataProvider
+  private Object[][] intsAndLongsDataProvider() {
+    return new Object[][]{
+        {vs14.IntsAndLongs.class},
+        {vs15.IntsAndLongs.class},
+        {vs16.IntsAndLongs.class},
+        {vs17.IntsAndLongs.class},
+        {vs18.IntsAndLongs.class},
+        {vs19.IntsAndLongs.class},
+        {vs110.IntsAndLongs.class},
+        {vs111.IntsAndLongs.class},
+    };
+  }
+
+  @Test(dataProvider = "intsAndLongsDataProvider")
+  public void testIntLongRecords(Class<?> clazz) throws Exception {
+    // Get the newBuilder method via reflection to work with different versions
+    Method newBuilderMethod = clazz.getMethod("newBuilder");
+    Object builder = newBuilderMethod.invoke(null);
+
+    // Get the builder methods via reflection
+    Method setIntFieldMethod = builder.getClass().getMethod("setIntField", int.class);
+    Method setIntFieldLongMethod = builder.getClass().getMethod("setIntField", long.class);
+    Method setLongFieldMethod = builder.getClass().getMethod("setLongField", long.class);
+    Method setLongFieldIntMethod = builder.getClass().getMethod("setLongField", int.class);
+    Method buildMethod = builder.getClass().getMethod("build");
+
+    // Case 1: Set int and long with matching int/long types (primitive)
+    Object builder1 = newBuilderMethod.invoke(null);
+    setIntFieldMethod.invoke(builder1, 123);
+    setLongFieldMethod.invoke(builder1, 456L);
+    Object record1 = buildMethod.invoke(builder1);
+
+    // Case 2: Set int field with long type, and long field with int type (primitive)
+    Object builder2 = newBuilderMethod.invoke(null);
+    setIntFieldLongMethod.invoke(builder2, 123L);
+    setLongFieldIntMethod.invoke(builder2, 456);
+    Object record2 = buildMethod.invoke(builder2);
+
+    // Case 3: Using the put method with primitive types
+    Object record3 = clazz.newInstance();
+    Method putMethod = clazz.getMethod("put", int.class, Object.class);
+    putMethod.invoke(record3, 0, 456L); // longField with long
+    putMethod.invoke(record3, 1, 123); // intField with int
+
+    // Case 4: Using the put method with cross types
+    Object record4 = clazz.newInstance();
+    putMethod.invoke(record4, 0, 456); // longField with int
+    putMethod.invoke(record4, 1, 123L); // intField with long
+
+    // Case 5: Using the put method with Integer/Long wrapper classes
+    Object record5 = clazz.newInstance();
+    putMethod.invoke(record5, 0, Integer.valueOf(456)); // longField with Integer
+    putMethod.invoke(record5, 1, Long.valueOf(123L)); // intField with Long
+
+    // Verify all records are equal
+    Assert.assertEquals(record1, record2);
+    Assert.assertEquals(record1, record3);
+    Assert.assertEquals(record1, record4);
+    Assert.assertEquals(record1, record5);
+
+    // Verify field values directly
+    Method getIntFieldMethod = clazz.getMethod("getIntField");
+    Method getLongFieldMethod = clazz.getMethod("getLongField");
+
+    Assert.assertEquals(123, getIntFieldMethod.invoke(record1));
+    Assert.assertEquals(456L, getLongFieldMethod.invoke(record1));
+    Assert.assertEquals(123, getIntFieldMethod.invoke(record5));
+    Assert.assertEquals(456L, getLongFieldMethod.invoke(record5));
+  }
+
+  @Test(dataProvider = "intsAndLongsDataProvider")
+  public void testIntFieldOutOfBoundsHandling(Class<?> clazz) throws Exception {
+    // Test Case 1: Using builder pattern with setIntField(long)
+    Method newBuilderMethod = clazz.getMethod("newBuilder");
+    Object builder = newBuilderMethod.invoke(null);
+    Method setIntFieldLongMethod = builder.getClass().getMethod("setIntField", long.class);
+    Method buildMethod = builder.getClass().getMethod("build");
+
+    try {
+      // Try to set a long value that's too large for an int
+      setIntFieldLongMethod.invoke(builder, Long.MAX_VALUE);
+      // This should throw an exception when we try to build
+      buildMethod.invoke(builder);
+      Assert.fail("Expected an exception when building with out-of-bounds long value");
+    } catch (InvocationTargetException e) {
+      Throwable cause = e.getCause();
+      Assert.assertNotNull(cause, "Exception cause should not be null");
+      Assert.assertTrue(cause instanceof AvroRuntimeException,
+          "Expected AvroRuntimeException but got: " + cause.getClass().getName());
+      Assert.assertTrue(cause.getMessage() != null &&
+          cause.getMessage().contains(String.format("Long value %d cannot be cast to int", Long.MAX_VALUE)),
+          "Expected message about long value cast but got: " + cause.getMessage());
+    }
+
+    // Test Case 2: Using put method directly
+    Object record = clazz.newInstance();
+    Method putMethod = clazz.getMethod("put", int.class, Object.class);
+
+    try {
+      // Try to put a long value that's too large for the int field (field index 1)
+      putMethod.invoke(record, 1, Long.MAX_VALUE);
+      Assert.fail("Expected an exception when putting out-of-bounds long value");
+    } catch (InvocationTargetException e) {
+      Throwable cause = e.getCause();
+      Assert.assertNotNull(cause, "Exception cause should not be null");
+      Assert.assertTrue(cause instanceof AvroRuntimeException,
+          "Expected AvroRuntimeException but got: " + cause.getClass().getName());
+      Assert.assertTrue(cause.getMessage() != null &&
+          cause.getMessage().contains(String.format("Long value %d cannot be cast to int", Long.MAX_VALUE)),
+          "Expected message about long value cast but got: " + cause.getMessage());
     }
   }
 
