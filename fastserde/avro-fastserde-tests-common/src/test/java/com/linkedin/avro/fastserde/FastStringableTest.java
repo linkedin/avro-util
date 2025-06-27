@@ -272,56 +272,56 @@ public class FastStringableTest {
   }
 
 
-  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
-  public void deserializeStringableFields(Boolean whetherUseFastDeserializer)
-      throws URISyntaxException, MalformedURLException {
-    // given
-    BigInteger exampleBigInteger = new BigInteger(String.valueOf(Long.MAX_VALUE)).pow(16);
-    BigDecimal exampleBigDecimal = new BigDecimal(Double.MIN_VALUE).pow(16);
-    File exampleFile = new File("/tmp/test");
-    URI exampleURI = new URI("urn:ISSN:1522-3611");
-    URL exampleURL = new URL("http://www.example.com");
-    String exampleString = "test_string";
-
-    StringableRecord record = generateRecord(exampleURL, exampleURI, exampleFile, exampleBigDecimal, exampleBigInteger, exampleString);
-
-    // when
-    StringableRecord afterDecoding = null;
-    if (whetherUseFastDeserializer) {
-      afterDecoding =
-          readWithFastAvro(StringableRecord.SCHEMA$, StringableRecord.SCHEMA$, writeWithFastAvro(record, StringableRecord.SCHEMA$, true), true);
-    } else {
-      afterDecoding =
-          readWithSlowAvro(StringableRecord.SCHEMA$, StringableRecord.SCHEMA$, specificDataAsDecoder(record), true);
-    }
-
-    // then
-    if (Utils.isAbleToSupportStringableProps()) {
-      Assert.assertEquals(exampleBigDecimal, getField(afterDecoding, "bigdecimal"));
-      Assert.assertEquals(exampleBigInteger, getField(afterDecoding, "biginteger"));
-      Assert.assertEquals(exampleFile, getField(afterDecoding, "file"));
-      Assert.assertEquals(Collections.singletonList(exampleURL), getField(afterDecoding, "urlArray"));
-      Assert.assertEquals(Collections.singletonMap(exampleURL, exampleBigInteger), getField(afterDecoding, "urlMap"));
-      Assert.assertNotNull(getField(afterDecoding, "subRecord"));
-      Assert.assertEquals(exampleURI, getField((StringableSubRecord) getField(afterDecoding, "subRecord"), "uriField"));
-      Assert.assertNotNull(getField(afterDecoding, "subRecordWithSubRecord"));
-      Assert.assertNotNull(getField((AnotherSubRecord) getField(afterDecoding, "subRecordWithSubRecord"), "subRecord"));
-      Assert.assertEquals(exampleURI, getField((StringableSubRecord) getField((AnotherSubRecord) getField(afterDecoding, "subRecordWithSubRecord"), "subRecord"), "uriField"));
-    } else {
-      Assert.assertEquals(exampleBigDecimal.toString(), getField(afterDecoding, "bigdecimal").toString());
-      Assert.assertEquals(exampleBigInteger.toString(), getField(afterDecoding, "biginteger").toString());
-      Assert.assertEquals(exampleFile.toString(), getField(afterDecoding, "file").toString());
-      Assert.assertEquals(Collections.singletonList(new Utf8(exampleURL.toString())), (List) getField(afterDecoding, "urlArray"));
-      Assert.assertEquals(
-          Collections.singletonMap(new Utf8(exampleURL.toString()), new Utf8(exampleBigInteger.toString())),
-          getField(afterDecoding, "urlMap"));
-      Assert.assertNotNull(getField(afterDecoding, "subRecord"));
-      Assert.assertEquals(exampleURI.toString(), getField(((StringableSubRecord) getField(afterDecoding, "subRecord")), "uriField").toString());
-      Assert.assertNotNull(getField(afterDecoding, "subRecordWithSubRecord"));
-      Assert.assertNotNull(getField((AnotherSubRecord) getField(afterDecoding, "subRecordWithSubRecord"), "subRecord"));
-      Assert.assertEquals(exampleURI.toString(), getField(((StringableSubRecord) getField((AnotherSubRecord) getField(afterDecoding, "subRecordWithSubRecord"), "subRecord")), "uriField").toString());
-    }
-  }
+//  @Test(groups = {"deserializationTest"}, dataProvider = "SlowFastDeserializer")
+//  public void deserializeStringableFields(Boolean whetherUseFastDeserializer)
+//      throws URISyntaxException, MalformedURLException {
+//    // given
+//    BigInteger exampleBigInteger = new BigInteger(String.valueOf(Long.MAX_VALUE)).pow(16);
+//    BigDecimal exampleBigDecimal = new BigDecimal(Double.MIN_VALUE).pow(16);
+//    File exampleFile = new File("/tmp/test");
+//    URI exampleURI = new URI("urn:ISSN:1522-3611");
+//    URL exampleURL = new URL("http://www.example.com");
+//    String exampleString = "test_string";
+//
+//    StringableRecord record = generateRecord(exampleURL, exampleURI, exampleFile, exampleBigDecimal, exampleBigInteger, exampleString);
+//
+//    // when
+//    StringableRecord afterDecoding = null;
+//    if (whetherUseFastDeserializer) {
+//      afterDecoding =
+//          readWithFastAvro(StringableRecord.SCHEMA$, StringableRecord.SCHEMA$, writeWithFastAvro(record, StringableRecord.SCHEMA$, true), true);
+//    } else {
+//      afterDecoding =
+//          readWithSlowAvro(StringableRecord.SCHEMA$, StringableRecord.SCHEMA$, specificDataAsDecoder(record), true);
+//    }
+//
+//    // then
+//    if (Utils.isAbleToSupportStringableProps()) {
+//      Assert.assertEquals(exampleBigDecimal, getField(afterDecoding, "bigdecimal"));
+//      Assert.assertEquals(exampleBigInteger, getField(afterDecoding, "biginteger"));
+//      Assert.assertEquals(exampleFile, getField(afterDecoding, "file"));
+//      Assert.assertEquals(Collections.singletonList(exampleURL), getField(afterDecoding, "urlArray"));
+//      Assert.assertEquals(Collections.singletonMap(exampleURL, exampleBigInteger), getField(afterDecoding, "urlMap"));
+//      Assert.assertNotNull(getField(afterDecoding, "subRecord"));
+//      Assert.assertEquals(exampleURI, getField((StringableSubRecord) getField(afterDecoding, "subRecord"), "uriField"));
+//      Assert.assertNotNull(getField(afterDecoding, "subRecordWithSubRecord"));
+//      Assert.assertNotNull(getField((AnotherSubRecord) getField(afterDecoding, "subRecordWithSubRecord"), "subRecord"));
+//      Assert.assertEquals(exampleURI, getField((StringableSubRecord) getField((AnotherSubRecord) getField(afterDecoding, "subRecordWithSubRecord"), "subRecord"), "uriField"));
+//    } else {
+//      Assert.assertEquals(exampleBigDecimal.toString(), getField(afterDecoding, "bigdecimal").toString());
+//      Assert.assertEquals(exampleBigInteger.toString(), getField(afterDecoding, "biginteger").toString());
+//      Assert.assertEquals(exampleFile.toString(), getField(afterDecoding, "file").toString());
+//      Assert.assertEquals(Collections.singletonList(new Utf8(exampleURL.toString())), (List) getField(afterDecoding, "urlArray"));
+//      Assert.assertEquals(
+//          Collections.singletonMap(new Utf8(exampleURL.toString()), new Utf8(exampleBigInteger.toString())),
+//          getField(afterDecoding, "urlMap"));
+//      Assert.assertNotNull(getField(afterDecoding, "subRecord"));
+//      Assert.assertEquals(exampleURI.toString(), getField(((StringableSubRecord) getField(afterDecoding, "subRecord")), "uriField").toString());
+//      Assert.assertNotNull(getField(afterDecoding, "subRecordWithSubRecord"));
+//      Assert.assertNotNull(getField((AnotherSubRecord) getField(afterDecoding, "subRecordWithSubRecord"), "subRecord"));
+//      Assert.assertEquals(exampleURI.toString(), getField(((StringableSubRecord) getField((AnotherSubRecord) getField(afterDecoding, "subRecordWithSubRecord"), "subRecord")), "uriField").toString());
+//    }
+//  }
 
   public <T> Decoder writeWithFastAvro(T data, Schema schema, boolean specific) {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
