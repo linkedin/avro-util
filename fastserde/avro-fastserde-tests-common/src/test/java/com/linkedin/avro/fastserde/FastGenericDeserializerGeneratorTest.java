@@ -33,16 +33,13 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.io.BinaryDecoder;
-import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.Decoder;
-import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.avro.util.Utf8;
 import org.testng.Assert;
 import org.testng.SkipException;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.testng.collections.Lists;
 import org.testng.internal.collections.Pair;
 
 import static com.linkedin.avro.fastserde.FastSerdeTestsSupport.*;
@@ -334,6 +331,64 @@ public class FastGenericDeserializerGeneratorTest {
         Assert.fail("1.4, and 1.8+ support unqualified name for named type matching");
       }
     }
+  }
+
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldFailOnNamespaceMismatch(Implementation implementation) throws IOException {
+    // writer-side schema: "metadata" has NO namespace
+    String writerSchemaStr = "{\n" +
+            "  \"type\": \"record\",\n" +
+            "  \"name\": \"Wrapper\",\n" +
+            "\"namespace\": \"com.linkedin.avro.fastserde\",\n" +
+            "  \"fields\": [\n" +
+            "    {\n" +
+            "      \"name\": \"metadata\",\n" +
+            "      \"type\": [\"null\", {\n" +
+            "        \"type\": \"record\",\n" +
+            "        \"name\": \"metadata\",\n" +
+            "        \"fields\": [\n" +
+            "          {\"name\": \"productTypeUUID\", \"type\": [\"null\", \"string\"], \"default\": null}\n" +
+            "        ]\n" +
+            "      }],\n" +
+            "      \"default\": null\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
+
+    // reader-side schema: same nested record but WITH namespace "rtapi.surge"
+    String readerSchemaStr = "{\n" +
+            "  \"type\": \"record\",\n" +
+            "  \"name\": \"Wrapper\",\n" +
+            "  \"fields\": [\n" +
+            "    {\n" +
+            "      \"name\": \"metadata\",\n" +
+            "      \"type\": [\"null\", {\n" +
+            "        \"type\": \"record\",\n" +
+            "        \"name\": \"metadata\",\n" +
+            "        \"namespace\": \"rtapi.surge\",\n" +
+            "        \"fields\": [\n" +
+            "          {\"name\": \"productTypeUUID\", \"type\": [\"null\", \"string\"], \"default\": null}\n" +
+            "        ]\n" +
+            "      }],\n" +
+            "      \"default\": null\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
+
+    Schema writerSchema = AvroCompatibilityHelper.parse(writerSchemaStr);
+    Schema readerSchema = AvroCompatibilityHelper.parse(readerSchemaStr);
+
+    // Build a writer-side record instance
+    GenericRecord wrapper = new GenericData.Record(writerSchema);
+    Schema metadataSchema = writerSchema.getField("metadata").schema().getTypes().get(1);
+    GenericRecord metadataRecord = new GenericData.Record(metadataSchema);
+    metadataRecord.put("productTypeUUID", "abc-123");
+    wrapper.put("metadata", metadataRecord);
+
+    // Attempt to deserialize – should throw AvroTypeException because of namespace mismatch
+      GenericRecord record = implementation.decode(writerSchema, readerSchema, genericDataAsDecoder(wrapper));
+      record.get(0);
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")

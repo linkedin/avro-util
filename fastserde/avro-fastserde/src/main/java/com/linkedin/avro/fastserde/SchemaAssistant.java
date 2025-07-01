@@ -589,7 +589,7 @@ public class SchemaAssistant<T extends GenericData> {
     return unionSchema.getTypes().get(compatibleUnionSchemaIndex(schema, unionSchema));
   }
 
-  private boolean areTypesCompatible(Schema schema, Schema potentialCompatibleSchema){
+  public boolean areTypesCompatible(Schema schema, Schema potentialCompatibleSchema){
     if(!potentialCompatibleSchema.getType().equals(schema.getType())) {
       return false;
     }
