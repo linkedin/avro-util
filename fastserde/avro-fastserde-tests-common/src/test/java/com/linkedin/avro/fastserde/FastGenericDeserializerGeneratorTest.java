@@ -335,12 +335,11 @@ public class FastGenericDeserializerGeneratorTest {
 
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
-  public void shouldFailOnNamespaceMismatch(Implementation implementation) throws IOException {
+  public void shouldNotFailOnNamespaceMismatch(Implementation implementation) throws IOException {
     // writer-side schema: "metadata" has NO namespace
     String writerSchemaStr = "{\n" +
             "  \"type\": \"record\",\n" +
-            "  \"name\": \"Wrapper\",\n" +
-            "\"namespace\": \"com.linkedin.avro.fastserde\",\n" +
+            "  \"name\": \"wrapper\",\n" +
             "  \"fields\": [\n" +
             "    {\n" +
             "      \"name\": \"metadata\",\n" +
@@ -348,7 +347,7 @@ public class FastGenericDeserializerGeneratorTest {
             "        \"type\": \"record\",\n" +
             "        \"name\": \"metadata\",\n" +
             "        \"fields\": [\n" +
-            "          {\"name\": \"productTypeUUID\", \"type\": [\"null\", \"string\"], \"default\": null}\n" +
+            "          {\"name\": \"fieldName\", \"type\": [\"null\", \"string\"], \"default\": null}\n" +
             "        ]\n" +
             "      }],\n" +
             "      \"default\": null\n" +
@@ -366,9 +365,9 @@ public class FastGenericDeserializerGeneratorTest {
             "      \"type\": [\"null\", {\n" +
             "        \"type\": \"record\",\n" +
             "        \"name\": \"metadata\",\n" +
-            "        \"namespace\": \"rtapi.surge\",\n" +
+            "        \"namespace\": \"some.other.namespace\",\n" +
             "        \"fields\": [\n" +
-            "          {\"name\": \"productTypeUUID\", \"type\": [\"null\", \"string\"], \"default\": null}\n" +
+            "          {\"name\": \"fieldName\", \"type\": [\"null\", \"string\"], \"default\": null}\n" +
             "        ]\n" +
             "      }],\n" +
             "      \"default\": null\n" +
@@ -383,12 +382,23 @@ public class FastGenericDeserializerGeneratorTest {
     GenericRecord wrapper = new GenericData.Record(writerSchema);
     Schema metadataSchema = writerSchema.getField("metadata").schema().getTypes().get(1);
     GenericRecord metadataRecord = new GenericData.Record(metadataSchema);
-    metadataRecord.put("productTypeUUID", "abc-123");
+    metadataRecord.put("fieldName", "abc-123");
     wrapper.put("metadata", metadataRecord);
 
     // Attempt to deserialize – should throw AvroTypeException because of namespace mismatch
+    try{
       GenericRecord record = implementation.decode(writerSchema, readerSchema, genericDataAsDecoder(wrapper));
-      record.get(0);
+      if(Utils.usesQualifiedNameForNamedTypedMatching()){
+        Assert.fail("1.5-1.7 don't support unqualified name for named type matching so we should have failed");
+      }
+      Assert.assertEquals(((GenericRecord)record.get("metadata")).get("fieldName").toString(), "abc-123");
+    } catch (AvroTypeException e){
+        if(!Utils.usesQualifiedNameForNamedTypedMatching()) {
+            Assert.fail("1.4, and 1.8+ support unqualified name for named type matching");
+        }
+        // expected exception
+    }
+
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
