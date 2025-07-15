@@ -6,8 +6,6 @@
 
 package com.linkedin.avroutil1.compatibility;
 
-import org.apache.commons.text.StringEscapeUtils;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,6 +17,7 @@ import java.util.Set;
 import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.text.StringEscapeUtils;
 
 
 /**
@@ -100,6 +99,12 @@ public class CodeTransformations {
   private static final String ENUM_CLASS_BODY_POST19_TEMPLATE = TemplateUtil.loadTemplate("avroutil1/templates/EnumClass19.template");
   private static final String ENUM_CLASS_NO_NAMESPACE_BODY_POST19_TEMPLATE = TemplateUtil.loadTemplate("avroutil1/templates/EnumClassNoNamespace19.template");
 
+  private static final Pattern PUT_METHOD_PATTERN = Pattern.compile(
+      "public\\s+void\\s+put\\s*\\(\\s*int\\s+field\\$\\s*,\\s*java\\.lang\\.Object\\s+value\\$\\s*\\)\\s*\\{\\s*" +
+      "switch\\s*\\(\\s*field\\$\\s*\\)\\s*\\{\\s*" +
+      "([^}]+)" +  // Capture the case statements
+      "\\}\\s*\\}");
+
   private static final int MAX_STRING_LITERAL_SIZE = 65000; //just under 64k
 
   private CodeTransformations() {
@@ -131,6 +136,11 @@ public class CodeTransformations {
     fixed = CodeTransformations.transformParseCalls(fixed, generatedBy, minSupportedVersion, maxSupportedVersion, alternativeAvsc, importStatements);
     fixed = CodeTransformations.addGetClassSchemaMethod(fixed, generatedBy, minSupportedVersion, maxSupportedVersion);
 
+    // Allow int fields to be set using longs, and vice versa
+    fixed = CodeTransformations.enhanceNumericPutMethod(fixed);
+    fixed = CodeTransformations.addOverloadedNumericSetterMethods(fixed);
+    fixed = CodeTransformations.addOverloadedNumericConstructor(fixed);
+
     //1.6+ features
     if (minSupportedVersion.earlierThan(AvroVersion.AVRO_1_6)) {
       //optionally strip out builders
@@ -141,6 +151,7 @@ public class CodeTransformations {
       fixed = CodeTransformations.removeReferencesToNewClassesFromBuilders(fixed, generatedBy, minSupportedVersion, maxSupportedVersion);
     }
 
+    fixed = CodeTransformations.addOverloadedNumericBuilderSetterMethods(fixed);
     //1.7+ features
     //this is considered harmless enough we can keep doing it?
     fixed = CodeTransformations.removeAvroGeneratedAnnotation(fixed, minSupportedVersion, maxSupportedVersion);
@@ -917,6 +928,584 @@ public class CodeTransformations {
     }
     return code.substring(0, insertPosition) + "\nprivate static final " + builderClassName +
         " " + BUILDER_INSTANCE_NAME + " = new " + builderClassName + "(false);\n" + code.substring(insertPosition);
+  }
+
+  /**
+   * Transforms the put method in Avro-generated record classes to allow setting Long values into int fields
+   * and Integer values into long fields. This improves type compatibility when working with numeric fields.
+   * This method preserves existing case statements and only enhances the ones for numeric fields.
+   *
+   * @param code generated code
+   * @return transformed code with enhanced put method
+   */
+  public static String enhanceNumericPutMethod(String code) {
+    if (code == null || code.isEmpty()) {
+      return code;
+    }
+
+    // Pattern to match the put method with simple casts
+    Matcher matcher = PUT_METHOD_PATTERN.matcher(code);
+    if (!matcher.find()) {
+      return code; // No matching put method found
+    }
+
+    String caseStatements = matcher.group(1);
+
+    // Pattern to find int and long field cases
+    Pattern casePattern = Pattern.compile("case\\s+(\\d+)\\s*:\\s*(\\w+)\\s*=\\s*\\(([^)]+)\\)value\\$\\s*;\\s*break\\s*;");
+    Matcher caseMatcher = casePattern.matcher(caseStatements);
+
+    // Map to store field info: caseNumber -> [fieldName, fieldType]
+    Map<String, String[]> fieldInfo = new HashMap<>(); // fieldName -> type
+
+    // Find all numeric field cases
+    while (caseMatcher.find()) {
+      String caseNumber = caseMatcher.group(1);
+      String fieldName = caseMatcher.group(2);
+      String fieldType = caseMatcher.group(3);
+
+      if (CodeTransformationUtils.JAVA_LANG_INTEGER.equals(fieldType) || "int".equals(fieldType) ||
+          CodeTransformationUtils.JAVA_LANG_LONG.equals(fieldType) || "long".equals(fieldType)) {
+        fieldInfo.put(caseNumber, new String[]{fieldName, fieldType});
+      }
+    }
+
+    if (fieldInfo.isEmpty()) {
+      return code; // No numeric fields found
+    }
+
+    // Build the enhanced put method, preserving existing case statements
+    StringBuilder enhancedPutMethod = new StringBuilder();
+    enhancedPutMethod.append("public void put(int field$, java.lang.Object value$) {\n");
+    enhancedPutMethod.append("  switch (field$) {\n");
+
+    // Reset the matcher to process all case statements
+    caseMatcher = Pattern.compile("case\\s+(\\d+)\\s*:([^;]*);\\s*break\\s*;").matcher(caseStatements);
+    int lastMatchEnd = 0;
+
+    while (caseMatcher.find()) {
+      String caseNumber = caseMatcher.group(1);
+
+      // If this is a numeric field case that we want to enhance
+      if (fieldInfo.containsKey(caseNumber)) {
+        String[] fieldData = fieldInfo.get(caseNumber);
+        String fieldName = fieldData[0];
+        String fieldType = fieldData[1];
+
+        enhancedPutMethod.append("  case ").append(caseNumber).append(": ");
+
+        if ("int".equals(fieldType)) {
+          enhancedPutMethod.append("if (value$ instanceof java.lang.Long) {\n");
+          enhancedPutMethod.append("      if ((java.lang.Long)value$ <= Integer.MAX_VALUE && (java.lang.Long)value$ >= Integer.MIN_VALUE) {\n");
+          enhancedPutMethod.append("        this.").append(fieldName).append(" = ((java.lang.Long)value$).intValue();\n");
+          enhancedPutMethod.append("      } else {\n");
+          enhancedPutMethod.append("        throw new org.apache.avro.AvroRuntimeException(\"Long value \" + value$ + \" cannot be cast to int\");\n");
+          enhancedPutMethod.append("      }\n");
+          enhancedPutMethod.append("    } else {\n");
+          enhancedPutMethod.append("      this.").append(fieldName).append(" = (java.lang.Integer)value$;\n");
+          enhancedPutMethod.append("    }\n");
+          enhancedPutMethod.append("    break;\n");
+        } else if ("long".equals(fieldType)) {
+          enhancedPutMethod.append("if (value$ instanceof java.lang.Integer) {\n");
+          enhancedPutMethod.append("      this.").append(fieldName).append(" = ((java.lang.Integer)value$).longValue();\n");
+          enhancedPutMethod.append("    } else {\n");
+          enhancedPutMethod.append("      this.").append(fieldName).append(" = (java.lang.Long)value$;\n");
+          enhancedPutMethod.append("    }\n");
+          enhancedPutMethod.append("    break;\n");
+        } else if (CodeTransformationUtils.JAVA_LANG_INTEGER.equals(fieldType)) {
+          enhancedPutMethod.append("if (value$ instanceof java.lang.Long) {\n");
+          enhancedPutMethod.append("      if ((java.lang.Long)value$ <= Integer.MAX_VALUE && (java.lang.Long)value$ >= Integer.MIN_VALUE) {\n");
+          enhancedPutMethod.append("        this.").append(fieldName).append(" = ((java.lang.Long)value$).intValue();\n");
+          enhancedPutMethod.append("      } else {\n");
+          enhancedPutMethod.append("        throw new org.apache.avro.AvroRuntimeException(\"Long value \" + value$ + \" cannot be cast to Integer\");\n");
+          enhancedPutMethod.append("      }\n");
+          enhancedPutMethod.append("    } else {\n");
+          enhancedPutMethod.append("      this.").append(fieldName).append(" = (java.lang.Integer)value$;\n");
+          enhancedPutMethod.append("    }\n");
+          enhancedPutMethod.append("    break;\n");
+        } else if (CodeTransformationUtils.JAVA_LANG_LONG.equals(fieldType)) {
+          enhancedPutMethod.append("if (value$ instanceof java.lang.Integer) {\n");
+          enhancedPutMethod.append("      this.").append(fieldName).append(" = ((java.lang.Integer)value$).longValue();\n");
+          enhancedPutMethod.append("    } else {\n");
+          enhancedPutMethod.append("      this.").append(fieldName).append(" = (java.lang.Long)value$;\n");
+          enhancedPutMethod.append("    }\n");
+          enhancedPutMethod.append("    break;\n");
+        }
+      } else {
+        // For non-numeric fields, preserve the original case statement
+        enhancedPutMethod.append("  case ").append(caseNumber).append(":")
+                         .append(caseMatcher.group(2)).append(";")
+                         .append(" break;\n");
+      }
+
+      lastMatchEnd = caseMatcher.end();
+    }
+
+    // Add any remaining case statements (like default case)
+    if (lastMatchEnd < caseStatements.length()) {
+      String remaining = caseStatements.substring(lastMatchEnd).trim();
+      if (!remaining.isEmpty()) {
+        enhancedPutMethod.append("  ").append(remaining).append("\n");
+      }
+    } else {
+      // Add the default case if it wasn't in the original
+      enhancedPutMethod.append("  default: throw new IndexOutOfBoundsException(\"Invalid index: \" + field$);\n");
+    }
+
+    enhancedPutMethod.append("  }\n}");
+
+    // Replace the original put method with the enhanced one
+    return code.substring(0, matcher.start()) + enhancedPutMethod + code.substring(matcher.end());
+  }
+
+  /**
+   * Adds overloaded setter methods for numeric fields to allow setting Integer fields with Long values
+   * and Long fields with Integer values. This improves type compatibility when working with numeric fields.
+   * This method identifies existing setter methods and adds appropriate overloaded versions in a single pass.
+   *
+   * @param code generated code
+   * @return transformed code with overloaded numeric setter methods
+   */
+  public static String addOverloadedNumericSetterMethods(String code) {
+    if (code == null || code.isEmpty()) {
+      return code;
+    }
+
+    StringBuilder result = new StringBuilder(code);
+    
+    // Unified pattern to match all numeric setter methods in a single pass
+        Pattern numericSetterPattern = Pattern.compile(
+        "public\\s+void\\s+(set\\w+)\\s*\\(\\s*(int|long|java\\.lang\\.Integer|java\\.lang\\.Long)\\s+([\\w$]+)\\s*\\)\\s*\\{");
+    Matcher numericSetterMatcher = numericSetterPattern.matcher(code);
+    
+    // Track positions to insert overloaded methods
+    // Use a map of position -> insertion text to collect all insertions
+    Map<Integer, String> insertions = new HashMap<>();
+    
+    // Process all numeric setters in a single pass
+    while (numericSetterMatcher.find()) {
+      String methodName = numericSetterMatcher.group(1);
+      String paramType = numericSetterMatcher.group(2);
+      
+      // Derive the field name from the method name instead of parameter name
+      // Convert "setFieldName" to "fieldName" (remove "set" prefix and lowercase first char)
+      String fieldName = methodName.substring(3, 4).toLowerCase() + methodName.substring(4);
+      
+      // Find the end of the setter method
+      int methodBodyStart = code.indexOf("{", numericSetterMatcher.start());
+      if (methodBodyStart == -1) continue;
+      
+      int methodEnd = CodeTransformationUtils.findEndOfBlock(code, methodBodyStart);
+      if (methodEnd == -1) continue;
+      
+      // Determine if we need to generate an overload based on the parameter type
+      String overloadSignature = CodeTransformationUtils.determineOverloadSignature(paramType, methodName);
+      
+      // Skip if no overload is needed or if this overload already exists
+      if (overloadSignature == null || code.contains(overloadSignature)) {
+        continue;
+      }
+      
+      // Generate the complete overloaded setter method
+      StringBuilder overload = CodeTransformationUtils.generateOverloadedSetter(
+          methodName, fieldName, paramType, false, null);
+      
+      // Schedule the insertion
+      insertions.put(methodEnd, overload.toString());
+    }
+    
+    // Apply all insertions in reverse order to maintain correct positions
+    List<Integer> positions = new ArrayList<>(insertions.keySet());
+    Collections.sort(positions, Collections.reverseOrder());
+    
+    for (int position : positions) {
+      result.insert(position, insertions.get(position));
+    }
+    
+    return result.toString();
+  }
+
+  /**
+   * Adds an overloaded constructor that allows Integer parameters for Long fields and Long parameters for Integer fields.
+   * This makes the generated code more flexible by allowing automatic type conversion between numeric types.
+   * The implementation handles both boxed Integer/Long types and primitive int/long types, with proper null handling
+   * for boxed types and default values for primitives when null is passed.
+   *
+   * @param code generated code
+   * @return transformed code with overloaded constructor for numeric type conversions
+   */
+  public static String addOverloadedNumericConstructor(String code) {
+    if (code == null || code.isEmpty()) {
+      return code;
+    }
+
+    // First, identify all numeric fields in the class (both primitive and boxed)
+    Map<String, String> fieldTypes = new HashMap<>(); // fieldName -> type
+
+    // Pattern to match primitive field declarations
+    Pattern primitiveFieldPattern = Pattern.compile("private\\s+(int|long)\\s+(\\w+)\\s*;");
+    Matcher primitiveFieldMatcher = primitiveFieldPattern.matcher(code);
+
+    while (primitiveFieldMatcher.find()) {
+      String fieldType = primitiveFieldMatcher.group(1);
+      String fieldName = primitiveFieldMatcher.group(2);
+      fieldTypes.put(fieldName, fieldType);
+    }
+
+    // Pattern to match boxed field declarations
+    Pattern boxedFieldPattern = Pattern.compile("private\\s+(java\\.lang\\.Integer|java\\.lang\\.Long)\\s+(\\w+)\\s*;");
+    Matcher boxedFieldMatcher = boxedFieldPattern.matcher(code);
+
+    while (boxedFieldMatcher.find()) {
+      String fieldType = boxedFieldMatcher.group(1);
+      String fieldName = boxedFieldMatcher.group(2);
+      fieldTypes.put(fieldName, fieldType);
+    }
+
+    if (fieldTypes.isEmpty()) {
+      return code; // No numeric fields found
+    }
+
+    // Find the class name
+    Pattern classNamePattern = Pattern.compile("public\\s+class\\s+(\\w+)");
+    Matcher classNameMatcher = classNamePattern.matcher(code);
+    if (!classNameMatcher.find()) {
+      return code; // Can't find class name
+    }
+    String className = classNameMatcher.group(1);
+
+    // Find the all-args constructor
+    Pattern constructorPattern = Pattern.compile(
+        "public\\s+" + className + "\\s*\\(([^)]*)\\)\\s*\\{([^}]*)\\}"
+    );
+    Matcher constructorMatcher = constructorPattern.matcher(code);
+
+    // Try to find a constructor with parameters
+    boolean foundConstructor = false;
+    String constructorParams = "";
+    int constructorEnd = -1;
+
+    // Skip the default constructor (no args) if present
+    if (constructorMatcher.find()) {
+      String params = constructorMatcher.group(1).trim();
+      if (!params.isEmpty()) {
+        // Found a constructor with parameters
+        foundConstructor = true;
+        constructorParams = params;
+        constructorEnd = constructorMatcher.end();
+      } else {
+        // Found a default constructor, try to find another constructor with parameters
+        if (constructorMatcher.find()) {
+          foundConstructor = true;
+          constructorParams = constructorMatcher.group(1).trim();
+          constructorEnd = constructorMatcher.end();
+        }
+      }
+    }
+
+    // If no constructor with parameters was found, return the original code
+    if (!foundConstructor || constructorParams.isEmpty()) {
+      return code;
+    }
+
+    // Parse the constructor parameters using a more robust approach that handles generic types
+    List<String> paramTypes = new ArrayList<>();
+    List<String> paramNames = new ArrayList<>();
+    Map<String, String> originalParamTypes = new HashMap<>(); // paramName -> original type
+
+    // Parse parameters more carefully to handle generics
+    parseConstructorParameters(constructorParams, paramTypes, paramNames, originalParamTypes);
+
+    // Generate the overloaded constructor with swapped numeric types
+    StringBuilder overloadedConstructor = new StringBuilder();
+    overloadedConstructor.append("\n  /**\n");
+    overloadedConstructor.append("   * All-args constructor with flexible numeric type conversion.\n");
+    overloadedConstructor.append("   * Allows Integer parameters for Long fields and Long parameters for Integer fields.\n");
+
+    // Add parameter javadoc
+    for (int i = 0; i < paramNames.size(); i++) {
+      overloadedConstructor.append("   * @param ").append(paramNames.get(i)).append(" The new value for ").append(paramNames.get(i)).append("\n");
+    }
+
+    overloadedConstructor.append("   */\n");
+    overloadedConstructor.append("  public ").append(className).append("(");
+
+    // Generate parameters with swapped types for numeric fields
+    Map<String, String> swappedParamTypes = new HashMap<>(); // paramName -> swapped type
+
+    for (int i = 0; i < paramTypes.size(); i++) {
+      if (i > 0) {
+        overloadedConstructor.append(", ");
+      }
+
+      String paramType = paramTypes.get(i);
+      String paramName = paramNames.get(i);
+
+      // Swap Java types for numeric fields
+      if (CodeTransformationUtils.JAVA_LANG_LONG.equals(paramType) && fieldTypes.containsKey(paramName)) {
+        overloadedConstructor.append(CodeTransformationUtils.JAVA_LANG_INTEGER + " ").append(paramName);
+        swappedParamTypes.put(paramName, CodeTransformationUtils.JAVA_LANG_INTEGER);
+      } else if (CodeTransformationUtils.JAVA_LANG_INTEGER.equals(paramType) && fieldTypes.containsKey(paramName)) {
+        overloadedConstructor.append(CodeTransformationUtils.JAVA_LANG_LONG + " ").append(paramName);
+        swappedParamTypes.put(paramName, CodeTransformationUtils.JAVA_LANG_LONG);
+      } else {
+        overloadedConstructor.append(paramType).append(" ").append(paramName);
+        swappedParamTypes.put(paramName, paramType);
+      }
+    }
+
+    overloadedConstructor.append(") {\n");
+
+    // Generate constructor body with type conversion logic
+    for (int i = 0; i < paramNames.size(); i++) {
+      String paramName = paramNames.get(i);
+      String fieldType = fieldTypes.get(paramName);
+      String swappedParamType = swappedParamTypes.get(paramName);
+
+      if (fieldType != null) {
+        if ("int".equals(fieldType) && CodeTransformationUtils.JAVA_LANG_LONG.equals(swappedParamType)) {
+          // Convert Long to int with bounds check
+          overloadedConstructor.append("    if (").append(paramName).append(" == null) {\n");
+          overloadedConstructor.append("      this.").append(paramName).append(" = 0;\n");
+          overloadedConstructor.append("    } else if (").append(paramName).append(" <= Integer.MAX_VALUE && ")
+                               .append(paramName).append(" >= Integer.MIN_VALUE) {\n");
+          overloadedConstructor.append("      this.").append(paramName).append(" = ").append(paramName).append(".intValue();\n");
+          overloadedConstructor.append("    } else {\n");
+          overloadedConstructor.append("      throw new org.apache.avro.AvroRuntimeException(\"Long value \" + ")
+                               .append(paramName).append(" + \" cannot be cast to int\");\n");
+          overloadedConstructor.append("    }\n");
+        } else if ("long".equals(fieldType) && CodeTransformationUtils.JAVA_LANG_INTEGER.equals(swappedParamType)) {
+          // Convert Integer to long
+          overloadedConstructor.append("    this.").append(paramName).append(" = ").append(paramName).append(" == null ? 0L : ")
+                               .append(paramName).append(".longValue();\n");
+        } else if (CodeTransformationUtils.JAVA_LANG_INTEGER.equals(fieldType)
+            && CodeTransformationUtils.JAVA_LANG_LONG.equals(swappedParamType)) {
+          // Convert Long to Integer with bounds check
+          overloadedConstructor.append("    if (").append(paramName).append(" == null) {\n");
+          overloadedConstructor.append("      this.").append(paramName).append(" = null;\n");
+          overloadedConstructor.append("    } else if (").append(paramName).append(" <= Integer.MAX_VALUE && ")
+                               .append(paramName).append(" >= Integer.MIN_VALUE) {\n");
+          overloadedConstructor.append("      this.").append(paramName).append(" = ").append(paramName).append(".intValue();\n");
+          overloadedConstructor.append("    } else {\n");
+          overloadedConstructor.append("      throw new org.apache.avro.AvroRuntimeException(\"Long value \" + ")
+                               .append(paramName).append(" + \" cannot be cast to Integer\");\n");
+          overloadedConstructor.append("    }\n");
+        } else if (CodeTransformationUtils.JAVA_LANG_LONG.equals(fieldType)
+            && CodeTransformationUtils.JAVA_LANG_INTEGER.equals(swappedParamType)) {
+          // Convert Integer to Long
+          overloadedConstructor.append("    if (").append(paramName).append(" == null) {\n");
+          overloadedConstructor.append("      this.").append(paramName).append(" = null;\n");
+          overloadedConstructor.append("    } else {\n");
+          overloadedConstructor.append("      this.").append(paramName).append(" = ").append(paramName).append(".longValue();\n");
+          overloadedConstructor.append("    }\n");
+        } else {
+          // For non-numeric fields or fields with the same type, just assign directly
+          overloadedConstructor.append("    this.").append(paramName).append(" = ").append(paramName).append(";\n");
+        }
+      } else {
+        // For fields not in our fieldTypes map, just assign directly
+        overloadedConstructor.append("    this.").append(paramName).append(" = ").append(paramName).append(";\n");
+      }
+    }
+
+    overloadedConstructor.append("  }");
+
+    // Insert the overloaded constructor after the original constructor
+    StringBuilder result = new StringBuilder(code);
+    result.insert(constructorEnd, "\n" + overloadedConstructor.toString());
+
+    return result.toString();
+  }
+
+  /**
+   * Parses constructor parameters handling complex generic types correctly.
+   * This method properly handles nested generics like Map<String, List<String>>.
+   *
+   * @param constructorParams The constructor parameter string
+   * @param paramTypes Output list to store parameter types
+   * @param paramNames Output list to store parameter names
+   * @param originalParamTypes Output map to store parameter name to type mapping
+   */
+  private static void parseConstructorParameters(String constructorParams,
+                                               List<String> paramTypes,
+                                               List<String> paramNames,
+                                               Map<String, String> originalParamTypes) {
+    if (constructorParams == null || constructorParams.trim().isEmpty()) {
+      return;
+    }
+
+    int pos = 0;
+    int len = constructorParams.length();
+    int angleNestLevel = 0;
+    int startPos = 0;
+
+    while (pos < len) {
+      char c = constructorParams.charAt(pos);
+
+      if (c == '<') {
+        angleNestLevel++;
+      } else if (c == '>') {
+        angleNestLevel--;
+      } else if (c == ',' && angleNestLevel == 0) {
+        // Found a top-level comma, which separates parameters
+        String param = constructorParams.substring(startPos, pos).trim();
+        processParameter(param, paramTypes, paramNames, originalParamTypes);
+        startPos = pos + 1;
+      }
+
+      pos++;
+           }
+
+    // Process the last parameter
+    if (startPos < len) {
+      String param = constructorParams.substring(startPos).trim();
+      processParameter(param, paramTypes, paramNames, originalParamTypes);
+    }
+  }
+
+  /**
+   * Processes a single parameter string and extracts the type and name.
+   *
+   * @param param The parameter string (e.g., "java.lang.Integer fieldName")
+   * @param paramTypes Output list to store parameter types
+   * @param paramNames Output list to store parameter names
+   * @param originalParamTypes Output map to store parameter name to type mapping
+   */
+  private static void processParameter(String param,
+                                     List<String> paramTypes,
+                                     List<String> paramNames,
+                                     Map<String, String> originalParamTypes) {
+    if (param == null || param.trim().isEmpty()) {
+      return;
+    }
+
+    // Find the last space which separates the type from the name
+    int lastSpacePos = param.lastIndexOf(' ');
+    if (lastSpacePos > 0) {
+      String paramType = param.substring(0, lastSpacePos).trim();
+      String paramName = param.substring(lastSpacePos + 1).trim();
+
+      paramTypes.add(paramType);
+      paramNames.add(paramName);
+      originalParamTypes.put(paramName, paramType);
+    }
+  }
+
+
+ /**
+   * Adds overloaded setter methods for numeric fields in the builder class to allow setting Integer fields with Long values
+   * and Long fields with Integer values. This improves type compatibility when working with numeric fields in the builder pattern.
+   * This method preserves existing builder setter methods and only adds the overloaded versions.
+   *
+   * @param code generated code
+   * @return transformed code with overloaded numeric builder setter methods
+   */
+  public static String addOverloadedNumericBuilderSetterMethods(String code) {
+    if (code == null || code.isEmpty()) {
+      return code;
+    }
+
+    // First, identify the builder class in the code
+    Pattern builderClassPattern = Pattern.compile("public static class Builder[^{]*\\{");
+    Matcher builderClassMatcher = builderClassPattern.matcher(code);
+
+    if (!builderClassMatcher.find()) {
+      return code; // No builder class found
+    }
+
+    int builderClassStart = builderClassMatcher.start();
+    
+    // Find the opening brace of the builder class
+    int builderClassOpenBrace = code.indexOf("{", builderClassStart);
+    if (builderClassOpenBrace == -1) {
+      return code; // Unexpected format
+    }
+    
+    // Find the end of the builder class using the helper method
+    int builderClassEnd = CodeTransformationUtils.findEndOfBlock(code, builderClassOpenBrace);
+    if (builderClassEnd == -1) {
+      return code; // Couldn't find proper end of builder class
+    }
+
+    String builderClassCode = code.substring(builderClassStart, builderClassEnd);
+
+    // Extract the class name to determine the builder return type
+    Pattern classNamePattern = Pattern.compile("public class (\\w+)");
+    Matcher classNameMatcher = classNamePattern.matcher(code);
+    if (!classNameMatcher.find()) {
+      return code; // Can't find class name
+    }
+    String className = classNameMatcher.group(1);
+
+    // Extract namespace/package name to correctly reference the builder class
+    String namespace = "";
+    Pattern packagePattern = Pattern.compile("package\\s+([^;]+);");
+    Matcher packageMatcher = packagePattern.matcher(code);
+    if (packageMatcher.find()) {
+      namespace = packageMatcher.group(1) + ".";
+    }
+
+    String builderReturnType = namespace + className + ".Builder";
+
+    // Find numeric setter methods in the builder class
+    Pattern builderSetterPattern = Pattern.compile(
+        "public\\s+[\\w.]+\\.Builder\\s+(\\w+)\\s*\\(\\s*(int|long|java\\.lang\\.Integer|java\\.lang\\.Long)\\s+(\\w+)\\s*\\)\\s*\\{");
+    Matcher builderSetterMatcher = builderSetterPattern.matcher(builderClassCode);
+
+    StringBuilder modifiedBuilderClass = new StringBuilder(builderClassCode);
+    int offset = 0;
+
+    while (builderSetterMatcher.find()) {
+      String methodName = builderSetterMatcher.group(1);
+      String paramType = builderSetterMatcher.group(2);
+      String fieldName = builderSetterMatcher.group(3);
+
+      // Only process methods that start with "set"
+      if (!methodName.startsWith("set")) {
+        continue;
+      }
+
+      // Find the position of the method body start
+      int methodStart = builderSetterMatcher.start() + offset;
+      int methodBodyStart = modifiedBuilderClass.indexOf("{", methodStart);
+      if (methodBodyStart == -1) continue;
+      
+      // Find the end of the method using the helper
+      int methodRelativeEnd = CodeTransformationUtils.findEndOfBlock(modifiedBuilderClass.toString(), methodBodyStart);
+      if (methodRelativeEnd == -1) continue; // Couldn't find proper end of method
+      
+      int methodEnd = methodRelativeEnd;
+
+      // Generate the overloaded setter using the utility method
+      StringBuilder overloadedSetter = CodeTransformationUtils.generateOverloadedSetter(
+          methodName, fieldName, paramType, true, builderReturnType);
+
+      if (overloadedSetter.length() == 0) {
+        continue;  // Not a numeric type we handle
+      }
+
+      // Check if the overloaded method already exists in the builder class
+      String overloadSignature = null;
+      if ("int".equals(paramType)) {
+        overloadSignature = "public " + builderReturnType + " " + methodName + "(long ";
+      } else if ("long".equals(paramType)) {
+        overloadSignature = "public " + builderReturnType + " " + methodName + "(int ";
+      } else if (CodeTransformationUtils.JAVA_LANG_INTEGER.equals(paramType)) {
+        overloadSignature = "public " + builderReturnType + " " + methodName + "(java.lang.Long ";
+      } else if (CodeTransformationUtils.JAVA_LANG_LONG.equals(paramType)) {
+        overloadSignature = "public " + builderReturnType + " " + methodName + "(java.lang.Integer ";
+      }
+
+      // Only add if it doesn't already exist
+      if (overloadSignature != null && !modifiedBuilderClass.toString().contains(overloadSignature)) {
+        // Insert the overloaded setter after the existing setter
+        modifiedBuilderClass.insert(methodEnd, overloadedSetter);
+        offset += overloadedSetter.length();
+      }
+    }
+
+    // Replace the builder class in the original code
+    return code.substring(0, builderClassStart) + modifiedBuilderClass + code.substring(builderClassEnd);
   }
 
   private static String addImports(String code, Collection<String> importStatements) {
