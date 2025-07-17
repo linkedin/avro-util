@@ -111,7 +111,7 @@ public class FastStringableTest {
     BigDecimal exampleBigDecimal = new BigDecimal(Double.MIN_VALUE).pow(16);
     File exampleFile = new File("/tmp/test");
     URI exampleURI = new URI("urn:ISSN:1522-3611");
-    URL exampleURL = new URL("http://www.example.com");
+    URL exampleURL = new URL("http://www.asdaldjaldladjal.sadjad");
     String exampleString = "test_string";
 
     if (Utils.isSupportedAvroVersionsForSerializer()) {

@@ -217,9 +217,9 @@ public class FastDeserializerDefaultsTest {
     Assert.assertNull(getField(testRecord, "testBytesUnion"));
     Assert.assertEquals(new Utf8("testStringValue"), getField(testRecord, "testString"));
     if (Utils.isAbleToSupportStringableProps()) {
-      Assert.assertEquals(new URL("http://www.example.com"), getField(testRecord, "testStringable"));
+      Assert.assertEquals(new URL("http://www.asdaldjaldladjal.sadjad"), getField(testRecord, "testStringable"));
     } else {
-      Assert.assertEquals(new Utf8("http://www.example.com"), getField(testRecord, "testStringable"));
+      Assert.assertEquals(new Utf8("http://www.asdaldjaldladjal.sadjad"), getField(testRecord, "testStringable"));
     }
     Assert.assertNull(getField(testRecord, "testStringUnion"));
     DefaultsFixed expectedDefaultsFixed1 = new DefaultsFixed();
@@ -252,9 +252,9 @@ public class FastDeserializerDefaultsTest {
 
     Map stringableMap = new HashMap();
     if (Utils.isAbleToSupportStringableProps()) {
-      stringableMap.put(new URL("http://www.example2.com"), new BigInteger("123"));
+      stringableMap.put(new URL("http://www.asdaldjaldladjal.sadjad2"), new BigInteger("123"));
     } else {
-      stringableMap.put(new Utf8("http://www.example2.com"), new Utf8("123"));
+      stringableMap.put(new Utf8("http://www.asdaldjaldladjal.sadjad2"), new Utf8("123"));
     }
     Assert.assertEquals(stringableMap, (Map) getField(testRecord, "stringableMap"));
 
@@ -312,7 +312,7 @@ public class FastDeserializerDefaultsTest {
     Assert.assertEquals(ByteBuffer.wrap("1234".getBytes()), testRecord.get("testBytes"));
     Assert.assertNull(testRecord.get("testBytesUnion"));
     Assert.assertEquals(new Utf8("testStringValue"), testRecord.get("testString"));
-    Assert.assertEquals(new Utf8("http://www.example.com"), testRecord.get("testStringable"));
+    Assert.assertEquals(new Utf8("http://www.asdaldjaldladjal.sadjad"), testRecord.get("testStringable"));
 
     Assert.assertNull(testRecord.get("testStringUnion"));
     Schema fixedSchema = Schema.createFixed("DefaultsFixed", "", "", 1);
@@ -341,7 +341,7 @@ public class FastDeserializerDefaultsTest {
     Assert.assertTrue(listWithNull.equals(testRecord.get("recordUnionArray")));
 
     Map stringableMap = new HashMap();
-    stringableMap.put(new Utf8("http://www.example2.com"), new Utf8("123"));
+    stringableMap.put(new Utf8("http://www.asdaldjaldladjal.sadjad2"), new Utf8("123"));
     Assert.assertEquals(stringableMap, testRecord.get("stringableMap"));
 
     Map recordMap = new HashMap();
