@@ -90,7 +90,7 @@
     {
       "name": "testStringable",
       "type": { "type": "string", "java-class": "java.net.URL" },
-      "default": "http://www.example.com"
+      "default": "http://www.asdaldjaldladjal.sadjad"
     },
     {
       "name": "testStringUnion",
@@ -297,7 +297,7 @@
         "java-key-class": "java.net.URL",
         "values": { "type": "string", "java-class": "java.math.BigInteger" }
       },
-      "default": {"http://www.example2.com": "123"}
+      "default": {"http://www.asdaldjaldladjal.sadjad2": "123"}
     },
     {
       "name": "recordMap",
