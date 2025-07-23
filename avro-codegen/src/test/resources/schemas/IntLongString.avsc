@@ -1,0 +1,64 @@
+{
+  "type": "record",
+  "namespace": "com.linkedin.test",
+  "name": "IntLongString",
+  "fields": [
+    {
+      "name": "longField",
+      "type": "long"
+    },
+    {
+      "name": "intField",
+      "type": "int"
+    },
+    {
+      "name": "boxedLongField",
+      "type": ["null", "long"],
+      "default": null
+    },
+    {
+      "name": "boxedIntField",
+      "type": ["null", "int"],
+      "default": null
+    },
+    {
+      "name": "str",
+      "type": "string"
+    },
+    {
+      "name": "strAr",
+      "type": {
+        "type": "array",
+        "items": "string"
+      }
+    },
+    {
+      "name": "strArAr",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "array",
+          "items": "string"
+        }
+      }
+    },
+    {
+      "name": "unionOfArray",
+      "type": ["null", {
+        "type": "array",
+        "items": "string"
+      }
+      ]
+    },
+    {
+      "name": "arOfMap",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "map",
+          "values": "string"
+        }
+      }
+    }
+  ]
+}

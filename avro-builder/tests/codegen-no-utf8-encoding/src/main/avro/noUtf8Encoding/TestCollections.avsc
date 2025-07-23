@@ -89,6 +89,10 @@
           "values": "int"
         }
       ]
+    },
+    {
+      "name": "intField",
+      "type": "int"
     }
   ],
   "type": "record"
