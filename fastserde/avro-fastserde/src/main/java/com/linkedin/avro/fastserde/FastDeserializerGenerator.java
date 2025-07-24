@@ -663,10 +663,7 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
             Schema potentialReaderSchema = unionReaderSchema.getTypes().get(j);
             // Avro allows unnamed types to appear only once in a union, but named types may appear multiple times and
             // thus need to be disambiguated via their full-name (including aliases).
-            if (potentialReaderSchema.getType().equals(optionSchema.getType()) &&
-                (!schemaAssistant.isNamedType(potentialReaderSchema) ||
-                    AvroCompatibilityHelper.getSchemaFullName(potentialReaderSchema).equals(AvroCompatibilityHelper.getSchemaFullName(optionSchema)) ||
-                    potentialReaderSchema.getAliases().contains(AvroCompatibilityHelper.getSchemaFullName(optionSchema)))) {
+            if (schemaAssistant.areTypesCompatible(potentialReaderSchema, optionSchema)) {
               readerOptionSchema = potentialReaderSchema;
               readerOptionUnionBranchIndex = j;
               break;

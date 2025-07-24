@@ -33,16 +33,13 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.io.BinaryDecoder;
-import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.Decoder;
-import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.avro.util.Utf8;
 import org.testng.Assert;
 import org.testng.SkipException;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.testng.collections.Lists;
 import org.testng.internal.collections.Pair;
 
 import static com.linkedin.avro.fastserde.FastSerdeTestsSupport.*;
@@ -254,6 +251,154 @@ public class FastGenericDeserializerGeneratorTest {
         ((List<GenericData.Fixed>) record.get("testFixedArray")).get(0).bytes());
     Assert.assertEquals(new byte[]{0x07, 0x08},
         ((List<GenericData.Fixed>) record.get("testFixedUnionArray")).get(0).bytes());
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldHandleDiffNamepspaceInRecords(Implementation implementation) {
+    //record with two fields, first optional string second a record with namespace "a.b.c" with name "innerRecordName". Inner record has one int field
+    Schema writerSchema  = Schema.parse("{\n" +
+            "  \"type\": \"record\",\n" +
+            "  \"name\": \"OuterRecord\",\n" +
+            "  \"fields\": [\n" +
+            "    {\n" +
+            "      \"name\": \"optionalString\",\n" +
+            "      \"type\": [\"null\", \"string\"],\n" +
+            "      \"default\": null\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"innerRecord\",\n" +
+            "      \"type\": {\n" +
+            "        \"type\": \"record\",\n" +
+            "        \"name\": \"innerRecordName\",\n" +
+            "        \"namespace\": \"a.b.c\",\n" +
+            "        \"fields\": [\n" +
+            "          {\n" +
+            "            \"name\": \"intField\",\n" +
+            "            \"type\": \"int\"\n" +
+            "          }\n" +
+            "        ]\n" +
+            "      }\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}");
+
+    //change namespace on inner record to "d.e.f"
+    Schema readerSchema = Schema.parse("{\n" +
+            "  \"type\": \"record\",\n" +
+            "  \"name\": \"OuterRecord\",\n" +
+            "  \"fields\": [\n" +
+            "    {\n" +
+            "      \"name\": \"optionalString\",\n" +
+            "      \"type\": [\"null\", \"string\"],\n" +
+            "      \"default\": null\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"innerRecord\",\n" +
+            "      \"type\": [\"null\", {\n" +
+            "        \"type\": \"record\",\n" +
+            "        \"name\": \"innerRecordName\",\n" +
+            "        \"namespace\": \"d.e.f\",\n" +
+            "        \"fields\": [\n" +
+            "          {\n" +
+            "            \"name\": \"intField\",\n" +
+            "            \"type\": \"int\"\n" +
+            "          }\n" +
+            "        ]\n" +
+            "      }],\n" +
+            "      \"default\": null\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}");
+
+    GenericRecord originalRecord = new GenericData.Record(writerSchema);
+    originalRecord.put("optionalString", "abc");
+    GenericRecord innerRecord = new GenericData.Record(writerSchema.getField("innerRecord").schema());
+    innerRecord.put("intField", 1);
+    originalRecord.put("innerRecord", innerRecord);
+
+    // when
+    try{
+      GenericRecord record = implementation.decode(writerSchema, readerSchema, genericDataAsDecoder(originalRecord));
+      // then
+      if(Utils.usesQualifiedNameForNamedTypedMatching()){
+        Assert.fail("1.5-1.7 don't support unqualified name for named type matching so we should have failed");
+      }
+      Assert.assertEquals(new Utf8("abc"), record.get("optionalString"));
+      GenericRecord innerRecordDecoded = (GenericRecord) record.get("innerRecord");
+      Assert.assertEquals(1, innerRecordDecoded.get("intField"));
+    } catch (Exception e){
+      if(!Utils.usesQualifiedNameForNamedTypedMatching()) {
+        Assert.fail("1.4, and 1.8+ support unqualified name for named type matching");
+      }
+    }
+  }
+
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldNotFailOnNamespaceMismatch(Implementation implementation) throws IOException {
+    // writer-side schema: "metadata" has NO namespace
+    String writerSchemaStr = "{\n" +
+            "  \"type\": \"record\",\n" +
+            "  \"name\": \"wrapper\",\n" +
+            "  \"fields\": [\n" +
+            "    {\n" +
+            "      \"name\": \"metadata\",\n" +
+            "      \"type\": [\"null\", {\n" +
+            "        \"type\": \"record\",\n" +
+            "        \"name\": \"metadata\",\n" +
+            "        \"fields\": [\n" +
+            "          {\"name\": \"fieldName\", \"type\": [\"null\", \"string\"], \"default\": null}\n" +
+            "        ]\n" +
+            "      }],\n" +
+            "      \"default\": null\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
+
+    // reader-side schema: same nested record but WITH namespace "rtapi.surge"
+    String readerSchemaStr = "{\n" +
+            "  \"type\": \"record\",\n" +
+            "  \"name\": \"Wrapper\",\n" +
+            "  \"fields\": [\n" +
+            "    {\n" +
+            "      \"name\": \"metadata\",\n" +
+            "      \"type\": [\"null\", {\n" +
+            "        \"type\": \"record\",\n" +
+            "        \"name\": \"metadata\",\n" +
+            "        \"namespace\": \"some.other.namespace\",\n" +
+            "        \"fields\": [\n" +
+            "          {\"name\": \"fieldName\", \"type\": [\"null\", \"string\"], \"default\": null}\n" +
+            "        ]\n" +
+            "      }],\n" +
+            "      \"default\": null\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
+
+    Schema writerSchema = AvroCompatibilityHelper.parse(writerSchemaStr);
+    Schema readerSchema = AvroCompatibilityHelper.parse(readerSchemaStr);
+
+    // Build a writer-side record instance
+    GenericRecord wrapper = new GenericData.Record(writerSchema);
+    Schema metadataSchema = writerSchema.getField("metadata").schema().getTypes().get(1);
+    GenericRecord metadataRecord = new GenericData.Record(metadataSchema);
+    metadataRecord.put("fieldName", "abc-123");
+    wrapper.put("metadata", metadataRecord);
+
+    // Attempt to deserialize – should throw AvroTypeException because of namespace mismatch
+    try{
+      GenericRecord record = implementation.decode(writerSchema, readerSchema, genericDataAsDecoder(wrapper));
+      if(Utils.usesQualifiedNameForNamedTypedMatching()){
+        Assert.fail("1.5-1.7 don't support unqualified name for named type matching so we should have failed");
+      }
+      Assert.assertEquals(((GenericRecord)record.get("metadata")).get("fieldName").toString(), "abc-123");
+    } catch (AvroTypeException e){
+        if(!Utils.usesQualifiedNameForNamedTypedMatching()) {
+            Assert.fail("1.4, and 1.8+ support unqualified name for named type matching");
+        }
+        // expected exception
+    }
+
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")

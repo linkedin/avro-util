@@ -93,6 +93,12 @@ public class Utils {
     return AvroCompatibilityHelperCommon.getRuntimeAvroVersion().laterThan(AvroVersion.AVRO_1_8);
   }
 
+  public static boolean usesQualifiedNameForNamedTypedMatching(){
+    return AvroCompatibilityHelper.getRuntimeAvroVersion().equals(AvroVersion.AVRO_1_5)
+            || AvroCompatibilityHelper.getRuntimeAvroVersion().equals(AvroVersion.AVRO_1_6)
+            || AvroCompatibilityHelper.getRuntimeAvroVersion().equals(AvroVersion.AVRO_1_7);
+  }
+
   public static boolean isWindows() {
     return IS_WINDOWS;
   }
