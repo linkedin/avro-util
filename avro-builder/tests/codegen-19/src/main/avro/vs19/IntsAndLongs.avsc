@@ -20,6 +20,11 @@
       "name": "boxedIntField",
       "type": ["null", "int"],
       "default": null
+    },
+    {
+      "name": "strField",
+      "type": "string",
+      "default": "defaultStr"
     }
   ]
 }

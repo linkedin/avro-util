@@ -38,7 +38,8 @@ public class SpecificRecordClassGeneratorTest {
         {"schemas/SimpleFixedWithHugeDoc.avsc", true},
         {"schemas/TestCollections.avsc", true},
         {"schemas/TestProblematicRecord.avsc", true},
-        {"schemas/TestRecord.avsc", false}
+        {"schemas/TestRecord.avsc", false},
+        {"schemas/IntLongString.avsc", true}
     };
   }
 

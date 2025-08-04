@@ -553,67 +553,95 @@ public class SpecificRecordClassGenerator {
     if(recordSchema.getFields().size() < 254) {
       MethodSpec.Builder allArgsConstructorBuilder = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC);
       for (AvroSchemaField field : recordSchema.getFields()) {
-        //if declared schema, use fully qualified class (no import)
-        String escapedFieldName = getFieldNameWithSuffix(field);
-        allArgsConstructorBuilder.addParameter(getParameterSpecForField(field, defaultMethodStringRepresentation));
-        if(!disableStringTransform &&  SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.STRING, field.getSchema())) {
-          allArgsConstructorBuilder.addStatement(
-              "this.$1L = com.linkedin.avroutil1.compatibility.StringConverterUtil.getUtf8($1L)",
-              escapedFieldName);
-        } else if (SpecificRecordGeneratorUtil.isListTransformerApplicableForSchema(field.getSchema(), disableStringTransform)) {
-          allArgsConstructorBuilder.addStatement(
-              "this.$1L = com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.convertToUtf8($1L)",
-              escapedFieldName);
-        } else if (SpecificRecordGeneratorUtil.isMapTransformerApplicable(field.getSchema(), disableStringTransform)) {
-          allArgsConstructorBuilder.addStatement(
-              "this.$1L = com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.convertToUtf8($1L)",
-              escapedFieldName);
-        } else if (field.getSchema() != null && AvroType.UNION.equals(field.getSchema().type())
-            && !SpecificRecordGeneratorUtil.isSingleTypeNullableUnionSchema(field.getSchema())) {
+        handleConstructorField(allArgsConstructorBuilder, field, defaultMethodStringRepresentation, disableStringTransform);
+      }
+      annotateDeprecatedConstructor(allArgsConstructorBuilder, defaultMethodStringRepresentation, recordSchema);
+      classBuilder.addMethod(allArgsConstructorBuilder.build());
+    }
+  }
 
-          allArgsConstructorBuilder.beginControlFlow("if ($1L == null)", escapedFieldName)
-              .addStatement("this.$1L = null", escapedFieldName)
+  /**
+   * Handles a field in a constructor.
+   *
+   * @param classBuilder The builder for the class being generated.
+   * @param field The AvroSchemaField to handle.
+   * @param defaultMethodStringRepresentation The default method string representation to use.
+   * @param disableStringTransform If true, disables string transformation for fields.
+   */
+  private void handleConstructorField(MethodSpec.Builder classBuilder, AvroSchemaField field,
+      AvroJavaStringRepresentation defaultMethodStringRepresentation, boolean disableStringTransform) {
+
+    //if declared schema, use fully qualified class (no import)
+    String escapedFieldName = getFieldNameWithSuffix(field);
+    classBuilder.addParameter(getParameterSpecForField(field, defaultMethodStringRepresentation));
+    if(!disableStringTransform &&  SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.STRING, field.getSchema())) {
+      classBuilder.addStatement(
+          "this.$1L = com.linkedin.avroutil1.compatibility.StringConverterUtil.getUtf8($1L)",
+          escapedFieldName);
+    } else if (SpecificRecordGeneratorUtil.isListTransformerApplicableForSchema(field.getSchema(), disableStringTransform)) {
+      classBuilder.addStatement(
+          "this.$1L = com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.convertToUtf8($1L)",
+          escapedFieldName);
+    } else if (SpecificRecordGeneratorUtil.isMapTransformerApplicable(field.getSchema(), disableStringTransform)) {
+      classBuilder.addStatement(
+          "this.$1L = com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.convertToUtf8($1L)",
+          escapedFieldName);
+    } else if (field.getSchema() != null && AvroType.UNION.equals(field.getSchema().type())
+        && !SpecificRecordGeneratorUtil.isSingleTypeNullableUnionSchema(field.getSchema())) {
+
+      classBuilder.beginControlFlow("if ($1L == null)", escapedFieldName)
+          .addStatement("this.$1L = null", escapedFieldName)
+          .endControlFlow();
+
+      // if union might contain string value in runtime
+      for (SchemaOrRef unionMemberSchema : ((AvroUnionSchema) field.getSchema()).getTypes()) {
+        if (!disableStringTransform && SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.STRING, unionMemberSchema.getSchema())) {
+          classBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName,
+                  CharSequence.class)
+              .addStatement("this.$1L = com.linkedin.avroutil1.compatibility.StringConverterUtil.getUtf8($1L)",
+                  escapedFieldName)
               .endControlFlow();
-
-          // if union might contain string value in runtime
-          for (SchemaOrRef unionMemberSchema : ((AvroUnionSchema) field.getSchema()).getTypes()) {
-            if (!disableStringTransform && SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.STRING, unionMemberSchema.getSchema())) {
-              allArgsConstructorBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName,
-                      CharSequence.class)
-                  .addStatement("this.$1L = com.linkedin.avroutil1.compatibility.StringConverterUtil.getUtf8($1L)",
-                      escapedFieldName)
-                  .endControlFlow();
-            } else if (SpecificRecordGeneratorUtil.isListTransformerApplicableForSchema(
-                unionMemberSchema.getSchema(), disableStringTransform)) {
-              allArgsConstructorBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName, List.class)
-                  .addStatement(
-                      "this.$1L = com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.convertToUtf8($1L)",
-                      escapedFieldName)
-                  .endControlFlow();
-            } else if (SpecificRecordGeneratorUtil.isMapTransformerApplicable(unionMemberSchema.getSchema(), disableStringTransform)) {
-              allArgsConstructorBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName, Map.class)
-                  .addStatement(
-                      "this.$1L = com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.convertToUtf8($1L)",
-                      escapedFieldName)
-                  .endControlFlow();
-            }
-          }
-
-          allArgsConstructorBuilder.beginControlFlow("else")
-              .addStatement("this.$1L = $1L", escapedFieldName)
+        } else if (SpecificRecordGeneratorUtil.isListTransformerApplicableForSchema(
+            unionMemberSchema.getSchema(), disableStringTransform)) {
+          classBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName, List.class)
+              .addStatement(
+                  "this.$1L = com.linkedin.avroutil1.compatibility.collectiontransformer.ListTransformer.convertToUtf8($1L)",
+                  escapedFieldName)
               .endControlFlow();
-        } else {
-          allArgsConstructorBuilder.addStatement("this.$1L = $1L", escapedFieldName);
+        } else if (SpecificRecordGeneratorUtil.isMapTransformerApplicable(unionMemberSchema.getSchema(), disableStringTransform)) {
+          classBuilder.beginControlFlow("else if($1L instanceof $2T)", escapedFieldName, Map.class)
+              .addStatement(
+                  "this.$1L = com.linkedin.avroutil1.compatibility.collectiontransformer.MapTransformer.convertToUtf8($1L)",
+                  escapedFieldName)
+              .endControlFlow();
         }
       }
 
-      //CharSequence constructors are deprecated in favor of String constructors
-      if (defaultMethodStringRepresentation.equals(AvroJavaStringRepresentation.CHAR_SEQUENCE)
-          && SpecificRecordGeneratorUtil.recordHasSimpleStringField(recordSchema)) {
-        allArgsConstructorBuilder.addAnnotation(Deprecated.class);
-      }
+      classBuilder.beginControlFlow("else")
+          .addStatement("this.$1L = $1L", escapedFieldName)
+          .endControlFlow();
+    } else {
+      classBuilder.addStatement("this.$1L = $1L", escapedFieldName);
+    }
+  }
 
-      classBuilder.addMethod(allArgsConstructorBuilder.build());
+  /**
+  * Annotates the constructor as deprecated if the schema has string fields and the default method string
+   * representation is CharSequence. CharSequence constructors are deprecated in favor of String constructors.
+   *
+  * @param classBuilder The builder for the class being generated.
+  * @param defaultMethodStringRepresentation The default method string representation.
+  * @param recordSchema The Avro record schema.
+   */
+  private void annotateDeprecatedConstructor(
+      MethodSpec.Builder classBuilder,
+      AvroJavaStringRepresentation defaultMethodStringRepresentation,
+      AvroRecordSchema recordSchema
+  ) {
+    if (defaultMethodStringRepresentation.equals(AvroJavaStringRepresentation.CHAR_SEQUENCE)
+        && SpecificRecordGeneratorUtil.recordHasSimpleStringField(recordSchema)
+    ) {
+      classBuilder.addAnnotation(Deprecated.class);
     }
   }
 
@@ -663,6 +691,7 @@ public class SpecificRecordClassGenerator {
    */
   private void addMixedNumericConversionConstructor(AvroRecordSchema recordSchema, SpecificRecordGenerationConfig config,
       TypeSpec.Builder classBuilder) {
+    AvroJavaStringRepresentation defaultMethodStringRepresentation = config.getDefaultMethodStringRepresentation();
     MethodSpec.Builder constructorBuilder = MethodSpec.constructorBuilder()
         .addModifiers(Modifier.PUBLIC);
 
@@ -729,12 +758,11 @@ public class SpecificRecordClassGenerator {
         }
       } else  {
         // For other fields, use their normal type
-        constructorBuilder.addParameter(
-            getParameterSpecForField(field, AvroJavaStringRepresentation.STRING));
-        constructorBuilder.addStatement("this.$1L = $1L", escapedFieldName);
-
+        handleConstructorField(constructorBuilder, field,
+            defaultMethodStringRepresentation, !config.isUtf8EncodingEnabled());
       }
     }
+    annotateDeprecatedConstructor(constructorBuilder, defaultMethodStringRepresentation, recordSchema);
     classBuilder.addMethod(constructorBuilder.build());
   }
 
@@ -1071,13 +1099,13 @@ public class SpecificRecordClassGenerator {
     if (fieldClass != null) {
       methodBuilder = MethodSpec
           .methodBuilder(getMethodNameForFieldWithPrefix("set", escapedFieldName))
-          .addModifiers(Modifier.PUBLIC);
+          .addModifiers(Modifier.PUBLIC)
+          .addStatement("validate(fields()[$L], value)", fieldIndex);
 
       if (fieldClass.equals(long.class)) {
         // If field is of type long, add method with int parameter
         methodBuilder
             .addParameter(TypeName.INT, "value")
-            .addStatement("validate(fields()[$L], value)", fieldIndex)
             .addStatement("this.$L = value", escapedFieldName);
 
       } else if (fieldClass.equals(int.class)) {
@@ -1097,10 +1125,14 @@ public class SpecificRecordClassGenerator {
           field.getSchemaOrRef().getSchema().type(), true,
           config.getDefaultMethodStringRepresentation());
 
+      methodBuilder = MethodSpec
+          .methodBuilder(getMethodNameForFieldWithPrefix("set", escapedFieldName))
+          .addModifiers(Modifier.PUBLIC)
+          .addStatement("validate(fields()[$L], value)", fieldIndex);;
+
       if (typeName.equals(ClassName.get(Long.class))) {
         // For long or Long fields, add a setter that accepts int or Integer
-        methodBuilder = MethodSpec
-            .methodBuilder(getMethodNameForFieldWithPrefix("set", escapedFieldName))
+        methodBuilder
             .addParameter(ClassName.get(Integer.class), "value")
             .beginControlFlow("if (value == null)")
             .addStatement("this.$L = null", escapedFieldName)
@@ -1110,8 +1142,7 @@ public class SpecificRecordClassGenerator {
 
 
       } else if (typeName.equals(ClassName.get(Integer.class))) {
-        methodBuilder = MethodSpec
-            .methodBuilder(getMethodNameForFieldWithPrefix("set", escapedFieldName))
+        methodBuilder
             .addParameter(ClassName.get(Long.class), "value")
             .beginControlFlow("if (value == null)")
             .addStatement("this.$L = null", escapedFieldName)
@@ -1271,7 +1302,7 @@ public class SpecificRecordClassGenerator {
           codeBlockBuilder
               .beginControlFlow("try")
               .addStatement("$L = in.readInt()", fieldName)
-              .nextControlFlow("catch (Exception e)")
+              .nextControlFlow("catch ($T e)", Exception.class)
               .addStatement("// If int decoding fails, try long decoding with bounds check")
               .addStatement("long $L = in.readLong()", tempIntVarName)
               .beginControlFlow("if ($L <= Integer.MAX_VALUE && $L >= Integer.MIN_VALUE)", tempIntVarName, tempIntVarName)
@@ -1295,7 +1326,7 @@ public class SpecificRecordClassGenerator {
               "temp" + Character.toUpperCase(cleanLongFieldName.charAt(0)) + cleanLongFieldName.substring(1);
           codeBlockBuilder.beginControlFlow("try")
               .addStatement("$L = in.readLong()", fieldName)
-              .nextControlFlow("catch (Exception e)")
+              .nextControlFlow("catch ($T e)", Exception.class)
               .addStatement("// If long decoding fails, try int decoding with conversion to long")
               .addStatement("int $L = in.readInt()", tempLongVarName)
               .addStatement("$L = (long) $L", fieldName, tempLongVarName)
