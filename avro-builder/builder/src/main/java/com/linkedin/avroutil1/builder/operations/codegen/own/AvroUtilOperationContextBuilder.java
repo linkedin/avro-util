@@ -13,16 +13,15 @@ import com.linkedin.avroutil1.builder.operations.codegen.OperationContextBuilder
 import com.linkedin.avroutil1.builder.operations.codegen.util.AvscFileFinderUtil;
 import com.linkedin.avroutil1.builder.operations.codegen.vanilla.ClasspathSchemaSet;
 import com.linkedin.avroutil1.builder.operations.codegen.vanilla.ResolverPathSchemaSet;
+import com.linkedin.avroutil1.builder.operations.codegen.util.SchemaComparisonUtil;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
-import com.linkedin.avroutil1.compatibility.SchemaComparisonConfiguration;
 import com.linkedin.avroutil1.model.AvroNamedSchema;
 import com.linkedin.avroutil1.model.AvroSchema;
 import com.linkedin.avroutil1.model.SchemaOrRef;
 import com.linkedin.avroutil1.parser.avsc.AvroParseContext;
 import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
 import com.linkedin.avroutil1.parser.avsc.AvscParser;
-import com.linkedin.avroutil1.util.ConfigurableAvroSchemaComparator;
 import org.apache.avro.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -122,11 +121,7 @@ public class AvroUtilOperationContextBuilder implements OperationContextBuilder 
           if (cpSchema != null) {
             // check if the schema on classpath is the same as the one we are trying to generate
             AvroSchema avroSchemaFromClasspath = (new AvscParser()).parse(cpSchema.toString()).getTopLevelSchema();
-            SchemaComparisonConfiguration comparisonConfig = SchemaComparisonConfiguration.STRICT;
-            if (config.getJsonPropsToIgnore() != null && !config.getJsonPropsToIgnore().isEmpty()) {
-              comparisonConfig = comparisonConfig.jsonPropNamesToIgnore(config.getJsonPropsToIgnore());
-            }
-            boolean areEqual = ConfigurableAvroSchemaComparator.equals(avroSchemaFromClasspath, schema, comparisonConfig);
+            boolean areEqual = SchemaComparisonUtil.equalsAvroSchema(avroSchemaFromClasspath, schema, config.getJsonPropsToIgnore());
             if (!areEqual) {
               throw new IllegalStateException("Schema with name " + fullName
                   + " is defined in the filesystem and on the classpath, but the two schemas are not equal.");
@@ -160,10 +155,7 @@ public class AvroUtilOperationContextBuilder implements OperationContextBuilder 
           case FAIL_IF_DIFFERENT:
             AvroNamedSchema baseNamed = null;
             AvscParseResult baseSchemaResult = null;
-            SchemaComparisonConfiguration comparisonConfig = SchemaComparisonConfiguration.STRICT;
-            if (config.getJsonPropsToIgnore() != null && !config.getJsonPropsToIgnore().isEmpty()) {
-              comparisonConfig = comparisonConfig.jsonPropNamesToIgnore(config.getJsonPropsToIgnore());
-            }
+            // Use SchemaComparisonUtil to build the comparison configuration
             for (AvscParseResult duplicateParseResult : duplicateEntry.getValue()) {
               AvroNamedSchema currentNamed = duplicateParseResult.getDefinedSchema(fqcn);
               if (baseNamed == null) {
@@ -171,8 +163,8 @@ public class AvroUtilOperationContextBuilder implements OperationContextBuilder 
                 baseSchemaResult = duplicateParseResult;
                 continue;
               }
-              // Compare using configurable comparator on Avro model with optional json-prop ignores
-              boolean equal = com.linkedin.avroutil1.util.ConfigurableAvroSchemaComparator.equals(baseNamed, currentNamed, comparisonConfig);
+              // Compare using SchemaComparisonUtil for consistent schema comparison
+              boolean equal = SchemaComparisonUtil.equalsAvroSchema(baseNamed, currentNamed, config.getJsonPropsToIgnore());
               long baseLineNumber = baseSchemaResult.getDefinedSchema(fqcn).getCodeLocation().getEnd().getLineNumber();
               long duplicateLineNumber = currentNamed.getCodeLocation().getEnd().getLineNumber();
               String msg = "schema " + fqcn + " found DIFFERENT in 2+ places: " + baseSchemaResult.getURI() + "#L"
