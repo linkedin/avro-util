@@ -43,6 +43,28 @@ public class SchemaBuilderTest {
   }
 
   @Test
+  public void testJsonPropsToIgnoreFlagWithVanilla() throws Exception {
+    File projectRoot = new File(locateTestProjectsRoot(), "json-props-ignore-project");
+    File inputFolder = new File(projectRoot, "input");
+    File outputFolder = new File(projectRoot, "output");
+    if (outputFolder.exists()) { // clear output
+      FileUtils.deleteDirectory(outputFolder);
+    }
+    // Run the builder with the jsonPropsToIgnore flag so the two schemas differing only by custom prop are treated equal
+    SchemaBuilder.main(new String[] {
+        "--input", inputFolder.getAbsolutePath(),
+        "--output", outputFolder.getAbsolutePath(),
+        "--generator", CodeGenerator.VANILLA.name(),
+        "--jsonPropsToIgnore", "my_custom_prop"
+    });
+    // Expect only one generated java file since duplicate schemas are equal after ignoring the custom prop
+    List<Path> javaFiles = Files.find(outputFolder.toPath(), 5,
+        (path, basicFileAttributes) -> path.getFileName().toString().endsWith(".java")
+    ).collect(Collectors.toList());
+    Assert.assertEquals(javaFiles.size(), 1);
+  }
+
+  @Test
   public void testSimpleProjectWithPlugin() throws Exception {
     File simpleProjectRoot = new File(locateTestProjectsRoot(), "simple-project");
     File inputFolder = new File(simpleProjectRoot, "input");

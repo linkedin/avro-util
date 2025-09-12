@@ -7,12 +7,12 @@
 package com.linkedin.avroutil1.builder.operations.codegen.own;
 
 import com.linkedin.avroutil1.builder.operations.OperationContext;
+import com.linkedin.avroutil1.builder.operations.SchemaSet;
 import com.linkedin.avroutil1.builder.operations.codegen.CodeGenOpConfig;
 import com.linkedin.avroutil1.builder.operations.codegen.OperationContextBuilder;
 import com.linkedin.avroutil1.builder.operations.codegen.util.AvscFileFinderUtil;
 import com.linkedin.avroutil1.builder.operations.codegen.vanilla.ClasspathSchemaSet;
 import com.linkedin.avroutil1.builder.operations.codegen.vanilla.ResolverPathSchemaSet;
-import com.linkedin.avroutil1.builder.operations.SchemaSet;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
 import com.linkedin.avroutil1.compatibility.SchemaComparisonConfiguration;
@@ -23,8 +23,11 @@ import com.linkedin.avroutil1.parser.avsc.AvroParseContext;
 import com.linkedin.avroutil1.parser.avsc.AvscParseResult;
 import com.linkedin.avroutil1.parser.avsc.AvscParser;
 import com.linkedin.avroutil1.util.ConfigurableAvroSchemaComparator;
-import com.linkedin.avroutil1.writer.avsc.AvscSchemaWriter;
-import com.linkedin.avroutil1.writer.avsc.AvscWriterConfig;
+import org.apache.avro.Schema;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 import java.io.File;
 import java.util.Collections;
 import java.util.HashSet;
@@ -34,9 +37,6 @@ import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.avro.Schema;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 public class AvroUtilOperationContextBuilder implements OperationContextBuilder {
@@ -122,8 +122,11 @@ public class AvroUtilOperationContextBuilder implements OperationContextBuilder 
           if (cpSchema != null) {
             // check if the schema on classpath is the same as the one we are trying to generate
             AvroSchema avroSchemaFromClasspath = (new AvscParser()).parse(cpSchema.toString()).getTopLevelSchema();
-            boolean areEqual = ConfigurableAvroSchemaComparator.equals(avroSchemaFromClasspath, schema,
-                SchemaComparisonConfiguration.STRICT);
+            SchemaComparisonConfiguration comparisonConfig = SchemaComparisonConfiguration.STRICT;
+            if (config.getJsonPropsToIgnore() != null && !config.getJsonPropsToIgnore().isEmpty()) {
+              comparisonConfig = comparisonConfig.jsonPropNamesToIgnore(config.getJsonPropsToIgnore());
+            }
+            boolean areEqual = ConfigurableAvroSchemaComparator.equals(avroSchemaFromClasspath, schema, comparisonConfig);
             if (!areEqual) {
               throw new IllegalStateException("Schema with name " + fullName
                   + " is defined in the filesystem and on the classpath, but the two schemas are not equal.");
@@ -155,28 +158,29 @@ public class AvroUtilOperationContextBuilder implements OperationContextBuilder 
             System.err.println("WARNING: schema " + fqcn + " found in 2+ places: " + allFilesString);
             break;
           case FAIL_IF_DIFFERENT:
-            String baseSchema = null;
+            AvroNamedSchema baseNamed = null;
             AvscParseResult baseSchemaResult = null;
+            SchemaComparisonConfiguration comparisonConfig = SchemaComparisonConfiguration.STRICT;
+            if (config.getJsonPropsToIgnore() != null && !config.getJsonPropsToIgnore().isEmpty()) {
+              comparisonConfig = comparisonConfig.jsonPropNamesToIgnore(config.getJsonPropsToIgnore());
+            }
             for (AvscParseResult duplicateParseResult : duplicateEntry.getValue()) {
-              if (baseSchema == null) {
-                baseSchema = new AvscSchemaWriter().generateAvsc(duplicateParseResult.getDefinedSchema(fqcn),
-                    AvscWriterConfig.CORRECT_MITIGATED);
+              AvroNamedSchema currentNamed = duplicateParseResult.getDefinedSchema(fqcn);
+              if (baseNamed == null) {
+                baseNamed = currentNamed;
                 baseSchemaResult = duplicateParseResult;
                 continue;
               }
-              String currSchema = new AvscSchemaWriter().generateAvsc(duplicateParseResult.getDefinedSchema(fqcn),
-                  AvscWriterConfig.CORRECT_MITIGATED);
-
-              // TODO: compare canonical forms when canonicalization work is complete
+              // Compare using configurable comparator on Avro model with optional json-prop ignores
+              boolean equal = com.linkedin.avroutil1.util.ConfigurableAvroSchemaComparator.equals(baseNamed, currentNamed, comparisonConfig);
               long baseLineNumber = baseSchemaResult.getDefinedSchema(fqcn).getCodeLocation().getEnd().getLineNumber();
-              long duplicateLineNumber =
-                  duplicateParseResult.getDefinedSchema(fqcn).getCodeLocation().getEnd().getLineNumber();
-              String errorMsg = "schema " + fqcn + " found DIFFERENT in 2+ places: " + baseSchemaResult.getURI() + "#L"
+              long duplicateLineNumber = currentNamed.getCodeLocation().getEnd().getLineNumber();
+              String msg = "schema " + fqcn + " found DIFFERENT in 2+ places: " + baseSchemaResult.getURI() + "#L"
                   + baseLineNumber + " and " + duplicateParseResult.getURI() + "#L" + duplicateLineNumber;
-              if (!baseSchema.equals(currSchema)) {
-                throw new RuntimeException("ERROR: " + errorMsg);
+              if (!equal) {
+                throw new RuntimeException("ERROR: " + msg);
               } else {
-                System.err.println("WARNING: " + errorMsg);
+                System.err.println("WARNING: " + msg);
               }
             }
             break;

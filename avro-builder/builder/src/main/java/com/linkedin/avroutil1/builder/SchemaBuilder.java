@@ -122,6 +122,12 @@ public class SchemaBuilder {
         .defaultsTo("true")
         .describedAs("true/false");
 
+    OptionSpec<String> jsonPropsToIgnoreOpt = parser.accepts(
+            "jsonPropsToIgnore",
+            "Comma-separated JSON property names to ignore during schema equality comparison (e.g., custom props)")
+        .withOptionalArg()
+        .withValuesSeparatedBy(',');
+
     //allow plugins to add CLI options
     for (BuilderPlugin plugin : plugins) {
       plugin.customizeCLI(parser);
@@ -261,6 +267,19 @@ public class SchemaBuilder {
       }
     }
 
+    java.util.Set<String> jsonPropsToIgnore = new java.util.HashSet<>();
+    if (options.has(jsonPropsToIgnoreOpt)) {
+      List<String> vals = options.valuesOf(jsonPropsToIgnoreOpt);
+      for (String v : vals) {
+        if (v != null) {
+          String trimmed = v.trim();
+          if (!trimmed.isEmpty()) {
+            jsonPropsToIgnore.add(trimmed);
+          }
+        }
+      }
+    }
+
     //allow plugins to parse and validate their own added options
     for (BuilderPlugin plugin : plugins) {
       plugin.parseAndValidateOptions(options);
@@ -282,7 +301,8 @@ public class SchemaBuilder {
         handleAvro702,
         handleUtf8EncodingInPutByIndex,
         skipCodegenIfSchemaOnClasspath,
-        handleUtf8Encoding
+        handleUtf8Encoding,
+        jsonPropsToIgnore
     );
 
     opConfig.validateParameters();
