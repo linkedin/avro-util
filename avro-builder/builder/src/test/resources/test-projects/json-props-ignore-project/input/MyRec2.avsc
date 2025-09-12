@@ -1,0 +1,7 @@
+{
+  "type": "record",
+  "name": "MyRec",
+  "namespace": "com.example",
+  "fields": [ { "name": "a", "type": "int" } ],
+  "my_custom_prop": "v2"
+}

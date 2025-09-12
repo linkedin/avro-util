@@ -14,6 +14,7 @@ import com.linkedin.avroutil1.builder.operations.codegen.util.AvscFileFinderUtil
 import com.linkedin.avroutil1.compatibility.Avro702Checker;
 import com.linkedin.avroutil1.compatibility.AvscGenerationConfig;
 import com.linkedin.avroutil1.compatibility.CodeGenerationConfig;
+import com.linkedin.avroutil1.builder.operations.codegen.util.SchemaComparisonUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
@@ -116,9 +117,11 @@ public class VanillaProcessedCodeGenOp implements OperationContextBuilder {
               System.err.println("WARNING: schema " + fqcn + " found in 2+ places: " + otherPath + " and " + filePath);
               break;
             case FAIL_IF_DIFFERENT:
-              String otherContents = readFile(otherPath);
-              boolean identical = fileContents.equals(otherContents);
-              if (!identical) {
+              // Compare schemas structurally, optionally ignoring specified JSON properties
+              Schema thisSchema = new JSONObject(fileContents).has("type") ? new Schema.Parser().parse(fileContents) : null;
+              Schema thatSchema = new JSONObject(readFile(otherPath)).has("type") ? new Schema.Parser().parse(readFile(otherPath)) : null;
+              boolean schemasEqual = SchemaComparisonUtil.equalsApacheSchema(thisSchema, thatSchema, config.getJsonPropsToIgnore());
+              if (!schemasEqual) {
                 throw new RuntimeException("ERROR: schema " + fqcn + " found DIFFERENT in 2+ places: " + otherPath + " and " + filePath);
               } else {
                 System.err.println("WARNING: schema " + fqcn + " found identical in 2+ places: " + otherPath + " and " + filePath);
@@ -144,7 +147,8 @@ public class VanillaProcessedCodeGenOp implements OperationContextBuilder {
         fqcnsFoundOnClasspath,
         config.getDuplicateSchemasToIgnore(),
         config.getDupBehaviour(),
-        codeGenerationConfig
+        codeGenerationConfig,
+        config.getJsonPropsToIgnore() == null ? java.util.Collections.emptySet() : config.getJsonPropsToIgnore()
     );
 
     for (Schema schema : schemas) {
