@@ -25,11 +25,7 @@ package com.linkedin.avroutil1.compatibility.avro14.parsing;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.linkedin.avroutil1.compatibility.HelperConsts;
 import org.apache.avro.AvroTypeException;
@@ -165,6 +161,12 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
         case NULL:
         case BOOLEAN:
         case INT:
+          switch (writerType) {
+            case LONG:
+              return Symbol.IntLongAdjustAction.INSTANCE;
+            default:
+              break;
+          }
         case STRING:
         case FLOAT:
         case BYTES:
@@ -449,6 +451,11 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
           }
           break;
         case LONG:
+            // We can selectively demote long and check that it fits inside int range
+            // when reading an int from a long writer schema.
+            if (b.getType() == Schema.Type.INT) {
+                return j;
+            }
         case FLOAT:
           switch (b.getType()) {
             case DOUBLE:

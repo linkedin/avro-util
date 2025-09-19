@@ -152,6 +152,23 @@ public class ResolvingDecoder extends ValidatingDecoder {
   }
 
   @Override
+  public int readInt() throws IOException {
+    Symbol actual = parser.popSymbol();
+    if (actual == Symbol.INT) {
+      return in.readInt();
+    } else if (actual == Symbol.IntLongAdjustAction.INSTANCE) {
+      long value = in.readLong();
+      if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
+        throw new AvroTypeException(value + " cannot be represented as int");
+      }
+
+      return (int) value;
+    }
+
+    throw new AvroTypeException("Expected int but found " + actual);
+  }
+
+  @Override
   public long readLong() throws IOException {
     Symbol actual = parser.advance(Symbol.LONG);
     if (actual == Symbol.INT) {
@@ -227,6 +244,9 @@ public class ResolvingDecoder extends ValidatingDecoder {
           .createBinaryDecoder(dsa.contents, null);
     } else if (top == Symbol.DEFAULT_END_ACTION) {
       in = backup;
+    } else if (top == Symbol.IntLongAdjustAction.INSTANCE) {
+      parser.pushSymbol(Symbol.INT);
+      return Symbol.INT;
     } else {
       throw new AvroTypeException("Unknown action: " + top);
     }
