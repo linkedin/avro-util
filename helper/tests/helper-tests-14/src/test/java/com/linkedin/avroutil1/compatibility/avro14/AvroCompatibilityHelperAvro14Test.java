@@ -142,7 +142,7 @@ public class AvroCompatibilityHelperAvro14Test {
   }
 
   @Test
-  public void testIntToLongDemotion() throws IOException {
+  public void testLongToIntDemotion() throws IOException {
     LongRecord longRecord = new LongRecord();
     longRecord.field = 42L;
     longRecord.unionField = 55L;
@@ -158,7 +158,7 @@ public class AvroCompatibilityHelperAvro14Test {
   }
 
   @Test
-  public void testIntToLongDemotionOutOfRange() throws IOException {
+  public void testLongToIntDemotionOutOfRange() throws IOException {
     LongRecord longRecord = new LongRecord();
     longRecord.field = (long) Integer.MAX_VALUE + 1L;
     byte[] binary = toBinary(longRecord);
