@@ -25,7 +25,9 @@ import com.linkedin.avroutil1.compatibility.StringPropertyUtils;
 import com.linkedin.avroutil1.compatibility.StringRepresentation;
 import com.linkedin.avroutil1.compatibility.avro14.backports.Avro14DefaultValuesCache;
 import com.linkedin.avroutil1.compatibility.avro14.backports.Avro18BufferedBinaryEncoder;
+import com.linkedin.avroutil1.compatibility.avro14.backports.GenericDatumReaderExt;
 import com.linkedin.avroutil1.compatibility.avro14.backports.GenericDatumWriterExt;
+import com.linkedin.avroutil1.compatibility.avro14.backports.SpecificDatumReaderExt;
 import com.linkedin.avroutil1.compatibility.avro14.backports.SpecificDatumWriterExt;
 import com.linkedin.avroutil1.compatibility.avro14.codec.AliasAwareSpecificDatumReader;
 import com.linkedin.avroutil1.compatibility.avro14.codec.BoundedMemoryDecoder;
@@ -43,7 +45,6 @@ import org.apache.avro.Avro14SchemaAccessUtil;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
-import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.io.Avro14BinaryDecoderAccessUtil;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.BinaryEncoder;
@@ -229,7 +230,7 @@ public class Avro14Adapter implements AvroAdapter {
   @Override
   public DatumReader<?> newGenericDatumReader(Schema writer, Schema reader, GenericData genericData) {
     // genericData not supported here
-    return new GenericDatumReader<>(writer, reader);
+    return new GenericDatumReaderExt<>(writer, reader);
   }
 
   @Override
@@ -241,7 +242,7 @@ public class Avro14Adapter implements AvroAdapter {
   public DatumReader<?> newSpecificDatumReader(Schema writer, Schema reader, SpecificData specificData) {
     //SDRs in 1.4 do not allow for specifying an instance of SpecificData
     //TODO - get back here if we want to try backporting this to 1.4
-    return new SpecificDatumReader<>(writer, reader);
+    return new SpecificDatumReaderExt<>(writer, reader);
   }
 
   @Override
