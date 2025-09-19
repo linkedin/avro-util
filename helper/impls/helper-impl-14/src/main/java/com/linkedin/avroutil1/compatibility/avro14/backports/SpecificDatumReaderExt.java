@@ -1,3 +1,9 @@
+/*
+ * Copyright 2025 LinkedIn Corp.
+ * Licensed under the BSD 2-Clause License (the "License").
+ * See License in the project root for license information.
+ */
+
 package com.linkedin.avroutil1.compatibility.avro14.backports;
 
 import com.linkedin.avroutil1.compatibility.avro14.codec.CachedResolvingDecoder;
