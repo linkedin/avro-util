@@ -23,6 +23,8 @@ import com.linkedin.avroutil1.compatibility.SchemaParseResult;
 import com.linkedin.avroutil1.compatibility.SkipDecoder;
 import com.linkedin.avroutil1.compatibility.StringRepresentation;
 import com.linkedin.avroutil1.compatibility.avro18.backports.Avro18DefaultValuesCache;
+import com.linkedin.avroutil1.compatibility.avro18.backports.GenericDatumReaderExt;
+import com.linkedin.avroutil1.compatibility.avro18.backports.SpecificDatumReaderExt;
 import com.linkedin.avroutil1.compatibility.avro18.codec.AliasAwareSpecificDatumReader;
 import com.linkedin.avroutil1.compatibility.avro18.codec.BoundedMemoryDecoder;
 import com.linkedin.avroutil1.compatibility.avro18.codec.CachedResolvingDecoder;
@@ -36,7 +38,6 @@ import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaNormalization;
 import org.apache.avro.generic.GenericData;
-import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.io.Avro18BinaryDecoderAccessUtil;
 import org.apache.avro.io.BinaryDecoder;
@@ -232,7 +233,7 @@ public class Avro18Adapter implements AvroAdapter {
 
   @Override
   public DatumReader<?> newGenericDatumReader(Schema writer, Schema reader, GenericData genericData) {
-    return new GenericDatumReader<>(writer, reader, genericData);
+    return new GenericDatumReaderExt<>(writer, reader, genericData);
   }
 
   @Override
@@ -242,7 +243,7 @@ public class Avro18Adapter implements AvroAdapter {
 
   @Override
   public DatumReader<?> newSpecificDatumReader(Schema writer, Schema reader, SpecificData specificData) {
-    return new SpecificDatumReader<>(writer, reader, specificData);
+    return new SpecificDatumReaderExt<>(writer, reader, specificData);
   }
 
   @Override

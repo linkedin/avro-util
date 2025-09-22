@@ -68,6 +68,23 @@ public class ResolvingDecoder extends ValidatingDecoder {
     this.parser.processImplicitActions();
   }
 
+  @Override
+  public int readInt() throws IOException {
+    Symbol actual = parser.popSymbol();
+    if (actual == Symbol.INT) {
+      return in.readInt();
+    } else if (actual == Symbol.IntLongAdjustAction.INSTANCE) {
+      long value = in.readLong();
+      if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
+        throw new AvroTypeException(value + " cannot be represented as int");
+      }
+
+      return (int) value;
+    }
+
+    throw new AvroTypeException("Expected int but found " + actual);
+  }
+
   public long readLong() throws IOException {
     Symbol actual = this.parser.advance(Symbol.LONG);
     if (actual == Symbol.INT) {
@@ -206,6 +223,11 @@ public class ResolvingDecoder extends ValidatingDecoder {
       } else {
         if (top instanceof Symbol.ErrorAction) {
           throw new AvroTypeException(((Symbol.ErrorAction)top).msg);
+        }
+
+        if (top == Symbol.IntLongAdjustAction.INSTANCE) {
+          parser.pushSymbol(Symbol.INT);
+          return Symbol.INT;
         }
 
         if (top instanceof Symbol.DefaultStartAction) {

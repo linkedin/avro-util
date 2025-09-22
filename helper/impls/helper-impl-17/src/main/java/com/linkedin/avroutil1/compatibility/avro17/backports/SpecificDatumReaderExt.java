@@ -4,9 +4,9 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1.compatibility.avro16.backports;
+package com.linkedin.avroutil1.compatibility.avro17.backports;
 
-import com.linkedin.avroutil1.compatibility.avro16.codec.CachedResolvingDecoder;
+import com.linkedin.avroutil1.compatibility.avro17.codec.CachedResolvingDecoder;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -19,7 +19,7 @@ import java.io.IOException;
 
 /**
  * this class allows constructing a {@link SpecificDatumReader} with
- * a specified {@link SpecificData} instance under avro 1.6
+ * a specified {@link SpecificData} instance under avro 1.7
  * @param <T>
  */
 public class SpecificDatumReaderExt<T> extends SpecificDatumReader<T> {
@@ -102,8 +102,11 @@ public class SpecificDatumReaderExt<T> extends SpecificDatumReader<T> {
         for (Schema.Field f : in.readFieldOrder()) {
             int pos = f.pos();
             String name = f.name();
-            Object oldDatum = (old!=null) ? data.getField(r, name, pos) : null;
-            data.setField(r, name, pos, read(oldDatum, f.schema(), in));
+            Object oldDatum = null;
+            if (old != null) {
+                oldDatum = data.getField(r, name, pos);
+            }
+            data.setField(r, f.name(), f.pos(), read(oldDatum, f.schema(), in));
         }
 
         return r;
