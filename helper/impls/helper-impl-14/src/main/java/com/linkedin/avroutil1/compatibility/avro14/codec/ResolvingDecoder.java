@@ -24,6 +24,7 @@
 
 package com.linkedin.avroutil1.compatibility.avro14.codec;
 
+import com.linkedin.avroutil1.compatibility.CustomDecoder;
 import com.linkedin.avroutil1.compatibility.avro14.parsing.ResolvingGrammarGenerator;
 import com.linkedin.avroutil1.compatibility.avro14.parsing.Symbol;
 import java.io.IOException;
@@ -45,7 +46,7 @@ import org.apache.avro.io.DecoderFactory;
  * <p>See the <a href="doc-files/parsing.html">parser documentation</a> for
  *  information on how this works.
  */
-public class ResolvingDecoder extends ValidatingDecoder {
+public class ResolvingDecoder extends ValidatingDecoder implements CustomDecoder {
 
   private Decoder backup;
 

@@ -59,7 +59,7 @@ public class GenericDatumReaderExt<T> extends GenericDatumReader<T> {
   @SuppressWarnings("unchecked")
   @Override
   public T read(T reuse, Decoder in) throws IOException {
-    CachedResolvingDecoder resolver = new CachedResolvingDecoder(writer, reader, in);
+    CachedResolvingDecoder resolver = new CachedResolvingDecoder(Schema.applyAliases(writer, reader), reader, in);
     resolver.init(in);
     T result = (T) read(reuse, reader, resolver);
     resolver.drain();

@@ -4,31 +4,34 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1.compatibility.avro18.backports;
+package com.linkedin.avroutil1.compatibility.avro111.backports;
 
-import com.linkedin.avroutil1.compatibility.avro18.codec.CachedResolvingDecoder;
+import com.linkedin.avroutil1.compatibility.avro111.codec.CachedResolvingDecoder;
+import com.linkedin.avroutil1.compatibility.backports.SpecificRecordBaseExt;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Conversion;
 import org.apache.avro.LogicalType;
 import org.apache.avro.Schema;
-import org.apache.avro.generic.Avro18GenericDataAccessUtil;
+import org.apache.avro.generic.Avro111GenericDataAccessUtil;
 import org.apache.avro.generic.GenericData;
-import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.io.Decoder;
+import org.apache.avro.specific.SpecificData;
+import org.apache.avro.specific.SpecificDatumReader;
+import org.apache.avro.specific.SpecificRecordBase;
 
 import java.io.IOException;
 
 
 /**
- * this class allows constructing a {@link GenericDatumReader} with
- * a specified {@link GenericData} instance under avro 1.8
+ * this class allows constructing a {@link SpecificDatumReader} with
+ * a specified {@link SpecificData} instance under avro 1.9.
  *
  * @param <T>
  */
-public class GenericDatumReaderExt<T> extends GenericDatumReader<T> {
+public class SpecificDatumReaderExt<T> extends SpecificDatumReader<T> {
 
-    public GenericDatumReaderExt(Schema writer, Schema reader, GenericData genericData) {
-        super(writer, reader, genericData);
+    public SpecificDatumReaderExt(Schema writer, Schema reader, SpecificData specificData) {
+        super(writer, reader, specificData);
     }
 
     /**
@@ -98,18 +101,30 @@ public class GenericDatumReaderExt<T> extends GenericDatumReader<T> {
 
     private Object readRecord(Object old, Schema expected,
                               CachedResolvingDecoder in) throws IOException {
+        SpecificData specificData = getSpecificData();
+        if (specificData.useCustomCoders()) {
+            old = specificData.newRecord(old, expected);
+            if (old instanceof SpecificRecordBaseExt) {
+                SpecificRecordBaseExt d = (SpecificRecordBaseExt) old;
+                if (d.isCustomDecodingEnabled()) {
+                    d.customDecode(in);
+                    return d;
+                }
+            }
+        }
+
         final GenericData data = getData();
         Object r = data.newRecord(old, expected);
-        Object state = Avro18GenericDataAccessUtil.getRecordState(data, r, expected);
+        Object state = Avro111GenericDataAccessUtil.getRecordState(data, r, expected);
 
         for (Schema.Field f : in.readFieldOrder()) {
             int pos = f.pos();
             String name = f.name();
             Object oldDatum = null;
             if (old != null) {
-                oldDatum = Avro18GenericDataAccessUtil.getField(data, r, name, pos, state);
+                oldDatum = Avro111GenericDataAccessUtil.getField(data, r, name, pos, state);
             }
-            Avro18GenericDataAccessUtil.setField(getData(), r, f.name(), f.pos(), read(oldDatum, f.schema(), in), state);
+            readField(r, f, oldDatum, in, state);
         }
 
         return r;
@@ -147,5 +162,35 @@ public class GenericDatumReaderExt<T> extends GenericDatumReader<T> {
             } while ((l = in.mapNext()) > 0);
         }
         return map;
+    }
+
+    private void readField(Object r, Schema.Field f, Object oldDatum,
+                           CachedResolvingDecoder in, Object state)
+            throws IOException {
+        if (r instanceof SpecificRecordBase) {
+            Conversion<?> conversion = ((SpecificRecordBase) r).getConversion(f.pos());
+
+            Object datum;
+            if (conversion != null) {
+                datum = readWithConversion(
+                        oldDatum, f.schema(), f.schema().getLogicalType(), conversion, in);
+            } else {
+                datum = readWithoutConversion(oldDatum, f.schema(), in);
+            }
+
+            getData().setField(r, f.name(), f.pos(), datum);
+
+        } else {
+            Avro111GenericDataAccessUtil.setField(getData(), r, f.name(), f.pos(),
+                    read(oldDatum, f.schema(), in), state);
+        }
+    }
+
+    private Object readWithConversion(Object old, Schema expected,
+                                      LogicalType logicalType,
+                                      Conversion<?> conversion,
+                                      CachedResolvingDecoder in) throws IOException {
+        return convert(readWithoutConversion(old, expected, in),
+                expected, logicalType, conversion);
     }
 }

@@ -7,10 +7,14 @@
 package com.linkedin.avroutil1.builder;
 
 import com.linkedin.avroutil1.compatibility.AvroCodecUtil;
+import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 import com.linkedin.avroutil1.compatibility.AvroRecordUtil;
+import com.linkedin.avroutil1.compatibility.CustomDecoder;
 import com.linkedin.avroutil1.compatibility.RandomRecordGenerator;
 import com.linkedin.avroutil1.compatibility.RecordGenerationConfig;
 import com.linkedin.avroutil1.compatibility.StringConverterUtil;
+
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -29,9 +33,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.linkedin.avroutil1.compatibility.backports.SpecificRecordBaseExt;
 import noutf8.TestCollections;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.generic.IndexedRecord;
+import org.apache.avro.io.Decoder;
+import org.apache.avro.io.Encoder;
 import org.apache.avro.util.Utf8;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -2038,6 +2046,36 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     Assert.assertTrue(instance.arOfMap.get(0).containsValue(strValue));
     Assert.assertTrue(instance.getArOfMap().get(0).containsValue(utf8Value));
     Assert.assertTrue(instance.arOfMap.get(0).containsValue(strValue));
+  }
+
+  @DataProvider
+  private Object[][] customDecodeDataProvider() {
+    return new Object[][]{
+            {vs19.MoneyRange.class},
+            {vs110.MoneyRange.class},
+            {vs111.MoneyRange.class}
+    };
+  }
+
+  @Test(dataProvider = "customDecodeDataProvider")
+  public void testCustomDecode(Class<? extends SpecificRecordBaseExt> specificRecordClass) throws Exception {
+    RandomRecordGenerator generator = new RandomRecordGenerator();
+    SpecificRecordBaseExt instance = generator.randomSpecific(specificRecordClass);
+
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    Encoder encoder = AvroCompatibilityHelper.newBinaryEncoder(outputStream);
+    Method customEncodeMethod = instance.getClass().getMethod("customEncode", Encoder.class);
+    customEncodeMethod.invoke(instance, encoder);
+    encoder.flush();
+
+    byte[] data = outputStream.toByteArray();
+    Decoder binaryDecoder = AvroCompatibilityHelper.newBinaryDecoder(data);
+    CustomDecoder decoder =
+            (CustomDecoder) AvroCompatibilityHelper.newCachedResolvingDecoder(
+                    instance.getSchema(), instance.getSchema(), binaryDecoder);
+    SpecificRecordBaseExt decodedInstance = specificRecordClass.getDeclaredConstructor().newInstance();
+    decodedInstance.customDecode(decoder);
+    Assert.assertEquals(instance, decodedInstance);
   }
 
   @BeforeClass

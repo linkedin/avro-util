@@ -4,14 +4,14 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1.compatibility.avro18.backports;
+package com.linkedin.avroutil1.compatibility.avro19.backports;
 
-import com.linkedin.avroutil1.compatibility.avro18.codec.CachedResolvingDecoder;
+import com.linkedin.avroutil1.compatibility.avro19.codec.CachedResolvingDecoder;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Conversion;
 import org.apache.avro.LogicalType;
 import org.apache.avro.Schema;
-import org.apache.avro.generic.Avro18GenericDataAccessUtil;
+import org.apache.avro.generic.Avro19GenericDataAccessUtil;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.io.Decoder;
@@ -21,7 +21,7 @@ import java.io.IOException;
 
 /**
  * this class allows constructing a {@link GenericDatumReader} with
- * a specified {@link GenericData} instance under avro 1.8
+ * a specified {@link GenericData} instance under avro 1.9
  *
  * @param <T>
  */
@@ -100,16 +100,16 @@ public class GenericDatumReaderExt<T> extends GenericDatumReader<T> {
                               CachedResolvingDecoder in) throws IOException {
         final GenericData data = getData();
         Object r = data.newRecord(old, expected);
-        Object state = Avro18GenericDataAccessUtil.getRecordState(data, r, expected);
+        Object state = Avro19GenericDataAccessUtil.getRecordState(data, r, expected);
 
         for (Schema.Field f : in.readFieldOrder()) {
             int pos = f.pos();
             String name = f.name();
             Object oldDatum = null;
             if (old != null) {
-                oldDatum = Avro18GenericDataAccessUtil.getField(data, r, name, pos, state);
+                oldDatum = Avro19GenericDataAccessUtil.getField(data, r, name, pos, state);
             }
-            Avro18GenericDataAccessUtil.setField(getData(), r, f.name(), f.pos(), read(oldDatum, f.schema(), in), state);
+            Avro19GenericDataAccessUtil.setField(getData(), r, f.name(), f.pos(), read(oldDatum, f.schema(), in), state);
         }
 
         return r;

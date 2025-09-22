@@ -24,6 +24,7 @@
 
 package com.linkedin.avroutil1.compatibility.avro16.codec;
 
+import com.linkedin.avroutil1.compatibility.CustomDecoder;
 import com.linkedin.avroutil1.compatibility.avro16.parsing.ResolvingGrammarGenerator;
 import com.linkedin.avroutil1.compatibility.avro16.parsing.Symbol;
 import java.io.IOException;
@@ -34,7 +35,7 @@ import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
 
-public class ResolvingDecoder extends ValidatingDecoder {
+public class ResolvingDecoder extends ValidatingDecoder implements CustomDecoder {
   private Decoder backup;
 
   ResolvingDecoder(Schema writer, Schema reader, Decoder in) throws IOException {

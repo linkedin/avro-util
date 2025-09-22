@@ -10,6 +10,7 @@ import com.linkedin.avroutil1.compatibility.avro19.parsing.ResolvingGrammarGener
 import com.linkedin.avroutil1.compatibility.avro19.parsing.Symbol;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.avro.Schema;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.Decoder;

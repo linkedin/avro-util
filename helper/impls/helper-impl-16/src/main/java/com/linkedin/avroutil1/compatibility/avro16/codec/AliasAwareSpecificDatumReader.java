@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.compatibility.avro16.codec;
 
+import com.linkedin.avroutil1.compatibility.avro16.backports.SpecificDatumReaderExt;
 import org.apache.avro.Schema;
 import org.apache.avro.specific.SpecificData;
 import org.apache.avro.specific.SpecificDatumReader;
@@ -23,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @param <T>
  */
-public class AliasAwareSpecificDatumReader<T> extends SpecificDatumReader<T> {
+public class AliasAwareSpecificDatumReader<T> extends SpecificDatumReaderExt<T> {
 
     //same idea as the one in SpecificData
     protected final static Map<String, Class<?>> CLASS_CACHE = new ConcurrentHashMap<>();
@@ -45,6 +46,7 @@ public class AliasAwareSpecificDatumReader<T> extends SpecificDatumReader<T> {
     }
 
     public AliasAwareSpecificDatumReader(Schema writer, Schema reader, SpecificData data) {
+        super(null, null, data);
         throw new UnsupportedOperationException("providing custom SpecificData not supported (yet?)");
     }
 

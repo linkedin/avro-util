@@ -1,0 +1,19 @@
+{
+  "type": "record",
+  "namespace": "by110",
+  "name": "LongRecord",
+  "fields": [
+    {
+      "name": "unionField",
+      "type": [
+        "null",
+        "long"
+      ],
+      "default": null
+    },
+    {
+      "name": "field",
+      "type": "long"
+    }
+  ]
+}

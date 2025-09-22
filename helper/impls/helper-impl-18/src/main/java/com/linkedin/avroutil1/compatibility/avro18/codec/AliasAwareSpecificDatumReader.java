@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.compatibility.avro18.codec;
 
+import com.linkedin.avroutil1.compatibility.avro18.backports.SpecificDatumReaderExt;
 import org.apache.avro.Schema;
 import org.apache.avro.specific.SpecificData;
 import org.apache.avro.specific.SpecificDatumReader;
@@ -20,7 +21,7 @@ import org.apache.avro.specific.SpecificDatumReader;
  *
  * @param <T>
  */
-public class AliasAwareSpecificDatumReader<T> extends SpecificDatumReader<T> {
+public class AliasAwareSpecificDatumReader<T> extends SpecificDatumReaderExt<T> {
 
     public AliasAwareSpecificDatumReader() {
         this(null, null);
@@ -40,10 +41,12 @@ public class AliasAwareSpecificDatumReader<T> extends SpecificDatumReader<T> {
     }
 
     public AliasAwareSpecificDatumReader(Schema writer, Schema reader, SpecificData data) {
+        super(null, null, data);
         throw new UnsupportedOperationException("providing custom SpecificData not supported (yet?)");
     }
 
     protected AliasAwareSpecificDatumReader(SpecificData data) {
+        super(null, null, data);
         throw new UnsupportedOperationException("providing custom SpecificData not supported (yet?)");
     }
 }
