@@ -488,6 +488,10 @@ public abstract class Symbol {
     }
   }
 
+  public static class IntLongAdjustAction extends ImplicitAction {
+    public static final IntLongAdjustAction INSTANCE = new IntLongAdjustAction();
+  }
+
   public static class DefaultStartAction extends ImplicitAction {
     public final byte[] contents;
     public DefaultStartAction(byte[] contents) {
