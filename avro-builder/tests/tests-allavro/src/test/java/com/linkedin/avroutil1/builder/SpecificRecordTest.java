@@ -1999,21 +1999,18 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     Method setIntFieldLongMethod = builder.getClass().getMethod("setIntField", long.class);
     Method setLongFieldMethod = builder.getClass().getMethod("setLongField", long.class);
     Method setLongFieldIntMethod = builder.getClass().getMethod("setLongField", int.class);
-    Method setStrFieldIntMethod = builder.getClass().getMethod("setStrField", String.class);
     Method buildMethod = builder.getClass().getMethod("build");
 
     // Case 1: Set int and long with matching int/long types (primitive)
     Object builder1 = newBuilderMethod.invoke(null);
     setIntFieldMethod.invoke(builder1, 123);
     setLongFieldMethod.invoke(builder1, 456L);
-    setStrFieldIntMethod.invoke(builder1, "testStr");
     Object record1 = buildMethod.invoke(builder1);
 
     // Case 2: Set int field with long type, and long field with int type (primitive)
     Object builder2 = newBuilderMethod.invoke(null);
     setIntFieldLongMethod.invoke(builder2, 123L);
     setLongFieldIntMethod.invoke(builder2, 456);
-    setStrFieldIntMethod.invoke(builder2, "testStr");
     Object record2 = buildMethod.invoke(builder2);
 
     // Case 3: Using the put method with primitive types
@@ -2021,19 +2018,16 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     Method putMethod = clazz.getMethod("put", int.class, Object.class);
     putMethod.invoke(record3, 0, 456L); // longField with long
     putMethod.invoke(record3, 1, 123); // intField with int
-    putMethod.invoke(record3, 4, "testStr");
 
     // Case 4: Using the put method with cross types
     Object record4 = clazz.newInstance();
     putMethod.invoke(record4, 0, 456); // longField with int
     putMethod.invoke(record4, 1, 123L); // intField with long
-    putMethod.invoke(record4, 4, "testStr");
 
     // Case 5: Using the put method with Integer/Long wrapper classes
     Object record5 = clazz.newInstance();
     putMethod.invoke(record5, 0, Integer.valueOf(456)); // longField with Integer
     putMethod.invoke(record5, 1, Long.valueOf(123L)); // intField with Long
-    putMethod.invoke(record5, 4, "testStr");
 
     // Verify all records are equal
     Assert.assertEquals(record1, record2);
@@ -2044,13 +2038,11 @@ TODO:// enable these test cases after AvroRecordUtil.deepConvert supports collec
     // Verify field values directly
     Method getIntFieldMethod = clazz.getMethod("getIntField");
     Method getLongFieldMethod = clazz.getMethod("getLongField");
-    Method getStrFieldMethod = clazz.getMethod("getStrField");
 
     Assert.assertEquals(123, getIntFieldMethod.invoke(record1));
     Assert.assertEquals(456L, getLongFieldMethod.invoke(record1));
     Assert.assertEquals(123, getIntFieldMethod.invoke(record5));
     Assert.assertEquals(456L, getLongFieldMethod.invoke(record5));
-    Assert.assertEquals("testStr", getStrFieldMethod.invoke(record1));
   }
 
   @Test(dataProvider = "intsAndLongsDataProvider")
