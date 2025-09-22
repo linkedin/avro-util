@@ -56,6 +56,7 @@ import javax.lang.model.element.Modifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
  * generates java classes out of avro schemas.
  */
@@ -461,10 +462,6 @@ public class SpecificRecordClassGenerator {
       // add all arg constructor if #args < 254
       addAllArgsConstructor(recordSchema, config.getDefaultMethodStringRepresentation(), classBuilder, !config.isUtf8EncodingEnabled());
 
-      // Add numeric conversion constructors. This will add constructor using Integer param for long/Long fields, and
-      //  Long param for int/Integer fields. Note that this will not create all constructor permutations
-      addNumericConversionConstructors(recordSchema, config, classBuilder);
-
       if (config.isUtf8EncodingEnabled() && SpecificRecordGeneratorUtil.recordHasSimpleStringField(recordSchema)) {
         addAllArgsConstructor(recordSchema,
             config.getDefaultMethodStringRepresentation().equals(AvroJavaStringRepresentation.STRING)
@@ -490,10 +487,6 @@ public class SpecificRecordClassGenerator {
         MethodSpec overloadedSetterIfString = getOverloadedSetterSpecIfStringField(field, config);
         if(config.isUtf8EncodingEnabled() && overloadedSetterIfString != null) {
           classBuilder.addMethod(getOverloadedSetterSpecIfStringField(field, config));
-        }
-        MethodSpec overloadedSetterIfIntOrLong = getOverloadedSetterSpecIfIntOrLongField(field, config);
-        if (overloadedSetterIfIntOrLong != null) {
-          classBuilder.addMethod(overloadedSetterIfIntOrLong);
         }
       }
     }
@@ -615,127 +608,6 @@ public class SpecificRecordClassGenerator {
 
       classBuilder.addMethod(allArgsConstructorBuilder.build());
     }
-  }
-
-  /**
-   * Adds a constructor that performs numeric conversions for {@link Integer} and {@link Long} fields.
-   * @param recordSchema The Avro record schema.
-   * @param config The {@link SpecificRecordGenerationConfig}
-   * @param classBuilder The {@link TypeSpec.Builder} for the generated class.
-   */
-  private void addNumericConversionConstructors(AvroRecordSchema recordSchema, SpecificRecordGenerationConfig config,
-      TypeSpec.Builder classBuilder) {
-    // Only proceed if we have fewer than 254 fields (Java method parameter limit)
-    if (recordSchema.getFields().size() >= 254) {
-      return;
-    }
-
-    // If the record has any Integer/int or Long/long fields
-    // Add a constructor that handles both types of conversions
-    if (hasIntOrLongField(recordSchema)) {
-      addMixedNumericConversionConstructor(recordSchema, config, classBuilder);
-    }
-  }
-
-  /**
-   * Checks if the record schema has int or long field.
-   *
-   * @param recordSchema The record schema to check
-   * @return True if the schema has at least one int or long field
-   */
-  private boolean hasIntOrLongField(AvroRecordSchema recordSchema) {
-    for (AvroSchemaField field : recordSchema.getFields()) {
-      // Check if field is long or [null, long]
-      if (SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.LONG, field.getSchema())
-          || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.INT, field.getSchema())) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
-   * Adds a constructor that handles both Integer-to-Long and Long-to-Integer conversions simultaneously
-   *
-   * @param recordSchema The record schema
-   * @param config The {@link SpecificRecordGenerationConfig}
-   * @param classBuilder The class builder to add the constructor to
-   */
-  private void addMixedNumericConversionConstructor(AvroRecordSchema recordSchema, SpecificRecordGenerationConfig config,
-      TypeSpec.Builder classBuilder) {
-    MethodSpec.Builder constructorBuilder = MethodSpec.constructorBuilder()
-        .addModifiers(Modifier.PUBLIC);
-
-    for (AvroSchemaField field : recordSchema.getFields()) {
-      String escapedFieldName = getFieldNameWithSuffix(field);
-
-      if (SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.LONG, field.getSchema())
-          || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.INT, field.getSchema())) {
-
-        // Get the class from the schema
-        Class<?> fieldClass =
-            SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(field.getSchemaOrRef().getSchema().type(),
-                config.getDefaultMethodStringRepresentation(), false);
-
-        if(fieldClass != null ) {
-          if (fieldClass.equals(long.class)) {
-            // For primitive long, throw exception on null or use default value
-            constructorBuilder
-                .addParameter(ParameterSpec.builder(Integer.class, escapedFieldName).build())
-                .beginControlFlow("if ($L != null)", escapedFieldName)
-                .addStatement("this.$1L = $1L.longValue()", escapedFieldName)
-                .nextControlFlow("else")
-                .addStatement("throw new org.apache.avro.AvroRuntimeException(\"$L cannot be set to null\")", escapedFieldName)
-                .endControlFlow();
-          } else if (fieldClass.equals(int.class)) {
-            // For primitive int, throw exception on null or use default value
-            constructorBuilder
-                .addParameter(ParameterSpec.builder(Long.class, escapedFieldName).build())
-                .beginControlFlow("if ($L != null)", escapedFieldName)
-                .beginControlFlow("if ($1L <= Integer.MAX_VALUE && $1L >= Integer.MIN_VALUE)", escapedFieldName)
-                .addStatement("this.$1L = $1L.intValue()", escapedFieldName)
-                .nextControlFlow("else")
-                .addStatement("throw new org.apache.avro.AvroRuntimeException(\"Long value \" + $L + \" cannot be cast to int\")", escapedFieldName)
-                .endControlFlow()
-                .nextControlFlow("else")
-                .addStatement("throw new org.apache.avro.AvroRuntimeException(\"$L cannot be set to null\")", escapedFieldName)
-                .endControlFlow();
-          }
-        } else if (field.getSchema() != null && field.getSchema().type().equals(AvroType.UNION)) {
-          TypeName typeName = SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(),
-              field.getSchemaOrRef().getSchema().type(), true,
-              config.getDefaultMethodStringRepresentation());
-          if (typeName.equals(ClassName.get(Long.class))) {
-            constructorBuilder
-                .addParameter(ParameterSpec.builder(Integer.class, escapedFieldName).build())
-                .beginControlFlow("if ($L != null)", escapedFieldName)
-                .addStatement("this.$1L = Long.valueOf($1L)", escapedFieldName)
-                .nextControlFlow("else")
-                .addStatement("this.$L = null", escapedFieldName)
-                .endControlFlow();
-          } else if (typeName.equals(ClassName.get(Integer.class))) {
-            constructorBuilder
-                .addParameter(ParameterSpec.builder(Long.class, escapedFieldName).build())
-                .beginControlFlow("if ($L != null)", escapedFieldName)
-                .beginControlFlow("if ($1L <= Integer.MAX_VALUE && $1L >= Integer.MIN_VALUE)", escapedFieldName)
-                .addStatement("this.$1L = $1L.intValue()", escapedFieldName)
-                .nextControlFlow("else")
-                .addStatement("throw new org.apache.avro.AvroRuntimeException(\"Long value \" + $L + \" cannot be cast to Integer\")", escapedFieldName)
-                .endControlFlow()
-                .nextControlFlow("else")
-                .addStatement("this.$L = null", escapedFieldName)
-                .endControlFlow();
-          }
-        }
-      } else  {
-        // For other fields, use their normal type
-        constructorBuilder.addParameter(
-            getParameterSpecForField(field, AvroJavaStringRepresentation.STRING));
-        constructorBuilder.addStatement("this.$1L = $1L", escapedFieldName);
-
-      }
-    }
-    classBuilder.addMethod(constructorBuilder.build());
   }
 
   private String replaceSingleDollarSignWithDouble(String str) {
@@ -878,7 +750,7 @@ public class SpecificRecordClassGenerator {
 
       // get, set, has, clear methods
       populateAccessorMethodsBlock(accessorMethodSpecs, field, fieldClass, fieldType, recordSchema.getFullName(),
-          fieldIndex, config);
+          fieldIndex);
 
       fieldIndex++;
     }
@@ -980,7 +852,7 @@ public class SpecificRecordClassGenerator {
   }
 
   private void populateAccessorMethodsBlock(List<MethodSpec> accessorMethodSpecs, AvroSchemaField field,
-      Class<?> fieldClass, TypeName fieldType, String parentClass, int fieldIndex, SpecificRecordGenerationConfig config) {
+      Class<?> fieldClass, TypeName fieldType, String parentClass, int fieldIndex) {
     String escapedFieldName = getFieldNameWithSuffix(field);
     //Getter
     MethodSpec.Builder getMethodBuilder =
@@ -1012,14 +884,6 @@ public class SpecificRecordClassGenerator {
       setMethodBuilder.addParameter(fieldType, "value");
     }
 
-    // Additional setter for int/long fields (both primitive and boxed)
-    MethodSpec.Builder overloadSetMethodBuilder = null;
-    if ((SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.LONG, field.getSchema())
-        || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.INT, field.getSchema()))) {
-      overloadSetMethodBuilder = createNumericTypeOverloadedSetterBuilder(fieldClass, field, escapedFieldName, fieldIndex,
-          parentClass, config);
-    }
-
     // Has
     MethodSpec.Builder hasMethodBuilder =
         MethodSpec.methodBuilder(getMethodNameForFieldWithPrefix("has", field.getName()))
@@ -1047,93 +911,8 @@ public class SpecificRecordClassGenerator {
 
     accessorMethodSpecs.add(getMethodBuilder.build());
     accessorMethodSpecs.add(setMethodBuilder.build());
-    if (overloadSetMethodBuilder != null) {
-      accessorMethodSpecs.add(overloadSetMethodBuilder.build());
-    }
     accessorMethodSpecs.add(hasMethodBuilder.build());
     accessorMethodSpecs.add(clearMethodBuilder.build());
-  }
-
-  /**
-   * Creates an overloaded setter method for numeric type fields (int/long) to support flexible type conversion.
-   *
-   * @param fieldClass The class of the field (int.class, long.class, Integer.class, or Long.class)
-   * @param field The Avro schema field
-   * @param escapedFieldName The escaped field name
-   * @param fieldIndex The index of the field
-   * @param parentClass The parent class name
-   * @return A MethodSpec.Builder for the overloaded setter method
-   */
-  private MethodSpec.Builder createNumericTypeOverloadedSetterBuilder(Class<?> fieldClass, AvroSchemaField field,
-      String escapedFieldName, int fieldIndex, String parentClass, SpecificRecordGenerationConfig config) {
-    MethodSpec.Builder methodBuilder = null;
-
-    if (fieldClass != null) {
-      methodBuilder = MethodSpec
-          .methodBuilder(getMethodNameForFieldWithPrefix("set", escapedFieldName))
-          .addModifiers(Modifier.PUBLIC);
-
-      if (fieldClass.equals(long.class)) {
-        // If field is of type long, add method with int parameter
-        methodBuilder
-            .addParameter(TypeName.INT, "value")
-            .addStatement("validate(fields()[$L], value)", fieldIndex)
-            .addStatement("this.$L = value", escapedFieldName);
-
-      } else if (fieldClass.equals(int.class)) {
-        // If field is of type int, add method with long parameter
-        // This method will error if the long input is greater than Integer.MAX_VALUE
-        methodBuilder
-            .addParameter(TypeName.LONG, "value")
-            .beginControlFlow("if (value <= Integer.MAX_VALUE && value >= Integer.MIN_VALUE)")
-            .addStatement("this.$L = (int) value", escapedFieldName)
-            .nextControlFlow("else")
-            .addStatement("throw new org.apache.avro.AvroRuntimeException(\"Long value \" + value + \" cannot be cast to int\")")
-            .endControlFlow();
-
-      }
-    } else if (field.getSchema() != null && field.getSchema().type().equals(AvroType.UNION)) {
-      TypeName typeName = SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(),
-          field.getSchemaOrRef().getSchema().type(), true,
-          config.getDefaultMethodStringRepresentation());
-
-      if (typeName.equals(ClassName.get(Long.class))) {
-        // For long or Long fields, add a setter that accepts int or Integer
-        methodBuilder = MethodSpec
-            .methodBuilder(getMethodNameForFieldWithPrefix("set", escapedFieldName))
-            .addParameter(ClassName.get(Integer.class), "value")
-            .beginControlFlow("if (value == null)")
-            .addStatement("this.$L = null", escapedFieldName)
-            .nextControlFlow("else")
-            .addStatement("this.$L = Long.valueOf(value)", escapedFieldName)
-            .endControlFlow();
-
-
-      } else if (typeName.equals(ClassName.get(Integer.class))) {
-        methodBuilder = MethodSpec
-            .methodBuilder(getMethodNameForFieldWithPrefix("set", escapedFieldName))
-            .addParameter(ClassName.get(Long.class), "value")
-            .beginControlFlow("if (value == null)")
-            .addStatement("this.$L = null", escapedFieldName)
-            .nextControlFlow("else if (value <= Integer.MAX_VALUE && value >= Integer.MIN_VALUE)")
-            .addStatement("this.$L = Integer.valueOf(value.intValue())", escapedFieldName)
-            .nextControlFlow("else")
-            .addStatement("throw new org.apache.avro.AvroRuntimeException(\"Long value \" + value + \" cannot be cast to Integer\")")
-            .endControlFlow();
-      }
-    }
-
-    if (methodBuilder != null) {
-      methodBuilder
-          .addJavadoc(
-              "Sets the value of the '$L' field.$L" + "@param value The value of '$L'.\n" + "@return This Builder.",
-              field.getName(), getFieldJavaDoc(field), field.getName())
-          .addStatement("fieldSetFlags()[$L] = true", fieldIndex)
-          .addStatement("return this")
-          .returns(ClassName.get(parentClass, "Builder"));
-    }
-
-    return methodBuilder;
   }
 
   private String getFieldJavaDoc(AvroSchemaField field) {
@@ -1186,14 +965,11 @@ public class SpecificRecordClassGenerator {
       for (; fieldCounter < Math.min(blockSize * chunkCounter + blockSize, recordSchema.getFields().size());
           fieldCounter++) {
         AvroSchemaField field = recordSchema.getField(fieldCounter);
-        boolean unionContainsBothIntAndLong = field.getSchemaOrRef().getSchema().type().equals(AvroType.UNION) &&
-            unionSchemaContainsBothIntAndLong((AvroUnionSchema) field.getSchemaOrRef().getSchema());
-
         String escapedFieldName = getFieldNameWithSuffix(field);
         customDecodeChunkMethod.addStatement(getSerializedCustomDecodeBlock(config, field.getSchemaOrRef().getSchema(),
             field.getSchemaOrRef().getSchema().type(), "this." + replaceSingleDollarSignWithDouble(escapedFieldName),
             "this." + replaceSingleDollarSignWithDouble(escapedFieldName), StringUtils.EMPTY_STRING,
-            sizeValCounter, unionContainsBothIntAndLong));
+            sizeValCounter));
       }
       chunkCounter++;
       classBuilder.addMethod(customDecodeChunkMethod.build());
@@ -1225,13 +1001,11 @@ public class SpecificRecordClassGenerator {
           fieldCounter++) {
         AvroSchemaField field = recordSchema.getField(fieldCounter);
         String escapedFieldName = getFieldNameWithSuffix(field);
-        boolean unionContainsBothIntAndLong = field.getSchemaOrRef().getSchema().type().equals(AvroType.UNION) &&
-            unionSchemaContainsBothIntAndLong((AvroUnionSchema) field.getSchemaOrRef().getSchema());
         customDecodeChunkMethod.addStatement(String.format("case %s: ",fieldIndex++)+ getSerializedCustomDecodeBlock(config,
                 field.getSchemaOrRef().getSchema(), field.getSchemaOrRef().getSchema().type(),
                 "this." + replaceSingleDollarSignWithDouble(escapedFieldName),
                 "this." + replaceSingleDollarSignWithDouble(escapedFieldName), StringUtils.EMPTY_STRING,
-                sizeValCounter, unionContainsBothIntAndLong))
+                sizeValCounter))
             .addStatement("break");
       }
       customDecodeChunkMethod
@@ -1251,7 +1025,7 @@ public class SpecificRecordClassGenerator {
 
   private String getSerializedCustomDecodeBlock(SpecificRecordGenerationConfig config,
       AvroSchema fieldSchema, AvroType fieldType, String fieldName, String schemaFieldName, String arrayOption,
-      Counter sizeValCounter, boolean unionContainsBothIntAndLong) {
+      Counter sizeValCounter) {
     String serializedCodeBlock = "";
     CodeBlock.Builder codeBlockBuilder  = CodeBlock.builder();
     switch (fieldType) {
@@ -1263,45 +1037,13 @@ public class SpecificRecordClassGenerator {
         serializedCodeBlock = String.format("%s = in.readBoolean()", fieldName);
         break;
       case INT:
-        if (unionContainsBothIntAndLong) {
-          serializedCodeBlock = String.format("%s = in.readInt()", fieldName);
-        } else {
-          String cleanIntFieldName = fieldName.replaceAll("^this\\.", "");
-          String tempIntVarName = "temp" + Character.toUpperCase(cleanIntFieldName.charAt(0)) + cleanIntFieldName.substring(1);
-          codeBlockBuilder
-              .beginControlFlow("try")
-              .addStatement("$L = in.readInt()", fieldName)
-              .nextControlFlow("catch (Exception e)")
-              .addStatement("// If int decoding fails, try long decoding with bounds check")
-              .addStatement("long $L = in.readLong()", tempIntVarName)
-              .beginControlFlow("if ($L <= Integer.MAX_VALUE && $L >= Integer.MIN_VALUE)", tempIntVarName, tempIntVarName)
-              .addStatement("$L = (int) $L", fieldName, tempIntVarName)
-              .nextControlFlow("else")
-              .addStatement("throw new org.apache.avro.AvroRuntimeException(\"Long value cannot be cast to int\")")
-              .endControlFlow()
-              .endControlFlow();
-          serializedCodeBlock = codeBlockBuilder.build().toString();
-        }
+        serializedCodeBlock = String.format("%s = in.readInt()", fieldName);
         break;
       case FLOAT:
         serializedCodeBlock = String.format("%s = in.readFloat()", fieldName);
         break;
       case LONG:
-        if (unionContainsBothIntAndLong) {
-          serializedCodeBlock = String.format("%s = in.readLong()", fieldName);
-        } else {
-          String cleanLongFieldName = fieldName.replaceAll("^this\\.", "");
-          String tempLongVarName =
-              "temp" + Character.toUpperCase(cleanLongFieldName.charAt(0)) + cleanLongFieldName.substring(1);
-          codeBlockBuilder.beginControlFlow("try")
-              .addStatement("$L = in.readLong()", fieldName)
-              .nextControlFlow("catch (Exception e)")
-              .addStatement("// If long decoding fails, try int decoding with conversion to long")
-              .addStatement("int $L = in.readInt()", tempLongVarName)
-              .addStatement("$L = (long) $L", fieldName, tempLongVarName)
-              .endControlFlow();
-          serializedCodeBlock = codeBlockBuilder.build().toString();
-        }
+        serializedCodeBlock = String.format("%s = in.readLong()", fieldName);
         break;
       case DOUBLE:
         serializedCodeBlock = String.format("%s = in.readDouble()", fieldName);
@@ -1370,7 +1112,7 @@ public class SpecificRecordClassGenerator {
         codeBlockBuilder.addStatement(
             getSerializedCustomDecodeBlock(config, arrayItemSchema, arrayItemSchema.type(), arrayElementVarName,
                 schemaFieldName,  arrayOption + SpecificRecordGeneratorUtil.ARRAY_GET_ELEMENT_TYPE,
-                sizeValCounter, unionContainsBothIntAndLong));
+                sizeValCounter));
         codeBlockBuilder.addStatement("$L.add($L)", arrayVarName, arrayElementVarName)
             .endControlFlow()
             .endControlFlow()
@@ -1413,12 +1155,12 @@ public class SpecificRecordClassGenerator {
             .addStatement(
                 getSerializedCustomDecodeBlock(config, ((AvroMapSchema) fieldSchema).getValueSchema(), AvroType.STRING,
                     mapKeyVarName, schemaFieldName, arrayOption + SpecificRecordGeneratorUtil.MAP_GET_VALUE_TYPE,
-                    sizeValCounter, unionContainsBothIntAndLong))
+                    sizeValCounter))
             .addStatement("$T $L = null", ((mapItemClass != null) ? mapItemClass : mapItemClassName), mapValueVarName)
             .addStatement(getSerializedCustomDecodeBlock(config, ((AvroMapSchema) fieldSchema).getValueSchema(),
                 ((AvroMapSchema) fieldSchema).getValueSchema().type(), mapValueVarName, schemaFieldName,
                 arrayOption + SpecificRecordGeneratorUtil.MAP_GET_VALUE_TYPE,
-                sizeValCounter, unionContainsBothIntAndLong));
+                sizeValCounter));
 
         codeBlockBuilder.addStatement("$L.put($L,$L)", mapVarName, mapKeyVarName, mapValueVarName)
             .endControlFlow()
@@ -1440,7 +1182,7 @@ public class SpecificRecordClassGenerator {
             codeBlockBuilder.addStatement(
                 getSerializedCustomDecodeBlock(config, unionMember.getSchema(), unionMember.getSchema().type(),
                     fieldName, schemaFieldName, arrayOption + ".getTypes().get(" + i + ")",
-                    sizeValCounter, unionContainsBothIntAndLong));
+                    sizeValCounter));
             if (unionMember.getSchema().type().equals(AvroType.NULL)) {
               codeBlockBuilder.addStatement("$L = null", fieldName);
             }
@@ -1745,12 +1487,10 @@ public class SpecificRecordClassGenerator {
                   field.getSchemaOrRef().getSchema().type(), true, config.getDefaultFieldStringRepresentation()));
         }
       } else if (field.getSchema() != null && AvroType.UNION.equals(field.getSchema().type())) {
-        switchBuilder.add("case $L: \n", fieldIndex++);
+        switchBuilder.addStatement("case $L:", fieldIndex++);
         switchBuilder.beginControlFlow("if (value == null)")
             .addStatement("this.$1L = null", escapedFieldName)
             .endControlFlow();
-
-        boolean unionContainsBothIntAndLong = unionSchemaContainsBothIntAndLong((AvroUnionSchema) field.getSchema());
 
         // if union might contain string value in runtime
         for (SchemaOrRef unionMemberSchema : ((AvroUnionSchema) field.getSchema()).getTypes()) {
@@ -1796,55 +1536,12 @@ public class SpecificRecordClassGenerator {
                       field.getSchemaOrRef().getSchema().type(), true, config.getDefaultFieldStringRepresentation()));
             }
             switchBuilder.endControlFlow();
-          } else if (!unionContainsBothIntAndLong && SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.INT, unionMemberSchema.getSchema())) {
-            // For boxed Integer fields, handle Long values with bounds check
-            switchBuilder
-                .beginControlFlow("else if (value instanceof Long)")
-                .beginControlFlow("if ((Long) value <= Integer.MAX_VALUE && (Long) value >= Integer.MIN_VALUE)")
-                .addStatement("this.$1L = ((Long) value).intValue()", escapedFieldName)
-                .nextControlFlow("else")
-                .addStatement("throw new org.apache.avro.AvroRuntimeException(\"Long value \" + value + \" cannot be cast to Integer\")")
-                .endControlFlow()
-                .endControlFlow();
-          } else if (!unionContainsBothIntAndLong && SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.LONG, unionMemberSchema.getSchema())) {
-            // For boxed Long fields, handle Integer values
-            switchBuilder.beginControlFlow("else if (value instanceof Integer)")
-                .addStatement("this.$1L = ((Integer) value).longValue()", escapedFieldName)
-                .addStatement("break")
-                .endControlFlow();
           }
         }
         switchBuilder.beginControlFlow("else")
             .addStatement("this.$L = ($L) value", escapedFieldName,
                 SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(),
                     field.getSchemaOrRef().getSchema().type(), true, config.getDefaultFieldStringRepresentation()))
-            .endControlFlow()
-            .addStatement("break");
-      } else if (fieldClass == int.class) {
-        // If the field is an int, allow input value to be a long with range check
-        switchBuilder
-            .add("case $L: \n", fieldIndex++)
-            .beginControlFlow("if (value instanceof Long)")
-            .beginControlFlow("if (((Long) value) <= Integer.MAX_VALUE && ((Long) value) >= Integer.MIN_VALUE)")
-            .addStatement("this.$1L = ((Long) value).intValue()", escapedFieldName)
-            .endControlFlow()
-            .beginControlFlow("else")
-            .addStatement("throw new org.apache.avro.AvroRuntimeException(\"Long value \" + value + \" cannot be cast to int\")")
-            .endControlFlow()
-            .endControlFlow()
-            .beginControlFlow("else")
-            .addStatement("this.$L = ($T) value",  escapedFieldName, fieldClass)
-            .endControlFlow()
-            .addStatement("break");
-      } else if (fieldClass == long.class) {
-        // If the field is a long, allow input value to be an int
-        switchBuilder
-            .add("case $L: \n", fieldIndex++)
-            .beginControlFlow("if (value instanceof Integer)")
-            .addStatement("this.$1L = ((Integer) value).longValue()", escapedFieldName)
-            .endControlFlow()
-            .beginControlFlow("else")
-            .addStatement("this.$L = ($T) value",  escapedFieldName, fieldClass)
             .endControlFlow()
             .addStatement("break");
       } else {
@@ -1917,6 +1614,7 @@ public class SpecificRecordClassGenerator {
                 .endControlFlow();
           }
         }
+
         switchBuilder.beginControlFlow("else")
             .addStatement("return this.$1L", escapedFieldName)
             .endControlFlow();
@@ -1928,103 +1626,6 @@ public class SpecificRecordClassGenerator {
         .endControlFlow();
 
     classBuilder.addMethod(methodSpecBuilder.addCode(switchBuilder.build()).build());
-  }
-
-  private boolean unionSchemaContainsBothIntAndLong(AvroUnionSchema unionSchema) {
-    boolean unionContainsInt = false;
-    boolean unionContainsLong = false;
-    for (SchemaOrRef unionMemberSchema : unionSchema.getTypes()) {
-      if (SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.INT, unionMemberSchema.getSchema())) {
-        unionContainsInt = true;
-      }
-      if (SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.LONG, unionMemberSchema.getSchema())) {
-        unionContainsLong = true;
-      }
-    }
-    return unionContainsInt && unionContainsLong;
-  }
-
-  private MethodSpec getOverloadedSetterSpecIfIntOrLongField(AvroSchemaField field,
-      SpecificRecordGenerationConfig config) {
-    MethodSpec.Builder numberSetter = null;
-    String escapedFieldName = getFieldNameWithSuffix(field);
-    if (SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.LONG, field.getSchema())
-        || SpecificRecordGeneratorUtil.isNullUnionOf(AvroType.INT, field.getSchema())) {
-
-      // Get the class from the schema
-      Class<?> fieldClass =
-          SpecificRecordGeneratorUtil.getJavaClassForAvroTypeIfApplicable(field.getSchemaOrRef().getSchema().type(),
-              config.getDefaultMethodStringRepresentation(), false);
-
-      numberSetter = MethodSpec
-          .methodBuilder(getMethodNameForFieldWithPrefix("set", escapedFieldName))
-          .addModifiers(Modifier.PUBLIC);
-
-      if(fieldClass != null ) {
-        if (fieldClass.equals(long.class)) {
-          // If field is of type long, add method with int parameter
-          // int value can safely be cast to long
-          numberSetter
-              .addParameter( int.class, escapedFieldName)
-              .addStatement("this.$1L = (long) $1L", escapedFieldName);
-        } else if (fieldClass.equals(int.class)) {
-          // If field is of type int, add method with long parameter
-          // This method will error if the long input is greater than Integer.MAX_VALUE
-
-          CodeBlock castToInt = CodeBlock
-              .builder()
-              .beginControlFlow("if ($1L <= Integer.MAX_VALUE && $1L >= Integer.MIN_VALUE)", escapedFieldName)
-              .addStatement("this.$1L = (int) $1L", escapedFieldName)
-              .endControlFlow()
-              .beginControlFlow("else")
-              .addStatement("throw new org.apache.avro.AvroRuntimeException(\"long value cannot be cast to int\")")
-              .endControlFlow()
-              .build();
-
-          numberSetter
-              .addParameter(long.class, escapedFieldName)
-              .addCode(castToInt);
-        }
-
-      } else if (field.getSchema() != null && field.getSchema().type().equals(AvroType.UNION)) {
-        TypeName typeName = SpecificRecordGeneratorUtil.getTypeName(field.getSchemaOrRef().getSchema(),
-            field.getSchemaOrRef().getSchema().type(), true,
-            config.getDefaultMethodStringRepresentation());
-
-        CodeBlock nullCheck = CodeBlock.builder()
-            .beginControlFlow("if ($1L == null)", escapedFieldName)
-            .addStatement("this.$1L = null", escapedFieldName)
-            .endControlFlow()
-            .build();
-
-        if (typeName.equals(ClassName.get(Long.class))) {
-          numberSetter
-              .addParameter(ClassName.get(Integer.class), escapedFieldName)
-              .addCode(nullCheck)
-              .beginControlFlow("else")
-              .addStatement("this.$1L = Long.valueOf($1L)", escapedFieldName)
-              .endControlFlow();
-
-        } else if (typeName.equals(ClassName.get(Integer.class))) {
-
-          CodeBlock castToInt = CodeBlock
-              .builder()
-              .beginControlFlow("else if ($1L <= Integer.MAX_VALUE && $1L >= Integer.MIN_VALUE)", escapedFieldName)
-              .addStatement("this.$1L = $1L.intValue()", escapedFieldName)
-              .endControlFlow()
-              .beginControlFlow("else")
-              .addStatement("throw new org.apache.avro.AvroRuntimeException(\"Long value cannot be cast to Integer\")")
-              .endControlFlow()
-              .build();
-
-          numberSetter
-              .addParameter(ClassName.get(Long.class), escapedFieldName)
-              .addCode(nullCheck)
-              .addCode(castToInt);
-        }
-      }
-    }
-    return numberSetter == null ? null : numberSetter.build();
   }
 
   private MethodSpec getOverloadedSetterSpecIfStringField(AvroSchemaField field,
@@ -2309,6 +1910,7 @@ public class SpecificRecordClassGenerator {
     }
     return parameterSpecBuilder.build();
   }
+
 
   private void addAndInitializeSizeFieldToClass(TypeSpec.Builder classBuilder, AvroFixedSchema fixedSchema)
       throws ClassNotFoundException {
