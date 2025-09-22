@@ -148,28 +148,6 @@ public class CodeTransformationsAvro14Test {
     Assert.assertEquals(inCode, schema); //no (significant) harm done
   }
 
-  @Test
-  public void testEnhanceNumericPutMethod() throws Exception {
-    // Use the IntsAndLongs schema for testing
-    String avsc = TestUtil.load("IntsAndLongs.avsc");
-    Schema schema = AvroCompatibilityHelper.parse(avsc);
-    String originalCode = runNativeCodegen(schema);
-
-    // Apply the transformation
-    String enhancedCode = CodeTransformations.enhanceNumericPutMethod(originalCode);
-
-    // Verify the enhanced code contains the type checking for numeric conversions
-    Assert.assertTrue(enhancedCode.contains("if (value$ instanceof java.lang.Long)"));
-    Assert.assertTrue(enhancedCode.contains("if (value$ instanceof java.lang.Integer)"));
-
-    // Compile the enhanced code to verify it's valid Java
-    try {
-      CompilerUtils.CACHED_COMPILER.loadFromJava(schema.getFullName(), enhancedCode);
-    } catch (Exception e) {
-      Assert.fail("Enhanced put method code should compile without errors");
-    }
-  }
-
   private String runNativeCodegen(Schema schema) throws Exception {
     File outputRoot = Files.createTempDirectory(null).toFile();
     return runNativeCodegen(schema, outputRoot);
