@@ -32,7 +32,11 @@ import org.codehaus.jackson.JsonNode;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The class that generates a resolving grammar to resolve between two
