@@ -170,6 +170,7 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
         break;
       case NULL:
       case BOOLEAN:
+        break;
       case INT:
         if (writerType == Schema.Type.LONG) {
           return Symbol.IntLongAdjustAction.INSTANCE;

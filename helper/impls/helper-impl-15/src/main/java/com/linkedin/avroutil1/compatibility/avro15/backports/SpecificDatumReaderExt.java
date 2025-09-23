@@ -32,12 +32,18 @@ public class SpecificDatumReaderExt<T> extends SpecificDatumReader<T> {
     this.reader = reader;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setExpected(Schema reader) throws IOException {
     super.setExpected(reader);
     this.reader = reader;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setSchema(Schema writer) {
     super.setSchema(writer);
@@ -47,6 +53,9 @@ public class SpecificDatumReaderExt<T> extends SpecificDatumReader<T> {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @SuppressWarnings("unchecked")
   @Override
   public T read(T reuse, Decoder in) throws IOException {

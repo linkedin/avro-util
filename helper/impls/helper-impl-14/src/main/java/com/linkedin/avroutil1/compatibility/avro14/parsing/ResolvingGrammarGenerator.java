@@ -164,13 +164,11 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
           break;
         case NULL:
         case BOOLEAN:
+          break;
         case INT:
-          switch (writerType) {
-            case LONG:
-              return Symbol.IntLongAdjustAction.INSTANCE;
-            default:
-              break;
-          }
+            if (writerType == Schema.Type.LONG) {
+                return Symbol.IntLongAdjustAction.INSTANCE;
+            }
         case STRING:
         case FLOAT:
         case BYTES:

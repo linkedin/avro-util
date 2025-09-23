@@ -23,34 +23,18 @@ import java.io.IOException;
  */
 public class GenericDatumReaderExt<T> extends GenericDatumReader<T> {
 
-  private Schema writer;
-  private Schema reader;
-
   public GenericDatumReaderExt(Schema writer, Schema reader, GenericData genericData) {
     super(writer, reader, genericData);
-    this.writer = writer;
-    this.reader = reader;
   }
 
-  @Override
-  public void setExpected(Schema reader) {
-    super.setExpected(reader);
-    this.reader = reader;
-  }
-
-  @Override
-  public void setSchema(Schema writer) {
-    super.setSchema(writer);
-    this.writer = writer;
-    if (reader == null) {
-      this.reader = writer;
-    }
-  }
-
+  /**
+   * {@inheritDoc}
+   */
   @SuppressWarnings("unchecked")
   @Override
   public T read(T reuse, Decoder in) throws IOException {
-    CachedResolvingDecoder resolver = new CachedResolvingDecoder(writer, reader, in);
+    final Schema reader = getExpected();
+    CachedResolvingDecoder resolver = new CachedResolvingDecoder(getSchema(), reader, in);
     resolver.configure(in);
     T result = (T) read(reuse, reader, resolver);
     resolver.drain();
