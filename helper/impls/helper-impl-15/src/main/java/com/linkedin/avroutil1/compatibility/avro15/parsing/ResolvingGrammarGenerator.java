@@ -33,8 +33,8 @@ import org.codehaus.jackson.JsonNode;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -170,7 +170,11 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
           break;
         case NULL:
         case BOOLEAN:
+          break;
         case INT:
+            if (writerType == Schema.Type.LONG) {
+                return Symbol.IntLongAdjustAction.INSTANCE;
+            }
         case STRING:
         case BYTES:
         case ENUM:
@@ -461,6 +465,11 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
           }
           break;
         case LONG:
+          // We can selectively demote long and check that it fits inside int range
+          // when reading an int from a long writer schema.
+          if (b.getType() == Schema.Type.INT) {
+            return j;
+          }
         case FLOAT:
           switch (b.getType()) {
             case DOUBLE:

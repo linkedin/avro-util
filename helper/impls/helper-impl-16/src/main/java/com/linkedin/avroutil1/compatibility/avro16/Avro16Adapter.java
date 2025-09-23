@@ -27,6 +27,7 @@ import com.linkedin.avroutil1.compatibility.StringRepresentation;
 import com.linkedin.avroutil1.compatibility.avro16.backports.Avro16DefaultValuesCache;
 import com.linkedin.avroutil1.compatibility.avro16.backports.GenericDatumReaderExt;
 import com.linkedin.avroutil1.compatibility.avro16.backports.GenericDatumWriterExt;
+import com.linkedin.avroutil1.compatibility.avro16.backports.SpecificDatumReaderExt;
 import com.linkedin.avroutil1.compatibility.avro16.backports.SpecificDatumWriterExt;
 import com.linkedin.avroutil1.compatibility.avro16.codec.AliasAwareSpecificDatumReader;
 import com.linkedin.avroutil1.compatibility.avro16.codec.BoundedMemoryDecoder;
@@ -245,7 +246,7 @@ public class Avro16Adapter implements AvroAdapter {
 
   @Override
   public DatumReader<?> newSpecificDatumReader(Schema writer, Schema reader, SpecificData specificData) {
-    return new SpecificDatumReader<>(writer, reader, specificData);
+    return new SpecificDatumReaderExt<>(writer, reader, specificData);
   }
 
   @Override

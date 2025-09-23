@@ -4,46 +4,33 @@
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1.compatibility.avro14.backports;
+package com.linkedin.avroutil1.compatibility.avro18.backports;
 
-import com.linkedin.avroutil1.compatibility.avro14.codec.CachedResolvingDecoder;
+import com.linkedin.avroutil1.compatibility.avro18.codec.CachedResolvingDecoder;
 import org.apache.avro.AvroRuntimeException;
+import org.apache.avro.Conversion;
+import org.apache.avro.LogicalType;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.Avro18GenericDataAccessUtil;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.io.Decoder;
+import org.apache.avro.specific.SpecificData;
 import org.apache.avro.specific.SpecificDatumReader;
+import org.apache.avro.specific.SpecificRecordBase;
 
 import java.io.IOException;
 
+
+/**
+ * this class allows constructing a {@link SpecificDatumReader} with
+ * a specified {@link SpecificData} instance under avro 1.8
+ *
+ * @param <T>
+ */
 public class SpecificDatumReaderExt<T> extends SpecificDatumReader<T> {
 
-    private Schema writer;
-    private Schema reader;
-
-    public SpecificDatumReaderExt(Schema writer, Schema reader) {
-        super(writer, reader);
-        this.writer = writer;
-        this.reader = reader;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setSchema(Schema writer) {
-        super.setSchema(writer);
-        this.writer = writer;
-        if (this.reader == null) {
-            this.reader = writer;
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setExpected(Schema reader) throws IOException {
-        super.setExpected(reader);
-        this.reader = reader;
+    public SpecificDatumReaderExt(Schema writer, Schema reader, SpecificData specificData) {
+        super(writer, reader, specificData);
     }
 
     /**
@@ -52,8 +39,9 @@ public class SpecificDatumReaderExt<T> extends SpecificDatumReader<T> {
     @SuppressWarnings("unchecked")
     @Override
     public T read(T reuse, Decoder in) throws IOException {
-        CachedResolvingDecoder resolver = new CachedResolvingDecoder(writer, reader, in);
-        resolver.init(in);
+        final Schema reader = getExpected();
+        CachedResolvingDecoder resolver = new CachedResolvingDecoder(getSchema(), reader, in);
+        resolver.configure(in);
         T result = (T) read(reuse, reader, resolver);
         resolver.drain();
         return result;
@@ -61,6 +49,19 @@ public class SpecificDatumReaderExt<T> extends SpecificDatumReader<T> {
 
     private Object read(Object old, Schema expected,
                         CachedResolvingDecoder in) throws IOException {
+        Object datum = readWithoutConversion(old, expected, in);
+        LogicalType logicalType = expected.getLogicalType();
+        if (logicalType != null) {
+            Conversion<?> conversion = getData().getConversionFor(logicalType);
+            if (conversion != null) {
+                return convert(datum, expected, logicalType, conversion);
+            }
+        }
+        return datum;
+    }
+
+    private Object readWithoutConversion(Object old, Schema expected,
+                                         CachedResolvingDecoder in) throws IOException {
         switch (expected.getType()) {
             case RECORD:
                 return readRecord(old, expected, in);
@@ -77,7 +78,7 @@ public class SpecificDatumReaderExt<T> extends SpecificDatumReader<T> {
             case STRING:
                 return readString(old, expected, in);
             case BYTES:
-                return readBytes(old, in);
+                return readBytes(old, expected, in);
             case INT:
                 return readInt(old, expected, in);
             case LONG:
@@ -98,16 +99,21 @@ public class SpecificDatumReaderExt<T> extends SpecificDatumReader<T> {
 
     private Object readRecord(Object old, Schema expected,
                               CachedResolvingDecoder in) throws IOException {
-        Object record = newRecord(old, expected);
+        final GenericData data = getData();
+        Object r = data.newRecord(old, expected);
+        Object state = Avro18GenericDataAccessUtil.getRecordState(data, r, expected);
 
         for (Schema.Field f : in.readFieldOrder()) {
             int pos = f.pos();
             String name = f.name();
-            Object oldDatum = (old != null) ? getField(record, name, pos) : null;
-            setField(record, name, pos, read(oldDatum, f.schema(), in));
+            Object oldDatum = null;
+            if (old != null) {
+                oldDatum = Avro18GenericDataAccessUtil.getField(data, r, name, pos, state);
+            }
+            readField(r, f, oldDatum, in, state);
         }
 
-        return record;
+        return r;
     }
 
     private Object readArray(Object old, Schema expected,
@@ -142,5 +148,35 @@ public class SpecificDatumReaderExt<T> extends SpecificDatumReader<T> {
             } while ((l = in.mapNext()) > 0);
         }
         return map;
+    }
+
+    private void readField(Object r, Schema.Field f, Object oldDatum,
+                           CachedResolvingDecoder in, Object state)
+            throws IOException {
+        if (r instanceof SpecificRecordBase) {
+            Conversion<?> conversion = ((SpecificRecordBase) r).getConversion(f.pos());
+
+            Object datum;
+            if (conversion != null) {
+                datum = readWithConversion(
+                        oldDatum, f.schema(), f.schema().getLogicalType(), conversion, in);
+            } else {
+                datum = readWithoutConversion(oldDatum, f.schema(), in);
+            }
+
+            getData().setField(r, f.name(), f.pos(), datum);
+
+        } else {
+            Avro18GenericDataAccessUtil.setField(getData(), r, f.name(), f.pos(),
+                    read(oldDatum, f.schema(), in), state);
+        }
+    }
+
+    private Object readWithConversion(Object old, Schema expected,
+                                      LogicalType logicalType,
+                                      Conversion<?> conversion,
+                                      CachedResolvingDecoder in) throws IOException {
+        return convert(readWithoutConversion(old, expected, in),
+                expected, logicalType, conversion);
     }
 }

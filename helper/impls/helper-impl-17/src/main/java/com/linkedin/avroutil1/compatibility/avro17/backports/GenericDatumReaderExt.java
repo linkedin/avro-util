@@ -1,56 +1,30 @@
 /*
- * Copyright 2023 LinkedIn Corp.
+ * Copyright 2025 LinkedIn Corp.
  * Licensed under the BSD 2-Clause License (the "License").
  * See License in the project root for license information.
  */
 
-package com.linkedin.avroutil1.compatibility.avro15.backports;
+package com.linkedin.avroutil1.compatibility.avro17.backports;
 
-import com.linkedin.avroutil1.compatibility.avro15.codec.CachedResolvingDecoder;
+import com.linkedin.avroutil1.compatibility.avro17.codec.CachedResolvingDecoder;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.io.Decoder;
-import org.apache.avro.specific.SpecificData;
-import org.apache.avro.specific.SpecificDatumReader;
 
 import java.io.IOException;
 
 
 /**
- * this class allows constructing a {@link SpecificDatumReader} with
- * a specified {@link SpecificData} instance under avro 1.5
+ * this class allows constructing a {@link GenericDatumReader} with
+ * a specified {@link GenericData} instance under avro 1.7
  * @param <T>
  */
-public class SpecificDatumReaderExt<T> extends SpecificDatumReader<T> {
-  private Schema writer;
-  private Schema reader;
+public class GenericDatumReaderExt<T> extends GenericDatumReader<T> {
 
-  public SpecificDatumReaderExt(Schema writer, Schema reader, SpecificData specificData) {
-    super(writer, reader, specificData);
-    this.writer = writer;
-    this.reader = reader;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setExpected(Schema reader) throws IOException {
-    super.setExpected(reader);
-    this.reader = reader;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setSchema(Schema writer) {
-    super.setSchema(writer);
-    this.writer = writer;
-    if (reader == null) {
-      this.reader = writer;
-    }
+  public GenericDatumReaderExt(Schema writer, Schema reader, GenericData genericData) {
+    super(writer, reader, genericData);
   }
 
   /**
@@ -59,8 +33,9 @@ public class SpecificDatumReaderExt<T> extends SpecificDatumReader<T> {
   @SuppressWarnings("unchecked")
   @Override
   public T read(T reuse, Decoder in) throws IOException {
-    CachedResolvingDecoder resolver = new CachedResolvingDecoder(writer, reader, in);
-    resolver.init(in);
+    final Schema reader = getExpected();
+    CachedResolvingDecoder resolver = new CachedResolvingDecoder(getSchema(), reader, in);
+    resolver.configure(in);
     T result = (T) read(reuse, reader, resolver);
     resolver.drain();
     return result;
@@ -105,17 +80,20 @@ public class SpecificDatumReaderExt<T> extends SpecificDatumReader<T> {
 
   private Object readRecord(Object old, Schema expected,
                             CachedResolvingDecoder in) throws IOException {
-    Object record = newRecord(old, expected);
     final GenericData data = getData();
+    Object r = data.newRecord(old, expected);
 
     for (Schema.Field f : in.readFieldOrder()) {
       int pos = f.pos();
       String name = f.name();
-      Object oldDatum = (old != null) ? data.getField(record, name, pos) : null;
-      data.setField(record, name, pos, read(oldDatum, f.schema(), in));
+      Object oldDatum = null;
+      if (old != null) {
+        oldDatum = data.getField(r, name, pos);
+      }
+      data.setField(r, f.name(), f.pos(), read(oldDatum, f.schema(), in));
     }
 
-    return record;
+    return r;
   }
 
   private Object readArray(Object old, Schema expected,

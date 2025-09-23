@@ -1,0 +1,19 @@
+{
+  "type": "record",
+  "namespace": "by18",
+  "name": "IntRecord",
+  "fields": [
+    {
+      "name": "unionField",
+      "type": [
+        "null",
+        "int"
+      ],
+      "default": null
+    },
+    {
+      "name": "field",
+      "type": "int"
+    }
+  ]
+}
