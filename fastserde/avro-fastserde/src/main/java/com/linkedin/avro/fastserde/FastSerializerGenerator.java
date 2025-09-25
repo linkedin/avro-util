@@ -246,7 +246,7 @@ public class FastSerializerGenerator<T, U extends GenericData> extends FastSerde
 
     final Schema elementSchema = arraySchema.getElementType();
     if (SchemaAssistant.isComplexType(elementSchema)) {
-      JVar containerVar = declareValueVar(elementSchema.getName(), elementSchema, forBody);
+      JVar containerVar = declareValueVar(getUniqueName("element"), elementSchema, forBody);
       forBody.assign(containerVar, JExpr.invoke(JExpr.cast(arrayClass, arrayExpr), getMethodName).arg(counter));
       processComplexType(elementSchema, containerVar, forBody, customizationSupplier);
     } else {
@@ -290,7 +290,7 @@ public class FastSerializerGenerator<T, U extends GenericData> extends FastSerde
 
     JVar containerVar;
     if (SchemaAssistant.isComplexType(valueSchema)) {
-      containerVar = declareValueVar(valueSchema.getName(), valueSchema, forBody);
+      containerVar = declareValueVar(getUniqueName("element"), valueSchema, forBody);
       forBody.assign(containerVar, JExpr.invoke(JExpr.cast(mapClass, mapExpr), "get").arg(mapKeysLoop.var()));
 
       processComplexType(valueSchema, containerVar, forBody, customizationSupplier);
