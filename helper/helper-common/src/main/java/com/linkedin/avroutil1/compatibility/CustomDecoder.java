@@ -117,8 +117,8 @@ public interface CustomDecoder {
 
     /**
      * Reads a byte-string written by {@link Encoder#writeBytes}.
-     * if <tt>old</tt> is not null and has sufficient capacity to take in
-     * the bytes being read, the bytes are returned in <tt>old</tt>.
+     * if old is not null and has sufficient capacity to take in
+     * the bytes being read, the bytes are returned in old.
      * @throws AvroTypeException If this is a stateful reader and
      *          byte-string is not the type of the next value to be read
      */
@@ -145,7 +145,7 @@ public interface CustomDecoder {
             throws IOException;
 
     /**
-     * A shorthand for <tt>readFixed(bytes, 0, bytes.length)</tt>.
+     * A shorthand for readFixed(bytes, 0, bytes.length).
      * @throws AvroTypeException If this is a stateful reader and
      *          fixed sized binary object is not the type of the next
      *          value to be read or the length is incorrect.
