@@ -178,13 +178,13 @@ public interface CustomDecoder {
      * indicated number of items, and then call {@link
      * #arrayNext} to find out the number of items in the next
      * block.  The typical pattern for consuming an array looks like:
-     * <pre>
+     * <pre>{@code
      *   for(long i = in.readArrayStart(); i != 0; i = in.arrayNext()) {
      *     for (long j = 0; j < i; j++) {
      *       read next element of the array;
      *     }
      *   }
-     * </pre>
+     * }</pre>
      *  @throws AvroTypeException If this is a stateful reader and
      *          array is not the type of the next value to be read */
     long readArrayStart() throws IOException;
@@ -208,13 +208,13 @@ public interface CustomDecoder {
      * them if possible.  It will return zero if there are no more
      * items to skip through, or an item count if it needs the client's
      * help in skipping.  The typical usage pattern is:
-     * <pre>
+     * <pre>{@code
      *   for(long i = in.skipArray(); i != 0; i = i.skipArray()) {
      *     for (long j = 0; j < i; j++) {
      *       read and discard the next element of the array;
      *     }
      *   }
-     * </pre>
+     * }</pre>
      * Note that this method can automatically skip through items if a
      * byte-count is found in the underlying data, or if a schema has
      * been provided to the implementation, but
@@ -232,7 +232,7 @@ public interface CustomDecoder {
      *  As an example, let's say you want to read a map of records,
      *  the record consisting of an Long field and a Boolean field.
      *  Your code would look something like this:
-     * <pre>
+     * <pre>{@code
      *   Map<String,Record> m = new HashMap<String,Record>();
      *   Record reuse = new Record();
      *   for(long i = in.readMapStart(); i != 0; i = in.readMapNext()) {
@@ -243,7 +243,7 @@ public interface CustomDecoder {
      *       m.put(key, reuse);
      *     }
      *   }
-     * </pre>
+     * }</pre>
      * @throws AvroTypeException If this is a stateful reader and
      *         map is not the type of the next value to be read
      */
@@ -263,7 +263,7 @@ public interface CustomDecoder {
      * As an example, let's say you want to skip a map of records,
      * the record consisting of an Long field and a Boolean field.
      * Your code would look something like this:
-     * <pre>
+     * <pre>{@code
      *   for(long i = in.skipMap(); i != 0; i = in.skipMap()) {
      *     for (long j = 0; j < i; j++) {
      *       in.skipString();  // Discard key
@@ -271,7 +271,7 @@ public interface CustomDecoder {
      *       in.readBoolean(); // Discard boolean-field of value
      *     }
      *   }
-     * </pre>
+     * }</pre>
      *  @throws AvroTypeException If this is a stateful reader and
      *          array is not the type of the next value to be read */
 
