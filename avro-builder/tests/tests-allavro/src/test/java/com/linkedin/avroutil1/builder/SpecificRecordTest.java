@@ -40,7 +40,6 @@ import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.io.Encoder;
-import org.apache.avro.specific.SpecificData;
 import org.apache.avro.util.Utf8;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;

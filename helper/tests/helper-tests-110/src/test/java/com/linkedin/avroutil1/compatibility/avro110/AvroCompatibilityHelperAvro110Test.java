@@ -15,7 +15,6 @@ import com.linkedin.avroutil1.compatibility.AvroVersion;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
