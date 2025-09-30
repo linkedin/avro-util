@@ -14,6 +14,44 @@
     {
       "name": "field",
       "type": "long"
+    },
+    {
+      "name": "arrayField",
+      "type": {
+        "type": "array",
+        "items": "long"
+      },
+      "default": []
+    },
+    {
+      "name": "mapField",
+      "type": {
+        "type": "map",
+        "values": "long"
+      },
+      "default": {}
+    },
+    {
+      "name": "unionArrayField",
+      "type": {
+        "type": "array",
+        "items": [
+          "null",
+          "long"
+        ]
+      },
+      "default": []
+    },
+    {
+      "name": "unionMapField",
+      "type": {
+        "type": "map",
+        "values": [
+          "null",
+          "long"
+        ]
+      },
+      "default": {}
     }
   ]
 }

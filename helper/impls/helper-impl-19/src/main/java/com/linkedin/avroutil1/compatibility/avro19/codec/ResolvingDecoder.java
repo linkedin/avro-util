@@ -156,7 +156,7 @@ public class ResolvingDecoder extends ValidatingDecoder implements CustomDecoder
 
   @Override
   public int readInt() throws IOException {
-    Symbol actual = parser.popSymbol();
+    Symbol actual = parser.advance(Symbol.INT);
     if (actual == Symbol.INT) {
       return in.readInt();
     } else if (actual == Symbol.IntLongAdjustAction.INSTANCE) {
@@ -327,8 +327,7 @@ public class ResolvingDecoder extends ValidatingDecoder implements CustomDecoder
     } else if (top == Symbol.DEFAULT_END_ACTION) {
       in = backup;
     } else if (top == Symbol.IntLongAdjustAction.INSTANCE) {
-      parser.pushSymbol(Symbol.INT);
-      return Symbol.INT;
+      return top;
     } else {
       throw new AvroTypeException("Unknown action: " + top);
     }
