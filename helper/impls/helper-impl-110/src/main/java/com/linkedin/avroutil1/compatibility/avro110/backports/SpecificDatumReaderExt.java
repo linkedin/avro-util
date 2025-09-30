@@ -13,6 +13,7 @@ import org.apache.avro.Conversion;
 import org.apache.avro.LogicalType;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.Avro110GenericDataAccessUtil;
+import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.specific.SpecificData;
@@ -136,17 +137,33 @@ public class SpecificDatumReaderExt<T> extends SpecificDatumReader<T> {
         long l = in.readArrayStart();
         long base = 0;
         if (l > 0) {
+            LogicalType logicalType = expectedType.getLogicalType();
+            Conversion<?> conversion = getData().getConversionFor(logicalType);
             Object array = newArray(old, (int) l, expected);
             do {
-                for (long i = 0; i < l; i++) {
-                    addToArray(array, base + i, read(peekArray(array), expectedType, in));
+                if (logicalType != null && conversion != null) {
+                    for (long i = 0; i < l; i++) {
+                        addToArray(array, base + i,
+                                readWithConversion(peekArray(array), expectedType, logicalType, conversion, in));
+                    }
+                } else {
+                    for (long i = 0; i < l; i++) {
+                        addToArray(array, base + i, readWithoutConversion(peekArray(array), expectedType, in));
+                    }
                 }
                 base += l;
             } while ((l = in.arrayNext()) > 0);
-            return array;
+            return pruneArray(array);
         } else {
-            return newArray(old, 0, expected);
+            return pruneArray(newArray(old, 0, expected));
         }
+    }
+
+    private Object pruneArray(Object object) {
+        if (object instanceof GenericArray<?>) {
+            ((GenericArray<?>) object).prune();
+        }
+        return object;
     }
 
     private Object readMap(Object old, Schema expected,
