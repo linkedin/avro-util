@@ -8,6 +8,8 @@ package com.linkedin.avroutil1.compatibility.avro15;
 
 import by15.IntRecord;
 import by15.LongRecord;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumWriter;
@@ -102,27 +104,27 @@ public class AvroCompatibilityHelperAvro15Test {
     IntRecord intRecord = new IntRecord();
     intRecord.field = 42;
     intRecord.unionField = 55;
-    intRecord.arrayField = List.of(100, -200);
-    intRecord.mapField = Map.of("key1", 300, "key2", -400);
-    intRecord.unionArrayField = List.of(99, -199);
-    intRecord.unionMapField = Map.of("key1", 298, "key2", 355);
+    intRecord.arrayField = ImmutableList.of(100, -200);
+    intRecord.mapField = ImmutableMap.of("key1", 300, "key2", -400);
+    intRecord.unionArrayField = ImmutableList.of(99, -199);
+    intRecord.unionMapField = ImmutableMap.of("key1", 298, "key2", 355);
     byte[] binary = toBinary(intRecord);
 
     IntRecord roundtrip = toSpecificRecord(binary, IntRecord.SCHEMA$, IntRecord.SCHEMA$);
     Assert.assertEquals(roundtrip.field, 42);
     Assert.assertEquals(roundtrip.unionField.intValue(), 55);
-    Assert.assertEquals(roundtrip.arrayField, List.of(100, -200));
-    Assert.assertEquals(roundtrip.mapField, Map.of(new Utf8("key1"), 300, new Utf8("key2"), -400));
-    Assert.assertEquals(roundtrip.unionArrayField, List.of(99, -199));
-    Assert.assertEquals(roundtrip.unionMapField, Map.of(new Utf8("key1"), 298, new Utf8("key2"), 355));
+    Assert.assertEquals(roundtrip.arrayField, ImmutableList.of(100, -200));
+    Assert.assertEquals(roundtrip.mapField, ImmutableMap.of(new Utf8("key1"), 300, new Utf8("key2"), -400));
+    Assert.assertEquals(roundtrip.unionArrayField, ImmutableList.of(99, -199));
+    Assert.assertEquals(roundtrip.unionMapField, ImmutableMap.of(new Utf8("key1"), 298, new Utf8("key2"), 355));
 
     GenericRecord genericRecord = toGenericRecord(binary, IntRecord.SCHEMA$, IntRecord.SCHEMA$);
     Assert.assertEquals(genericRecord.get("field"), 42);
     Assert.assertEquals(genericRecord.get("unionField"), 55);
-    Assert.assertEquals(new ArrayList<>((GenericData.Array<Integer>) genericRecord.get("arrayField")), List.of(100, -200));
-    Assert.assertEquals(genericRecord.get("mapField"), Map.of(new Utf8("key1"), 300, new Utf8("key2"), -400));
-    Assert.assertEquals(new ArrayList<>((GenericData.Array<Integer>) genericRecord.get("unionArrayField")), List.of(99, -199));
-    Assert.assertEquals(genericRecord.get("unionMapField"), Map.of(new Utf8("key1"), 298, new Utf8("key2"), 355));
+    Assert.assertEquals(new ArrayList<>((GenericData.Array<Integer>) genericRecord.get("arrayField")), ImmutableList.of(100, -200));
+    Assert.assertEquals(genericRecord.get("mapField"), ImmutableMap.of(new Utf8("key1"), 300, new Utf8("key2"), -400));
+    Assert.assertEquals(new ArrayList<>((GenericData.Array<Integer>) genericRecord.get("unionArrayField")), ImmutableList.of(99, -199));
+    Assert.assertEquals(genericRecord.get("unionMapField"), ImmutableMap.of(new Utf8("key1"), 298, new Utf8("key2"), 355));
   }
 
   @Test
@@ -130,27 +132,27 @@ public class AvroCompatibilityHelperAvro15Test {
     LongRecord longRecord = new LongRecord();
     longRecord.field = 42L;
     longRecord.unionField = 55L;
-    longRecord.arrayField = List.of(100L, -200L);
-    longRecord.mapField = Map.of("key1", 300L, "key2", -400L);
-    longRecord.unionArrayField = List.of(99L, -199L);
-    longRecord.unionMapField = Map.of("key1", 298L, "key2", 355L);
+    longRecord.arrayField = ImmutableList.of(100L, -200L);
+    longRecord.mapField = ImmutableMap.of("key1", 300L, "key2", -400L);
+    longRecord.unionArrayField = ImmutableList.of(99L, -199L);
+    longRecord.unionMapField = ImmutableMap.of("key1", 298L, "key2", 355L);
     byte[] binary = toBinary(longRecord);
 
     LongRecord roundtrip = toSpecificRecord(binary, LongRecord.SCHEMA$, LongRecord.SCHEMA$);
     Assert.assertEquals(roundtrip.field, 42L);
     Assert.assertEquals(roundtrip.unionField.longValue(), 55L);
-    Assert.assertEquals(roundtrip.arrayField, List.of(100L, -200L));
-    Assert.assertEquals(roundtrip.mapField, Map.of(new Utf8("key1"), 300L, new Utf8("key2"), -400L));
-    Assert.assertEquals(roundtrip.unionArrayField, List.of(99L, -199L));
-    Assert.assertEquals(roundtrip.unionMapField, Map.of(new Utf8("key1"), 298L, new Utf8("key2"), 355L));
+    Assert.assertEquals(roundtrip.arrayField, ImmutableList.of(100L, -200L));
+    Assert.assertEquals(roundtrip.mapField, ImmutableMap.of(new Utf8("key1"), 300L, new Utf8("key2"), -400L));
+    Assert.assertEquals(roundtrip.unionArrayField, ImmutableList.of(99L, -199L));
+    Assert.assertEquals(roundtrip.unionMapField, ImmutableMap.of(new Utf8("key1"), 298L, new Utf8("key2"), 355L));
 
     GenericRecord genericRecord = toGenericRecord(binary, LongRecord.SCHEMA$, LongRecord.SCHEMA$);
     Assert.assertEquals(genericRecord.get("field"), 42L);
     Assert.assertEquals(genericRecord.get("unionField"), 55L);
-    Assert.assertEquals(new ArrayList<>((GenericData.Array<Integer>) genericRecord.get("arrayField")), List.of(100L, -200L));
-    Assert.assertEquals(genericRecord.get("mapField"), Map.of(new Utf8("key1"), 300L, new Utf8("key2"), -400L));
-    Assert.assertEquals(new ArrayList<>((GenericData.Array<Integer>) genericRecord.get("unionArrayField")), List.of(99L, -199L));
-    Assert.assertEquals(genericRecord.get("unionMapField"), Map.of(new Utf8("key1"), 298L, new Utf8("key2"), 355L));
+    Assert.assertEquals(new ArrayList<>((GenericData.Array<Integer>) genericRecord.get("arrayField")), ImmutableList.of(100L, -200L));
+    Assert.assertEquals(genericRecord.get("mapField"), ImmutableMap.of(new Utf8("key1"), 300L, new Utf8("key2"), -400L));
+    Assert.assertEquals(new ArrayList<>((GenericData.Array<Integer>) genericRecord.get("unionArrayField")), ImmutableList.of(99L, -199L));
+    Assert.assertEquals(genericRecord.get("unionMapField"), ImmutableMap.of(new Utf8("key1"), 298L, new Utf8("key2"), 355L));
   }
 
   @Test
@@ -158,27 +160,27 @@ public class AvroCompatibilityHelperAvro15Test {
     IntRecord intRecord = new IntRecord();
     intRecord.field = 42;
     intRecord.unionField = 55;
-    intRecord.arrayField = List.of(100, -200);
-    intRecord.mapField = Map.of("key1", 300, "key2", -400);
-    intRecord.unionArrayField = List.of(99, -199);
-    intRecord.unionMapField = Map.of("key1", 298, "key2", 355);
+    intRecord.arrayField = ImmutableList.of(100, -200);
+    intRecord.mapField = ImmutableMap.of("key1", 300, "key2", -400);
+    intRecord.unionArrayField = ImmutableList.of(99, -199);
+    intRecord.unionMapField = ImmutableMap.of("key1", 298, "key2", 355);
     byte[] binary = toBinary(intRecord);
 
     LongRecord longRecord = toSpecificRecord(binary, IntRecord.SCHEMA$, LongRecord.SCHEMA$);
     Assert.assertEquals(longRecord.field, 42L);
     Assert.assertEquals(longRecord.unionField.longValue(), 55L);
-    Assert.assertEquals(longRecord.arrayField, List.of(100L, -200L));
-    Assert.assertEquals(longRecord.mapField, Map.of(new Utf8("key1"), 300L, new Utf8("key2"), -400L));
-    Assert.assertEquals(longRecord.unionArrayField, List.of(99L, -199L));
-    Assert.assertEquals(longRecord.unionMapField, Map.of(new Utf8("key1"), 298L, new Utf8("key2"), 355L));
+    Assert.assertEquals(longRecord.arrayField, ImmutableList.of(100L, -200L));
+    Assert.assertEquals(longRecord.mapField, ImmutableMap.of(new Utf8("key1"), 300L, new Utf8("key2"), -400L));
+    Assert.assertEquals(longRecord.unionArrayField, ImmutableList.of(99L, -199L));
+    Assert.assertEquals(longRecord.unionMapField, ImmutableMap.of(new Utf8("key1"), 298L, new Utf8("key2"), 355L));
 
     GenericRecord genericRecord = toGenericRecord(binary, IntRecord.SCHEMA$, LongRecord.SCHEMA$);
     Assert.assertEquals(genericRecord.get("field"), 42L);
     Assert.assertEquals(genericRecord.get("unionField"), 55L);
-    Assert.assertEquals(new ArrayList<>((GenericData.Array<Integer>) genericRecord.get("arrayField")), List.of(100L, -200L));
-    Assert.assertEquals(genericRecord.get("mapField"), Map.of(new Utf8("key1"), 300L, new Utf8("key2"), -400L));
-    Assert.assertEquals(new ArrayList<>((GenericData.Array<Integer>) genericRecord.get("unionArrayField")), List.of(99L, -199L));
-    Assert.assertEquals(genericRecord.get("unionMapField"), Map.of(new Utf8("key1"), 298L, new Utf8("key2"), 355L));
+    Assert.assertEquals(new ArrayList<>((GenericData.Array<Integer>) genericRecord.get("arrayField")), ImmutableList.of(100L, -200L));
+    Assert.assertEquals(genericRecord.get("mapField"), ImmutableMap.of(new Utf8("key1"), 300L, new Utf8("key2"), -400L));
+    Assert.assertEquals(new ArrayList<>((GenericData.Array<Integer>) genericRecord.get("unionArrayField")), ImmutableList.of(99L, -199L));
+    Assert.assertEquals(genericRecord.get("unionMapField"), ImmutableMap.of(new Utf8("key1"), 298L, new Utf8("key2"), 355L));
   }
 
   @Test
@@ -186,27 +188,27 @@ public class AvroCompatibilityHelperAvro15Test {
     LongRecord longRecord = new LongRecord();
     longRecord.field = 42L;
     longRecord.unionField = 55L;
-    longRecord.arrayField = List.of(100L, -200L);
-    longRecord.mapField = Map.of("key1", 300L, "key2", -400L);
-    longRecord.unionArrayField = List.of(99L, -199L);
-    longRecord.unionMapField = Map.of("key1", 298L, "key2", 355L);
+    longRecord.arrayField = ImmutableList.of(100L, -200L);
+    longRecord.mapField = ImmutableMap.of("key1", 300L, "key2", -400L);
+    longRecord.unionArrayField = ImmutableList.of(99L, -199L);
+    longRecord.unionMapField = ImmutableMap.of("key1", 298L, "key2", 355L);
     byte[] binary = toBinary(longRecord);
 
     IntRecord intRecord = toSpecificRecord(binary, LongRecord.SCHEMA$, IntRecord.SCHEMA$);
     Assert.assertEquals(intRecord.field, 42);
     Assert.assertEquals(intRecord.unionField.intValue(), 55);
-    Assert.assertEquals(intRecord.arrayField, List.of(100, -200));
-    Assert.assertEquals(intRecord.mapField, Map.of(new Utf8("key1"), 300, new Utf8("key2"), -400));
-    Assert.assertEquals(intRecord.unionArrayField, List.of(99, -199));
-    Assert.assertEquals(intRecord.unionMapField, Map.of(new Utf8("key1"), 298, new Utf8("key2"), 355));
+    Assert.assertEquals(intRecord.arrayField, ImmutableList.of(100, -200));
+    Assert.assertEquals(intRecord.mapField, ImmutableMap.of(new Utf8("key1"), 300, new Utf8("key2"), -400));
+    Assert.assertEquals(intRecord.unionArrayField, ImmutableList.of(99, -199));
+    Assert.assertEquals(intRecord.unionMapField, ImmutableMap.of(new Utf8("key1"), 298, new Utf8("key2"), 355));
 
     GenericRecord genericRecord = toGenericRecord(binary, LongRecord.SCHEMA$, IntRecord.SCHEMA$);
     Assert.assertEquals(genericRecord.get("field"), 42);
     Assert.assertEquals(genericRecord.get("unionField"), 55);
-    Assert.assertEquals(new ArrayList<>((GenericData.Array<Integer>) genericRecord.get("arrayField")), List.of(100, -200));
-    Assert.assertEquals(genericRecord.get("mapField"), Map.of(new Utf8("key1"), 300, new Utf8("key2"), -400));
-    Assert.assertEquals(new ArrayList<>((GenericData.Array<Integer>) genericRecord.get("unionArrayField")), List.of(99, -199));
-    Assert.assertEquals(genericRecord.get("unionMapField"), Map.of(new Utf8("key1"), 298, new Utf8("key2"), 355));
+    Assert.assertEquals(new ArrayList<>((GenericData.Array<Integer>) genericRecord.get("arrayField")), ImmutableList.of(100, -200));
+    Assert.assertEquals(genericRecord.get("mapField"), ImmutableMap.of(new Utf8("key1"), 300, new Utf8("key2"), -400));
+    Assert.assertEquals(new ArrayList<>((GenericData.Array<Integer>) genericRecord.get("unionArrayField")), ImmutableList.of(99, -199));
+    Assert.assertEquals(genericRecord.get("unionMapField"), ImmutableMap.of(new Utf8("key1"), 298, new Utf8("key2"), 355));
   }
 
   @Test
@@ -220,19 +222,19 @@ public class AvroCompatibilityHelperAvro15Test {
     byte[] binary2 = toBinary(longRecord2);
 
     LongRecord longRecord3 = newLongRecord();
-    longRecord3.arrayField = List.of((long) Integer.MAX_VALUE + 1L);
+    longRecord3.arrayField = ImmutableList.of((long) Integer.MAX_VALUE + 1L);
     byte[] binary3 = toBinary(longRecord3);
 
     LongRecord longRecord4 = newLongRecord();
-    longRecord4.mapField = Map.of("haha", (long) Integer.MIN_VALUE - 1L);
+    longRecord4.mapField = ImmutableMap.of("haha", (long) Integer.MIN_VALUE - 1L);
     byte[] binary4 = toBinary(longRecord4);
 
     LongRecord longRecord5 = newLongRecord();
-    longRecord5.unionArrayField = List.of((long) Integer.MAX_VALUE + 1L);
+    longRecord5.unionArrayField = ImmutableList.of((long) Integer.MAX_VALUE + 1L);
     byte[] binary5 = toBinary(longRecord5);
 
     LongRecord longRecord6 = newLongRecord();
-    longRecord6.unionMapField = Map.of("haha", (long) Integer.MIN_VALUE - 1L);
+    longRecord6.unionMapField = ImmutableMap.of("haha", (long) Integer.MIN_VALUE - 1L);
     byte[] binary6 = toBinary(longRecord6);
 
     Assert.assertThrows(AvroTypeException.class, () -> toSpecificRecord(binary, LongRecord.SCHEMA$, IntRecord.SCHEMA$));
@@ -258,10 +260,10 @@ public class AvroCompatibilityHelperAvro15Test {
     LongRecord longRecord = new LongRecord();
     longRecord.field = 0L;
     longRecord.unionField = 0L;
-    longRecord.arrayField = List.of();
-    longRecord.mapField = Map.of();
-    longRecord.unionArrayField = List.of();
-    longRecord.unionMapField = Map.of();
+    longRecord.arrayField = ImmutableList.of();
+    longRecord.mapField = ImmutableMap.of();
+    longRecord.unionArrayField = ImmutableList.of();
+    longRecord.unionMapField = ImmutableMap.of();
     return longRecord;
   }
 
