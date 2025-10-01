@@ -615,6 +615,10 @@ public abstract class Symbol {
     }
   }
 
+  public static class IntLongAdjustAction extends ImplicitAction {
+    public static final IntLongAdjustAction INSTANCE = new IntLongAdjustAction();
+  }
+
   public static FieldOrderAction fieldOrderAction(Schema.Field[] fields) {
     return new FieldOrderAction(fields);
   }

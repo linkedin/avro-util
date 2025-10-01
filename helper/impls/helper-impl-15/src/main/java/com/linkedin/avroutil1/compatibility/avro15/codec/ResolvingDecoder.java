@@ -24,6 +24,7 @@
 
 package com.linkedin.avroutil1.compatibility.avro15.codec;
 
+import com.linkedin.avroutil1.compatibility.CustomDecoder;
 import com.linkedin.avroutil1.compatibility.avro15.parsing.ResolvingGrammarGenerator;
 import com.linkedin.avroutil1.compatibility.avro15.parsing.Symbol;
 import java.io.IOException;
@@ -45,7 +46,7 @@ import org.apache.avro.io.DecoderFactory;
  * <p>See the <a href="doc-files/parsing.html">parser documentation</a> for
  *  information on how this works.
  */
-public class ResolvingDecoder extends ValidatingDecoder {
+public class ResolvingDecoder extends ValidatingDecoder implements CustomDecoder {
 
   private Decoder backup;
 
@@ -158,7 +159,7 @@ public class ResolvingDecoder extends ValidatingDecoder {
 
   @Override
   public int readInt() throws IOException {
-    Symbol actual = parser.popSymbol();
+    Symbol actual = parser.advance(Symbol.INT);
     if (actual == Symbol.INT) {
       return in.readInt();
     } else if (actual == Symbol.IntLongAdjustAction.INSTANCE) {
@@ -263,8 +264,7 @@ public class ResolvingDecoder extends ValidatingDecoder {
     } else if (top == Symbol.DEFAULT_END_ACTION) {
       in = backup;
     } else if (top == Symbol.IntLongAdjustAction.INSTANCE) {
-      parser.pushSymbol(Symbol.INT);
-      return Symbol.INT;
+      return top;
     } else {
       throw new AvroTypeException("Unknown action: " + top);
     }

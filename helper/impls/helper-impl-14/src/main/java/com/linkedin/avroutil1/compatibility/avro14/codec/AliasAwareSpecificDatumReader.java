@@ -6,6 +6,7 @@
 
 package com.linkedin.avroutil1.compatibility.avro14.codec;
 
+import com.linkedin.avroutil1.compatibility.avro14.backports.SpecificDatumReaderExt;
 import org.apache.avro.Schema;
 import org.apache.avro.specific.SpecificData;
 import org.apache.avro.specific.SpecificDatumReader;
@@ -23,20 +24,21 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @param <T>
  */
-public class AliasAwareSpecificDatumReader<T> extends SpecificDatumReader<T> {
+public class AliasAwareSpecificDatumReader<T> extends SpecificDatumReaderExt<T> {
 
     //same idea as the one in SpecificData
     protected final static Map<String, Class<?>> CLASS_CACHE = new ConcurrentHashMap<>();
 
     public AliasAwareSpecificDatumReader() {
+        this(null, null);
     }
 
     public AliasAwareSpecificDatumReader(Class<T> c) {
-        super(c);
+        this(SpecificData.get().getSchema(c));
     }
 
     public AliasAwareSpecificDatumReader(Schema schema) {
-        super(schema);
+        this(schema, schema);
     }
 
     public AliasAwareSpecificDatumReader(Schema writer, Schema reader) {

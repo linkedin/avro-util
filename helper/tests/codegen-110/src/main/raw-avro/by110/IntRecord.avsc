@@ -1,0 +1,57 @@
+{
+  "type": "record",
+  "namespace": "by110",
+  "name": "IntRecord",
+  "fields": [
+    {
+      "name": "unionField",
+      "type": [
+        "null",
+        "int"
+      ],
+      "default": null
+    },
+    {
+      "name": "field",
+      "type": "int"
+    },
+    {
+      "name": "arrayField",
+      "type": {
+        "type": "array",
+        "items": "int"
+      },
+      "default": []
+    },
+    {
+      "name": "mapField",
+      "type": {
+        "type": "map",
+        "values": "int"
+      },
+      "default": {}
+    },
+    {
+      "name": "unionArrayField",
+      "type": {
+        "type": "array",
+        "items": [
+          "null",
+          "int"
+        ]
+      },
+      "default": []
+    },
+    {
+      "name": "unionMapField",
+      "type": {
+        "type": "map",
+        "values": [
+          "null",
+          "int"
+        ]
+      },
+      "default": {}
+    }
+  ]
+}

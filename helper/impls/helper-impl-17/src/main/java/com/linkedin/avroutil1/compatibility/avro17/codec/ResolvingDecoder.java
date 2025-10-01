@@ -24,6 +24,7 @@
 
 package com.linkedin.avroutil1.compatibility.avro17.codec;
 
+import com.linkedin.avroutil1.compatibility.CustomDecoder;
 import com.linkedin.avroutil1.compatibility.avro17.parsing.ResolvingGrammarGenerator;
 import com.linkedin.avroutil1.compatibility.avro17.parsing.Symbol;
 import java.io.IOException;
@@ -37,7 +38,7 @@ import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.util.Utf8;
 
-public class ResolvingDecoder extends ValidatingDecoder {
+public class ResolvingDecoder extends ValidatingDecoder implements CustomDecoder {
   private Decoder backup;
   private static final Charset UTF8 = Charset.forName("UTF-8");
 
@@ -70,7 +71,7 @@ public class ResolvingDecoder extends ValidatingDecoder {
 
   @Override
   public int readInt() throws IOException {
-    Symbol actual = parser.popSymbol();
+    Symbol actual = parser.advance(Symbol.INT);
     if (actual == Symbol.INT) {
       return in.readInt();
     } else if (actual == Symbol.IntLongAdjustAction.INSTANCE) {
@@ -226,8 +227,7 @@ public class ResolvingDecoder extends ValidatingDecoder {
         }
 
         if (top == Symbol.IntLongAdjustAction.INSTANCE) {
-          parser.pushSymbol(Symbol.INT);
-          return Symbol.INT;
+          return top;
         }
 
         if (top instanceof Symbol.DefaultStartAction) {

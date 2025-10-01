@@ -38,7 +38,8 @@ public class GenericDatumReaderExt<T> extends GenericDatumReader<T> {
     @Override
     public T read(T reuse, Decoder in) throws IOException {
         final Schema reader = getExpected();
-        CachedResolvingDecoder resolver = new CachedResolvingDecoder(getSchema(), reader, in);
+        final Schema writer = getSchema();
+        CachedResolvingDecoder resolver = new CachedResolvingDecoder(Schema.applyAliases(writer, reader), reader, in);
         resolver.configure(in);
         T result = (T) read(reuse, reader, resolver);
         resolver.drain();

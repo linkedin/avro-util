@@ -51,9 +51,11 @@ public class SpecificRecordGeneratorUtil {
   public static final ClassName CLASSNAME_SPECIFIC_DATA = ClassName.get("org.apache.avro.specific", "SpecificData");
   public static final ClassName CLASSNAME_SPECIFIC_RECORD = ClassName.get("org.apache.avro.specific", "SpecificRecord");
   public static final ClassName CLASSNAME_SPECIFIC_RECORD_BASE = ClassName.get("org.apache.avro.specific", "SpecificRecordBase");
+  public static final ClassName CLASSNAME_SPECIFIC_RECORD_BASE_EXT = ClassName.get("com.linkedin.avroutil1.compatibility.backports", "SpecificRecordBaseExt");
   public static final ClassName CLASSNAME_SPECIFIC_DATUM_READER = ClassName.get("org.apache.avro.specific", "SpecificDatumReader");
   public static final ClassName CLASSNAME_SPECIFIC_DATUM_WRITER = ClassName.get("org.apache.avro.specific", "SpecificDatumWriter");
   public static final ClassName CLASSNAME_ENCODER = ClassName.get("org.apache.avro.io", "Encoder");
+  public static final ClassName CLASSNAME_CUSTOM_DECODER = ClassName.get("com.linkedin.avroutil1.compatibility", "CustomDecoder");
   public static final ClassName CLASSNAME_RESOLVING_DECODER = ClassName.get("org.apache.avro.io", "ResolvingDecoder");
   public static final ClassName CLASSNAME_DATUM_READER = ClassName.get("org.apache.avro.io", "DatumReader");
   public static final ClassName CLASSNAME_DATUM_WRITER = ClassName.get("org.apache.avro.io", "DatumWriter");

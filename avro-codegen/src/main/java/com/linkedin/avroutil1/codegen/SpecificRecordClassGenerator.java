@@ -356,7 +356,7 @@ public class SpecificRecordClassGenerator {
     classBuilder.addSuperinterface(SpecificRecordGeneratorUtil.CLASSNAME_SPECIFIC_RECORD);
 
     // extends
-    classBuilder.superclass(SpecificRecordGeneratorUtil.CLASSNAME_SPECIFIC_RECORD_BASE);
+    classBuilder.superclass(SpecificRecordGeneratorUtil.CLASSNAME_SPECIFIC_RECORD_BASE_EXT);
 
     //add class-level doc from schema doc
     //file-level (top of file) comment is added to the file object later
@@ -519,8 +519,26 @@ public class SpecificRecordClassGenerator {
         .addParameter(SpecificRecordGeneratorUtil.CLASSNAME_RESOLVING_DECODER, "in")
         .addException(IOException.class)
         .addModifiers(Modifier.PUBLIC);
-    addCustomDecodeMethod(customDecodeBuilder, recordSchema, config, classBuilder, sizeValCounter);
+    addCustomDecodeMethod(customDecodeBuilder, recordSchema, config, classBuilder, sizeValCounter, false);
     classBuilder.addMethod(customDecodeBuilder.build());
+
+    //customDecode with CustomDecoder
+    MethodSpec.Builder methodBuilder = MethodSpec
+            .methodBuilder("customDecode")
+            .addParameter(SpecificRecordGeneratorUtil.CLASSNAME_CUSTOM_DECODER, "in")
+            .addException(IOException.class)
+            .addModifiers(Modifier.PUBLIC)
+            .addAnnotation(Override.class);
+    addCustomDecodeMethod(methodBuilder, recordSchema, config, classBuilder, sizeValCounter, true);
+    classBuilder.addMethod(methodBuilder.build());
+
+    MethodSpec.Builder isCustomDecodingEnabledMethod = MethodSpec
+            .methodBuilder("isCustomDecodingEnabled")
+            .addModifiers(Modifier.PUBLIC)
+            .returns(TypeName.BOOLEAN)
+            .addAnnotation(Override.class)
+            .addCode("return hasCustomCoders();");
+    classBuilder.addMethod(isCustomDecodingEnabledMethod.build());
 
     // Builder
     TypeSpec.Builder recordBuilder = TypeSpec.classBuilder("Builder");
@@ -945,8 +963,13 @@ public class SpecificRecordClassGenerator {
   }
 
   private void addCustomDecodeMethod(MethodSpec.Builder customDecodeBuilder, AvroRecordSchema recordSchema,
-      SpecificRecordGenerationConfig config, TypeSpec.Builder classBuilder, Counter sizeValCounter) {
+      SpecificRecordGenerationConfig config, TypeSpec.Builder classBuilder, Counter sizeValCounter, boolean isCustomDecoder) {
     int blockSize = 25, fieldCounter = 0, chunkCounter = 0;
+
+    // Decoder class name.
+    ClassName decoderClassName = isCustomDecoder ? SpecificRecordGeneratorUtil.CLASSNAME_CUSTOM_DECODER :
+            SpecificRecordGeneratorUtil.CLASSNAME_RESOLVING_DECODER;
+
     // reset var counter
     sizeValCounter.reset();
     customDecodeBuilder.addStatement(
@@ -959,7 +982,7 @@ public class SpecificRecordClassGenerator {
       customDecodeBuilder.addStatement(chunkMethodName + "(in)");
       // create new method
       MethodSpec.Builder customDecodeChunkMethod = MethodSpec.methodBuilder(chunkMethodName)
-          .addParameter(SpecificRecordGeneratorUtil.CLASSNAME_RESOLVING_DECODER, "in")
+          .addParameter(decoderClassName, "in")
           .addException(IOException.class)
           .addModifiers(Modifier.PUBLIC);
       for (; fieldCounter < Math.min(blockSize * chunkCounter + blockSize, recordSchema.getFields().size());
@@ -989,7 +1012,7 @@ public class SpecificRecordClassGenerator {
       customDecodeBuilder.addStatement(chunkMethodName + "(in, fieldOrder)");
       // create new method
       MethodSpec.Builder customDecodeChunkMethod = MethodSpec.methodBuilder(chunkMethodName)
-          .addParameter(SpecificRecordGeneratorUtil.CLASSNAME_RESOLVING_DECODER, "in")
+          .addParameter(decoderClassName, "in")
           .addParameter(ArrayTypeName.of(SpecificRecordGeneratorUtil.CLASSNAME_SCHEMA_FIELD), "fieldOrder")
           .addException(IOException.class)
           .addModifiers(Modifier.PUBLIC);
