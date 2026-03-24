@@ -17,9 +17,9 @@ public class FastGenericDeserializerGeneratorTest_shouldReadNestedArrayOfMaps_Ge
 {
 
     private final Schema readerSchema;
-    private final Schema arrayField0;
-    private final Schema arrayFieldArrayElemSchema0;
-    private final Schema arrayFieldElemArrayElemSchema0;
+    private Schema arrayField0;
+    private Schema arrayFieldArrayElemSchema0;
+    private Schema arrayFieldElemArrayElemSchema0;
 
     public FastGenericDeserializerGeneratorTest_shouldReadNestedArrayOfMaps_GenericDeserializer_1605446505_1605446505(Schema readerSchema) {
         this.readerSchema = readerSchema;

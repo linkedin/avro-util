@@ -15,8 +15,8 @@ public class Map_of_record_GenericDeserializer_1677529043_1677529043
 {
 
     private final Schema readerSchema;
-    private final Schema mapMapValueSchema0;
-    private final Schema field0;
+    private Schema mapMapValueSchema0;
+    private Schema field0;
 
     public Map_of_record_GenericDeserializer_1677529043_1677529043(Schema readerSchema) {
         this.readerSchema = readerSchema;

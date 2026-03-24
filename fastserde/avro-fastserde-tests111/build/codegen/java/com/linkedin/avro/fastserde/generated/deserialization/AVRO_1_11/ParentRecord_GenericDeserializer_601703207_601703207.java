@@ -14,9 +14,9 @@ public class ParentRecord_GenericDeserializer_601703207_601703207
 {
 
     private final Schema readerSchema;
-    private final Schema class_field0;
-    private final Schema if_field0;
-    private final Schema public_field0;
+    private Schema class_field0;
+    private Schema if_field0;
+    private Schema public_field0;
 
     public ParentRecord_GenericDeserializer_601703207_601703207(Schema readerSchema) {
         this.readerSchema = readerSchema;

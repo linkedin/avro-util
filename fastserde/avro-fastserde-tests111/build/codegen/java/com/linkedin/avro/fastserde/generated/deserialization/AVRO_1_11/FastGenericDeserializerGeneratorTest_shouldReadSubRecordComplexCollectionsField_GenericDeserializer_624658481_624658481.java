@@ -17,20 +17,20 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexColl
 {
 
     private final Schema readerSchema;
-    private final Schema recordsArrayMap0;
-    private final Schema recordsArrayMapArrayElemSchema0;
-    private final Schema recordsArrayMapElemMapValueSchema0;
-    private final Schema recordsArrayMapElemValueOptionSchema0;
-    private final Schema subField0;
-    private final Schema recordsMapArray0;
-    private final Schema recordsMapArrayMapValueSchema0;
-    private final Schema recordsMapArrayValueArrayElemSchema0;
-    private final Schema recordsArrayMapUnion0;
-    private final Schema recordsArrayMapUnionOptionArrayElemSchema0;
-    private final Schema recordsArrayMapUnionOptionElemMapValueSchema0;
-    private final Schema recordsMapArrayUnion0;
-    private final Schema recordsMapArrayUnionOptionSchema0;
-    private final Schema recordsMapArrayUnionOptionValueArrayElemSchema0;
+    private Schema recordsArrayMap0;
+    private Schema recordsArrayMapArrayElemSchema0;
+    private Schema recordsArrayMapElemMapValueSchema0;
+    private Schema recordsArrayMapElemValueOptionSchema0;
+    private Schema subField0;
+    private Schema recordsMapArray0;
+    private Schema recordsMapArrayMapValueSchema0;
+    private Schema recordsMapArrayValueArrayElemSchema0;
+    private Schema recordsArrayMapUnion0;
+    private Schema recordsArrayMapUnionOptionArrayElemSchema0;
+    private Schema recordsArrayMapUnionOptionElemMapValueSchema0;
+    private Schema recordsMapArrayUnion0;
+    private Schema recordsMapArrayUnionOptionSchema0;
+    private Schema recordsMapArrayUnionOptionValueArrayElemSchema0;
 
     public FastGenericDeserializerGeneratorTest_shouldReadSubRecordComplexCollectionsField_GenericDeserializer_624658481_624658481(Schema readerSchema) {
         this.readerSchema = readerSchema;

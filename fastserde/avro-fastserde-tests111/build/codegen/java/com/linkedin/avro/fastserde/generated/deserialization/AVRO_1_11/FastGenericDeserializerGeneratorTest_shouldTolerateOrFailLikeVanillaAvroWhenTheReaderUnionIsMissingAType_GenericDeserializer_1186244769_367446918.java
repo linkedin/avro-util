@@ -14,7 +14,7 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanill
 {
 
     private final Schema readerSchema;
-    private final Schema test0;
+    private Schema test0;
 
     public FastGenericDeserializerGeneratorTest_shouldTolerateOrFailLikeVanillaAvroWhenTheReaderUnionIsMissingAType_GenericDeserializer_1186244769_367446918(Schema readerSchema) {
         this.readerSchema = readerSchema;

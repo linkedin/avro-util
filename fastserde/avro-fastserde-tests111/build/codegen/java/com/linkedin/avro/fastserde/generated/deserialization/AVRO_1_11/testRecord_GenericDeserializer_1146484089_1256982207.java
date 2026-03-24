@@ -18,7 +18,7 @@ public class testRecord_GenericDeserializer_1146484089_1256982207
 {
 
     private final Schema readerSchema;
-    private final Schema testEnum0;
+    private Schema testEnum0;
     private final Map enumMappingtestEnum0;
 
     public testRecord_GenericDeserializer_1146484089_1256982207(Schema readerSchema) {

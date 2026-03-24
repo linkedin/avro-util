@@ -14,9 +14,9 @@ public class Wrapper_GenericDeserializer_977858399_369594598
 {
 
     private final Schema readerSchema;
-    private final Schema metadata0;
-    private final Schema metadataOptionSchema0;
-    private final Schema fieldName0;
+    private Schema metadata0;
+    private Schema metadataOptionSchema0;
+    private Schema fieldName0;
 
     public Wrapper_GenericDeserializer_977858399_369594598(Schema readerSchema) {
         this.readerSchema = readerSchema;

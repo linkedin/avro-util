@@ -14,10 +14,10 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordField_Gener
 {
 
     private final Schema readerSchema;
-    private final Schema record0;
-    private final Schema recordOptionSchema0;
-    private final Schema subField0;
-    private final Schema field0;
+    private Schema record0;
+    private Schema recordOptionSchema0;
+    private Schema subField0;
+    private Schema field0;
 
     public FastGenericDeserializerGeneratorTest_shouldReadSubRecordField_GenericDeserializer_1111917046_1111917046(Schema readerSchema) {
         this.readerSchema = readerSchema;

@@ -14,9 +14,9 @@ public class OuterRecord_GenericDeserializer_998347834_1261326440
 {
 
     private final Schema readerSchema;
-    private final Schema optionalString0;
-    private final Schema innerRecord0;
-    private final Schema innerRecordNameRecordSchema0;
+    private Schema optionalString0;
+    private Schema innerRecord0;
+    private Schema innerRecordNameRecordSchema0;
 
     public OuterRecord_GenericDeserializer_998347834_1261326440(Schema readerSchema) {
         this.readerSchema = readerSchema;

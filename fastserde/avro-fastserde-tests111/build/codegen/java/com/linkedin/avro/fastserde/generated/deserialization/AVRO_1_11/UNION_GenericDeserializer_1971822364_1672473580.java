@@ -13,7 +13,7 @@ public class UNION_GenericDeserializer_1971822364_1672473580
 {
 
     private final Schema readerSchema;
-    private final Schema recordRecordSchema0;
+    private Schema recordRecordSchema0;
 
     public UNION_GenericDeserializer_1971822364_1672473580(Schema readerSchema) {
         this.readerSchema = readerSchema;

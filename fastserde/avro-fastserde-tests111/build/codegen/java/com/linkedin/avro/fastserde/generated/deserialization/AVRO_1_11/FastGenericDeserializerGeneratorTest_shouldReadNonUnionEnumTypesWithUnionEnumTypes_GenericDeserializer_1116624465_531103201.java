@@ -13,8 +13,8 @@ public class FastGenericDeserializerGeneratorTest_shouldReadNonUnionEnumTypesWit
 {
 
     private final Schema readerSchema;
-    private final Schema testEnum0;
-    private final Schema testEnumEnumSchema0;
+    private Schema testEnum0;
+    private Schema testEnumEnumSchema0;
 
     public FastGenericDeserializerGeneratorTest_shouldReadNonUnionEnumTypesWithUnionEnumTypes_GenericDeserializer_1116624465_531103201(Schema readerSchema) {
         this.readerSchema = readerSchema;

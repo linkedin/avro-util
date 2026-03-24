@@ -16,7 +16,7 @@ public class Map_of_record_GenericDeserializer_1223705675_568621313
 {
 
     private final Schema readerSchema;
-    private final Schema unionOptionMapValueSchema0;
+    private Schema unionOptionMapValueSchema0;
 
     public Map_of_record_GenericDeserializer_1223705675_568621313(Schema readerSchema) {
         this.readerSchema = readerSchema;

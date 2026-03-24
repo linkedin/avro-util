@@ -15,7 +15,7 @@ public class TestRecord_GenericDeserializer_473555078_473555078
 {
 
     private final Schema readerSchema;
-    private final Schema map_field0;
+    private Schema map_field0;
 
     public TestRecord_GenericDeserializer_473555078_473555078(Schema readerSchema) {
         this.readerSchema = readerSchema;

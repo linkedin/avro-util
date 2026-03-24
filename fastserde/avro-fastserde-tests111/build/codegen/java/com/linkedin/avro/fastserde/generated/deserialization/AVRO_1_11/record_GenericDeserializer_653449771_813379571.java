@@ -14,9 +14,9 @@ public class record_GenericDeserializer_653449771_813379571
 {
 
     private final Schema readerSchema;
-    private final Schema someInts0;
-    private final Schema someIntsArraySchema0;
-    private final Schema someIntsArrayElemSchema0;
+    private Schema someInts0;
+    private Schema someIntsArraySchema0;
+    private Schema someIntsArrayElemSchema0;
 
     public record_GenericDeserializer_653449771_813379571(Schema readerSchema) {
         this.readerSchema = readerSchema;

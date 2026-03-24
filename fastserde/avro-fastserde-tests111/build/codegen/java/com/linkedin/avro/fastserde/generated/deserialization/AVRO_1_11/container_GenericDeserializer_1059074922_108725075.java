@@ -15,11 +15,11 @@ public class container_GenericDeserializer_1059074922_108725075
 {
 
     private final Schema readerSchema;
-    private final Schema nested_maps0;
-    private final Schema nested_mapsMapSchema0;
-    private final Schema nested_mapsMapValueSchema0;
-    private final Schema nested_mapsValueMapSchema0;
-    private final Schema nested_mapsValueMapValueSchema0;
+    private Schema nested_maps0;
+    private Schema nested_mapsMapSchema0;
+    private Schema nested_mapsMapValueSchema0;
+    private Schema nested_mapsValueMapSchema0;
+    private Schema nested_mapsValueMapValueSchema0;
 
     public container_GenericDeserializer_1059074922_108725075(Schema readerSchema) {
         this.readerSchema = readerSchema;

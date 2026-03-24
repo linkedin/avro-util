@@ -14,9 +14,9 @@ public class FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion_
 {
 
     private final Schema readerSchema;
-    private final Schema union0;
-    private final Schema unionOptionSchema0;
-    private final Schema subField0;
+    private Schema union0;
+    private Schema unionOptionSchema0;
+    private Schema subField0;
 
     public FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion_GenericDeserializer_2643982_2643982(Schema readerSchema) {
         this.readerSchema = readerSchema;

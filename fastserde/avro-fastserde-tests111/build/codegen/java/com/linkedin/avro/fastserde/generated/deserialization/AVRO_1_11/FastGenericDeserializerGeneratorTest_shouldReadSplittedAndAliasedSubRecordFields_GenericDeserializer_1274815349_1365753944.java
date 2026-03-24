@@ -16,12 +16,12 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSu
 {
 
     private final Schema readerSchema;
-    private final Schema record10;
-    private final Schema subField0;
-    private final Schema intFieldField0;
-    private final Schema intField0;
-    private final Schema subField1;
-    private final Schema recordArray0;
+    private Schema record10;
+    private Schema subField0;
+    private Schema intFieldField0;
+    private Schema intField0;
+    private Schema subField1;
+    private Schema recordArray0;
 
     public FastGenericDeserializerGeneratorTest_shouldReadSplittedAndAliasedSubRecordFields_GenericDeserializer_1274815349_1365753944(Schema readerSchema) {
         this.readerSchema = readerSchema;

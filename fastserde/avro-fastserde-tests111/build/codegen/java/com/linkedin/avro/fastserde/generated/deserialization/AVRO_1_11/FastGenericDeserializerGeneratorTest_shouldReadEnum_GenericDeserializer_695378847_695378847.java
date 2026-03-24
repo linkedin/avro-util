@@ -16,11 +16,11 @@ public class FastGenericDeserializerGeneratorTest_shouldReadEnum_GenericDeserial
 {
 
     private final Schema readerSchema;
-    private final Schema testEnum0;
-    private final Schema testEnumUnion0;
-    private final Schema testEnumArray0;
-    private final Schema testEnumUnionArray0;
-    private final Schema testEnumUnionArrayArrayElemSchema0;
+    private Schema testEnum0;
+    private Schema testEnumUnion0;
+    private Schema testEnumArray0;
+    private Schema testEnumUnionArray0;
+    private Schema testEnumUnionArrayArrayElemSchema0;
 
     public FastGenericDeserializerGeneratorTest_shouldReadEnum_GenericDeserializer_695378847_695378847(Schema readerSchema) {
         this.readerSchema = readerSchema;

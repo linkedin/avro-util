@@ -16,16 +16,16 @@ public class FastGenericDeserializerGeneratorTest_shouldHandleNullableCorrectly_
 {
 
     private final Schema readerSchema;
-    private final Schema field10;
-    private final Schema field20;
-    private final Schema fieldRecordOne0;
-    private final Schema recordOneRecordSchema0;
-    private final Schema fieldA0;
-    private final Schema arrayFieldRecordTwo0;
-    private final Schema arrayFieldRecordTwoArraySchema0;
-    private final Schema arrayFieldRecordTwoArrayElemSchema0;
-    private final Schema recordTwoRecordSchema0;
-    private final Schema fieldB0;
+    private Schema field10;
+    private Schema field20;
+    private Schema fieldRecordOne0;
+    private Schema recordOneRecordSchema0;
+    private Schema fieldA0;
+    private Schema arrayFieldRecordTwo0;
+    private Schema arrayFieldRecordTwoArraySchema0;
+    private Schema arrayFieldRecordTwoArrayElemSchema0;
+    private Schema recordTwoRecordSchema0;
+    private Schema fieldB0;
 
     public FastGenericDeserializerGeneratorTest_shouldHandleNullableCorrectly_GenericDeserializer_64996084_522115670(Schema readerSchema) {
         this.readerSchema = readerSchema;

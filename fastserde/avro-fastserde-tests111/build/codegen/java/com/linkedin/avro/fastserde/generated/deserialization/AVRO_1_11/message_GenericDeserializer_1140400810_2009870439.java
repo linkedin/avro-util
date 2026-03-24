@@ -17,9 +17,9 @@ public class message_GenericDeserializer_1140400810_2009870439
 {
 
     private final Schema readerSchema;
-    private final Schema data0;
-    private final Schema dataArraySchema0;
-    private final Schema dataArrayElemSchema0;
+    private Schema data0;
+    private Schema dataArraySchema0;
+    private Schema dataArrayElemSchema0;
 
     public message_GenericDeserializer_1140400810_2009870439(Schema readerSchema) {
         this.readerSchema = readerSchema;

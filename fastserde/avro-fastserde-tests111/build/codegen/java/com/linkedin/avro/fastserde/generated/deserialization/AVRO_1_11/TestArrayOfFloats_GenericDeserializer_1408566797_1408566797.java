@@ -15,7 +15,7 @@ public class TestArrayOfFloats_GenericDeserializer_1408566797_1408566797
 {
 
     private final Schema readerSchema;
-    private final Schema array_of_float0;
+    private Schema array_of_float0;
 
     public TestArrayOfFloats_GenericDeserializer_1408566797_1408566797(Schema readerSchema) {
         this.readerSchema = readerSchema;

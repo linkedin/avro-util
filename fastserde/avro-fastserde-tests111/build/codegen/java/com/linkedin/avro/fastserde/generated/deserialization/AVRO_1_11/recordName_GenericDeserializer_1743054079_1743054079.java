@@ -14,7 +14,7 @@ public class recordName_GenericDeserializer_1743054079_1743054079
 {
 
     private final Schema readerSchema;
-    private final Schema unionField0;
+    private Schema unionField0;
 
     public recordName_GenericDeserializer_1743054079_1743054079(Schema readerSchema) {
         this.readerSchema = readerSchema;

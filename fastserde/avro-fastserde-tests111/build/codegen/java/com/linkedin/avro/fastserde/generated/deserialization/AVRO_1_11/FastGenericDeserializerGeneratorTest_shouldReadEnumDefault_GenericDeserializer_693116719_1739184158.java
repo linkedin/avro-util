@@ -20,14 +20,14 @@ public class FastGenericDeserializerGeneratorTest_shouldReadEnumDefault_GenericD
 {
 
     private final Schema readerSchema;
-    private final Schema testEnum0;
+    private Schema testEnum0;
     private final Map enumMappingtestEnum0;
-    private final Schema testEnumUnion0;
+    private Schema testEnumUnion0;
     private final Map enumMappingtestEnum1;
-    private final Schema testEnumArray0;
+    private Schema testEnumArray0;
     private final Map enumMappingtestEnum2;
-    private final Schema testEnumUnionArray0;
-    private final Schema testEnumUnionArrayArrayElemSchema0;
+    private Schema testEnumUnionArray0;
+    private Schema testEnumUnionArrayArrayElemSchema0;
     private final Map enumMappingtestEnum3;
 
     public FastGenericDeserializerGeneratorTest_shouldReadEnumDefault_GenericDeserializer_693116719_1739184158(Schema readerSchema) {

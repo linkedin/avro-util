@@ -14,7 +14,7 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord_
 {
 
     private final Schema readerSchema;
-    private final Schema subRecord0;
+    private Schema subRecord0;
 
     public FastGenericDeserializerGeneratorTest_shouldSkipRemovedNestedRecord_GenericDeserializer_1090641932_438987109(Schema readerSchema) {
         this.readerSchema = readerSchema;

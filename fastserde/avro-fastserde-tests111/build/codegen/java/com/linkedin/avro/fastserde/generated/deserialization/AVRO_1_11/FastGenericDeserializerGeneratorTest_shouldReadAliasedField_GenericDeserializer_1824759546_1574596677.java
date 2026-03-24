@@ -14,8 +14,8 @@ public class FastGenericDeserializerGeneratorTest_shouldReadAliasedField_Generic
 {
 
     private final Schema readerSchema;
-    private final Schema testString0;
-    private final Schema testStringUnionAlias0;
+    private Schema testString0;
+    private Schema testStringUnionAlias0;
 
     public FastGenericDeserializerGeneratorTest_shouldReadAliasedField_GenericDeserializer_1824759546_1574596677(Schema readerSchema) {
         this.readerSchema = readerSchema;
