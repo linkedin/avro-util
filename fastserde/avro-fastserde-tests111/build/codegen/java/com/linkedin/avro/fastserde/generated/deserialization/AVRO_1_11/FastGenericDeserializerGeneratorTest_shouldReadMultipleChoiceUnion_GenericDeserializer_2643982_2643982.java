@@ -34,69 +34,69 @@ public class FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion_
     public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion;
+        IndexedRecord fastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
-            FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion = ((IndexedRecord)(reuse));
+            fastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion0 = ((IndexedRecord)(reuse));
         } else {
-            FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            fastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion0 = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
-            FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.put(0, null);
+            fastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion0 .put(0, null);
         } else {
             if (unionIndex0 == 1) {
-                FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.put(0, deserializesubRecord0(FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.get(0), (decoder), (customization)));
+                fastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion0 .put(0, deserializesubRecord0(fastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion0 .get(0), (decoder), (customization)));
             } else {
                 if (unionIndex0 == 2) {
                     Utf8 charSequence1;
-                    Object oldString1 = FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.get(0);
+                    Object oldString1 = fastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion0 .get(0);
                     if (oldString1 instanceof Utf8) {
                         charSequence1 = (decoder).readString(((Utf8) oldString1));
                     } else {
                         charSequence1 = (decoder).readString(null);
                     }
-                    FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.put(0, charSequence1);
+                    fastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion0 .put(0, charSequence1);
                 } else {
                     if (unionIndex0 == 3) {
-                        FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion.put(0, (decoder.readInt()));
+                        fastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion0 .put(0, (decoder.readInt()));
                     } else {
                         throw new RuntimeException(("Illegal union index for 'union': "+ unionIndex0));
                     }
                 }
             }
         }
-        return FastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion;
+        return fastGenericDeserializerGeneratorTest_shouldReadMultipleChoiceUnion0;
     }
 
     public IndexedRecord deserializesubRecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord subRecord;
+        IndexedRecord subRecord0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == unionOptionSchema0)) {
-            subRecord = ((IndexedRecord)(reuse));
+            subRecord0 = ((IndexedRecord)(reuse));
         } else {
-            subRecord = new org.apache.avro.generic.GenericData.Record(unionOptionSchema0);
+            subRecord0 = new org.apache.avro.generic.GenericData.Record(unionOptionSchema0);
         }
         int unionIndex1 = (decoder.readIndex());
         if (unionIndex1 == 0) {
             decoder.readNull();
-            subRecord.put(0, null);
+            subRecord0 .put(0, null);
         } else {
             if (unionIndex1 == 1) {
                 Utf8 charSequence0;
-                Object oldString0 = subRecord.get(0);
+                Object oldString0 = subRecord0 .get(0);
                 if (oldString0 instanceof Utf8) {
                     charSequence0 = (decoder).readString(((Utf8) oldString0));
                 } else {
                     charSequence0 = (decoder).readString(null);
                 }
-                subRecord.put(0, charSequence0);
+                subRecord0 .put(0, charSequence0);
             } else {
                 throw new RuntimeException(("Illegal union index for 'subField': "+ unionIndex1));
             }
         }
-        return subRecord;
+        return subRecord0;
     }
 
 }

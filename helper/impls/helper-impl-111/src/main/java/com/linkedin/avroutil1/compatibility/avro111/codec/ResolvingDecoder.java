@@ -24,6 +24,7 @@
 
 package com.linkedin.avroutil1.compatibility.avro111.codec;
 
+import com.linkedin.avroutil1.compatibility.CustomDecoder;
 import com.linkedin.avroutil1.compatibility.avro111.parsing.ResolvingGrammarGenerator;
 import com.linkedin.avroutil1.compatibility.avro111.parsing.Symbol;
 import org.apache.avro.AvroTypeException;
@@ -39,7 +40,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
-public class ResolvingDecoder extends ValidatingDecoder {
+public class ResolvingDecoder extends ValidatingDecoder implements CustomDecoder {
   private Decoder backup;
 
   ResolvingDecoder(Schema writer, Schema reader, Decoder in) throws IOException {

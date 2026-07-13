@@ -47,14 +47,14 @@ public class UNION_GenericDeserializer_568621313_1223705675
     public IndexedRecord deserializerecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord record;
+        IndexedRecord record0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == mapMapValueSchema0)) {
-            record = ((IndexedRecord)(reuse));
+            record0 = ((IndexedRecord)(reuse));
         } else {
-            record = new org.apache.avro.generic.GenericData.Record(mapMapValueSchema0);
+            record0 = new org.apache.avro.generic.GenericData.Record(mapMapValueSchema0);
         }
-        record.put(0, (decoder.readInt()));
-        return record;
+        record0 .put(0, (decoder.readInt()));
+        return record0;
     }
 
 }

@@ -33,24 +33,24 @@ public class FastSerdeLogicalTypesUndefined_GenericDeserializer_1982763418_19827
     public IndexedRecord deserializeFastSerdeLogicalTypesUndefined0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord FastSerdeLogicalTypesUndefined;
+        IndexedRecord fastSerdeLogicalTypesUndefined0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
-            FastSerdeLogicalTypesUndefined = ((IndexedRecord)(reuse));
+            fastSerdeLogicalTypesUndefined0 = ((IndexedRecord)(reuse));
         } else {
-            FastSerdeLogicalTypesUndefined = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            fastSerdeLogicalTypesUndefined0 = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
-        FastSerdeLogicalTypesUndefined.put(0, (decoder.readInt()));
-        populate_FastSerdeLogicalTypesUndefined0((FastSerdeLogicalTypesUndefined), (customization), (decoder));
-        return FastSerdeLogicalTypesUndefined;
+        fastSerdeLogicalTypesUndefined0 .put(0, (decoder.readInt()));
+        populate_FastSerdeLogicalTypesUndefined0((fastSerdeLogicalTypesUndefined0), (customization), (decoder));
+        return fastSerdeLogicalTypesUndefined0;
     }
 
-    private void populate_FastSerdeLogicalTypesUndefined0(IndexedRecord FastSerdeLogicalTypesUndefined, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_FastSerdeLogicalTypesUndefined0(IndexedRecord fastSerdeLogicalTypesUndefined0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
-        FastSerdeLogicalTypesUndefined.put(1, (decoder.readInt()));
+        fastSerdeLogicalTypesUndefined0 .put(1, (decoder.readInt()));
         List<Object> arrayOfUnionOfDateAndTimestampMillis1 = null;
         long chunkLen0 = (decoder.readArrayStart());
-        Object oldArray0 = FastSerdeLogicalTypesUndefined.get(2);
+        Object oldArray0 = fastSerdeLogicalTypesUndefined0 .get(2);
         if (oldArray0 instanceof List) {
             arrayOfUnionOfDateAndTimestampMillis1 = ((List) oldArray0);
             if (arrayOfUnionOfDateAndTimestampMillis1 instanceof GenericArray) {
@@ -80,7 +80,7 @@ public class FastSerdeLogicalTypesUndefined_GenericDeserializer_1982763418_19827
             }
             chunkLen0 = (decoder.arrayNext());
         }
-        FastSerdeLogicalTypesUndefined.put(2, arrayOfUnionOfDateAndTimestampMillis1);
+        fastSerdeLogicalTypesUndefined0 .put(2, arrayOfUnionOfDateAndTimestampMillis1);
     }
 
 }

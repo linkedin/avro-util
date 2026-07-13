@@ -57,7 +57,7 @@ public class ConfigurableAvroSchemaComparatorTest {
     AvroRecordSchema recordSchema2 = (AvroRecordSchema) validateAndGetAvroRecordSchema(path2);
 
     SchemaComparisonConfiguration comparisonConfiguration =
-        new SchemaComparisonConfiguration(true, false, false, false, true, false, new HashSet(
+        new SchemaComparisonConfiguration(true, false, false, false, true, false, false, new HashSet(
             Arrays.asList("li.data.proto.numberFieldType", "li.data.proto.fieldNumber",
                 "li.data.proto.fullyQualifiedName", "li.data.proto.enumValueNumbers")));
 

@@ -33,16 +33,13 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.io.BinaryDecoder;
-import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.Decoder;
-import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.avro.util.Utf8;
 import org.testng.Assert;
 import org.testng.SkipException;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.testng.collections.Lists;
 import org.testng.internal.collections.Pair;
 
 import static com.linkedin.avro.fastserde.FastSerdeTestsSupport.*;
@@ -76,12 +73,32 @@ public class FastGenericDeserializerGeneratorTest {
     }
   }
 
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadNonUnionEnumTypesWithUnionEnumTypes(Implementation implementation) {
+    // given
+    Schema enumSchema = createEnumSchema("testEnum", new String[]{"A", "B"});
+    Schema writerSchema = createRecord(
+            createField("testEnum", enumSchema));
+    Schema readerSchema = createRecord(
+            createUnionFieldWithNull("testEnum", enumSchema));
+
+    GenericRecord originalRecord = new GenericData.Record(writerSchema);
+    originalRecord.put("testEnum",
+            AvroCompatibilityHelper.newEnumSymbol(enumSchema, "A"));
+
+    // when
+    GenericRecord record = implementation.decode(writerSchema, readerSchema, genericDataAsDecoder(originalRecord));
+
+    // then
+    Assert.assertEquals("A", record.get("testEnum").toString());
+  }
+
   @DataProvider(name = "Implementation")
   public static Object[][] implementations() {
     return new Object[][]{
-        {Implementation.VANILLA_AVRO},
-        {Implementation.COLD_FAST_AVRO},
-        {Implementation.WARM_FAST_AVRO}
+            {Implementation.VANILLA_AVRO},
+            {Implementation.COLD_FAST_AVRO},
+            {Implementation.WARM_FAST_AVRO}
     };
   }
 
@@ -99,7 +116,7 @@ public class FastGenericDeserializerGeneratorTest {
     tempDir = getCodeGenDirectory();
 
     classLoader = URLClassLoader.newInstance(new URL[]{tempDir.toURI().toURL()},
-        FastGenericDeserializerGeneratorTest.class.getClassLoader());
+            FastGenericDeserializerGeneratorTest.class.getClassLoader());
 
     // In order to test the functionality of the record split we set an unusually low number
     FastGenericDeserializerGenerator.setFieldsPerPopulationMethod(2);
@@ -237,6 +254,154 @@ public class FastGenericDeserializerGeneratorTest {
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldHandleDiffNamepspaceInRecords(Implementation implementation) {
+    //record with two fields, first optional string second a record with namespace "a.b.c" with name "innerRecordName". Inner record has one int field
+    Schema writerSchema  = Schema.parse("{\n" +
+            "  \"type\": \"record\",\n" +
+            "  \"name\": \"OuterRecord\",\n" +
+            "  \"fields\": [\n" +
+            "    {\n" +
+            "      \"name\": \"optionalString\",\n" +
+            "      \"type\": [\"null\", \"string\"],\n" +
+            "      \"default\": null\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"innerRecord\",\n" +
+            "      \"type\": {\n" +
+            "        \"type\": \"record\",\n" +
+            "        \"name\": \"innerRecordName\",\n" +
+            "        \"namespace\": \"a.b.c\",\n" +
+            "        \"fields\": [\n" +
+            "          {\n" +
+            "            \"name\": \"intField\",\n" +
+            "            \"type\": \"int\"\n" +
+            "          }\n" +
+            "        ]\n" +
+            "      }\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}");
+
+    //change namespace on inner record to "d.e.f"
+    Schema readerSchema = Schema.parse("{\n" +
+            "  \"type\": \"record\",\n" +
+            "  \"name\": \"OuterRecord\",\n" +
+            "  \"fields\": [\n" +
+            "    {\n" +
+            "      \"name\": \"optionalString\",\n" +
+            "      \"type\": [\"null\", \"string\"],\n" +
+            "      \"default\": null\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"innerRecord\",\n" +
+            "      \"type\": [\"null\", {\n" +
+            "        \"type\": \"record\",\n" +
+            "        \"name\": \"innerRecordName\",\n" +
+            "        \"namespace\": \"d.e.f\",\n" +
+            "        \"fields\": [\n" +
+            "          {\n" +
+            "            \"name\": \"intField\",\n" +
+            "            \"type\": \"int\"\n" +
+            "          }\n" +
+            "        ]\n" +
+            "      }],\n" +
+            "      \"default\": null\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}");
+
+    GenericRecord originalRecord = new GenericData.Record(writerSchema);
+    originalRecord.put("optionalString", "abc");
+    GenericRecord innerRecord = new GenericData.Record(writerSchema.getField("innerRecord").schema());
+    innerRecord.put("intField", 1);
+    originalRecord.put("innerRecord", innerRecord);
+
+    // when
+    try{
+      GenericRecord record = implementation.decode(writerSchema, readerSchema, genericDataAsDecoder(originalRecord));
+      // then
+      if(Utils.usesQualifiedNameForNamedTypedMatching()){
+        Assert.fail("1.5-1.7 don't support unqualified name for named type matching so we should have failed");
+      }
+      Assert.assertEquals(new Utf8("abc"), record.get("optionalString"));
+      GenericRecord innerRecordDecoded = (GenericRecord) record.get("innerRecord");
+      Assert.assertEquals(1, innerRecordDecoded.get("intField"));
+    } catch (Exception e){
+      if(!Utils.usesQualifiedNameForNamedTypedMatching()) {
+        Assert.fail("1.4, and 1.8+ support unqualified name for named type matching");
+      }
+    }
+  }
+
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldNotFailOnNamespaceMismatch(Implementation implementation) throws IOException {
+    // writer-side schema: "metadata" has NO namespace
+    String writerSchemaStr = "{\n" +
+            "  \"type\": \"record\",\n" +
+            "  \"name\": \"wrapper\",\n" +
+            "  \"fields\": [\n" +
+            "    {\n" +
+            "      \"name\": \"metadata\",\n" +
+            "      \"type\": [\"null\", {\n" +
+            "        \"type\": \"record\",\n" +
+            "        \"name\": \"metadata\",\n" +
+            "        \"fields\": [\n" +
+            "          {\"name\": \"fieldName\", \"type\": [\"null\", \"string\"], \"default\": null}\n" +
+            "        ]\n" +
+            "      }],\n" +
+            "      \"default\": null\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
+
+    // reader-side schema: same nested record but WITH namespace "rtapi.surge"
+    String readerSchemaStr = "{\n" +
+            "  \"type\": \"record\",\n" +
+            "  \"name\": \"Wrapper\",\n" +
+            "  \"fields\": [\n" +
+            "    {\n" +
+            "      \"name\": \"metadata\",\n" +
+            "      \"type\": [\"null\", {\n" +
+            "        \"type\": \"record\",\n" +
+            "        \"name\": \"metadata\",\n" +
+            "        \"namespace\": \"some.other.namespace\",\n" +
+            "        \"fields\": [\n" +
+            "          {\"name\": \"fieldName\", \"type\": [\"null\", \"string\"], \"default\": null}\n" +
+            "        ]\n" +
+            "      }],\n" +
+            "      \"default\": null\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
+
+    Schema writerSchema = AvroCompatibilityHelper.parse(writerSchemaStr);
+    Schema readerSchema = AvroCompatibilityHelper.parse(readerSchemaStr);
+
+    // Build a writer-side record instance
+    GenericRecord wrapper = new GenericData.Record(writerSchema);
+    Schema metadataSchema = writerSchema.getField("metadata").schema().getTypes().get(1);
+    GenericRecord metadataRecord = new GenericData.Record(metadataSchema);
+    metadataRecord.put("fieldName", "abc-123");
+    wrapper.put("metadata", metadataRecord);
+
+    // Attempt to deserialize – should throw AvroTypeException because of namespace mismatch
+    try{
+      GenericRecord record = implementation.decode(writerSchema, readerSchema, genericDataAsDecoder(wrapper));
+      if(Utils.usesQualifiedNameForNamedTypedMatching()){
+        Assert.fail("1.5-1.7 don't support unqualified name for named type matching so we should have failed");
+      }
+      Assert.assertEquals(((GenericRecord)record.get("metadata")).get("fieldName").toString(), "abc-123");
+    } catch (AvroTypeException e){
+        if(!Utils.usesQualifiedNameForNamedTypedMatching()) {
+            Assert.fail("1.4, and 1.8+ support unqualified name for named type matching");
+        }
+        // expected exception
+    }
+
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
   public void shouldReadEnum(Implementation implementation) {
     // given
     Schema enumSchema = createEnumSchema("testEnum", new String[]{"A", "B"});
@@ -265,6 +430,60 @@ public class FastGenericDeserializerGeneratorTest {
     Assert.assertEquals("A", ((List<GenericData.EnumSymbol>) record.get("testEnumArray")).get(0).toString());
     Assert.assertEquals("A", ((List<GenericData.EnumSymbol>) record.get("testEnumUnionArray")).get(0).toString());
   }
+
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldHandleNullableCorrectly(Implementation implementation){
+    //writer is a record with 2 required primitive fields, 1 required record and 1 required array field with record elements
+    Schema innerWriteRecordOneSchema =  createRecord("recordOne",
+            createField("fieldA", Schema.create(Schema.Type.STRING))
+    );
+    Schema innerWriterRecordTwoSchema =  createRecord("recordTwo",
+            createField("fieldB", Schema.create(Schema.Type.STRING))
+    );
+    Schema writerSchema = createRecord(
+        createField("field1", Schema.create(Schema.Type.STRING)),
+        createField("field2", Schema.create(Schema.Type.DOUBLE)),
+        createField("fieldRecordOne", innerWriteRecordOneSchema),
+        createArrayFieldSchema("arrayFieldRecordTwo", innerWriterRecordTwoSchema
+    ));
+    //reader is a record with 4 fields, all nullable at all levels including array field
+    Schema readerSchema = createRecord(
+        createUnionFieldWithNull("field1", Schema.create(Schema.Type.STRING)),
+        createUnionFieldWithNull("field2", Schema.create(Schema.Type.DOUBLE)),
+        createUnionFieldWithNull("fieldRecordOne", createRecord("recordOne",
+                createUnionFieldWithNull("fieldA", Schema.create(Schema.Type.STRING))
+        )),
+        createUnionFieldWithNull("arrayFieldRecordTwo", createArrayFieldSchema("unused",
+                createUnionFieldWithNull("unused2",
+                        createRecord("recordTwo",
+                                createUnionFieldWithNull("fieldB", Schema.create(Schema.Type.STRING))
+                        )
+                ).schema()
+        ).schema()
+    ));
+
+    //create record with writer schema
+    GenericRecord originalRecord = new GenericData.Record(writerSchema);
+    originalRecord.put("field1", "abc");
+    originalRecord.put("field2", 1.0);
+    GenericRecord innerRecord = new GenericData.Record(innerWriteRecordOneSchema);
+    innerRecord.put("fieldA", "valFieldA");
+    originalRecord.put("fieldRecordOne", innerRecord);
+    GenericRecord innerRecord2 = new GenericData.Record(innerWriterRecordTwoSchema);
+    innerRecord2.put("fieldB", "valFieldB");
+    originalRecord.put("arrayFieldRecordTwo", Arrays.asList(innerRecord2));
+
+    //decode record
+    GenericRecord record = implementation.decode(writerSchema, readerSchema, genericDataAsDecoder(originalRecord));
+
+    Assert.assertEquals(new Utf8("abc"), record.get("field1"));
+    Assert.assertEquals(1.0, record.get("field2"));
+    Assert.assertEquals(new Utf8("valFieldB"), ((List<GenericData.Record>) record.get("arrayFieldRecordTwo")).get(0).get("fieldB"));
+    Assert.assertEquals(new Utf8("valFieldA"), ((GenericRecord) record.get("fieldRecordOne")).get("fieldA"));
+  }
+
+
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
   public void shouldReadEnumDefault(Implementation implementation) {
@@ -1501,6 +1720,119 @@ public class FastGenericDeserializerGeneratorTest {
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadMapWithNestedRecordWithMapField(Implementation implementation) {
+    // given
+    Schema schema = createRecord("outerRecord",
+            createField("mapField", createMapFieldSchema("mapField",
+                    createRecord("innerRecord", createField("internalMapField",
+                            createMapFieldSchema("internalMapField", Schema.create(Schema.Type.LONG)).schema())
+                    )).schema()));
+    Schema mapSchema = schema.getField("mapField").schema();
+    Schema recordFieldSchema = mapSchema.getValueType();
+
+    // Create test data
+    GenericRecord record = new GenericData.Record(schema);
+    Map<String, GenericRecord> mapField = new HashMap<>();
+    for (int i = 0; i < 3; i++) {
+      GenericRecord nestedRecord = new GenericData.Record(recordFieldSchema);
+      Map<String, Long> internalMap = new HashMap<>();
+      internalMap.put("key" + i, (long) i);
+      nestedRecord.put("internalMapField", internalMap);
+      mapField.put("record" + i, nestedRecord);
+    }
+    record.put("mapField", mapField);
+
+    // when
+    GenericRecord decoded = implementation.decode(schema, schema, genericDataAsDecoder(record));
+    //then
+    Assert.assertNotNull(decoded);
+    Map<Utf8, GenericRecord> deserializedMap = (Map<Utf8, GenericRecord>) decoded.get("mapField");
+    Assert.assertEquals(deserializedMap.size(), 3);
+    for (int i = 0; i < 3; i++) {
+      GenericRecord nestedRecord = deserializedMap.get(new Utf8("record" + i));
+      Assert.assertNotNull(nestedRecord);
+      Map<Utf8, Long> internalMap = (Map<Utf8, Long>) nestedRecord.get("internalMapField");
+      Assert.assertEquals(internalMap.get(new Utf8("key" + i)), Long.valueOf(i));
+    }
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldReadNestedArrayOfMaps(Implementation implementation) {
+    // Define a complex nested structure: array<array<map<string, int>>>
+    Schema mapSchema = Schema.createMap(Schema.create(Schema.Type.INT));
+    Schema innerArraySchema = Schema.createArray(mapSchema);
+    Schema outerArraySchema = Schema.createArray(innerArraySchema);
+    Schema recordSchema = createRecord(
+            createField("arrayField", outerArraySchema)
+    );
+
+    GenericRecord recordData = new GenericData.Record(recordSchema);
+    List<List<Map<String, Integer>>> outerArray = new ArrayList<>();
+    List<Map<String, Integer>> innerArray1 = new ArrayList<>();
+    for (int i = 0; i < 2; i++) {
+      Map<String, Integer> map = new HashMap<>();
+      map.put("key" + i + "_1", i * 10 + 1);
+      map.put("key" + i + "_2", i * 10 + 2);
+      map.put("key" + i + "_3", i * 10 + 3);
+      innerArray1.add(map);
+    }
+
+    List<Map<String, Integer>> innerArray2 = new ArrayList<>();
+    Map<String, Integer> map = new HashMap<>();
+    map.put("keyA", 100);
+    map.put("keyB", 200);
+    map.put("keyC", 300);
+    innerArray2.add(map);
+
+    outerArray.add(innerArray1);
+    outerArray.add(innerArray2);
+    recordData.put("arrayField", outerArray);
+
+    // when
+    GenericData.Record decodedRecord = implementation.decode(recordSchema, recordSchema,
+            FastSerdeTestsSupport.genericDataAsDecoder(recordData, recordSchema));
+
+    // then
+    Object decodedArrayField = decodedRecord.get("arrayField");
+    Assert.assertTrue(decodedArrayField instanceof List);
+    List<?> decodedOuterArray = (List<?>) decodedArrayField;
+    Assert.assertEquals(decodedOuterArray.size(), 2);
+
+    // Verify first inner array with 2 maps
+    Object firstInnerArray = decodedOuterArray.get(0);
+    Assert.assertTrue(firstInnerArray instanceof List);
+    List<?> decodedInnerArray1 = (List<?>) firstInnerArray;
+    Assert.assertEquals(decodedInnerArray1.size(), 2);
+
+    // Verify the maps in the first inner array
+    for (int i = 0; i < 2; i++) {
+      Object mapObj = decodedInnerArray1.get(i);
+      Assert.assertTrue(mapObj instanceof Map);
+      @SuppressWarnings("unchecked")
+      Map<Utf8, Integer> decodedMap = (Map<Utf8, Integer>) mapObj;
+      Assert.assertEquals(decodedMap.size(), 3);
+
+      // Verify each key-value pair in the map
+      Assert.assertEquals(decodedMap.get(new Utf8("key" + i + "_1")), Integer.valueOf(i * 10 + 1));
+      Assert.assertEquals(decodedMap.get(new Utf8("key" + i + "_2")), Integer.valueOf(i * 10 + 2));
+      Assert.assertEquals(decodedMap.get(new Utf8("key" + i + "_3")), Integer.valueOf(i * 10 + 3));
+    }
+
+    // Verify second inner array with 1 map
+    Object secondInnerArray = decodedOuterArray.get(1);
+    Assert.assertTrue(secondInnerArray instanceof List);
+    List<?> decodedInnerArray2 = (List<?>) secondInnerArray;
+    Assert.assertEquals(decodedInnerArray2.size(), 1);
+
+    // Verify the map in the second inner array
+    Map<Utf8, Integer> decodedMap = (Map<Utf8, Integer>) decodedInnerArray2.get(0);
+    Assert.assertEquals(decodedMap.size(), 3);
+    Assert.assertEquals(decodedMap.get(new Utf8("keyA")), Integer.valueOf(100));
+    Assert.assertEquals(decodedMap.get(new Utf8("keyB")), Integer.valueOf(200));
+    Assert.assertEquals(decodedMap.get(new Utf8("keyC")), Integer.valueOf(300));
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
   public void shouldBidirectionallyReadArrayWithUnionArrayOfUnionValues(Implementation implementation) {
     // given
     Schema recordWithArraySchema = createRecord("record", createArrayFieldSchema("someInts", Schema.create(Schema.Type.INT)));
@@ -1568,6 +1900,50 @@ public class FastGenericDeserializerGeneratorTest {
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldHandleJavaKeywordsAsRecordNames(Implementation implementation) {
+    // Create schemas with Java keywords as names
+    Schema classSchema = createRecord("class",
+            createField("value", Schema.create(Schema.Type.STRING)));
+
+    Schema ifSchema = createRecord("if",
+            createField("value", Schema.create(Schema.Type.STRING)));
+
+    Schema publicSchema = createRecord("public",
+            createField("value", Schema.create(Schema.Type.STRING)));
+
+    // Create a parent record that contains records with Java keyword names
+    Schema parentSchema = createRecord("ParentRecord",
+            createField("class_field", classSchema),
+            createField("if_field", ifSchema),
+            createField("public_field", publicSchema));
+
+    // Create record instances
+    GenericRecord classRecord = new GenericData.Record(classSchema);
+    classRecord.put("value", "class value");
+
+    GenericRecord ifRecord = new GenericData.Record(ifSchema);
+    ifRecord.put("value", "if value");
+
+    GenericRecord publicRecord = new GenericData.Record(publicSchema);
+    publicRecord.put("value", "public value");
+
+    GenericRecord parentRecord = new GenericData.Record(parentSchema);
+    parentRecord.put("class_field", classRecord);
+    parentRecord.put("if_field", ifRecord);
+    parentRecord.put("public_field", publicRecord);
+
+
+    // when
+    GenericRecord deserializedRecord = implementation.decode(parentSchema, parentSchema,
+            genericDataAsDecoder(parentRecord));
+
+    // then
+    Assert.assertEquals(((GenericRecord)deserializedRecord.get("class_field")).get("value"), new Utf8("class value"));
+    Assert.assertEquals(((GenericRecord)deserializedRecord.get("if_field")).get("value"), new Utf8("if value"));
+    Assert.assertEquals(((GenericRecord)deserializedRecord.get("public_field")).get("value"), new Utf8("public value"));
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
   public void shouldBidirectionallyReadMapWithUnionMapOfUnionValues(Implementation implementation) {
     // given
     Schema recordWithMapSchema = createRecord("record", createMapFieldSchema("someInts", Schema.create(Schema.Type.INT)));
@@ -1620,6 +1996,181 @@ public class FastGenericDeserializerGeneratorTest {
     Assert.assertEquals(outerRecord2.toString(), outerRecord1.toString());
   }
 
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  void testNestedMapWithNullableInnerMapOnReader(Implementation implementation) {
+
+    String writerAvroSchema = "{\n" +
+            "  \"type\" : \"record\",\n" +
+            "  \"name\" : \"container\",\n" +
+            "  \"fields\" : [ {\n" +
+            "    \"name\" : \"nested_maps\",\n" +
+            "    \"type\" : {\n" +
+            "      \"type\" : \"map\",\n" +
+            "      \"values\" : {\n" +
+            "        \"type\" : \"map\",\n" +
+            "        \"values\" : \"int\"\n" +
+            "      }\n" +
+            "    }\n" +
+            "  } ]\n" +
+            "}";
+    Schema writerSchema = Schema.parse(writerAvroSchema);
+    String readerAvroSchema = "{\n" +
+            "  \"type\" : \"record\",\n" +
+            "  \"name\" : \"container\",\n" +
+            "  \"fields\" : [ {\n" +
+            "    \"name\" : \"nested_maps\",\n" +
+            "    \"type\" : [ \"null\", {\n" +
+            "      \"type\" : \"map\",\n" +
+            "      \"values\" : [ \"null\", {\n" +
+            "        \"type\" : \"map\",\n" +
+            "        \"values\" : [ \"null\", \"int\" ]\n" +
+            "      } ]\n" +
+            "    } ],\n" +
+            "    \"default\" : null\n" +
+            "  } ]\n" +
+            "}";
+    Schema readerSchema = Schema.parse(readerAvroSchema);
+    
+    GenericRecord record = new GenericData.Record(writerSchema);
+    Map<String, Map<Utf8, Integer>> map = new HashMap<>();
+    Map<Utf8, Integer> innerMap = new HashMap<>();
+    innerMap.put(new Utf8("key1"), 1);
+    map.put("key1", innerMap);
+    
+    record.put("nested_maps", map);
+
+    // when
+    GenericRecord decodedRecord = implementation.decode(writerSchema, readerSchema, genericDataAsDecoder(record));
+    
+    // then
+    Assert.assertNotNull(decodedRecord);
+    Assert.assertNotNull(decodedRecord.get("nested_maps"));
+    
+    @SuppressWarnings("unchecked")
+    Map<Utf8, Map<Utf8, Integer>> decodedMap = (Map<Utf8, Map<Utf8, Integer>>) decodedRecord.get("nested_maps");
+    Assert.assertEquals(decodedMap.size(), 1);
+    
+    Map<Utf8, Integer> decodedInnerMap = decodedMap.get(new Utf8("key1"));
+    Assert.assertNotNull(decodedInnerMap);
+    Assert.assertEquals(decodedInnerMap.size(), 1);
+    Assert.assertEquals(decodedInnerMap.get(new Utf8("key1")), Integer.valueOf(1));
+  }
+
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void testNestedArrayWithNullableInnerArrayOnReader(Implementation implementation){
+    String writerSchemaStr = "{\n" +
+            "  \"type\" : \"record\",\n" +
+            "  \"name\" : \"message\",\n" +
+            "  \"fields\" : [ {\n" +
+            "    \"name\" : \"data\",\n" +
+            "    \"type\" : {\n" +
+            "      \"type\" : \"array\",\n" +
+            "      \"items\" : {\n" +
+            "        \"type\" : \"array\",\n" +
+            "        \"items\" : \"int\"\n" +
+            "      }\n" +
+            "    }\n" +
+            "  } ]\n" +
+            "}";
+    Schema writerSchema = Schema.parse(writerSchemaStr);
+    
+    String readerSchemaStr = "{\n" +
+            "  \"type\" : \"record\",\n" +
+            "  \"name\" : \"message\",\n" +
+            "  \"fields\" : [ {\n" +
+            "    \"name\" : \"data\",\n" +
+            "    \"type\" : [ \"null\", {\n" +
+            "      \"type\" : \"array\",\n" +
+            "      \"items\" : {\n" +
+            "        \"type\" : \"array\",\n" +
+            "        \"items\" : \"int\"\n" +
+            "      }\n" +
+            "    } ],\n" +
+            "    \"default\" : null\n" +
+            "  } ]\n" +
+            "}";
+    Schema readerSchema = Schema.parse(readerSchemaStr);
+    
+    // Create a test record with nested arrays
+    GenericRecord record = new GenericData.Record(writerSchema);
+    
+    // Create a nested array structure: array<array<int>>
+    List<List<Integer>> nestedArrays = new ArrayList<>();
+    
+    List<Integer> inner1 = new ArrayList<>();
+    inner1.add(1);
+    
+    // Add inner arrays to the outer array
+    nestedArrays.add(inner1);
+    
+    // Add the nested array structure to the record
+    record.put("data", nestedArrays);
+
+    // when
+    GenericRecord decodedRecord = implementation.decode(writerSchema, readerSchema, genericDataAsDecoder(record));
+    
+    // then
+    Assert.assertNotNull(decodedRecord);
+    Assert.assertNotNull(decodedRecord.get("data"));
+    
+    @SuppressWarnings("unchecked")
+    List<List<Integer>> decodedData = (List<List<Integer>>) decodedRecord.get("data");
+    Assert.assertEquals(decodedData.size(), 1);
+
+    List<Integer> decodedInner1 = decodedData.get(0);
+    Assert.assertEquals(decodedInner1.get(0), Integer.valueOf(1));
+    
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  void testNullableNestedMap(Implementation implementation) {
+    String schemaStr = "{\n" +
+            "  \"type\" : \"record\",\n" +
+            "  \"name\" : \"message\",\n" +
+            "  \"fields\" : [ {\n" +
+            "    \"name\" : \"data\",\n" +
+            "    \"type\" : [ \"null\", {\n" +
+            "      \"type\" : \"map\",\n" +
+            "      \"values\" : {\n" +
+            "        \"type\" : \"map\",\n" +
+            "        \"values\" : \"int\"\n" +
+            "      }\n" +
+            "    } ],\n" +
+            "    \"default\" : null\n" +
+            "  } ]\n" +
+            "}";
+    Schema schema = Schema.parse(schemaStr);
+    
+    // Test Case 1: With non-null data
+    GenericRecord record1 = new GenericData.Record(schema);
+    
+    // Create a nested map structure: map<string, map<string, int>>
+    Map<String, Map<String, Integer>> nestedMap = new HashMap<>();
+    Map<String, Integer> innerMap = new HashMap<>();
+    innerMap.put("inner_key", 42);
+    nestedMap.put("outer_key", innerMap);
+    
+    // Add the nested map to the record
+    record1.put("data", nestedMap);
+
+    // When: decode with identical schema
+    GenericRecord decodedRecord1 = implementation.decode(schema, schema, genericDataAsDecoder(record1));
+    
+    // Then: verify the decoded record
+    Assert.assertNotNull(decodedRecord1);
+    Assert.assertNotNull(decodedRecord1.get("data"));
+    
+    @SuppressWarnings("unchecked")
+    Map<Utf8, Map<Utf8, Integer>> decodedMap = (Map<Utf8, Map<Utf8, Integer>>) decodedRecord1.get("data");
+    Assert.assertEquals(decodedMap.size(), 1);
+    
+    Map<Utf8, Integer> decodedInnerMap = decodedMap.get(new Utf8("outer_key"));
+    Assert.assertNotNull(decodedInnerMap);
+    Assert.assertEquals(decodedInnerMap.size(), 1);
+    Assert.assertEquals(decodedInnerMap.get(new Utf8("inner_key")), Integer.valueOf(42));
+  }
+
   private static <T> T decodeRecordColdFast(Schema writerSchema, Schema readerSchema, Decoder decoder) {
     FastDeserializer<T> deserializer =
         new FastSerdeUtils.FastDeserializerWithAvroGenericImpl<>(writerSchema, readerSchema, GenericData.get(), false);
@@ -1655,4 +2206,6 @@ public class FastGenericDeserializerGeneratorTest {
       return null;
     }
   }
+
+  
 }

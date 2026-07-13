@@ -2,6 +2,7 @@ package com.linkedin.avro.fastserde;
 
 import com.linkedin.avro.fastserde.generated.avro.SimpleRecord;
 import com.linkedin.avro.fastserde.generated.avro.TestRecord;
+import com.linkedin.avro.fastserde.generated.ownavro.TestOwnCodegenRecord;
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelper;
 
 import java.io.ByteArrayOutputStream;
@@ -79,6 +80,12 @@ public class FastSerdeCacheTest {
   public void testBuildFastSpecificDeserializerWithCorrectClasspath() {
     FastSerdeCache cache = FastSerdeCache.getDefaultInstance();
     cache.buildFastSpecificDeserializer(TestRecord.SCHEMA$, TestRecord.SCHEMA$);
+  }
+
+  @Test(groups = "deserializationTest")
+  public void testBuildFastSpecificDeserializerSupportsOurOwnGenerator() {
+    FastSerdeCache cache = FastSerdeCache.getDefaultInstance();
+    cache.buildFastSpecificDeserializer(TestOwnCodegenRecord.SCHEMA$, TestOwnCodegenRecord.SCHEMA$);
   }
 
   @Test(groups = "serializationTest", timeOut = 5_000L,

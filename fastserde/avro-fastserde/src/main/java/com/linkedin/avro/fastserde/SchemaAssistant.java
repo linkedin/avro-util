@@ -297,9 +297,12 @@ public class SchemaAssistant<T extends GenericData> {
   /* Note that settings abstractType and rawType are not passed to subcalls */
   public JClass classFromSchema(Schema schema, boolean abstractType, boolean rawType, boolean primitiveList,
           boolean allowLogicalTypes) {
-    if (allowLogicalTypes && logicalTypeEnabled(schema)) {
+    if (logicalTypeEnabled(schema)) {
       Class<?> logicalTypeClass = ((Conversion<?>) getConversion(schema.getLogicalType())).getConvertedType();
-      return codeModel.ref(logicalTypeClass);
+      fullyQualifiedClassNameSet.add(logicalTypeClass.getName());
+      if (allowLogicalTypes) {
+        return codeModel.ref(logicalTypeClass);
+      }
     }
 
     JClass outputClass;
@@ -575,10 +578,7 @@ public class SchemaAssistant<T extends GenericData> {
   public int compatibleUnionSchemaIndex(Schema schema, Schema unionSchema) {
     for (int i = 0; i < unionSchema.getTypes().size(); i++) {
       Schema potentialCompatibleSchema = unionSchema.getTypes().get(i);
-      if (potentialCompatibleSchema.getType().equals(schema.getType()) &&
-              (!isNamedType(potentialCompatibleSchema) ||
-                      AvroCompatibilityHelper.getSchemaFullName(potentialCompatibleSchema).equals(AvroCompatibilityHelper.getSchemaFullName(schema)) ||
-                      potentialCompatibleSchema.getAliases().contains(AvroCompatibilityHelper.getSchemaFullName(schema)))) {
+      if (areTypesCompatible(schema, potentialCompatibleSchema)) {
         return i;
       }
     }
@@ -587,5 +587,22 @@ public class SchemaAssistant<T extends GenericData> {
 
   public Schema compatibleUnionSchema(Schema schema, Schema unionSchema) {
     return unionSchema.getTypes().get(compatibleUnionSchemaIndex(schema, unionSchema));
+  }
+
+  public boolean areTypesCompatible(Schema schema, Schema potentialCompatibleSchema){
+    if(!potentialCompatibleSchema.getType().equals(schema.getType())) {
+      return false;
+    }
+    if(!isNamedType(potentialCompatibleSchema)) {
+      return true;
+    }
+    // Avro 1.5-1.7 use full name to compare named types
+    if(Utils.usesQualifiedNameForNamedTypedMatching()) {
+      return potentialCompatibleSchema.getFullName().equals(schema.getFullName()) ||
+          potentialCompatibleSchema.getAliases().contains(AvroCompatibilityHelper.getSchemaFullName(schema));
+    }
+    // Other avro versions (impl for all, spec for 1.9+) use unqualified name to compare named types (e.g. "test" instead of "com.test.test").
+    return potentialCompatibleSchema.getName().equals(schema.getName()) ||
+        potentialCompatibleSchema.getAliases().contains(AvroCompatibilityHelper.getSchemaFullName(schema));
   }
 }

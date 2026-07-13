@@ -29,28 +29,28 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingW
     public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithNonString0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithNonString;
+        IndexedRecord fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithNonString0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
-            FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithNonString = ((IndexedRecord)(reuse));
+            fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithNonString0 = ((IndexedRecord)(reuse));
         } else {
-            FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithNonString = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithNonString0 = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
-            FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithNonString.put(0, null);
+            fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithNonString0 .put(0, null);
         } else {
             if (unionIndex0 == 1) {
-                FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithNonString.put(0, (decoder.readBoolean()));
+                fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithNonString0 .put(0, (decoder.readBoolean()));
             } else {
                 if (unionIndex0 == 2) {
-                    FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithNonString.put(0, (decoder.readInt()));
+                    fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithNonString0 .put(0, (decoder.readInt()));
                 } else {
                     throw new RuntimeException(("Illegal union index for 'test': "+ unionIndex0));
                 }
             }
         }
-        return FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithNonString;
+        return fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithNonString0;
     }
 
 }

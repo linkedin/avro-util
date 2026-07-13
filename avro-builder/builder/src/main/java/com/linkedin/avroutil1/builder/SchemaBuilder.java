@@ -122,6 +122,12 @@ public class SchemaBuilder {
         .defaultsTo("true")
         .describedAs("true/false");
 
+    OptionSpec<String> jsonPropsToIgnoreOpt = parser.accepts(
+            "jsonPropsToIgnore",
+            "Comma-separated JSON property names to ignore during schema equality comparison (e.g., custom props)")
+        .withOptionalArg()
+        .withValuesSeparatedBy(',');
+
     //allow plugins to add CLI options
     for (BuilderPlugin plugin : plugins) {
       plugin.customizeCLI(parser);
@@ -250,13 +256,26 @@ public class SchemaBuilder {
     if (options.has(enableUtf8Encoding)) {
       String value = options.valueOf(enableUtf8Encoding);
       handleUtf8Encoding = Boolean.TRUE.equals(Boolean.parseBoolean(value));
-      if (handleUtf8Encoding) {
+      if (!handleUtf8Encoding) {
         if (methodStringRepresentation.equals(StringRepresentation.CharSequence) && stringRepresentation.equals(
             StringRepresentation.CharSequence)) {
           handleUtf8EncodingInPutByIndex = handleUtf8Encoding;
         } else {
           throw new IllegalArgumentException("--methodStringRepresentation and --stringRepresentation both need to be"
               + " CharSequence for enableUtf8Encoding to be supported.");
+        }
+      }
+    }
+
+    java.util.Set<String> jsonPropsToIgnore = new java.util.HashSet<>();
+    if (options.has(jsonPropsToIgnoreOpt)) {
+      List<String> vals = options.valuesOf(jsonPropsToIgnoreOpt);
+      for (String v : vals) {
+        if (v != null) {
+          String trimmed = v.trim();
+          if (!trimmed.isEmpty()) {
+            jsonPropsToIgnore.add(trimmed);
+          }
         }
       }
     }
@@ -282,7 +301,8 @@ public class SchemaBuilder {
         handleAvro702,
         handleUtf8EncodingInPutByIndex,
         skipCodegenIfSchemaOnClasspath,
-        handleUtf8Encoding
+        handleUtf8Encoding,
+        jsonPropsToIgnore
     );
 
     opConfig.validateParameters();

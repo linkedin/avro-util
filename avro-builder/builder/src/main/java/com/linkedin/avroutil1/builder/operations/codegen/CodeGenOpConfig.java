@@ -50,6 +50,8 @@ public class CodeGenOpConfig {
   boolean utf8EncodingPutByIndex;
   boolean skipCodegenIfSchemaOnClasspath;
   boolean enableUtf8Encoding;
+  // names of json properties to ignore during schema equality comparisons (e.g., custom props)
+  java.util.Set<String> jsonPropsToIgnore;
 
   @Deprecated
   public CodeGenOpConfig(
@@ -223,7 +225,8 @@ public class CodeGenOpConfig {
       boolean avro702Handling,
       boolean handleUtf8EncodingInPutByIndex,
       boolean skipCodegenIfSchemaOnClasspath,
-      boolean handleUtf8Encoding) {
+      boolean handleUtf8Encoding,
+      java.util.Set<String> jsonPropsToIgnore) {
     this.inputRoots = inputRoots;
     this.nonImportableSourceRoots = nonImportableSourceRoots;
     this.includeClasspath = includeClasspath;
@@ -240,6 +243,45 @@ public class CodeGenOpConfig {
     this.utf8EncodingPutByIndex = handleUtf8EncodingInPutByIndex;
     this.skipCodegenIfSchemaOnClasspath = skipCodegenIfSchemaOnClasspath;
     this.enableUtf8Encoding = handleUtf8Encoding;
+    this.jsonPropsToIgnore = jsonPropsToIgnore;
+  }
+
+  // Overload preserving original public API (without jsonPropsToIgnore)
+  public CodeGenOpConfig(List<File> inputRoots,
+      List<File> nonImportableSourceRoots,
+      boolean includeClasspath,
+      File outputSpecificRecordClassesRoot,
+      File outputExpandedSchemasRoot,
+      List<File> resolverPath,
+      CodeGenerator generatorType,
+      DuplicateSchemaBehaviour dupBehaviour,
+      List<String> duplicateSchemasToIgnore,
+      StringRepresentation stringRepresentation,
+      StringRepresentation methodStringRepresentation,
+      AvroVersion minAvroVersion,
+      boolean avro702Handling,
+      boolean handleUtf8EncodingInPutByIndex,
+      boolean skipCodegenIfSchemaOnClasspath,
+      boolean handleUtf8Encoding) {
+    this(
+        inputRoots,
+        nonImportableSourceRoots,
+        includeClasspath,
+        outputSpecificRecordClassesRoot,
+        outputExpandedSchemasRoot,
+        resolverPath,
+        generatorType,
+        dupBehaviour,
+        duplicateSchemasToIgnore,
+        stringRepresentation,
+        methodStringRepresentation,
+        minAvroVersion,
+        avro702Handling,
+        handleUtf8EncodingInPutByIndex,
+        skipCodegenIfSchemaOnClasspath,
+        handleUtf8Encoding,
+        java.util.Collections.emptySet()
+    );
   }
 
   /**
@@ -355,6 +397,10 @@ public class CodeGenOpConfig {
 
   public boolean isUtf8EncodingEnabled() {
     return enableUtf8Encoding;
+  }
+
+  public java.util.Set<String> getJsonPropsToIgnore() {
+    return jsonPropsToIgnore;
   }
 
   private void validateInput(Collection<File> files, String desc) {

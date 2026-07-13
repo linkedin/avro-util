@@ -207,11 +207,11 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
     }
   }
 
-  private void processSimpleType(Schema schema, Schema readerSchema, JBlock methodBody, FieldAction action,
+  private void processSimpleType(JVar fieldSchemaVar, String name, Schema schema, Schema readerSchema, JBlock methodBody, FieldAction action,
       BiConsumer<JBlock, JExpression> putExpressionIntoParent, Supplier<JExpression> reuseSupplier) {
     switch (schema.getType()) {
       case ENUM:
-        processEnum(readerSchema, methodBody, action, putExpressionIntoParent);
+        processEnum(fieldSchemaVar, name, schema, readerSchema, methodBody, action, putExpressionIntoParent);
         break;
       case FIXED:
         final Schema fixedFieldSchema;
@@ -330,9 +330,10 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
 
     final JVar result;
     JClass recordClass = null;
+    String uniqueRecordName = getUniqueName(recordName);
     if (recordAction.getShouldRead()) {
       recordClass = schemaAssistant.classFromSchema(effectiveRecordReaderSchema);
-      result = methodBody.decl(recordClass, recordName);
+      result = methodBody.decl(recordClass, uniqueRecordName);
 
       JExpression reuseVar = JExpr.direct(VAR_NAME_FOR_REUSE);
       JClass indexedRecordClass = codeModel.ref(IndexedRecord.class);
@@ -378,7 +379,7 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
 
         popMethod._throws(IOException.class);
         if (recordAction.getShouldRead()) {
-          popMethod.param(recordClass, recordName);
+          popMethod.param(recordClass, uniqueRecordName);
         }
         popMethod.param(codeModel.ref(DatumReaderCustomization.class), VAR_NAME_FOR_CUSTOMIZATION);
         popMethod.param(Decoder.class, DECODER);
@@ -386,7 +387,7 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
 
         JInvocation invocation = methodBody.invoke(popMethod);
         if (recordAction.getShouldRead()) {
-          invocation.arg(JExpr.direct(recordName));
+          invocation.arg(JExpr.direct(uniqueRecordName));
         }
         // even if recordAction.getShouldRead() == false we need to generate 'customization' argument for javac purposes
         invocation.arg(customizationSupplier.get());
@@ -417,7 +418,7 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
         processComplexType(fieldSchemaVar, field.name(), field.schema(), readerFieldSchema, popMethodBody, action,
             putExpressionInRecord, fieldReuseSupplier, customizationSupplier);
       } else {
-        processSimpleType(field.schema(), readerFieldSchema, popMethodBody, action, putExpressionInRecord, fieldReuseSupplier);
+        processSimpleType(fieldSchemaVar, field.name(), field.schema(), readerFieldSchema, popMethodBody, action, putExpressionInRecord, fieldReuseSupplier);
       }
 
       if (popMethod != null) {
@@ -662,10 +663,7 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
             Schema potentialReaderSchema = unionReaderSchema.getTypes().get(j);
             // Avro allows unnamed types to appear only once in a union, but named types may appear multiple times and
             // thus need to be disambiguated via their full-name (including aliases).
-            if (potentialReaderSchema.getType().equals(optionSchema.getType()) &&
-                (!schemaAssistant.isNamedType(potentialReaderSchema) ||
-                    AvroCompatibilityHelper.getSchemaFullName(potentialReaderSchema).equals(AvroCompatibilityHelper.getSchemaFullName(optionSchema)) ||
-                    potentialReaderSchema.getAliases().contains(AvroCompatibilityHelper.getSchemaFullName(optionSchema)))) {
+            if (schemaAssistant.areTypesCompatible(potentialReaderSchema, optionSchema)) {
               readerOptionSchema = potentialReaderSchema;
               readerOptionUnionBranchIndex = j;
               break;
@@ -703,8 +701,15 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
                   FieldAction.fromValues(optionSchema.getType(), action.getShouldRead(), alternative.symbols[compatibleWriterSchema]);
         } else {
           Symbol.UnionAdjustAction unionAdjustAction = (Symbol.UnionAdjustAction) alternative.symbols[i].production[0];
-          unionAction =
-                  FieldAction.fromValues(optionSchema.getType(), action.getShouldRead(), unionAdjustAction.symToParse);
+          //For maps and arrays, our processMap and processArray logic expect the map-end symbol whose production contains the maps values
+          //We go from Symbol A(production = [map-start, map-end]) to Symbol map-end
+          if(optionSchema.getType().equals(Schema.Type.MAP) || optionSchema.getType().equals(Schema.Type.ARRAY)){
+            unionAction =
+                    FieldAction.fromValues(optionSchema.getType(), action.getShouldRead(), unionAdjustAction.symToParse.production[0]);
+          } else {
+            unionAction =
+                    FieldAction.fromValues(optionSchema.getType(), action.getShouldRead(), unionAdjustAction.symToParse);
+          }
         }
 
       } else {
@@ -723,15 +728,16 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
         optionSchemaVar = unionSchemaVar;
       }
 
+      String optionName = name + "Option";
+      if (Schema.Type.UNION.equals(optionSchema.getType())) {
+        throw new FastDeserializerGeneratorException("Union cannot be sub-type of union!");
+      }
       if (SchemaAssistant.isComplexType(optionSchema)) {
-        String optionName = name + "Option";
-        if (Schema.Type.UNION.equals(optionSchema.getType())) {
-          throw new FastDeserializerGeneratorException("Union cannot be sub-type of union!");
-        }
+
         processComplexType(optionSchemaVar, optionName, optionSchema, readerOptionSchema, thenBlock, unionAction,
             putValueIntoParent, reuseSupplier, customizationSupplier);
       } else {
-        processSimpleType(optionSchema, readerOptionSchema, thenBlock, unionAction, putValueIntoParent, reuseSupplier);
+        processSimpleType(optionSchemaVar, name, optionSchema, readerOptionSchema, thenBlock, unionAction, putValueIntoParent, reuseSupplier);
       }
     }
     if (ifBlock != null) {
@@ -773,10 +779,17 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
                 ((Symbol.UnionAdjustAction) symbol).symToParse);
       }
 
+      //See processMap for a description of this logic
       Symbol valuesActionSymbol = null;
-      for (Symbol symbol : action.getSymbol().production) {
+      int arrayEndsToSkip = arrayReaderSchema.getType().equals(Schema.Type.ARRAY) && arrayReaderSchema.getElementType().getType().equals(Schema.Type.ARRAY) ? 1 : 0;
+      int arrayEndsFound = 0;
+      for (Symbol symbol: action.getSymbol().production) {
         if (Symbol.Kind.REPEATER.equals(symbol.kind) && "array-end".equals(
-            getSymbolPrintName(((Symbol.Repeater) symbol).end))) {
+                getSymbolPrintName(((Symbol.Repeater) symbol).end))) {
+          if(arrayEndsFound < arrayEndsToSkip) {
+            arrayEndsFound++;
+            continue;
+          }
           valuesActionSymbol = symbol;
           break;
         }
@@ -894,11 +907,10 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
 
     if (SchemaAssistant.isComplexType(arraySchema.getElementType())) {
       String elemName = name + "Elem";
-
       processComplexType(elementSchemaVar, elemName, arraySchema.getElementType(), readerArrayElementSchema, forBody,
           finalAction, putValueInArray, elementReuseSupplier, customizationSupplier);
     } else {
-      processSimpleType(arraySchema.getElementType(), readerArrayElementSchema, forBody, finalAction, putValueInArray, elementReuseSupplier);
+      processSimpleType(elementSchemaVar, name, arraySchema.getElementType(), readerArrayElementSchema, forBody, finalAction, putValueInArray, elementReuseSupplier);
     }
     whileLoopToIterateOnBlocks.body().assign(chunkLen, JExpr.direct(DECODER + ".arrayNext()"));
 
@@ -939,7 +951,22 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
      *
      * The {@link FastDeserializerGenerator.generateDeserializer} tries to proceed as a depth-first,
      * left-to-right traversal of the schema. So for a nested Map, we need to iterate production list
-     * in reverse order to get the correct "map-end" symbol of internal Maps.
+     * in reverse order to get the correct "map-end" symbol of internal Maps. However, if the map's value type
+     * is a record which contains a nested map we need to still use the outer map's production.
+     *
+     * Assume we are processing a Map it's value type is a map. In this case the production for the fieldAction of this map will be
+     * <code> map-end1, map-end2, map-start2, string</code>. map-end1 is for the outer map and map-end2 is for the inner map.
+     *  When we create a field action for the inner map we must give it the symbol map-end2 which is the second map-end
+     *  we see in the production. If we had even more levels of nesting, this would still hold.
+     *
+     * Now assume we are processing a map and the value type is a record which contains a map. In this case,
+     *  the production for the fieldAction of this map will be <code> map-end1, map-end2, map-start2, fieldAdjustAction, string</code>.
+     * Notice how similar this is to the previous case with just one additional fieldAdjustAction to help us differentiate.
+     * In this case, to process the record correctly it needs to have a symbol list which has [fieldAdjustAction map-start2 map-end2].
+     * However, our logic to create actionIterator for a record is much more lax and will accept additional symbols
+     * before the fieldAdjustAction and skip them. Moreover, it also accepts additional symbols after the last symbol
+     * in the record which it just ignores. This, if we give it map-end2's production it will work just fine.
+     * Same applies to arrays where we look for an array-end in the array processing logic to do something
      */
     Schema effectiveMapReaderSchema = mapReaderSchema;
     if (action.getShouldRead()) {
@@ -971,10 +998,15 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
       }
 
       Symbol valuesActionSymbol = null;
-      for (int i = action.getSymbol().production.length - 1; i >= 0; --i) {
-        Symbol symbol = action.getSymbol().production[i];
+      int mapEndsToSkip = mapReaderSchema.getType().equals(Schema.Type.MAP) && mapReaderSchema.getValueType().getType().equals(Schema.Type.MAP) ? 1 : 0;
+      int mapEndsFound = 0;
+      for (Symbol symbol: action.getSymbol().production) {
         if (Symbol.Kind.REPEATER.equals(symbol.kind) && "map-end".equals(
             getSymbolPrintName(((Symbol.Repeater) symbol).end))) {
+            if(mapEndsFound < mapEndsToSkip) {
+              mapEndsFound++;
+              continue;
+            }
           valuesActionSymbol = symbol;
           break;
         }
@@ -1036,13 +1068,12 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
       putValueInMap = (block, expression) -> block.invoke(mapVar, "put").arg(key).arg(expression);
       readerMapValueSchema = effectiveMapReaderSchema.getValueType();
     }
-
     if (SchemaAssistant.isComplexType(mapSchema.getValueType())) {
       String valueName = name + "Value";
       processComplexType(mapValueSchemaVar, valueName, mapSchema.getValueType(), readerMapValueSchema, forBody, action,
           putValueInMap, EMPTY_SUPPLIER, customizationSupplier);
     } else {
-      processSimpleType(mapSchema.getValueType(), readerMapValueSchema, forBody, action, putValueInMap, EMPTY_SUPPLIER);
+      processSimpleType(mapValueSchemaVar, name, mapSchema.getValueType(), readerMapValueSchema, forBody, action, putValueInMap, EMPTY_SUPPLIER);
     }
     doLoop.body().assign(chunkLen, JExpr.direct(DECODER + ".mapNext()"));
     if (action.getShouldRead()) {
@@ -1100,9 +1131,36 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
     }
   }
 
-  private void processEnum(final Schema schema, final JBlock body, FieldAction action,
+  private void processEnum(JVar fieldVar, final String name,  final Schema writerSchema, Schema schema, final JBlock body, FieldAction action,
       BiConsumer<JBlock, JExpression> putEnumIntoParent) {
     if (action.getShouldRead()) {
+      // if reader schema is a union type then the compatible union type must be selected
+      // as effectiveRecordReaderSchema and recordAction needs to be adjusted.
+      if (Schema.Type.UNION.equals(schema.getType())) {
+        Schema effectiveRecordReaderSchema = schemaAssistant.compatibleUnionSchema(writerSchema, schema);
+        if (fieldVar != null) {
+          declareSchemaVar(effectiveRecordReaderSchema, name + "EnumSchema",
+                  fieldVar.invoke("getTypes").invoke("get").arg(JExpr.lit(
+                          schemaAssistant.compatibleUnionSchemaIndex(writerSchema, schema)
+                  )));
+        }
+        Symbol symbol = action.getSymbol();
+        if (!(symbol instanceof Symbol.UnionAdjustAction)) {
+          for (Symbol aSymbol: symbol.production) {
+            if (aSymbol instanceof Symbol.UnionAdjustAction) {
+              symbol = aSymbol;
+              break;
+            }
+          }
+        }
+        if (symbol == null) {
+          throw new FastDeserializerGeneratorException("Symbol.UnionAdjustAction is expected but was not found");
+        }
+        action = FieldAction.fromValues(action.getType(), action.getShouldRead(),
+                ((Symbol.UnionAdjustAction) symbol).symToParse);
+        schema = effectiveRecordReaderSchema;
+      }
+
       Symbol.EnumAdjustAction enumAdjustAction = null;
       if (action.getSymbol() instanceof Symbol.EnumAdjustAction) {
         enumAdjustAction = (Symbol.EnumAdjustAction) action.getSymbol();

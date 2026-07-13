@@ -40,11 +40,11 @@ public class testRecord_GenericDeserializer_1146484089_1256982207
     public IndexedRecord deserializetestRecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord testRecord;
+        IndexedRecord testRecord0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
-            testRecord = ((IndexedRecord)(reuse));
+            testRecord0 = ((IndexedRecord)(reuse));
         } else {
-            testRecord = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            testRecord0 = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         int enumIndex0 = (decoder.readEnum());
         GenericEnumSymbol enumValue0 = null;
@@ -58,8 +58,8 @@ public class testRecord_GenericDeserializer_1146484089_1256982207
                 throw new RuntimeException(("Illegal enum index for 'com.linkedin.avro.fastserde.generated.avro.testEnum': "+ enumIndex0));
             }
         }
-        testRecord.put(0, enumValue0);
-        return testRecord;
+        testRecord0 .put(0, enumValue0);
+        return testRecord0;
     }
 
 }

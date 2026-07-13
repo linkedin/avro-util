@@ -154,4 +154,65 @@ public class AvroWireFormatCompatibilityTest {
         AvroCodecUtil.deserializeAsGeneric(bytes, writerSchema, readerSchemaWithLong);
     Assert.assertEquals(deserializedGenericRecord.get(0), 1L);
   }
+
+  @Test
+  public void testNegativeInt32BinaryRoundtrip() throws Exception {
+    Schema schema = AvroCompatibilityHelper.parse(TestUtil.load("allavro/RecordWithNumericFields.avsc"));
+    int[] negativeValues = {-1, -100, Integer.MIN_VALUE};
+
+    for (int negativeValue : negativeValues) {
+      GenericData.Record record = new GenericData.Record(schema);
+      record.put("intField", negativeValue);
+      record.put("longField", 0L);
+      record.put("floatField", 0.0f);
+      record.put("doubleField", 0.0d);
+
+      byte[] bytes = AvroCodecUtil.serializeBinary(record);
+      GenericRecord deserialized = AvroCodecUtil.deserializeAsGeneric(bytes, schema, schema);
+
+      Assert.assertEquals(deserialized.get(schema.getField("intField").pos()), negativeValue,
+          "Negative int32 value " + negativeValue + " should survive binary roundtrip");
+    }
+  }
+
+  @Test
+  public void testNegativeInt32JsonRoundtrip() throws Exception {
+    Schema schema = AvroCompatibilityHelper.parse(TestUtil.load("allavro/RecordWithNumericFields.avsc"));
+    int[] negativeValues = {-1, -100, Integer.MIN_VALUE};
+
+    for (int negativeValue : negativeValues) {
+      GenericData.Record record = new GenericData.Record(schema);
+      record.put("intField", negativeValue);
+      record.put("longField", 0L);
+      record.put("floatField", 0.0f);
+      record.put("doubleField", 0.0d);
+
+      String json = AvroCodecUtil.serializeJson(record, AvroCompatibilityHelper.getRuntimeAvroVersion());
+      Decoder jsonDecoder = AvroCompatibilityHelper.newCompatibleJsonDecoder(schema, json);
+      GenericDatumReader<IndexedRecord> reader = new GenericDatumReader<>(schema);
+      IndexedRecord deserialized = reader.read(null, jsonDecoder);
+
+      Assert.assertEquals(deserialized.get(schema.getField("intField").pos()), negativeValue,
+          "Negative int32 value " + negativeValue + " should survive JSON roundtrip");
+    }
+  }
+
+  @Test
+  public void testNegativeInt32TypeWideningToLong() throws Exception {
+    Schema writerSchema =
+        AvroCompatibilityHelper.parse(TestUtil.load("allavro/WidenIntToLongInUnionField_writer.avsc"));
+    Schema readerSchema =
+        AvroCompatibilityHelper.parse(TestUtil.load("allavro/WidenIntToLongInUnionField_reader.avsc"));
+    int[] negativeValues = {-1, -100, Integer.MIN_VALUE};
+
+    for (int negativeValue : negativeValues) {
+      GenericData.Record record = new GenericData.Record(writerSchema);
+      record.put("f1", negativeValue);
+      byte[] bytes = AvroCodecUtil.serializeBinary(record);
+
+      GenericRecord deserialized = AvroCodecUtil.deserializeAsGeneric(bytes, writerSchema, readerSchema);
+      Assert.assertEquals(deserialized.get(0), (long) negativeValue,
+          "Negative int32 value " + negativeValue + " should widen to long correctly");
+    }
+  }
 }

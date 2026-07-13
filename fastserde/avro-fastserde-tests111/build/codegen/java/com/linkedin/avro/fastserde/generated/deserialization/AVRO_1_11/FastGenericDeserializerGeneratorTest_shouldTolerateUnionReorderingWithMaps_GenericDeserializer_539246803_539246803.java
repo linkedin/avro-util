@@ -33,22 +33,22 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingW
     public IndexedRecord deserializeFastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps;
+        IndexedRecord fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
-            FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps = ((IndexedRecord)(reuse));
+            fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps0 = ((IndexedRecord)(reuse));
         } else {
-            FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps0 = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
-            FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps.put(0, null);
+            fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps0 .put(0, null);
         } else {
             if (unionIndex0 == 1) {
                 Map<Utf8, Integer> testOption0 = null;
                 long chunkLen0 = (decoder.readMapStart());
                 if (chunkLen0 > 0) {
-                    testOption0 = ((Map)(customization).getNewMapOverrideFunc().apply(FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps.get(0), ((int) chunkLen0)));
+                    testOption0 = ((Map)(customization).getNewMapOverrideFunc().apply(fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps0 .get(0), ((int) chunkLen0)));
                     do {
                         for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
                             Utf8 key0 = (decoder.readString(null));
@@ -57,14 +57,14 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingW
                         chunkLen0 = (decoder.mapNext());
                     } while (chunkLen0 > 0);
                 } else {
-                    testOption0 = ((Map)(customization).getNewMapOverrideFunc().apply(FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps.get(0), 0));
+                    testOption0 = ((Map)(customization).getNewMapOverrideFunc().apply(fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps0 .get(0), 0));
                 }
-                FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps.put(0, testOption0);
+                fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps0 .put(0, testOption0);
             } else {
                 throw new RuntimeException(("Illegal union index for 'test': "+ unionIndex0));
             }
         }
-        return FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps;
+        return fastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps0;
     }
 
 }

@@ -10,6 +10,7 @@ plugins {
 
 configurations {
   codegen
+  ownCodegen
 }
 
 sourceSets {
@@ -17,6 +18,7 @@ sourceSets {
     java {
       srcDir "$rootProject.projectDir/fastserde/avro-fastserde-tests-common/src/test/java"
       srcDir "$buildDir/generated/avro"
+      srcDir "$buildDir/generated/ownAvro"
       exclude "com/linkedin/avro/fastserde/logical/types/**" // LogicalType available since version 1.8
     }
     resources {
@@ -47,6 +49,8 @@ dependencies {
   codegen project(":helper:helper")
   codegen "org.apache.avro:avro-tools:1.6.3"
   codegen "org.apache.avro:avro-compiler:1.6.3"
+
+  ownCodegen project(":avro-builder:builder")
 }
 
 test {
@@ -80,4 +84,28 @@ task runVanillaAvroCodegen {
   }
 }
 
-compileTestJava.dependsOn runVanillaAvroCodegen
+task runOwnAvroCodegen {
+  description = 'generate specific classes using own codegen utility'
+
+  dependsOn configurations.ownCodegen
+  // define input and output files so we can have incremental build when nothing changes
+  inputs.dir("$rootProject.projectDir/fastserde/avro-fastserde-tests-common/src/test/ownAvro")
+  outputs.dir("$buildDir/generated/ownAvro")
+
+  fileTree(dir: "$rootProject.projectDir/fastserde/avro-fastserde-tests-common/src/test/ownAvro", include:'**/*.avsc').each { file ->
+    doLast {
+      javaexec {
+        classpath = configurations.ownCodegen
+        main = 'com.linkedin.avroutil1.builder.SchemaBuilder'
+        args = [
+            "--input", file.getAbsolutePath(),
+            "--output", "$buildDir/generated/ownAvro",
+            "--generator", "AVRO_UTIL",
+            "--minAvroVer", "1.6"
+        ]
+      }
+    }
+  }
+}
+
+compileTestJava.dependsOn runVanillaAvroCodegen, runOwnAvroCodegen

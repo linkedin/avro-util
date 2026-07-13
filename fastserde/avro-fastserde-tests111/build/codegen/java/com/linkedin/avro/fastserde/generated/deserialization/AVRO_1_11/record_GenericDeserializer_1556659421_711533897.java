@@ -30,43 +30,43 @@ public class record_GenericDeserializer_1556659421_711533897
     public IndexedRecord deserializerecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord record;
+        IndexedRecord record0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
-            record = ((IndexedRecord)(reuse));
+            record0 = ((IndexedRecord)(reuse));
         } else {
-            record = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            record0 = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             throw new AvroTypeException("Found \"null\", expecting {\"type\":\"record\",\"name\":\"subRecord\",\"namespace\":\"com.linkedin.avro.fastserde.generated.avro\",\"doc\":\"subRecord\",\"fields\":[{\"name\":\"someInt1\",\"type\":\"int\",\"doc\":\"\"},{\"name\":\"someInt2\",\"type\":\"int\",\"doc\":\"\"}]}");
         } else {
             if (unionIndex0 == 1) {
-                record.put(0, deserializesubRecord0(record.get(0), (decoder), (customization)));
+                record0 .put(0, deserializesubRecord0(record0 .get(0), (decoder), (customization)));
             } else {
                 throw new RuntimeException(("Illegal union index for 'subRecord': "+ unionIndex0));
             }
         }
-        return record;
+        return record0;
     }
 
     public IndexedRecord deserializesubRecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord subRecord;
+        IndexedRecord subRecord1;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == subRecord0)) {
-            subRecord = ((IndexedRecord)(reuse));
+            subRecord1 = ((IndexedRecord)(reuse));
         } else {
-            subRecord = new org.apache.avro.generic.GenericData.Record(subRecord0);
+            subRecord1 = new org.apache.avro.generic.GenericData.Record(subRecord0);
         }
-        subRecord.put(0, (decoder.readInt()));
-        populate_subRecord0((subRecord), (customization), (decoder));
-        return subRecord;
+        subRecord1 .put(0, (decoder.readInt()));
+        populate_subRecord0((subRecord1), (customization), (decoder));
+        return subRecord1;
     }
 
-    private void populate_subRecord0(IndexedRecord subRecord, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_subRecord0(IndexedRecord subRecord1, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
-        subRecord.put(1, (decoder.readInt()));
+        subRecord1 .put(1, (decoder.readInt()));
     }
 
 }

@@ -56,31 +56,31 @@ public class Array_of_record_GenericDeserializer_477614132_477614132
     public IndexedRecord deserializerecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord record;
+        IndexedRecord record0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == arrayArrayElemSchema0)) {
-            record = ((IndexedRecord)(reuse));
+            record0 = ((IndexedRecord)(reuse));
         } else {
-            record = new org.apache.avro.generic.GenericData.Record(arrayArrayElemSchema0);
+            record0 = new org.apache.avro.generic.GenericData.Record(arrayArrayElemSchema0);
         }
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             decoder.readNull();
-            record.put(0, null);
+            record0 .put(0, null);
         } else {
             if (unionIndex0 == 1) {
                 Utf8 charSequence0;
-                Object oldString0 = record.get(0);
+                Object oldString0 = record0 .get(0);
                 if (oldString0 instanceof Utf8) {
                     charSequence0 = (decoder).readString(((Utf8) oldString0));
                 } else {
                     charSequence0 = (decoder).readString(null);
                 }
-                record.put(0, charSequence0);
+                record0 .put(0, charSequence0);
             } else {
                 throw new RuntimeException(("Illegal union index for 'field': "+ unionIndex0));
             }
         }
-        return record;
+        return record0;
     }
 
 }

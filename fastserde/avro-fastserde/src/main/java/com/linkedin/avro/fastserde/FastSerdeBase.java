@@ -1,6 +1,8 @@
 package com.linkedin.avro.fastserde;
 
 import com.linkedin.avroutil1.compatibility.AvroCompatibilityHelperCommon;
+import com.linkedin.avroutil1.compatibility.CustomDecoder;
+import com.linkedin.avroutil1.compatibility.backports.SpecificRecordBaseExt;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JConditional;
@@ -174,7 +176,13 @@ public abstract class FastSerdeBase<T extends GenericData> {
       throw new FastSerdeGeneratorException("Couldn't locate java compiler at runtime, please double check your env "
           + "setting for 'JAVA_HOME', and here is the value for 'System.getProperty(\"java.home\")': " + System.getProperty("java.home"));
     }
-    String compileClassPathForCurrentFile = Utils.inferCompileDependencies(compileClassPath, filePath, knownUsedFullyQualifiedClassNameSet);
+    Set<String> knownClassNameSet = new HashSet<>(knownUsedFullyQualifiedClassNameSet);
+
+    // Add classes that are used in generated code but may not be directly referenced in the schema
+    knownClassNameSet.add(SpecificRecordBaseExt.class.getName());
+    knownClassNameSet.add(CustomDecoder.class.getName());
+
+    String compileClassPathForCurrentFile = Utils.inferCompileDependencies(compileClassPath, filePath, knownClassNameSet);
     int compileResult;
     try {
       /*

@@ -14,13 +14,15 @@ import java.util.Map;
 import java.util.UUID;
 import com.linkedin.avro.fastserde.FastDeserializer;
 import com.linkedin.avro.fastserde.customized.DatumReaderCustomization;
+import com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesTest1;
+import com.linkedin.avro.fastserde.generated.avro.LocalTimestampRecord;
 import org.apache.avro.Conversions;
 import org.apache.avro.Schema;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.util.Utf8;
 
 public class FastSerdeLogicalTypesTest1_SpecificDeserializer_1007574890_1007574890
-    implements FastDeserializer<com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesTest1>
+    implements FastDeserializer<FastSerdeLogicalTypesTest1>
 {
 
     private final Schema readerSchema;
@@ -45,26 +47,26 @@ public class FastSerdeLogicalTypesTest1_SpecificDeserializer_1007574890_10075748
         this.readerSchema = readerSchema;
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesTest1 deserialize(com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesTest1 reuse, Decoder decoder, DatumReaderCustomization customization)
+    public FastSerdeLogicalTypesTest1 deserialize(FastSerdeLogicalTypesTest1 reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
         return deserializeFastSerdeLogicalTypesTest10((reuse), (decoder), (customization));
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesTest1 deserializeFastSerdeLogicalTypesTest10(Object reuse, Decoder decoder, DatumReaderCustomization customization)
+    public FastSerdeLogicalTypesTest1 deserializeFastSerdeLogicalTypesTest10(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesTest1 FastSerdeLogicalTypesTest1;
+        FastSerdeLogicalTypesTest1 fastSerdeLogicalTypesTest10;
         if ((reuse)!= null) {
-            FastSerdeLogicalTypesTest1 = ((com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesTest1)(reuse));
+            fastSerdeLogicalTypesTest10 = ((FastSerdeLogicalTypesTest1)(reuse));
         } else {
-            FastSerdeLogicalTypesTest1 = new com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesTest1();
+            fastSerdeLogicalTypesTest10 = new FastSerdeLogicalTypesTest1();
         }
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
             List<LocalTime> unionOfArrayAndMapOption0 = null;
             long chunkLen0 = (decoder.readArrayStart());
-            Object oldArray0 = FastSerdeLogicalTypesTest1 .get(0);
+            Object oldArray0 = fastSerdeLogicalTypesTest10 .get(0);
             if (oldArray0 instanceof List) {
                 unionOfArrayAndMapOption0 = ((List) oldArray0);
                 unionOfArrayAndMapOption0 .clear();
@@ -78,13 +80,13 @@ public class FastSerdeLogicalTypesTest1_SpecificDeserializer_1007574890_10075748
                 }
                 chunkLen0 = (decoder.arrayNext());
             }
-            FastSerdeLogicalTypesTest1 .put(0, unionOfArrayAndMapOption0);
+            fastSerdeLogicalTypesTest10 .put(0, unionOfArrayAndMapOption0);
         } else {
             if (unionIndex0 == 1) {
                 Map<Utf8, LocalDate> unionOfArrayAndMapOption1 = null;
                 long chunkLen1 = (decoder.readMapStart());
                 if (chunkLen1 > 0) {
-                    unionOfArrayAndMapOption1 = ((Map)(customization).getNewMapOverrideFunc().apply(FastSerdeLogicalTypesTest1 .get(0), ((int) chunkLen1)));
+                    unionOfArrayAndMapOption1 = ((Map)(customization).getNewMapOverrideFunc().apply(fastSerdeLogicalTypesTest10 .get(0), ((int) chunkLen1)));
                     do {
                         for (int counter1 = 0; (counter1 <chunkLen1); counter1 ++) {
                             Utf8 key0 = (decoder.readString(null));
@@ -94,29 +96,29 @@ public class FastSerdeLogicalTypesTest1_SpecificDeserializer_1007574890_10075748
                         chunkLen1 = (decoder.mapNext());
                     } while (chunkLen1 > 0);
                 } else {
-                    unionOfArrayAndMapOption1 = ((Map)(customization).getNewMapOverrideFunc().apply(FastSerdeLogicalTypesTest1 .get(0), 0));
+                    unionOfArrayAndMapOption1 = ((Map)(customization).getNewMapOverrideFunc().apply(fastSerdeLogicalTypesTest10 .get(0), 0));
                 }
-                FastSerdeLogicalTypesTest1 .put(0, unionOfArrayAndMapOption1);
+                fastSerdeLogicalTypesTest10 .put(0, unionOfArrayAndMapOption1);
             } else {
                 throw new RuntimeException(("Illegal union index for 'unionOfArrayAndMap': "+ unionIndex0));
             }
         }
-        populate_FastSerdeLogicalTypesTest10((FastSerdeLogicalTypesTest1), (customization), (decoder));
-        populate_FastSerdeLogicalTypesTest11((FastSerdeLogicalTypesTest1), (customization), (decoder));
-        populate_FastSerdeLogicalTypesTest12((FastSerdeLogicalTypesTest1), (customization), (decoder));
-        populate_FastSerdeLogicalTypesTest13((FastSerdeLogicalTypesTest1), (customization), (decoder));
-        populate_FastSerdeLogicalTypesTest14((FastSerdeLogicalTypesTest1), (customization), (decoder));
-        populate_FastSerdeLogicalTypesTest15((FastSerdeLogicalTypesTest1), (customization), (decoder));
-        return FastSerdeLogicalTypesTest1;
+        populate_FastSerdeLogicalTypesTest10((fastSerdeLogicalTypesTest10), (customization), (decoder));
+        populate_FastSerdeLogicalTypesTest11((fastSerdeLogicalTypesTest10), (customization), (decoder));
+        populate_FastSerdeLogicalTypesTest12((fastSerdeLogicalTypesTest10), (customization), (decoder));
+        populate_FastSerdeLogicalTypesTest13((fastSerdeLogicalTypesTest10), (customization), (decoder));
+        populate_FastSerdeLogicalTypesTest14((fastSerdeLogicalTypesTest10), (customization), (decoder));
+        populate_FastSerdeLogicalTypesTest15((fastSerdeLogicalTypesTest10), (customization), (decoder));
+        return fastSerdeLogicalTypesTest10;
     }
 
-    private void populate_FastSerdeLogicalTypesTest10(com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesTest1 FastSerdeLogicalTypesTest1, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_FastSerdeLogicalTypesTest10(FastSerdeLogicalTypesTest1 fastSerdeLogicalTypesTest10, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         Map<Utf8, Object> mapOfUnionsOfDateAndTimestampMillis0 = null;
         long chunkLen2 = (decoder.readMapStart());
         if (chunkLen2 > 0) {
-            mapOfUnionsOfDateAndTimestampMillis0 = ((Map)(customization).getNewMapOverrideFunc().apply(FastSerdeLogicalTypesTest1 .get(1), ((int) chunkLen2)));
+            mapOfUnionsOfDateAndTimestampMillis0 = ((Map)(customization).getNewMapOverrideFunc().apply(fastSerdeLogicalTypesTest10 .get(1), ((int) chunkLen2)));
             do {
                 for (int counter2 = 0; (counter2 <chunkLen2); counter2 ++) {
                     Utf8 key1 = (decoder.readString(null));
@@ -136,13 +138,13 @@ public class FastSerdeLogicalTypesTest1_SpecificDeserializer_1007574890_10075748
                 chunkLen2 = (decoder.mapNext());
             } while (chunkLen2 > 0);
         } else {
-            mapOfUnionsOfDateAndTimestampMillis0 = ((Map)(customization).getNewMapOverrideFunc().apply(FastSerdeLogicalTypesTest1 .get(1), 0));
+            mapOfUnionsOfDateAndTimestampMillis0 = ((Map)(customization).getNewMapOverrideFunc().apply(fastSerdeLogicalTypesTest10 .get(1), 0));
         }
-        FastSerdeLogicalTypesTest1 .put(1, mapOfUnionsOfDateAndTimestampMillis0);
+        fastSerdeLogicalTypesTest10 .put(1, mapOfUnionsOfDateAndTimestampMillis0);
         Map<Utf8, Instant> timestampMillisMap0 = null;
         long chunkLen3 = (decoder.readMapStart());
         if (chunkLen3 > 0) {
-            timestampMillisMap0 = ((Map)(customization).getNewMapOverrideFunc().apply(FastSerdeLogicalTypesTest1 .get(2), ((int) chunkLen3)));
+            timestampMillisMap0 = ((Map)(customization).getNewMapOverrideFunc().apply(fastSerdeLogicalTypesTest10 .get(2), ((int) chunkLen3)));
             do {
                 for (int counter3 = 0; (counter3 <chunkLen3); counter3 ++) {
                     Utf8 key2 = (decoder.readString(null));
@@ -152,23 +154,23 @@ public class FastSerdeLogicalTypesTest1_SpecificDeserializer_1007574890_10075748
                 chunkLen3 = (decoder.mapNext());
             } while (chunkLen3 > 0);
         } else {
-            timestampMillisMap0 = ((Map)(customization).getNewMapOverrideFunc().apply(FastSerdeLogicalTypesTest1 .get(2), 0));
+            timestampMillisMap0 = ((Map)(customization).getNewMapOverrideFunc().apply(fastSerdeLogicalTypesTest10 .get(2), 0));
         }
-        FastSerdeLogicalTypesTest1 .put(2, timestampMillisMap0);
+        fastSerdeLogicalTypesTest10 .put(2, timestampMillisMap0);
     }
 
-    private void populate_FastSerdeLogicalTypesTest11(com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesTest1 FastSerdeLogicalTypesTest1, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_FastSerdeLogicalTypesTest11(FastSerdeLogicalTypesTest1 fastSerdeLogicalTypesTest10, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex2 = (decoder.readIndex());
         if (unionIndex2 == 0) {
             decoder.readNull();
-            FastSerdeLogicalTypesTest1 .put(3, null);
+            fastSerdeLogicalTypesTest10 .put(3, null);
         } else {
             if (unionIndex2 == 1) {
                 List<LocalDate> nullableArrayOfDatesOption0 = null;
                 long chunkLen4 = (decoder.readArrayStart());
-                Object oldArray1 = FastSerdeLogicalTypesTest1 .get(3);
+                Object oldArray1 = fastSerdeLogicalTypesTest10 .get(3);
                 if (oldArray1 instanceof List) {
                     nullableArrayOfDatesOption0 = ((List) oldArray1);
                     nullableArrayOfDatesOption0 .clear();
@@ -182,14 +184,14 @@ public class FastSerdeLogicalTypesTest1_SpecificDeserializer_1007574890_10075748
                     }
                     chunkLen4 = (decoder.arrayNext());
                 }
-                FastSerdeLogicalTypesTest1 .put(3, nullableArrayOfDatesOption0);
+                fastSerdeLogicalTypesTest10 .put(3, nullableArrayOfDatesOption0);
             } else {
                 throw new RuntimeException(("Illegal union index for 'nullableArrayOfDates': "+ unionIndex2));
             }
         }
         List<LocalDate> arrayOfDates0 = null;
         long chunkLen5 = (decoder.readArrayStart());
-        Object oldArray2 = FastSerdeLogicalTypesTest1 .get(4);
+        Object oldArray2 = fastSerdeLogicalTypesTest10 .get(4);
         if (oldArray2 instanceof List) {
             arrayOfDates0 = ((List) oldArray2);
             arrayOfDates0 .clear();
@@ -203,95 +205,95 @@ public class FastSerdeLogicalTypesTest1_SpecificDeserializer_1007574890_10075748
             }
             chunkLen5 = (decoder.arrayNext());
         }
-        FastSerdeLogicalTypesTest1 .put(4, arrayOfDates0);
+        fastSerdeLogicalTypesTest10 .put(4, arrayOfDates0);
     }
 
-    private void populate_FastSerdeLogicalTypesTest12(com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesTest1 FastSerdeLogicalTypesTest1, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_FastSerdeLogicalTypesTest12(FastSerdeLogicalTypesTest1 fastSerdeLogicalTypesTest10, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex3 = (decoder.readIndex());
         if (unionIndex3 == 0) {
             ByteBuffer byteBuffer0;
-            Object oldBytes0 = FastSerdeLogicalTypesTest1 .get(5);
+            Object oldBytes0 = fastSerdeLogicalTypesTest10 .get(5);
             if (oldBytes0 instanceof ByteBuffer) {
                 byteBuffer0 = (decoder).readBytes(((ByteBuffer) oldBytes0));
             } else {
                 byteBuffer0 = (decoder).readBytes((null));
             }
             BigDecimal convertedValue7 = ((BigDecimal) Conversions.convertToLogicalType(byteBuffer0, this.logicalTypeSchema_120893213, this.logicalTypeSchema_120893213 .getLogicalType(), this.conversion_decimal));
-            FastSerdeLogicalTypesTest1 .put(5, convertedValue7);
+            fastSerdeLogicalTypesTest10 .put(5, convertedValue7);
         } else {
             if (unionIndex3 == 1) {
                 LocalDate convertedValue8 = ((LocalDate) Conversions.convertToLogicalType((decoder.readInt()), this.logicalTypeSchema__59052268, this.logicalTypeSchema__59052268 .getLogicalType(), this.conversion_date));
-                FastSerdeLogicalTypesTest1 .put(5, convertedValue8);
+                fastSerdeLogicalTypesTest10 .put(5, convertedValue8);
             } else {
                 throw new RuntimeException(("Illegal union index for 'unionOfDecimalOrDate': "+ unionIndex3));
             }
         }
         Utf8 charSequence0;
-        Object oldString0 = FastSerdeLogicalTypesTest1 .get(6);
+        Object oldString0 = fastSerdeLogicalTypesTest10 .get(6);
         if (oldString0 instanceof Utf8) {
             charSequence0 = (decoder).readString(((Utf8) oldString0));
         } else {
             charSequence0 = (decoder).readString(null);
         }
         UUID convertedValue9 = ((UUID) Conversions.convertToLogicalType(charSequence0, this.logicalTypeSchema__1245572876, this.logicalTypeSchema__1245572876 .getLogicalType(), this.conversion_uuid));
-        FastSerdeLogicalTypesTest1 .put(6, convertedValue9);
+        fastSerdeLogicalTypesTest10 .put(6, convertedValue9);
     }
 
-    private void populate_FastSerdeLogicalTypesTest13(com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesTest1 FastSerdeLogicalTypesTest1, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_FastSerdeLogicalTypesTest13(FastSerdeLogicalTypesTest1 fastSerdeLogicalTypesTest10, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         Instant convertedValue10 = ((Instant) Conversions.convertToLogicalType((decoder.readLong()), this.logicalTypeSchema_1074306973, this.logicalTypeSchema_1074306973 .getLogicalType(), this.conversion_timestamp_millis));
-        FastSerdeLogicalTypesTest1 .put(7, convertedValue10);
+        fastSerdeLogicalTypesTest10 .put(7, convertedValue10);
         Instant convertedValue11 = ((Instant) Conversions.convertToLogicalType((decoder.readLong()), this.logicalTypeSchema__1252781617, this.logicalTypeSchema__1252781617 .getLogicalType(), this.conversion_timestamp_micros));
-        FastSerdeLogicalTypesTest1 .put(8, convertedValue11);
+        fastSerdeLogicalTypesTest10 .put(8, convertedValue11);
     }
 
-    private void populate_FastSerdeLogicalTypesTest14(com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesTest1 FastSerdeLogicalTypesTest1, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_FastSerdeLogicalTypesTest14(FastSerdeLogicalTypesTest1 fastSerdeLogicalTypesTest10, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         LocalTime convertedValue12 = ((LocalTime) Conversions.convertToLogicalType((decoder.readInt()), this.logicalTypeSchema__419105534, this.logicalTypeSchema__419105534 .getLogicalType(), this.conversion_time_millis));
-        FastSerdeLogicalTypesTest1 .put(9, convertedValue12);
+        fastSerdeLogicalTypesTest10 .put(9, convertedValue12);
         LocalTime convertedValue13 = ((LocalTime) Conversions.convertToLogicalType((decoder.readLong()), this.logicalTypeSchema__1515894331, this.logicalTypeSchema__1515894331 .getLogicalType(), this.conversion_time_micros));
-        FastSerdeLogicalTypesTest1 .put(10, convertedValue13);
+        fastSerdeLogicalTypesTest10 .put(10, convertedValue13);
     }
 
-    private void populate_FastSerdeLogicalTypesTest15(com.linkedin.avro.fastserde.generated.avro.FastSerdeLogicalTypesTest1 FastSerdeLogicalTypesTest1, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_FastSerdeLogicalTypesTest15(FastSerdeLogicalTypesTest1 fastSerdeLogicalTypesTest10, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         LocalDate convertedValue14 = ((LocalDate) Conversions.convertToLogicalType((decoder.readInt()), this.logicalTypeSchema__59052268, this.logicalTypeSchema__59052268 .getLogicalType(), this.conversion_date));
-        FastSerdeLogicalTypesTest1 .put(11, convertedValue14);
-        FastSerdeLogicalTypesTest1 .put(12, deserializeLocalTimestampRecord0(FastSerdeLogicalTypesTest1 .get(12), (decoder), (customization)));
+        fastSerdeLogicalTypesTest10 .put(11, convertedValue14);
+        fastSerdeLogicalTypesTest10 .put(12, deserializeLocalTimestampRecord0(fastSerdeLogicalTypesTest10 .get(12), (decoder), (customization)));
     }
 
-    public com.linkedin.avro.fastserde.generated.avro.LocalTimestampRecord deserializeLocalTimestampRecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
+    public LocalTimestampRecord deserializeLocalTimestampRecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        com.linkedin.avro.fastserde.generated.avro.LocalTimestampRecord LocalTimestampRecord;
+        LocalTimestampRecord localTimestampRecord0;
         if ((reuse)!= null) {
-            LocalTimestampRecord = ((com.linkedin.avro.fastserde.generated.avro.LocalTimestampRecord)(reuse));
+            localTimestampRecord0 = ((LocalTimestampRecord)(reuse));
         } else {
-            LocalTimestampRecord = new com.linkedin.avro.fastserde.generated.avro.LocalTimestampRecord();
+            localTimestampRecord0 = new LocalTimestampRecord();
         }
         LocalDateTime convertedValue15 = ((LocalDateTime) Conversions.convertToLogicalType((decoder.readLong()), this.logicalTypeSchema__250645780, this.logicalTypeSchema__250645780 .getLogicalType(), this.conversion_local_timestamp_millis));
-        LocalTimestampRecord.put(0, convertedValue15);
-        populate_LocalTimestampRecord0((LocalTimestampRecord), (customization), (decoder));
-        populate_LocalTimestampRecord1((LocalTimestampRecord), (customization), (decoder));
-        return LocalTimestampRecord;
+        localTimestampRecord0 .put(0, convertedValue15);
+        populate_LocalTimestampRecord0((localTimestampRecord0), (customization), (decoder));
+        populate_LocalTimestampRecord1((localTimestampRecord0), (customization), (decoder));
+        return localTimestampRecord0;
     }
 
-    private void populate_LocalTimestampRecord0(com.linkedin.avro.fastserde.generated.avro.LocalTimestampRecord LocalTimestampRecord, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_LocalTimestampRecord0(LocalTimestampRecord localTimestampRecord0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex4 = (decoder.readIndex());
         if (unionIndex4 == 0) {
             decoder.readNull();
-            LocalTimestampRecord.put(1, null);
+            localTimestampRecord0 .put(1, null);
         } else {
             if (unionIndex4 == 1) {
                 LocalDateTime convertedValue16 = ((LocalDateTime) Conversions.convertToLogicalType((decoder.readLong()), this.logicalTypeSchema__250645780, this.logicalTypeSchema__250645780 .getLogicalType(), this.conversion_local_timestamp_millis));
-                LocalTimestampRecord.put(1, convertedValue16);
+                localTimestampRecord0 .put(1, convertedValue16);
             } else {
                 throw new RuntimeException(("Illegal union index for 'nullableNestedTimestamp': "+ unionIndex4));
             }
@@ -299,15 +301,15 @@ public class FastSerdeLogicalTypesTest1_SpecificDeserializer_1007574890_10075748
         int unionIndex5 = (decoder.readIndex());
         if (unionIndex5 == 0) {
             decoder.readNull();
-            LocalTimestampRecord.put(2, null);
+            localTimestampRecord0 .put(2, null);
         } else {
             if (unionIndex5 == 1) {
                 LocalDate convertedValue17 = ((LocalDate) Conversions.convertToLogicalType((decoder.readInt()), this.logicalTypeSchema__59052268, this.logicalTypeSchema__59052268 .getLogicalType(), this.conversion_date));
-                LocalTimestampRecord.put(2, convertedValue17);
+                localTimestampRecord0 .put(2, convertedValue17);
             } else {
                 if (unionIndex5 == 2) {
                     LocalDateTime convertedValue18 = ((LocalDateTime) Conversions.convertToLogicalType((decoder.readLong()), this.logicalTypeSchema__250645780, this.logicalTypeSchema__250645780 .getLogicalType(), this.conversion_local_timestamp_millis));
-                    LocalTimestampRecord.put(2, convertedValue18);
+                    localTimestampRecord0 .put(2, convertedValue18);
                 } else {
                     throw new RuntimeException(("Illegal union index for 'nullableUnionOfDateAndLocalTimestamp': "+ unionIndex5));
                 }
@@ -315,17 +317,17 @@ public class FastSerdeLogicalTypesTest1_SpecificDeserializer_1007574890_10075748
         }
     }
 
-    private void populate_LocalTimestampRecord1(com.linkedin.avro.fastserde.generated.avro.LocalTimestampRecord LocalTimestampRecord, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_LocalTimestampRecord1(LocalTimestampRecord localTimestampRecord0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         int unionIndex6 = (decoder.readIndex());
         if (unionIndex6 == 0) {
             LocalDate convertedValue19 = ((LocalDate) Conversions.convertToLogicalType((decoder.readInt()), this.logicalTypeSchema__59052268, this.logicalTypeSchema__59052268 .getLogicalType(), this.conversion_date));
-            LocalTimestampRecord.put(3, convertedValue19);
+            localTimestampRecord0 .put(3, convertedValue19);
         } else {
             if (unionIndex6 == 1) {
                 LocalDateTime convertedValue20 = ((LocalDateTime) Conversions.convertToLogicalType((decoder.readLong()), this.logicalTypeSchema__250645780, this.logicalTypeSchema__250645780 .getLogicalType(), this.conversion_local_timestamp_millis));
-                LocalTimestampRecord.put(3, convertedValue20);
+                localTimestampRecord0 .put(3, convertedValue20);
             } else {
                 throw new RuntimeException(("Illegal union index for 'unionOfDateAndLocalTimestamp': "+ unionIndex6));
             }

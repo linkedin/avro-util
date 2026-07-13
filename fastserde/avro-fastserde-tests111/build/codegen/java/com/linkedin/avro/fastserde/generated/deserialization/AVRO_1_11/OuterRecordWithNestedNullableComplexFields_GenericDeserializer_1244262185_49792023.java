@@ -43,44 +43,44 @@ public class OuterRecordWithNestedNullableComplexFields_GenericDeserializer_1244
     public IndexedRecord deserializeOuterRecordWithNestedNullableComplexFields0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord OuterRecordWithNestedNullableComplexFields;
+        IndexedRecord outerRecordWithNestedNullableComplexFields0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
-            OuterRecordWithNestedNullableComplexFields = ((IndexedRecord)(reuse));
+            outerRecordWithNestedNullableComplexFields0 = ((IndexedRecord)(reuse));
         } else {
-            OuterRecordWithNestedNullableComplexFields = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            outerRecordWithNestedNullableComplexFields0 = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
-        OuterRecordWithNestedNullableComplexFields.put(0, deserializeInnerRecordNullable0(OuterRecordWithNestedNullableComplexFields.get(0), (decoder), (customization)));
-        populate_OuterRecordWithNestedNullableComplexFields0((OuterRecordWithNestedNullableComplexFields), (customization), (decoder));
-        return OuterRecordWithNestedNullableComplexFields;
+        outerRecordWithNestedNullableComplexFields0 .put(0, deserializeInnerRecordNullable0(outerRecordWithNestedNullableComplexFields0 .get(0), (decoder), (customization)));
+        populate_OuterRecordWithNestedNullableComplexFields0((outerRecordWithNestedNullableComplexFields0), (customization), (decoder));
+        return outerRecordWithNestedNullableComplexFields0;
     }
 
     public IndexedRecord deserializeInnerRecordNullable0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord InnerRecordNullable;
+        IndexedRecord innerRecordNullable0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == innerRecordNullableRecordSchema0)) {
-            InnerRecordNullable = ((IndexedRecord)(reuse));
+            innerRecordNullable0 = ((IndexedRecord)(reuse));
         } else {
-            InnerRecordNullable = new org.apache.avro.generic.GenericData.Record(innerRecordNullableRecordSchema0);
+            innerRecordNullable0 = new org.apache.avro.generic.GenericData.Record(innerRecordNullableRecordSchema0);
         }
         Utf8 charSequence0;
-        Object oldString0 = InnerRecordNullable.get(0);
+        Object oldString0 = innerRecordNullable0 .get(0);
         if (oldString0 instanceof Utf8) {
             charSequence0 = (decoder).readString(((Utf8) oldString0));
         } else {
             charSequence0 = (decoder).readString(null);
         }
-        InnerRecordNullable.put(0, charSequence0);
-        return InnerRecordNullable;
+        innerRecordNullable0 .put(0, charSequence0);
+        return innerRecordNullable0;
     }
 
-    private void populate_OuterRecordWithNestedNullableComplexFields0(IndexedRecord OuterRecordWithNestedNullableComplexFields, DatumReaderCustomization customization, Decoder decoder)
+    private void populate_OuterRecordWithNestedNullableComplexFields0(IndexedRecord outerRecordWithNestedNullableComplexFields0, DatumReaderCustomization customization, Decoder decoder)
         throws IOException
     {
         Map<Utf8, Integer> innerMap1 = null;
         long chunkLen0 = (decoder.readMapStart());
         if (chunkLen0 > 0) {
-            innerMap1 = ((Map)(customization).getNewMapOverrideFunc().apply(OuterRecordWithNestedNullableComplexFields.get(1), ((int) chunkLen0)));
+            innerMap1 = ((Map)(customization).getNewMapOverrideFunc().apply(outerRecordWithNestedNullableComplexFields0 .get(1), ((int) chunkLen0)));
             do {
                 for (int counter0 = 0; (counter0 <chunkLen0); counter0 ++) {
                     Utf8 key0 = (decoder.readString(null));
@@ -89,12 +89,12 @@ public class OuterRecordWithNestedNullableComplexFields_GenericDeserializer_1244
                 chunkLen0 = (decoder.mapNext());
             } while (chunkLen0 > 0);
         } else {
-            innerMap1 = ((Map)(customization).getNewMapOverrideFunc().apply(OuterRecordWithNestedNullableComplexFields.get(1), 0));
+            innerMap1 = ((Map)(customization).getNewMapOverrideFunc().apply(outerRecordWithNestedNullableComplexFields0 .get(1), 0));
         }
-        OuterRecordWithNestedNullableComplexFields.put(1, innerMap1);
+        outerRecordWithNestedNullableComplexFields0 .put(1, innerMap1);
         PrimitiveIntList innerArray1 = null;
         long chunkLen1 = (decoder.readArrayStart());
-        Object oldArray0 = OuterRecordWithNestedNullableComplexFields.get(2);
+        Object oldArray0 = outerRecordWithNestedNullableComplexFields0 .get(2);
         if (oldArray0 instanceof PrimitiveIntList) {
             innerArray1 = ((PrimitiveIntList) oldArray0);
             innerArray1 .clear();
@@ -107,7 +107,7 @@ public class OuterRecordWithNestedNullableComplexFields_GenericDeserializer_1244
             }
             chunkLen1 = (decoder.arrayNext());
         }
-        OuterRecordWithNestedNullableComplexFields.put(2, innerArray1);
+        outerRecordWithNestedNullableComplexFields0 .put(2, innerArray1);
     }
 
 }

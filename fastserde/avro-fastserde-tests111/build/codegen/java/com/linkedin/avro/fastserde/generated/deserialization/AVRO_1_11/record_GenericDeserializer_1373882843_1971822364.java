@@ -27,19 +27,19 @@ public class record_GenericDeserializer_1373882843_1971822364
     public IndexedRecord deserializerecord0(Object reuse, Decoder decoder, DatumReaderCustomization customization)
         throws IOException
     {
-        IndexedRecord record;
+        IndexedRecord record0;
         if ((((reuse)!= null)&&((reuse) instanceof IndexedRecord))&&(((IndexedRecord)(reuse)).getSchema() == readerSchema)) {
-            record = ((IndexedRecord)(reuse));
+            record0 = ((IndexedRecord)(reuse));
         } else {
-            record = new org.apache.avro.generic.GenericData.Record(readerSchema);
+            record0 = new org.apache.avro.generic.GenericData.Record(readerSchema);
         }
         int unionIndex0 = (decoder.readIndex());
         if (unionIndex0 == 0) {
-            record.put(0, (decoder.readInt()));
+            record0 .put(0, (decoder.readInt()));
         } else {
             throw new RuntimeException(("Illegal union index for 'someInt': "+ unionIndex0));
         }
-        return record;
+        return record0;
     }
 
 }
