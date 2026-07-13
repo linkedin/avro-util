@@ -68,7 +68,7 @@ public abstract class FastSerdeBase<T extends GenericData> {
   public FastSerdeBase(String description, boolean useGenericTypes, Class defaultStringClass, File destination, ClassLoader classLoader,
       String compileClassPath, T modelData, boolean isForSerializer) {
     this.useGenericTypes = useGenericTypes;
-    this.schemaAssistant = new SchemaAssistant<>(codeModel, useGenericTypes, defaultStringClass, modelData, isForSerializer);
+    this.schemaAssistant = new SchemaAssistant<>(codeModel, useGenericTypes, defaultStringClass, modelData, isForSerializer, classLoader);
     this.destination = destination;
     this.classLoader = classLoader;
     this.compileClassPath = (null == compileClassPath ? "" : compileClassPath);
