@@ -196,7 +196,7 @@ public class SpecificRecordClassGenerator {
 
     //add class-level doc from schema doc
     //file-level (top of file) comment is added to the file object later
-    String doc = enumSchema.getDoc();
+    String doc = sanitizeDocForJavadoc(enumSchema.getDoc());
     if (doc != null && !doc.isEmpty()) {
       classBuilder.addJavadoc(doc);
     }
@@ -241,7 +241,7 @@ public class SpecificRecordClassGenerator {
 
     //add class-level doc from schema doc
     //file-level (top of file) comment is added to the file object later
-    String doc = fixedSchema.getDoc();
+    String doc = sanitizeDocForJavadoc(fixedSchema.getDoc());
     if (doc != null && !doc.isEmpty()) {
       classBuilder.addJavadoc(doc);
     }
@@ -360,9 +360,8 @@ public class SpecificRecordClassGenerator {
 
     //add class-level doc from schema doc
     //file-level (top of file) comment is added to the file object later
-    String doc = recordSchema.getDoc();
+    String doc = sanitizeDocForJavadoc(recordSchema.getDoc());
     if (doc != null && !doc.isEmpty()) {
-      doc = replaceSingleDollarSignWithDouble(doc);
       classBuilder.addJavadoc(doc);
     }
 
@@ -617,6 +616,31 @@ public class SpecificRecordClassGenerator {
     return str;
   }
 
+  /**
+   * Sanitizes a schema doc string for safe use in Javadoc comments.
+   *
+   * <p>Two escaping steps are applied:
+   * <ol>
+   *   <li>{@code $} to {@code $$}: prevents JavaPoet from interpreting the string as a format
+   *       specifier, which would produce malformed or injected source code.</li>
+   *   <li>{@code *}{@code /} replaced with {@code * /}: prevents a doc string from prematurely
+   *       closing the surrounding Javadoc block comment, which would allow arbitrary Java code to
+   *       be injected after the comment close. This mirrors the escaping applied by
+   *       {@code org.apache.avro.compiler.specific.SpecificCompiler#escapeForJavadoc} to address
+   *       CVE-2024-47561.</li>
+   * </ol>
+   */
+  private String sanitizeDocForJavadoc(String doc) {
+    if (doc == null || doc.isEmpty()) {
+      return doc;
+    }
+    // Escape JavaPoet format specifiers ($)
+    doc = replaceSingleDollarSignWithDouble(doc);
+    // Escape */ to prevent Javadoc block comment injection (CVE-2024-47561 analog)
+    doc = doc.replace("*/", "* /");
+    return doc;
+  }
+
   private void populateBuilderClassBuilder(TypeSpec.Builder recordBuilder, AvroRecordSchema recordSchema,
       SpecificRecordGenerationConfig config) throws ClassNotFoundException {
     recordBuilder.superclass(ClassName.get(CompatibleSpecificRecordBuilderBase.class));
@@ -730,7 +754,7 @@ public class SpecificRecordClassGenerator {
         }
       }
       if (field.hasDoc()) {
-        fieldBuilder.addJavadoc(replaceSingleDollarSignWithDouble(field.getDoc()));
+        fieldBuilder.addJavadoc(sanitizeDocForJavadoc(field.getDoc()));
       }
       recordBuilder.addField(fieldBuilder.build());
 

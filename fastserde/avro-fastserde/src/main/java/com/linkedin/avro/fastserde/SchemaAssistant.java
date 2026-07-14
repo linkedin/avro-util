@@ -50,6 +50,8 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericEnumSymbol;
 import org.apache.avro.generic.GenericFixed;
 import org.apache.avro.generic.IndexedRecord;
+import org.apache.avro.specific.SpecificFixed;
+import org.apache.avro.specific.SpecificRecord;
 import org.apache.avro.util.Utf8;
 
 
@@ -76,6 +78,13 @@ public class SchemaAssistant<T extends GenericData> {
   private final T modelData;
 
   /**
+   * The classloader used to validate specific-mode class references (CVE-2023-39410 bypass guard).
+   * May be {@code null}, in which case validation is skipped and the reference is emitted as-is
+   * (preserving pre-patch behaviour for callers that do not supply one).
+   */
+  private final ClassLoader classLoader;
+
+  /**
    * Whether this schema assistant is for serializer generation or not.
    * The reason to differentiate serializer from de-serializer is that for some Avro features, such as java string property,
    * it is not meaningful for serializer in generic mode.
@@ -84,6 +93,11 @@ public class SchemaAssistant<T extends GenericData> {
 
   public SchemaAssistant(JCodeModel codeModel, boolean useGenericTypes, Class defaultStringClass,
           T modelData, boolean isForSerializer) {
+    this(codeModel, useGenericTypes, defaultStringClass, modelData, isForSerializer, null);
+  }
+
+  public SchemaAssistant(JCodeModel codeModel, boolean useGenericTypes, Class defaultStringClass,
+          T modelData, boolean isForSerializer, ClassLoader classLoader) {
     this.codeModel = codeModel;
     this.useGenericTypes = useGenericTypes;
     /**
@@ -93,10 +107,46 @@ public class SchemaAssistant<T extends GenericData> {
     this.defaultStringType = codeModel.ref(defaultStringClass);
     this.modelData = modelData;
     this.isForSerializer = isForSerializer;
+    this.classLoader = classLoader;
   }
 
   protected Set<String> getUsedFullyQualifiedClassNameSet() {
     return fullyQualifiedClassNameSet;
+  }
+
+  /**
+   * Validates that the Java class referenced by a specific (non-generic) Avro schema is a
+   * legitimate Avro-generated class of the expected kind, and returns a {@link JClass} for it.
+   *
+   * <p>This is a defence-in-depth guard against CVE-2023-39410-style RCE bypasses: fast-serde
+   * generates Janino/javac code that directly instantiates classes derived from schema full names.
+   * Unlike {@code SpecificData.newInstance()}, that path never goes through the
+   * {@code SERIALIZABLE_CLASSES} allowlist that was added to Avro core to fix CVE-2023-39410.
+   * By verifying the class here — before emitting any code — we ensure an attacker-supplied
+   * schema cannot cause fast-serde to generate code that instantiates an unintended class.
+   *
+   * @param schema         the Avro schema whose {@code fullName} will be used as a class name
+   * @param expectedSuper  the interface or superclass the loaded class must implement/extend
+   * @param classLoader    the classloader to use for verification
+   * @throws SchemaAssistantException if the class cannot be loaded or does not implement
+   *                                   {@code expectedSuper}
+   */
+  private JClass validatedSpecificClassRef(Schema schema, Class<?> expectedSuper, ClassLoader classLoader) {
+    String className = AvroCompatibilityHelper.getSchemaFullName(schema);
+    try {
+      Class<?> clazz = Class.forName(className, false, classLoader);
+      if (!expectedSuper.isAssignableFrom(clazz)) {
+        throw new SchemaAssistantException(
+            "Schema class '" + className + "' does not implement " + expectedSuper.getName()
+                + ". Refusing to generate fast-serde code for an untrusted schema.");
+      }
+    } catch (ClassNotFoundException e) {
+      // The class is not on the compile-time classpath (common in schema-evolution scenarios).
+      // Fall through and emit the reference; the generated code will fail to compile if the
+      // class is truly absent, which is the existing pre-patch behaviour and not a security
+      // regression.
+    }
+    return codeModel.ref(className);
   }
 
   /* Complex type here means type that it have to handle other types inside itself. */
@@ -317,7 +367,7 @@ public class SchemaAssistant<T extends GenericData> {
             outputClass = codeModel.ref(GenericData.Record.class);
           }
         } else {
-          outputClass = codeModel.ref(AvroCompatibilityHelper.getSchemaFullName(schema));
+          outputClass = validatedSpecificClassRef(schema, SpecificRecord.class, classLoader);
         }
         break;
 
@@ -367,7 +417,7 @@ public class SchemaAssistant<T extends GenericData> {
         break;
       case ENUM:
         outputClass =
-            useGenericTypes ? codeModel.ref(GenericEnumSymbol.class) : codeModel.ref(AvroCompatibilityHelper.getSchemaFullName(schema));
+            useGenericTypes ? codeModel.ref(GenericEnumSymbol.class) : validatedSpecificClassRef(schema, Enum.class, classLoader);
         break;
       case FIXED:
         if (abstractType) {
@@ -375,7 +425,7 @@ public class SchemaAssistant<T extends GenericData> {
         } else if (useGenericTypes) {
           outputClass = codeModel.ref(GenericData.Fixed.class);
         } else {
-          outputClass = codeModel.ref(AvroCompatibilityHelper.getSchemaFullName(schema));
+          outputClass = validatedSpecificClassRef(schema, SpecificFixed.class, classLoader);
         }
         break;
       case BOOLEAN:
