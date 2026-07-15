@@ -108,6 +108,9 @@ public class FieldBuilder17 implements FieldBuilder {
 
   @Override
   public Schema.Field build() {
+    if (_schema == null) {
+      throw new IllegalStateException("schema not set");
+    }
     Schema.Field result = new Schema.Field(_name, _schema, _doc, _defaultVal, _order);
     if (_props != null) {
       Avro17Utils.setProps(result, _props);

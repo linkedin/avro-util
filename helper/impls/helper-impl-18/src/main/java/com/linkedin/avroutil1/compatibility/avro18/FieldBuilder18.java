@@ -111,6 +111,9 @@ public class FieldBuilder18 implements FieldBuilder {
 
   @Override
   public Schema.Field build() {
+    if (_schema == null) {
+      throw new IllegalStateException("schema not set");
+    }
     @SuppressWarnings("deprecation") //deprecated but faster
     Schema.Field result = new Schema.Field(_name, _schema, _doc, _defaultVal, _order);
     if (_props != null) {

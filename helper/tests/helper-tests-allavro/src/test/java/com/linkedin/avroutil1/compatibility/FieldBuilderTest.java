@@ -110,6 +110,16 @@ public class FieldBuilderTest {
         }
     }
 
+    @Test
+    public void testBuildFailsOnNullSchema() throws Exception {
+        try {
+            AvroCompatibilityHelper.newField(null).setName("noSchema").build();
+            Assert.fail("expected an exception");
+        } catch (IllegalStateException expected) {
+            // pass - schema is required for a field to be built
+        }
+    }
+
     private void setDefaultValues(Schema.Field field) {
         Assert.assertTrue(AvroCompatibilityHelper.fieldHasDefault(field));
         Schema fieldSchema = field.schema();
