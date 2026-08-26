@@ -940,7 +940,7 @@ public class SpecificRecordClassGenerator {
   }
 
   private String getFieldJavaDoc(AvroSchemaField field) {
-    return (field.hasDoc() ? "\n" + replaceSingleDollarSignWithDouble(field.getDoc()) + "\n" : "\n");
+    return (field.hasDoc() ? "\n" + sanitizeDocForJavadoc(field.getDoc()) + "\n" : "\n");
   }
 
   private String getSuffixForFieldName(String fieldName) {
