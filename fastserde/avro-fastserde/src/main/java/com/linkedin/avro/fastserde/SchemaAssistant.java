@@ -584,7 +584,7 @@ public class SchemaAssistant<T extends GenericData> {
         return JExpr._new(codeModel.ref(GenericData.EnumSymbol.class)).arg(getSchemaExpr).arg(nameExpr);
       }
     } else {
-      return codeModel.ref(AvroCompatibilityHelper.getSchemaFullName(enumSchema)).staticInvoke("valueOf").arg(nameExpr);
+      return validatedSpecificClassRef(enumSchema, Enum.class, classLoader).staticInvoke("valueOf").arg(nameExpr);
     }
   }
 
@@ -603,14 +603,14 @@ public class SchemaAssistant<T extends GenericData> {
             .arg(getSchemaExpr.invoke("getEnumSymbols").invoke("get").arg(indexExpr));
       }
     } else {
-      JClass enumClass = codeModel.ref(AvroCompatibilityHelper.getSchemaFullName(enumSchema));
+      JClass enumClass = validatedSpecificClassRef(enumSchema, Enum.class, classLoader);
       return codeModel.ref(Enums.class).staticInvoke("getConstant").arg(enumClass.dotclass()).arg(indexExpr);
     }
   }
 
   public JExpression getFixedValue(Schema schema, JExpression fixedBytesExpr, JInvocation getSchemaExpr) {
     if (!useGenericTypes) {
-      return JExpr._new(codeModel.ref(AvroCompatibilityHelper.getSchemaFullName(schema))).arg(fixedBytesExpr);
+      return JExpr._new(validatedSpecificClassRef(schema, SpecificFixed.class, classLoader)).arg(fixedBytesExpr);
     } else {
       return JExpr._new(codeModel.ref(GenericData.Fixed.class)).arg(getSchemaExpr).arg(fixedBytesExpr);
     }
