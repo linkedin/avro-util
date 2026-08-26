@@ -225,8 +225,8 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
         break;
       default:
         final Schema primitiveFieldSchema;
-        if (action.getShouldRead() && readerSchema != null && Schema.Type.STRING.equals(readerSchema.getType())) {
-          // to preserve reader-specific options use reader field schema
+        if (action.getShouldRead() && readerSchema != null && !Schema.Type.UNION.equals(readerSchema.getType())) {
+          // preserve reader-specific options/promotions, but avoid forwarding a union schema
           primitiveFieldSchema = readerSchema;
         } else {
           primitiveFieldSchema = schema;
@@ -630,7 +630,16 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
 
     // Check if unionReaderSchema is really a union, if not then only the compatible writer union type can be deserialized
     final boolean readerSchemaNotAUnion = unionReaderSchema != null && !Schema.Type.UNION.equals(unionReaderSchema.getType());
-    final int compatibleWriterSchema = readerSchemaNotAUnion ? schemaAssistant.compatibleUnionSchemaIndex(unionReaderSchema, unionSchema) : -1;
+    int compatibleWriterSchema = -1;
+    if (readerSchemaNotAUnion) {
+      for (int i = 0; i < unionSchema.getTypes().size(); i++) {
+        Schema optionSchema = unionSchema.getTypes().get(i);
+        if (schemaAssistant.areTypesCompatible(optionSchema, unionReaderSchema)) {
+          compatibleWriterSchema = i;
+          break;
+        }
+      }
+    }
 
     for (int i = 0; i < unionSchema.getTypes().size(); i++) {
       Schema optionSchema = unionSchema.getTypes().get(i);
@@ -658,16 +667,12 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
             readerOptionSchema = (i == compatibleWriterSchema) ? unionReaderSchema : null;
         } else {
           // The reader's union could be re-ordered, so we need to find the one that matches.
-          // TODO: this code should support primitive type promotions
-          for (int j = 0; j < unionReaderSchema.getTypes().size(); j++) {
-            Schema potentialReaderSchema = unionReaderSchema.getTypes().get(j);
-            // Avro allows unnamed types to appear only once in a union, but named types may appear multiple times and
-            // thus need to be disambiguated via their full-name (including aliases).
-            if (schemaAssistant.areTypesCompatible(potentialReaderSchema, optionSchema)) {
-              readerOptionSchema = potentialReaderSchema;
-              readerOptionUnionBranchIndex = j;
-              break;
-            }
+          try {
+            readerOptionUnionBranchIndex = schemaAssistant.compatibleUnionSchemaIndex(optionSchema, unionReaderSchema);
+            readerOptionSchema = unionReaderSchema.getTypes().get(readerOptionUnionBranchIndex);
+          } catch (SchemaAssistantException e) {
+            // no compatible branch - readerOptionSchema stays null, and AvroTypeException
+            // is thrown below
           }
         }
 
@@ -698,17 +703,17 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
 
         if (readerSchemaNotAUnion) {
           unionAction =
-                  FieldAction.fromValues(optionSchema.getType(), action.getShouldRead(), alternative.symbols[compatibleWriterSchema]);
+                  FieldAction.fromValues(readerOptionSchema.getType(), action.getShouldRead(), alternative.symbols[compatibleWriterSchema]);
         } else {
           Symbol.UnionAdjustAction unionAdjustAction = (Symbol.UnionAdjustAction) alternative.symbols[i].production[0];
           //For maps and arrays, our processMap and processArray logic expect the map-end symbol whose production contains the maps values
           //We go from Symbol A(production = [map-start, map-end]) to Symbol map-end
           if(optionSchema.getType().equals(Schema.Type.MAP) || optionSchema.getType().equals(Schema.Type.ARRAY)){
             unionAction =
-                    FieldAction.fromValues(optionSchema.getType(), action.getShouldRead(), unionAdjustAction.symToParse.production[0]);
+                    FieldAction.fromValues(readerOptionSchema.getType(), action.getShouldRead(), unionAdjustAction.symToParse.production[0]);
           } else {
             unionAction =
-                    FieldAction.fromValues(optionSchema.getType(), action.getShouldRead(), unionAdjustAction.symToParse);
+                    FieldAction.fromValues(readerOptionSchema.getType(), action.getShouldRead(), unionAdjustAction.symToParse);
           }
         }
 

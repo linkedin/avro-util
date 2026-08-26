@@ -902,6 +902,28 @@ public class FastGenericDeserializerGeneratorTest {
   }
 
   @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldPromoteNullableIntUnionToNullableLongUnion(Implementation implementation) {
+    // given
+    Schema writerSchema = createRecord(
+        createPrimitiveUnionFieldSchema("test", Schema.Type.INT));
+    Schema readerSchema = createRecord(
+        createPrimitiveUnionFieldSchema("test", Schema.Type.LONG));
+
+    GenericData.Record recordWithInt = new GenericData.Record(writerSchema);
+    recordWithInt.put("test", 1);
+    GenericData.Record recordWithNull = new GenericData.Record(writerSchema);
+    recordWithNull.put("test", null);
+
+    // when
+    GenericRecord intRecord = implementation.decode(writerSchema, readerSchema, genericDataAsDecoder(recordWithInt));
+    GenericRecord nullRecord = implementation.decode(writerSchema, readerSchema, genericDataAsDecoder(recordWithNull));
+
+    // then
+    Assert.assertEquals(intRecord.get("test"), 1L);
+    Assert.assertNull(nullRecord.get("test"));
+  }
+
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
   public void shouldTolerateUnionReorderingWithNonString(Implementation implementation) {
     // given
     Schema record1Schema = createRecord(

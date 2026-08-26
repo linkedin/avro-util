@@ -624,11 +624,16 @@ public class SchemaAssistant<T extends GenericData> {
     }
   }
 
-  // TODO: this code should support primitive type promotions
   public int compatibleUnionSchemaIndex(Schema schema, Schema unionSchema) {
     for (int i = 0; i < unionSchema.getTypes().size(); i++) {
       Schema potentialCompatibleSchema = unionSchema.getTypes().get(i);
-      if (areTypesCompatible(schema, potentialCompatibleSchema)) {
+      if (areTypesExactlyCompatible(schema, potentialCompatibleSchema)) {
+        return i;
+      }
+    }
+    for (int i = 0; i < unionSchema.getTypes().size(); i++) {
+      Schema potentialCompatibleSchema = unionSchema.getTypes().get(i);
+      if (isTypePromotable(schema, potentialCompatibleSchema)) {
         return i;
       }
     }
@@ -640,6 +645,11 @@ public class SchemaAssistant<T extends GenericData> {
   }
 
   public boolean areTypesCompatible(Schema schema, Schema potentialCompatibleSchema){
+    return areTypesExactlyCompatible(schema, potentialCompatibleSchema)
+        || isTypePromotable(schema, potentialCompatibleSchema);
+  }
+
+  private boolean areTypesExactlyCompatible(Schema schema, Schema potentialCompatibleSchema) {
     if(!potentialCompatibleSchema.getType().equals(schema.getType())) {
       return false;
     }
@@ -654,5 +664,25 @@ public class SchemaAssistant<T extends GenericData> {
     // Other avro versions (impl for all, spec for 1.9+) use unqualified name to compare named types (e.g. "test" instead of "com.test.test").
     return potentialCompatibleSchema.getName().equals(schema.getName()) ||
         potentialCompatibleSchema.getAliases().contains(AvroCompatibilityHelper.getSchemaFullName(schema));
+  }
+
+  private boolean isTypePromotable(Schema schema, Schema potentialCompatibleSchema) {
+    switch (schema.getType()) {
+      case INT:
+        return Schema.Type.LONG.equals(potentialCompatibleSchema.getType())
+            || Schema.Type.FLOAT.equals(potentialCompatibleSchema.getType())
+            || Schema.Type.DOUBLE.equals(potentialCompatibleSchema.getType());
+      case LONG:
+        return Schema.Type.FLOAT.equals(potentialCompatibleSchema.getType())
+            || Schema.Type.DOUBLE.equals(potentialCompatibleSchema.getType());
+      case FLOAT:
+        return Schema.Type.DOUBLE.equals(potentialCompatibleSchema.getType());
+      case STRING:
+        return Schema.Type.BYTES.equals(potentialCompatibleSchema.getType());
+      case BYTES:
+        return Schema.Type.STRING.equals(potentialCompatibleSchema.getType());
+      default:
+        return false;
+    }
   }
 }
