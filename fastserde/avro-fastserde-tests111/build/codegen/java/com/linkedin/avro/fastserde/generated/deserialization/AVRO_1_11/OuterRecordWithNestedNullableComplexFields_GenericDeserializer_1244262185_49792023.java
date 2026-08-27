@@ -17,12 +17,12 @@ public class OuterRecordWithNestedNullableComplexFields_GenericDeserializer_1244
 {
 
     private final Schema readerSchema;
-    private final Schema innerRecord0;
-    private final Schema innerRecordNullableRecordSchema0;
-    private final Schema innerMap0;
-    private final Schema innerMapMapSchema0;
-    private final Schema innerArray0;
-    private final Schema innerArrayArraySchema0;
+    private Schema innerRecord0;
+    private Schema innerRecordNullableRecordSchema0;
+    private Schema innerMap0;
+    private Schema innerMapMapSchema0;
+    private Schema innerArray0;
+    private Schema innerArrayArraySchema0;
 
     public OuterRecordWithNestedNullableComplexFields_GenericDeserializer_1244262185_49792023(Schema readerSchema) {
         this.readerSchema = readerSchema;

@@ -203,6 +203,48 @@ public class FastGenericDeserializerGeneratorTest {
     }
   }
 
+  @Test(groups = {"deserializationTest"}, dataProvider = "Implementation")
+  public void shouldBeAbleToReadVeryLargeSchemaWithDistinctRecordFields(Implementation implementation) {
+    // Each field is a union of [null, uniqueRecordType] where each record has multiple
+    // nullable sub-fields. This forces many distinct schema vars in the generated
+    // constructor, which can exceed JVM's 64KB method limit without constructor splitting.
+    int n = 1000;
+    int subFieldCount = 5;
+    Schema.Field[] fields = new Schema.Field[n];
+    GenericRecord[] innerRecords = new GenericRecord[n];
+    for (int i = 0; i < n; i++) {
+      List<Schema.Field> subFields = new ArrayList<>();
+      for (int j = 0; j < subFieldCount; j++) {
+        Schema subUnion = Schema.createUnion(Arrays.asList(
+            Schema.create(Schema.Type.NULL), Schema.create(Schema.Type.STRING)));
+        subFields.add(new Schema.Field("sub_" + j, subUnion, null, null));
+      }
+      Schema innerRecord = Schema.createRecord(
+          "InnerRecord_" + i, "", "com.linkedin.avro.fastserde.generated.avro", false);
+      innerRecord.setFields(subFields);
+      Schema unionSchema = Schema.createUnion(Arrays.asList(Schema.create(Schema.Type.NULL), innerRecord));
+      fields[i] = new Schema.Field("F" + i, unionSchema, null, null);
+      innerRecords[i] = new GenericData.Record(innerRecord);
+      for (int j = 0; j < subFieldCount; j++) {
+        innerRecords[i].put("sub_" + j, "val_" + i + "_" + j);
+      }
+    }
+    Schema recordSchema = createRecord("VeryLargeDistinctRecordSchema", fields);
+
+    GenericRecord record = new GenericData.Record(recordSchema);
+    for (int i = 0; i < n; i++) {
+      record.put("F" + i, innerRecords[i]);
+    }
+
+    GenericRecord decodedRecord = implementation.decode(recordSchema, recordSchema, genericDataAsDecoder(record));
+
+    for (int i = 0; i < n; i++) {
+      GenericRecord inner = (GenericRecord) decodedRecord.get("F" + i);
+      Assert.assertNotNull(inner);
+      Assert.assertEquals(new Utf8("val_" + i + "_0"), inner.get("sub_0"));
+    }
+  }
+
   public GenericData.Fixed newFixed(Schema fixedSchema, byte[] bytes) {
     GenericData.Fixed fixed = new GenericData.Fixed(fixedSchema);
     fixed.bytes(bytes);

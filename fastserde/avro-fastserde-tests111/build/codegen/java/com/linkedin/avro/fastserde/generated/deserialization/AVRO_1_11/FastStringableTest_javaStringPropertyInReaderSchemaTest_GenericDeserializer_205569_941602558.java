@@ -16,9 +16,9 @@ public class FastStringableTest_javaStringPropertyInReaderSchemaTest_GenericDese
 {
 
     private final Schema readerSchema;
-    private final Schema testUnionString0;
-    private final Schema testStringArray0;
-    private final Schema testStringMap0;
+    private Schema testUnionString0;
+    private Schema testStringArray0;
+    private Schema testStringMap0;
 
     public FastStringableTest_javaStringPropertyInReaderSchemaTest_GenericDeserializer_205569_941602558(Schema readerSchema) {
         this.readerSchema = readerSchema;

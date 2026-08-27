@@ -22,14 +22,14 @@ public class FastSerdeLogicalTypesDefined_GenericDeserializer_229156053_22915605
     private final org.apache.avro.data.TimeConversions.DateConversion conversion_date = new org.apache.avro.data.TimeConversions.DateConversion();
     private final org.apache.avro.data.TimeConversions.TimeMillisConversion conversion_time_millis = new org.apache.avro.data.TimeConversions.TimeMillisConversion();
     private final org.apache.avro.data.TimeConversions.TimestampMillisConversion conversion_timestamp_millis = new org.apache.avro.data.TimeConversions.TimestampMillisConversion();
-    private final Schema timeMillisField0;
+    private Schema timeMillisField0;
     private final Schema logicalTypeSchema__419105534 = Schema.parse("{\"type\":\"int\",\"logicalType\":\"time-millis\"}");
-    private final Schema dateField0;
+    private Schema dateField0;
     private final Schema logicalTypeSchema__59052268 = Schema.parse("{\"type\":\"int\",\"logicalType\":\"date\"}");
-    private final Schema arrayOfUnionOfDateAndTimestampMillis0;
-    private final Schema arrayOfUnionOfDateAndTimestampMillisArrayElemSchema0;
-    private final Schema arrayOfUnionOfDateAndTimestampMillisElemOptionSchema0;
-    private final Schema arrayOfUnionOfDateAndTimestampMillisElemOptionSchema1;
+    private Schema arrayOfUnionOfDateAndTimestampMillis0;
+    private Schema arrayOfUnionOfDateAndTimestampMillisArrayElemSchema0;
+    private Schema arrayOfUnionOfDateAndTimestampMillisElemOptionSchema0;
+    private Schema arrayOfUnionOfDateAndTimestampMillisElemOptionSchema1;
     private final Schema logicalTypeSchema_1074306973 = Schema.parse("{\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}");
 
     public FastSerdeLogicalTypesDefined_GenericDeserializer_229156053_229156053(Schema readerSchema) {

@@ -67,6 +67,8 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
 
   private static int FIELDS_PER_POPULATION_METHOD = 20;
 
+  private static int SCHEMA_VARS_PER_CONSTRUCTOR_METHOD = 500;
+
   // 65535 is the actual limit, 65K added for safety
   static int MAX_LENGTH_OF_STRING_LITERAL = 65000;
 
@@ -78,6 +80,9 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
   private static final Supplier<JExpression> EMPTY_SUPPLIER = JExpr::_null;
 
   private JMethod constructor;
+  private JBlock constructorBody;
+  private int schemaVarCount = 0;
+  private int constructorInitMethodCount = 0;
   private final Map<Integer, Schema> schemaMap = new HashMap<>();
   private final Map<Integer, JVar> schemaVarMap = new HashMap<>();
   private final Map<String, JMethod> deserializeMethodMap = new HashMap<>();
@@ -100,6 +105,7 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
       constructor = generatedClass.constructor(JMod.PUBLIC);
       JVar constructorParam = constructor.param(Schema.class, "readerSchema");
       constructor.body().assign(JExpr.refthis(readerSchemaVar.name()), constructorParam);
+      constructorBody = constructor.body();
       injectConversionClasses();
 
       Schema aliasedWriterSchema = writer;
@@ -1383,9 +1389,20 @@ public class FastDeserializerGenerator<T, U extends GenericData> extends FastDes
       if (schemaVar != null) {
         return schemaVar;
       } else {
-        schemaVar = generatedClass.field(JMod.PRIVATE | JMod.FINAL, Schema.class,
+        schemaVar = generatedClass.field(JMod.PRIVATE, Schema.class,
             getUniqueName(StringUtils.uncapitalize(variableName)));
-        constructor.body().assign(JExpr.refthis(schemaVar.name()), getValueType);
+
+        schemaVarCount++;
+        if (schemaVarCount % SCHEMA_VARS_PER_CONSTRUCTOR_METHOD == 0) {
+          JMethod initMethod = generatedClass.method(JMod.PRIVATE, codeModel.VOID,
+              getUniqueName("initSchemaFields_" + constructorInitMethodCount));
+          initMethod.param(Schema.class, "readerSchema");
+          constructorBody = initMethod.body();
+          constructor.body().invoke(initMethod).arg(JExpr.ref("readerSchema"));
+          constructorInitMethodCount++;
+        }
+
+        constructorBody.assign(JExpr.refthis(schemaVar.name()), getValueType);
 
         registerSchema(valueSchema, schemaId, schemaVar);
         return schemaVar;

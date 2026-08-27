@@ -15,8 +15,8 @@ public class FastSerdeLogicalTypesUndefined_GenericDeserializer_1982763418_19827
 {
 
     private final Schema readerSchema;
-    private final Schema arrayOfUnionOfDateAndTimestampMillis0;
-    private final Schema arrayOfUnionOfDateAndTimestampMillisArrayElemSchema0;
+    private Schema arrayOfUnionOfDateAndTimestampMillis0;
+    private Schema arrayOfUnionOfDateAndTimestampMillisArrayElemSchema0;
 
     public FastSerdeLogicalTypesUndefined_GenericDeserializer_1982763418_1982763418(Schema readerSchema) {
         this.readerSchema = readerSchema;

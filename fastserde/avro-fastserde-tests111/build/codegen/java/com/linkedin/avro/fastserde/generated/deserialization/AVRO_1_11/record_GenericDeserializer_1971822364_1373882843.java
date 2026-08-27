@@ -13,7 +13,7 @@ public class record_GenericDeserializer_1971822364_1373882843
 {
 
     private final Schema readerSchema;
-    private final Schema someInt0;
+    private Schema someInt0;
 
     public record_GenericDeserializer_1971822364_1373882843(Schema readerSchema) {
         this.readerSchema = readerSchema;

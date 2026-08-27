@@ -15,9 +15,9 @@ public class outerRecord_GenericDeserializer_1765134514_1765134514
 {
 
     private final Schema readerSchema;
-    private final Schema mapField0;
-    private final Schema mapFieldMapValueSchema0;
-    private final Schema internalMapField0;
+    private Schema mapField0;
+    private Schema mapFieldMapValueSchema0;
+    private Schema internalMapField0;
 
     public outerRecord_GenericDeserializer_1765134514_1765134514(Schema readerSchema) {
         this.readerSchema = readerSchema;

@@ -17,14 +17,14 @@ public class FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_Generic
 {
 
     private final Schema readerSchema;
-    private final Schema testNotRemoved0;
-    private final Schema testNotRemoved20;
-    private final Schema subRecord0;
-    private final Schema subRecordOptionSchema0;
-    private final Schema testNotRemoved1;
-    private final Schema testNotRemoved21;
-    private final Schema subRecordMap0;
-    private final Schema subRecordArray0;
+    private Schema testNotRemoved0;
+    private Schema testNotRemoved20;
+    private Schema subRecord0;
+    private Schema subRecordOptionSchema0;
+    private Schema testNotRemoved1;
+    private Schema testNotRemoved21;
+    private Schema subRecordMap0;
+    private Schema subRecordArray0;
 
     public FastGenericDeserializerGeneratorTest_shouldSkipRemovedField_GenericDeserializer_1830076637_292632696(Schema readerSchema) {
         this.readerSchema = readerSchema;

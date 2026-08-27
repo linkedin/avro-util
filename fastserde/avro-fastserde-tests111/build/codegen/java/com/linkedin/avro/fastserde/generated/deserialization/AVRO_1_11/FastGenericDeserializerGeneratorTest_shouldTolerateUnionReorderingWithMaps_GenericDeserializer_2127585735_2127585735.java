@@ -15,8 +15,8 @@ public class FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingW
 {
 
     private final Schema readerSchema;
-    private final Schema test0;
-    private final Schema testOptionSchema0;
+    private Schema test0;
+    private Schema testOptionSchema0;
 
     public FastGenericDeserializerGeneratorTest_shouldTolerateUnionReorderingWithMaps_GenericDeserializer_2127585735_2127585735(Schema readerSchema) {
         this.readerSchema = readerSchema;

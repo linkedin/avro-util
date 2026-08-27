@@ -15,13 +15,13 @@ public class FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDe
 {
 
     private final Schema readerSchema;
-    private final Schema testIntUnion0;
-    private final Schema testStringUnion0;
-    private final Schema testLongUnion0;
-    private final Schema testDoubleUnion0;
-    private final Schema testFloatUnion0;
-    private final Schema testBooleanUnion0;
-    private final Schema testBytesUnion0;
+    private Schema testIntUnion0;
+    private Schema testStringUnion0;
+    private Schema testLongUnion0;
+    private Schema testDoubleUnion0;
+    private Schema testFloatUnion0;
+    private Schema testBooleanUnion0;
+    private Schema testBytesUnion0;
 
     public FastGenericDeserializerGeneratorTest_shouldReadPrimitives_GenericDeserializer_1966544736_1966544736(Schema readerSchema) {
         this.readerSchema = readerSchema;

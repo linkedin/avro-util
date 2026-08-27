@@ -15,9 +15,9 @@ public class Map_of_UNION_GenericDeserializer_2140000109_2140000109
 {
 
     private final Schema readerSchema;
-    private final Schema mapMapValueSchema0;
-    private final Schema mapValueOptionSchema0;
-    private final Schema field0;
+    private Schema mapMapValueSchema0;
+    private Schema mapValueOptionSchema0;
+    private Schema field0;
 
     public Map_of_UNION_GenericDeserializer_2140000109_2140000109(Schema readerSchema) {
         this.readerSchema = readerSchema;

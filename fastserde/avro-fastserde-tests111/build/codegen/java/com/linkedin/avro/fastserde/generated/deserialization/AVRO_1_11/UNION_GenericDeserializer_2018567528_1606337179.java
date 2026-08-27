@@ -15,8 +15,8 @@ public class UNION_GenericDeserializer_2018567528_1606337179
 {
 
     private final Schema readerSchema;
-    private final Schema arrayArraySchema0;
-    private final Schema arrayArrayElemSchema0;
+    private Schema arrayArraySchema0;
+    private Schema arrayArrayElemSchema0;
 
     public UNION_GenericDeserializer_2018567528_1606337179(Schema readerSchema) {
         this.readerSchema = readerSchema;

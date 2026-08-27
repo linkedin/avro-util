@@ -16,11 +16,11 @@ public class FastGenericDeserializerGeneratorTest_shouldReadFixed_GenericDeseria
 {
 
     private final Schema readerSchema;
-    private final Schema testFixed0;
-    private final Schema testFixedUnion0;
-    private final Schema testFixedArray0;
-    private final Schema testFixedUnionArray0;
-    private final Schema testFixedUnionArrayArrayElemSchema0;
+    private Schema testFixed0;
+    private Schema testFixedUnion0;
+    private Schema testFixedArray0;
+    private Schema testFixedUnionArray0;
+    private Schema testFixedUnionArrayArrayElemSchema0;
 
     public FastGenericDeserializerGeneratorTest_shouldReadFixed_GenericDeserializer_1590965143_1590965143(Schema readerSchema) {
         this.readerSchema = readerSchema;

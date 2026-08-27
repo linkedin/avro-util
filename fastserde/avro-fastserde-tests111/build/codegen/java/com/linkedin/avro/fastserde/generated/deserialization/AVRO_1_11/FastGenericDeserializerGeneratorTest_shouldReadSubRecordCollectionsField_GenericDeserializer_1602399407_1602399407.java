@@ -17,16 +17,16 @@ public class FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollections
 {
 
     private final Schema readerSchema;
-    private final Schema recordsArray0;
-    private final Schema recordsArrayArrayElemSchema0;
-    private final Schema subField0;
-    private final Schema recordsMap0;
-    private final Schema recordsArrayUnion0;
-    private final Schema recordsArrayUnionOptionSchema0;
-    private final Schema recordsArrayUnionOptionArrayElemSchema0;
-    private final Schema recordsMapUnion0;
-    private final Schema recordsMapUnionOptionSchema0;
-    private final Schema recordsMapUnionOptionMapValueSchema0;
+    private Schema recordsArray0;
+    private Schema recordsArrayArrayElemSchema0;
+    private Schema subField0;
+    private Schema recordsMap0;
+    private Schema recordsArrayUnion0;
+    private Schema recordsArrayUnionOptionSchema0;
+    private Schema recordsArrayUnionOptionArrayElemSchema0;
+    private Schema recordsMapUnion0;
+    private Schema recordsMapUnionOptionSchema0;
+    private Schema recordsMapUnionOptionMapValueSchema0;
 
     public FastGenericDeserializerGeneratorTest_shouldReadSubRecordCollectionsField_GenericDeserializer_1602399407_1602399407(Schema readerSchema) {
         this.readerSchema = readerSchema;
