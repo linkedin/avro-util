@@ -1,0 +1,25 @@
+{
+  "type": "record",
+  "namespace": "under16",
+  "name": "IntsAndLongs",
+  "fields": [
+    {
+      "name": "longField",
+      "type": "long"
+    },
+    {
+      "name": "intField",
+      "type": "int"
+    },
+    {
+      "name": "boxedLongField",
+      "type": ["null", "long"],
+      "default": null
+    },
+    {
+      "name": "boxedIntField",
+      "type": ["null", "int"],
+      "default": null
+    }
+  ]
+}
