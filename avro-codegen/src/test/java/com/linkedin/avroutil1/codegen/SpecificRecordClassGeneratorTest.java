@@ -22,6 +22,30 @@ import org.testng.annotations.Test;
 
 public class SpecificRecordClassGeneratorTest {
   @DataProvider
+  public Object[][] schemasWithUnsafeDocs() {
+    String doc = "\"doc\":\"doc-marker */ $L $N $T\"";
+    return new Object[][]{
+        {"{\"type\":\"record\",\"name\":\"DocRecord\"," + doc + ",\"fields\":[]}"},
+        {"{\"type\":\"enum\",\"name\":\"DocEnum\"," + doc + ",\"symbols\":[\"A\"]}"},
+        {"{\"type\":\"fixed\",\"name\":\"DocFixed\"," + doc + ",\"size\":1}"},
+        {"{\"type\":\"record\",\"name\":\"DocFieldRecord\",\"fields\":["
+            + "{\"name\":\"value\",\"type\":\"string\"," + doc + "}]}"}
+    };
+  }
+
+  @Test(dataProvider = "schemasWithUnsafeDocs")
+  public void testSchemaDocsCannotTerminateJavadoc(String avsc) throws Exception {
+    AvscParseResult result = new AvscParser().parse(avsc);
+    Assert.assertNull(result.getParseError());
+    AvroNamedSchema schema = (AvroNamedSchema) result.getTopLevelSchema();
+    JavaFileObject generated = new SpecificRecordClassGenerator()
+        .generateSpecificClass(schema, SpecificRecordGenerationConfig.BROAD_COMPATIBILITY).toJavaFileObject();
+
+    Assert.assertTrue(generated.getCharContent(false).toString().contains("doc-marker * / $L $N $T"));
+    CompilerHelper.assertCompiles(generated);
+  }
+
+  @DataProvider
   Object[][] schemaPaths() {
     return new Object[][]{
         {"schemas/ArrayOfRecords.avsc", false},
