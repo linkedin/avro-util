@@ -5,6 +5,19 @@ Avro-Util
 
 A collection of utilities and libraries to allow java projects to better work with avro.
 
+### 0.4.37 maintenance branch ###
+
+This branch backports the security fixes from #604 and #606 onto 0.4.37:
+schema-documentation escaping in Java code generation and class validation in
+specific fast-serde code generation. It also includes the negative-integer
+regression coverage from #602.
+
+It intentionally excludes #595, preserving 0.4.37's range-checked `long` to `int`
+conversion, including rejection of values outside the signed 32-bit range.
+Consumers already on 0.4.38 or later should use 0.4.40 or a newer appropriate
+release rather than this compatibility branch. Maintenance artifacts must be
+published under a new version; the existing 0.4.37 release must not be replaced.
+
 ### How To Use ###
 
 Artifacts are published to [artifactory](https://linkedin.jfrog.io/artifactory/avro-util/).
