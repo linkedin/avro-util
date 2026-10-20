@@ -151,4 +151,8 @@ public class FieldBuilderTest {
         Assert.assertNull(field.getProp("string1"));
         Assert.assertNull(field.getProp("string2"));
     }
+    @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = ".*schema cannot be null.*")
+    public void testBuildWithoutSchemaThrows() {
+        AvroCompatibilityHelper.newField(null).setName("fieldWithoutSchema").build();
+    }
 }
