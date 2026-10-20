@@ -103,6 +103,9 @@ public class FieldBuilder111 implements FieldBuilder {
 
   @Override
   public Schema.Field build() {
+    if (_schema == null) {
+      throw new IllegalArgumentException("schema cannot be null");
+    }
     Object avroFriendlyDefault;
     try {
       avroFriendlyDefault = avroFriendlyDefaultValue(_defaultVal);
